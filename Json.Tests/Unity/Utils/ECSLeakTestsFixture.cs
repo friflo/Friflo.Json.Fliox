@@ -1,4 +1,11 @@
-﻿#if UNITY_5_3_OR_NEWER
+﻿using System.Reflection;
+using System.Text;
+using Friflo.Json.Burst;
+using NUnit.Framework;
+
+using static NUnit.Framework.Assert;
+
+#if UNITY_5_3_OR_NEWER
 using System.Reflection;
 using NUnit.Framework;
 using Unity.Collections;
@@ -36,6 +43,22 @@ namespace Friflo.Json.Tests.Unity.Utils
 {
     public class ECSLeakTestsFixture
     {
+        [SetUp]
+        public void Setup() {
+            DebugUtils.allocations.Clear();
+        }
+
+        [TearDown]
+        public void TearDown() {
+            
+            if (DebugUtils.allocations.Count > 0) {
+                StringBuilder msg = new StringBuilder();
+                foreach (var allocation in DebugUtils.allocations) {
+                    msg.Append(allocation.Value);
+                }
+                // Fail($"Found {DebugUtils.allocations.Count} resource leaks\n" + msg);
+            }
+        }
     }
 }
 #endif // UNITY_5_3_OR_NEWER

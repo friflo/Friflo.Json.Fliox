@@ -40,6 +40,7 @@ namespace Friflo.Json.Burst.Utils
 
         public ByteArray(int size) {
             array = new byte[size];
+            DebugUtils.AcquireAllocation(array);
         }
         
  /*       public byte this[int index]
@@ -59,6 +60,7 @@ namespace Friflo.Json.Burst.Utils
         public void Dispose() {
             if (array == null)
                 throw new InvalidOperationException("Friflo.Json.Burst.Utils.ByteArray has been disposed. Mimic NativeArray behavior");
+            DebugUtils.ReleaseAllocation(array);
             array = null;
         }
         
