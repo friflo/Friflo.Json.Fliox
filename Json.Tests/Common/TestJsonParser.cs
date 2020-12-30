@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed;
@@ -21,8 +20,8 @@ namespace Friflo.Json.Tests.Common
 
 		    using (var bytes = fromString("{}")) {
 			    parser.InitParser(bytes);
-			    Assert.AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-			    Assert.AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+			    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+			    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
 			    AreEqual(0, parser.GetLevel());
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
 		    }
@@ -164,7 +163,7 @@ namespace Friflo.Json.Tests.Common
 
         [Test]
         public void TestParseFile() {
-	        using (Bytes bytes = TestJsonParser.fromFile("assets/codec/parse.json")) {
+	        using (Bytes bytes = CommonUtils.fromFile("assets/codec/parse.json")) {
 		        TestParserImpl.TestParseFile(bytes);
 	        }
         }
@@ -183,23 +182,11 @@ namespace Friflo.Json.Tests.Common
 
         [Test]
         public void ParseJsonComplex()	{
-	        using (Bytes bytes = fromFile("assets/codec/complex.json")) {
+	        using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
 		        ParseJson(bytes);
 	        }
         }
 
-        public static Bytes fromFile (String path)
-        {
-#if UNITY_5_3_OR_NEWER
-	        string baseDir = UnityUtils.GetProjectFolder();
-#else
-	        string baseDir = Directory.GetCurrentDirectory() + "/../../../";	        
-#endif
-	        byte[] data = File.ReadAllBytes(baseDir + path);
-		    ByteArray bytes = Arrays.CopyFrom(data);
-	        return new Bytes(bytes);
-        }
-        
         int					num2 =				2;
         
         private void ParseJson(Bytes json)
@@ -370,7 +357,7 @@ namespace Friflo.Json.Tests.Common
 		[Test]
 		public void EncodeJsonComplex() {
 			using (PropType.Store store = createStore())
-			using (Bytes bytes = fromFile("assets/codec/complex.json")) {
+			using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
 				JsonComplex obj = (JsonComplex) EncodeJson(bytes, typeof(JsonComplex), store);
 				checkJsonComplex(obj);
 			}
@@ -379,7 +366,7 @@ namespace Friflo.Json.Tests.Common
 		[Test]
 		public void EncodeJsonToComplex()	{
 			using (PropType.Store store = createStore())
-			using (Bytes bytes = fromFile("assets/codec/complex.json")) {
+			using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
 				JsonComplex obj = new JsonComplex();
 				obj = (JsonComplex) EncodeJsonTo(bytes, obj, store);
 				checkJsonComplex(obj);
@@ -407,7 +394,7 @@ namespace Friflo.Json.Tests.Common
 
 		[Test]
 		public void testUtf8() {
-			Bytes src = fromFile ("assets/EuroSign.txt");
+			Bytes src = CommonUtils.fromFile ("assets/EuroSign.txt");
 			String str = src.ToString();
 			AreEqual("€", str);
 

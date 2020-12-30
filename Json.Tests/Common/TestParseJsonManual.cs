@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common
         
         [Test]
         public void ParseJsonManual() {
-            using (Bytes bytes = TestJsonParser.fromFile("assets/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
                 var parser = new JsonParser();
                 {
                     ParseManual manual = new ParseManual(Default.Constructor);
