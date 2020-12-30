@@ -44,9 +44,12 @@ namespace Friflo.Json.Tests.Unity.Utils
 {
     public class ECSLeakTestsFixture
     {
+        private int currentFrameCount;
         [SetUp]
         public void Setup() {
             DebugUtils.StartLeakDetection();
+            StackTrace stackTrace = new StackTrace(true);
+            currentFrameCount = stackTrace.FrameCount;
         }
 
         [TearDown]
@@ -58,27 +61,27 @@ namespace Friflo.Json.Tests.Unity.Utils
                 foreach (var allocation in DebugUtils.allocations) {
                     StackFrame[] frames = allocation.Value.GetFrames();
                     allocation.Value.GetFrames();
-                    int lastFrameIndex;
+                    /* int lastFrameIndex;
                     for (int i = frames.Length - 1; i > 0; i--) {
                         StackFrame frame = frames[i];
                         MethodBase method = frame.GetMethod();
                         var module = method.Module;
                         if (module.Name.Contains("Friflo")) {
                             lastFrameIndex = i;
-                            for (int n = 1; n <= lastFrameIndex; n++) {
-                                StackFrame f = frames[n];
-                                msg.Append("  ");
-                                MethodBase m = f.GetMethod();
-                                if (m.ReflectedType != null)
-                                    msg.Append($"{m.ReflectedType.Namespace}:{m.ReflectedType.Name} - ");
-                                msg.Append(m);
-                                msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
-                            }
-                            break;
                         }
+                    } */
+
+                    for (int n = 1; n <= frames.Length - currentFrameCount + 1; n++) {
+                        StackFrame f = frames[n];
+                        msg.Append("  ");
+                        MethodBase m = f.GetMethod();
+                        if (m.ReflectedType != null)
+                            msg.Append($"{m.ReflectedType.Namespace}.{m.ReflectedType.Name} - ");
+                        msg.Append(m);
+                        msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
                     }
                 }
-                Fail($"Found {DebugUtils.allocations.Count} resource leaks\n" + msg);
+                Fail($"Found {DebugUtils.allocations.Count} resource leaks\n{msg}");
             }
         }
     }
