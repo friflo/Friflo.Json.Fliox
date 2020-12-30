@@ -1,0 +1,16 @@
+{
+	"eur": ">€<",
+	"eur2": "[\u20AC]",
+	"null": null,
+	"true": true,
+	"false": false,
+	"empty": { },
+	"obj" :	 { "val": 11 },
+	"arr0" : [  ],
+	"arr1" : [ 1 ],
+	"arr2" : [ 1, 2 ],
+	"arr3" : [ { "val": 1}, { "val": 2} ],
+	"str" : "Hello",
+	"int32" : 42,
+	"dbl" : 3.5
+}

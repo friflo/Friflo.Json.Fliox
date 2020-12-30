@@ -1,0 +1,12 @@
+
+
+.bin/
+.obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+
+# This project is a code-only project, so script files are not referenced.
+# E.g as MonoBehavior scripts with are attached to game objects in regular Unity projects
+# ignores: *.user.meta, *.cs.meta, *.asmdef.meta, *.meta (folders), ...
+*.meta
