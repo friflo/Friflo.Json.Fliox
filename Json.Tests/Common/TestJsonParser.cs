@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common
         public static Bytes fromFile (String path)
         {
 #if UNITY_5_3_OR_NEWER
-	        string baseDir = Directory.GetCurrentDirectory() + "/Assets/Friflo/Json.Tests/"; // or Environment.CurrentDirectory;
+	        string baseDir = UnityUtils.GetProjectFolder();
 #else
 	        string baseDir = Directory.GetCurrentDirectory() + "/../../../";	        
 #endif
