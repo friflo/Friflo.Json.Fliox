@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿
+#if UNITY_5_3_OR_NEWER
+
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,3 +23,5 @@ namespace Friflo.Json.Tests.Unity.Utils
         }
     }
 }
+
+#endif

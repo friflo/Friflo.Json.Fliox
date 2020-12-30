@@ -5,6 +5,10 @@
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.idea/
+
+# .Net
+*.user
 
 # This project is a code-only project, so script files are not referenced.
 # E.g as MonoBehavior scripts with are attached to game objects in regular Unity projects
