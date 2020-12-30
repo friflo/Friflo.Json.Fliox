@@ -22,12 +22,15 @@ namespace Friflo.Json.Burst
         public StackTrace stackTrace;
     }
 
-    public static class DebugUtils
+    public class DebugUtils
     {
         public static Dictionary<object, StackTrace> allocations = new Dictionary<object, StackTrace>();
+        private static bool enableLeakDetection = false;
         
         public static void AcquireAllocation(object resource) {
 #if DEBUG
+            if (!enableLeakDetection)
+                return;
             var allocation = new Allocation();
             allocation.resource = resource;
             StackTrace stackTrace = new StackTrace(true);
@@ -39,6 +42,16 @@ namespace Friflo.Json.Burst
         public static void ReleaseAllocation(object resource) {
             allocations.Remove(resource);
         }
+
+        public static void StartLeakDetection() {
+            enableLeakDetection = true;
+            allocations.Clear();
+        }
+        
+        public static void StopLeakDetection() {
+            enableLeakDetection = false;
+        }
+
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
 using NUnit.Framework;
@@ -45,18 +46,39 @@ namespace Friflo.Json.Tests.Unity.Utils
     {
         [SetUp]
         public void Setup() {
-            DebugUtils.allocations.Clear();
+            DebugUtils.StartLeakDetection();
         }
 
         [TearDown]
         public void TearDown() {
+            DebugUtils.StopLeakDetection();
             
             if (DebugUtils.allocations.Count > 0) {
                 StringBuilder msg = new StringBuilder();
                 foreach (var allocation in DebugUtils.allocations) {
-                    msg.Append(allocation.Value);
+                    StackFrame[] frames = allocation.Value.GetFrames();
+                    allocation.Value.GetFrames();
+                    int lastFrameIndex;
+                    for (int i = frames.Length - 1; i > 0; i--) {
+                        StackFrame frame = frames[i];
+                        MethodBase method = frame.GetMethod();
+                        var module = method.Module;
+                        if (module.Name.Contains("Friflo")) {
+                            lastFrameIndex = i;
+                            for (int n = 1; n <= lastFrameIndex; n++) {
+                                StackFrame f = frames[n];
+                                msg.Append("  ");
+                                MethodBase m = f.GetMethod();
+                                if (m.ReflectedType != null)
+                                    msg.Append($"{m.ReflectedType.Namespace}:{m.ReflectedType.Name} - ");
+                                msg.Append(m);
+                                msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
+                            }
+                            break;
+                        }
+                    }
                 }
-                // Fail($"Found {DebugUtils.allocations.Count} resource leaks\n" + msg);
+                Fail($"Found {DebugUtils.allocations.Count} resource leaks\n" + msg);
             }
         }
     }
