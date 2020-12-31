@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed;
@@ -189,17 +190,19 @@ namespace Friflo.Json.Tests.Common
 
         int					num2 =				2;
         
-        private void ParseJson(Bytes json)
-        {
+        private void ParseJson(Bytes json) {
+	        var memLog = new MemoryLogger(100, 1000, MemoryLog.Disabled);
 	        // 170 ms - 20000, Release | Any CPU, target framework: net5.0, complex.json: 1134 bytes => 133 MB/sec
 	        using (JsonParser parser = new JsonParser()) {
 		        // StopWatch stopwatch = new StopWatch();
-		        for (int n = 0; n < num2; n++) {
+		        for (int n = 0; n < 20000; n++) {
+			        memLog.Snapshot();
 			        parser.InitParser(json);
 			        while (parser.NextEvent() != JsonEvent.EOF) {
 			        }
 		        }
 	        }
+	        memLog.AssertNoAllocations();
 	        // FFLog.log("ParseJson: " + json + " : " + stopwatch.Time());
         }
         
