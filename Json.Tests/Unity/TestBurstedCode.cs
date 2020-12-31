@@ -19,8 +19,8 @@ namespace Friflo.Json.Tests.Unity
             int capturedVariable = 42;
             Job.WithBurst().WithCode(() =>
             {
+                // ReSharper disable once UnusedVariable
                 int val = capturedVariable;
-                // Debug.Log("fff");
             }).Schedule();
         }
     }
