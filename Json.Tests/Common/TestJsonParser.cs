@@ -346,7 +346,7 @@ namespace Friflo.Json.Tests.Common
 			obj.map5 = new Dictionary <String, String>();
 			obj.map5 [ "key1" ] = "str1" ;
 			obj.map5 [ "key2" ] = null ;
-			obj.i64arr = new [] {1, 2, 3};
+			obj.i64Arr = new [] {1, 2, 3};
 		}
 	
 		
