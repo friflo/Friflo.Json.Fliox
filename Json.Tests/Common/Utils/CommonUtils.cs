@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.Utils
     [SuppressMessage("ReSharper", "UnusedParameter.Local")]
     public struct MemoryLogger
     {
-#if JSON_BURST
+#if JSON_BURST || UNITY_5_3_OR_NEWER
         // Burst code does not support usage of managed objects. So no logging performed in this case
         public MemoryLogger(int size, int stepSize, MemoryLog memoryLog) { }
         public void Snapshot() { }

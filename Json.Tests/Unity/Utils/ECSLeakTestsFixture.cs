@@ -7,8 +7,6 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
-using System.Reflection;
-using NUnit.Framework;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 

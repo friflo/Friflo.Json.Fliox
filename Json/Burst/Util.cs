@@ -50,3 +50,8 @@ namespace Friflo.Json.Burst
     }
 
 }
+
+ 
+#if UNITY_5_3_OR_NEWER && !JSON_BURST
+#warning Burst mode disabled. To enable add directive JSON_BURST to: Edit > Project Settings... > Player > Other Settings > Configuration > Scripting Define Symbols  
+#endif
