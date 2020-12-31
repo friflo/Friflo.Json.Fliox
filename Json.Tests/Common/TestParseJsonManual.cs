@@ -123,15 +123,15 @@ namespace Friflo.Json.Tests.Common
             public Str32 n;
 
             public Names(Default _) {
-                map = new Str32("map");
-                map2 = new Str32("map2");
-                listStr = new Str32("listStr");
-                boolArr = new Str32("boolArr");
-                i64Arr = new Str32("i64Arr");
-                i64 = new Str32("i64");
-                str = new Str32("str");
-                t = new Str32("t");
-                n = new Str32("n");
+                map =       "map";
+                map2 =      "map2";
+                listStr =   "listStr";
+                boolArr =   "boolArr";
+                i64Arr =    "i64Arr";
+                i64 =       "i64";
+                str =       "str";
+                t =         "t";
+                n =         "n";
             }
         }
         
