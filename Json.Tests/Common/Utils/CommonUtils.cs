@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Utils;
-using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.Utils
 {
@@ -45,6 +45,7 @@ namespace Friflo.Json.Tests.Common.Utils
     }
     
 
+    [SuppressMessage("ReSharper", "UnusedParameter.Local")]
     public struct MemoryLogger
     {
 #if JSON_BURST
@@ -77,14 +78,14 @@ namespace Friflo.Json.Tests.Common.Utils
             if (memoryLog == MemoryLog.Disabled)
                 return;
             if (totalMemoryCount < 2)
-                Assert.Fail($"Gathered too few memory snapshots ({totalMemoryCount}). Decrease snapshotInterval ({snapshotInterval})");
+                NUnit.Framework.Assert.Fail($"Gathered too few memory snapshots ({totalMemoryCount}). Decrease snapshotInterval ({snapshotInterval})");
                 
             long initialMemory = totalMemory[0];
             for (int i = 1; i < totalMemoryCount; i++) {
                 if (initialMemory == totalMemory[i])
                     continue;
                 string msg = $"Unexpected memory allocations. Snapshot history (bytes):\n{MemorySnapshots()}";
-                Assert.Fail(msg);
+                NUnit.Framework.Assert.Fail(msg);
                 return;
             }
         }
