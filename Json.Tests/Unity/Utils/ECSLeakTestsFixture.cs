@@ -54,9 +54,9 @@ namespace Friflo.Json.Tests.Unity.Utils
         public void TearDown() {
             DebugUtils.StopLeakDetection();
             
-            if (DebugUtils.allocations.Count > 0) {
+            if (DebugUtils.Allocations.Count > 0) {
                 StringBuilder msg = new StringBuilder();
-                foreach (var allocation in DebugUtils.allocations) {
+                foreach (var allocation in DebugUtils.Allocations) {
                     StackFrame[] frames = allocation.Value.GetFrames();
                     allocation.Value.GetFrames();
                     /* int lastFrameIndex;
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Unity.Utils
                         msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
                     }
                 }
-                Fail($"Found {DebugUtils.allocations.Count} resource leaks\n{msg}");
+                Fail($"Found {DebugUtils.Allocations.Count} resource leaks\n{msg}");
             }
         }
     }

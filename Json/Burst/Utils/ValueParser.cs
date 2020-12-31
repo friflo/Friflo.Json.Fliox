@@ -7,8 +7,8 @@ namespace Friflo.Json.Burst.Utils
 {
     public struct ValueParser : IDisposable
     {
-	    private		String32	_true;
-	    private		String32	_false;
+	    private		String32	@true;
+	    private		String32	@false;
 	    private		String32	_1;
 	    private		String32	_0;
 	    private		bool		initialized;
@@ -18,8 +18,8 @@ namespace Friflo.Json.Burst.Utils
 		    if (initialized)
 			    return;
 		    initialized = true;
-		    _true =		new String32("true");
-		    _false =	new String32("false");
+		    @true =		new String32("true");
+		    @false =	new String32("false");
 		    _1 =		new String32("1");
 		    _0 =		new String32("0");
 	    }
@@ -269,9 +269,9 @@ namespace Friflo.Json.Burst.Utils
 		public bool ParseBoolean(ref Bytes bytes, ref ValueError valueError, out bool success) {
 			success = true;
 			valueError.ClearError();
-			if (bytes.IsEqual32(ref _true.value)   || bytes.IsEqual32(ref _1.value))
+			if (bytes.IsEqual32(ref @true.value)   || bytes.IsEqual32(ref _1.value))
 				return true;
-			if (bytes.IsEqual32(ref _false.value)  || bytes.IsEqual32(ref _0.value))
+			if (bytes.IsEqual32(ref @false.value)  || bytes.IsEqual32(ref _0.value))
 				return false;
 			success = false;
 			valueError.SetErrorFalse($"Invalid boolean. Expected true/false but found: {bytes.ToFixed32()}");

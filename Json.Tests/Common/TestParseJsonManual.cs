@@ -64,14 +64,14 @@ namespace Friflo.Json.Tests.Common
             AreEqual(true,          manual.foundNullElement);
             AreEqual(true,          manual.trueElement);
             //
-            AreEqual(8,     p.SkipInfo.arrays);
-            AreEqual(1,     p.SkipInfo.booleans);
-            AreEqual(1,     p.SkipInfo.floats);
-            AreEqual(34,    p.SkipInfo.integers);
-            AreEqual(15,    p.SkipInfo.nulls);
-            AreEqual(37,    p.SkipInfo.objects);
-            AreEqual(4,     p.SkipInfo.strings);
-            AreEqual(100,   p.SkipInfo.Sum);
+            AreEqual(8,     p.skipInfo.arrays);
+            AreEqual(1,     p.skipInfo.booleans);
+            AreEqual(1,     p.skipInfo.floats);
+            AreEqual(34,    p.skipInfo.integers);
+            AreEqual(15,    p.skipInfo.nulls);
+            AreEqual(37,    p.skipInfo.objects);
+            AreEqual(4,     p.skipInfo.strings);
+            AreEqual(100,   p.skipInfo.Sum);
         }
         
         [Test]

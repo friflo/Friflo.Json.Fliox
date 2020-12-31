@@ -49,12 +49,12 @@ namespace Friflo.Json.Burst
 		private				ValueFormat			format;
 		private				ValueParser			valueParser;
 
-		private				String32			_true;
-		private				String32			_false;
-		private				String32			_null;
+		private				String32			@true;
+		private				String32			@false;
+		private				String32			@null;
 
 		public				bool				isFloat;
-		public				SkipInfo			SkipInfo;
+		public				SkipInfo			skipInfo;
 		
 	
 		private const int 	ExpectMember =			0;
@@ -142,9 +142,9 @@ namespace Friflo.Json.Burst
 			misc.InitBytes(32); 
 			value.InitBytes(32);
 			format.InitTokenFormat();
-			_true = new String32("true");
-			_false = new String32("false");
-			_null = new String32("null");
+			@true = new String32("true");
+			@false = new String32("false");
+			@null = new String32("null");
 			valueParser.InitValueParser();
 		}
 
@@ -173,7 +173,7 @@ namespace Friflo.Json.Burst
 			this.startPos = offset;
 			this.buf = bytes;
 			this.bufEnd = offset + len;
-			SkipInfo = default(SkipInfo);
+			skipInfo = default(SkipInfo);
 			error.Clear();
 		}
 
@@ -290,17 +290,17 @@ namespace Friflo.Json.Burst
             			return JsonEvent.ValueNumber;
             		return JsonEvent.Error;
 				case 't':
-            		if (!ReadKeyword(ref _true ))
+            		if (!ReadKeyword(ref @true ))
             			return JsonEvent.Error;
             		boolValue= true;
             		return JsonEvent.ValueBool;
 				case 'f':
-            		if (!ReadKeyword(ref _false))
+            		if (!ReadKeyword(ref @false))
             			return JsonEvent.Error;
             		boolValue= false;
             		return JsonEvent.ValueBool;
 				case 'n':
-            		if (!ReadKeyword(ref _null))
+            		if (!ReadKeyword(ref @null))
             			return JsonEvent.Error;
             		return JsonEvent.ValueNull;
 				case  -1:
@@ -528,26 +528,26 @@ namespace Friflo.Json.Burst
 		
 		private bool SkipObject()
 		{
-			SkipInfo.objects++;
+			skipInfo.objects++;
 			while (true)
 			{
 				JsonEvent ev = NextEvent();
 				switch (ev)
 				{
 				case JsonEvent. ValueString:
-					SkipInfo.strings++;
+					skipInfo.strings++;
 					break;
 				case JsonEvent. ValueNumber:
 					if (isFloat)
-						SkipInfo.floats++;
+						skipInfo.floats++;
 					else
-						SkipInfo.integers++;
+						skipInfo.integers++;
 					break;
 				case JsonEvent. ValueBool:
-					SkipInfo.booleans++;
+					skipInfo.booleans++;
 					break;
 				case JsonEvent. ValueNull:
-					SkipInfo.nulls++;
+					skipInfo.nulls++;
 					break;
 				case JsonEvent. ObjectStart:
 					if (!SkipObject())
@@ -569,26 +569,26 @@ namespace Friflo.Json.Burst
 		
 		private bool SkipArray()
 		{
-			SkipInfo.arrays++;
+			skipInfo.arrays++;
 			while (true)
 			{
 				JsonEvent ev = NextEvent();
 				switch (ev)
 				{
 				case JsonEvent. ValueString:
-					SkipInfo.strings++;
+					skipInfo.strings++;
 					break;
 				case JsonEvent. ValueNumber:
 					if (isFloat)
-						SkipInfo.floats++;
+						skipInfo.floats++;
 					else
-						SkipInfo.integers++;
+						skipInfo.integers++;
 					break;
 				case JsonEvent. ValueBool:
-					SkipInfo.booleans++;
+					skipInfo.booleans++;
 					break;
 				case JsonEvent. ValueNull:
-					SkipInfo.nulls++;
+					skipInfo.nulls++;
 					break;
 				case JsonEvent. ObjectStart:
 					if (!SkipObject())
@@ -617,19 +617,19 @@ namespace Friflo.Json.Burst
 				case JsonEvent.ObjectEnd:
 					return false;
 				case JsonEvent. ValueString:
-					SkipInfo.strings++;
+					skipInfo.strings++;
 					return true;
 				case JsonEvent. ValueNumber:
 					if (isFloat)
-						SkipInfo.floats++;
+						skipInfo.floats++;
 					else
-						SkipInfo.integers++;
+						skipInfo.integers++;
 					return true;
 				case JsonEvent. ValueBool:
-					SkipInfo.booleans++;
+					skipInfo.booleans++;
 					return true;
 				case JsonEvent. ValueNull:
-					SkipInfo.nulls++;
+					skipInfo.nulls++;
 					return true;
 				case JsonEvent.Error:
 				case JsonEvent.EOF:

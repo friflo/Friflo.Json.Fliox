@@ -19,32 +19,32 @@ namespace Friflo.Json.Burst
         public StackTrace stackTrace;
     }
 
-    public class DebugUtils
+    public static class DebugUtils
     {
-        public static Dictionary<object, StackTrace> allocations = new Dictionary<object, StackTrace>();
-        private static bool enableLeakDetection = false;
+        public static readonly Dictionary<object, StackTrace> Allocations = new Dictionary<object, StackTrace>();
+        private static bool _enableLeakDetection;
         
         public static void TrackAllocation(object resource) {
-            if (!enableLeakDetection)
+            if (!_enableLeakDetection)
                 return;
             var allocation = new Allocation();
             allocation.resource = resource;
             StackTrace stackTrace = new StackTrace(true);
             // StackFrame[] stackFrames = stackTrace.GetFrames();
-            allocations.Add(resource, stackTrace);
+            Allocations.Add(resource, stackTrace);
         }
 
         public static void UntrackAllocation(object resource) {
-            allocations.Remove(resource);
+            Allocations.Remove(resource);
         }
 
         public static void StartLeakDetection() {
-            enableLeakDetection = true;
-            allocations.Clear();
+            _enableLeakDetection = true;
+            Allocations.Clear();
         }
         
         public static void StopLeakDetection() {
-            enableLeakDetection = false;
+            _enableLeakDetection = false;
         }
 
     }
