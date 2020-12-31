@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Unity.Utils
         public static string GetProjectFolder() {
             ScriptableObject unityUtils = ScriptableObject.CreateInstance<UnityUtils>();
             string scriptPath = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(unityUtils));
-            string expectedPath = "Json.Tests/Unity/Utils/UnityUtils.cs";
+            string expectedPath = "Json.Tests/Common/Utils/UnityUtils.cs";
             if (!scriptPath.EndsWith(expectedPath))
                 Fail("Expect UnityUtils located in: " + expectedPath);
             string projectBase = Path.GetDirectoryName(scriptPath) + "/../../";
