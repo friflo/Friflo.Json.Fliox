@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common
 
         public void Snapshot() {
             if (snapshotCount++ % snapshotInterval == 0)
-                totalMemory[totalMemoryCount++] = GC.GetTotalMemory(false);
+                totalMemory[totalMemoryCount++] = GC.GetAllocatedBytesForCurrentThread();
         }
 
         public void AssertNoAllocations() {
@@ -77,7 +77,6 @@ namespace Friflo.Json.Tests.Common
                     continue;
                 string msg = $"Unexpected memory allocations. Snapshot history (bytes):\n{MemorySnapshots()}";
                 Assert.Fail(msg);
-                // TestContext.Out.WriteLine(msg);
                 return;
             }
         }
