@@ -3,10 +3,8 @@
 
 #if JSON_BURST
 	using Str32 = Unity.Collections.FixedString32;
-	using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
-    using Str128 = System.String;
 #endif
 
 namespace Friflo.Json.Burst
