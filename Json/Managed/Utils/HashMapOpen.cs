@@ -16,9 +16,9 @@ namespace Friflo.Json.Managed.Utils
 		private static	Removed		removed = new Removed();
 		private			int			removes;
 		private			int			thresholdRemoves;
-		private  		Object[]	_key;
-		private  		V[]			_val;
-		private 		int[]		_used;
+		private  		Object[]	rehashKey;
+		private  		V[]			rehashVal;
+		private 		int[]		rehashUsed;
 
 		public HashMapOpen()
 		:
@@ -125,17 +125,18 @@ namespace Friflo.Json.Managed.Utils
     		capacity = newCap;
 			threshold 			= (int)(0.7 * capacity);
 			thresholdRemoves	= (int)(0.15 * capacity);
-			bool reuse = _key != null && _key. Length >= capacity;
-			Object[]	newKey 	= reuse ? _key 	:		new Object	[ capacity ];
+			bool reuse = rehashKey != null && rehashKey. Length >= capacity;
+			Object[]	newKey 	= reuse ? rehashKey 	: new Object	[ capacity ];
 			// @SuppressWarnings("unchecked")
-			V[]			newVal	= reuse ? _val	:		new V 		[ capacity ];
-			int[]		newUsed = reuse ? _used :		new int		[ capacity ];
+			V[]			newVal	= reuse ? rehashVal		: new V 		[ capacity ];
+			int[]		newUsed = reuse ? rehashUsed	:new int		[ capacity ];
 			int			newSize = 0;
 		
 			for (int n = 0; n < size; n++)
 			{
 				int pos = used[n];
 				Object k = key[pos];
+				// ReSharper disable once PossibleUnintendedReferenceComparison
 				if (k != removed)
 				{
 		    		int hash = k. GetHashCode() & 0x7FFFFFFF;
@@ -155,9 +156,9 @@ namespace Friflo.Json.Managed.Utils
 			}
 			// Array.Clear( key, 0, _key.Length);
 			// Array.Clear( val, 0, _val.Length);
-			_key = key;
-			_val = val;
-			_used = used;
+			rehashKey = key;
+			rehashVal = val;
+			rehashUsed = used;
 			key = newKey;
 			val = newVal;
 			used = newUsed;

@@ -56,7 +56,7 @@ namespace Friflo.Json.Managed.Prop
 			return fieldMap.Get(fieldName);
 		}
 
-		public static readonly Store store = new Store();
+		// public static readonly Store store = new Store();
 		
 		public class Store : IDisposable
 		{
