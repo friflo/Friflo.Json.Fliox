@@ -112,7 +112,7 @@ namespace Friflo.Json.Managed
 					bytes.AppendChar(',');
 				PropField field = fields[n];
 				switch (field.type) {
-					case SimpleType.ID.String:
+					case SimpleType.Id.String:
 						WriteKey(field);
 						String val = field.GetString(obj);
 						if (val != null)
@@ -120,37 +120,37 @@ namespace Friflo.Json.Managed
 						else
 							bytes.AppendBytes(ref _null);
 						break;
-					case SimpleType.ID.Long:
+					case SimpleType.Id.Long:
 						WriteKey(field);
 						format.AppendLong(ref bytes, field.GetLong(obj));
 						break;
-					case SimpleType.ID.Integer:
+					case SimpleType.Id.Integer:
 						WriteKey(field);
 						format.AppendInt(ref bytes, field.GetInt(obj));
 						break;
-					case SimpleType.ID.Short:
+					case SimpleType.Id.Short:
 						WriteKey(field);
 						format.AppendInt(ref bytes, field.GetInt(obj));
 						break;
-					case SimpleType.ID.Byte:
+					case SimpleType.Id.Byte:
 						WriteKey(field);
 						format.AppendInt(ref bytes, field.GetInt(obj));
 						break;
-					case SimpleType.ID.Bool:
+					case SimpleType.Id.Bool:
 						WriteKey(field);
 						format.AppendBool(ref bytes, field.GetBool(obj));
 						break;
-					case SimpleType.ID.Double:
+					case SimpleType.Id.Double:
 						WriteKey(field);
 						format.AppendDbl(ref bytes, field.GetDouble(obj));
 						break;
 					//													bytes.Append(field.GetString(obj));		break;	// precise conversion
-					case SimpleType.ID.Float:
+					case SimpleType.Id.Float:
 						WriteKey(field);
 						format.AppendFlt(ref bytes, field.GetFloat(obj));
 						break;
 					// 													bytes.Append(field.GetString(obj));		break;	// precise conversion
-					case SimpleType.ID.Object:
+					case SimpleType.Id.Object:
 						WriteKey(field);
 						Object child = field.GetObject(obj);
 						if (child == null) {
@@ -177,38 +177,38 @@ namespace Friflo.Json.Managed
 			Type typeInterface = collection.typeInterface;
 			if (typeInterface == typeof(Array)) {
 				bytes.AppendChar('[');
-				switch (collection.ID) {
-					case SimpleType.ID.String:
+				switch (collection.id) {
+					case SimpleType.Id.String:
 						WriteArrayString((String[]) col);
 						break;
-					case SimpleType.ID.Long:
+					case SimpleType.Id.Long:
 						WriteArrayLong((long[]) col);
 						break;
-					case SimpleType.ID.Integer:
+					case SimpleType.Id.Integer:
 						WriteArrayInt((int[]) col);
 						break;
-					case SimpleType.ID.Short:
+					case SimpleType.Id.Short:
 						WriteArrayShort((short[]) col);
 						break;
-					case SimpleType.ID.Byte:
+					case SimpleType.Id.Byte:
 						WriteArrayByte((byte[]) col);
 						break;
-					case SimpleType.ID.Bool:
+					case SimpleType.Id.Bool:
 						WriteArrayBool((bool[]) col);
 						break;
-					case SimpleType.ID.Double:
+					case SimpleType.Id.Double:
 						WriteArrayDouble((double[]) col);
 						break;
-					case SimpleType.ID.Float:
+					case SimpleType.Id.Float:
 						WriteArrayFloat((float[]) col);
 						break;
-					case SimpleType.ID.Object:
+					case SimpleType.Id.Object:
 						if (collection.elementPropType == null)
 							collection.elementPropType = typeCache.Get(collection.elementType);
 						WriteArrayObject(collection.elementPropType, (Object[]) col);
 						break;
 					default:
-						throw new FrifloException("unsupported array type: " + collection.ID);
+						throw new FrifloException("unsupported array type: " + collection.id);
 				}
 
 				bytes.AppendChar(']');
@@ -233,11 +233,11 @@ namespace Friflo.Json.Managed
 				if (n > 0) bytes.AppendChar(',');
 				Object item = list[n];
 				if (item != null) {
-					switch (collection.ID) {
-						case SimpleType.ID.Object:
+					switch (collection.id) {
+						case SimpleType.Id.Object:
 							WriteObject(itemType, item);
 							break;
-						case SimpleType.ID.String:
+						case SimpleType.Id.String:
 							WriteString((String) item);
 							break;
 						default:

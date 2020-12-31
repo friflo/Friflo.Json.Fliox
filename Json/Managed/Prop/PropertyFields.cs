@@ -22,7 +22,7 @@ namespace Friflo.Json.Managed.Prop
 		private		readonly	IPropDriver					propDriver = PropDriver.GetDriver();
 
 
-		private readonly static	Type[] 						types = new Type [] { typeof( PropCall ) };
+		private readonly static	Type[] 						Types = new Type [] { typeof( PropCall ) };
 
 		public PropertyFields (Type type, PropType declType, bool listFields, bool listMethods)
 		{
@@ -43,14 +43,14 @@ namespace Friflo.Json.Managed.Prop
 				int count = 0;
 				for (int n = 0; n < num; n++)
 				{
-					if (fields[n].type != SimpleType.ID.Method)
+					if (fields[n].type != SimpleType.Id.Method)
 						count++;
 				}
 				fieldsSerializable = new PropField [count];
 				int pos = 0;
 				for (int n = 0; n < num; n++)
 				{
-					if (fields[n].type != SimpleType.ID.Method)
+					if (fields[n].type != SimpleType.Id.Method)
 						fieldsSerializable[pos++] = fields[n];
 				}
 			}
@@ -103,7 +103,7 @@ namespace Friflo.Json.Managed.Prop
 		{
 			if (!listMethods)
 				return;
-			MethodInfo method = Reflect.GetMethod(type, name, types );
+			MethodInfo method = Reflect.GetMethod(type, name, Types );
 			if (method == null)
 				throw new FrifloException ("Method '" + name + "' ('" + name + "') not found in type " + type. FullName);
 			PropField pf =  new PropFieldMethod(declType, name, method);

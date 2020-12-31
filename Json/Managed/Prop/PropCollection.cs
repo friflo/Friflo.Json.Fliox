@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Prop
 		public 	 readonly	Type			keyType;
 		public 	 readonly 	Type			elementType;
 		public 				PropType		elementPropType;
-		public	 readonly	SimpleType.ID ?	ID;
+		public	 readonly	SimpleType.Id ?	id;
         internal readonly	ConstructorInfo constructor;
 	
 		internal PropCollection (Type typeInterface, Type type, Type elementType, Type keyType)
@@ -23,7 +23,7 @@ namespace Friflo.Json.Managed.Prop
 			this.typeInterface	= typeInterface;
 			this.keyType		= keyType;
 			this.elementType	= elementType;
-			this.ID				= SimpleType.IdFromType(elementType);
+			this.id				= SimpleType.IdFromType(elementType);
             this.constructor    = GetConstructor (type, typeInterface, keyType, elementType);
 		}
 

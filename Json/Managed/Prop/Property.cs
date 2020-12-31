@@ -8,7 +8,7 @@ namespace Friflo.Json.Managed.Prop
 {
 	public abstract class  Property
 	{
-		private readonly static 	Type[] types = new Type [] { typeof( Property ) };
+		private readonly static 	Type[] Types = new Type [] { typeof( Property ) };
 
 		public abstract	void	Set(String name) ;
 		public abstract void	Set(String name, String field) ;
@@ -17,7 +17,7 @@ namespace Friflo.Json.Managed.Prop
 
 		public static MethodInfo GetPropertiesDeclaration (Type type)
 		{
-			return Reflect.GetMethodEx(type, "SetProperties", types);
+			return Reflect.GetMethodEx(type, "SetProperties", Types);
 		}
 
 		internal void SetProperties (Type type)

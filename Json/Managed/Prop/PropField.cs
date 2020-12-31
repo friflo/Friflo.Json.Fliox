@@ -13,7 +13,7 @@ namespace Friflo.Json.Managed.Prop
 	{
 		internal readonly 	String 			name;
 		internal readonly 	MethodInfo		method;
-		internal readonly 	SimpleType.ID	type;
+		internal readonly 	SimpleType.Id	type;
 		public	 readonly 	Type			fieldType;
 		public 	 readonly	PropCollection	collection;
 		public 	 readonly	PropAccess		access;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Managed.Prop
 			return fieldPropType = cache.Get(fieldType);		
 		}
 	
-		internal PropField (PropType declType, String name, SimpleType.ID type, Type fieldType, PropCollection.Info info)
+		internal PropField (PropType declType, String name, SimpleType.Id type, Type fieldType, PropCollection.Info info)
 		{
 			this.declType				= declType;
 			this.name 					= name;
@@ -48,7 +48,7 @@ namespace Friflo.Json.Managed.Prop
 			this.name 					= name;
 			this.nameBytes				= new Bytes(name);
 			this.method					= method;
-			this.type					= SimpleType.ID.Method;
+			this.type					= SimpleType.Id.Method;
 			this.fieldType				= null;
 			this.collection				= null;
 			this.access					= null;
@@ -77,14 +77,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		return InternalGetString	(prop);
-				case SimpleType.ID. Long:		return InternalGetLong 		(prop) .ToString(NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Integer:	return InternalGetInt		(prop) .ToString(NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Short:		return InternalGetShort		(prop) .ToString(NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Byte:		return InternalGetByte		(prop) .ToString(NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Bool:		return InternalGetBool		(prop) ? "true"  : "false";
-				case SimpleType.ID. Double:		return InternalGetDouble	(prop) .ToString(NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Float:		return InternalGetFloat		(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. String:		return InternalGetString	(prop);
+				case SimpleType.Id. Long:		return InternalGetLong 		(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Integer:	return InternalGetInt		(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Short:		return InternalGetShort		(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Byte:		return InternalGetByte		(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Bool:		return InternalGetBool		(prop) ? "true"  : "false";
+				case SimpleType.Id. Double:		return InternalGetDouble	(prop) .ToString(NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Float:		return InternalGetFloat		(prop) .ToString(NumberFormatInfo.InvariantInfo);
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -101,14 +101,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		InternalSetString	(prop, val) ;					break;
-				case SimpleType.ID. Long:		InternalSetLong 	(prop, long.	Parse (val,NumberFormatInfo.InvariantInfo) );	break;
-				case SimpleType.ID. Integer:	InternalSetInt		(prop, int.		Parse (val, NumberFormatInfo.InvariantInfo) );	break;
-				case SimpleType.ID. Short:		InternalSetShort	(prop, short.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
-				case SimpleType.ID. Byte:		InternalSetByte		(prop, byte.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
-				case SimpleType.ID. Bool:		InternalSetBool		(prop, bool.	Parse (val) );	                                break;
-				case SimpleType.ID. Double:		InternalSetDouble	(prop, double.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
-				case SimpleType.ID. Float:		InternalSetFloat	(prop, float.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. String:		InternalSetString	(prop, val) ;					break;
+				case SimpleType.Id. Long:		InternalSetLong 	(prop, long.	Parse (val,NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. Integer:	InternalSetInt		(prop, int.		Parse (val, NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. Short:		InternalSetShort	(prop, short.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. Byte:		InternalSetByte		(prop, byte.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. Bool:		InternalSetBool		(prop, bool.	Parse (val) );	                                break;
+				case SimpleType.Id. Double:		InternalSetDouble	(prop, double.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
+				case SimpleType.Id. Float:		InternalSetFloat	(prop, float.	Parse (val, NumberFormatInfo.InvariantInfo) );	break;
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -123,7 +123,7 @@ namespace Friflo.Json.Managed.Prop
 		{
 			try
 			{
-				if (type == SimpleType. ID.Object)
+				if (type == SimpleType. Id.Object)
 					return InternalGetObject	(prop) ;
 				throw new FrifloException("unhandled case for field: " + name + " type: " + type);
 			}
@@ -135,7 +135,7 @@ namespace Friflo.Json.Managed.Prop
 
 		public void SetObject (Object prop, Object val)
 		{
-			if (type == SimpleType.ID.Object)
+			if (type == SimpleType.Id.Object)
 			{
 				try
 				{
@@ -152,7 +152,7 @@ namespace Friflo.Json.Managed.Prop
 
 		public long GetLong (Object prop)
 		{
-			if (type == SimpleType.ID.Long)
+			if (type == SimpleType.Id.Long)
 			{
 				try
 				{
@@ -169,7 +169,7 @@ namespace Friflo.Json.Managed.Prop
 		
 		public void SetLong (Object prop, long val)
 		{
-			if (type == SimpleType.ID.Long)
+			if (type == SimpleType.Id.Long)
 			{
 				try
 				{
@@ -190,16 +190,16 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:
+				case SimpleType.Id. String:
 					String str = 								InternalGetString	(prop) ;
 					throw new FrifloException("No conversion to bool. field: " + name + " val: " + str);
-				case SimpleType.ID. Long:		return (int)	InternalGetLong		(prop) ;
-				case SimpleType.ID. Integer:	return			InternalGetInt		(prop) ;
-				case SimpleType.ID. Short:		return 			InternalGetShort	(prop) ;
-				case SimpleType.ID. Byte:		return 			InternalGetByte		(prop) ;
-				case SimpleType.ID. Bool:		return 			InternalGetBool		(prop) ? 1 : 0;
-				case SimpleType.ID. Double:		return (int)	InternalGetDouble	(prop) ;
-				case SimpleType.ID. Float:		return (int)	InternalGetFloat	(prop) ;
+				case SimpleType.Id. Long:		return (int)	InternalGetLong		(prop) ;
+				case SimpleType.Id. Integer:	return			InternalGetInt		(prop) ;
+				case SimpleType.Id. Short:		return 			InternalGetShort	(prop) ;
+				case SimpleType.Id. Byte:		return 			InternalGetByte		(prop) ;
+				case SimpleType.Id. Bool:		return 			InternalGetBool		(prop) ? 1 : 0;
+				case SimpleType.Id. Double:		return (int)	InternalGetDouble	(prop) ;
+				case SimpleType.Id. Float:		return (int)	InternalGetFloat	(prop) ;
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -216,14 +216,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		InternalSetString	(prop, val .ToString(NumberFormatInfo.InvariantInfo));		break;
-				case SimpleType.ID. Long:		InternalSetLong		(prop, 			val);			break;
-				case SimpleType.ID. Integer:	InternalSetInt		(prop,			val);			break;
-				case SimpleType.ID. Short:		InternalSetShort	(prop, (short)	val);			break;
-				case SimpleType.ID. Byte:		InternalSetByte		(prop, (byte)	val);			break;
-				case SimpleType.ID. Bool:		InternalSetBool		(prop, 			val != 0 );		break; 
-				case SimpleType.ID. Double:		InternalSetDouble	(prop, 			val);			break;
-				case SimpleType.ID. Float:		InternalSetFloat	(prop, 			val);			break;
+				case SimpleType.Id. String:		InternalSetString	(prop, val .ToString(NumberFormatInfo.InvariantInfo));		break;
+				case SimpleType.Id. Long:		InternalSetLong		(prop, 			val);			break;
+				case SimpleType.Id. Integer:	InternalSetInt		(prop,			val);			break;
+				case SimpleType.Id. Short:		InternalSetShort	(prop, (short)	val);			break;
+				case SimpleType.Id. Byte:		InternalSetByte		(prop, (byte)	val);			break;
+				case SimpleType.Id. Bool:		InternalSetBool		(prop, 			val != 0 );		break; 
+				case SimpleType.Id. Double:		InternalSetDouble	(prop, 			val);			break;
+				case SimpleType.Id. Float:		InternalSetFloat	(prop, 			val);			break;
 				default:						throw new FrifloException ("no conversion to int. type: " + type);
 				}
 			}
@@ -239,14 +239,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		return Double.Parse ( InternalGetString(prop) ,  NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Long:		return InternalGetLong		(prop) ;
-				case SimpleType.ID. Integer:	return InternalGetInt		(prop) ;
-				case SimpleType.ID. Short:		return InternalGetShort		(prop) ;
-				case SimpleType.ID. Byte:		return InternalGetByte		(prop) ;
-				case SimpleType.ID. Bool:		return InternalGetBool		(prop) ? 1 : 0;
-				case SimpleType.ID. Double:		return InternalGetDouble	(prop) ;
-				case SimpleType.ID. Float:		return InternalGetFloat		(prop) ;
+				case SimpleType.Id. String:		return Double.Parse ( InternalGetString(prop) ,  NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Long:		return InternalGetLong		(prop) ;
+				case SimpleType.Id. Integer:	return InternalGetInt		(prop) ;
+				case SimpleType.Id. Short:		return InternalGetShort		(prop) ;
+				case SimpleType.Id. Byte:		return InternalGetByte		(prop) ;
+				case SimpleType.Id. Bool:		return InternalGetBool		(prop) ? 1 : 0;
+				case SimpleType.Id. Double:		return InternalGetDouble	(prop) ;
+				case SimpleType.Id. Float:		return InternalGetFloat		(prop) ;
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -263,14 +263,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		InternalSetString	(prop, val .ToString (NumberFormatInfo.InvariantInfo));		break;
-				case SimpleType.ID. Long:		InternalSetLong		(prop, (long)	val);			break;
-				case SimpleType.ID. Integer:	InternalSetInt		(prop, (int)	val);			break;
-				case SimpleType.ID. Short:		InternalSetShort	(prop, (short)	val);			break;
-				case SimpleType.ID. Byte:		InternalSetByte		(prop, (byte)	val);			break;
-				case SimpleType.ID. Bool:		InternalSetBool		(prop, 			val != 0 );		break; 
-				case SimpleType.ID. Double:		InternalSetDouble	(prop, 			val);			break;
-				case SimpleType.ID. Float:		InternalSetFloat	(prop, (float)	val);			break;
+				case SimpleType.Id. String:		InternalSetString	(prop, val .ToString (NumberFormatInfo.InvariantInfo));		break;
+				case SimpleType.Id. Long:		InternalSetLong		(prop, (long)	val);			break;
+				case SimpleType.Id. Integer:	InternalSetInt		(prop, (int)	val);			break;
+				case SimpleType.Id. Short:		InternalSetShort	(prop, (short)	val);			break;
+				case SimpleType.Id. Byte:		InternalSetByte		(prop, (byte)	val);			break;
+				case SimpleType.Id. Bool:		InternalSetBool		(prop, 			val != 0 );		break; 
+				case SimpleType.Id. Double:		InternalSetDouble	(prop, 			val);			break;
+				case SimpleType.Id. Float:		InternalSetFloat	(prop, (float)	val);			break;
 				default:						throw new FrifloException ("no conversion to double. type: " + type);
 				}
 			}
@@ -286,14 +286,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		return Single.Parse ( InternalGetString(prop) ,  NumberFormatInfo.InvariantInfo);
-				case SimpleType.ID. Long:		return InternalGetLong				(prop) ;
-				case SimpleType.ID. Integer:	return InternalGetInt				(prop) ;
-				case SimpleType.ID. Short:		return InternalGetShort				(prop) ;
-				case SimpleType.ID. Byte:		return InternalGetByte				(prop) ;
-				case SimpleType.ID. Bool:		return InternalGetBool				(prop) ? 1 : 0;
-				case SimpleType.ID. Double:		return (float) InternalGetDouble	(prop) ;
-				case SimpleType.ID. Float:		return InternalGetFloat				(prop) ;
+				case SimpleType.Id. String:		return Single.Parse ( InternalGetString(prop) ,  NumberFormatInfo.InvariantInfo);
+				case SimpleType.Id. Long:		return InternalGetLong				(prop) ;
+				case SimpleType.Id. Integer:	return InternalGetInt				(prop) ;
+				case SimpleType.Id. Short:		return InternalGetShort				(prop) ;
+				case SimpleType.Id. Byte:		return InternalGetByte				(prop) ;
+				case SimpleType.Id. Bool:		return InternalGetBool				(prop) ? 1 : 0;
+				case SimpleType.Id. Double:		return (float) InternalGetDouble	(prop) ;
+				case SimpleType.Id. Float:		return InternalGetFloat				(prop) ;
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -310,14 +310,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:	    InternalSetString	(prop, val .ToString(NumberFormatInfo.InvariantInfo));	break;
-				case SimpleType.ID. Long:		InternalSetLong		(prop, (long)	val);			break;
-				case SimpleType.ID. Integer:	InternalSetInt		(prop, (int)	val);			break;
-				case SimpleType.ID. Short:		InternalSetShort	(prop, (short)	val);			break;
-				case SimpleType.ID. Byte:		InternalSetByte		(prop, (byte)	val);			break;
-				case SimpleType.ID. Bool:		InternalSetBool		(prop, 			val != 0 );		break;
-				case SimpleType.ID. Double:	    InternalSetDouble	(prop, 			val);			break;
-				case SimpleType.ID. Float:		InternalSetFloat	(prop, 			val);			break;
+				case SimpleType.Id. String:	    InternalSetString	(prop, val .ToString(NumberFormatInfo.InvariantInfo));	break;
+				case SimpleType.Id. Long:		InternalSetLong		(prop, (long)	val);			break;
+				case SimpleType.Id. Integer:	InternalSetInt		(prop, (int)	val);			break;
+				case SimpleType.Id. Short:		InternalSetShort	(prop, (short)	val);			break;
+				case SimpleType.Id. Byte:		InternalSetByte		(prop, (byte)	val);			break;
+				case SimpleType.Id. Bool:		InternalSetBool		(prop, 			val != 0 );		break;
+				case SimpleType.Id. Double:	    InternalSetDouble	(prop, 			val);			break;
+				case SimpleType.Id. Float:		InternalSetFloat	(prop, 			val);			break;
 				default:		throw new FrifloException ("no conversion to double. type: " + type);
 				}
 			}
@@ -333,18 +333,18 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:
+				case SimpleType.Id. String:
 					String str =					   InternalGetString	(prop) ;
 					if (str. Equals ("true"))	return true;
 					if (str. Equals ("false"))	return false;
 					throw new FrifloException("No conversion to bool. field: " + name + " val: " + str);
-				case SimpleType.ID. Long:		return InternalGetLong		(prop) != 0;
-				case SimpleType.ID. Integer:	return InternalGetInt		(prop) != 0;
-				case SimpleType.ID. Short:		return InternalGetShort		(prop) != 0;
-				case SimpleType.ID. Byte:		return InternalGetByte		(prop) != 0;
-				case SimpleType.ID. Bool:		return InternalGetBool		(prop);
-				case SimpleType.ID. Double:		return InternalGetDouble	(prop) != 0;
-				case SimpleType.ID. Float:		return InternalGetFloat		(prop) != 0;
+				case SimpleType.Id. Long:		return InternalGetLong		(prop) != 0;
+				case SimpleType.Id. Integer:	return InternalGetInt		(prop) != 0;
+				case SimpleType.Id. Short:		return InternalGetShort		(prop) != 0;
+				case SimpleType.Id. Byte:		return InternalGetByte		(prop) != 0;
+				case SimpleType.Id. Bool:		return InternalGetBool		(prop);
+				case SimpleType.Id. Double:		return InternalGetDouble	(prop) != 0;
+				case SimpleType.Id. Float:		return InternalGetFloat		(prop) != 0;
 				default:
 					throw new FrifloException("unhandled case for field: " + name);
 				}
@@ -361,14 +361,14 @@ namespace Friflo.Json.Managed.Prop
 			{
 				switch (type)
 				{
-				case SimpleType.ID. String:		InternalSetString 	(prop, val ? "true" : "false");		break;
-				case SimpleType.ID. Long:		InternalSetLong		(prop,			(val ? 1 : 0));		break;
-				case SimpleType.ID. Integer:	InternalSetInt		(prop,			(val ? 1 : 0));		break;
-				case SimpleType.ID. Short:		InternalSetShort	(prop, (short)	(val ? 1 : 0));		break;
-				case SimpleType.ID. Byte:		InternalSetByte		(prop, (byte)	(val ? 1 : 0));		break;
-				case SimpleType.ID. Bool:		InternalSetBool		(prop, 			 val 		 );		break;
-				case SimpleType.ID. Double:		InternalSetDouble	(prop,			(val ? 1 : 0));		break;
-				case SimpleType.ID. Float:		InternalSetFloat	(prop,			(val ? 1 : 0));		break;
+				case SimpleType.Id. String:		InternalSetString 	(prop, val ? "true" : "false");		break;
+				case SimpleType.Id. Long:		InternalSetLong		(prop,			(val ? 1 : 0));		break;
+				case SimpleType.Id. Integer:	InternalSetInt		(prop,			(val ? 1 : 0));		break;
+				case SimpleType.Id. Short:		InternalSetShort	(prop, (short)	(val ? 1 : 0));		break;
+				case SimpleType.Id. Byte:		InternalSetByte		(prop, (byte)	(val ? 1 : 0));		break;
+				case SimpleType.Id. Bool:		InternalSetBool		(prop, 			 val 		 );		break;
+				case SimpleType.Id. Double:		InternalSetDouble	(prop,			(val ? 1 : 0));		break;
+				case SimpleType.Id. Float:		InternalSetFloat	(prop,			(val ? 1 : 0));		break;
 				default:						throw new FrifloException ("no conversion to bool. type: " + type);
 				}
 			}

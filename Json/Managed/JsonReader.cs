@@ -127,7 +127,7 @@ namespace Friflo.Json.Managed
 					PropField field = propType.GetField(parser.key);
 					if (field == null)
 						break;
-					if (field.type == SimpleType.ID.String)
+					if (field.type == SimpleType.Id.String)
 						field.SetString(obj, parser.value.ToString());
 					else
 						return ErrorNull("Expected type String. Field type: " + field.type);
@@ -162,8 +162,8 @@ namespace Friflo.Json.Managed
 						break;
 					switch (field.type)
 					{
-					case SimpleType.ID. String:	field.SetString(obj, null);	break;
-					case SimpleType.ID.	Object:	field.SetObject(obj, null);	break;
+					case SimpleType.Id. String:	field.SetString(obj, null);	break;
+					case SimpleType.Id.	Object:	field.SetObject(obj, null);	break;
 					default:	        return ErrorNull("Field type not nullable. Field type: " + field.type);
 					}	
 					break;
@@ -305,19 +305,19 @@ namespace Friflo.Json.Managed
 			Type typeInterface = collection.typeInterface;
 			if (typeInterface == typeof( Array ))
 			{
-				switch (collection.ID)
+				switch (collection.id)
 				{
-				case SimpleType.ID. String:		return ReadArrayString	((String	[])col);
-				case SimpleType.ID. Long:		return ReadArrayLong	((long		[])col);
-				case SimpleType.ID. Integer:	return ReadArrayInt		((int		[])col);
-				case SimpleType.ID. Short:		return ReadArrayShort	((short		[])col);
-				case SimpleType.ID. Byte:		return ReadArrayByte	((byte		[])col);
-				case SimpleType.ID. Bool:		return ReadArrayBool	((bool	    [])col);
-				case SimpleType.ID. Double:		return ReadArrayDouble	((double	[])col);
-				case SimpleType.ID. Float:		return ReadArrayFloat	((float		[])col);
-				case SimpleType.ID. Object:		return ReadArray		(col, collection);
+				case SimpleType.Id. String:		return ReadArrayString	((String	[])col);
+				case SimpleType.Id. Long:		return ReadArrayLong	((long		[])col);
+				case SimpleType.Id. Integer:	return ReadArrayInt		((int		[])col);
+				case SimpleType.Id. Short:		return ReadArrayShort	((short		[])col);
+				case SimpleType.Id. Byte:		return ReadArrayByte	((byte		[])col);
+				case SimpleType.Id. Bool:		return ReadArrayBool	((bool	    [])col);
+				case SimpleType.Id. Double:		return ReadArrayDouble	((double	[])col);
+				case SimpleType.Id. Float:		return ReadArrayFloat	((float		[])col);
+				case SimpleType.Id. Object:		return ReadArray		(col, collection);
 				default:
-					return ErrorNull("unsupported array type: " + collection.ID);
+					return ErrorNull("unsupported array type: " + collection.id);
 				}
 			}
 			if (typeInterface == typeof( IList<> ))
@@ -397,7 +397,7 @@ namespace Friflo.Json.Managed
 			if (collection.elementPropType == null)
 				collection.elementPropType = typeCache.Get(collection.elementType);
 			IList list = (IList) col;
-			if (collection.ID != SimpleType.ID.Object)
+			if (collection.id != SimpleType.Id.Object)
 				list. Clear();
 			int startLen = list. Count;
 			int index = 0;
