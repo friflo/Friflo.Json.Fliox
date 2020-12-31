@@ -1,11 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-
-#if DEBUG
 using System.Collections.Generic;
 using System.Diagnostics;
-#endif
 
 namespace Friflo.Json.Burst
 {
@@ -28,7 +25,6 @@ namespace Friflo.Json.Burst
         private static bool enableLeakDetection = false;
         
         public static void AcquireAllocation(object resource) {
-#if DEBUG
             if (!enableLeakDetection)
                 return;
             var allocation = new Allocation();
@@ -36,7 +32,6 @@ namespace Friflo.Json.Burst
             StackTrace stackTrace = new StackTrace(true);
             // StackFrame[] stackFrames = stackTrace.GetFrames();
             allocations.Add(resource, stackTrace);
-#endif
         }
 
         public static void ReleaseAllocation(object resource) {
