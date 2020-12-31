@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
+using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common
 	    public static void BasicJsonParser() {
 		    JsonParser parser = new JsonParser();
 
-		    using (var bytes = fromString("{}")) {
+		    using (var bytes = CommonUtils.FromString("{}")) {
 			    parser.InitParser(bytes);
 			    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
 			    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
 		    }
 
-		    using (var bytes = fromString("{'test':'hello'}")) {
+		    using (var bytes = CommonUtils.FromString("{'test':'hello'}")) {
 			    parser.InitParser(bytes);
 			    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
 			    AreEqual(JsonEvent.ValueString, parser.NextEvent());
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
 		    }
 
-		    using (var bytes = fromString("{'a':'b','abc':123,'x':'ab\\r\\nc'}")) {
+		    using (var bytes = CommonUtils.FromString("{'a':'b','abc':123,'x':'ab\\r\\nc'}")) {
 			    parser.InitParser(bytes);
 			    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
 			    AreEqual(JsonEvent.ValueString, parser.NextEvent());
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
 		    }
 
-		    using (var bytes = fromString("[]")) {
+		    using (var bytes = CommonUtils.FromString("[]")) {
 			    parser.InitParser(bytes);
 			    AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
 			    AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
@@ -137,15 +137,7 @@ namespace Friflo.Json.Tests.Common
 	    }
 
 	    
-	    public static  Bytes fromString (String str) {
 
-		    Bytes buffer = new Bytes(256);
-		    str = str. Replace ('\'', '\"');
-		    buffer.AppendString(str);
-		    Bytes ret = buffer.SwapWithDefault();
-		    buffer.Dispose();
-		    return ret;
-	    }
     }
 
     public class TestJsonParser : ECSLeakTestsFixture
@@ -164,7 +156,7 @@ namespace Friflo.Json.Tests.Common
 
         [Test]
         public void TestParseFile() {
-	        using (Bytes bytes = CommonUtils.fromFile("assets/codec/parse.json")) {
+	        using (Bytes bytes = CommonUtils.FromFile("assets/codec/parse.json")) {
 		        TestParserImpl.TestParseFile(bytes);
 	        }
         }
@@ -174,7 +166,7 @@ namespace Friflo.Json.Tests.Common
         [Test]
         public void EncodeJsonSimple()	{
 	        using (PropType.Store store = createStore())
-	        using (Bytes bytes = TestParserImpl.fromString(JsonSimpleObj))
+	        using (Bytes bytes = CommonUtils.FromString(JsonSimpleObj))
 	        {
 		        JsonSimple obj = (JsonSimple) EncodeJson(bytes, typeof(JsonSimple), store);
 		        AreEqual(5L, obj.val);
@@ -183,7 +175,7 @@ namespace Friflo.Json.Tests.Common
 
         [Test]
         public void ParseJsonComplex()	{
-	        using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
+	        using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
 		        ParseJson(bytes);
 	        }
         }
@@ -237,7 +229,7 @@ namespace Friflo.Json.Tests.Common
 	        }
         }
         
-        private static void checkMap (IDictionary <String, JsonSimple> map)
+        private static void CheckMap (IDictionary <String, JsonSimple> map)
 		{
 			AreEqual (2, map. Count);
 			JsonSimple key1 = map [ "key1" ];
@@ -246,7 +238,7 @@ namespace Friflo.Json.Tests.Common
 			AreEqual (		 null, key2);
 		}
 		
-		private static void checkList (IList <Sub> list)
+		private static void CheckList (IList <Sub> list)
 		{
 			AreEqual (		     4, list. Count);
 			AreEqual (		   11L, list [0] .i64);
@@ -255,7 +247,7 @@ namespace Friflo.Json.Tests.Common
 			AreEqual (		   14L, list [3] .i64);
 		}
 
-		private static void checkJsonComplex (JsonComplex obj)
+		private static void CheckJsonComplex (JsonComplex obj)
 		{
 			AreEqual (		   64L, obj.i64);
 			AreEqual (			32, obj.i32);
@@ -276,32 +268,32 @@ namespace Friflo.Json.Tests.Common
 			AreEqual (		   23L, obj.arr[2].i64);
 			AreEqual (		   24L, obj.arr[3].i64);
 			AreEqual (		     4, obj.arr. Length);
-			checkList (obj.list);
-			checkList (obj.list2);
-			checkList (obj.list3);
-			checkList (obj.list4);
-			checkList (obj.listDerived);
-			checkList (obj.listDerivedNull);
+			CheckList (obj.list);
+			CheckList (obj.list2);
+			CheckList (obj.list3);
+			CheckList (obj.list4);
+			CheckList (obj.listDerived);
+			CheckList (obj.listDerivedNull);
 			AreEqual (		"str0",	obj.listStr [0] );
 			AreEqual (		  101L,	((Sub)obj.listObj [0]) .i64 );
-			checkMap (obj.map);
-			checkMap (obj.map2);
-			checkMap (obj.map3);
-			checkMap (obj.map4);
-			checkMap (obj.mapDerived);
-			checkMap (obj.mapDerivedNull);
+			CheckMap (obj.map);
+			CheckMap (obj.map2);
+			CheckMap (obj.map3);
+			CheckMap (obj.map4);
+			CheckMap (obj.mapDerived);
+			CheckMap (obj.mapDerivedNull);
 			AreEqual (		"str1", obj.map5 [ "key1" ]);
 			AreEqual (		  null, obj.map5 [ "key2" ]);
 		}
 		
-		private static void setMap (IDictionary <String, JsonSimple> map)
+		private static void SetMap (IDictionary <String, JsonSimple> map)
 		{
 			// order not defined for HashMap
 			map [ "key1" ]= new  JsonSimple(1L) ;
 			map [ "key2" ]= null ;
 		}
 		
-		private static void setList (IList <Sub> list)
+		private static void SetList (IList <Sub> list)
 		{
 			list. Add (new Sub(11L));
 			list. Add (null);
@@ -309,7 +301,7 @@ namespace Friflo.Json.Tests.Common
 			list. Add (new Sub(14L));
 		}
 		
-		private static void setComplex (JsonComplex obj)
+		private static void SetComplex (JsonComplex obj)
 		{
 			obj.i64 = 64;
 			obj.i32 = 32;
@@ -332,48 +324,48 @@ namespace Friflo.Json.Tests.Common
 			obj.arr[2] = new Sub(23L);
 			obj.arr[3] = new Sub(24L);
 			obj.list =  new List <Sub>();
-			setList (obj.list);
-			setList (obj.list2);
+			SetList (obj.list);
+			SetList (obj.list2);
 			obj.list3 =  new List <Sub>();
-			setList (obj.list3);
-			setList (obj.list4);
-			setList (obj.listDerived);
+			SetList (obj.list3);
+			SetList (obj.list4);
+			SetList (obj.listDerived);
 			obj.listDerivedNull = new DerivedList();
-			setList (obj.listDerivedNull);
+			SetList (obj.listDerivedNull);
 			obj.listStr. Add ("str0");
 			obj.listObj. Add (new Sub(101));
 			obj.map = new Dictionary <String, JsonSimple>();
-			setMap (obj.map);
-			setMap (obj.map2);
+			SetMap (obj.map);
+			SetMap (obj.map2);
 			obj.map3 = new Dictionary <String, JsonSimple>();
-			setMap (obj.map3);
-			setMap (obj.map4);
-			setMap (obj.mapDerived);
+			SetMap (obj.map3);
+			SetMap (obj.map4);
+			SetMap (obj.mapDerived);
 			obj.mapDerivedNull = new DerivedMap();
-			setMap (obj.mapDerivedNull);
+			SetMap (obj.mapDerivedNull);
 			obj.map5 = new Dictionary <String, String>();
 			obj.map5 [ "key1" ] = "str1" ;
 			obj.map5 [ "key2" ] = null ;
-			obj.i64arr = new int[] {1, 2, 3};
+			obj.i64arr = new [] {1, 2, 3};
 		}
 	
 		
 		[Test]
 		public void EncodeJsonComplex() {
 			using (PropType.Store store = createStore())
-			using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
+			using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
 				JsonComplex obj = (JsonComplex) EncodeJson(bytes, typeof(JsonComplex), store);
-				checkJsonComplex(obj);
+				CheckJsonComplex(obj);
 			}
 		}
 		
 		[Test]
 		public void EncodeJsonToComplex()	{
 			using (PropType.Store store = createStore())
-			using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
+			using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
 				JsonComplex obj = new JsonComplex();
 				obj = (JsonComplex) EncodeJsonTo(bytes, obj, store);
-				checkJsonComplex(obj);
+				CheckJsonComplex(obj);
 			}
 		}
 		
@@ -382,7 +374,7 @@ namespace Friflo.Json.Tests.Common
 		{
 			using (PropType.Store store = createStore()) {
 				JsonComplex obj = new JsonComplex();
-				setComplex(obj);
+				SetComplex(obj);
 				using (JsonWriter writer = new JsonWriter(store)) {
 					writer.Write(obj);
 
@@ -390,15 +382,15 @@ namespace Friflo.Json.Tests.Common
 						JsonComplex res = (JsonComplex) enc.Read(writer.Output, typeof(JsonComplex));
 						if (res == null)
 							Fail(enc.Error.Msg.ToString());
-						checkJsonComplex(res);
+						CheckJsonComplex(res);
 					}
 				}
 			}
 		}
 
 		[Test]
-		public void testUtf8() {
-			Bytes src = CommonUtils.fromFile ("assets/EuroSign.txt");
+		public void TestUtf8() {
+			Bytes src = CommonUtils.FromFile ("assets/EuroSign.txt");
 			String str = src.ToString();
 			AreEqual("€", str);
 
@@ -410,7 +402,7 @@ namespace Friflo.Json.Tests.Common
 		}
 		
 		[Test]
-		public void testStringIsEqual() {
+		public void TestStringIsEqual() {
 			Bytes bytes = new Bytes("€");
 			AreEqual(3, bytes.Len); // UTF-8 length of € is 3
 			String eur = "€";
@@ -427,7 +419,7 @@ namespace Friflo.Json.Tests.Common
 		}
 		
 		[Test]
-		public void testUtf8Compare() {
+		public void TestUtf8Compare() {
 			using (var empty = new Bytes(""))
 			using (var a = new Bytes("a"))
 			using (var ab = new Bytes("ab"))
@@ -448,7 +440,7 @@ namespace Friflo.Json.Tests.Common
 		}
 
 		[Test]
-		public void testBurstStringInterpolation() {
+		public void TestBurstStringInterpolation() {
 			using (Bytes bytes = new Bytes(128)) {
 				int val = 42;
 				int val2 = 43;
@@ -473,7 +465,7 @@ namespace Friflo.Json.Tests.Common
     public class TestStructBehavior
     {
 	    [Test]
-	    public void testStructBehavior() {
+	    public void TestStructAssignment() {
 		    Struct var1 = new Struct();
 		    Struct var2 = var1; // copy as value;
 		    ref Struct ref1 = ref var1; 
@@ -488,6 +480,7 @@ namespace Friflo.Json.Tests.Common
 		    AreEqual(12, ref1.val); // method parameter is given as reference value, original value is changed
 	    }
 
+	    // ReSharper disable once UnusedParameter.Local
 	    private void modifyParam(Struct param) {
 		    param.val = 12;
 	    }
@@ -499,6 +492,8 @@ namespace Friflo.Json.Tests.Common
 	    // in parameter is passed as reference (ref readonly) - it must not be changed
 	    // using in parameter degrade performance:
 	    // [c# 7.2 - Why would one ever use the "in" parameter modifier in C#? - Stack Overflow] https://stackoverflow.com/questions/52820372/why-would-one-ever-use-the-in-parameter-modifier-in-c
+	    // ReSharper disable once UnusedMember.Local
+	    // ReSharper disable once UnusedParameter.Local
 	    private void passByReadOnlyRef(in Struct param) {
 		    // param.val = 12;  // error CS8332: Cannot assign to a member of variable 'in Struct' because it is a readonly variable
 	    }

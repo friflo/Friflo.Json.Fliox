@@ -53,48 +53,48 @@ namespace Friflo.Json.Tests.Common
 					bytes = bytes
 				};
 				parseCx.parser.InitValueParser();
-				AreEqual(     0.0,        parseDbl(           "0",		ref parseCx)); 
-				AreEqual(	1234567890.0, parseDbl(	 "1234567890",		ref parseCx));
-				AreEqual(	123.0		, parseDbl(	  	    "123",		ref parseCx)); 
-				AreEqual(	 12.3		, parseDbl(			 "12.3",	ref parseCx)); 
-				AreEqual(	  1.23		, parseDbl(			  "1.23",	ref parseCx));
-				AreEqual(	  0.12		, parseDbl(			   ".12",	ref parseCx));
-				AreEqual(	  0.12		, parseDbl(			  "0.12",	ref parseCx));
-				AreEqual(	  0.12		, parseDbl(			  "0.1200", ref parseCx));
-				AreEqual(	  0.12		, parseDbl(			"000.12",	ref parseCx));
-				AreEqual(	  0.012		, parseDbl(			  "0.012",	ref parseCx));
-				AreEqual(	 +1.23		, parseDbl(			  "1.23",	ref parseCx));
-				AreEqual(	 -1.23		, parseDbl(			 "-1.23",	ref parseCx));
+				AreEqual(     0.0,        ParseDbl(           "0",		ref parseCx)); 
+				AreEqual(	1234567890.0, ParseDbl(	 "1234567890",		ref parseCx));
+				AreEqual(	123.0		, ParseDbl(	  	    "123",		ref parseCx)); 
+				AreEqual(	 12.3		, ParseDbl(			 "12.3",	ref parseCx)); 
+				AreEqual(	  1.23		, ParseDbl(			  "1.23",	ref parseCx));
+				AreEqual(	  0.12		, ParseDbl(			   ".12",	ref parseCx));
+				AreEqual(	  0.12		, ParseDbl(			  "0.12",	ref parseCx));
+				AreEqual(	  0.12		, ParseDbl(			  "0.1200", ref parseCx));
+				AreEqual(	  0.12		, ParseDbl(			"000.12",	ref parseCx));
+				AreEqual(	  0.012		, ParseDbl(			  "0.012",	ref parseCx));
+				AreEqual(	 +1.23		, ParseDbl(			  "1.23",	ref parseCx));
+				AreEqual(	 -1.23		, ParseDbl(			 "-1.23",	ref parseCx));
 				
-				AreEqual(	 100.0		, parseDbl(			  "1E2",	ref parseCx));
-				AreEqual(	 100.0		, parseDbl(			  "1e2",	ref parseCx));
-				AreEqual(	 100.0		, parseDbl(			  "1e+2",	ref parseCx));
-				AreEqual(	   0.1		, parseDbl(			  "1e-1",	ref parseCx)); 
-				AreEqual(	   0.001	, parseDbl(			  "0.1e-2", ref parseCx)); 
-				AreEqual(	1000.0		, parseDbl(			 "10e2",	ref parseCx)); 
-				AreEqual(	 100.0		, parseDbl(			  "1.e2",	ref parseCx));
+				AreEqual(	 100.0		, ParseDbl(			  "1E2",	ref parseCx));
+				AreEqual(	 100.0		, ParseDbl(			  "1e2",	ref parseCx));
+				AreEqual(	 100.0		, ParseDbl(			  "1e+2",	ref parseCx));
+				AreEqual(	   0.1		, ParseDbl(			  "1e-1",	ref parseCx)); 
+				AreEqual(	   0.001	, ParseDbl(			  "0.1e-2", ref parseCx)); 
+				AreEqual(	1000.0		, ParseDbl(			 "10e2",	ref parseCx)); 
+				AreEqual(	 100.0		, ParseDbl(			  "1.e2",	ref parseCx));
 				
-				AreEqual(  1.7976931348623157e+308,	parseDbl(  "1.7976931348623157e+308",	ref parseCx)); // Double.MAX_VALUE
-				AreEqual(  2.2250738585072014E-308,	parseDbl(  "2.2250738585072014E-308",	ref parseCx)); // Double.MIN_NORMAL
-				AreEqual(  4.9e-324, 				parseDbl(  "4.9e-324",					ref parseCx)); // Double.MIN_VALUE
+				AreEqual(  1.7976931348623157e+308,	ParseDbl(  "1.7976931348623157e+308",	ref parseCx)); // Double.MAX_VALUE
+				AreEqual(  2.2250738585072014E-308,	ParseDbl(  "2.2250738585072014E-308",	ref parseCx)); // Double.MIN_NORMAL
+				AreEqual(  4.9e-324, 				ParseDbl(  "4.9e-324",					ref parseCx)); // Double.MIN_VALUE
 				
-				AreEqual( -1.7976931348623157e+308,	parseDbl( "-1.7976931348623157e+308",	ref parseCx)); // Double.MAX_VALUE
-				AreEqual( -2.2250738585072014E-308,	parseDbl( "-2.2250738585072014E-308",	ref parseCx)); // Double.MIN_NORMAL
-				AreEqual( -4.9e-324, 				parseDbl( "-4.9e-324",					ref parseCx)); // Double.MIN_VALUE
+				AreEqual( -1.7976931348623157e+308,	ParseDbl( "-1.7976931348623157e+308",	ref parseCx)); // Double.MAX_VALUE
+				AreEqual( -2.2250738585072014E-308,	ParseDbl( "-2.2250738585072014E-308",	ref parseCx)); // Double.MIN_NORMAL
+				AreEqual( -4.9e-324, 				ParseDbl( "-4.9e-324",					ref parseCx)); // Double.MIN_VALUE
 				
-				AreEqual(  1.0 / 0.0, 				parseDbl(  "1.7976931348623159e+308",	ref parseCx));
-				AreEqual( -1.0 / 0.0, 				parseDbl( "-1.7976931348623159e+308",	ref parseCx));
-				AreEqual(  1.0 / 0.0, 				parseDbl(  "1e+309",					ref parseCx));
-				AreEqual(  0.0, 					parseDbl(  "4.9e-325",					ref parseCx));
+				AreEqual(  1.0 / 0.0, 				ParseDbl(  "1.7976931348623159e+308",	ref parseCx));
+				AreEqual( -1.0 / 0.0, 				ParseDbl( "-1.7976931348623159e+308",	ref parseCx));
+				AreEqual(  1.0 / 0.0, 				ParseDbl(  "1e+309",					ref parseCx));
+				AreEqual(  0.0, 					ParseDbl(  "4.9e-325",					ref parseCx));
 				
-				AreEqual(	   0.0		, parseDbl(			  "",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
-				AreEqual(	   0.0		, parseDbl(			  "1e",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
-				AreEqual(	   0.0		, parseDbl(			  "1e+",	ref parseCx)); IsTrue (parseCx.cx.IsErrSet());
+				AreEqual(	   0.0		, ParseDbl(			  "",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
+				AreEqual(	   0.0		, ParseDbl(			  "1e",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
+				AreEqual(	   0.0		, ParseDbl(			  "1e+",	ref parseCx)); IsTrue (parseCx.cx.IsErrSet());
 				parseCx.parser.Dispose();
 			}
 		}
 
-		double parseDbl(String value, ref ParseDblCx parseCx) {
+		double ParseDbl(String value, ref ParseDblCx parseCx) {
 			parseCx.bytes.Clear();
 			parseCx.bytes.FromString(value);
 			return parseCx.parser.ParseDoubleFast(ref parseCx.bytes, ref parseCx.cx, out _);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Tests.Common
 					s += bytes.Len;
 				}
 				bytes.Dispose();
-				//	FFLog.log("" + s);
+				TestContext.Out.WriteLine($"WriteDoublePerf: {s}");
 			}
 		}
 	
@@ -219,7 +219,7 @@ namespace Friflo.Json.Tests.Common
 			double sum = 0;
 			for (int n = 0; n < num3; n++)
 				sum += Double. Parse (testFloat); 
-			//	FFLog.log("TestParseDouble: " + sum);
+			TestContext.Out.WriteLine($"WriteDoublePerf: {sum}");
 		}
 		
 		public void TestParseDoubleFast()
@@ -233,7 +233,7 @@ namespace Friflo.Json.Tests.Common
 				sum += parser.ParseDoubleFast(ref bytes, ref valueError, out _);
 			}
 			parser.Dispose();
-			//	FFLog.log("TestParseDouble: " + sum);
+			TestContext.Out.WriteLine($"TestParseDoubleFast: {sum}");
 		}
     }
 }

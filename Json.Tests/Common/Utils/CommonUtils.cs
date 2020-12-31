@@ -3,14 +3,12 @@
 
 using System;
 using System.IO;
-using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Utils;
-using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common
+namespace Friflo.Json.Tests.Common.Utils
 {
     public class CommonUtils
     {
@@ -23,14 +21,24 @@ namespace Friflo.Json.Tests.Common
             return baseDir;
         }
         
-        public static Bytes fromFile (String path) {
+        public static Bytes FromFile (String path) {
             string baseDir = CommonUtils.GetBasePath();
             byte[] data = File.ReadAllBytes(baseDir + path);
             ByteArray bytes = Arrays.CopyFrom(data);
             return new Bytes(bytes);
         }
-    }
+        
+        public static  Bytes FromString (String str) {
 
+            Bytes buffer = new Bytes(256);
+            str = str. Replace ('\'', '\"');
+            buffer.AppendString(str);
+            Bytes ret = buffer.SwapWithDefault();
+            buffer.Dispose();
+            return ret;
+        }
+    }
+    
     public enum MemoryLog {
         Enabled,
         Disabled
@@ -82,7 +90,7 @@ namespace Friflo.Json.Tests.Common
         }
 
         public string MemorySnapshots() {
-            var msg = new StringBuilder();
+            var msg = new System.Text.StringBuilder();
             for (int i = 0; i < totalMemoryCount; i++)
                 msg.Append($"  {totalMemory[i]}\n");
             return msg.ToString();

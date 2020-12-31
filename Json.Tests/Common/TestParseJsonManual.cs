@@ -1,5 +1,6 @@
 ﻿using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
@@ -77,7 +78,7 @@ namespace Friflo.Json.Tests.Common
         
         [Test]
         public void ParseJsonManual() {
-            using (Bytes bytes = CommonUtils.fromFile("assets/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
                 var parser = new JsonParser();
                 {
                     ParseManual manual = new ParseManual(Default.Constructor);
