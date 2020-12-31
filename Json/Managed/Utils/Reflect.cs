@@ -294,6 +294,7 @@ namespace Friflo.Json.Managed.Utils
 	
 		public static String GetMethodName (MethodInfo method)
 		{
+			// ReSharper disable once PossibleNullReferenceException
 			return method. DeclaringType.FullName + "." + method. Name;
 		}
 

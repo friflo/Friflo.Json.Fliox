@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed
 		private 			JsonParser			parser;
 		private	readonly	PropType.Cache  	typeCache;
 
-		private	readonly	Bytes				_type = new Bytes ("$type");	
+		private	readonly	Bytes				type = new Bytes ("$type");	
 
 		public	ErrorCx Error  =>  parser.error;
 		
@@ -28,7 +28,7 @@ namespace Friflo.Json.Managed
 		}
 		
 		public void Dispose() {
-			_type.Dispose();
+			type.Dispose();
 			parser.Dispose();
 		}
 
@@ -109,7 +109,7 @@ namespace Friflo.Json.Managed
 			if (obj == null)
 			{
 				// Is first member "$type": "<typeName>" ?
-				if (ev == JsonEvent.ValueString && _type.IsEqualBytes(parser.key))
+				if (ev == JsonEvent.ValueString && type.IsEqualBytes(parser.key))
 				{
 					propType = typeCache.GetByName (parser.value);
 					if (propType == null)

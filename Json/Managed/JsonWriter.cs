@@ -17,8 +17,8 @@ namespace Friflo.Json.Managed
 		private				ValueFormat	format;
 		private				Bytes		strBuf;
 
-		private				Bytes		_null = new Bytes("null");
-		private				Bytes		_type = new Bytes("\"$type\":\"");
+		private				Bytes		@null = new Bytes("null");
+		private				Bytes		type = new Bytes("\"$type\":\"");
 
 		public			ref Bytes Output => ref bytes;
 
@@ -27,8 +27,8 @@ namespace Friflo.Json.Managed
 		}
 		
 		public void Dispose() {
-			_null.Dispose();
-			_type.Dispose();
+			@null.Dispose();
+			type.Dispose();
 			format.Dispose();
 			strBuf.Dispose();
 			bytes.Dispose();
@@ -38,8 +38,8 @@ namespace Friflo.Json.Managed
 			bytes.InitBytes(128);
 			strBuf.InitBytes(128);
 			format.InitTokenFormat();
-			PropType type = typeCache.Get(obj.GetType());
-			WriteObject(type, obj);
+			PropType objType = typeCache.Get(obj.GetType());
+			WriteObject(objType, obj);
 		}
 
 		private void WriteKey(PropField field) {
@@ -94,7 +94,7 @@ namespace Friflo.Json.Managed
 			if (type.nativeType != objType) {
 				type = typeCache.Get(objType);
 				firstMember = false;
-				bytes.AppendBytes(ref _type);
+				bytes.AppendBytes(ref this.type);
 				Bytes subType = type.typeName;
 				if (subType.buffer.IsCreated())
 					bytes.AppendBytes(ref subType);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Managed
 						if (val != null)
 							WriteString(val);
 						else
-							bytes.AppendBytes(ref _null);
+							bytes.AppendBytes(ref @null);
 						break;
 					case SimpleType.Id.Long:
 						WriteKey(field);
@@ -154,7 +154,7 @@ namespace Friflo.Json.Managed
 						WriteKey(field);
 						Object child = field.GetObject(obj);
 						if (child == null) {
-							bytes.AppendBytes(ref _null);
+							bytes.AppendBytes(ref @null);
 						}
 						else {
 							PropCollection collection = field.collection;
@@ -245,7 +245,7 @@ namespace Friflo.Json.Managed
 					}
 				}
 				else
-					bytes.AppendBytes(ref _null);
+					bytes.AppendBytes(ref @null);
 			}
 
 			bytes.AppendChar(']');
@@ -266,7 +266,7 @@ namespace Friflo.Json.Managed
 					if (value != null)
 						WriteString(value);
 					else
-						bytes.AppendBytes(ref _null);
+						bytes.AppendBytes(ref @null);
 				}
 			}
 			else {
@@ -282,7 +282,7 @@ namespace Friflo.Json.Managed
 					if (value != null)
 						WriteObject(itemType, value);
 					else
-						bytes.AppendBytes(ref _null);
+						bytes.AppendBytes(ref @null);
 				}
 			}
 
@@ -297,7 +297,7 @@ namespace Friflo.Json.Managed
 				if (item != null)
 					WriteString(item);
 				else
-					bytes.AppendBytes(ref _null);
+					bytes.AppendBytes(ref @null);
 			}
 		}
 
@@ -356,7 +356,7 @@ namespace Friflo.Json.Managed
 			for (int n = 0; n < arr.Length; n++) {
 				if (n > 0) bytes.AppendChar(',');
 				if (arr[n] == null)
-					bytes.AppendBytes(ref _null);
+					bytes.AppendBytes(ref @null);
 				else
 					WriteObject(elementPropType, arr[n]);
 			}
