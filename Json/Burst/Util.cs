@@ -24,7 +24,7 @@ namespace Friflo.Json.Burst
         public static Dictionary<object, StackTrace> allocations = new Dictionary<object, StackTrace>();
         private static bool enableLeakDetection = false;
         
-        public static void AcquireAllocation(object resource) {
+        public static void TrackAllocation(object resource) {
             if (!enableLeakDetection)
                 return;
             var allocation = new Allocation();
@@ -34,7 +34,7 @@ namespace Friflo.Json.Burst
             allocations.Add(resource, stackTrace);
         }
 
-        public static void ReleaseAllocation(object resource) {
+        public static void UntrackAllocation(object resource) {
             allocations.Remove(resource);
         }
 
