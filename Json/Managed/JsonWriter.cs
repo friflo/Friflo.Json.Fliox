@@ -52,39 +52,7 @@ namespace Friflo.Json.Managed
 			bytes.AppendChar('\"');
 			strBuf.Clear();
 			strBuf.FromString(str);
-			int len = strBuf.Len;
-			ref ByteArray buf = ref strBuf.buffer;
-			for (int n = 0; n < len; n++) {
-				char c = (char) buf.array[n];
-				switch (c) {
-					case '"':
-						bytes.AppendString("\\\"");
-						break;
-					case '\\':
-						bytes.AppendString("\\\\");
-						break;
-					case '\b':
-						bytes.AppendString("\\b");
-						break;
-					case '\f':
-						bytes.AppendString("\\f");
-						break;
-					case '\r':
-						bytes.AppendString("\\r");
-						break;
-					case '\n':
-						bytes.AppendString("\\n");
-						break;
-					case '\t':
-						bytes.AppendString("\\t");
-						break;
-					default:
-						bytes.AppendChar(c);
-						break;
-				}
-			}
-
-			bytes.AppendChar('\"');
+			JsonEncoder.AppendEscString(ref bytes, ref strBuf);
 		}
 
 		private void WriteObject(PropType type, Object obj) {

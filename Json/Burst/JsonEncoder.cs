@@ -28,6 +28,41 @@ namespace Friflo.Json.Burst
             format.Dispose();
         }
 
+        public static void AppendEscString(ref Bytes dst, ref Bytes src) {
+            int len = src.Len;
+            var srcArr = src.buffer.array; 
+            for (int n = 0; n < len; n++) {
+                char c = (char) srcArr[n];
+                switch (c) {
+                    case '"':
+                        dst.AppendString("\\\"");
+                        break;
+                    case '\\':
+                        dst.AppendString("\\\\");
+                        break;
+                    case '\b':
+                        dst.AppendString("\\b");
+                        break;
+                    case '\f':
+                        dst.AppendString("\\f");
+                        break;
+                    case '\r':
+                        dst.AppendString("\\r");
+                        break;
+                    case '\n':
+                        dst.AppendString("\\n");
+                        break;
+                    case '\t':
+                        dst.AppendString("\\t");
+                        break;
+                    default:
+                        dst.AppendChar(c);
+                        break;
+                }
+            }
+            dst.AppendChar('\"');
+        }
+
         // ----------------------------- object with properties -----------------------------
         public void ObjectStart(ref Bytes dst) {
             dst.AppendChar('{');
@@ -47,38 +82,37 @@ namespace Friflo.Json.Burst
         public void PropertyArray(ref Bytes dst, ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
         public void PropertyObject(ref Bytes dst, ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
         public void PropertyString(ref Bytes dst, ref Bytes key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":\"");
-            dst.AppendBytes(ref value);
+            AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
         
         public void PropertyDouble(ref Bytes dst, ref Bytes key, double value) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
-            dst.AppendString("\":");
+            AppendEscString(ref dst, ref key);            dst.AppendString("\":");
             format.AppendDbl(ref dst, value);
         }
         
         public void PropertyLong(ref Bytes dst, ref Bytes key, long value) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendLong(ref dst, value);
         }
@@ -86,7 +120,7 @@ namespace Friflo.Json.Burst
         public void PropertyBool(ref Bytes dst, ref Bytes key, bool value) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendBool(ref dst, value);
         }
@@ -94,7 +128,7 @@ namespace Friflo.Json.Burst
         public void PropertyNull(ref Bytes dst, ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref key);
+            AppendEscString(ref dst, ref key);
             dst.AppendString("\":null");
         }
         
@@ -112,7 +146,7 @@ namespace Friflo.Json.Burst
         public void ElementString(ref Bytes dst, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
-            dst.AppendBytes(ref value);
+            AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
         
