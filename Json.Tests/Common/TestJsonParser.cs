@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common
 		//	ParseCx parseCx = new ParseCx();
 			JsonParser parser = new JsonParser();
 			parser.InitParser (bytes);									CheckPath(ref parser, "");
-			AreEqual(JsonEvent.ObjectStart,	parser.NextEvent());
+			AreEqual(JsonEvent.ObjectStart,	parser.NextEvent());		CheckPath(ref parser, "");
 			AreEqual(JsonEvent.ValueString,	parser.NextEvent());		CheckPath(ref parser, "eur");
 			AreEqual(">€<",					parser.value.ToString());
 			AreEqual(JsonEvent.ValueString,	parser.NextEvent());		CheckPath(ref parser, "eur2");
