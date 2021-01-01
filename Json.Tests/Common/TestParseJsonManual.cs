@@ -73,37 +73,63 @@ namespace Friflo.Json.Tests.Common
             AreEqual(4,     p.skipInfo.strings);
             AreEqual(100,   p.skipInfo.Sum);
         }
-        
+
         [Test]
         public void ParseJsonManual() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                var parser = new JsonParser();
-                {
-                    ParseManual manual = new ParseManual(Default.Constructor);
+                RunParser(bytes, 1, MemoryLog.Disabled);
+            }
+        }
+        
+        [Test]
+        public void ParseCheckAllocations() {
+            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
+                RunParser(bytes, 1000, MemoryLog.Enabled);
+            }
+        }
+
+        private void RunParser(Bytes bytes, int iterations, MemoryLog memoryLog) {
+            var memLog = new MemoryLogger(100, 100, memoryLog);
+            var parser = new JsonParser();
+            {
+                memLog.Reset();
+                ParseManual manual = new ParseManual(Default.Constructor);
+                for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent();
                     manual.Root1(ref parser);
-                    AssertParseResult(ref manual, ref parser);
-                    manual.Dispose();
-                } {
-                    ParseManual manual = new ParseManual(Default.Constructor);
+                    memLog.Snapshot();
+                }
+                AssertParseResult(ref manual, ref parser);
+                memLog.AssertNoAllocations();
+                manual.Dispose();
+            } {
+                memLog.Reset();
+                ParseManual manual = new ParseManual(Default.Constructor);
+                for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent();
                     manual.Root2(ref parser);
-                    AssertParseResult(ref manual, ref parser);
-                    manual.Dispose();
-                } {
-                    ParseManual manual = new ParseManual(Default.Constructor);
-                    for (int i = 0; i < 1; i++) {
-                        parser.InitParser(bytes);
-                        parser.NextEvent();
-                        manual.Root3(ref parser);
-                    }
-                    AssertParseResult(ref manual, ref parser);
-                    manual.Dispose();
+                    memLog.Snapshot();
                 }
-                parser.Dispose();
+                AssertParseResult(ref manual, ref parser);
+                memLog.AssertNoAllocations();
+                manual.Dispose();
+            } {
+                memLog.Reset();
+                ParseManual manual = new ParseManual(Default.Constructor);
+                for (int i = 0; i < iterations; i++) {
+                    parser.InitParser(bytes);
+                    parser.NextEvent();
+                    manual.Root3(ref parser);
+                    memLog.Snapshot();
+                }
+                AssertParseResult(ref manual, ref parser);
+                memLog.AssertNoAllocations();
+                manual.Dispose();
             }
+            parser.Dispose();
+
         }
 
         /** pre create json keys upfront, to avoid creating them on the stack, when passing them to the Is...() methods.

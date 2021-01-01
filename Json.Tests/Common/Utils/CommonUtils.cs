@@ -51,6 +51,7 @@ namespace Friflo.Json.Tests.Common.Utils
 #if JSON_BURST || UNITY_5_3_OR_NEWER
         // Burst code does not support usage of managed objects. So no logging performed in this case
         public MemoryLogger(int size, int stepSize, MemoryLog memoryLog) { }
+        public void Reset() { }
         public void Snapshot() { }
         public void AssertNoAllocations() { }
 #else
@@ -67,6 +68,11 @@ namespace Friflo.Json.Tests.Common.Utils
             snapshotCount = 1; // Dont log memory snapshots in the first interval to give chance filling the buffers.
             this.snapshotInterval = snapshotInterval;
             GC.Collect();
+        }
+
+        public void Reset() {
+            totalMemoryCount = 0;
+            snapshotCount = 0;
         }
 
         public void Snapshot() {
