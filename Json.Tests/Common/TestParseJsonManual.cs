@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common
             AreEqual(2,                     manual.int3.y);
             AreEqual(3,                     manual.int3.z);
             AreEqual(6400000000000000000,   manual.i64);
-            AreEqual(640,                   manual.i64Neg);
+            AreEqual(-640,                  manual.i64Neg);
             AreEqual("string-ý",            manual.str.ToString());
             AreEqual(true,                  manual.t);
             AreEqual(true,                  manual.foundNull);
