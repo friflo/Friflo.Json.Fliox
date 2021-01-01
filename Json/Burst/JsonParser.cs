@@ -680,6 +680,14 @@ namespace Friflo.Json.Burst
 			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
 			if (!success) 
 				SetErrorFalse(valueError.GetError().value);
+			if (result < float.MinValue) {
+				SetErrorFalse($"float is less than float.MinValue. {value.ToFixed32()}");
+				return 0;
+			}
+			if (result > float.MaxValue) {
+				SetErrorFalse($"float is greater than float.MaxValue. {value.ToFixed32()}");
+				return 0;
+			}
 			return (float)result;
 		}
 		
