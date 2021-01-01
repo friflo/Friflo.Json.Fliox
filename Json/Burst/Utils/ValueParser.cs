@@ -113,7 +113,7 @@ namespace Friflo.Json.Burst.Utils
 			return positive ? -val : val;
 		}
 
-		public double ParseDoubleFast(ref Bytes bytes, ref ValueError valueError, out bool success)
+		public double ParseDouble(ref Bytes bytes, ref ValueError valueError, out bool success)
 		{
 			valueError.ClearError();
 			success = false;
@@ -278,7 +278,7 @@ namespace Friflo.Json.Burst.Utils
 			return false;
 		}
 
-		public double ParseDouble(ref Bytes bytes, ref ValueError valueError, out bool success) {
+		public double ParseDoubleStd(ref Bytes bytes, ref ValueError valueError, out bool success) {
 			valueError.ClearError();
 			String val = bytes.ToString();
 			success = true;

@@ -215,7 +215,7 @@ namespace Friflo.Json.Tests.Common
                     else if (key.IsEqual32(ref nm.str)      && ev == JsonEvent.ValueString) { str.Set(ref p.value); }
                     else if (key.IsEqual32(ref nm.t)        && ev == JsonEvent.ValueBool)   { t = p.boolValue; }
                     else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
-                    else if (key.IsEqual32(ref nm.dbl)      && ev == JsonEvent.ValueNumber) { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (key.IsEqual32(ref nm.dbl)      && ev == JsonEvent.ValueNumber) { dbl = p.ValueAsDouble(out _); }
                     else if (key.IsEqual32(ref nm.flt)      && ev == JsonEvent.ValueNumber) { flt = p.ValueAsFloat(out _); }
                     else                                                                    { p.SkipEvent(ev); }
                 } while(p.ContinueObject(ev));
@@ -234,7 +234,7 @@ namespace Friflo.Json.Tests.Common
                     else if (p.IsStr(ev, ref nm.str))       { str.Set(ref p.value); }
                     else if (p.IsBln(ev, ref nm.t))         { t = p.boolValue; }
                     else if (p.IsNul(ev, ref nm.n))         { foundNull = true; }
-                    else if (p.IsNum(ev, ref nm.dbl))       { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (p.IsNum(ev, ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
                     else if (p.IsNum(ev, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                     else                                    { p.SkipEvent(ev); }
                 } while(p.ContinueObject(ev));
@@ -252,7 +252,7 @@ namespace Friflo.Json.Tests.Common
                     else if (obj.IsStr(ref p, ref nm.str))        { str.Set(ref p.value); }
                     else if (obj.IsBln(ref p, ref nm.t))          { t = p.boolValue; }
                     else if (obj.IsNul(ref p, ref nm.n))          { foundNull = true; }
-                    else if (obj.IsNum(ref p, ref nm.dbl))        { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (obj.IsNum(ref p, ref nm.dbl))        { dbl = p.ValueAsDouble(out _); }
                     else if (obj.IsNum(ref p, ref nm.flt))        { flt = p.ValueAsFloat(out _); }
                 }
             }

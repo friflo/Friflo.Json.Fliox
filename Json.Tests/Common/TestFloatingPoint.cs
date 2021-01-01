@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common
 		double ParseDbl(String value, ref ParseDblCx parseCx) {
 			parseCx.bytes.Clear();
 			parseCx.bytes.FromString(value);
-			return parseCx.parser.ParseDoubleFast(ref parseCx.bytes, ref parseCx.cx, out _);
+			return parseCx.parser.ParseDouble(ref parseCx.bytes, ref parseCx.cx, out _);
 		}
 		
 		bool isDouble;
@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common
 			double sum = 0;
 			Bytes bytes = new Bytes (testFloat);
 			for (int n = 0; n < num3; n++) {
-				sum += parser.ParseDoubleFast(ref bytes, ref valueError, out _);
+				sum += parser.ParseDouble(ref bytes, ref valueError, out _);
 			}
 			parser.Dispose();
 			TestContext.Out.WriteLine($"TestParseDoubleFast: {sum}");

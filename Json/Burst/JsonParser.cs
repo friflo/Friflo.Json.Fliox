@@ -662,22 +662,22 @@ namespace Friflo.Json.Burst
 			return true;
 		}
 
-		public double ValueAsDouble(out bool success) {
-			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
+		public double ValueAsDoubleStd(out bool success) {
+			double result = valueParser.ParseDoubleStd(ref value, ref valueError, out success);
 			if (!success)
 				SetErrorFalse(valueError.GetError().value);
 			return result;
 		}
 		
-		public double ValueAsDoubleFast(out bool success) {
-			double result = valueParser.ParseDoubleFast(ref value, ref valueError, out success);
+		public double ValueAsDouble(out bool success) {
+			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
 			if (!success) 
 				SetErrorFalse(valueError.GetError().value);
 			return result;
 		}
 		
 		public float ValueAsFloat(out bool success) {
-			double result = valueParser.ParseDoubleFast(ref value, ref valueError, out success);
+			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
 			if (!success) 
 				SetErrorFalse(valueError.GetError().value);
 			return (float)result;

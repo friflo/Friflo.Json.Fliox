@@ -139,7 +139,7 @@ namespace Friflo.Json.Managed
 					if (!SimpleType.IsNumber(field.type))
 						return ErrorNull("Field is not a number. Field type: " + field.type);
 					if (parser.isFloat) {
-						double val = parser.ValueAsDoubleFast(out bool success);
+						double val = parser.ValueAsDouble(out bool success);
 						field.SetDouble(obj, val);
 						if (!success)
 							return ValueParseError();
@@ -640,7 +640,7 @@ namespace Friflo.Json.Managed
 				case JsonEvent. ValueNumber:
 					if (index >= len)
 						array = Arrays.CopyOf (array, len = Inc(len));
-					array[index++] = parser.ValueAsDoubleFast(out bool success);
+					array[index++] = parser.ValueAsDouble(out bool success);
 					if (!success)
 						return ValueParseError();
 					break;
@@ -669,7 +669,7 @@ namespace Friflo.Json.Managed
 				case JsonEvent. ValueNumber:
 					if (index >= len)
 						array = Arrays.CopyOf (array, len = Inc(len));
-					array[index++] = (float) parser.ValueAsDoubleFast(out bool success);
+					array[index++] = (float) parser.ValueAsDouble(out bool success);
 					if (!success)
 						return ValueParseError();
 					break;
