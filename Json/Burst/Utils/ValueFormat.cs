@@ -82,8 +82,10 @@ namespace Friflo.Json.Burst.Utils
 				return;
 			}
 
-			if (val < 0)
-				throw new NotImplementedException();
+			if (val < 0) {
+				owned.AppendChar('-');
+				val = -val;
+			}
 			long i = val;
 			int len = 0;
 			while (i > 0)

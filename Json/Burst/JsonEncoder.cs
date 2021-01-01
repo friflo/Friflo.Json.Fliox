@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Burst.Utils;
+﻿using System;
+using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
 	using Str32 = Unity.Collections.FixedString32;
@@ -9,7 +10,7 @@
 
 namespace Friflo.Json.Burst
 {
-    public struct JsonEncoder
+    public struct JsonEncoder : IDisposable
     {
         private ValueFormat format;
         private ValueArray<bool> subsequentElement;
@@ -19,6 +20,12 @@ namespace Friflo.Json.Burst
             format.InitTokenFormat();
             if (!subsequentElement.IsCreated())
                 subsequentElement = new ValueArray<bool>(32);
+        }
+
+        public void Dispose() {
+            if (subsequentElement.IsCreated())
+                subsequentElement.Dispose();
+            format.Dispose();
         }
 
         // ----------------------------- object with properties -----------------------------
@@ -36,6 +43,20 @@ namespace Friflo.Json.Burst
         
         // TODO implement version with Str32 key
         // public void PropertyString(ref Bytes dst, ref Str32 key, ref Bytes value) { }
+        
+        public void PropertyArray(ref Bytes dst, ref Bytes key) {
+            AddSeparator();
+            dst.AppendChar('"');
+            dst.AppendBytes(ref key);
+            dst.AppendString("\":");
+        }
+        
+        public void PropertyObject(ref Bytes dst, ref Bytes key) {
+            AddSeparator();
+            dst.AppendChar('"');
+            dst.AppendBytes(ref key);
+            dst.AppendString("\":");
+        }
         
         public void PropertyString(ref Bytes dst, ref Bytes key, ref Bytes value) {
             AddSeparator();

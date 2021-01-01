@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst
     
     public struct ReadArray
     {
-        private JsonEvent ev;
+        private JsonEvent ev; // Note: Dont make public! The intention is to use Is...() which support auto skipping
         private bool foundElement;
         private bool hasIterated;
 

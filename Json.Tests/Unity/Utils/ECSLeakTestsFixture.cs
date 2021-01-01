@@ -75,9 +75,13 @@ namespace Friflo.Json.Tests.Unity.Utils
                         MethodBase m = f.GetMethod();
                         if (m.ReflectedType != null)
                             msg.Append($"{m.ReflectedType.Namespace}.{m.ReflectedType.Name} - ");
-                        msg.Append(m);
+                        
+                        // msg.Append(m); // Note: create very long lines. So using only the method name:
+                        msg.Append($"{m.Name}()");
+                        
                         msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
                     }
+                    msg.Append("\n");
                 }
                 Fail($"Found {DebugUtils.Allocations.Count} resource leaks\n{msg}");
             }
