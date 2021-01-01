@@ -420,12 +420,12 @@ namespace Friflo.Json.Tests.Common
 		
 		[Test]
 		public void TestUtf8Compare() {
-			using (var empty = new Bytes(""))
-			using (var a = new Bytes("a"))
-			using (var ab = new Bytes("ab"))
-			using (var copyright = new Bytes("©"))		//  © U+00A9  
-			using (var euro = new Bytes("€"))			//  € U+20AC
-			using (var smiley = new Bytes("😎"))		//  😎 U+1F60E
+			using (var empty		= new Bytes(""))	//				(0 byte)
+			using (var a			= new Bytes("a"))	//  a U+0061	(1 byte)
+			using (var ab			= new Bytes("ab"))	//				(2 bytes)
+			using (var copyright	= new Bytes("©"))	//  © U+00A9	(2 bytes)  
+			using (var euro			= new Bytes("€"))	//  € U+20AC	(3 bytes)
+			using (var smiley		= new Bytes("😎"))	//  😎 U+1F60E	(4 bytes)
 			{
 				IsTrue (Utf8Utils.IsStringEqualUtf8("", empty));
 				IsTrue (Utf8Utils.IsStringEqualUtf8("a", a));

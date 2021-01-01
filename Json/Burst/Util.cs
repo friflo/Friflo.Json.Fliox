@@ -35,6 +35,8 @@ namespace Friflo.Json.Burst
         }
 
         public static void UntrackAllocation(object resource) {
+            if (!_enableLeakDetection)
+                return;
             Allocations.Remove(resource);
         }
 

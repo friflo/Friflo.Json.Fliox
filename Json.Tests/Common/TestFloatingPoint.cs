@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common
 		{
 			if (javaReference)
 			{
-				AreEqual(  	 100.0		, Double. Parse (  "1E2")); 
+				AreEqual(  	 100.0		, Double. Parse(  "1E2")); 
 				AreEqual(  	 100.0		, Double. Parse(  "1e2")); 
 				AreEqual(  	 100.0		, Double. Parse(  "1e+2")); 
 				AreEqual(  	   0.1		, Double. Parse(  "1e-1")); 

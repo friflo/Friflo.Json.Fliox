@@ -9,19 +9,19 @@ namespace Friflo.Json.Tests.Unity
 
     public struct HybridString
     {
-        public String value;
+        public String Value;
 
         public HybridString(String str) {
-            value = str;
+            Value = str;
         }
     }
     
     public struct HybridNativeString
     {
-        public FixedString128 value;
+        public FixedString128 Value;
 
         public HybridNativeString(FixedString128 str) {
-            value = str;
+            Value = str;
         }
     }
 
@@ -29,10 +29,10 @@ namespace Friflo.Json.Tests.Unity
     public class TestHybridString
     {
         [Test]
-        public void testHybridString() {
-            HybridString hybrid = new HybridString("ABC");
-            
-            HybridNativeString hybridNative = new HybridNativeString("ABC");
+        public void TestInstantiation() {
+            HybridString        hybrid =        new HybridString        ("ABC");
+            HybridNativeString  hybridNative =  new HybridNativeString  ("ABC");
+            Assert.AreEqual(hybrid.Value, hybridNative.Value.ToString());
         }
     }
         

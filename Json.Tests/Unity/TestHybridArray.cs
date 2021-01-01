@@ -67,11 +67,11 @@ namespace Friflo.Json.Tests.Unity
         [Test]
         public void CompareHybridArrays() {
             // --- common array usage
-            byte[] array = new byte[1];
+            byte[] array =  new byte[1];
             byte[] array2 = new byte[1];
             int l0 = array.Length;
             array2[0] = 1;
-            AreEqual(0, l0);
+            AreEqual(1, l0);
             
         //  array.Dispose();
             array = array2;
@@ -79,11 +79,11 @@ namespace Friflo.Json.Tests.Unity
         //  array.Dispose();
 
             // --- usage of encapsulated managed array 
-            HybridArray<byte> hybrid = new HybridArray<byte>(1);
+            HybridArray<byte> hybrid =  new HybridArray<byte>(1);
             HybridArray<byte> hybrid2 = new HybridArray<byte>(1);
             int l1 = hybrid.Length;
             hybrid2[0] = 1;
-            AreEqual(0, l1);
+            AreEqual(1, l1);
             
             hybrid.Dispose();
             hybrid = hybrid2;
@@ -91,11 +91,11 @@ namespace Friflo.Json.Tests.Unity
             hybrid.Dispose();
 
             // --- usage of encapsulated NativeArray
-            HybridNativeArray<byte> hybridNative = new HybridNativeArray<byte>(1);
+            HybridNativeArray<byte> hybridNative =  new HybridNativeArray<byte>(1);
             HybridNativeArray<byte> hybridNative2 = new HybridNativeArray<byte>(1);
             int l2 = hybridNative.Length;
             hybridNative2[0] = 1;
-            AreEqual(0, l2);
+            AreEqual(1, l2);
             
             hybridNative.Dispose();
             hybridNative = hybridNative2;
