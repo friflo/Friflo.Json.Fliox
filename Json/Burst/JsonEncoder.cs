@@ -135,12 +135,12 @@ namespace Friflo.Json.Burst
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart(ref Bytes dst) {
             AddSeparator();
-            dst.AppendChar('{');
+            dst.AppendChar('[');
         }
         
         public void ArrayEnd(ref Bytes dst) {
             AddSeparator();
-            dst.AppendChar('}');
+            dst.AppendChar(']');
         }
         
         public void ElementString(ref Bytes dst, ref Bytes value) {

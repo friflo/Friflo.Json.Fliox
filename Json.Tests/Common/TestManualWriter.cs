@@ -32,6 +32,7 @@ namespace Friflo.Json.Tests.Common
                 }
                 memLog.AssertNoAllocations();
             }
+            CommonUtils.ToFile("assets/output/writeManual.json", dst);
             parser.Dispose();
             enc.Dispose();
             dst.Dispose();

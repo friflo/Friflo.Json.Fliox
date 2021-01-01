@@ -37,6 +37,13 @@ namespace Friflo.Json.Tests.Common.Utils
             buffer.Dispose();
             return ret;
         }
+        
+        public static void ToFile (String path, Bytes bytes) {
+            string baseDir = CommonUtils.GetBasePath();
+            using (FileStream fileStream = new FileStream(baseDir + path, FileMode.Create)) {
+                fileStream.Write(bytes.buffer.array, bytes.start, bytes.end);
+            }
+        }
     }
     
     public enum MemoryLog {
