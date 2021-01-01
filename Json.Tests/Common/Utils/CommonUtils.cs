@@ -40,8 +40,9 @@ namespace Friflo.Json.Tests.Common.Utils
         
         public static void ToFile (String path, Bytes bytes) {
             string baseDir = CommonUtils.GetBasePath();
+            var byteArray = Arrays.CreateFromBytes(bytes);
             using (FileStream fileStream = new FileStream(baseDir + path, FileMode.Create)) {
-                fileStream.Write(bytes.buffer.array, bytes.start, bytes.end);
+                fileStream.Write(byteArray, 0, byteArray.Length);
             }
         }
     }

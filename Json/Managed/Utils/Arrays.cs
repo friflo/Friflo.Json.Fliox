@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Managed.Utils
@@ -42,6 +43,17 @@ namespace Friflo.Json.Managed.Utils
 		    Buffer.BlockCopy (src, 0, array.array, 0, src.Length);
 #endif
 		    return array;
+	    }
+	    
+	    public static byte[] CreateFromBytes(Bytes src) {
+		    byte[] dst = new byte[src.Len];
+#if JSON_BURST
+		    for (int i = 0; i < src.Len; i++)
+			    dst[i] = src.buffer.array[src.start + i];
+#else
+		    Buffer.BlockCopy (src.buffer.array, src.start, dst, 0, src.Len);
+#endif
+		    return dst;
 	    }
 	}
 }
