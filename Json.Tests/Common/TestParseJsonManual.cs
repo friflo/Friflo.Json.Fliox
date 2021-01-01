@@ -64,6 +64,7 @@ namespace Friflo.Json.Tests.Common
             AreEqual(true,          manual.foundNullElement);
             AreEqual(true,          manual.trueElement);
             AreEqual(22.5,          manual.dbl);
+            AreEqual(11.5,          manual.flt);
             //
             AreEqual(8,     p.skipInfo.arrays);
             AreEqual(1,     p.skipInfo.booleans);
@@ -147,6 +148,7 @@ namespace Friflo.Json.Tests.Common
             public Str32 t;     
             public Str32 n;
             public Str32 dbl;
+            public Str32 flt;
 
             public Names(Default _) {
                 map =       "map";
@@ -159,6 +161,7 @@ namespace Friflo.Json.Tests.Common
                 t =         "t";
                 n =         "n";
                 dbl =       "dbl";
+                flt =       "flt";
             }
         }
         
@@ -175,6 +178,7 @@ namespace Friflo.Json.Tests.Common
             private Names   nm;
             private Bytes   temp;
             public  double  dbl;
+            public  float   flt;
 
             public ParseManual(Default _) {
                 int3 = new Int3();
@@ -188,6 +192,7 @@ namespace Friflo.Json.Tests.Common
                 trueElement = false;
                 nm = new Names(Default.Constructor);
                 dbl = 0;
+                flt = 0;
             }
             
             public void Dispose() {
@@ -211,6 +216,7 @@ namespace Friflo.Json.Tests.Common
                     else if (key.IsEqual32(ref nm.t)        && ev == JsonEvent.ValueBool)   { t = p.boolValue; }
                     else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
                     else if (key.IsEqual32(ref nm.dbl)      && ev == JsonEvent.ValueNumber) { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (key.IsEqual32(ref nm.flt)      && ev == JsonEvent.ValueNumber) { flt = p.ValueAsFloat(out _); }
                     else                                                                    { p.SkipEvent(ev); }
                 } while(p.ContinueObject(ev));
             }
@@ -229,6 +235,7 @@ namespace Friflo.Json.Tests.Common
                     else if (p.IsBln(ev, ref nm.t))         { t = p.boolValue; }
                     else if (p.IsNul(ev, ref nm.n))         { foundNull = true; }
                     else if (p.IsNum(ev, ref nm.dbl))       { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (p.IsNum(ev, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                     else                                    { p.SkipEvent(ev); }
                 } while(p.ContinueObject(ev));
             }
@@ -246,6 +253,7 @@ namespace Friflo.Json.Tests.Common
                     else if (obj.IsBln(ref p, ref nm.t))          { t = p.boolValue; }
                     else if (obj.IsNul(ref p, ref nm.n))          { foundNull = true; }
                     else if (obj.IsNum(ref p, ref nm.dbl))        { dbl = p.ValueAsDoubleFast(out _); }
+                    else if (obj.IsNum(ref p, ref nm.flt))        { flt = p.ValueAsFloat(out _); }
                 }
             }
 	        

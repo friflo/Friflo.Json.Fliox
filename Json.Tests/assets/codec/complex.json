@@ -32,6 +32,7 @@
 	"i8" : 8,
 	"dbl" : 22.5,
 	"flt" : 11.5,
+	"fltSkip" : 33.5,
 	"str" : "string-ý",
 	"escChars" : "_\"_\\_\b_\f_\r_\n_\t_",
 	"strNull" : null,

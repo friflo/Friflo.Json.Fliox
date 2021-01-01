@@ -676,6 +676,13 @@ namespace Friflo.Json.Burst
 			return result;
 		}
 		
+		public float ValueAsFloat(out bool success) {
+			double result = valueParser.ParseDoubleFast(ref value, ref valueError, out success);
+			if (!success) 
+				SetErrorFalse(valueError.GetError().value);
+			return (float)result;
+		}
+		
 		public long ValueAsLong(out bool success) {
 			long result = valueParser.ParseLong(ref value, ref valueError, out success);
 			if ( !success)
