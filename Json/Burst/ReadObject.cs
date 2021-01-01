@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst
     
     public struct ReadObject
     {
-        private JsonEvent ev;
+        public JsonEvent ev;
         private bool foundMember;
         private bool hasIterated;
         
