@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common
 			AreEqual (			32, obj.i32);
 			AreEqual ((short)	16, obj.i16);
 			AreEqual ((byte)	 8, obj.i8);
-			AreEqual (		   22d, obj.dbl);
+			AreEqual (		  22.5, obj.dbl);
 			AreEqual (		 11.5f, obj.flt);
 			AreEqual (  "string-ý", obj.str);
 			AreEqual (        null, obj.strNull);
@@ -307,7 +307,7 @@ namespace Friflo.Json.Tests.Common
 			obj.i32 = 32;
 			obj.i16 = 16;
 			obj.i8	= 8;
-			obj.dbl = 22d;
+			obj.dbl = 22.5;
 			obj.flt = 11.5f;
 			obj.str = "string-ý";
 			obj.strNull = null;
