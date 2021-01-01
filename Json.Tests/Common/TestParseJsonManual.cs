@@ -53,18 +53,18 @@ namespace Friflo.Json.Tests.Common
                 AreEqual(JsonEvent.EOF, p.NextEvent());
                 AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
             }
-            AreEqual(1,             manual.int3.x);
-            AreEqual(2,             manual.int3.y);
-            AreEqual(3,             manual.int3.z);
-            AreEqual(64,            manual.i64);
-            AreEqual("string-ý",    manual.str.ToString());
-            AreEqual(true,          manual.t);
-            AreEqual(true,          manual.foundNull);
-            AreEqual("str0",        manual.strElement.ToString());
-            AreEqual(true,          manual.foundNullElement);
-            AreEqual(true,          manual.trueElement);
-            AreEqual(22.5,          manual.dbl);
-            AreEqual(11.5,          manual.flt);
+            AreEqual(1,                     manual.int3.x);
+            AreEqual(2,                     manual.int3.y);
+            AreEqual(3,                     manual.int3.z);
+            AreEqual(6400000000000000000,   manual.i64);
+            AreEqual("string-ý",            manual.str.ToString());
+            AreEqual(true,                  manual.t);
+            AreEqual(true,                  manual.foundNull);
+            AreEqual("str0",                manual.strElement.ToString());
+            AreEqual(true,                  manual.foundNullElement);
+            AreEqual(true,                  manual.trueElement);
+            AreEqual(22.5,                  manual.dbl);
+            AreEqual(11.5,                  manual.flt);
             //
             AreEqual(8,     p.skipInfo.arrays);
             AreEqual(1,     p.skipInfo.booleans);

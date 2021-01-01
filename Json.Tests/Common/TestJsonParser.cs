@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.Common
 
 		private static void CheckJsonComplex (JsonComplex obj)
 		{
-			AreEqual (		   64L, obj.i64);
+			AreEqual (6400000000000000000, obj.i64);
 			AreEqual (			32, obj.i32);
 			AreEqual ((short)	16, obj.i16);
 			AreEqual ((byte)	 8, obj.i8);
@@ -303,7 +303,7 @@ namespace Friflo.Json.Tests.Common
 		
 		private static void SetComplex (JsonComplex obj)
 		{
-			obj.i64 = 64;
+			obj.i64 = 6400000000000000000;
 			obj.i32 = 32;
 			obj.i16 = 16;
 			obj.i8	= 8;
