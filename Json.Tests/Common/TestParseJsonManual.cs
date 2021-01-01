@@ -211,7 +211,7 @@ namespace Friflo.Json.Tests.Common
                     else if (key.IsEqual32(ref nm.listStr)  && ev == JsonEvent.ArrayStart)  { ReadListStr(ref p); }
                     else if (key.IsEqual32(ref nm.boolArr)  && ev == JsonEvent.ArrayStart)  { ReadBoolArr(ref p); }
                     else if (key.IsEqual32(ref nm.i64Arr)   && ev == JsonEvent.ArrayStart)  { int3.Read(ref p); }
-                    else if (key.IsEqual32(ref nm.i64)      && ev == JsonEvent.ValueNumber) { i64 = p.ValueAsInt(out _); }
+                    else if (key.IsEqual32(ref nm.i64)      && ev == JsonEvent.ValueNumber) { i64 = p.ValueAsLong(out _); }
                     else if (key.IsEqual32(ref nm.str)      && ev == JsonEvent.ValueString) { str.Set(ref p.value); }
                     else if (key.IsEqual32(ref nm.t)        && ev == JsonEvent.ValueBool)   { t = p.boolValue; }
                     else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common
                     else if (p.IsArr(ev, ref nm.listStr))   { ReadListStr(ref p); }
                     else if (p.IsArr(ev, ref nm.boolArr))   { ReadBoolArr(ref p); }
                     else if (p.IsArr(ev, ref nm.i64Arr))    { int3.Read(ref p); }
-                    else if (p.IsNum(ev, ref nm.i64))       { i64 = p.ValueAsInt(out _); }
+                    else if (p.IsNum(ev, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
                     else if (p.IsStr(ev, ref nm.str))       { str.Set(ref p.value); }
                     else if (p.IsBln(ev, ref nm.t))         { t = p.boolValue; }
                     else if (p.IsNul(ev, ref nm.n))         { foundNull = true; }
@@ -248,7 +248,7 @@ namespace Friflo.Json.Tests.Common
                     else if (obj.IsArr(ref p, ref nm.listStr))    { ReadListStr2(ref p); }
                     else if (obj.IsArr(ref p, ref nm.boolArr))    { ReadBoolArr2(ref p); }
                     else if (obj.IsArr(ref p, ref nm.i64Arr))     { int3.Read2(ref p); }
-                    else if (obj.IsNum(ref p, ref nm.i64))        { i64 = p.ValueAsInt(out _); }
+                    else if (obj.IsNum(ref p, ref nm.i64))        { i64 = p.ValueAsLong(out _); }
                     else if (obj.IsStr(ref p, ref nm.str))        { str.Set(ref p.value); }
                     else if (obj.IsBln(ref p, ref nm.t))          { t = p.boolValue; }
                     else if (obj.IsNul(ref p, ref nm.n))          { foundNull = true; }
