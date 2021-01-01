@@ -52,6 +52,7 @@ namespace Friflo.Json.Burst
 		private				String32			@true;
 		private				String32			@false;
 		private				String32			@null;
+		private				Str32				emptyArray;
 
 		public				bool				isFloat;
 		public				SkipInfo			skipInfo;
@@ -125,7 +126,7 @@ namespace Friflo.Json.Burst
 						str.AppendChar(']');
 					}
 					else
-						str.AppendFixed32("[]");
+						str.AppendFixed32(ref emptyArray);
 					break;
 				}
 			}
@@ -145,6 +146,7 @@ namespace Friflo.Json.Burst
 			@true = new String32("true");
 			@false = new String32("false");
 			@null = new String32("null");
+			emptyArray = "[]";
 			valueParser.InitValueParser();
 		}
 

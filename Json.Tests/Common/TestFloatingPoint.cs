@@ -104,7 +104,8 @@ namespace Friflo.Json.Tests.Common
 		
 		private void WriteDouble (double val)
 		{
-			using (ValueFormat bb = new ValueFormat(Default.Constructor)) {
+			using (ValueFormat bb = new ValueFormat()) {
+				bb.InitTokenFormat();
 				Bytes bytes = new Bytes(0);
 				if (isDouble)
 				{
@@ -192,7 +193,8 @@ namespace Friflo.Json.Tests.Common
 		[Test]
 		public void WriteDoublePerf()
 		{
-			using (ValueFormat bb = new ValueFormat(Default.Constructor)) {
+			using (ValueFormat bb = new ValueFormat()) {
+				bb.InitTokenFormat();
 				Bytes bytes = new Bytes(64);
 				long s = 0;
 				double d = 0;
