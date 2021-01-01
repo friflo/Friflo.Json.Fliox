@@ -24,8 +24,9 @@ namespace Friflo.Json.Tests.Common.Utils
         public static Bytes FromFile (String path) {
             string baseDir = CommonUtils.GetBasePath();
             byte[] data = File.ReadAllBytes(baseDir + path);
-            ByteArray bytes = Arrays.CopyFrom(data);
-            return new Bytes(bytes);
+            Bytes dst = new Bytes(0);
+            Arrays.ToBytes(ref dst, data);
+            return dst;
         }
         
         public static  Bytes FromString (String str) {
@@ -40,9 +41,10 @@ namespace Friflo.Json.Tests.Common.Utils
         
         public static void ToFile (String path, Bytes bytes) {
             string baseDir = CommonUtils.GetBasePath();
-            var byteArray = Arrays.CreateFromBytes(bytes);
+            byte[] dst = new byte[bytes.Len];
+            Arrays.ToManagedArray(dst, bytes);
             using (FileStream fileStream = new FileStream(baseDir + path, FileMode.Create)) {
-                fileStream.Write(byteArray, 0, byteArray.Length);
+                fileStream.Write(dst, 0, dst.Length);
             }
         }
     }

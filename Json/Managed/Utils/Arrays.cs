@@ -29,8 +29,11 @@ namespace Friflo.Json.Managed.Utils
 		    return Array. CreateInstance (componentType, length);
 	    }
 
-	    static public ByteArray CopyFrom(byte[] src) {
-		    ByteArray array = new ByteArray(src.Length);
+	    static public void ToBytes (ref Bytes dst, byte[] src) {
+		    dst.EnsureCapacityAbs(src.Length);
+		    dst.start = 0;
+		    dst.end = src.Length;
+		    dst.hc = 0;
 #if JSON_BURST
 		    /* unsafe {
 			    void* dstPtr = Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(array.array);
@@ -38,22 +41,21 @@ namespace Friflo.Json.Managed.Utils
 				    Buffer.MemoryCopy(srcPtr, dstPtr, array.Length, src.Length);
 			    }
 		    } */
-		    array.array.CopyFrom(src);
+		    dst.buffer.array.CopyFrom(src);
 #else
-		    Buffer.BlockCopy (src, 0, array.array, 0, src.Length);
+		    Buffer.BlockCopy (src, 0, dst.buffer.array, 0, src.Length);
 #endif
-		    return array;
 	    }
 	    
-	    public static byte[] CreateFromBytes(Bytes src) {
-		    byte[] dst = new byte[src.Len];
+	    public static void ToManagedArray(byte[] dst, Bytes src) {
+		    if (dst.Length < src.Len)
+			    throw new IndexOutOfRangeException();
 #if JSON_BURST
 		    for (int i = 0; i < src.Len; i++)
 			    dst[i] = src.buffer.array[src.start + i];
 #else
 		    Buffer.BlockCopy (src.buffer.array, src.start, dst, 0, src.Len);
 #endif
-		    return dst;
 	    }
 	}
 }
