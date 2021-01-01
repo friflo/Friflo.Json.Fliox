@@ -57,6 +57,7 @@ namespace Friflo.Json.Tests.Common
             AreEqual(2,                     manual.int3.y);
             AreEqual(3,                     manual.int3.z);
             AreEqual(6400000000000000000,   manual.i64);
+            AreEqual(640,                   manual.i64Neg);
             AreEqual("string-ý",            manual.str.ToString());
             AreEqual(true,                  manual.t);
             AreEqual(true,                  manual.foundNull);
@@ -143,7 +144,8 @@ namespace Friflo.Json.Tests.Common
             public Str32 listStr;
             public Str32 boolArr;
             public Str32 i64Arr; 
-            public Str32 i64;  
+            public Str32 i64;
+            public Str32 i64Neg;
             public Str32 str;    
             public Str32 t;     
             public Str32 n;
@@ -157,6 +159,7 @@ namespace Friflo.Json.Tests.Common
                 boolArr =   "boolArr";
                 i64Arr =    "i64Arr";
                 i64 =       "i64";
+                i64Neg =    "i64Neg";
                 str =       "str";
                 t =         "t";
                 n =         "n";
@@ -169,6 +172,7 @@ namespace Friflo.Json.Tests.Common
         {
             public  Int3    int3;
             public  long    i64;
+            public  long    i64Neg;
             public  Bytes   str;
             public  bool    t;
             public  bool    foundNull;
@@ -184,6 +188,7 @@ namespace Friflo.Json.Tests.Common
                 int3 = new Int3();
                 temp = new Bytes(32);
                 i64 = 0;
+                i64Neg = 0;
                 t = false;
                 foundNull = false;
                 strElement = new Bytes(16);
@@ -212,6 +217,7 @@ namespace Friflo.Json.Tests.Common
                     else if (key.IsEqual32(ref nm.boolArr)  && ev == JsonEvent.ArrayStart)  { ReadBoolArr(ref p); }
                     else if (key.IsEqual32(ref nm.i64Arr)   && ev == JsonEvent.ArrayStart)  { int3.Read(ref p); }
                     else if (key.IsEqual32(ref nm.i64)      && ev == JsonEvent.ValueNumber) { i64 = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32(ref nm.i64Neg)   && ev == JsonEvent.ValueNumber) { i64Neg = p.ValueAsLong(out _); }
                     else if (key.IsEqual32(ref nm.str)      && ev == JsonEvent.ValueString) { str.Set(ref p.value); }
                     else if (key.IsEqual32(ref nm.t)        && ev == JsonEvent.ValueBool)   { t = p.boolValue; }
                     else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
@@ -231,6 +237,7 @@ namespace Friflo.Json.Tests.Common
                     else if (p.IsArr(ev, ref nm.boolArr))   { ReadBoolArr(ref p); }
                     else if (p.IsArr(ev, ref nm.i64Arr))    { int3.Read(ref p); }
                     else if (p.IsNum(ev, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (p.IsNum(ev, ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
                     else if (p.IsStr(ev, ref nm.str))       { str.Set(ref p.value); }
                     else if (p.IsBln(ev, ref nm.t))         { t = p.boolValue; }
                     else if (p.IsNul(ev, ref nm.n))         { foundNull = true; }
@@ -249,6 +256,7 @@ namespace Friflo.Json.Tests.Common
                     else if (obj.IsArr(ref p, ref nm.boolArr))    { ReadBoolArr2(ref p); }
                     else if (obj.IsArr(ref p, ref nm.i64Arr))     { int3.Read2(ref p); }
                     else if (obj.IsNum(ref p, ref nm.i64))        { i64 = p.ValueAsLong(out _); }
+                    else if (obj.IsNum(ref p, ref nm.i64Neg))     { i64Neg = p.ValueAsLong(out _); }
                     else if (obj.IsStr(ref p, ref nm.str))        { str.Set(ref p.value); }
                     else if (obj.IsBln(ref p, ref nm.t))          { t = p.boolValue; }
                     else if (obj.IsNul(ref p, ref nm.n))          { foundNull = true; }
