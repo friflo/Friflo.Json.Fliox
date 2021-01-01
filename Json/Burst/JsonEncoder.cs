@@ -29,9 +29,9 @@ namespace Friflo.Json.Burst
         }
 
         public static void AppendEscString(ref Bytes dst, ref Bytes src) {
-            int len = src.Len;
+            int end = src.end;
             var srcArr = src.buffer.array; 
-            for (int n = 0; n < len; n++) {
+            for (int n = src.start; n < end; n++) {
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
@@ -60,7 +60,6 @@ namespace Friflo.Json.Burst
                         break;
                 }
             }
-            dst.AppendChar('\"');
         }
 
         // ----------------------------- object with properties -----------------------------

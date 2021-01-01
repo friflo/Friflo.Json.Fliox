@@ -53,6 +53,7 @@ namespace Friflo.Json.Managed
 			strBuf.Clear();
 			strBuf.FromString(str);
 			JsonEncoder.AppendEscString(ref bytes, ref strBuf);
+			bytes.AppendChar('\"');
 		}
 
 		private void WriteObject(PropType type, Object obj) {
