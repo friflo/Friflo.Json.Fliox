@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common
                 memLog.Reset();
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
-                    parser.NextEvent();
+                    parser.NextEvent(); // ObjectStart
                     WriteObject(ref enc, ref dst, ref parser);
                     memLog.Snapshot();
                 }

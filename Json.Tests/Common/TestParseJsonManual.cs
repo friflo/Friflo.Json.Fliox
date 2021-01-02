@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common
                 ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
-                    parser.NextEvent();
+                    parser.NextEvent(); // ObjectStart
                     manual.Root1(ref parser);
                     memLog.Snapshot();
                 }
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common
                 ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
-                    parser.NextEvent();
+                    parser.NextEvent(); // ObjectStart
                     manual.Root2(ref parser);
                     memLog.Snapshot();
                 }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common
                 ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
-                    parser.NextEvent();
+                    parser.NextEvent(); // ObjectStart
                     manual.Root3(ref parser);
                     memLog.Snapshot();
                 }
