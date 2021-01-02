@@ -32,12 +32,24 @@ namespace Friflo.Json.Tests.Common
                 }
                 memLog.AssertNoAllocations();
             }
-            parser.Dispose();
-            enc.Dispose();
             CommonUtils.ToFile("assets/output/writeManual.json", dst);
-            dst.Dispose();
             if (parser.error.ErrSet)
                 Fail(parser.error.Msg.ToString());
+            
+            parser.InitParser(bytes);
+            parser.SkipTree();
+            SkipInfo srcSkipInfo = parser.skipInfo;
+            
+            // validate generated JSON
+            parser.InitParser(dst);
+            parser.SkipTree();
+            if (parser.error.ErrSet)
+                Fail(parser.error.Msg.ToString());
+            IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
+            
+            parser.Dispose();
+            enc.Dispose();
+            dst.Dispose();
         }
 
         void WriteObject(ref JsonEncoder enc, ref Bytes dst, ref JsonParser p) {

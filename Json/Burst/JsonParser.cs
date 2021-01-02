@@ -23,6 +23,11 @@ namespace Friflo.Json.Burst
 		public int strings;
 
 		public int Sum => arrays + booleans + floats + integers + nulls + objects + strings;
+
+		public bool IsEqual(SkipInfo si) {
+			return arrays == si.arrays && booleans == si.booleans && floats == si.floats && integers == si.integers &&
+			       nulls == si.nulls && objects == si.objects && strings == si.strings;
+		}
 	}
 	
 	public partial struct JsonParser : IDisposable
