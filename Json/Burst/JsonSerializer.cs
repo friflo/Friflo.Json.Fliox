@@ -149,6 +149,35 @@ namespace Friflo.Json.Burst
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":null");
         }
+        
+        // ------------- non-ref Str32 Property...() versions for convenience  -------------
+        public void PropertyArray(ref Bytes dst, Str32 key) {
+            PropertyArray(ref dst, ref key);
+        }
+        
+        public void PropertyObject(ref Bytes dst, Str32 key) {
+            PropertyObject(ref dst, ref key);
+        }
+        
+        public void PropertyString(ref Bytes dst, Str32 key, ref Bytes value) {
+            PropertyString(ref dst, ref key, ref value);
+        }
+        
+        public void PropertyDouble(ref Bytes dst, Str32 key, double value) {
+            PropertyDouble(ref dst, ref key, value);
+        }
+        
+        public void PropertyLong(ref Bytes dst, Str32 key, long value) {
+            PropertyLong(ref dst, ref key, value);
+        }
+        
+        public void PropertyBool(ref Bytes dst, Str32 key, bool value) {
+            PropertyBool(ref dst, ref key, value);
+        }
+        
+        public void PropertyNull(ref Bytes dst, Str32 key) {
+            PropertyNull(ref dst, ref key);
+        }
 
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart(ref Bytes dst) {
