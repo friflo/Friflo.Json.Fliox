@@ -7,7 +7,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common
 {
-    public class TestManualWriter  : ECSLeakTestsFixture
+    public class TestManualWriter  : LeakTestsFixture
     {
         [Test]
         public void TestManualBuilder() {

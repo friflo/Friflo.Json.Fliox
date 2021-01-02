@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Unity
     }
     
     // [StructLayout(LayoutKind.Sequential, Size = 1)]
-    public class TestBurstedCode : ECSLeakTestsFixture
+    public class TestBurstedCode : LeakTestsFixture
     {
         [Test]
         public void TestParser() {

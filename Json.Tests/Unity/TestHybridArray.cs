@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Unity
         }
     }
 
-    class TestHybridArray : ECSLeakTestsFixture
+    class TestHybridArray : LeakTestsFixture
     {
         [Test]
         public void CompareHybridArrays() {

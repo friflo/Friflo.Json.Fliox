@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common
         }
     }
     
-    public class TestParseJsonManual : ECSLeakTestsFixture
+    public class TestParseJsonManual : LeakTestsFixture
     {
         private static void AssertParseResult(ref ParseManual manual, ref JsonParser p) {
             if (p.error.ErrSet) {

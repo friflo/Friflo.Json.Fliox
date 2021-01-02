@@ -9,7 +9,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common
 {
-    public class TestFloatingPoint : ECSLeakTestsFixture
+    public class TestFloatingPoint : LeakTestsFixture
     {
 	    public bool javaReference = false;
 

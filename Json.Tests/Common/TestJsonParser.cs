@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Common
 
     }
 
-    public class TestJsonParser : ECSLeakTestsFixture
+    public class TestJsonParser : LeakTestsFixture
     {
 	    private PropType.Store createStore()
 	    {

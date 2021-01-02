@@ -13,7 +13,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace Friflo.Json.Tests.Unity.Utils
 {
     // Log unit test leaks of native containers
-    public class ECSLeakTestsFixture : ECSTestsFixture
+    public class LeakTestsFixture : ECSTestsFixture
     {
         AtomicSafetyHandle m_Safety;
         DisposeSentinel ds;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Unity.Utils
 #else
 namespace Friflo.Json.Tests.Unity.Utils
 {
-    public class ECSLeakTestsFixture
+    public class LeakTestsFixture
     {
         private int currentFrameCount;
         [SetUp]
