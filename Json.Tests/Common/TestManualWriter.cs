@@ -7,7 +7,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common
 {
-    public class TestManualWriter : ECSLeakTestsFixture
+    public class TestManualWriter  : ECSLeakTestsFixture
     {
         [Test]
         public void TestManualBuilder() {
@@ -32,11 +32,10 @@ namespace Friflo.Json.Tests.Common
                 }
                 memLog.AssertNoAllocations();
             }
-            CommonUtils.ToFile("assets/output/writeManual.json", dst);
             parser.Dispose();
             enc.Dispose();
+            CommonUtils.ToFile("assets/output/writeManual.json", dst);
             dst.Dispose();
-            
             if (parser.error.ErrSet)
                 Fail(parser.error.Msg.ToString());
         }
