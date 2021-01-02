@@ -358,6 +358,7 @@ namespace Friflo.Json.Tests.Common
 			        if (ret == null)
 				        throw new FrifloException(enc.Error.Msg.ToString());
 		        }
+		        AreEqual(0, enc.SkipInfo.Sum);
 		        // FFLog.log("EncodeJson: " + json + " : " + stopwatch.Time());
 	        }
 	        return ret;
@@ -373,6 +374,7 @@ namespace Friflo.Json.Tests.Common
 			        if (ret == null)
 				        throw new FrifloException(enc.Error.Msg.ToString());
 		        }
+		        AreEqual(0, enc.SkipInfo.Sum);
 		        // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());
 		        return ret;
 	        }

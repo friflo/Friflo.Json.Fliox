@@ -46,5 +46,5 @@
 	"f" : false,
 	"sub":{"i64":1},
 	"i64Arr" : [1, 2, 3],
-	"boolArr" : [null, true]
+	"boolArr" : [false, true]
 }

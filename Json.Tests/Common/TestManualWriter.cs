@@ -43,8 +43,7 @@ namespace Friflo.Json.Tests.Common
             // validate generated JSON
             parser.InitParser(dst);
             parser.SkipTree();
-            if (parser.error.ErrSet)
-                Fail(parser.error.Msg.ToString());
+            AreEqual(JsonEvent.EOF, parser.NextEvent());
             IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
             
             parser.Dispose();

@@ -18,7 +18,8 @@ namespace Friflo.Json.Managed
 
 		private	readonly	Bytes				type = new Bytes ("$type");	
 
-		public	ErrorCx Error  =>  parser.error;
+		public				ErrorCx				Error  =>  parser.error;
+		public				SkipInfo			SkipInfo  =>  parser.skipInfo;
 		
 		public JsonReader(PropType.Store store)
 		{
@@ -610,7 +611,7 @@ namespace Friflo.Json.Managed
 				JsonEvent ev = parser.NextEvent();
 				switch (ev)
 				{
-				case JsonEvent. ValueNumber:
+				case JsonEvent. ValueBool:
 					if (index >= len)
 						array = Arrays.CopyOf (array, len = Inc(len));
 					array[index++] = parser.boolValue;

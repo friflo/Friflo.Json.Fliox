@@ -67,14 +67,14 @@ namespace Friflo.Json.Tests.Common
             AreEqual(22.5,                  manual.dbl);
             AreEqual(11.5,                  manual.flt);
             //
-            AreEqual(8,     p.skipInfo.arrays);
+            AreEqual(7,     p.skipInfo.arrays);
             AreEqual(1,     p.skipInfo.booleans);
             AreEqual(1,     p.skipInfo.floats);
             AreEqual(33,    p.skipInfo.integers);
-            AreEqual(15,    p.skipInfo.nulls);
+            AreEqual(14,    p.skipInfo.nulls);
             AreEqual(37,    p.skipInfo.objects);
             AreEqual(4,     p.skipInfo.strings);
-            AreEqual(99,    p.skipInfo.Sum);
+            AreEqual(97,    p.skipInfo.Sum);
         }
 
         [Test]
@@ -142,6 +142,7 @@ namespace Friflo.Json.Tests.Common
             public Str32 map;
             public Str32 map2;
             public Str32 listStr;
+            public Str32 arr;
             public Str32 boolArr;
             public Str32 i64Arr; 
             public Str32 i64;
@@ -156,6 +157,7 @@ namespace Friflo.Json.Tests.Common
                 map =       "map";
                 map2 =      "map2";
                 listStr =   "listStr";
+                arr =       "arr";
                 boolArr =   "boolArr";
                 i64Arr =    "i64Arr";
                 i64 =       "i64";
@@ -214,6 +216,7 @@ namespace Friflo.Json.Tests.Common
                     if      (key.IsEqual32(ref nm.map)      && ev == JsonEvent.ObjectStart) { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.map2)     && ev == JsonEvent.ObjectStart) { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.listStr)  && ev == JsonEvent.ArrayStart)  { ReadListStr(ref p); }
+                    else if (key.IsEqual32(ref nm.arr)      && ev == JsonEvent.ArrayStart)  { ReadArr(ref p); }
                     else if (key.IsEqual32(ref nm.boolArr)  && ev == JsonEvent.ArrayStart)  { ReadBoolArr(ref p); }
                     else if (key.IsEqual32(ref nm.i64Arr)   && ev == JsonEvent.ArrayStart)  { int3.Read(ref p); }
                     else if (key.IsEqual32(ref nm.i64)      && ev == JsonEvent.ValueNumber) { i64 = p.ValueAsLong(out _); }
@@ -234,6 +237,7 @@ namespace Friflo.Json.Tests.Common
                     if      (p.IsObj(ev, ref nm.map))       { p.SkipTree(); }
                     else if (p.IsObj(ev, ref nm.map2))      { p.SkipTree(); }
                     else if (p.IsArr(ev, ref nm.listStr))   { ReadListStr(ref p); }
+                    else if (p.IsArr(ev, ref nm.arr))       { ReadArr(ref p); }
                     else if (p.IsArr(ev, ref nm.boolArr))   { ReadBoolArr(ref p); }
                     else if (p.IsArr(ev, ref nm.i64Arr))    { int3.Read(ref p); }
                     else if (p.IsNum(ev, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
@@ -253,6 +257,7 @@ namespace Friflo.Json.Tests.Common
                     if      (obj.IsObj(ref p, ref nm.map))        { p.SkipTree(); }
                     else if (obj.IsObj(ref p, ref nm.map2))       { p.SkipTree(); }
                     else if (obj.IsArr(ref p, ref nm.listStr))    { ReadListStr2(ref p); }
+                    else if (obj.IsArr(ref p, ref nm.arr))        { ReadArr2(ref p); }
                     else if (obj.IsArr(ref p, ref nm.boolArr))    { ReadBoolArr2(ref p); }
                     else if (obj.IsArr(ref p, ref nm.i64Arr))     { int3.Read2(ref p); }
                     else if (obj.IsNum(ref p, ref nm.i64))        { i64 = p.ValueAsLong(out _); }
@@ -274,6 +279,22 @@ namespace Friflo.Json.Tests.Common
                 } while (p.ContinueArray(ev));
             }
             
+            void ReadArr(ref JsonParser p) {
+                JsonEvent ev;
+                do {
+                    ev = p.NextEvent();
+                    if      (ev == JsonEvent.ValueNull)     { foundNullElement = true; }
+                    else                                    { p.SkipEvent(ev); }
+                } while (p.ContinueArray(ev));
+            }
+            
+            void ReadArr2(ref JsonParser p) {
+                var arr = new ReadArray();
+                while (arr.NextEvent(ref p)) {
+                    if      (arr.IsNul(ref p))              { foundNullElement = true; }
+                }
+            }
+            
             void ReadListStr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
@@ -286,7 +307,6 @@ namespace Friflo.Json.Tests.Common
                 do {
                     ev = p.NextEvent();
                     if      (ev == JsonEvent.ValueBool)     { trueElement = p.boolValue; }
-                    else if (ev == JsonEvent.ValueNull)     { foundNullElement = true; }
                     else                                    { p.SkipEvent(ev); }
                 } while (p.ContinueArray(ev));
             }
@@ -295,7 +315,6 @@ namespace Friflo.Json.Tests.Common
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
                     if      (arr.IsBln(ref p))              { trueElement = p.boolValue; }
-                    else if (arr.IsNul(ref p))              { foundNullElement = true; }
                 }
             }
         }

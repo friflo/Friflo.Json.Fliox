@@ -69,11 +69,11 @@ namespace Friflo.Json.Burst
 		private const int 	ExpectElement =			2;
 		private const int 	ExpectElementFirst =	3;
 	
-		private const int 	ExpectRoot =			4;
-		private const int 	ExpectEof =				5;
+		private const int 	ExpectRoot =			4; // only set at state[0]
+		private const int 	ExpectEof =				5; // only set at state[0]
 		
 		private const int 	JsonError =				6;
-		private const int 	Finished =				7;
+		private const int 	Finished =				7; // only set at state[0]
 
 	
 		public String128	GetError()	{	return error.Msg;		}

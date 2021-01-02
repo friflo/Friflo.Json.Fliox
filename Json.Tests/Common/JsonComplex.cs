@@ -37,6 +37,7 @@ namespace Friflo.Json.Tests.Common
 		public List <Object>	listObj =		new List <Object>();
 	    public Sub[]		    arr;
 		public int[]		    i64Arr;
+		public bool[]			boolArr;
 
 		public static int		notSerialized;
 	}
