@@ -9,7 +9,7 @@ using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Burst
 {
-    public struct JsonSerializer : IDisposable
+    public partial struct JsonSerializer : IDisposable
     {
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
@@ -39,10 +39,11 @@ namespace Friflo.Json.Burst
             format.Dispose();
         }
         
-        public static void AppendEscString(ref Bytes dst, ref Bytes src) {
-            int end = src.end;
-            var srcArr = src.buffer.array; 
-            for (int n = src.start; n < end; n++) {
+        // --- comment to enable source alignment in WinMerge
+        public static void AppendEscString(ref Bytes dst, ref Str32 src) {
+            int end = src.Length;
+            var srcArr = src; 
+            for (int n = 0; n < end; n++) {
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
@@ -96,24 +97,21 @@ namespace Friflo.Json.Burst
             firstEntry[--level] = false;
         }
 
-        // TODO implement version with Str32 key
-        // public void PropertyString(ref Bytes dst, ref Str32 key, ref Bytes value) { }
-        
-        public void PropertyArray(ref Bytes dst, ref Bytes key) {
+        public void PropertyArray(ref Bytes dst, ref Str32 key) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyObject(ref Bytes dst, ref Bytes key) {
+        public void PropertyObject(ref Bytes dst, ref Str32 key) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyString(ref Bytes dst, ref Bytes key, ref Bytes value) {
+        public void PropertyString(ref Bytes dst, ref Str32 key, ref Bytes value) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -122,14 +120,14 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-        public void PropertyDouble(ref Bytes dst, ref Bytes key, double value) {
+        public void PropertyDouble(ref Bytes dst, ref Str32 key, double value) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);            dst.AppendString("\":");
             format.AppendDbl(ref dst, value);
         }
         
-        public void PropertyLong(ref Bytes dst, ref Bytes key, long value) {
+        public void PropertyLong(ref Bytes dst, ref Str32 key, long value) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -137,7 +135,7 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref dst, value);
         }
         
-        public void PropertyBool(ref Bytes dst, ref Bytes key, bool value) {
+        public void PropertyBool(ref Bytes dst, ref Str32 key, bool value) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -145,13 +143,13 @@ namespace Friflo.Json.Burst
             format.AppendBool(ref dst, value);
         }
         
-        public void PropertyNull(ref Bytes dst, ref Bytes key) {
+        public void PropertyNull(ref Bytes dst, ref Str32 key) {
             AddSeparator(ref dst);
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":null");
         }
-        
+
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart(ref Bytes dst) {
             if (elementType[level] == ElementType.Array)
@@ -192,6 +190,6 @@ namespace Friflo.Json.Burst
             AddSeparator(ref dst);
             dst.AppendString("null");
         }
-        
+
     }
 }
