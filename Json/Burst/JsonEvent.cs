@@ -15,6 +15,7 @@ namespace Friflo.Json.Burst
         ArrayStart,		// key is set, if inside an object
         ArrayEnd,
 	
+        // ReSharper disable once InconsistentNaming
         EOF,
         Error,
     }

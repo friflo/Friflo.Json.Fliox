@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common
 		    }
 		    parser.Dispose();
 	    }
-	    
+
     
 	    public static void TestParseFile(Bytes bytes)
 		{
@@ -205,6 +205,49 @@ namespace Friflo.Json.Tests.Common
         [Test]
         public void TestParser() {
 	        TestParserImpl.BasicJsonParser();
+        }
+        
+        [Test]
+        public void TestSkipping() {
+	        JsonParser parser = new JsonParser();
+
+	        using (var bytes = CommonUtils.FromString("{}")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.objects);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("[]")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.arrays);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("\"str\"")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.strings);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("42")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.integers);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("true")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.booleans);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("null")) {
+		        parser.InitParser(bytes);
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.nulls);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        parser.Dispose();
         }
 
         [Test]

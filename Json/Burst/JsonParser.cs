@@ -542,6 +542,9 @@ namespace Friflo.Json.Burst
 	        case ExpectElement:
 	        case ExpectElementFirst:
 	        	return SkipArray();
+	        case ExpectRoot:
+		        JsonEvent ev = NextEvent();
+		        return SkipEvent(ev);
 	        default:
 	        	return SetErrorFalse("unexpected state");
 	        }
