@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed
 	    	return null;
 		}
 
-		readonly private static int minLen = 8;
+		private static readonly int minLen = 8;
 
 		private static int Inc (int len)
 		{

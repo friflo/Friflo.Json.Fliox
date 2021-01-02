@@ -57,21 +57,21 @@ namespace Friflo.Json.Managed.Prop
 	    	internal PropCollection	collection;
 	    	internal PropAccess		access;
 	
-			static  public Info Create (FieldInfo field)
+			public  static Info Create (FieldInfo field)
 			{
 	    		Info info = new Info();
 	    		info.Create (field. FieldType );
 	    		return info;
 			}
 	
-			static  public Info Create (PropertyInfo getter)
+			public  static Info Create (PropertyInfo getter)
 			{
 	    		Info info = new Info();
 	    		info.Create (getter. PropertyType);
 	    		return info;
 	        }
 
-	    	static public PropCollection CreateCollection (Type type)
+	    	public static PropCollection CreateCollection (Type type)
 	    	{
 	    		Info info = new Info();
 	    		info.Create (type );

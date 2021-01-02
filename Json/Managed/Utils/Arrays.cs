@@ -8,7 +8,7 @@ namespace Friflo.Json.Managed.Utils
 {
 	public static class Arrays
 	{
-		static public T[] CopyOf <T> (T[] src, int length)
+		public static T[] CopyOf <T> (T[] src, int length)
 		{
 			T[] dst = (T[])Array.CreateInstance(typeof (T), length);
             int min = Math.Min (length, src. Length);
@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed.Utils
 			return dst;
 		}
 
-		static public Array CopyOfType (Type type, Array src, int length)
+		public static Array CopyOfType (Type type, Array src, int length)
 		{
 			Array dst = Array.CreateInstance(type, length);
             int min = Math.Min (length, src. Length);
@@ -24,12 +24,12 @@ namespace Friflo.Json.Managed.Utils
 			return dst;
 		}
 
-	    static public Array CreateInstance (Type componentType, int length)
+	    public static Array CreateInstance (Type componentType, int length)
 	    {
 		    return Array. CreateInstance (componentType, length);
 	    }
 
-	    static public void ToBytes (ref Bytes dst, byte[] src) {
+	    public static void ToBytes (ref Bytes dst, byte[] src) {
 		    dst.EnsureCapacityAbs(src.Length);
 		    dst.start = 0;
 		    dst.end = src.Length;

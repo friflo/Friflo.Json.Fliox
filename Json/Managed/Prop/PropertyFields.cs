@@ -22,7 +22,7 @@ namespace Friflo.Json.Managed.Prop
 		private		readonly	IPropDriver					propDriver = PropDriver.GetDriver();
 
 
-		private readonly static	Type[] 						Types = new Type [] { typeof( PropCall ) };
+		private static readonly	Type[] 						Types = new Type [] { typeof( PropCall ) };
 
 		public PropertyFields (Type type, PropType declType, bool listFields, bool listMethods)
 		{

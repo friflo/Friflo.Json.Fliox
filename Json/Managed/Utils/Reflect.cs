@@ -26,7 +26,7 @@ namespace Friflo.Json.Managed.Utils
 		}
 
 		// GetFields
-		static public FieldInfo[] GetFields (Type type)
+		public static FieldInfo[] GetFields (Type type)
 		{
 #if NETFX_CORE
 			List<FieldInfo> list = new List<FieldInfo>();
@@ -85,7 +85,7 @@ namespace Friflo.Json.Managed.Utils
 #endif
 		}
 
-		private readonly static Object[] DefConstructorArgs = new Object[0];
+		private static readonly Object[] DefConstructorArgs = new Object[0];
 
 		public static Object CreateInstance (Type type)
 		{

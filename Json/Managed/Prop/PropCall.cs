@@ -23,6 +23,6 @@ namespace Friflo.Json.Managed.Prop
 			}		
 		}
 		
-		public readonly static PropCall log = new LogCall();
+		public static readonly PropCall log = new LogCall();
 	}
 }

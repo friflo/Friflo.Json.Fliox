@@ -7,18 +7,18 @@ namespace Friflo.Json.Managed.Utils
 	// HashMapOpen
 	public class HashMapOpen <K,V> : FFMap<K,V>
 	{
-		private  		Object[]	key;
-		private  		V[]			val;
-		private 		int[]		used;
-		private			int			capacity;
-		private			int			size;
-		private			int			threshold;
-		private static	Removed		removed = new Removed();
-		private			int			removes;
-		private			int			thresholdRemoves;
-		private  		Object[]	rehashKey;
-		private  		V[]			rehashVal;
-		private 		int[]		rehashUsed;
+		private  				Object[]	key;
+		private  				V[]			val;
+		private 				int[]		used;
+		private					int			capacity;
+		private					int			size;
+		private					int			threshold;
+		private static readonly	Removed		RemovedKey = new Removed();
+		private					int			removes;
+		private					int			thresholdRemoves;
+		private  				Object[]	rehashKey;
+		private  				V[]			rehashVal;
+		private 				int[]		rehashUsed;
 
 		public HashMapOpen()
 		:
@@ -52,7 +52,7 @@ namespace Friflo.Json.Managed.Utils
 	    	{
 	    		if (e. Equals( k ))
 	    		{
-	    			key[idx] = removed;
+	    			key[idx] = RemovedKey;
 	    	    	val[idx] = default(V);
 	    	    	if (removes++ >= thresholdRemoves )
 	    	    		Rehash(capacity);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Managed.Utils
 				int pos = used[n];
 				Object k = key[pos];
 				// ReSharper disable once PossibleUnintendedReferenceComparison
-				if (k != removed)
+				if (k != RemovedKey)
 				{
 		    		int hash = k. GetHashCode() & 0x7FFFFFFF;
 		    		int idx = hash % capacity;

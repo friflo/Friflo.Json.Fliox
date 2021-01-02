@@ -8,7 +8,7 @@ namespace Friflo.Json.Managed.Prop
 {
 	public abstract class  Property
 	{
-		private readonly static 	Type[] Types = new Type [] { typeof( Property ) };
+		private static readonly 	Type[] Types = new Type [] { typeof( Property ) };
 
 		public abstract	void	Set(String name) ;
 		public abstract void	Set(String name, String field) ;
