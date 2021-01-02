@@ -7,10 +7,9 @@ using Friflo.Json.Burst.Utils;
     using Str32 = System.String;
 #endif
 
-
 namespace Friflo.Json.Burst
 {
-    public struct JsonEncoder : IDisposable
+    public struct JsonSerializer : IDisposable
     {
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;

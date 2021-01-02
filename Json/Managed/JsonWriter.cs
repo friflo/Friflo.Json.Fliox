@@ -52,7 +52,7 @@ namespace Friflo.Json.Managed
 			bytes.AppendChar('\"');
 			strBuf.Clear();
 			strBuf.FromString(str);
-			JsonEncoder.AppendEscString(ref bytes, ref strBuf);
+			JsonSerializer.AppendEscString(ref bytes, ref strBuf);
 			bytes.AppendChar('\"');
 		}
 
