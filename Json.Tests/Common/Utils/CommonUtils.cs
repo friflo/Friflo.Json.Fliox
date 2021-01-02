@@ -86,6 +86,8 @@ namespace Friflo.Json.Tests.Common.Utils
         }
 
         public void Snapshot() {
+            if (memoryLog == MemoryLog.Disabled)
+                return;
             if (snapshotCount++ % snapshotInterval == 0)
                 totalMemory[totalMemoryCount++] = GC.GetAllocatedBytesForCurrentThread();
         }
