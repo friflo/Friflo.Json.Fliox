@@ -65,7 +65,10 @@ namespace Friflo.Json.Burst
 		private const int 	ExpectElementFirst =	3;
 	
 		private const int 	ExpectRoot =			4;
-		private const int 	Finished =				6;
+		private const int 	ExpectEof =				5;
+		
+		private const int 	JsonError =				6;
+		private const int 	Finished =				7;
 
 	
 		public String128	GetError()	{	return error.Msg;		}
@@ -79,14 +82,15 @@ namespace Friflo.Json.Burst
 			error.Error(err, pos);
 		}
 		
-		private JsonEvent SetError (Str128 msg)
-		{
+		private JsonEvent SetError (Str128 msg) {
+			state[stateLevel] = JsonError;
 			Error("JsonParser", msg);
 			return JsonEvent.Error;
 		}
 		
 		private bool SetErrorFalse (Str128 msg)
 		{
+			state[stateLevel] = JsonError;
 			Error("JsonParser", msg);
 			return false;
 		}
@@ -248,6 +252,7 @@ namespace Friflo.Json.Burst
     			break;
     		
 			case ExpectRoot:
+				state[0] = ExpectEof;
         		switch (c)
         		{
 					case '{':
@@ -260,13 +265,23 @@ namespace Friflo.Json.Burst
 						arrIndex[stateLevel] = -1;
 	            		return JsonEvent.ArrayStart;
 					case -1:
-	            		state[stateLevel] = Finished;
-	            		return JsonEvent.EOF;
-					default:
-	        			return SetError($"Expected '{{', '[' or EOF at root level. Found: {(char)c}");
+						return SetError("unexpected EOF on root");
+					// default: read following bytes as value  
         		}
-			case Finished:
-        		return SetError("Parser already finished");
+                break;
+			
+			case ExpectEof:
+				if (c == -1) {
+					state[0] = Finished;
+					return JsonEvent.EOF;
+				}
+				return SetError("Expected EOF");
+			
+            case Finished:
+	            return SetError("Parsing already finished");
+            
+			case JsonError:
+				return JsonEvent.Error;
 			}
         
 			// ---- read value of key/value pairs or array items ---
@@ -364,7 +379,11 @@ namespace Friflo.Json.Burst
 				}
 				return SetErrorFalse($"unexpected character {(char)c} while reading number");
 			}
-			return SetErrorFalse("unexpected EOF while reading number");
+			if (state[stateLevel] != ExpectEof) 
+				return SetErrorFalse("unexpected EOF while reading number");
+			value.Clear();
+			value.AppendArray(ref buf, start, pos);
+			return true;
 		}
 	
 		private bool ReadString(ref Bytes token)

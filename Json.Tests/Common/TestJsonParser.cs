@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
 			    AreEqual(0, parser.GetLevel());
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
 		    }
 
 		    using (var bytes = CommonUtils.FromString("{'test':'hello'}")) {
@@ -36,6 +37,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
 			    AreEqual(0, parser.GetLevel());
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
 		    }
 
 		    using (var bytes = CommonUtils.FromString("{'a':'b','abc':123,'x':'ab\\r\\nc'}")) {
@@ -50,6 +52,7 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
 			    AreEqual(0, parser.GetLevel());
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
 		    }
 
 		    using (var bytes = CommonUtils.FromString("[]")) {
@@ -58,10 +61,60 @@ namespace Friflo.Json.Tests.Common
 			    AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
 			    AreEqual(0, parser.GetLevel());
 			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    
+		    // --------------- primitives on root level --------------- 
+		    using (var bytes = CommonUtils.FromString("\"str\"")) {
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.ValueString, parser.NextEvent());
+			    AreEqual("str", parser.value.ToString());
+			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("42")) {
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
+			    AreEqual("42", parser.value.ToString());
+			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("true")) {
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.ValueBool, parser.NextEvent());
+			    AreEqual(true, parser.boolValue);
+			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("null")) {
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.ValueNull, parser.NextEvent());
+			    AreEqual(JsonEvent.EOF, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    
+		    // --------------- invalid strings on root ---------------
+		    using (var bytes = CommonUtils.FromString("")) { // empty string is not valid JSON
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("str")) {
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("tx")) { // start as a bool (true)
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+		    }
+		    using (var bytes = CommonUtils.FromString("1a")) { // start as a number
+			    parser.InitParser(bytes);
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
+			    AreEqual(JsonEvent.Error, parser.NextEvent());
 		    }
 		    parser.Dispose();
 	    }
 	    
+    
 	    public static void TestParseFile(Bytes bytes)
 		{
 		//	ParseCx parseCx = new ParseCx();
