@@ -3,4 +3,18 @@
  
 
 ## Compatibility
- Compiles with: net40;net45;net451;net452;net46;net461;net471;net472;net5.0;net5.0-windows;netcoreapp2.1;netcoreapp3.1;netstandard2.0;netstandard2.1
+
+## Features
+- Json.Burst features:
+	- UTF-8 support
+	- object mapping
+	- Support deserialization to passed Object instances
+	- Support polymorphism
+	- Small library
+	- No (0) allocations after a few iterations
+	- Compatible to .NET Standard.
+	  That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
+	- No dependencies to 3rd party libraries
+	- allow single quotation marks for string
+	- expressive error messages when parsing invalid JSON
+	- compatibly to Unity Burst Jobs
