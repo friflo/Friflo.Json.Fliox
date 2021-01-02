@@ -546,7 +546,8 @@ namespace Friflo.Json.Burst
 		        JsonEvent ev = NextEvent();
 		        return SkipEvent(ev);
 	        default:
-	        	return SetErrorFalse("unexpected state");
+		        // dont set error. It would overwrite a previous error (parser state did not change)
+		        return false;
 	        }
 		}
 		

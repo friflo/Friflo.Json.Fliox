@@ -213,14 +213,14 @@ namespace Friflo.Json.Tests.Common
 
 	        using (var bytes = CommonUtils.FromString("{}")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.objects);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("{'a':'A'}")) {
 		        parser.InitParser(bytes);
 		        AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.objects);
 		        AreEqual(1, parser.skipInfo.strings);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
@@ -229,39 +229,75 @@ namespace Friflo.Json.Tests.Common
 		        parser.InitParser(bytes);
 		        AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
 		        AreEqual(JsonEvent.ValueString, parser.NextEvent()); // consume first property
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.objects);
 		        AreEqual(1, parser.skipInfo.strings);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("[]")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.arrays);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("'str'")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.strings);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("42")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.integers);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("true")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.booleans);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        using (var bytes = CommonUtils.FromString("null")) {
 		        parser.InitParser(bytes);
-		        parser.SkipTree();
+		        IsTrue(parser.SkipTree());
 		        AreEqual(1, parser.skipInfo.nulls);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        
+	        // --------------- skipping skipping invalid cases
+	        using (var bytes = CommonUtils.FromString("[")) {
+		        parser.InitParser(bytes);
+		        IsFalse(parser.SkipTree());
+		        AreEqual(JsonEvent.Error, parser.NextEvent());
+		        IsFalse(parser.SkipTree()); // parser state is not changed
+	        }
+	        using (var bytes = CommonUtils.FromString("{")) {
+		        parser.InitParser(bytes);
+		        IsFalse(parser.SkipTree());
+		        AreEqual(JsonEvent.Error, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("a")) {
+		        parser.InitParser(bytes);
+		        IsFalse(parser.SkipTree());
+		        AreEqual(JsonEvent.Error, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("")) {
+		        parser.InitParser(bytes);
+		        IsFalse(parser.SkipTree());
+		        AreEqual(JsonEvent.Error, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("42")) {
+		        parser.InitParser(bytes);
+		        AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
+		        IsFalse(parser.SkipTree()); // parser state is not changed
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("{}")) {
+		        parser.InitParser(bytes);
+		        AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+		        AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+		        IsFalse(parser.SkipTree()); // parser state is not changed
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
 	        parser.Dispose();
