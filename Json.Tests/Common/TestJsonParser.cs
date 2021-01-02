@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common
 		    }
 		    
 		    // --------------- primitives on root level --------------- 
-		    using (var bytes = CommonUtils.FromString("\"str\"")) {
+		    using (var bytes = CommonUtils.FromString("'str'")) {
 			    parser.InitParser(bytes);
 			    AreEqual(JsonEvent.ValueString, parser.NextEvent());
 			    AreEqual("str", parser.value.ToString());
@@ -217,13 +217,30 @@ namespace Friflo.Json.Tests.Common
 		        AreEqual(1, parser.skipInfo.objects);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
+	        using (var bytes = CommonUtils.FromString("{'a':'A'}")) {
+		        parser.InitParser(bytes);
+		        AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.objects);
+		        AreEqual(1, parser.skipInfo.strings);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
+	        using (var bytes = CommonUtils.FromString("{'a':'A','b':'B'}")) {
+		        parser.InitParser(bytes);
+		        AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+		        AreEqual(JsonEvent.ValueString, parser.NextEvent()); // consume first property
+		        parser.SkipTree();
+		        AreEqual(1, parser.skipInfo.objects);
+		        AreEqual(1, parser.skipInfo.strings);
+		        AreEqual(JsonEvent.EOF, parser.NextEvent());
+	        }
 	        using (var bytes = CommonUtils.FromString("[]")) {
 		        parser.InitParser(bytes);
 		        parser.SkipTree();
 		        AreEqual(1, parser.skipInfo.arrays);
 		        AreEqual(JsonEvent.EOF, parser.NextEvent());
 	        }
-	        using (var bytes = CommonUtils.FromString("\"str\"")) {
+	        using (var bytes = CommonUtils.FromString("'str'")) {
 		        parser.InitParser(bytes);
 		        parser.SkipTree();
 		        AreEqual(1, parser.skipInfo.strings);
