@@ -79,6 +79,8 @@ namespace Friflo.Json.Burst
 			AppendPath(ref misc);
 			int position = pos - startPos;
 			var err = new String128($"{module} error - {msg} path: {misc.ToFixed128()} at position: {position}");
+			if (error.ErrSet)
+				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
 			error.Error(err, pos);
 		}
 		

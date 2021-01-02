@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
 using NUnit.Framework;
-
+using NUnit.Framework.Interfaces;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -53,6 +53,10 @@ namespace Friflo.Json.Tests.Unity.Utils
         [TearDown]
         public void TearDown() {
             DebugUtils.StopLeakDetection();
+            
+            ResultState state = TestContext.CurrentContext.Result.Outcome;
+            if (state.Status == TestStatus.Failed)
+                return;
             
             if (DebugUtils.Allocations.Count > 0) {
                 StringBuilder msg = new StringBuilder();
