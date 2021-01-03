@@ -1,4 +1,5 @@
 ﻿using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace Friflo.Json.Tests.Common
         }
 
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
-            var memLog = new MemoryLogger(100, 100, memoryLog);
+            var memLog = new MemoryLogger(100, 100, memoryLog, Fail);
             var ser = new JsonSerializer();
             ser.InitEncoder();
             var parser = new JsonParser();
