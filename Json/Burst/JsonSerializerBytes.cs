@@ -1,5 +1,4 @@
-﻿using System;
-using Friflo.Json.Burst.Utils;
+﻿
 
 #if JSON_BURST
 	using Str32 = Unity.Collections.FixedString32;
@@ -74,22 +73,22 @@ namespace Friflo.Json.Burst
 
         // TODO implement version with Str32 key
         
-        public void PropertyArray(ref Bytes dst, ref Bytes key) {
-            AddSeparator(ref dst);
+        public void PropertyArray(ref Bytes key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyObject(ref Bytes dst, ref Bytes key) {
-            AddSeparator(ref dst);
+        public void PropertyObject(ref Bytes key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyString(ref Bytes dst, ref Bytes key, ref Bytes value) {
-            AddSeparator(ref dst);
+        public void PropertyString(ref Bytes key, ref Bytes value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":\"");
@@ -97,31 +96,31 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-        public void PropertyDouble(ref Bytes dst, ref Bytes key, double value) {
-            AddSeparator(ref dst);
+        public void PropertyDouble(ref Bytes key, double value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);            dst.AppendString("\":");
             format.AppendDbl(ref dst, value);
         }
         
-        public void PropertyLong(ref Bytes dst, ref Bytes key, long value) {
-            AddSeparator(ref dst);
+        public void PropertyLong(ref Bytes key, long value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendLong(ref dst, value);
         }
         
-        public void PropertyBool(ref Bytes dst, ref Bytes key, bool value) {
-            AddSeparator(ref dst);
+        public void PropertyBool(ref Bytes key, bool value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendBool(ref dst, value);
         }
         
-        public void PropertyNull(ref Bytes dst, ref Bytes key) {
-            AddSeparator(ref dst);
+        public void PropertyNull(ref Bytes key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":null");

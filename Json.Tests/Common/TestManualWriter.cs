@@ -18,7 +18,6 @@ namespace Friflo.Json.Tests.Common
 
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
-            var dst = new Bytes(1);
             var ser = new JsonSerializer();
             ser.InitEncoder();
             var parser = new JsonParser();
@@ -27,12 +26,12 @@ namespace Friflo.Json.Tests.Common
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent(); // ObjectStart
-                    WriteObject(ref ser, ref dst, ref parser);
+                    WriteObject(ref ser, ref parser);
                     memLog.Snapshot();
                 }
                 memLog.AssertNoAllocations();
             }
-            CommonUtils.ToFile("assets/output/writeManual.json", dst);
+            CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
             if (parser.error.ErrSet)
                 Fail(parser.error.Msg.ToString());
             
@@ -41,47 +40,46 @@ namespace Friflo.Json.Tests.Common
             SkipInfo srcSkipInfo = parser.skipInfo;
             
             // validate generated JSON
-            parser.InitParser(dst);
+            parser.InitParser(ser.dst);
             parser.SkipTree();
             AreEqual(JsonEvent.EOF, parser.NextEvent());
             IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
             
             parser.Dispose();
             ser.Dispose();
-            dst.Dispose();
         }
 
-        void WriteObject(ref JsonSerializer ser, ref Bytes dst, ref JsonParser p) {
-            ser.ObjectStart(ref dst);
+        void WriteObject(ref JsonSerializer ser, ref JsonParser p) {
+            ser.ObjectStart();
             JsonEvent ev;
             do {
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        ser.PropertyArray(ref dst, ref p.key);
-                        WriteArray(ref ser, ref dst, ref p);
+                        ser.PropertyArray(ref p.key);
+                        WriteArray(ref ser, ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        ser.PropertyObject(ref dst, ref p.key);
-                        WriteObject(ref ser, ref dst, ref p);
+                        ser.PropertyObject(ref p.key);
+                        WriteObject(ref ser, ref p);
                         break;
                     case JsonEvent.ValueString:
-                        ser.PropertyString(ref dst, ref p.key, ref p.value);
+                        ser.PropertyString(ref p.key, ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         if (p.isFloat)
-                            ser.PropertyDouble(ref dst, ref p.key, p.ValueAsDouble(out _));
+                            ser.PropertyDouble(ref p.key, p.ValueAsDouble(out _));
                         else
-                            ser.PropertyLong(ref dst, ref p.key, p.ValueAsLong(out _));
+                            ser.PropertyLong(ref p.key, p.ValueAsLong(out _));
                         break;
                     case JsonEvent.ValueBool:
-                        ser.PropertyBool(ref dst, ref p.key, p.boolValue);
+                        ser.PropertyBool(ref p.key, p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        ser.PropertyNull(ref dst, ref p.key);
+                        ser.PropertyNull(ref p.key);
                         break;
                     case JsonEvent.ObjectEnd:
-                        ser.ObjectEnd(ref dst);
+                        ser.ObjectEnd();
                         return;
                     case JsonEvent.ArrayEnd:
                         Fail("unreachable");
@@ -94,38 +92,38 @@ namespace Friflo.Json.Tests.Common
             while (p.ContinueObject(ev));
         }
         
-        void WriteArray(ref JsonSerializer ser, ref Bytes dst, ref JsonParser p) {
-            ser.ArrayStart(ref dst);
+        void WriteArray(ref JsonSerializer ser, ref JsonParser p) {
+            ser.ArrayStart();
             JsonEvent ev;
             do {
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        WriteArray(ref ser, ref dst, ref p);
+                        WriteArray(ref ser, ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        WriteObject(ref ser, ref dst, ref p);
+                        WriteObject(ref ser, ref p);
                         break;
                     case JsonEvent.ValueString:
-                        ser.ElementString(ref dst, ref p.value);
+                        ser.ElementString(ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         if (p.isFloat)
-                            ser.ElementDouble(ref dst, p.ValueAsDouble(out _));
+                            ser.ElementDouble(p.ValueAsDouble(out _));
                         else
-                            ser.ElementLong(ref dst, p.ValueAsLong(out _));
+                            ser.ElementLong(p.ValueAsLong(out _));
                         break;
                     case JsonEvent.ValueBool:
-                        ser.ElementBool(ref dst, p.boolValue);
+                        ser.ElementBool(p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        ser.ElementNull(ref dst);
+                        ser.ElementNull();
                         break;
                     case JsonEvent.ObjectEnd:
                         Fail("unreachable");
                         return;
                     case JsonEvent.ArrayEnd:
-                        ser.ArrayEnd(ref dst);
+                        ser.ArrayEnd();
                         return;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:

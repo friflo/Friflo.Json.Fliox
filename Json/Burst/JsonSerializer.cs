@@ -11,6 +11,7 @@ namespace Friflo.Json.Burst
 {
     public partial struct JsonSerializer : IDisposable
     {
+        public  Bytes			        dst;
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
         private ValueArray<ElementType> elementType;
@@ -22,6 +23,9 @@ namespace Friflo.Json.Burst
         }
 
         public void InitEncoder() {
+            if (!dst.buffer.IsCreated())
+                dst.InitBytes(128);
+            dst.Clear();
             format.InitTokenFormat();
             if (!firstEntry.IsCreated())
                 firstEntry = new ValueArray<bool>(32);
@@ -36,6 +40,8 @@ namespace Friflo.Json.Burst
                 firstEntry.Dispose();
             if (elementType.IsCreated())
                 elementType.Dispose();
+            if (dst.buffer.IsCreated())
+                dst.Dispose();
             format.Dispose();
         }
         
@@ -75,7 +81,7 @@ namespace Friflo.Json.Burst
         }
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
-        private void AddSeparator(ref Bytes dst) {
+        private void AddSeparator() {
             if (firstEntry[level]) {
                 firstEntry[level] = false;
                 return;
@@ -84,35 +90,35 @@ namespace Friflo.Json.Burst
         }
 
         // ----------------------------- object with properties -----------------------------
-        public void ObjectStart(ref Bytes dst) {
+        public void ObjectStart() {
             if (elementType[level] == ElementType.Array)
-                AddSeparator(ref dst);
+                AddSeparator();
             dst.AppendChar('{');
             firstEntry[++level] = true;
             elementType[level] = ElementType.Object;
         }
         
-        public void ObjectEnd(ref Bytes dst) {
+        public void ObjectEnd() {
             dst.AppendChar('}');
             firstEntry[--level] = false;
         }
 
-        public void PropertyArray(ref Bytes dst, ref Str32 key) {
-            AddSeparator(ref dst);
+        public void PropertyArray(ref Str32 key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyObject(ref Bytes dst, ref Str32 key) {
-            AddSeparator(ref dst);
+        public void PropertyObject(ref Str32 key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
         }
         
-        public void PropertyString(ref Bytes dst, ref Str32 key, ref Bytes value) {
-            AddSeparator(ref dst);
+        public void PropertyString(ref Str32 key, ref Bytes value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":\"");
@@ -120,103 +126,103 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-        public void PropertyDouble(ref Bytes dst, ref Str32 key, double value) {
-            AddSeparator(ref dst);
+        public void PropertyDouble(ref Str32 key, double value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);            dst.AppendString("\":");
             format.AppendDbl(ref dst, value);
         }
         
-        public void PropertyLong(ref Bytes dst, ref Str32 key, long value) {
-            AddSeparator(ref dst);
+        public void PropertyLong(ref Str32 key, long value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendLong(ref dst, value);
         }
         
-        public void PropertyBool(ref Bytes dst, ref Str32 key, bool value) {
-            AddSeparator(ref dst);
+        public void PropertyBool(ref Str32 key, bool value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":");
             format.AppendBool(ref dst, value);
         }
         
-        public void PropertyNull(ref Bytes dst, ref Str32 key) {
-            AddSeparator(ref dst);
+        public void PropertyNull(ref Str32 key) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendString("\":null");
         }
         
         // ------------- non-ref Str32 Property...() versions for convenience  -------------
-        public void PropertyArray(ref Bytes dst, Str32 key) {
-            PropertyArray(ref dst, ref key);
+        public void PropertyArray(Str32 key) {
+            PropertyArray(ref key);
         }
         
-        public void PropertyObject(ref Bytes dst, Str32 key) {
-            PropertyObject(ref dst, ref key);
+        public void PropertyObject(Str32 key) {
+            PropertyObject(ref key);
         }
         
-        public void PropertyString(ref Bytes dst, Str32 key, ref Bytes value) {
-            PropertyString(ref dst, ref key, ref value);
+        public void PropertyString(Str32 key, ref Bytes value) {
+            PropertyString(ref key, ref value);
         }
         
-        public void PropertyDouble(ref Bytes dst, Str32 key, double value) {
-            PropertyDouble(ref dst, ref key, value);
+        public void PropertyDouble(Str32 key, double value) {
+            PropertyDouble(ref key, value);
         }
         
-        public void PropertyLong(ref Bytes dst, Str32 key, long value) {
-            PropertyLong(ref dst, ref key, value);
+        public void PropertyLong(Str32 key, long value) {
+            PropertyLong(ref key, value);
         }
         
-        public void PropertyBool(ref Bytes dst, Str32 key, bool value) {
-            PropertyBool(ref dst, ref key, value);
+        public void PropertyBool(Str32 key, bool value) {
+            PropertyBool(ref key, value);
         }
         
-        public void PropertyNull(ref Bytes dst, Str32 key) {
-            PropertyNull(ref dst, ref key);
+        public void PropertyNull(Str32 key) {
+            PropertyNull(ref key);
         }
 
         // ----------------------------- array with elements -----------------------------
-        public void ArrayStart(ref Bytes dst) {
+        public void ArrayStart() {
             if (elementType[level] == ElementType.Array)
-                AddSeparator(ref dst);
+                AddSeparator();
             dst.AppendChar('[');
             firstEntry[++level] = true;
             elementType[level] = ElementType.Array;
         }
         
-        public void ArrayEnd(ref Bytes dst) {
+        public void ArrayEnd() {
             dst.AppendChar(']');
             firstEntry[--level] = false;
         }
         
-        public void ElementString(ref Bytes dst, ref Bytes value) {
-            AddSeparator(ref dst);
+        public void ElementString(ref Bytes value) {
+            AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
         
-        public void ElementDouble(ref Bytes dst, double value) {
-            AddSeparator(ref dst);
+        public void ElementDouble(double value) {
+            AddSeparator();
             format.AppendDbl(ref dst, value);
         }
         
-        public void ElementLong(ref Bytes dst, long value) {
-            AddSeparator(ref dst);
+        public void ElementLong(long value) {
+            AddSeparator();
             format.AppendLong(ref dst, value);
         }
         
-        public void ElementBool(ref Bytes dst, bool value) {
-            AddSeparator(ref dst);
+        public void ElementBool(bool value) {
+            AddSeparator();
             format.AppendBool(ref dst, value);
         }
         
-        public void ElementNull(ref Bytes dst) {
-            AddSeparator(ref dst);
+        public void ElementNull() {
+            AddSeparator();
             dst.AppendString("null");
         }
 
