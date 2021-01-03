@@ -445,13 +445,19 @@ namespace Friflo.Json.Burst
 		}
 #if JSON_BURST
 		public Unity.Collections.FixedString32 ToFixed32() {
-			var str = new String32(ref this);
-			return str.value;
+			var ret = new Unity.Collections.FixedString32();
+			ref var buf = ref buffer.array;
+			for (int i = start; i < end; i++)
+				ret.Add(buf[i]);
+			return ret;
 		}
 		
 		public Unity.Collections.FixedString128 ToFixed128() {
-			var str = new String128(ref this);
-			return str.value;
+			var ret = new Unity.Collections.FixedString128();
+			ref var buf = ref buffer.array;
+			for (int i = start; i < end; i++)
+				ret.Add(buf[i]);
+			return ret;
 		}
 #else
 		public String ToFixed32() {

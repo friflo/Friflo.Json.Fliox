@@ -12,13 +12,6 @@ namespace Friflo.Json.Burst.Utils
 			value = src;
 		}
 		
-		public String32 (ref Bytes bytes) {
-			value = new Unity.Collections.FixedString32();
-			ref var buf = ref bytes.buffer.array;
-			for (int i = bytes.start; i < bytes.end; i++)
-				value.Add(buf[i]);
-		}
-		
 		public override String ToString() { return value.ToString(); }
 	}
 #else
