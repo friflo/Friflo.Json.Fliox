@@ -332,7 +332,7 @@ namespace Friflo.Json.Tests.Common
         int					num2 =				2;
         
         private void ParseJson(Bytes json) {
-	        var memLog = new MemoryLogger(100, 1000, MemoryLog.Enabled, Fail);
+	        var memLog = new MemoryLogger(100, 1000, MemoryLog.Enabled);
 	        // 170 ms - 20000, Release | Any CPU, target framework: net5.0, complex.json: 1134 bytes => 133 MB/sec
 	        using (JsonParser parser = new JsonParser()) {
 		        // StopWatch stopwatch = new StopWatch();
