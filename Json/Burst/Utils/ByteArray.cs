@@ -7,10 +7,10 @@ namespace Friflo.Json.Burst.Utils
     public struct ByteArray : IDisposable
     {
 #if JSON_BURST
-        public Unity.Collections.NativeArray<byte> array;
+        public Unity.Collections.NativeList<byte> array;
 
         public ByteArray(int size) {
-            array = new Unity.Collections.NativeArray<byte>(size, Unity.Collections.Allocator.Persistent);
+            array = new Unity.Collections.NativeList<byte>(size, Unity.Collections.Allocator.Persistent);
         }
 	    
         /* public byte this[int index]
@@ -25,6 +25,10 @@ namespace Friflo.Json.Burst.Utils
 
         public int Length {
             get { return array.Length; }
+        }
+
+        public void Resize(int size) {
+            array.Resize(size, Unity.Collections.NativeArrayOptions.ClearMemory);
         }
         
         public void Dispose() {
@@ -52,9 +56,20 @@ namespace Friflo.Json.Burst.Utils
                 array[index] = value;
             }
         } */
-
+ 
         public int Length {
             get { return array.Length; }
+        }
+        
+        public void Resize(int size) {
+            byte[] newArr = new byte[size];
+            int len = size < array.Length ? size : array.Length;
+            Buffer.BlockCopy (array, 0, newArr, 0, len);
+            //  for (int i = 0; i < len; i++)
+            //      newArr[i] = array[i];
+            DebugUtils.UntrackAllocation(array);
+            DebugUtils.TrackAllocation(newArr);
+            array = newArr;
         }
 
         public void Dispose() {

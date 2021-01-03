@@ -545,7 +545,7 @@ namespace Friflo.Json.Tests.Common
 			String str = src.ToString();
 			AreEqual("€", str);
 
-			Bytes dst = new Bytes();
+			Bytes dst = new Bytes(0);
 			dst.FromString("€");
 			IsTrue(src.IsEqualBytes(dst));
 			dst.Dispose();

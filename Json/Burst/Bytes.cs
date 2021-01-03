@@ -54,7 +54,7 @@ namespace Friflo.Json.Burst
 			hc = 0;
 			start = 0;
 			end = 0;
-			buffer = default(ByteArray);
+			buffer = new ByteArray(0);
 			FromString(str);
 		}
 		
@@ -482,7 +482,7 @@ namespace Friflo.Json.Burst
         {
 #if JSON_BURST
 	        unsafe {
-		        sbyte* sbytePtr = (sbyte*)Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(data.array);
+		        sbyte* sbytePtr = (sbyte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(data.array);
 		        return new String(sbytePtr, pos, size, Encoding.UTF8);
 	        }
 #else
@@ -499,23 +499,19 @@ namespace Friflo.Json.Burst
 		 */
 		public void FromString(String str) {
 			if (str == null) {
-				if (buffer.IsCreated())
-					buffer.Dispose();
 				start	= 0; 
 				end	= -1;
 				hc 	= BytesConst.notHashed;
 				return;
 			}
 			int byteLen = Encoding.UTF8.GetByteCount(str);
-			if (!buffer.IsCreated())
-				buffer = new ByteArray(byteLen);
-			else
-				EnsureCapacity(byteLen);
+			EnsureCapacity(byteLen);
 #if JSON_BURST
 			unsafe {
-				byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(buffer.array);
+				byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(buffer.array);
 				fixed (char* strPtr = str) {
-					Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
+					if (arrPtr != null)
+						Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
 				}
 			}
 #else
@@ -545,10 +541,7 @@ namespace Friflo.Json.Burst
 			if (size < 2 * buffer. Length)
 				size = 2 * buffer. Length;
 
-			ByteArray newBytes = new ByteArray( size );
-			Bytes . CopyBytes(buffer, 0, newBytes, 0, end);
-			buffer.Dispose();
-			buffer = newBytes;
+			buffer.Resize(size);
 		}
 		
 		public void EnsureCapacity(int count) {
