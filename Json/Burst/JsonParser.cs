@@ -54,9 +54,9 @@ namespace Friflo.Json.Burst
 		private				ValueFormat			format;
 		private				ValueParser			valueParser;
 
-		private				String32			@true;
-		private				String32			@false;
-		private				String32			@null;
+		private				Str32				@true;
+		private				Str32				@false;
+		private				Str32				@null;
 		private				Str32				emptyArray;
 
 		public				bool				isFloat;
@@ -154,10 +154,10 @@ namespace Friflo.Json.Burst
 			misc.InitBytes(32); 
 			value.InitBytes(32);
 			format.InitTokenFormat();
-			@true = new String32("true");
-			@false = new String32("false");
-			@null = new String32("null");
-			emptyArray = "[]";
+			@true =			"true";
+			@false =		"false";
+			@null =			"null";
+			emptyArray =	"[]";
 			valueParser.InitValueParser();
 		}
 
@@ -508,7 +508,7 @@ namespace Friflo.Json.Burst
 			return -1;
 		}
 	
-		private bool ReadKeyword (ref String32 keyword)
+		private bool ReadKeyword (ref Str32 keyword)
 		{
 			int start = pos - 1;
 			ref var b = ref buf.array;
@@ -520,7 +520,7 @@ namespace Friflo.Json.Burst
 				break;
 			}
 			int len = pos - start;
-			int keyLen = keyword.value.Length;
+			int keyLen = keyword.Length;
 			if (len != keyLen) {
 				value.Clear();
 				value.AppendArray(ref buf, start, pos);
@@ -529,7 +529,7 @@ namespace Friflo.Json.Burst
 
 			for (int n = 1; n < len; n++)
 			{
-				if (keyword.value[n] != b[start + n]) {
+				if (keyword[n] != b[start + n]) {
 					value.Clear();
 					value.AppendArray(ref buf, start, pos);
 					return SetErrorFalse($"invalid value: {value.ToFixed32()}");

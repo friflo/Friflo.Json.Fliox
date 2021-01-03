@@ -4,7 +4,6 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
-	
 #if JSON_BURST
 	public struct String128 {
 		public Unity.Collections.FixedString128 value;

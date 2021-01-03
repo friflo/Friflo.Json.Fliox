@@ -3,25 +3,32 @@
 using System;
 using System.Globalization;
 
+#if JSON_BURST
+	using Str32 = Unity.Collections.FixedString32;
+#else
+	using Str32 = System.String;
+#endif
+
+
 namespace Friflo.Json.Burst.Utils
 {
     public struct ValueParser : IDisposable
     {
-	    private		String32	@true;
-	    private		String32	@false;
-	    private		String32	_1;
-	    private		String32	_0;
-	    private		bool		initialized;
+	    private		Str32	@true;
+	    private		Str32	@false;
+	    private		Str32	_1;
+	    private		Str32	_0;
+	    private		bool	initialized;
 
 
 	    public void InitValueParser() {
 		    if (initialized)
 			    return;
 		    initialized = true;
-		    @true =		new String32("true");
-		    @false =	new String32("false");
-		    _1 =		new String32("1");
-		    _0 =		new String32("0");
+		    @true =		"true";
+		    @false =	"false";
+		    _1 =		"1";
+		    _0 =		"0";
 	    }
 	    
 	    public void Dispose() {
@@ -269,9 +276,9 @@ namespace Friflo.Json.Burst.Utils
 		public bool ParseBoolean(ref Bytes bytes, ref ValueError valueError, out bool success) {
 			success = true;
 			valueError.ClearError();
-			if (bytes.IsEqual32(ref @true.value)   || bytes.IsEqual32(ref _1.value))
+			if (bytes.IsEqual32(ref @true)   || bytes.IsEqual32(ref _1))
 				return true;
-			if (bytes.IsEqual32(ref @false.value)  || bytes.IsEqual32(ref _0.value))
+			if (bytes.IsEqual32(ref @false)  || bytes.IsEqual32(ref _0))
 				return false;
 			success = false;
 			valueError.SetErrorFalse($"Invalid boolean. Expected true/false but found: {bytes.ToFixed32()}");
