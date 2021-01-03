@@ -16,7 +16,7 @@ namespace Friflo.Json.Burst
         ArrayEnd,
 	
         // ReSharper disable once InconsistentNaming
-        EOF,
-        Error,
+        EOF,            // After iteration of a valid JSON tree NextEvent() returns JsonEvent.EOF when reaching the end of the given payload. 
+        Error,          // Notify JSON error while parsing. Calling NextEvent() after JsonEvent.EOF return JsonEvent.Error
     }
 }
