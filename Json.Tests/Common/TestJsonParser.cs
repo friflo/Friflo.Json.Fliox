@@ -172,15 +172,12 @@ namespace Friflo.Json.Tests.Common
 			
 			AreEqual(JsonEvent.ObjectEnd,	parser.NextEvent());		CheckPath(ref parser, "");
 			AreEqual(JsonEvent.EOF,			parser.NextEvent());		CheckPath(ref parser, "");
+			AreEqual(JsonEvent.Error,		parser.NextEvent());		CheckPath(ref parser, "");
 		
-			for (int n = 0; n < 1; n++)
-			{
-				int count = 0;
-				parser.InitParser(bytes);
-				while (parser.NextEvent() != JsonEvent.EOF)
-					count++;
-				IsTrue(count == 32);
-			}
+			parser.InitParser(bytes);
+			for (int n = 0; n < 32; n++)
+				parser.NextEvent();
+			AreEqual(JsonEvent.EOF, parser.NextEvent());
 			parser.Dispose();
 		}
 	    
@@ -339,8 +336,7 @@ namespace Friflo.Json.Tests.Common
 		        for (int n = 0; n < 20000; n++) {
 			        memLog.Snapshot();
 			        parser.InitParser(json);
-			        while (parser.NextEvent() != JsonEvent.EOF) {
-			        }
+			        parser.SkipTree();
 		        }
 	        }
 	        memLog.AssertNoAllocations();
