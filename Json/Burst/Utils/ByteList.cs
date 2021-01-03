@@ -4,12 +4,12 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
-    public struct ByteArray : IDisposable
+    public struct ByteList : IDisposable
     {
 #if JSON_BURST
         public Unity.Collections.NativeList<byte> array;
 
-        public ByteArray(int size) {
+        public ByteList(int size) {
             array = new Unity.Collections.NativeList<byte>(size, Unity.Collections.Allocator.Persistent);
         }
 	    
@@ -42,7 +42,7 @@ namespace Friflo.Json.Burst.Utils
 #else // MANAGED
         public byte[] array;
 
-        public ByteArray(int size) {
+        public ByteList(int size) {
             array = new byte[size];
             DebugUtils.TrackAllocation(array);
         }
@@ -74,7 +74,7 @@ namespace Friflo.Json.Burst.Utils
 
         public void Dispose() {
             if (array == null)
-                throw new InvalidOperationException("Friflo.Json.Burst.Utils.ByteArray has been disposed. Mimic NativeArray behavior");
+                throw new InvalidOperationException("Friflo.Json.Burst.Utils.ByteList has been disposed. Mimic NativeArray behavior");
             DebugUtils.UntrackAllocation(array);
             array = null;
         }

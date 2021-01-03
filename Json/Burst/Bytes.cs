@@ -18,7 +18,7 @@ namespace Friflo.Json.Burst
 
 		public	int				start;
 		public	int				end;
-		public	ByteArray		buffer;
+		public	ByteList		buffer;
 		
 		public	int				Len => end - start;
 		public	int				Start => start;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Burst
 
 		public void InitBytes(int capacity) {
 			if (!buffer.IsCreated())
-				buffer = new ByteArray(capacity);
+				buffer = new ByteList(capacity);
 		}
 
 		public void Dispose() {
@@ -47,18 +47,18 @@ namespace Friflo.Json.Burst
 			hc = 0;
 			start = 0;
 			end = 0;
-			buffer = new ByteArray(capacity);
+			buffer = new ByteList(capacity);
 		}
 		
 		public Bytes (String str) {
 			hc = 0;
 			start = 0;
 			end = 0;
-			buffer = new ByteArray(0);
+			buffer = new ByteList(0);
 			FromString(str);
 		}
 		
-		public Bytes(ByteArray array) {
+		public Bytes(ByteList array) {
 			hc = 0;
 			start = 0;
 			end = array.Length;
@@ -283,7 +283,7 @@ namespace Friflo.Json.Burst
 			ref var str = ref buffer.array;
 			int end = start + len;
 			int i2 = 0;
-			// ref ByteArray str2 = ref fix;
+			// ref ByteList str2 = ref fix;
 			for (int i = start; i < end; i++) {
 				if (str[i] != str2[i2++])
 					return false;
@@ -337,7 +337,7 @@ namespace Friflo.Json.Burst
 		}
 /*
 #if JSON_BURST
-		private bool IsEqualNativeArray(String str, int end, ref ByteArray temp) {
+		private bool IsEqualNativeArray(String str, int end, ref ByteList temp) {
 
 			unsafe {
 				byte* arrPtr = (byte*) Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(temp.array);
@@ -478,7 +478,7 @@ namespace Friflo.Json.Burst
 		/**
 		 * Must not by called from Burst. Burst cant handle managed types
 		 */
-		public static String ToString (ByteArray data, int pos, int size)
+		public static String ToString (ByteList data, int pos, int size)
         {
 #if JSON_BURST
 	        unsafe {
@@ -521,7 +521,7 @@ namespace Friflo.Json.Burst
 			hc = BytesConst.notHashed;
 		}
 
-		public static void CopyBytes (ByteArray src, int srcPos, ByteArray dst, int dstPos, int length)
+		public static void CopyBytes (ByteList src, int srcPos, ByteList dst, int dstPos, int length)
 		{
 #if JSON_BURST
 			/* unsafe {
@@ -614,7 +614,7 @@ namespace Friflo.Json.Burst
 		}
 #endif
 
-		public void AppendArray(ref ByteArray str, int start, int end)
+		public void AppendArray(ref ByteList str, int start, int end)
 		{
 			int strLen = end - start;
 			ref var buf = ref buffer.array;
@@ -664,7 +664,7 @@ namespace Friflo.Json.Burst
 		{
 			EnsureCapacity(src.Len);
 			int 			strStart = src.Start;
-			ref ByteArray	srcBuf = ref src.buffer;
+			ref ByteList	srcBuf = ref src.buffer;
 			while (true)
 			{
 				int idx = src.IndexOf(target, strStart);

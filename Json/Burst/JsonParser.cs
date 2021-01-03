@@ -33,7 +33,7 @@ namespace Friflo.Json.Burst
 	public partial struct JsonParser : IDisposable
 	{
 		private 			int					pos;
-		private 			ByteArray			buf;
+		private 			ByteList			buf;
 		private 			int					bufEnd;
 		private				int					stateLevel;
 		private				int					startPos;
@@ -177,7 +177,7 @@ namespace Friflo.Json.Burst
 			InitParser (bytes.buffer, bytes.Start, bytes.Len);
 		}
 
-		public void InitParser(ByteArray bytes, int offset, int len) {
+		public void InitParser(ByteList bytes, int offset, int len) {
 			InitContainers();
 			stateLevel = 0;
 			state[0] = ExpectRoot;

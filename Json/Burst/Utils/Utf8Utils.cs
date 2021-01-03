@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst.Utils
             return IsStringEqualUtf8(str, ref bytes.buffer, bytes.start, bytes.end);
         }
 
-        public static bool IsStringEqualUtf8 (String str, ref ByteArray bytes, int start, int end) {
+        public static bool IsStringEqualUtf8 (String str, ref ByteList bytes, int start, int end) {
             int strPos = 0;
             int bytePos = start;
             while (bytePos < end && strPos < str.Length) {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Burst.Utils
         private static readonly int 	m_ooo11111 = 0x1f;
         private static readonly int 	m_oo111111 = 0x3f;
         
-        static int UnicodeFromUtf8Bytes(ByteArray byteArray, ref int n) {
+        static int UnicodeFromUtf8Bytes(ByteList byteArray, ref int n) {
             var bytes = byteArray.array;
             int b = bytes[n++];
 		

@@ -51,7 +51,7 @@ namespace Friflo.Json.Managed
 			return Read(bytes.buffer, bytes.Start, bytes.Len, type);
 		}
 	
-		public Object Read(ByteArray bytes, int offset, int len, Type type)
+		public Object Read(ByteList bytes, int offset, int len, Type type)
 		{			
 			parser.InitParser(bytes, offset, len);
 		
@@ -77,7 +77,7 @@ namespace Friflo.Json.Managed
 			return ReadTo(bytes.buffer, bytes.Start, bytes.Len, obj);
 		}
 		
-		public Object ReadTo (ByteArray bytes, int offset, int len, Object obj)
+		public Object ReadTo (ByteList bytes, int offset, int len, Object obj)
 		{
 			parser.InitParser(bytes, offset, len);
 			
