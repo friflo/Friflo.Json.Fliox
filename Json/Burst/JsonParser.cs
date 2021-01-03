@@ -28,6 +28,15 @@ namespace Friflo.Json.Burst
 			return arrays == si.arrays && booleans == si.booleans && floats == si.floats && integers == si.integers &&
 			       nulls == si.nulls && objects == si.objects && strings == si.strings;
 		}
+#if JSON_BURST
+		public new Unity.Collections.FixedString128 ToString() {
+#else
+		public override string ToString() {
+#endif
+			return $"[ arrays:{arrays} booleans: {booleans} floats: {floats} integers: {integers} nulls: {nulls} objects: {objects} strings: {strings} ]";
+		}
+		
+
 	}
 	
 	public partial struct JsonParser : IDisposable
