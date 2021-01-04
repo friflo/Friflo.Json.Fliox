@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common
                 RunManualBuilder(bytes, 10000, MemoryLog.Enabled);
             }
         }
-
+        
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 1000, memoryLog);
             var ser = new JsonSerializer();
@@ -55,5 +55,63 @@ namespace Friflo.Json.Tests.Common
             parser.Dispose();
             ser.Dispose();
         }
+        
+        [Test]
+        public void TestCopyTree() {
+            var parser = new JsonParser();
+            var ser = new JsonSerializer();
+            using (var bytes = CommonUtils.FromString("{}")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("{}", ser.dst.ToString());
+            }
+            using (var bytes = CommonUtils.FromString("[]")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("[]", ser.dst.ToString());
+            }
+            using (var bytes = CommonUtils.FromString("'abc'")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("\"abc\"", ser.dst.ToString());
+            }
+            using (var bytes = CommonUtils.FromString("123")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("123", ser.dst.ToString());
+            }
+            using (var bytes = CommonUtils.FromString("true")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("true", ser.dst.ToString());
+            }
+            using (var bytes = CommonUtils.FromString("null")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                ser.WriteTree(ref parser);
+                AreEqual(0, parser.skipInfo.Sum);
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                AreEqual("null", ser.dst.ToString());
+            }
+            parser.Dispose();
+            ser.Dispose();
+        }
+
+
     }
 }

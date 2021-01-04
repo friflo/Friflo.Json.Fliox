@@ -323,5 +323,28 @@ namespace Friflo.Json.Burst
             while (p.ContinueArray(ev));
         }
 
+        public void WriteTree(ref JsonParser p) {
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                    WriteObject(ref p);
+                    break;
+                case JsonEvent.ArrayStart:
+                    WriteArray(ref p);
+                    break;
+                case JsonEvent.ValueString:
+                    ElementString(ref p.value);
+                    break;
+                case JsonEvent.ValueNumber:
+                    dst.AppendBytes(ref p.value);
+                    break;
+                case JsonEvent.ValueBool:
+                    ElementBool(p.boolValue);
+                    break;
+                case JsonEvent.ValueNull:
+                    ElementNull();
+                    break;
+            }
+        }
     }
 }
