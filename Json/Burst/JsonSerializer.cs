@@ -105,6 +105,7 @@ namespace Friflo.Json.Burst
             firstEntry[--level] = false;
         }
 
+		// --- comment to enable source alignment in WinMerge
         public void PropertyArray(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
@@ -162,11 +163,11 @@ namespace Friflo.Json.Burst
         }
         
         // ------------- non-ref Str32 Property...() versions for convenience  -------------
-        public void PropertyArray(Str32 key) {
+        public void PropertyArrayKey(Str32 key) {
             PropertyArray(ref key);
         }
         
-        public void PropertyObject(Str32 key) {
+        public void PropertyObjectKey(Str32 key) {
             PropertyObject(ref key);
         }
         
@@ -239,11 +240,11 @@ namespace Friflo.Json.Burst
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        PropertyArray(ref p.key);
+                        PropertyArrayKey(ref p.key);
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        PropertyObject(ref p.key);
+                        PropertyObjectKey(ref p.key);
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:

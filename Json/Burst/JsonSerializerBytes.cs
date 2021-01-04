@@ -71,16 +71,20 @@ namespace Friflo.Json.Burst
 
         // ----------------------------- object with properties -----------------------------
 
-        // TODO implement version with Str32 key
+
+
+
+
         
-        public void PropertyArray(ref Bytes key) {
+        // --- comment to enable source alignment in WinMerge
+        public void PropertyArrayKey(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
         }
         
-        public void PropertyObject(ref Bytes key) {
+        public void PropertyObjectKey(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
