@@ -251,10 +251,18 @@ namespace Friflo.Json.Burst
                         PropertyString(ref p.key, ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
+                        AddSeparator();
+                        dst.AppendChar('"');
+                        AppendEscString(ref dst, ref p.key);
+                        dst.AppendChar2('\"', ':');
+                        /*
+                        // Conversion to long or double is expensive and not required 
                         if (p.isFloat)
                             PropertyDouble(ref p.key, p.ValueAsDouble(out _));
                         else
                             PropertyLong(ref p.key, p.ValueAsLong(out _));
+                        */
+                        dst.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         PropertyBool(ref p.key, p.boolValue);
@@ -292,10 +300,8 @@ namespace Friflo.Json.Burst
                         ElementString(ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        if (p.isFloat)
-                            ElementDouble(p.ValueAsDouble(out _));
-                        else
-                            ElementLong(p.ValueAsLong(out _));
+                        AddSeparator();
+                        dst.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         ElementBool(p.boolValue);
