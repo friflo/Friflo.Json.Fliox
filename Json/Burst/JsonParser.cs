@@ -56,7 +56,8 @@ namespace Friflo.Json.Burst
 		public				bool				boolValue;
 		public				Bytes				key;
 		private				Bytes				path;  // used for current path
-		private				Bytes				misc;
+		private				Bytes				getPath; // MUST by used only for GetPath() calls. Otherwise debugger causes side effect when using ToString() 
+		private				Bytes				errBuf;
 		public				Bytes				value;
 		
 		private				ValueFormat			format;
@@ -94,15 +95,15 @@ namespace Friflo.Json.Burst
 			int position = pos - startPos;
 			// Note: cascaded string interpolation does not work in Unity Burst. So using appenders
 			// Str128 err = $"{module} error - {msg} path: {misc.ToStr128()} at position: {position}";
-			misc.Clear();
-			misc.AppendStr32(module);
-			misc.AppendStr32(" - ");
-			misc.AppendStr128(ref msg);
-			misc.AppendStr32(" path: ");
-			AppendPath(ref misc);
-			misc.AppendStr32(" at position: ");
-			format.AppendInt(ref misc, position);
-			Str128 err = misc.ToStr128();
+			errBuf.Clear();
+			errBuf.AppendStr32(module);
+			errBuf.AppendStr32(" - ");
+			errBuf.AppendStr128(ref msg);
+			errBuf.AppendStr32(" path: ");
+			AppendPath(ref errBuf);
+			errBuf.AppendStr32(" at position: ");
+			format.AppendInt(ref errBuf, position);
+			Str128 err = errBuf.ToStr128();
 			error.Error(ref err, pos);
 		}
 		
@@ -121,9 +122,9 @@ namespace Friflo.Json.Burst
 	
 		public Str128 GetPath()
 		{
-			misc.Clear();
-			AppendPath(ref misc);
-			return misc.ToStr128();
+			getPath.Clear();
+			AppendPath(ref getPath);
+			return getPath.ToStr128();
 		}
 		
 		public Str128 ToStr128() {
@@ -172,7 +173,8 @@ namespace Friflo.Json.Burst
 			arrIndex = new ValueArray<int>(32);
 			key.InitBytes(32);
 			path.InitBytes(32);
-			misc.InitBytes(32); 
+			getPath.InitBytes(32); 
+			errBuf.InitBytes(128);
 			value.InitBytes(32);
 			format.InitTokenFormat();
 			@true =			"true";
@@ -186,7 +188,8 @@ namespace Friflo.Json.Burst
 			valueParser.Dispose();
 			format.Dispose();
 			value.Dispose();
-			misc.Dispose();
+			errBuf.Dispose();
+			getPath.Dispose();
 			path.Dispose();
 			key.Dispose();
 			if (arrIndex.IsCreated())	arrIndex.Dispose();
