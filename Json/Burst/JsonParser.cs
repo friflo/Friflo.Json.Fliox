@@ -84,17 +84,26 @@ namespace Friflo.Json.Burst
 		private const int 	Finished =				7; // only set at state[0]
 
 	
-		public String128	GetError()	{	return error.Msg;		}
+		public Str128		GetError()	{	return error.Msg;		}
 		public int			GetLevel()	{	return stateLevel;		}
 
 		public void Error (Str32 module, Str128 msg) {
-			misc.Clear();
-			AppendPath(ref misc);
-			int position = pos - startPos;
-			var err = new String128($"{module} error - {msg} path: {misc.ToStr128()} at position: {position}");
 			if (error.ErrSet)
 				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
-			error.Error(err, pos);
+			
+			int position = pos - startPos;
+			// Note: cascaded string interpolation does not work in Unity Burst. So using appenders
+			// Str128 err = $"{module} error - {msg} path: {misc.ToStr128()} at position: {position}";
+			misc.Clear();
+			misc.AppendStr32(module);
+			misc.AppendStr32(" - ");
+			misc.AppendStr128(ref msg);
+			misc.AppendStr32(" path: ");
+			AppendPath(ref misc);
+			misc.AppendStr32(" at position: ");
+			format.AppendInt(ref misc, position);
+			Str128 err = misc.ToStr128();
+			error.Error(ref err, pos);
 		}
 		
 		private JsonEvent SetError (Str128 msg) {
