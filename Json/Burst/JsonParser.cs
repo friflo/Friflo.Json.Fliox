@@ -29,12 +29,12 @@ namespace Friflo.Json.Burst
 			       nulls == si.nulls && objects == si.objects && strings == si.strings;
 		}
 
-		public Str128 ToFixed128() {
+		public Str128 ToStr128() {
 			return $"[ arrays:{arrays} booleans: {booleans} floats: {floats} integers: {integers} nulls: {nulls} objects: {objects} strings: {strings} ]";
 		}
 		
 		public override string ToString() {
-			return ToFixed128().ToString();
+			return ToStr128().ToString();
 		}
 	}
 	
@@ -91,7 +91,7 @@ namespace Friflo.Json.Burst
 			misc.Clear();
 			AppendPath(ref misc);
 			int position = pos - startPos;
-			var err = new String128($"{module} error - {msg} path: {misc.ToFixed128()} at position: {position}");
+			var err = new String128($"{module} error - {msg} path: {misc.ToStr128()} at position: {position}");
 			if (error.ErrSet)
 				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
 			error.Error(err, pos);
@@ -114,15 +114,15 @@ namespace Friflo.Json.Burst
 		{
 			misc.Clear();
 			AppendPath(ref misc);
-			return misc.ToFixed128();
+			return misc.ToStr128();
 		}
 		
-		public Str128 ToFixed128() {
+		public Str128 ToStr128() {
 			return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
 		}
 		
 		public override string ToString() {
-			return ToFixed128().ToString();
+			return ToStr128().ToString();
 		}
 		
 		public void AppendPath(ref Bytes str)
@@ -536,7 +536,7 @@ namespace Friflo.Json.Burst
 			if (len != keyLen) {
 				value.Clear();
 				value.AppendArray(ref buf, start, pos);
-				return SetErrorFalse($"invalid value: {value.ToFixed32()}");
+				return SetErrorFalse($"invalid value: {value.ToStr32()}");
 			}
 
 			for (int n = 1; n < len; n++)
@@ -544,7 +544,7 @@ namespace Friflo.Json.Burst
 				if (keyword[n] != b[start + n]) {
 					value.Clear();
 					value.AppendArray(ref buf, start, pos);
-					return SetErrorFalse($"invalid value: {value.ToFixed32()}");
+					return SetErrorFalse($"invalid value: {value.ToStr32()}");
 				}
 			}
 			return true;
@@ -725,11 +725,11 @@ namespace Friflo.Json.Burst
 			if (!success) 
 				SetErrorFalse(valueError.GetError().value);
 			if (result < float.MinValue) {
-				SetErrorFalse($"float is less than float.MinValue. {value.ToFixed32()}");
+				SetErrorFalse($"float is less than float.MinValue. {value.ToStr32()}");
 				return 0;
 			}
 			if (result > float.MaxValue) {
-				SetErrorFalse($"float is greater than float.MaxValue. {value.ToFixed32()}");
+				SetErrorFalse($"float is greater than float.MaxValue. {value.ToStr32()}");
 				return 0;
 			}
 			return (float)result;

@@ -452,7 +452,7 @@ namespace Friflo.Json.Burst
 			return count;		
 		}
 #if JSON_BURST
-		public Str32 ToFixed32() {
+		public Str32 ToStr32() {
 			var ret = new Unity.Collections.FixedString32();
 			ref var buf = ref buffer.array;
 			for (int i = start; i < end; i++)
@@ -460,7 +460,7 @@ namespace Friflo.Json.Burst
 			return ret;
 		}
 		
-		public Str128 ToFixed128() {
+		public Str128 ToStr128() {
 			var ret = new Unity.Collections.FixedString128();
 			ref var buf = ref buffer.array;
 			for (int i = start; i < end; i++)
@@ -468,11 +468,11 @@ namespace Friflo.Json.Burst
 			return ret;
 		}
 #else
-		public Str32 ToFixed32() {
+		public Str32 ToStr32() {
 			return ToString();
 		}
 		
-		public Str128 ToFixed128() {
+		public Str128 ToStr128() {
 			return ToString();
 		}
 #endif

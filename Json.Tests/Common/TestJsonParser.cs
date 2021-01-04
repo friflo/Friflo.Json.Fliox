@@ -593,9 +593,9 @@ namespace Friflo.Json.Tests.Common
 				int val2 = 43;
 				char a = 'a';
 				bytes.AppendFixed32($"With Bytes {val} {val2} {a}");
-				AreEqual("With Bytes 42 43 a", $"{bytes.ToFixed32()}");
+				AreEqual("With Bytes 42 43 a", $"{bytes.ToStr32()}");
 
-				var withValues = bytes.ToFixed32();
+				var withValues = bytes.ToStr32();
 				String32 str32 = new String32("World");
 				String128 err = new String128($"Hello {str32.value} {withValues}");
 				AreEqual("Hello World With Bytes 42 43 a", err.value);
