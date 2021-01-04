@@ -17,10 +17,16 @@ namespace Friflo.Json.Tests.Common.Utils
 	        string baseDir = UnityUtils.GetProjectFolder();
 #else
             string baseDir = Directory.GetCurrentDirectory() + "/../../../";
-            baseDir = Path.GetFullPath(baseDir);
 #endif
+            baseDir = Path.GetFullPath(baseDir);
             return baseDir;
         }
+        
+#if UNITY_EDITOR
+        public static bool  IsUnityEditor () { return true; }
+#else
+        public static bool  IsUnityEditor () { return false; }
+#endif
         
         public static Bytes FromFile (String path) {
             string baseDir = CommonUtils.GetBasePath();

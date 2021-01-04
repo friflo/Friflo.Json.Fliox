@@ -43,16 +43,16 @@ namespace Friflo.Json.Tests.Common
 		[Test]
 		public void Boon_widget()    			{	jsonIterate ("assets/codec/boon/widget.json", 		46);	}
 
-		private static readonly int perfNum = 1000;
 		
 		private void jsonIterate(String path, int expectedCount)
 		{
 			using (Bytes bytes = CommonUtils.FromFile(path)) {
+				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 50_000_000) / bytes.Len;
 				long start = TimeUtil.GetMicro();
 				JsonParser parser = new JsonParser();
 				int count = 0;
 
-				for (int n = 0; n < perfNum; n++) {
+				for (int n = 0; n < iterations; n++) {
 					count = 0;
 					parser.InitParser(bytes);
 					while (parser.NextEvent() != JsonEvent.EOF)
@@ -60,10 +60,10 @@ namespace Friflo.Json.Tests.Common
 				}
 
 				AreEqual(expectedCount, count);
-				double sec = (TimeUtil.GetMicro() - start) / 1000000.0;
-				int bytesPerSec = (int)(perfNum * bytes.Len / sec);
+				double sec = (TimeUtil.GetMicro() - start) / 1_000_000.0;
+				int bytesPerSec = (int)(iterations * bytes.Len / sec);
 				string fullPath = CommonUtils.GetBasePath() + path;
-				TestContext.Out.WriteLine($"{fullPath}:1 - {bytesPerSec/1000000} MB/s");
+				TestContext.Out.WriteLine($"{fullPath}:1 - size: {bytes.Len} bytes, {bytesPerSec/1_000_000} MB/s ");
 				parser.Dispose();
 			}
 		}
