@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common
 		private void jsonIterate(String path, int expectedCount)
 		{
 			using (Bytes bytes = CommonUtils.FromFile(path)) {
-				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 50_000_000) / bytes.Len;
+				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 5_000_000) / bytes.Len;
 				long start = TimeUtil.GetMicro();
 				JsonParser parser = new JsonParser();
 				int count = 0;
