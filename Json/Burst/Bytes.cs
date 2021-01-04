@@ -5,6 +5,14 @@ using System.Text;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Utils;
 
+#if JSON_BURST
+	using Str32 = Unity.Collections.FixedString32;
+	using Str128 = Unity.Collections.FixedString128;
+#else
+	using Str32 = System.String;
+	using Str128 = System.String;
+#endif
+
 namespace Friflo.Json.Burst
 {
 	public struct BytesConst {
@@ -272,11 +280,11 @@ namespace Friflo.Json.Burst
 		}
 
 #if JSON_BURST
-		public bool IsEqual32(Unity.Collections.FixedString32 str2) {
+		public bool IsEqual32(Str32 str2) {
 			return IsEqual32(ref str2);
 		}
 
-		public bool IsEqual32(ref Unity.Collections.FixedString32 str2) {
+		public bool IsEqual32(ref Str32 str2) {
 			int len = this.Len;
 			if (len != str2.Length)
 				return false;
@@ -444,7 +452,7 @@ namespace Friflo.Json.Burst
 			return count;		
 		}
 #if JSON_BURST
-		public Unity.Collections.FixedString32 ToFixed32() {
+		public Str32 ToFixed32() {
 			var ret = new Unity.Collections.FixedString32();
 			ref var buf = ref buffer.array;
 			for (int i = start; i < end; i++)
@@ -452,7 +460,7 @@ namespace Friflo.Json.Burst
 			return ret;
 		}
 		
-		public Unity.Collections.FixedString128 ToFixed128() {
+		public Str128 ToFixed128() {
 			var ret = new Unity.Collections.FixedString128();
 			ref var buf = ref buffer.array;
 			for (int i = start; i < end; i++)
@@ -460,19 +468,17 @@ namespace Friflo.Json.Burst
 			return ret;
 		}
 #else
-		public String ToFixed32() {
+		public Str32 ToFixed32() {
 			return ToString();
 		}
 		
-		public String ToFixed128() {
+		public Str128 ToFixed128() {
 			return ToString();
 		}
 #endif
 
-		public override String ToString()
-		{
-			String ret = ToString(buffer, start, end - start);
-			return ret;
+		public override String ToString() {
+			return ToString(buffer, start, end - start);
 		}
 		
 		/**
@@ -572,7 +578,7 @@ namespace Friflo.Json.Burst
 		}
 		
 #if JSON_BURST
-		public void AppendFixed128 (Unity.Collections.FixedString128 str) {
+		public void AppendFixed128 (Str128 str) {
 			int strLen = str.Length;
 			EnsureCapacity(Len + strLen);
 			int curEnd = end;
@@ -583,12 +589,12 @@ namespace Friflo.Json.Burst
 			hc = BytesConst.notHashed;
         }
 
-		// Note: Prefer using AppendFixed32 (ref Unity.Collections.FixedString32 str)
-		public void AppendFixed32(Unity.Collections.FixedString32 str) {
+		// Note: Prefer using AppendFixed32 (ref Str32 str)
+		public void AppendFixed32(Str32 str) {
 			AppendFixed32(ref str);
 		}
 
-		public void AppendFixed32 (ref Unity.Collections.FixedString32 str) {
+		public void AppendFixed32 (ref Str32 str) {
 			int strLen = str.Length;
 			EnsureCapacity(Len + strLen);
 			int curEnd = end;

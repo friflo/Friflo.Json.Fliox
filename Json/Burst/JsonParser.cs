@@ -28,15 +28,14 @@ namespace Friflo.Json.Burst
 			return arrays == si.arrays && booleans == si.booleans && floats == si.floats && integers == si.integers &&
 			       nulls == si.nulls && objects == si.objects && strings == si.strings;
 		}
-#if JSON_BURST
-		public new Unity.Collections.FixedString128 ToString() {
-#else
-		public override string ToString() {
-#endif
+
+		public Str128 ToFixed128() {
 			return $"[ arrays:{arrays} booleans: {booleans} floats: {floats} integers: {integers} nulls: {nulls} objects: {objects} strings: {strings} ]";
 		}
 		
-
+		public override string ToString() {
+			return ToFixed128().ToString();
+		}
 	}
 	
 	public partial struct JsonParser : IDisposable
@@ -111,15 +110,19 @@ namespace Friflo.Json.Burst
 			return false;
 		}
 	
-		public String GetPath()
+		public Str128 GetPath()
 		{
 			misc.Clear();
 			AppendPath(ref misc);
-			return misc.ToString();
+			return misc.ToFixed128();
+		}
+		
+		public Str128 ToFixed128() {
+			return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
 		}
 		
 		public override string ToString() {
-			return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
+			return ToFixed128().ToString();
 		}
 		
 		public void AppendPath(ref Bytes str)
