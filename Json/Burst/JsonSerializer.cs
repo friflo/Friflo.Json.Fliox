@@ -233,7 +233,7 @@ namespace Friflo.Json.Burst
         }
         
         // ----------------- utilities
-        public void WriteObject(ref JsonParser p) {
+        public bool WriteObject(ref JsonParser p) {
             ObjectStart();
             JsonEvent ev;
             do {
@@ -272,19 +272,21 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ObjectEnd:
                         ObjectEnd();
-                        return;
+                        return true;
                     case JsonEvent.ArrayEnd:
                         // unreachable
-                        return;
+                        return false;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
-                        return;
+                        return false;
                 }
             }
             while (p.ContinueObject(ev));
+            
+            return true;
         }
         
-        public void WriteArray(ref JsonParser p) {
+        public bool WriteArray(ref JsonParser p) {
             ArrayStart();
             JsonEvent ev;
             do {
@@ -311,40 +313,41 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ObjectEnd:
                         // unreachable
-                        return;
+                        return false;
                     case JsonEvent.ArrayEnd:
                         ArrayEnd();
-                        return;
+                        return true;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
-                        return;
+                        return false;
                 }
             }
             while (p.ContinueArray(ev));
+            
+            return true;
         }
 
-        public void WriteTree(ref JsonParser p) {
+        public bool WriteTree(ref JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ObjectStart:
-                    WriteObject(ref p);
-                    break;
+                    return WriteObject(ref p);
                 case JsonEvent.ArrayStart:
-                    WriteArray(ref p);
-                    break;
+                    return WriteArray(ref p);
                 case JsonEvent.ValueString:
                     ElementString(ref p.value);
-                    break;
+                    return true;
                 case JsonEvent.ValueNumber:
                     dst.AppendBytes(ref p.value);
-                    break;
+                    return true;
                 case JsonEvent.ValueBool:
                     ElementBool(p.boolValue);
-                    break;
+                    return true;
                 case JsonEvent.ValueNull:
                     ElementNull();
-                    break;
+                    return true;
             }
+            return false;
         }
     }
 }

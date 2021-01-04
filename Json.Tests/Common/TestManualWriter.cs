@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("{}")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("{}", ser.dst.ToString());
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("[]")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("[]", ser.dst.ToString());
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("'abc'")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("\"abc\"", ser.dst.ToString());
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("123")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("123", ser.dst.ToString());
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("true")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("true", ser.dst.ToString());
@@ -103,10 +103,36 @@ namespace Friflo.Json.Tests.Common
             using (var bytes = CommonUtils.FromString("null")) {
                 parser.InitParser(bytes);
                 ser.InitEncoder();
-                ser.WriteTree(ref parser);
+                IsTrue(ser.WriteTree(ref parser));
                 AreEqual(0, parser.skipInfo.Sum);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual("null", ser.dst.ToString());
+            }
+            
+            // --- some error cases
+            using (var bytes = CommonUtils.FromString("[")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                IsFalse(ser.WriteTree(ref parser));
+                AreEqual(JsonEvent.Error, parser.NextEvent());
+            }
+            using (var bytes = CommonUtils.FromString("{")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                IsFalse(ser.WriteTree(ref parser));
+                AreEqual(JsonEvent.Error, parser.NextEvent());
+            }
+            using (var bytes = CommonUtils.FromString("")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                IsFalse(ser.WriteTree(ref parser));
+                AreEqual(JsonEvent.Error, parser.NextEvent());
+            }
+            using (var bytes = CommonUtils.FromString("a")) {
+                parser.InitParser(bytes);
+                ser.InitEncoder();
+                IsFalse(ser.WriteTree(ref parser));
+                AreEqual(JsonEvent.Error, parser.NextEvent());
             }
             parser.Dispose();
             ser.Dispose();
