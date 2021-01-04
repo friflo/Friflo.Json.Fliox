@@ -40,25 +40,25 @@ namespace Friflo.Json.Burst
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
-                        dst.AppendString("\\\"");
+                        dst.AppendChar2('\\', '\"');
                         break;
                     case '\\':
-                        dst.AppendString("\\\\");
+                        dst.AppendChar2('\\', '\\');
                         break;
                     case '\b':
-                        dst.AppendString("\\b");
+                        dst.AppendChar2('\\', 'b');
                         break;
                     case '\f':
-                        dst.AppendString("\\f");
+                        dst.AppendChar2('\\', 'f');
                         break;
                     case '\r':
-                        dst.AppendString("\\r");
+                        dst.AppendChar2('\\', 'r');
                         break;
                     case '\n':
-                        dst.AppendString("\\n");
+                        dst.AppendChar2('\\', 'n');
                         break;
                     case '\t':
-                        dst.AppendString("\\t");
+                        dst.AppendChar2('\\', 't');
                         break;
                     default:
                         dst.AppendChar(c);
@@ -77,21 +77,22 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
         }
         
         public void PropertyObject(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
         }
         
         public void PropertyString(ref Bytes key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":\"");
+            dst.AppendChar2('\"', ':');
+            dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
@@ -99,7 +100,8 @@ namespace Friflo.Json.Burst
         public void PropertyDouble(ref Bytes key, double value) {
             AddSeparator();
             dst.AppendChar('"');
-            AppendEscString(ref dst, ref key);            dst.AppendString("\":");
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar2('\"', ':');
             format.AppendDbl(ref dst, value);
         }
         
@@ -107,7 +109,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
             format.AppendLong(ref dst, value);
         }
         
@@ -115,7 +117,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
             format.AppendBool(ref dst, value);
         }
         
@@ -123,7 +125,8 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":null");
+            dst.AppendChar2('\"', ':');
+            dst.AppendString(@null);
         }
         
  

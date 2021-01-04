@@ -16,6 +16,7 @@ namespace Friflo.Json.Burst
         private ValueArray<bool>        firstEntry;
         private ValueArray<ElementType> elementType;
         private int                     level;
+        private Str32                   @null;
 
         enum ElementType {
             Object,
@@ -31,6 +32,7 @@ namespace Friflo.Json.Burst
                 firstEntry = new ValueArray<bool>(32);
             if (!elementType.IsCreated())
                 elementType = new ValueArray<ElementType>(32);
+            @null = "null"; 
             level = 0;
             firstEntry[0] = true;
         }
@@ -53,25 +55,25 @@ namespace Friflo.Json.Burst
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
-                        dst.AppendString("\\\"");
+                        dst.AppendChar2('\\', '\"');
                         break;
                     case '\\':
-                        dst.AppendString("\\\\");
+                        dst.AppendChar2('\\', '\\');
                         break;
                     case '\b':
-                        dst.AppendString("\\b");
+                        dst.AppendChar2('\\', 'b');
                         break;
                     case '\f':
-                        dst.AppendString("\\f");
+                        dst.AppendChar2('\\', 'f');
                         break;
                     case '\r':
-                        dst.AppendString("\\r");
+                        dst.AppendChar2('\\', 'r');
                         break;
                     case '\n':
-                        dst.AppendString("\\n");
+                        dst.AppendChar2('\\', 'n');
                         break;
                     case '\t':
-                        dst.AppendString("\\t");
+                        dst.AppendChar2('\\', 't');
                         break;
                     default:
                         dst.AppendChar(c);
@@ -107,21 +109,22 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
         }
         
         public void PropertyObject(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
         }
         
         public void PropertyString(ref Str32 key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":\"");
+            dst.AppendChar2('\"', ':');
+            dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
@@ -129,7 +132,8 @@ namespace Friflo.Json.Burst
         public void PropertyDouble(ref Str32 key, double value) {
             AddSeparator();
             dst.AppendChar('"');
-            AppendEscString(ref dst, ref key);            dst.AppendString("\":");
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar2('\"', ':');
             format.AppendDbl(ref dst, value);
         }
         
@@ -137,7 +141,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
             format.AppendLong(ref dst, value);
         }
         
@@ -145,7 +149,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":");
+            dst.AppendChar2('\"', ':');
             format.AppendBool(ref dst, value);
         }
         
@@ -153,7 +157,8 @@ namespace Friflo.Json.Burst
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendString("\":null");
+            dst.AppendChar2('\"', ':');
+            dst.AppendString(@null);
         }
         
         // ------------- non-ref Str32 Property...() versions for convenience  -------------
@@ -223,7 +228,7 @@ namespace Friflo.Json.Burst
         
         public void ElementNull() {
             AddSeparator();
-            dst.AppendString("null");
+            dst.AppendString(@null);
         }
 
     }

@@ -640,6 +640,14 @@ namespace Friflo.Json.Burst
 			hc = BytesConst.notHashed;
 		}
 		
+		public void AppendChar2(char c0, char c1)
+		{
+			EnsureCapacity(2);
+			buffer.array[end++] = (byte)c0;
+			buffer.array[end++] = (byte)c1;
+			hc = BytesConst.notHashed;
+		}
+		
 		public void AppendBytes(ref Bytes ca)
 		{
 			int		curEnd = end;
