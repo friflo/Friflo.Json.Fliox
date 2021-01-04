@@ -1,3 +1,5 @@
+![.NET Tests](https://github.com/friflo/Friflo.Json.Burst/workflows/.NET/badge.svg)
+
 # friflo Json.Burst
 ![Logo](docs/images/Friflo.Json.Burst-128.png) 
  
