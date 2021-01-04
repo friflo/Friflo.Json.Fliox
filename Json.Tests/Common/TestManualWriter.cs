@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common
                     parser.InitParser(bytes);
                     ser.InitEncoder();
                     parser.NextEvent(); // ObjectStart
-                    JsonSerializer.WriteObject(ref ser, ref parser);
+                    ser.WriteObject(ref parser);
                     memLog.Snapshot();
                 }
                 memLog.AssertNoAllocations();

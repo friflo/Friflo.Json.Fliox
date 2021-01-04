@@ -232,37 +232,37 @@ namespace Friflo.Json.Burst
         }
         
         // ----------------- utilities
-        public static void WriteObject(ref JsonSerializer ser, ref JsonParser p) {
-            ser.ObjectStart();
+        public void WriteObject(ref JsonParser p) {
+            ObjectStart();
             JsonEvent ev;
             do {
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        ser.PropertyArray(ref p.key);
-                        WriteArray(ref ser, ref p);
+                        PropertyArray(ref p.key);
+                        WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        ser.PropertyObject(ref p.key);
-                        WriteObject(ref ser, ref p);
+                        PropertyObject(ref p.key);
+                        WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        ser.PropertyString(ref p.key, ref p.value);
+                        PropertyString(ref p.key, ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         if (p.isFloat)
-                            ser.PropertyDouble(ref p.key, p.ValueAsDouble(out _));
+                            PropertyDouble(ref p.key, p.ValueAsDouble(out _));
                         else
-                            ser.PropertyLong(ref p.key, p.ValueAsLong(out _));
+                            PropertyLong(ref p.key, p.ValueAsLong(out _));
                         break;
                     case JsonEvent.ValueBool:
-                        ser.PropertyBool(ref p.key, p.boolValue);
+                        PropertyBool(ref p.key, p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        ser.PropertyNull(ref p.key);
+                        PropertyNull(ref p.key);
                         break;
                     case JsonEvent.ObjectEnd:
-                        ser.ObjectEnd();
+                        ObjectEnd();
                         return;
                     case JsonEvent.ArrayEnd:
                         // unreachable
@@ -275,38 +275,38 @@ namespace Friflo.Json.Burst
             while (p.ContinueObject(ev));
         }
         
-        public static void WriteArray(ref JsonSerializer ser, ref JsonParser p) {
-            ser.ArrayStart();
+        public void WriteArray(ref JsonParser p) {
+            ArrayStart();
             JsonEvent ev;
             do {
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        WriteArray(ref ser, ref p);
+                        WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        WriteObject(ref ser, ref p);
+                        WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        ser.ElementString(ref p.value);
+                        ElementString(ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         if (p.isFloat)
-                            ser.ElementDouble(p.ValueAsDouble(out _));
+                            ElementDouble(p.ValueAsDouble(out _));
                         else
-                            ser.ElementLong(p.ValueAsLong(out _));
+                            ElementLong(p.ValueAsLong(out _));
                         break;
                     case JsonEvent.ValueBool:
-                        ser.ElementBool(p.boolValue);
+                        ElementBool(p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        ser.ElementNull();
+                        ElementNull();
                         break;
                     case JsonEvent.ObjectEnd:
                         // unreachable
                         return;
                     case JsonEvent.ArrayEnd:
-                        ser.ArrayEnd();
+                        ArrayEnd();
                         return;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
