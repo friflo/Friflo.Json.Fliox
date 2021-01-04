@@ -43,11 +43,24 @@ namespace Friflo.Json.Tests.Common
 		[Test]
 		public void Boon_widget()    			{	jsonIterate ("assets/codec/boon/widget.json", 		46);	}
 
+	    //
+	    [Test]
+	    public void Jsonexamples_canada()    	{	jsonIterate ("assets/jsonexamples/canada.json", 	223228);	}
+	
+	    [Test]
+	    public void Jsonexamples_citm_catalog() {	jsonIterate ("assets/jsonexamples/citm_catalog.json", 59166);	}
+	
+	    [Test]
+	    public void Jsonexamples_log()    		{	jsonIterate ("assets/jsonexamples/log.json", 	    49);	}
+	
+	    [Test]
+	    public void Jsonexamplesn_twitter()    	{	jsonIterate ("assets/jsonexamples/twitter.json",  16228);	}
 		
 		private void jsonIterate(String path, int expectedCount)
 		{
 			using (Bytes bytes = CommonUtils.FromFile(path)) {
-				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 5_000_000) / bytes.Len;
+				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 2_000_000) / bytes.Len;
+				iterations = Math.Max(1, iterations); 
 				long start = TimeUtil.GetMicro();
 				JsonParser parser = new JsonParser();
 				int count = 0;
