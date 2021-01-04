@@ -578,7 +578,7 @@ namespace Friflo.Json.Burst
 		}
 		
 #if JSON_BURST
-		public void AppendFixed128 (Str128 str) {
+		public void AppendStr128 (Str128 str) {
 			int strLen = str.Length;
 			EnsureCapacity(Len + strLen);
 			int curEnd = end;
@@ -589,12 +589,12 @@ namespace Friflo.Json.Burst
 			hc = BytesConst.notHashed;
         }
 
-		// Note: Prefer using AppendFixed32 (ref Str32 str)
-		public void AppendFixed32(Str32 str) {
-			AppendFixed32(ref str);
+		// Note: Prefer using AppendStr32 (ref Str32 str)
+		public void AppendStr32(Str32 str) {
+			AppendStr32(ref str);
 		}
 
-		public void AppendFixed32 (ref Str32 str) {
+		public void AppendStr32 (ref Str32 str) {
 			int strLen = str.Length;
 			EnsureCapacity(Len + strLen);
 			int curEnd = end;
@@ -606,16 +606,16 @@ namespace Friflo.Json.Burst
 		}
 
 #else
-		public void AppendFixed128 (ref String str) {
+		public void AppendStr128 (ref String str) {
 			AppendString(str);
 		}
 		
-		// Note: Prefer using AppendFixed32 (ref String str)
-		public void AppendFixed32 (String str) {
+		// Note: Prefer using AppendStr32 (ref String str)
+		public void AppendStr32 (String str) {
 			AppendString(str);
 		}
 		
-		public void AppendFixed32 (ref String str) {
+		public void AppendStr32 (ref String str) {
 			AppendString(str);
 		}
 #endif

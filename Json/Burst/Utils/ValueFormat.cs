@@ -42,9 +42,9 @@ namespace Friflo.Json.Burst.Utils
 		public void AppendBool (ref Bytes owned, bool val)
 		{
 			if (val)
-				owned.AppendFixed32(ref @true);
+				owned.AppendStr32(ref @true);
 			else
-				owned.AppendFixed32(ref @false);
+				owned.AppendStr32(ref @false);
 			owned.hc = BytesConst.notHashed;
 		}
 
@@ -137,24 +137,24 @@ namespace Friflo.Json.Burst.Utils
 	    public void AppendFlt (ref Bytes owned, float val)
 	    {
 		    if (val == 0.0f) {
-			    owned.AppendFixed32(ref zero);
+			    owned.AppendStr32(ref zero);
 			    return;
 		    }
 
 		    // if (val == 1.0f / 0.0f) {
 		    if (float.IsPositiveInfinity(val)) {
-			    owned.AppendFixed32(ref infinity);
+			    owned.AppendStr32(ref infinity);
 			    return;
 		    }
 
 		    // if (val == -1.0f / 0.0f) {
 		    if (float.IsNegativeInfinity(val)) {
-			    owned.AppendFixed32(ref negInfinity);
+			    owned.AppendStr32(ref negInfinity);
 			    return;
 		    }
 
 		    if (Single.IsNaN(val)) {
-			    owned.AppendFixed32(ref nan);
+			    owned.AppendStr32(ref nan);
 			    return;
 		    }
 
@@ -181,24 +181,24 @@ namespace Friflo.Json.Burst.Utils
 	    public void AppendDbl (ref Bytes owned, double val)
 	    {
 		    if (val == 0.0) {
-			    owned.AppendFixed32(ref zero);
+			    owned.AppendStr32(ref zero);
 			    return;
 		    }
 
 		    // if (val == 1.0 / 0.0) {
 		    if (double.IsPositiveInfinity(val)) {
-			    owned.AppendFixed32(ref infinity);
+			    owned.AppendStr32(ref infinity);
 			    return;
 		    }
 
 		    // if (val == -1.0 / 0.0) {
 		    if (double.IsNegativeInfinity(val)) {
-			    owned.AppendFixed32(ref negInfinity);
+			    owned.AppendStr32(ref negInfinity);
 			    return;
 		    }
 
 		    if (Double.IsNaN(val)) {
-			    owned.AppendFixed32(ref nan);
+			    owned.AppendStr32(ref nan);
 			    return;
 		    }
 

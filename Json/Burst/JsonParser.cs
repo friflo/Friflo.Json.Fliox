@@ -149,7 +149,7 @@ namespace Friflo.Json.Burst
 						str.AppendChar(']');
 					}
 					else
-						str.AppendFixed32(ref emptyArray);
+						str.AppendStr32(ref emptyArray);
 					break;
 				}
 			}

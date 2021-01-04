@@ -126,7 +126,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
-            dst.AppendString(@null);
+            dst.AppendStr32(@null);
         }
         
  
