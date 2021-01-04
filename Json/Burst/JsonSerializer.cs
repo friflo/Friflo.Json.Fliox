@@ -159,7 +159,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
-            dst.AppendStr32(@null);
+            dst.AppendStr32(ref @null);
         }
         
         // ------------- non-ref Str32 Property...() versions for convenience  -------------
@@ -229,7 +229,7 @@ namespace Friflo.Json.Burst
         
         public void ElementNull() {
             AddSeparator();
-            dst.AppendStr32(@null);
+            dst.AppendStr32(ref @null);
         }
         
         // ----------------- utilities
