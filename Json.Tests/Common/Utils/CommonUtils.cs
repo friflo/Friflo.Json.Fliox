@@ -65,11 +65,11 @@ namespace Friflo.Json.Tests.Common.Utils
         public void Snapshot() { }
         public void AssertNoAllocations() { }
 #else
-        private long[] totalMemory;
-        private int totalMemoryCount;
-        private int snapshotCount;
-        private int snapshotInterval;
-        private MemoryLog memoryLog;
+        private readonly    long[]      totalMemory;
+        private             int         totalMemoryCount;
+        private             int         snapshotCount;
+        private readonly    int         snapshotInterval;
+        private readonly    MemoryLog   memoryLog;
         
         public MemoryLogger(int size, int snapshotInterval, MemoryLog memoryLog) {
             this.memoryLog = memoryLog;
