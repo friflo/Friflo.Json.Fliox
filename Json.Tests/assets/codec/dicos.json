@@ -1,0 +1,21 @@
+ {
+   "Dictionaries" : [
+     [ { "Key": "Key0", "Value": "value at key 0" },
+       { "Key": "Key1", "Value": "value at key 1" },
+       { "Key": "Key2", "Value": "value at key 2" },
+       { "Key": "Key3", "Value": "value at key 3" },
+       { "Key": "Key4", "Value": "value at key 4" },
+       { "Key": "Key5", "Value": "value at key 5" },
+       { "Key": "Key6", "Value": "value at key 6" },
+       { "Key": "Key7", "Value": "value at key 7" },
+       { "Key": "Key8", "Value": "value at key 8" },
+       { "Key": "Key9", "Value": "value at key 9" } ],
+
+     [ { "Key": "Key0", "Value": "value at key zero" },
+       { "Key": "Key1", "Value": "value at key one" },
+       { "Key": "Key2", "Value": "value at key two" },
+       { "Key": "Key3", "Value": "value at key three" },
+       { "Key": "Key4", "Value": "value at key four" },
+       { "Key": "Key5", "Value": "value at key five" } ]
+   ]
+}

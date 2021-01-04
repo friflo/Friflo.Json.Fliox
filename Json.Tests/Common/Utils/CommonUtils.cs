@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Common.Utils
 	        string baseDir = UnityUtils.GetProjectFolder();
 #else
             string baseDir = Directory.GetCurrentDirectory() + "/../../../";
+            baseDir = Path.GetFullPath(baseDir);
 #endif
             return baseDir;
         }

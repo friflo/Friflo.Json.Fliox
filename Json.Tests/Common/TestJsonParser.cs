@@ -534,7 +534,9 @@ namespace Friflo.Json.Tests.Common
 				}
 			}
 		}
+		
 
+		// ------------------------------------- misc -------------------------------------
 		[Test]
 		public void TestUtf8() {
 			Bytes src = CommonUtils.FromFile ("assets/EuroSign.txt");
