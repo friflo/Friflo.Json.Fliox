@@ -68,8 +68,14 @@ namespace Friflo.Json.Tests.Common
 				for (int n = 0; n < iterations; n++) {
 					count = 0;
 					parser.InitParser(bytes);
-					while (parser.NextEvent() != JsonEvent.EOF)
+					while (true) {
+						JsonEvent ev = parser.NextEvent();
+						if (ev == JsonEvent.EOF)
+							break;
+						if (ev == JsonEvent.Error)
+							Fail(parser.error.Msg.ToString());
 						count++;
+					}
 				}
 
 				AreEqual(expectedCount, count);

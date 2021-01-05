@@ -337,6 +337,8 @@ namespace Friflo.Json.Tests.Common
 			        memLog.Snapshot();
 			        parser.InitParser(json);
 			        parser.SkipTree();
+			        if (parser.NextEvent() != JsonEvent.EOF)
+						Fail("Expected EOF");
 		        }
 	        }
 	        memLog.AssertNoAllocations();
