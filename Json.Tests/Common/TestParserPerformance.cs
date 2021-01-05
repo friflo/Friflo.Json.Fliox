@@ -63,28 +63,26 @@ namespace Friflo.Json.Tests.Common
 				int iterations = impliedThroughput / bytes.Len;
 				iterations = Math.Max(1, iterations); 
 				long start = TimeUtil.GetMicro();
-				JsonParser parser = new JsonParser();
-				int count = 0;
-
-				for (int n = 0; n < iterations; n++) {
-					count = 0;
-					parser.InitParser(bytes);
-					while (true) {
-						JsonEvent ev = parser.NextEvent();
-						if (ev == JsonEvent.EOF)
-							break;
-						if (ev == JsonEvent.Error)
-							Fail(parser.error.Msg.ToString());
-						count++;
+				using (JsonParser parser = new JsonParser()) {
+					int count = 0;
+					for (int n = 0; n < iterations; n++) {
+						count = 0;
+						parser.InitParser(bytes);
+						while (true) {
+							JsonEvent ev = parser.NextEvent();
+							if (ev == JsonEvent.EOF)
+								break;
+							if (ev == JsonEvent.Error)
+								Fail(parser.error.Msg.ToString());
+							count++;
+						}
 					}
+					AreEqual(expectedCount, count);
 				}
-
-				AreEqual(expectedCount, count);
 				double sec = (TimeUtil.GetMicro() - start) / 1_000_000.0;
 				int bytesPerSec = (int)(iterations * bytes.Len / sec);
 				string fullPath = CommonUtils.GetBasePath() + path;
 				TestContext.Out.WriteLine($"{fullPath}:1 - size: {bytes.Len} bytes, {bytesPerSec/1_000_000} MB/s ");
-				parser.Dispose();
 			}
 		}
     }
