@@ -37,13 +37,34 @@
 - Small library (Friflo.Json.Burst.dll - 70kb )
 
 
-# Unit tests
+# Unit test / Performance
 
-Project is using NUnit for unit testing. Execute them locally by running. 
+The Project is using **NUnit** for unit testing. Execute them locally by running:
 ```
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
+The units can be executed also within various IDEs. **Visual Studio**, **Rider** and **Visual Studio Code**.
 
-## Performance
-The test cases contain also some performance test.
-To reduce side effects in measurement (MB/s) increase `impliedThroughput` at the [performance test](Json.Tests/Common/TestParserPerformance.cs)
+By using NUnit the unit tests can be executed via the Test Runner in the **Unity Editor** (Window > General > Test Runner) as `EditMode` tests.
+
+Additional to common unit testing of expected behavior, the test also ensure the following principles with additional assertions:
+- No (exact 0) allocations occur on the heap while running a parser or serializer a couple of times.
+- No leaks of `native containers` are left over after tear down a unit test. This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
+
+## Performance .NET CLR (Common Language Runtime)
+
+The test cases contain also JSON parser (a JSON iterator) performance test.
+To reduce side effects in measurement of throughput increase `impliedThroughput` at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
+
+On my development system (Intel Core i7-4790k 4Ghz) the throughput of the example JSON files within the CLR are at **200-550 MB/sec**.
+
+## Performance Unity
+
+Running the performance inside the Unity Editor in Edit Mode or in the Test Runner show weak performance numbers.
+The reason is that the Editor uses only the Mono runtime in these modes. Throughput: **6-13 MB/sec**.
+
+When building the game as a binary for deployment the numbers are okay. There is mainly no difference between the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Throughput: **56-116 MB/sec**
+
+
+
+
