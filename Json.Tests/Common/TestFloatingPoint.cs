@@ -15,9 +15,10 @@ namespace Friflo.Json.Tests.Common
 
 	    struct ParseDblCx
 	    {
-		    public ValueError cx;
-		    public Bytes bytes;
-		    public ValueParser parser;
+		    public bool			success;
+		    public Bytes		parseError;
+		    public Bytes		bytes;
+		    public ValueParser	parser;
 	    }
 	    
 		[Test]
@@ -53,7 +54,6 @@ namespace Friflo.Json.Tests.Common
 					bytes = bytes
 				};
 				parseCx.parser.InitValueParser();
-				parseCx.cx.InitValueError();
 				AreEqual(     0.0,        ParseDbl(           "0",		ref parseCx)); 
 				AreEqual(	1234567890.0, ParseDbl(	 "1234567890",		ref parseCx));
 				AreEqual(	123.0		, ParseDbl(	  	    "123",		ref parseCx)); 
@@ -88,10 +88,9 @@ namespace Friflo.Json.Tests.Common
 				AreEqual(  1.0 / 0.0, 				ParseDbl(  "1e+309",					ref parseCx));
 				AreEqual(  0.0, 					ParseDbl(  "4.9e-325",					ref parseCx));
 				
-				AreEqual(	   0.0		, ParseDbl(			  "",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
-				AreEqual(	   0.0		, ParseDbl(			  "1e",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
-				AreEqual(	   0.0		, ParseDbl(			  "1e+",	ref parseCx)); IsTrue (parseCx.cx.IsErrSet());
-				parseCx.cx.Dispose();
+				AreEqual(	   0.0		, ParseDbl(			  "",		ref parseCx)); IsTrue (!parseCx.success); 
+				AreEqual(	   0.0		, ParseDbl(			  "1e",		ref parseCx)); IsTrue (!parseCx.success); 
+				AreEqual(	   0.0		, ParseDbl(			  "1e+",	ref parseCx)); IsTrue (!parseCx.success);
 				parseCx.parser.Dispose();
 			}
 		}
@@ -99,7 +98,7 @@ namespace Friflo.Json.Tests.Common
 		double ParseDbl(String value, ref ParseDblCx parseCx) {
 			parseCx.bytes.Clear();
 			parseCx.bytes.FromString(value);
-			return parseCx.parser.ParseDouble(ref parseCx.bytes, ref parseCx.cx, out _);
+			return parseCx.parser.ParseDouble(ref parseCx.bytes, ref parseCx.parseError, out parseCx.success);
 		}
 		
 		bool isDouble;
@@ -228,7 +227,7 @@ namespace Friflo.Json.Tests.Common
 		
 		public void TestParseDoubleFast()
 		{
-			ValueError valueError = new ValueError();
+			Bytes valueError = new Bytes();
 			ValueParser parser = new ValueParser();
 			parser.InitValueParser();
 			double sum = 0;

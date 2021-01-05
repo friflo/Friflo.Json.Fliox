@@ -5,10 +5,11 @@ using System.Globalization;
 
 #if JSON_BURST
 	using Str32 = Unity.Collections.FixedString32;
+	using Str128 = Unity.Collections.FixedString128;
 #else
 	using Str32 = System.String;
+	using Str128 = System.String;
 #endif
-
 
 namespace Friflo.Json.Burst.Utils
 {
@@ -34,9 +35,18 @@ namespace Friflo.Json.Burst.Utils
 	    public void Dispose() {
 	    }
 	    
-		public int ParseInt(ref Bytes bytes, ref ValueError valueError, out bool success) {
+	    private static bool SetErrorFalse (Str128 msg, ref Bytes value, ref Bytes dst) {
+		    if (dst.buffer.IsCreated()) {
+			    dst.Clear();
+			    dst.AppendStr128(ref msg);
+			    dst.AppendBytes(ref value);
+		    }
+		    return false;
+	    }
+	    
+		public int ParseInt(ref Bytes bytes, ref Bytes valueError, out bool success) {
 			success = false;
-			valueError.ClearError();
+			valueError.Clear();
 			int val = 0;
 			bool positive= true;
 			ref var str = ref bytes.buffer.array;
@@ -59,16 +69,16 @@ namespace Friflo.Json.Burst.Utils
 			{
 				int digit = str[n] - '0';
 				if (digit < 0 || digit > 9) {
-					valueError.SetErrorFalse ("Invalid character when parsing integer: ", ref bytes);
+					SetErrorFalse ("Invalid character when parsing integer: ", ref bytes, ref valueError);
 					return 0;
 				}
 				if (val < multLimit) {
-					valueError.SetErrorFalse ("Value out of range when parsing integer: ", ref bytes);
+					SetErrorFalse ("Value out of range when parsing integer: ", ref bytes, ref valueError);
 					return 0;
 				}
 				val *= 10;
 				if (val < limit + digit) {
-					valueError.SetErrorFalse ("Value out of range when parsing integer: ", ref bytes);
+					SetErrorFalse ("Value out of range when parsing integer: ", ref bytes, ref valueError);
 					return 0;
 				}				
 				val -= digit;
@@ -77,9 +87,9 @@ namespace Friflo.Json.Burst.Utils
 			return positive ? -val : val;
 		}
 
-		public long ParseLong(ref Bytes bytes, ref ValueError valueError, out bool success) {
+		public long ParseLong(ref Bytes bytes, ref Bytes valueError, out bool success) {
 			success = false;
-			valueError.ClearError();
+			valueError.Clear();
 			long val = 0;
 			bool positive= true;
 			ref var str = ref bytes.buffer.array;
@@ -102,16 +112,16 @@ namespace Friflo.Json.Burst.Utils
 			{
 				int digit = str[n] - '0';
 				if (digit < 0 || digit > 9) {
-					valueError.SetErrorFalse ("Invalid character when parsing long: ", ref bytes);
+					SetErrorFalse ("Invalid character when parsing long: ", ref bytes, ref valueError);
 					return 0;
 				}
 				if (val < multLimit) {
-					valueError.SetErrorFalse ("Value out of range when parsing long: ", ref bytes);
+					SetErrorFalse ("Value out of range when parsing long: ", ref bytes, ref valueError);
 					return 0;
 				}
 				val *= 10;
 				if (val < limit + digit) {
-					valueError.SetErrorFalse ("Value out of range when parsing long: ", ref bytes);
+					SetErrorFalse ("Value out of range when parsing long: ", ref bytes, ref valueError);
 					return 0;
 				}				
 				val -= digit;
@@ -120,16 +130,16 @@ namespace Friflo.Json.Burst.Utils
 			return positive ? -val : val;
 		}
 
-		public double ParseDouble(ref Bytes bytes, ref ValueError valueError, out bool success)
+		public double ParseDouble(ref Bytes bytes, ref Bytes valueError, out bool success)
 		{
-			valueError.ClearError();
+			valueError.Clear();
 			success = false;
 			bool negative = false;
 			ref var	str = ref bytes.buffer.array;
 			int end = bytes.end;
 			int n = bytes.start;
 			if (n >= end) {
-				valueError.SetErrorFalse("Invalid number: ", ref bytes);
+				SetErrorFalse("Invalid number: ", ref bytes, ref valueError);
 				return 0;
 			}
 
@@ -163,7 +173,7 @@ namespace Friflo.Json.Burst.Utils
 					if (comma == -1)
 						comma = n;
 					else {
-						valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
+						SetErrorFalse("Invalid floating point number: ", ref bytes, ref valueError);
 						return 0;
 					}
 
@@ -186,7 +196,7 @@ namespace Friflo.Json.Burst.Utils
 						}
 
 						if (n == end) {
-							valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
+							SetErrorFalse("Invalid floating point number: ", ref bytes, ref valueError);
 							return 0;
 						}
 
@@ -199,7 +209,7 @@ namespace Friflo.Json.Burst.Utils
 								exp = exp * 10 + digit;
 							}
 							else {
-								valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
+								SetErrorFalse("Invalid floating point number: ", ref bytes, ref valueError);
 								return 0;
 							}
 						}
@@ -208,15 +218,15 @@ namespace Friflo.Json.Burst.Utils
 						break;
 					}
 					
-					valueError.SetErrorFalse ("Invalid floating point number: ", ref bytes);
+					SetErrorFalse ("Invalid floating point number: ", ref bytes, ref valueError);
 					return 0;
 				default:
-					valueError.SetErrorFalse ("Invalid floating point number: ", ref bytes);
+					SetErrorFalse ("Invalid floating point number: ", ref bytes, ref valueError);
 					return 0;
 				}
 			}
 			double d = val;
-			valueError.ClearError();
+			valueError.Clear();
 			if (comma >= 0)
 			{
 				int decimals = lastDigit - comma - 1;
@@ -273,26 +283,26 @@ namespace Friflo.Json.Burst.Utils
 		    return result;
 		} */
 	
-		public bool ParseBoolean(ref Bytes bytes, ref ValueError valueError, out bool success) {
+		public bool ParseBoolean(ref Bytes bytes, ref Bytes valueError, out bool success) {
 			success = true;
-			valueError.ClearError();
+			valueError.Clear();
 			if (bytes.IsEqual32(ref @true)   || bytes.IsEqual32(ref _1))
 				return true;
 			if (bytes.IsEqual32(ref @false)  || bytes.IsEqual32(ref _0))
 				return false;
 			success = false;
-			valueError.SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes);
+			SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes, ref valueError);
 			return false;
 		}
 
-		public double ParseDoubleStd(ref Bytes bytes, ref ValueError valueError, out bool success) {
-			valueError.ClearError();
+		public double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
+			valueError.Clear();
 			String val = bytes.ToString();
 			success = true;
 			if (double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result))
 				return result;
 			success = false;
-			valueError.SetErrorFalse ("Parsing double failed. val: ", ref bytes);
+			SetErrorFalse ("Parsing double failed. val: ", ref bytes, ref valueError);
 			return 0;
 		}
     }
