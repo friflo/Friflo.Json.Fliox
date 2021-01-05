@@ -47,6 +47,7 @@ namespace Friflo.Json.Burst
 		private				int					startPos;
 	//	public				JsonEvent			lastEvent { get ; private set; } bad idea, lastEvent is only relevant for the api user
 
+		private				int					preErrorState;
 		private 			ValueArray<int>		state;
 		private 			ValueArray<int>		pathPos;  	// used for current path
 		private 			ValueArray<int>		arrIndex;  	// used for current path
@@ -86,6 +87,7 @@ namespace Friflo.Json.Burst
 
 		// ---------------------- error message creation - begin
 		public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
+			preErrorState = state[stateLevel]; 
 			state[stateLevel] = JsonError;
 			if (error.ErrSet)
 				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
@@ -150,48 +152,64 @@ namespace Friflo.Json.Burst
 
 		public string GetPath() {
 			var pathBuf = new Bytes(32, AllocType.Temp);
-			AppendPath(ref pathBuf);
-			string ret = pathBuf.ToString();
-			pathBuf.Dispose();
-			return ret;
+			try {
+				AppendPath(ref pathBuf);
+				return pathBuf.ToString();
+			}
+			finally {
+				pathBuf.Dispose();	
+			}
 		}
 		
 		public override string ToString() {
 			var pathBuf = new Bytes(32, AllocType.Temp);
-			AppendPath(ref pathBuf);
-			string ret = $"{{ path: \"{pathBuf}\", pos: {pos} }}";
-			pathBuf.Dispose();
-			return ret;
+			try {
+				AppendPath(ref pathBuf);
+				return $"{{ path: \"{pathBuf}\", pos: {pos} }}";
+			}
+			finally {
+				pathBuf.Dispose();	
+			}
 		}
 		
-		public void AppendPath(ref Bytes str)
-		{
+		public void AppendPath(ref Bytes str) {
+			int initialEnd = str.end;
 			int lastPos = 0;
-			for (int n = 1; n <= stateLevel; n++)
-			{
-				switch (state[n])
-				{
-				case ExpectMember:
-					if (n > 1)
-						str.AppendChar('.');
-                    str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[n]);
-                    break;
-				case ExpectMemberFirst:
-					str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[n]);
-					break;
-				case ExpectElement:
-				case ExpectElementFirst:
-					if (arrIndex[n] != -1)
-					{
-						str.AppendChar('[');
-						format.AppendInt(ref str, arrIndex[n]);
-						str.AppendChar(']');
-					}
-					else
-						str.AppendStr32(ref emptyArray);
-					break;
+			int level = stateLevel;
+			bool errored = state[level] == JsonError;
+			if (errored)
+				level++;
+			for (int n = 1; n <= level; n++) {
+				int curState = state[n];
+				int index = n;
+				if (errored && n == level) {
+					curState = preErrorState;
+					index = n - 1;
+				}
+				switch (curState) {
+					case ExpectMember:
+						if (index > 1)
+							str.AppendChar('.');
+	                    str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
+	                    break;
+					case ExpectMemberFirst:
+						str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
+						break;
+					case ExpectElement:
+					case ExpectElementFirst:
+						if (arrIndex[index] != -1)
+						{
+							str.AppendChar('[');
+							format.AppendInt(ref str, arrIndex[index]);
+							str.AppendChar(']');
+						}
+						else
+							str.AppendStr32(ref emptyArray);
+						break;
 				}
 			}
+			if (initialEnd == str.end)
+				str.AppendStr32("(root)");
 		}
 
 		private void InitContainers() {

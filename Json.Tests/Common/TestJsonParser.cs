@@ -114,13 +114,13 @@ namespace Friflo.Json.Tests.Common
 		    parser.Dispose();
 	    }
 
-    
+
 	    public static void TestParseFile(Bytes bytes)
 		{
 		//	ParseCx parseCx = new ParseCx();
 			JsonParser parser = new JsonParser();
-			parser.InitParser (bytes);									CheckPath(ref parser, "");
-			AreEqual(JsonEvent.ObjectStart,	parser.NextEvent());		CheckPath(ref parser, "");
+			parser.InitParser (bytes);									CheckPath(ref parser, "(root)");
+			AreEqual(JsonEvent.ObjectStart,	parser.NextEvent());		CheckPath(ref parser, "(root)");
 			AreEqual(JsonEvent.ValueString,	parser.NextEvent());		CheckPath(ref parser, "eur");
 			AreEqual(">€<",					parser.value.ToString());
 			AreEqual(JsonEvent.ValueString,	parser.NextEvent());		CheckPath(ref parser, "eur2");
@@ -170,9 +170,9 @@ namespace Friflo.Json.Tests.Common
 			AreEqual(JsonEvent.ValueNumber,	parser.NextEvent());		CheckPath(ref parser, "int32");
 			AreEqual(JsonEvent.ValueNumber,	parser.NextEvent());		CheckPath(ref parser, "dbl");
 			
-			AreEqual(JsonEvent.ObjectEnd,	parser.NextEvent());		CheckPath(ref parser, "");
-			AreEqual(JsonEvent.EOF,			parser.NextEvent());		CheckPath(ref parser, "");
-			AreEqual(JsonEvent.Error,		parser.NextEvent());		CheckPath(ref parser, "");
+			AreEqual(JsonEvent.ObjectEnd,	parser.NextEvent());		CheckPath(ref parser, "(root)");
+			AreEqual(JsonEvent.EOF,			parser.NextEvent());		CheckPath(ref parser, "(root)");
+			AreEqual(JsonEvent.Error,		parser.NextEvent());		CheckPath(ref parser, "(root)");
 		
 			parser.InitParser(bytes);
 			for (int n = 0; n < 32; n++)
@@ -202,6 +202,41 @@ namespace Friflo.Json.Tests.Common
         [Test]
         public void TestParser() {
 	        TestParserImpl.BasicJsonParser();
+        }
+        
+        [Test]
+        public void TestParserPath() {
+	        JsonParser parser = new JsonParser();
+	        try {
+		        using (var bytes = CommonUtils.FromString("{ err")) {
+			        parser.InitParser(bytes);
+			        parser.SkipTree();
+			        AreEqual("(root)", parser.GetPath());
+		        }
+		        using (var bytes = CommonUtils.FromString("{'m' err")) {
+			        parser.InitParser(bytes);
+			        parser.SkipTree();
+			        AreEqual("m", parser.GetPath());
+		        }
+		        using (var bytes = CommonUtils.FromString("[err")) {
+			        parser.InitParser(bytes);
+			        parser.SkipTree();
+			        AreEqual("[0]", parser.GetPath());
+		        }
+		        using (var bytes = CommonUtils.FromString("[1, err")) {
+			        parser.InitParser(bytes);
+			        parser.SkipTree();
+			        AreEqual("[1]", parser.GetPath());
+		        }
+		        using (var bytes = CommonUtils.FromString("err")) {
+			        parser.InitParser(bytes);
+			        parser.SkipTree();
+			        AreEqual("(root)", parser.GetPath());
+		        }
+	        }
+	        finally {
+		        parser.Dispose();
+	        }
         }
         
         [Test]
