@@ -45,22 +45,22 @@ namespace Friflo.Json.Burst
 		private 			int					bufEnd;
 		private				int					stateLevel;
 		private				int					startPos;
-	//	public				JsonEvent			lastEvent { get ; private set; }
+	//	public				JsonEvent			lastEvent { get ; private set; } bad idea, lastEvent is only relevant for the api user
 
 		private 			ValueArray<int>		state;
 		private 			ValueArray<int>		pathPos;  	// used for current path
 		private 			ValueArray<int>		arrIndex;  	// used for current path
 		public				ErrorCx				error;
-		private				ValueError			valueError;
 	
 		public				bool				boolValue;
 		public				Bytes				key;
-		private				Bytes				path;  // used for current path
-		private				Bytes				errVal;
 		public				Bytes				value;
+		private				Bytes				path;		// used for current path storing the path segments names
+		private				Bytes				errVal;		// used for conversion of an additional value in error message creation
 		
 		private				ValueFormat			format;
 		private				ValueParser			valueParser;
+		private				ValueError			valueError;
 
 		private				Str32				@true;
 		private				Str32				@false;
