@@ -36,3 +36,14 @@
 - Compatibly to Unity Burst Jobs
 - Small library (Friflo.Json.Burst.dll - 70kb )
 
+
+# Unit tests
+
+Project is using NUnit for unit testing. Execute them locally by running. 
+```
+dotnet test -c Release -l "console;verbosity=detailed"
+```
+
+## Performance
+The test cases contain also some performance test.
+To reduce side effects in measurement (MB/s) increase `impliedThroughput` at the [performance test](Json.Tests/Common/TestParserPerformance.cs)

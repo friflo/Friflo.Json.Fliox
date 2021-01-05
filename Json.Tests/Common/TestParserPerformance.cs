@@ -45,21 +45,22 @@ namespace Friflo.Json.Tests.Common
 
 	    //
 	    [Test]
-	    public void Jsonexamples_canada()    	{	jsonIterate ("assets/jsonexamples/canada.json", 	223228);	}
+	    public void JsonExamples_canada()    	{	jsonIterate ("assets/jsonexamples/canada.json", 	223228);	}
 	
 	    [Test]
-	    public void Jsonexamples_citm_catalog() {	jsonIterate ("assets/jsonexamples/citm_catalog.json", 59166);	}
+	    public void JsonExamples_citm_catalog() {	jsonIterate ("assets/jsonexamples/citm_catalog.json", 59166);	}
 	
 	    [Test]
-	    public void Jsonexamples_log()    		{	jsonIterate ("assets/jsonexamples/log.json", 	    49);	}
+	    public void JsonExamples_log()    		{	jsonIterate ("assets/jsonexamples/log.json", 	    49);	}
 	
 	    [Test]
-	    public void Jsonexamplesn_twitter()    	{	jsonIterate ("assets/jsonexamples/twitter.json",  16228);	}
+	    public void JsonExamples_twitter()    	{	jsonIterate ("assets/jsonexamples/twitter.json",  16228);	}
 		
 		private void jsonIterate(String path, int expectedCount)
 		{
 			using (Bytes bytes = CommonUtils.FromFile(path)) {
-				int iterations = (CommonUtils.IsUnityEditor() ? 500_000 : 2_000_000) / bytes.Len;
+				int impliedThroughput = CommonUtils.IsUnityEditor() ? 500_000 : 2_000_000; // MB/sec
+				int iterations = impliedThroughput / bytes.Len;
 				iterations = Math.Max(1, iterations); 
 				long start = TimeUtil.GetMicro();
 				JsonParser parser = new JsonParser();
