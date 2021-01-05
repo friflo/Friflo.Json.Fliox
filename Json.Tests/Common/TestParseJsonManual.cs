@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common
             int index = 0;
             var arr = new ReadArray();
             while (arr.NextEvent(ref p)) {
-                if (arr.IsNum(ref p))       { this[index++] = p.ValueAsInt(out _); }
+                if (arr.UseNum(ref p))       { this[index++] = p.ValueAsInt(out _); }
             }
         }
     }
@@ -225,19 +225,19 @@ namespace Friflo.Json.Tests.Common
             public void Root3(ref JsonParser p) {
                 var obj = new ReadObject();
                 while (obj.NextEvent(ref p)) {
-                    if      (obj.IsObj(ref p, ref nm.map))        { p.SkipTree(); }
-                    else if (obj.IsObj(ref p, ref nm.map2))       { p.SkipTree(); }
-                    else if (obj.IsArr(ref p, ref nm.listStr))    { ReadListStr2(ref p); }
-                    else if (obj.IsArr(ref p, ref nm.arr))        { ReadArr2(ref p); }
-                    else if (obj.IsArr(ref p, ref nm.boolArr))    { ReadBoolArr2(ref p); }
-                    else if (obj.IsArr(ref p, ref nm.i64Arr))     { int3.Read2(ref p); }
-                    else if (obj.IsNum(ref p, ref nm.i64))        { i64 = p.ValueAsLong(out _); }
-                    else if (obj.IsNum(ref p, ref nm.i64Neg))     { i64Neg = p.ValueAsLong(out _); }
-                    else if (obj.IsStr(ref p, ref nm.str))        { str.Set(ref p.value); }
-                    else if (obj.IsBln(ref p, ref nm.t))          { t = p.boolValue; }
-                    else if (obj.IsNul(ref p, ref nm.n))          { foundNull = true; }
-                    else if (obj.IsNum(ref p, ref nm.dbl))        { dbl = p.ValueAsDouble(out _); }
-                    else if (obj.IsNum(ref p, ref nm.flt))        { flt = p.ValueAsFloat(out _); }
+                    if      (obj.UseObj(ref p, ref nm.map))        { p.SkipTree(); }
+                    else if (obj.UseObj(ref p, ref nm.map2))       { p.SkipTree(); }
+                    else if (obj.UseArr(ref p, ref nm.listStr))    { ReadListStr2(ref p); }
+                    else if (obj.UseArr(ref p, ref nm.arr))        { ReadArr2(ref p); }
+                    else if (obj.UseArr(ref p, ref nm.boolArr))    { ReadBoolArr2(ref p); }
+                    else if (obj.UseArr(ref p, ref nm.i64Arr))     { int3.Read2(ref p); }
+                    else if (obj.UseNum(ref p, ref nm.i64))        { i64 = p.ValueAsLong(out _); }
+                    else if (obj.UseNum(ref p, ref nm.i64Neg))     { i64Neg = p.ValueAsLong(out _); }
+                    else if (obj.UseStr(ref p, ref nm.str))        { str.Set(ref p.value); }
+                    else if (obj.UseBln(ref p, ref nm.t))          { t = p.boolValue; }
+                    else if (obj.UseNul(ref p, ref nm.n))          { foundNull = true; }
+                    else if (obj.UseNum(ref p, ref nm.dbl))        { dbl = p.ValueAsDouble(out _); }
+                    else if (obj.UseNum(ref p, ref nm.flt))        { flt = p.ValueAsFloat(out _); }
                 }
             }
 	        
@@ -262,14 +262,14 @@ namespace Friflo.Json.Tests.Common
             void ReadArr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
-                    if      (arr.IsNul(ref p))              { foundNullElement = true; }
+                    if      (arr.UseNul(ref p))              { foundNullElement = true; }
                 }
             }
             
             void ReadListStr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
-                    if      (arr.IsStr(ref p))              { strElement.Set( ref p.value); }
+                    if      (arr.UseStr(ref p))              { strElement.Set( ref p.value); }
                 }
             }
             
@@ -285,7 +285,7 @@ namespace Friflo.Json.Tests.Common
             void ReadBoolArr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
-                    if      (arr.IsBln(ref p))              { trueElement = p.boolValue; }
+                    if      (arr.UseBln(ref p))              { trueElement = p.boolValue; }
                 }
             }
             

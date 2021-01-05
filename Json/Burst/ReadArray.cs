@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst
     
     public struct ReadArray
     {
-        private JsonEvent ev; // Note: Dont make public! The intention is to use Is...() which support auto skipping
+        private JsonEvent ev; // Note: Dont make public! The intention is to use Use...() which support auto skipping
         private bool foundElement;
         private bool hasIterated;
 
@@ -30,7 +30,7 @@ namespace Friflo.Json.Burst
             return parser.ContinueArray(ev);
         }
         
-        public bool IsObj(ref JsonParser parser) {
+        public bool UseObj(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ObjectStart) {
                 foundElement = true;
                 return true;
@@ -38,7 +38,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool IsArr(ref JsonParser parser) {
+        public bool UseArr(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ArrayStart) {
                 foundElement = true;
                 return true;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsNum(ref JsonParser parser) {
+        public bool UseNum(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ValueNumber){
                 foundElement = true;
                 return true;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Burst
             return false;
         }
 		
-        public bool IsStr(ref JsonParser parser) {
+        public bool UseStr(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ValueString) {
                 foundElement = true;
                 return true;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool IsBln(ref JsonParser parser) {
+        public bool UseBln(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ValueBool) {
                 foundElement = true;
                 return true;
@@ -70,7 +70,7 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsNul(ref JsonParser parser) {
+        public bool UseNul(ref JsonParser parser) {
             if (!foundElement && ev == JsonEvent.ValueNull) {
                 foundElement = true;
                 return true;

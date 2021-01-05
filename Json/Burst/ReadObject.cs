@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst
     
     public struct ReadObject
     {
-        private JsonEvent ev; // Note: Dont make public! The intention is to use Is...() which support auto skipping
+        private JsonEvent ev; // Note: Dont make public! The intention is to use Use...() which support auto skipping
         private bool foundMember;
         private bool hasIterated;
         
@@ -30,11 +30,11 @@ namespace Friflo.Json.Burst
             return parser.ContinueObject(ev);
         }
 
-        public bool IsObj(ref JsonParser parser, Str32 name) {
-            return IsObj(ref parser, ref name);
+        public bool UseObj(ref JsonParser parser, Str32 name) {
+            return UseObj(ref parser, ref name);
         }
 
-        public bool IsObj(ref JsonParser parser, ref Str32 name) {
+        public bool UseObj(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ObjectStart && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
@@ -42,11 +42,11 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsArr(ref JsonParser parser, Str32 name) {
-            return IsArr(ref parser, ref name);
+        public bool UseArr(ref JsonParser parser, Str32 name) {
+            return UseArr(ref parser, ref name);
         }
 
-        public bool IsArr(ref JsonParser parser, ref Str32 name) {
+        public bool UseArr(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ArrayStart && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
@@ -54,11 +54,11 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsNum(ref JsonParser parser, Str32 name) {
-            return IsNum(ref parser, ref name);
+        public bool UseNum(ref JsonParser parser, Str32 name) {
+            return UseNum(ref parser, ref name);
         }
 
-        public bool IsNum(ref JsonParser parser, ref Str32 name) {
+        public bool UseNum(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ValueNumber && parser.key.IsEqual32(ref name)){
                 foundMember = true;
                 return true;
@@ -66,11 +66,11 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsStr(ref JsonParser parser, Str32 name) {
-            return IsStr(ref parser, ref name);
+        public bool UseStr(ref JsonParser parser, Str32 name) {
+            return UseStr(ref parser, ref name);
         }
 
-        public bool IsStr(ref JsonParser parser, ref Str32 name) {
+        public bool UseStr(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ValueString && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
@@ -78,11 +78,11 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsBln(ref JsonParser parser, Str32 name) {
-            return IsBln(ref parser, ref name);
+        public bool UseBln(ref JsonParser parser, Str32 name) {
+            return UseBln(ref parser, ref name);
         }
 
-        public bool IsBln(ref JsonParser parser, ref Str32 name) {
+        public bool UseBln(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ValueBool && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
@@ -90,11 +90,11 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public bool IsNul(ref JsonParser parser, Str32 name) {
-            return IsNul(ref parser, ref name);
+        public bool UseNul(ref JsonParser parser, Str32 name) {
+            return UseNul(ref parser, ref name);
         }
 
-        public bool IsNul(ref JsonParser parser, ref Str32 name) {
+        public bool UseNul(ref JsonParser parser, ref Str32 name) {
             if (!foundMember && ev == JsonEvent.ValueNull && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
