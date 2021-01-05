@@ -39,13 +39,13 @@
 
 # Unit test / Performance
 
-The project is using **NUnit** for unit testing. Execute them locally by running:
+The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
-The units can be executed also within various IDEs. **Visual Studio**, **Rider** and **Visual Studio Code**.
+The units can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/), [Rider](https://www.jetbrains.com/rider/) and [Visual Studio Code](https://visualstudio.microsoft.com/).
 
-By using NUnit the unit tests can be executed via the Test Runner in the **Unity Editor** (Window > General > Test Runner) as `EditMode` tests.
+By using NUnit the unit tests can be executed via the Test Runner in the [Unity Editor](https://unity.com/) (Window > General > Test Runner) as `EditMode` tests.
 
 Additional to common unit testing of expected behavior, the test also ensure the following principles with additional assertions:
 - No (exact 0) allocations occur on the heap while running a parser or serializer a couple of times.
