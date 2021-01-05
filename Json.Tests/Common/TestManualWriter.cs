@@ -27,33 +27,38 @@ namespace Friflo.Json.Tests.Common
             var memLog = new MemoryLogger(100, 1000, memoryLog);
             var ser = new JsonSerializer();
             var parser = new JsonParser();
+            try
             {
-                memLog.Reset();
-                for (int i = 0; i < iterations; i++) {
-                    parser.InitParser(bytes);
-                    ser.InitEncoder();
-                    parser.NextEvent(); // ObjectStart
-                    ser.WriteObject(ref parser);
-                    memLog.Snapshot();
+                {
+                    memLog.Reset();
+                    for (int i = 0; i < iterations; i++) {
+                        parser.InitParser(bytes);
+                        ser.InitEncoder();
+                        parser.NextEvent(); // ObjectStart
+                        ser.WriteObject(ref parser);
+                        memLog.Snapshot();
+                    }
+
+                    memLog.AssertNoAllocations();
                 }
-                memLog.AssertNoAllocations();
+                CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
+                if (parser.error.ErrSet)
+                    Fail(parser.error.Msg.ToString());
+
+                parser.InitParser(bytes);
+                parser.SkipTree();
+                SkipInfo srcSkipInfo = parser.skipInfo;
+
+                // validate generated JSON
+                parser.InitParser(ser.dst);
+                parser.SkipTree();
+                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
             }
-            CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
-            if (parser.error.ErrSet)
-                Fail(parser.error.Msg.ToString());
-            
-            parser.InitParser(bytes);
-            parser.SkipTree();
-            SkipInfo srcSkipInfo = parser.skipInfo;
-            
-            // validate generated JSON
-            parser.InitParser(ser.dst);
-            parser.SkipTree();
-            AreEqual(JsonEvent.EOF, parser.NextEvent());
-            IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
-            
-            parser.Dispose();
-            ser.Dispose();
+            finally {
+                parser.Dispose();
+                ser.Dispose();
+            }
         }
         
         [Test]
