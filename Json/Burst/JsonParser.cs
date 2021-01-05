@@ -56,7 +56,6 @@ namespace Friflo.Json.Burst
 		public				bool				boolValue;
 		public				Bytes				key;
 		private				Bytes				path;  // used for current path
-		private				Bytes				getPath; // MUST by used only for GetPath() calls. Otherwise debugger causes side effect when using ToString() 
 		private				Bytes				errVal;
 		public				Bytes				value;
 		
@@ -150,19 +149,20 @@ namespace Friflo.Json.Burst
 		}
 		// ---------------------- error message creation - end
 
-		public Str128 GetPath()
-		{
-			getPath.Clear();
-			AppendPath(ref getPath);
-			return getPath.ToStr128();
-		}
-		
-		public Str128 ToStr128() {
-			return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
+		public string GetPath() {
+			var pathBuf = new Bytes(32, AllocType.Temp);
+			AppendPath(ref pathBuf);
+			string ret = pathBuf.ToString();
+			pathBuf.Dispose();
+			return ret;
 		}
 		
 		public override string ToString() {
-			return ToStr128().ToString();
+			var pathBuf = new Bytes(32, AllocType.Temp);
+			AppendPath(ref pathBuf);
+			string ret = $"{{ path: \"{pathBuf}\", pos: {pos} }}";
+			pathBuf.Dispose();
+			return ret;
 		}
 		
 		public void AppendPath(ref Bytes str)
@@ -204,7 +204,6 @@ namespace Friflo.Json.Burst
 			error.InitErrorCx(128);
 			key.InitBytes(32);
 			path.InitBytes(32);
-			getPath.InitBytes(32); 
 			errVal.InitBytes(32);
 			value.InitBytes(32);
 			format.InitTokenFormat();
@@ -220,7 +219,6 @@ namespace Friflo.Json.Burst
 			format.Dispose();
 			value.Dispose();
 			errVal.Dispose();
-			getPath.Dispose();
 			path.Dispose();
 			key.Dispose();
 			error.Dispose();

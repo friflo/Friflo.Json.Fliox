@@ -37,7 +37,7 @@ namespace Friflo.Json.Burst
 
 		public void InitBytes(int capacity) {
 			if (!buffer.IsCreated())
-				buffer = new ByteList(capacity);
+				buffer = new ByteList(capacity, AllocType.Persistent);
 		}
 
 		public void Dispose() {
@@ -55,14 +55,21 @@ namespace Friflo.Json.Burst
 			hc = 0;
 			start = 0;
 			end = 0;
-			buffer = new ByteList(capacity);
+			buffer = new ByteList(capacity, AllocType.Persistent);
+		}
+		
+		public Bytes(int capacity, AllocType allocType) {
+			hc = 0;
+			start = 0;
+			end = 0;
+			buffer = new ByteList(capacity, allocType);
 		}
 		
 		public Bytes (String str) {
 			hc = 0;
 			start = 0;
 			end = 0;
-			buffer = new ByteList(0);
+			buffer = new ByteList(0, AllocType.Persistent);
 			FromString(str);
 		}
 		

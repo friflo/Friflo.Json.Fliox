@@ -18,6 +18,27 @@ namespace Friflo.Json.Burst
         public object resource;
         public StackTrace stackTrace;
     }
+    
+    public enum AllocType {
+        Temp,
+        Persistent
+    }
+#if JSON_BURST
+    public struct AllocUtils
+    {
+        public static Unity.Collections.Allocator AsAllocator(AllocType allocType) {
+            switch (allocType) {
+                case AllocType.Persistent:
+                    return Unity.Collections.Allocator.Persistent;
+                case AllocType.Temp:
+                    return Unity.Collections.Allocator.Temp;
+            }
+            // unreachable
+            return default;
+        }  
+    }
+#endif
+
 
     public static class DebugUtils
     {

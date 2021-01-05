@@ -9,8 +9,9 @@ namespace Friflo.Json.Burst.Utils
 #if JSON_BURST
         public Unity.Collections.NativeList<byte> array;
 
-        public ByteList(int size) {
-            array = new Unity.Collections.NativeList<byte>(size, Unity.Collections.Allocator.Persistent);
+        public ByteList(int size,  AllocType allocType) {
+            var allocator = AllocUtils.AsAllocator(allocType);
+            array = new Unity.Collections.NativeList<byte>(size, allocator);
         }
 	    
         /* public byte this[int index]
@@ -42,7 +43,7 @@ namespace Friflo.Json.Burst.Utils
 #else // MANAGED
         public byte[] array;
 
-        public ByteList(int size) {
+        public ByteList(int size, AllocType allocType) {
             array = new byte[size];
             DebugUtils.TrackAllocation(array);
         }
