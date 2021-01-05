@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common
                 }
                 CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
                 if (parser.error.ErrSet)
-                    Fail(parser.error.Msg.ToString());
+                    Fail(parser.error.msg.ToString());
 
                 parser.InitParser(bytes);
                 parser.SkipTree();

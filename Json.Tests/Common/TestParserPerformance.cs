@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common
 							if (ev == JsonEvent.EOF)
 								break;
 							if (ev == JsonEvent.Error)
-								Fail(parser.error.Msg.ToString());
+								Fail(parser.error.msg.ToString());
 							count++;
 						}
 					}

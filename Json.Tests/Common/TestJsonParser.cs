@@ -390,7 +390,7 @@ namespace Friflo.Json.Tests.Common
 		        for (int n = 0; n < num2; n++) {
 			        ret = enc.Read(json, type);
 			        if (ret == null)
-				        throw new FrifloException(enc.Error.Msg.ToString());
+				        throw new FrifloException(enc.Error.msg.ToString());
 		        }
 		        AreEqual(0, enc.SkipInfo.Sum);
 		        // FFLog.log("EncodeJson: " + json + " : " + stopwatch.Time());
@@ -406,7 +406,7 @@ namespace Friflo.Json.Tests.Common
 		        for (int n = 0; n < num2; n++) {
 			        ret = enc.ReadTo(json, obj);
 			        if (ret == null)
-				        throw new FrifloException(enc.Error.Msg.ToString());
+				        throw new FrifloException(enc.Error.msg.ToString());
 		        }
 		        AreEqual(0, enc.SkipInfo.Sum);
 		        // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());
@@ -566,7 +566,7 @@ namespace Friflo.Json.Tests.Common
 					using (JsonReader enc = new JsonReader(store)) {
 						JsonComplex res = (JsonComplex) enc.Read(writer.Output, typeof(JsonComplex));
 						if (res == null)
-							Fail(enc.Error.Msg.ToString());
+							Fail(enc.Error.msg.ToString());
 						CheckJsonComplex(res);
 					}
 				}

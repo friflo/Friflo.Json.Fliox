@@ -291,7 +291,7 @@ namespace Friflo.Json.Tests.Common
             
             public void AssertParseResult(ref JsonParser p) {
                 if (p.error.ErrSet) {
-                    Fail(p.error.Msg.ToString());
+                    Fail(p.error.msg.ToString());
                 }
                 else {
                     AreEqual(JsonEvent.EOF, p.NextEvent());

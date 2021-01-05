@@ -16,15 +16,15 @@ namespace Friflo.Json.Burst.Utils
     {
         public         	bool		throwException; // has only effect in managed code
         public	        bool	    ErrSet  { get; private set; }
-        public          Bytes       Msg; //     { get; private set; }
+        public          Bytes       msg;
         public			int			Pos     { get; private set; }
 
         public void InitErrorCx(int capacity) {
-            Msg.InitBytes(capacity);
+            msg.InitBytes(capacity);
         }
 
         public void Dispose() {
-            Msg.Dispose();
+            msg.Dispose();
         }
 
         public bool Error (int pos) {
@@ -32,7 +32,7 @@ namespace Friflo.Json.Burst.Utils
             Pos = pos;
 #if !JSON_BURST
             if (throwException)
-                throw new Friflo.Json.Managed.Utils.FrifloException (Msg.ToString());
+                throw new Friflo.Json.Managed.Utils.FrifloException (msg.ToString());
 #endif
             return false;
         }
@@ -42,7 +42,7 @@ namespace Friflo.Json.Burst.Utils
         }
 	
         public override String ToString () {
-            return Msg.ToString();
+            return msg.ToString();
         }	
     }
 }
