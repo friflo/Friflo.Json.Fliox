@@ -35,7 +35,7 @@ namespace Friflo.Json.Managed
 
 		public Object ErrorNull (String msg)
 		{
-			parser.Error("JsonReader", msg);
+			parser.Error("JsonReader", ref msg);
 	    	return null;
 		}
 

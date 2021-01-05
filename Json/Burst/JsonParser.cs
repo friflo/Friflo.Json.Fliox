@@ -58,6 +58,7 @@ namespace Friflo.Json.Burst
 		private				Bytes				path;  // used for current path
 		private				Bytes				getPath; // MUST by used only for GetPath() calls. Otherwise debugger causes side effect when using ToString() 
 		private				Bytes				errBuf;
+		private				Bytes				errVal;
 		public				Bytes				value;
 		
 		private				ValueFormat			format;
@@ -88,7 +89,13 @@ namespace Friflo.Json.Burst
 		public Str128		GetError()	{	return error.Msg;		}
 		public int			GetLevel()	{	return stateLevel;		}
 
-		public void Error (Str32 module, Str128 msg) {
+		public void Error(Str32 module, ref Str128 msg) {
+			errVal.Clear();
+			Error(module, ref msg, ref errVal);
+		}
+
+		public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
+			state[stateLevel] = JsonError;
 			if (error.ErrSet)
 				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
 			
@@ -99,6 +106,7 @@ namespace Friflo.Json.Burst
 			errBuf.AppendStr32(ref module);
 			errBuf.AppendStr32(" - ");
 			errBuf.AppendStr128(ref msg);
+			errBuf.AppendBytes(ref value);
 			errBuf.AppendStr32(" path: ");
 			AppendPath(ref errBuf);
 			errBuf.AppendStr32(" at position: ");
@@ -108,15 +116,45 @@ namespace Friflo.Json.Burst
 		}
 		
 		private JsonEvent SetError (Str128 msg) {
-			state[stateLevel] = JsonError;
-			Error("JsonParser", msg);
+			errVal.Clear();
+			Error("JsonParser", ref msg, ref errVal);
 			return JsonEvent.Error;
 		}
 		
+		private JsonEvent SetErrorChar (Str128 msg, char c) {
+			errVal.Clear();
+			errVal.AppendChar(c);
+			Error("JsonParser", ref msg, ref errVal);
+			return JsonEvent.Error;
+		}
+		
+		private bool SetErrorValue (Str128 msg, ref Bytes value) {
+			Error("JsonParser", ref msg, ref value);
+			return false;
+		}
+
 		private bool SetErrorFalse (Str128 msg)
 		{
-			state[stateLevel] = JsonError;
-			Error("JsonParser", msg);
+			Error("JsonParser", ref msg);
+			return false;
+		}
+		
+		private bool SetErrorEvent (Str128 msg, JsonEvent ev)
+		{
+			errVal.Clear();
+			switch (ev) {
+				case JsonEvent.ValueString:	errVal.AppendStr32("ValueString");	break; 
+				case JsonEvent.ValueNumber: errVal.AppendStr32("ValueNumber");	break; 
+				case JsonEvent.ValueBool:	errVal.AppendStr32("ValueBool");	break; 
+				case JsonEvent.ValueNull:	errVal.AppendStr32("ValueNull");	break; 
+				case JsonEvent.ObjectStart: errVal.AppendStr32("ObjectStart");	break; 
+				case JsonEvent.ObjectEnd:	errVal.AppendStr32("ObjectEnd");	break; 
+				case JsonEvent.ArrayStart:	errVal.AppendStr32("ArrayStart");	break; 
+				case JsonEvent.ArrayEnd:	errVal.AppendStr32("ArrayEnd");		break; 
+				case JsonEvent.EOF:			errVal.AppendStr32("EOF");			break; 
+				case JsonEvent.Error:		errVal.AppendStr32("Error");		break; 
+			}
+			Error("JsonParser", ref msg, ref errVal);
 			return false;
 		}
 	
@@ -175,6 +213,7 @@ namespace Friflo.Json.Burst
 			path.InitBytes(32);
 			getPath.InitBytes(32); 
 			errBuf.InitBytes(128);
+			errVal.InitBytes(32);
 			value.InitBytes(32);
 			format.InitTokenFormat();
 			@true =			"true";
@@ -188,6 +227,7 @@ namespace Friflo.Json.Burst
 			valueParser.Dispose();
 			format.Dispose();
 			value.Dispose();
+			errVal.Dispose();
 			errBuf.Dispose();
 			getPath.Dispose();
 			path.Dispose();
@@ -235,7 +275,7 @@ namespace Friflo.Json.Burst
 							return SetError ("unexpected member separator");
 						c = ReadWhiteSpace();
 						if (c != '"')
-							return SetError ($"expect key. Found {(char)c}");
+							return SetErrorChar ("expect key. Found: ", (char)c);
 						break;
 		            case '}':
 		            	stateLevel--;
@@ -247,7 +287,7 @@ namespace Friflo.Json.Burst
 		            		return SetError ("expect member separator");
 		            	break;
 		            default:
-		            	return SetError($"unexpected character: {(char)c} - expect key");
+		            	return SetErrorChar("unexpected character - expect key. Found: ", (char)c);
 				}
 	        	// case: c == '"'
 				state[stateLevel] = ExpectMember;
@@ -260,7 +300,7 @@ namespace Friflo.Json.Burst
 	        	//
 	        	c = ReadWhiteSpace();
 	       		if (c != ':')
-	       			return SetError ($"Expected ':' after key. Found: {(char)c}");
+	       			return SetErrorChar ("Expected ':' after key. Found: ", (char)c);
 	    		c = ReadWhiteSpace();
 	            break;
             
@@ -275,7 +315,7 @@ namespace Friflo.Json.Burst
     			if (curState == ExpectElement)
     			{
 	    			if (c != ',')
-	    				return SetError($"expected array separator ','. Found: {(char)c}");
+	    				return SetErrorChar("expected array separator ','. Found: ", (char)c);
     				c = ReadWhiteSpace();
     			}
     			else
@@ -354,7 +394,7 @@ namespace Friflo.Json.Burst
 				case  -1:
             		return SetError("unexpected EOF while reading value");
 				default:
-	        		return SetError($"unexpected character: {(char)c} while reading value");
+	        		return SetErrorChar("unexpected character while reading value. Found: ", (char)c);
 			}
 			// unreachable
 		}
@@ -408,7 +448,8 @@ namespace Friflo.Json.Burst
 						value.AppendArray(ref buf, start, pos);
 						return true;
 				}
-				return SetErrorFalse($"unexpected character {(char)c} while reading number");
+				SetErrorChar("unexpected character while reading number. Found : ", (char)c);
+				return false;
 			}
 			if (state[stateLevel] != ExpectEof) 
 				return SetErrorFalse("unexpected EOF while reading number");
@@ -548,7 +589,7 @@ namespace Friflo.Json.Burst
 			if (len != keyLen) {
 				value.Clear();
 				value.AppendArray(ref buf, start, pos);
-				return SetErrorFalse($"invalid value: {value.ToStr32()}");
+				return SetErrorValue("invalid value: ", ref value);
 			}
 
 			for (int n = 1; n < len; n++)
@@ -556,7 +597,7 @@ namespace Friflo.Json.Burst
 				if (keyword[n] != b[start + n]) {
 					value.Clear();
 					value.AppendArray(ref buf, start, pos);
-					return SetErrorFalse($"invalid value: {value.ToStr32()}");
+					return SetErrorValue("invalid value: ", ref value);
 				}
 			}
 			return true;
@@ -618,7 +659,7 @@ namespace Friflo.Json.Burst
 				case JsonEvent. Error:
 					return false;
 				default:
-					return SetErrorFalse($"unexpected state: {ev}");
+					return SetErrorEvent("unexpected state: ", ev);
 				}
 			}
 		}
@@ -659,7 +700,7 @@ namespace Friflo.Json.Burst
 				case JsonEvent. Error:
 					return false;
 				default:
-					return SetErrorFalse($"unexpected state: {ev}");
+					return SetErrorEvent("unexpected state: ", ev);
 				}
 			}
 		}
@@ -737,11 +778,11 @@ namespace Friflo.Json.Burst
 			if (!success) 
 				SetErrorFalse(valueError.GetError().value);
 			if (result < float.MinValue) {
-				SetErrorFalse($"float is less than float.MinValue. {value.ToStr32()}");
+				SetErrorValue("float is less than float.MinValue. ", ref value);
 				return 0;
 			}
 			if (result > float.MaxValue) {
-				SetErrorFalse($"float is greater than float.MaxValue. {value.ToStr32()}");
+				SetErrorValue("float is greater than float.MaxValue. ", ref value);
 				return 0;
 			}
 			return (float)result;
