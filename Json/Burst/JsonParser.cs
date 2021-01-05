@@ -13,6 +13,13 @@ using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Burst
 {
+	/// <summary>
+	/// Contains the count of elements and members skipped while parsing a JSON document.
+	///
+	/// These numbers are categories by: arrays, booleans, floats, integers, nulls, objects and strings.
+	/// These numbers are increased while parsing while calling on of the JsonParser Skip() methods.
+	/// <see cref="JsonParser.SkipTree()"/> <see cref="JsonParser.SkipObject()"/> <see cref="JsonParser.SkipArray()"/> 
+	/// </summary>
 	public struct SkipInfo {
 		public int arrays;
 		public int booleans;
@@ -38,6 +45,20 @@ namespace Friflo.Json.Burst
 		}
 	}
 	
+	/// <summary>
+	/// The basic JSON Parser API required to parse a JSON document.
+	///
+	/// The parser has a forward iterator interface returning a <see cref="JsonEvent"/> for each call to <see cref="NextEvent()"/>.
+	/// To start parsing a JSON document the parser need to be initialized with <see cref="InitParser(Friflo.Json.Burst.Bytes)"/>
+	/// From this point <see cref="NextEvent()"/> can be used.
+	/// Depending on the returned event additional fields contain the data captured by the event.
+	/// 
+	/// After a JSON document was iterated successfully an additional call to <see cref="NextEvent()"/> returns <see cref="JsonEvent.EOF"/>
+	/// In case of an invalid JSON document <see cref="NextEvent()"/> returns <see cref="JsonEvent.Error"/>.
+	/// At this point any subsequent call to <see cref="NextEvent()"/> will return the same error.
+	///
+	/// To maximize performance the <see cref="JsonParser"/> instance should be reused. This avoids unnecessary allocations on the heap.
+	/// </summary>
 	public partial struct JsonParser : IDisposable
 	{
 		private 			int					pos;

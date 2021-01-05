@@ -4,9 +4,37 @@ namespace Friflo.Json.Burst
 {
     public enum JsonEvent
     {
-        ValueString,	// key is set, if inside an object
-        ValueNumber,	// key is set, if inside an object
+        /// <summary>
+        /// Found an object member { "name": "John" } with a string value in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element ["John"] in case the previous event was <see cref="ArrayStart"/>.
+        /// The value is available via <see cref="JsonParser.value"/>.
+        /// In case of an object member <see cref="JsonParser.key"/> is set.  
+        /// </summary>
+        ValueString,
+        /// <summary>
+        /// Found an object member { "count": 11 } with a number value in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [11] in case the previous event was <see cref="ArrayStart"/>.
+        /// In case of an object member <see cref="JsonParser.key"/> is set.  
+        ///
+        /// The value is available via <see cref="JsonParser.value"/>.
+        /// If the number is floating point number <see cref="JsonParser.isFloat"/> is set. Other the value is an integer.
+        /// To get the value as double or float use <see cref="JsonParser.ValueAsDouble"/> or <see cref="JsonParser.ValueAsFloat"/>
+        /// To get the value as long or int use <see cref="JsonParser.ValueAsLong"/> or <see cref="JsonParser.ValueAsInt"/>
+        /// </summary>
+        ValueNumber,
+        /// <summary>
+        /// Found an object member { "isAlive": true } with a boolean value in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [true] in case the previous event was <see cref="ArrayStart"/>.
+        /// The value is available via <see cref="JsonParser.boolValue"/>.
+        /// In case of an object member <see cref="JsonParser.key"/> is set.
+        /// </summary>
         ValueBool,		// true, false. key is set, if inside an object
+        /// <summary>
+        /// Found an object member { "spouse": null } with a null value in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [null] in case the previous event was <see cref="ArrayStart"/>.
+        /// Additional data is not available as the only value is null.
+        /// In case of an object member <see cref="JsonParser.key"/> is set.
+        /// </summary>
         ValueNull,		// key is set, if inside an object
 	
         ObjectStart,	// key is set, if inside an object
