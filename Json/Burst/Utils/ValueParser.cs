@@ -59,16 +59,16 @@ namespace Friflo.Json.Burst.Utils
 			{
 				int digit = str[n] - '0';
 				if (digit < 0 || digit > 9) {
-					valueError.SetErrorFalse ($"Invalid character when parsing integer: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Invalid character when parsing integer: ", ref bytes);
 					return 0;
 				}
 				if (val < multLimit) {
-					valueError.SetErrorFalse ($"Value out of range when parsing integer: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Value out of range when parsing integer: ", ref bytes);
 					return 0;
 				}
 				val *= 10;
 				if (val < limit + digit) {
-					valueError.SetErrorFalse ($"Value out of range when parsing integer: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Value out of range when parsing integer: ", ref bytes);
 					return 0;
 				}				
 				val -= digit;
@@ -102,16 +102,16 @@ namespace Friflo.Json.Burst.Utils
 			{
 				int digit = str[n] - '0';
 				if (digit < 0 || digit > 9) {
-					valueError.SetErrorFalse ($"Invalid character when parsing long: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Invalid character when parsing long: ", ref bytes);
 					return 0;
 				}
 				if (val < multLimit) {
-					valueError.SetErrorFalse ($"Value out of range when parsing long: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Value out of range when parsing long: ", ref bytes);
 					return 0;
 				}
 				val *= 10;
 				if (val < limit + digit) {
-					valueError.SetErrorFalse ($"Value out of range when parsing long: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Value out of range when parsing long: ", ref bytes);
 					return 0;
 				}				
 				val -= digit;
@@ -129,7 +129,7 @@ namespace Friflo.Json.Burst.Utils
 			int end = bytes.end;
 			int n = bytes.start;
 			if (n >= end) {
-				valueError.SetErrorFalse($"Invalid number: '{bytes.ToStr32()}'");
+				valueError.SetErrorFalse("Invalid number: ", ref bytes);
 				return 0;
 			}
 
@@ -163,7 +163,7 @@ namespace Friflo.Json.Burst.Utils
 					if (comma == -1)
 						comma = n;
 					else {
-						valueError.SetErrorFalse($"Invalid floating point number: '{bytes.ToStr32()}'");
+						valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
 						return 0;
 					}
 
@@ -186,7 +186,7 @@ namespace Friflo.Json.Burst.Utils
 						}
 
 						if (n == end) {
-							valueError.SetErrorFalse($"Invalid floating point number: '{bytes.ToStr32()}'");
+							valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
 							return 0;
 						}
 
@@ -199,7 +199,7 @@ namespace Friflo.Json.Burst.Utils
 								exp = exp * 10 + digit;
 							}
 							else {
-								valueError.SetErrorFalse($"Invalid floating point number: '{bytes.ToStr32()}'");
+								valueError.SetErrorFalse("Invalid floating point number: ", ref bytes);
 								return 0;
 							}
 						}
@@ -208,10 +208,10 @@ namespace Friflo.Json.Burst.Utils
 						break;
 					}
 					
-					valueError.SetErrorFalse ($"Invalid floating point number: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Invalid floating point number: ", ref bytes);
 					return 0;
 				default:
-					valueError.SetErrorFalse ($"Invalid floating point number: '{bytes.ToStr32()}'");
+					valueError.SetErrorFalse ("Invalid floating point number: ", ref bytes);
 					return 0;
 				}
 			}
@@ -281,7 +281,7 @@ namespace Friflo.Json.Burst.Utils
 			if (bytes.IsEqual32(ref @false)  || bytes.IsEqual32(ref _0))
 				return false;
 			success = false;
-			valueError.SetErrorFalse($"Invalid boolean. Expected true/false but found: {bytes.ToStr32()}");
+			valueError.SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes);
 			return false;
 		}
 
@@ -292,7 +292,7 @@ namespace Friflo.Json.Burst.Utils
 			if (double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result))
 				return result;
 			success = false;
-			valueError.SetErrorFalse ($"Parsing double failed. val: '{bytes.ToStr32()}'");
+			valueError.SetErrorFalse ("Parsing double failed. val: ", ref bytes);
 			return 0;
 		}
     }

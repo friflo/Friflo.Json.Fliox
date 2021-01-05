@@ -53,6 +53,7 @@ namespace Friflo.Json.Tests.Common
 					bytes = bytes
 				};
 				parseCx.parser.InitValueParser();
+				parseCx.cx.InitValueError();
 				AreEqual(     0.0,        ParseDbl(           "0",		ref parseCx)); 
 				AreEqual(	1234567890.0, ParseDbl(	 "1234567890",		ref parseCx));
 				AreEqual(	123.0		, ParseDbl(	  	    "123",		ref parseCx)); 
@@ -90,6 +91,7 @@ namespace Friflo.Json.Tests.Common
 				AreEqual(	   0.0		, ParseDbl(			  "",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
 				AreEqual(	   0.0		, ParseDbl(			  "1e",		ref parseCx)); IsTrue (parseCx.cx.IsErrSet()); 
 				AreEqual(	   0.0		, ParseDbl(			  "1e+",	ref parseCx)); IsTrue (parseCx.cx.IsErrSet());
+				parseCx.cx.Dispose();
 				parseCx.parser.Dispose();
 			}
 		}

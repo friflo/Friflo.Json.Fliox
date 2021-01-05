@@ -212,9 +212,11 @@ namespace Friflo.Json.Burst
 			@null =			"null";
 			emptyArray =	"[]";
 			valueParser.InitValueParser();
+			valueError.InitValueError();
 		}
 
 		public void Dispose() {
+			valueError.Dispose();
 			valueParser.Dispose();
 			format.Dispose();
 			value.Dispose();
@@ -752,21 +754,21 @@ namespace Friflo.Json.Burst
 		public double ValueAsDoubleStd(out bool success) {
 			double result = valueParser.ParseDoubleStd(ref value, ref valueError, out success);
 			if (!success)
-				SetErrorFalse(valueError.GetError().value);
+				SetErrorValue("", ref valueError.err);
 			return result;
 		}
 		
 		public double ValueAsDouble(out bool success) {
 			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
 			if (!success) 
-				SetErrorFalse(valueError.GetError().value);
+				SetErrorValue("", ref valueError.err);
 			return result;
 		}
 		
 		public float ValueAsFloat(out bool success) {
 			double result = valueParser.ParseDouble(ref value, ref valueError, out success);
 			if (!success) 
-				SetErrorFalse(valueError.GetError().value);
+				SetErrorValue("", ref valueError.err);
 			if (result < float.MinValue) {
 				SetErrorValue("float is less than float.MinValue. ", ref value);
 				return 0;
@@ -781,14 +783,14 @@ namespace Friflo.Json.Burst
 		public long ValueAsLong(out bool success) {
 			long result = valueParser.ParseLong(ref value, ref valueError, out success);
 			if ( !success)
-				SetErrorFalse(valueError.GetError().value);
+				SetErrorValue("", ref valueError.err);
 			return result;
 		}
 		
 		public int ValueAsInt(out bool success) {
 			int result = valueParser.ParseInt(ref value, ref valueError, out success);
 			if (!success)
-				SetErrorFalse(valueError.GetError().value);
+				SetErrorValue("", ref valueError.err);
 			return result;
 		}
 

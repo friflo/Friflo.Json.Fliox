@@ -11,30 +11,38 @@ using System;
 namespace Friflo.Json.Burst.Utils
 {
     // Intended to be passed as ref parameter to be able notify a possible error 
-    public struct ValueError
+    public struct ValueError : IDisposable
     {
-        private	String128	err;
-        private	bool	    errSet;
-		
+        public	Bytes	err;
+        private	bool	errSet;
+
+        public void InitValueError() {
+            err.InitBytes(128);
+        }
+
+        public void Dispose() {
+            err.Dispose();
+        }
+
         public bool IsErrSet()
         {
             return errSet;
         }
 		
-        public String128 GetError()
-        {
-            return err;
-        }
-		
         public void	ClearError ()
         {
+            err.Clear();
             errSet = false;
         }
 		
-        public bool SetErrorFalse (Str128 error)
+        public bool SetErrorFalse (Str128 error, ref Bytes value)
         {
-            this.err = new String128(error);
             errSet = true;
+            if (err.buffer.IsCreated()) {
+                err.Clear();
+                err.AppendStr128(ref error);
+                err.AppendBytes(ref value);
+            }
             return false;
         }
         
