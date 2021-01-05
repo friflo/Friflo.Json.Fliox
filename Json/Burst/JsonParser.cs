@@ -104,9 +104,9 @@ namespace Friflo.Json.Burst
 			errMsg.AppendStr32(" error - ");
 			errMsg.AppendStr128(ref msg);
 			errMsg.AppendBytes(ref value);
-			errMsg.AppendStr32(" path: ");
+			errMsg.AppendStr32(" path: '");
 			AppendPath(ref errMsg);
-			errMsg.AppendStr32(" at position: ");
+			errMsg.AppendStr32("' at position: ");
 			format.AppendInt(ref errMsg, position);
 			error.Error(pos);
 		}
