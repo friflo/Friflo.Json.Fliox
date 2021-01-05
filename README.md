@@ -39,7 +39,7 @@
 
 # Unit test / Performance
 
-The Project is using **NUnit** for unit testing. Execute them locally by running:
+The project is using **NUnit** for unit testing. Execute them locally by running:
 ```
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
@@ -53,17 +53,17 @@ Additional to common unit testing of expected behavior, the test also ensure the
 
 ## Performance .NET CLR (Common Language Runtime)
 
-The test cases contain also JSON parser (a JSON iterator) performance test.
-To reduce side effects in measurement of throughput increase `impliedThroughput` at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
+The test cases contain also JSON parser (a JSON iterator) performance tests.
+To reduce side effects in measurement by NUnit of throughput increase `impliedThroughput` at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
 
-On my development system (Intel Core i7-4790k 4Ghz) the throughput of the example JSON files within the CLR are at **200-550 MB/sec**.
+On the used development system (Intel Core i7-4790k 4Ghz) the throughput of the example JSON files within the CLR are at **200-550 MB/sec**.
 
 ## Performance Unity
 
-Running the performance inside the Unity Editor in Edit Mode or in the Test Runner show weak performance numbers.
+Running the performance inside the Unity Editor in `Edit Mode` or in the `Test Runner` show weak performance numbers.
 The reason is that the Editor uses only the Mono runtime in these modes. Throughput: **6-13 MB/sec**.
 
-When building the game as a binary for deployment the numbers are okay. There is mainly no difference between the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Throughput: **56-116 MB/sec**
+When building a game as a binary for deployment the numbers are okay. There is mainly no difference between the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Throughput: **56-116 MB/sec**
 
 
 
