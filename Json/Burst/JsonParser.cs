@@ -57,7 +57,6 @@ namespace Friflo.Json.Burst
 		public				Bytes				key;
 		private				Bytes				path;  // used for current path
 		private				Bytes				getPath; // MUST by used only for GetPath() calls. Otherwise debugger causes side effect when using ToString() 
-		private				Bytes				errBuf;
 		private				Bytes				errVal;
 		public				Bytes				value;
 		
@@ -84,35 +83,37 @@ namespace Friflo.Json.Burst
 		
 		private const int 	JsonError =				6;
 		private const int 	Finished =				7; // only set at state[0]
-
 	
-		public Str128		GetError()	{	return error.Msg;		}
 		public int			GetLevel()	{	return stateLevel;		}
 
-		public void Error(Str32 module, ref Str128 msg) {
-			errVal.Clear();
-			Error(module, ref msg, ref errVal);
-		}
-
+		// ---------------------- error message creation - begin
 		public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
 			state[stateLevel] = JsonError;
 			if (error.ErrSet)
 				throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
 			
 			int position = pos - startPos;
-			// Note: cascaded string interpolation does not work in Unity Burst. So using appenders
-			// Str128 err = $"{module} error - {msg} path: {misc.ToStr128()} at position: {position}";
-			errBuf.Clear();
-			errBuf.AppendStr32(ref module);
-			errBuf.AppendStr32(" - ");
-			errBuf.AppendStr128(ref msg);
-			errBuf.AppendBytes(ref value);
-			errBuf.AppendStr32(" path: ");
-			AppendPath(ref errBuf);
-			errBuf.AppendStr32(" at position: ");
-			format.AppendInt(ref errBuf, position);
-			Str128 err = errBuf.ToStr128();
-			error.Error(ref err, pos);
+			// Note 1:	Creating error messages complete avoid creating string on the heap to ensure no allocation
+			//			in case of errors. Using string interpolation like $"...{}..." create objects on the heap
+			// Note 2:  Even cascaded string interpolation does not work in Unity Burst. So using appenders make sense too.
+
+			// Pseudo format: $"{module} error - {msg}{value} path: {path} at position: {position}";
+			ref Bytes errMsg = ref error.Msg;
+			errMsg.Clear();
+			errMsg.AppendStr32(ref module);
+			errMsg.AppendStr32(" error - ");
+			errMsg.AppendStr128(ref msg);
+			errMsg.AppendBytes(ref value);
+			errMsg.AppendStr32(" path: ");
+			AppendPath(ref errMsg);
+			errMsg.AppendStr32(" at position: ");
+			format.AppendInt(ref errMsg, position);
+			error.Error(pos);
+		}
+		
+		public void Error(Str32 module, Str128 msg) {
+			errVal.Clear();
+			Error(module, ref msg, ref errVal);
 		}
 		
 		private JsonEvent SetError (Str128 msg) {
@@ -135,29 +136,20 @@ namespace Friflo.Json.Burst
 
 		private bool SetErrorFalse (Str128 msg)
 		{
-			Error("JsonParser", ref msg);
+			errVal.Clear();
+			Error("JsonParser", ref msg, ref errVal);
 			return false;
 		}
 		
 		private bool SetErrorEvent (Str128 msg, JsonEvent ev)
 		{
 			errVal.Clear();
-			switch (ev) {
-				case JsonEvent.ValueString:	errVal.AppendStr32("ValueString");	break; 
-				case JsonEvent.ValueNumber: errVal.AppendStr32("ValueNumber");	break; 
-				case JsonEvent.ValueBool:	errVal.AppendStr32("ValueBool");	break; 
-				case JsonEvent.ValueNull:	errVal.AppendStr32("ValueNull");	break; 
-				case JsonEvent.ObjectStart: errVal.AppendStr32("ObjectStart");	break; 
-				case JsonEvent.ObjectEnd:	errVal.AppendStr32("ObjectEnd");	break; 
-				case JsonEvent.ArrayStart:	errVal.AppendStr32("ArrayStart");	break; 
-				case JsonEvent.ArrayEnd:	errVal.AppendStr32("ArrayEnd");		break; 
-				case JsonEvent.EOF:			errVal.AppendStr32("EOF");			break; 
-				case JsonEvent.Error:		errVal.AppendStr32("Error");		break; 
-			}
+			JsonEventUtils.AppendEvent(ev, ref errVal);
 			Error("JsonParser", ref msg, ref errVal);
 			return false;
 		}
-	
+		// ---------------------- error message creation - end
+
 		public Str128 GetPath()
 		{
 			getPath.Clear();
@@ -209,10 +201,10 @@ namespace Friflo.Json.Burst
 			state =	 new ValueArray<int>(32);
 			pathPos = new ValueArray<int>(32);
 			arrIndex = new ValueArray<int>(32);
+			error.InitErrorCx(128);
 			key.InitBytes(32);
 			path.InitBytes(32);
 			getPath.InitBytes(32); 
-			errBuf.InitBytes(128);
 			errVal.InitBytes(32);
 			value.InitBytes(32);
 			format.InitTokenFormat();
@@ -228,10 +220,10 @@ namespace Friflo.Json.Burst
 			format.Dispose();
 			value.Dispose();
 			errVal.Dispose();
-			errBuf.Dispose();
 			getPath.Dispose();
 			path.Dispose();
 			key.Dispose();
+			error.Dispose();
 			if (arrIndex.IsCreated())	arrIndex.Dispose();
 			if (pathPos.IsCreated())	pathPos.Dispose();
 			if (state.IsCreated())		state.Dispose();

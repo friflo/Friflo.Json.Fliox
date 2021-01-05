@@ -12,20 +12,27 @@ using System;
 namespace Friflo.Json.Burst.Utils
 {
     // Intended to be passed as ref parameter to be able notify a possible error 
-    public struct ErrorCx
+    public struct ErrorCx : IDisposable
     {
         public         	bool		throwException; // has only effect in managed code
         public	        bool	    ErrSet  { get; private set; }
-        public          Str128      Msg     { get; private set; }
+        public          Bytes       Msg; //     { get; private set; }
         public			int			Pos     { get; private set; }
 
-        public bool Error (ref Str128 msg, int pos) {
-            this.ErrSet = true;
-            this.Msg = msg;
-            this.Pos = pos;
+        public void InitErrorCx(int capacity) {
+            Msg.InitBytes(capacity);
+        }
+
+        public void Dispose() {
+            Msg.Dispose();
+        }
+
+        public bool Error (int pos) {
+            ErrSet = true;
+            Pos = pos;
 #if !JSON_BURST
             if (throwException)
-                throw new Friflo.Json.Managed.Utils.FrifloException (msg.ToString());
+                throw new Friflo.Json.Managed.Utils.FrifloException (Msg.ToString());
 #endif
             return false;
         }

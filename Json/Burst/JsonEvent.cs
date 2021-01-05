@@ -19,4 +19,22 @@ namespace Friflo.Json.Burst
         EOF,            // After iteration of a valid JSON tree NextEvent() returns JsonEvent.EOF when reaching the end of the given payload. 
         Error,          // Notify JSON error while parsing. Calling NextEvent() after JsonEvent.EOF return JsonEvent.Error
     }
+
+    public struct JsonEventUtils
+    {
+        public static void AppendEvent(JsonEvent ev, ref Bytes bytes) {
+            switch (ev) {
+                case JsonEvent.ValueString:	bytes.AppendStr32("ValueString");	break; 
+                case JsonEvent.ValueNumber: bytes.AppendStr32("ValueNumber");	break; 
+                case JsonEvent.ValueBool:	bytes.AppendStr32("ValueBool");	    break; 
+                case JsonEvent.ValueNull:	bytes.AppendStr32("ValueNull");	    break; 
+                case JsonEvent.ObjectStart: bytes.AppendStr32("ObjectStart");	break; 
+                case JsonEvent.ObjectEnd:	bytes.AppendStr32("ObjectEnd");	    break; 
+                case JsonEvent.ArrayStart:	bytes.AppendStr32("ArrayStart");	break; 
+                case JsonEvent.ArrayEnd:	bytes.AppendStr32("ArrayEnd");		break; 
+                case JsonEvent.EOF:			bytes.AppendStr32("EOF");			break; 
+                case JsonEvent.Error:		bytes.AppendStr32("Error");		    break; 
+            }
+        }
+    }
 }

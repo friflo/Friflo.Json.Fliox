@@ -35,7 +35,8 @@ namespace Friflo.Json.Managed
 
 		public Object ErrorNull (String msg)
 		{
-			parser.Error("JsonReader", ref msg);
+			// TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+			parser.Error("JsonReader", msg);
 	    	return null;
 		}
 
