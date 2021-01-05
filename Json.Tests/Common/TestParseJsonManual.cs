@@ -45,37 +45,7 @@ namespace Friflo.Json.Tests.Common
     
     public class TestParseJsonManual : LeakTestsFixture
     {
-        private static void AssertParseResult(ref ParseManual manual, ref JsonParser p) {
-            if (p.error.ErrSet) {
-                Fail(p.error.Msg.ToString());
-            }
-            else {
-                AreEqual(JsonEvent.EOF, p.NextEvent());
-                AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
-            }
-            AreEqual(1,                     manual.int3.x);
-            AreEqual(2,                     manual.int3.y);
-            AreEqual(3,                     manual.int3.z);
-            AreEqual(6400000000000000000,   manual.i64);
-            AreEqual(-640,                  manual.i64Neg);
-            AreEqual("string-ý",            manual.str.ToString());
-            AreEqual(true,                  manual.t);
-            AreEqual(true,                  manual.foundNull);
-            AreEqual("str0",                manual.strElement.ToString());
-            AreEqual(true,                  manual.foundNullElement);
-            AreEqual(true,                  manual.trueElement);
-            AreEqual(22.5,                  manual.dbl);
-            AreEqual(11.5,                  manual.flt);
-            //
-            AreEqual(7,     p.skipInfo.arrays);
-            AreEqual(1,     p.skipInfo.booleans);
-            AreEqual(1,     p.skipInfo.floats);
-            AreEqual(33,    p.skipInfo.integers);
-            AreEqual(14,    p.skipInfo.nulls);
-            AreEqual(37,    p.skipInfo.objects);
-            AreEqual(4,     p.skipInfo.strings);
-            AreEqual(97,    p.skipInfo.Sum);
-        }
+
 
         [Test]
         public void ParseJsonManual() {
@@ -94,45 +64,40 @@ namespace Friflo.Json.Tests.Common
         private void RunParser(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
             var parser = new JsonParser();
-            {
+            using (ParseManual manual = new ParseManual(Default.Constructor)) {
                 memLog.Reset();
-                ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent(); // ObjectStart
                     manual.Root1(ref parser);
                     memLog.Snapshot();
                 }
-                AssertParseResult(ref manual, ref parser);
+                manual.AssertParseResult(ref parser);
                 memLog.AssertNoAllocations();
-                manual.Dispose();
-            } {
+            }
+            using (ParseManual manual = new ParseManual(Default.Constructor)) {
                 memLog.Reset();
-                ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent(); // ObjectStart
                     manual.Root2(ref parser);
                     memLog.Snapshot();
                 }
-                AssertParseResult(ref manual, ref parser);
+                manual.AssertParseResult(ref parser);
                 memLog.AssertNoAllocations();
-                manual.Dispose();
-            } {
+            } 
+            using (ParseManual manual = new ParseManual(Default.Constructor)) {
                 memLog.Reset();
-                ParseManual manual = new ParseManual(Default.Constructor);
                 for (int i = 0; i < iterations; i++) {
                     parser.InitParser(bytes);
                     parser.NextEvent(); // ObjectStart
                     manual.Root3(ref parser);
                     memLog.Snapshot();
                 }
-                AssertParseResult(ref manual, ref parser);
+                manual.AssertParseResult(ref parser);
                 memLog.AssertNoAllocations();
-                manual.Dispose();
             }
             parser.Dispose();
-
         }
 
         /** pre create json keys upfront, to avoid creating them on the stack, when passing them to the Is...() methods.
@@ -316,6 +281,38 @@ namespace Friflo.Json.Tests.Common
                 while (arr.NextEvent(ref p)) {
                     if      (arr.IsBln(ref p))              { trueElement = p.boolValue; }
                 }
+            }
+            
+            public void AssertParseResult(ref JsonParser p) {
+                if (p.error.ErrSet) {
+                    Fail(p.error.Msg.ToString());
+                }
+                else {
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
+                }
+                AreEqual(1,                     int3.x);
+                AreEqual(2,                     int3.y);
+                AreEqual(3,                     int3.z);
+                AreEqual(6400000000000000000,   i64);
+                AreEqual(-640,                  i64Neg);
+                AreEqual("string-ý",            str.ToString());
+                AreEqual(true,                  t);
+                AreEqual(true,                  foundNull);
+                AreEqual("str0",                strElement.ToString());
+                AreEqual(true,                  foundNullElement);
+                AreEqual(true,                  trueElement);
+                AreEqual(22.5,                  dbl);
+                AreEqual(11.5,                  flt);
+                //
+                AreEqual(7,     p.skipInfo.arrays);
+                AreEqual(1,     p.skipInfo.booleans);
+                AreEqual(1,     p.skipInfo.floats);
+                AreEqual(33,    p.skipInfo.integers);
+                AreEqual(14,    p.skipInfo.nulls);
+                AreEqual(37,    p.skipInfo.objects);
+                AreEqual(4,     p.skipInfo.strings);
+                AreEqual(97,    p.skipInfo.Sum);
             }
         }
     }
