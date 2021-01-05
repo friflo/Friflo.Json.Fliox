@@ -58,6 +58,7 @@ namespace Friflo.Json.Burst
 		public				Bytes				value;
 		private				Bytes				path;		// used for current path storing the path segments names
 		private				Bytes				errVal;		// used for conversion of an additional value in error message creation
+		private				Bytes				getPathBuf; // MUST be used only in GetPath()
 		
 		private				ValueFormat			format;
 		private				ValueParser			valueParser;
@@ -151,25 +152,13 @@ namespace Friflo.Json.Burst
 		// ---------------------- error message creation - end
 
 		public string GetPath() {
-			var pathBuf = new Bytes(32, AllocType.Temp);
-			try {
-				AppendPath(ref pathBuf);
-				return pathBuf.ToString();
-			}
-			finally {
-				pathBuf.Dispose();	
-			}
+			getPathBuf.Clear();
+			AppendPath(ref getPathBuf);
+			return getPathBuf.ToString();
 		}
 		
 		public override string ToString() {
-			var pathBuf = new Bytes(32, AllocType.Temp);
-			try {
-				AppendPath(ref pathBuf);
-				return $"{{ path: \"{pathBuf}\", pos: {pos} }}";
-			}
-			finally {
-				pathBuf.Dispose();	
-			}
+			return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
 		}
 		
 		public void AppendPath(ref Bytes str) {
@@ -222,6 +211,7 @@ namespace Friflo.Json.Burst
 			key.InitBytes(32);
 			path.InitBytes(32);
 			errVal.InitBytes(32);
+			getPathBuf.InitBytes(32);
 			value.InitBytes(32);
 			format.InitTokenFormat();
 			@true =			"true";
@@ -235,6 +225,7 @@ namespace Friflo.Json.Burst
 			valueParser.Dispose();
 			format.Dispose();
 			value.Dispose();
+			getPathBuf.Dispose();
 			errVal.Dispose();
 			path.Dispose();
 			key.Dispose();
