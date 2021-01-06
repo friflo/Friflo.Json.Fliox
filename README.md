@@ -57,7 +57,6 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 - No dependencies to 3rd party libraries
-- Allow single quotation marks for strings. E.g. {'name':'John'}
 - Expressive error messages when parsing invalid JSON. E.g.  
   `JsonParser error - unexpected character > expect key. Found: v path: 'map.key1' at position: 23`
 - Small library (Friflo.Json.Burst.dll - 70kb )
