@@ -77,21 +77,21 @@ namespace Friflo.Json.Burst
 
         
         // --- comment to enable source alignment in WinMerge
-        public void PropertyArrayKey(ref Bytes key) {
+        public void MemberArrayKey(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
         }
         
-        public void PropertyObjectKey(ref Bytes key) {
+        public void MemberObjectKey(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
         }
         
-        public void PropertyString(ref Bytes key, ref Bytes value) {
+        public void MemberString(ref Bytes key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-        public void PropertyDouble(ref Bytes key, double value) {
+        public void MemberDouble(ref Bytes key, double value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -109,7 +109,7 @@ namespace Friflo.Json.Burst
             format.AppendDbl(ref dst, value);
         }
         
-        public void PropertyLong(ref Bytes key, long value) {
+        public void MemberLong(ref Bytes key, long value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref dst, value);
         }
         
-        public void PropertyBool(ref Bytes key, bool value) {
+        public void MemberBool(ref Bytes key, bool value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -125,7 +125,7 @@ namespace Friflo.Json.Burst
             format.AppendBool(ref dst, value);
         }
         
-        public void PropertyNull(ref Bytes key) {
+        public void MemberNull(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);

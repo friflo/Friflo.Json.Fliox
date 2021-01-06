@@ -106,21 +106,21 @@ namespace Friflo.Json.Burst
         }
 
         // --- comment to enable source alignment in WinMerge
-        public void PropertyArray(ref Str32 key) {
+        public void MemberArray(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
         }
         
-        public void PropertyObject(ref Str32 key) {
+        public void MemberObject(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
         }
         
-        public void PropertyString(ref Str32 key, ref Bytes value) {
+        public void MemberString(ref Str32 key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -130,7 +130,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-        public void PropertyDouble(ref Str32 key, double value) {
+        public void MemberDouble(ref Str32 key, double value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Burst
             format.AppendDbl(ref dst, value);
         }
         
-        public void PropertyLong(ref Str32 key, long value) {
+        public void MemberLong(ref Str32 key, long value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -146,7 +146,7 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref dst, value);
         }
         
-        public void PropertyBool(ref Str32 key, bool value) {
+        public void MemberBool(ref Str32 key, bool value) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -154,7 +154,7 @@ namespace Friflo.Json.Burst
             format.AppendBool(ref dst, value);
         }
         
-        public void PropertyNull(ref Str32 key) {
+        public void MemberNull(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -162,33 +162,33 @@ namespace Friflo.Json.Burst
             dst.AppendStr32(ref @null);
         }
         
-        // ------------- non-ref Str32 Property...() versions for convenience  -------------
-        public void PropertyArrayKey(Str32 key) {
-            PropertyArray(ref key);
+        // ------------- non-ref Str32 Member...() versions for convenience  -------------
+        public void MemberArrayKey(Str32 key) {
+            MemberArray(ref key);
         }
         
-        public void PropertyObjectKey(Str32 key) {
-            PropertyObject(ref key);
+        public void MemberObjectKey(Str32 key) {
+            MemberObject(ref key);
         }
         
-        public void PropertyString(Str32 key, ref Bytes value) {
-            PropertyString(ref key, ref value);
+        public void MemberString(Str32 key, ref Bytes value) {
+            MemberString(ref key, ref value);
         }
         
-        public void PropertyDouble(Str32 key, double value) {
-            PropertyDouble(ref key, value);
+        public void MemberDouble(Str32 key, double value) {
+            MemberDouble(ref key, value);
         }
         
-        public void PropertyLong(Str32 key, long value) {
-            PropertyLong(ref key, value);
+        public void MemberLong(Str32 key, long value) {
+            MemberLong(ref key, value);
         }
         
-        public void PropertyBool(Str32 key, bool value) {
-            PropertyBool(ref key, value);
+        public void MemberBool(Str32 key, bool value) {
+            MemberBool(ref key, value);
         }
         
-        public void PropertyNull(Str32 key) {
-            PropertyNull(ref key);
+        public void MemberNull(Str32 key) {
+            MemberNull(ref key);
         }
 
         // ----------------------------- array with elements -----------------------------
@@ -240,15 +240,15 @@ namespace Friflo.Json.Burst
                 ev = p.NextEvent();
                 switch (ev) {
                     case JsonEvent.ArrayStart:
-                        PropertyArrayKey(ref p.key);
+                        MemberArrayKey(ref p.key);
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        PropertyObjectKey(ref p.key);
+                        MemberObjectKey(ref p.key);
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        PropertyString(ref p.key, ref p.value);
+                        MemberString(ref p.key, ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
@@ -258,17 +258,17 @@ namespace Friflo.Json.Burst
                         /*
                         // Conversion to long or double is expensive and not required 
                         if (p.isFloat)
-                            PropertyDouble(ref p.key, p.ValueAsDouble(out _));
+                            MemberDouble(ref p.key, p.ValueAsDouble(out _));
                         else
-                            PropertyLong(ref p.key, p.ValueAsLong(out _));
+                            MemberLong(ref p.key, p.ValueAsLong(out _));
                         */
                         dst.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
-                        PropertyBool(ref p.key, p.boolValue);
+                        MemberBool(ref p.key, p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        PropertyNull(ref p.key);
+                        MemberNull(ref p.key);
                         break;
                     case JsonEvent.ObjectEnd:
                         ObjectEnd();

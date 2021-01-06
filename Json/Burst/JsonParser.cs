@@ -95,9 +95,12 @@ namespace Friflo.Json.Burst
         private             Str32               @false;
         private             Str32               @null;
         private             Str32               emptyArray;
-
+        /// <summary>In case the event returned by <see cref="NextEvent()"/> was <see cref="JsonEvent.ValueNumber"/> the flag
+        /// indicates that the value of an object member or array element is a floating point number (e.g. 2.34).<br/>
+        /// Otherwise false indicates that the value is of an integral type (e.g. 11) 
+        /// </summary>
         public              bool                isFloat;
-        /// <summary>Contains number of skipped element when using one of the Skip...() methods like <see cref="SkipTree()"/> while parsing</summary>
+        /// <summary>Contains number of skipped JSON nodes when using one of the Skip...() methods like <see cref="SkipTree()"/> while parsing</summary>
         public              SkipInfo            skipInfo;
         
     
@@ -679,6 +682,10 @@ namespace Friflo.Json.Burst
             return true;
         }
 
+        /// <summary>
+        /// Skip parsing a complete JSON node which can be object member, an array element or a value on root. 
+        /// </summary>
+        /// <returns>Returns true if skipping was successful</returns>
         public bool SkipTree()
         {
             int curState = state[stateLevel];
@@ -781,6 +788,12 @@ namespace Friflo.Json.Burst
             }
         }
         
+        /// <summary>
+        /// Skip parsing a complete JSON node which can be object member, an array element or a value on root
+        /// with an already consumed <see cref="JsonEvent"/>  
+        /// </summary>
+        /// <param name="ev">The previous consumed event returned by <see cref="NextEvent()"/></param>
+        /// <returns></returns>
         public bool SkipEvent (JsonEvent ev) {
             switch (ev) {
                 case JsonEvent.ArrayStart:
@@ -837,7 +850,7 @@ namespace Friflo.Json.Burst
 
         /// <summary>
         /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>
-        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public double ValueAsDoubleStd(out bool success) {
             double result = valueParser.ParseDoubleStd(ref value, ref errVal, out success);
@@ -848,7 +861,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>
         /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>
-        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public double ValueAsDouble(out bool success) {
             double result = valueParser.ParseDouble(ref value, ref errVal, out success);
@@ -859,7 +872,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>
         /// Returns the <see cref="float"/> value of an object member or an array element after <see cref="NextEvent()"/>
-        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
         public float ValueAsFloat(out bool success) {
             double result = valueParser.ParseDouble(ref value, ref errVal, out success);
@@ -878,7 +891,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>
         /// Returns the <see cref="long"/> value of an object member or an array element after <see cref="NextEvent()"/>
-        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it false
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is false
         /// </summary>
         public long ValueAsLong(out bool success) {
             long result = valueParser.ParseLong(ref value, ref errVal, out success);
@@ -889,7 +902,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>
         /// Returns the <see cref="int"/> value of an object member or an array element after <see cref="NextEvent()"/>
-        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it false
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is false
         /// </summary>
         public int ValueAsInt(out bool success) {
             int result = valueParser.ParseInt(ref value, ref errVal, out success);
