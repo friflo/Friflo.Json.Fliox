@@ -44,22 +44,22 @@ namespace Friflo.Json.Tests.Common.Examples
             p.InitParser(json);
             
             var readRoot = new ReadObject();
-            while (readRoot.NextEvent(ref p)) {                         // descend to root object & iterate key/values
+            while (readRoot.NextEvent(ref p)) {                         // descend root object
                 var readBase = new ReadObject();
-                while (readBase.NextEvent(ref p)) {                     // descend to base object & iterate key/values
+                while (readBase.NextEvent(ref p)) {                     // iterate root object key/values
                     if (readBase.UseStr(ref p, "firstName")) {
                         buddy.firstName = p.value.ToString();
                     }
                     else if (readBase.UseNum(ref p, "age")) {
                         buddy.age = p.ValueAsInt(out _);
                     }
-                    else if (readBase.UseArr(ref p, "hobbies")) {
+                    else if (readBase.UseArr(ref p, "hobbies")) {        // descend hobbies array
                         var readHobbies = new ReadArray();
-                        while (readHobbies.NextEvent(ref p)) {           // descend to hobbies array & iterate elements
-                            if (readHobbies.UseObj(ref p)) {
+                        while (readHobbies.NextEvent(ref p)) {           // iterate hobbies array elements
+                            if (readHobbies.UseObj(ref p)) {             // descend array element
                                 var hobby = new Hobby();
                                 var readHobby = new ReadObject();
-                                while (readHobby.NextEvent(ref p)) {     // descend to hobby object & iterate key/values
+                                while (readHobby.NextEvent(ref p)) {     // iterate hobby key/values
                                     if (readHobby.UseStr(ref p, "name")) {
                                         hobby.name = p.value.ToString();
                                     }
