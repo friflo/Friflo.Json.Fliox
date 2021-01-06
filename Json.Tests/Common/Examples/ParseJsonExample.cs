@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.Examples
 {
     ""name"":       ""John"",
     ""age"":        24,
-    ""hobbies"":    [""gaming"", ""star wars""]
+    ""hobbies"":    [""Gaming"", ""STAR WARS""]
 }";
             String  name = "";
             int     age = 0;
@@ -23,10 +23,8 @@ namespace Friflo.Json.Tests.Common.Examples
             
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString); 
-            
             p.InitParser(json);
-            if (p.NextEvent() != JsonEvent.ObjectStart)
-                Fail("Expect: ObjectStart");
+            p.NextEvent(); // JsonEvent.ObjectStart
 
             ReadObject readRoot = new ReadObject();
             while (readRoot.NextEvent(ref p)) {
@@ -45,10 +43,13 @@ namespace Friflo.Json.Tests.Common.Examples
                     }
                 }
             }
+            AreEqual(JsonEvent.EOF, p.NextEvent());
+            if (p.error.ErrSet)
+                Fail(p.error.msg.ToString());
             AreEqual("John",        name);
             AreEqual(24,            age);
-            AreEqual("gaming",      hobbies[0]);
-            AreEqual("star wars",   hobbies[1]);
+            AreEqual("Gaming",      hobbies[0]);
+            AreEqual("STAR WARS",   hobbies[1]);
         }
     }
 }
