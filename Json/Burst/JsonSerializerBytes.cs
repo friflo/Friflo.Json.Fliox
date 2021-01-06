@@ -101,6 +101,21 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
+#if !JSON_BURST
+        /// <summary>
+        /// Method cant be used in a Unity Burst Job, because of using string as parameter
+        /// </summary>
+        public void MemberString(ref Bytes key, string value) {
+            AddSeparator();
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar2('\"', ':');
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref value);
+            dst.AppendChar('"');
+        }
+#endif
+        
         public void MemberDouble(ref Bytes key, double value) {
             AddSeparator();
             dst.AppendChar('"');

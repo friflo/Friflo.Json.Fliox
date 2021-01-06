@@ -9,6 +9,15 @@ using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Burst
 {
+    /// <summary>
+    /// The basics JSON serializer used to create a JSON document by using a set of appender methods to add
+    /// JSON objects, object members (key/ val pairs), arrays and array elements.<br/>
+    ///
+    /// Before using the serializer it need to be initialized with <see cref="InitSerializer()"/><br/>
+    /// To add a JSON object use <see cref="ObjectStart()"/>. Afterwards arbitrary object members can be added via
+    /// The Member...() methods. E.g by
+    /// <see cref="MemberString(ref string,ref Friflo.Json.Burst.Bytes)"/> to add 
+    /// </summary>
     public partial struct JsonSerializer : IDisposable
     {
         public  Bytes                   dst;
@@ -23,7 +32,7 @@ namespace Friflo.Json.Burst
             Array
         }
 
-        public void InitEncoder() {
+        public void InitSerializer() {
             if (!dst.buffer.IsCreated())
                 dst.InitBytes(128);
             dst.Clear();
@@ -130,6 +139,21 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
+#if !JSON_BURST
+        /// <summary>
+        /// Method cant be used in a Unity Burst Job, because of using string as parameter
+        /// </summary>
+        public void MemberString(ref Str32 key, string value) {
+            AddSeparator();
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar2('\"', ':');
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref value);
+            dst.AppendChar('"');
+        }
+#endif
+        
         public void MemberDouble(ref Str32 key, double value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -211,6 +235,15 @@ namespace Friflo.Json.Burst
             AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
+        
+#if !JSON_BURST
+        public void ElementString(string value) {
+            AddSeparator();
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref value);
+            dst.AppendChar('"');
+        }
+#endif
         
         public void ElementDouble(double value) {
             AddSeparator();
