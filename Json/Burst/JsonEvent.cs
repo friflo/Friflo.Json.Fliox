@@ -2,6 +2,9 @@
 // See LICENSE file in the project root for full license information.
 namespace Friflo.Json.Burst
 {
+    /// <summary>
+    /// The set of all JSON events returned by <see cref="JsonParser.NextEvent()"/> while iterating a JSON document.
+    /// </summary>
     public enum JsonEvent
     {
         /// <summary>
@@ -37,13 +40,28 @@ namespace Friflo.Json.Burst
         /// In case of an object member <see cref="JsonParser.key"/> is set.
         /// </summary>
         ValueNull,
-    
-        ObjectStart,    // key is set, if inside an object
+        /// <summary>
+        /// Found an object member "employee": { ... } with an object in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [{ ... }] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// Additional data is not available for this event. To access embedded object members use <see cref="JsonParser.NextEvent()"/><br/>
+        /// In case of an object member <see cref="JsonParser.key"/> is set.
+        /// </summary>
+        ObjectStart,
+        /// <summary>
+        /// Found the end of an JSON object previously started with <see cref="ObjectStart"/><br/>
+        /// Additional data is not available for this event. To access embedded object members use <see cref="JsonParser.NextEvent()"/><br/>
+        /// </summary>
         ObjectEnd,
-    
-        ArrayStart,     // key is set, if inside an object
+        /// <summary>
+        /// Found an object member "employee": [ ... ] with an array in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [ [...] ] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// Additional data is not available for this event. To access embedded array elements use <see cref="JsonParser.NextEvent()"/><br/>
+        /// In case of an object member <see cref="JsonParser.key"/> is set.
+        /// </summary>
+        ArrayStart,
+        /// Found the end of an JSON array previously started with <see cref="ArrayStart"/><br/>
+        /// Additional data is not available for this event. To access embedded object members use <see cref="JsonParser.NextEvent()"/><br/>
         ArrayEnd,
-    
         // ReSharper disable once InconsistentNaming
         /// <summary>
         /// After iteration of a valid JSON document <see cref="JsonParser.NextEvent()"/> returns <see cref="EOF"/>
@@ -51,10 +69,10 @@ namespace Friflo.Json.Burst
         /// </summary>
         EOF,
         /// <summary>
-        /// Notify JSON error while parsing.<br/>
-        /// Calling <see cref="JsonParser.NextEvent()"/> after <see cref="EOF"/> returns always <see cref="Error"/>
+        /// Notify a JSON error while parsing.<br/>
+        /// Calling <see cref="JsonParser.NextEvent()"/> after <see cref="EOF"/> returned once it always returns <see cref="Error"/>
         /// </summary>
-        Error, 
+        Error
     }
 
     public struct JsonEventUtils

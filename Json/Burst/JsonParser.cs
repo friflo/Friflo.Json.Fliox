@@ -73,9 +73,16 @@ namespace Friflo.Json.Burst
         private             ValueArray<int>     pathPos;    // used for current path
         private             ValueArray<int>     arrIndex;   // used for current path
         public              ErrorCx             error;
-    
+        
+        /// <summary>Contains the boolean value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueBool"/></summary>
         public              bool                boolValue;
+        /// <summary>Contains the key on an object member after <see cref="NextEvent()"/> returned one of the
+        /// <see cref="JsonEvent"/>'s starting with Value... and the previous event was <see cref="JsonEvent.ObjectStart"/>
+        /// </summary>
         public              Bytes               key;
+        /// <summary>Contains the (string) value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueString"/></summary>
         public              Bytes               value;
         private             Bytes               path;       // used for current path storing the path segments names
         private             Bytes               errVal;     // used for conversion of an additional value in error message creation
@@ -90,6 +97,7 @@ namespace Friflo.Json.Burst
         private             Str32               emptyArray;
 
         public              bool                isFloat;
+        /// <summary>Contains number of skipped element when using one of the Skip...() methods like <see cref="SkipTree()"/> while parsing</summary>
         public              SkipInfo            skipInfo;
         
     
@@ -105,9 +113,18 @@ namespace Friflo.Json.Burst
         private const int   JsonError =             6;
         private const int   Finished =              7; // only set at state[0]
     
+        /// <summary>Returns the current depth inside the JSON document while parsing</summary>
         public int          GetLevel()  {   return stateLevel;      }
 
         // ---------------------- error message creation - begin
+        /// <summary>
+        /// Set the parser to error state.<br/>
+        /// Subsequent calls to <see cref="NextEvent()"/> will return <see cref="JsonEvent.Error"/> 
+        /// </summary>
+        /// <param name="module">Name of the module raising the error</param>
+        /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
+        /// <param name="value">An optional value appended after the <see cref="msg"/> to give more specific info about the error</param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
             preErrorState = state[stateLevel]; 
             state[stateLevel] = JsonError;
@@ -172,16 +189,30 @@ namespace Friflo.Json.Burst
         }
         // ---------------------- error message creation - end
 
+        /// <summary>
+        /// Returns the current JSON path while iterating as a <see cref="string"/>.  E.g. "map.key1"
+        /// </summary>
+        /// <returns>The current JSON path</returns>
         public string GetPath() {
             getPathBuf.Clear();
             AppendPath(ref getPathBuf);
             return getPathBuf.ToString();
         }
         
+        /// <summary>
+        /// Returns the current JSON path and position while iterating as a <see cref="string"/>.<br/>
+        /// E.g. { path: "map.key1", pos: 20 }<br/>
+        /// This method is intended only for debugging purposes.
+        /// </summary>
+        /// <returns>The current JSON path and position</returns>
         public override string ToString() {
             return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
         }
         
+        /// <summary>
+        /// Add the current JSON path to the given <see cref="str"/> buffer. E.g. "map.key1"
+        /// </summary>
+        /// <param name="str">The destination the current JSON path is added to</param>
         public void AppendPath(ref Bytes str) {
             int initialEnd = str.end;
             int lastPos = 0;
@@ -242,6 +273,10 @@ namespace Friflo.Json.Burst
             valueParser.InitValueParser();
         }
 
+        /// <summary>
+        /// Dispose all internal used arrays.
+        /// Only required when running with JSON_BURST within Unity. 
+        /// </summary>
         public void Dispose() {
             valueParser.Dispose();
             format.Dispose();
@@ -255,20 +290,30 @@ namespace Friflo.Json.Burst
             if (pathPos.IsCreated())    pathPos.Dispose();
             if (state.IsCreated())      state.Dispose();
         }
-        
+
+        /// <summary>
+        /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
+        /// </summary>
+        /// <param name="bytes">The JSON document to parse</param>
         public void InitParser(Bytes bytes) {
             InitParser (bytes.buffer, bytes.Start, bytes.Len);
         }
 
-        public void InitParser(ByteList bytes, int offset, int len) {
+        /// <summary>
+        /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
+        /// </summary>
+        /// <param name="bytes">The JSON document to parse</param>
+        /// <param name="start">The start position in bytes inside <see cref="bytes"/> where parsing starts.</param>
+        /// <param name="len">The length of bytes inside <see cref="bytes"/> which are intended to parse.</param>
+        public void InitParser(ByteList bytes, int start, int len) {
             InitContainers();
             stateLevel = 0;
             state[0] = ExpectRoot;
 
-            this.pos = offset;
-            this.startPos = offset;
+            this.pos = start;
+            this.startPos = start;
             this.buf = bytes;
-            this.bufEnd = offset + len;
+            this.bufEnd = start + len;
             skipInfo = default(SkipInfo);
             error.Clear();
         }
@@ -279,6 +324,18 @@ namespace Friflo.Json.Burst
             return ev;
         } */
 
+        /// <summary>
+        /// Used to iterate a JSON document.<br/>
+        ///
+        /// See <see cref="JsonEvent"/> for all possible events.
+        /// Depending on the returned event additional fields or methods are valid for access. E.g.<br/>
+        /// <see cref="key"/>, <see cref="value"/>, <see cref="boolValue"/>, <see cref="isFloat"/>,
+        /// <see cref="ValueAsInt"/>, <see cref="ValueAsFloat"/> and <see cref="ValueAsDouble"/><br/> 
+        /// Before starting iteration the parser need to be initialized with <see cref="InitParser(Friflo.Json.Burst.Bytes)"/>
+        /// </summary>
+        /// <returns>Returns successively all <see cref="JsonEvent"/>'s while iterating a JSON document.<br/>
+        /// After full iteration of a JSON document an additional call to <see cref="NextEvent"/>
+        /// returns <see cref="JsonEvent.EOF"/></returns>
         public JsonEvent NextEvent()
         {
             int c = ReadWhiteSpace();
@@ -778,6 +835,10 @@ namespace Friflo.Json.Burst
             return true;
         }
 
+        /// <summary>
+        /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// </summary>
         public double ValueAsDoubleStd(out bool success) {
             double result = valueParser.ParseDoubleStd(ref value, ref errVal, out success);
             if (!success)
@@ -785,6 +846,10 @@ namespace Friflo.Json.Burst
             return result;
         }
         
+        /// <summary>
+        /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// </summary>
         public double ValueAsDouble(out bool success) {
             double result = valueParser.ParseDouble(ref value, ref errVal, out success);
             if (!success) 
@@ -792,6 +857,10 @@ namespace Friflo.Json.Burst
             return result;
         }
         
+        /// <summary>
+        /// Returns the <see cref="float"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it true
+        /// </summary>
         public float ValueAsFloat(out bool success) {
             double result = valueParser.ParseDouble(ref value, ref errVal, out success);
             if (!success) 
@@ -807,6 +876,10 @@ namespace Friflo.Json.Burst
             return (float)result;
         }
         
+        /// <summary>
+        /// Returns the <see cref="long"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it false
+        /// </summary>
         public long ValueAsLong(out bool success) {
             long result = valueParser.ParseLong(ref value, ref errVal, out success);
             if ( !success)
@@ -814,6 +887,10 @@ namespace Friflo.Json.Burst
             return result;
         }
         
+        /// <summary>
+        /// Returns the <see cref="int"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> it false
+        /// </summary>
         public int ValueAsInt(out bool success) {
             int result = valueParser.ParseInt(ref value, ref errVal, out success);
             if (!success)
