@@ -40,6 +40,10 @@ namespace Friflo.Json.Burst
                 buffer = new ByteList(capacity, AllocType.Persistent);
         }
 
+        /// <summary>
+        /// Dispose all internal used arrays.
+        /// Only required when running with JSON_BURST within Unity. 
+        /// </summary>
         public void Dispose() {
             if (buffer.IsCreated())
                 buffer.Dispose();

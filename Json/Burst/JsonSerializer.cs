@@ -10,16 +10,29 @@ using Friflo.Json.Burst.Utils;
 namespace Friflo.Json.Burst
 {
     /// <summary>
-    /// The basics JSON serializer used to create a JSON document by using a set of appender methods to add
-    /// JSON objects, object members (key/ val pairs), arrays and array elements.<br/>
+    /// The JSON serializer used to create a JSON document by using a set of appender methods to add
+    /// JSON objects, object members (key/value pairs), arrays and array elements.<br/>
     ///
     /// Before using the serializer it need to be initialized with <see cref="InitSerializer()"/><br/>
-    /// To add a JSON object use <see cref="ObjectStart()"/>. Afterwards arbitrary object members can be added via
-    /// The Member...() methods. E.g by
-    /// <see cref="MemberString(ref string,ref Friflo.Json.Burst.Bytes)"/> to add 
+    /// 
+    /// To add a JSON object use <see cref="ObjectStart()"/>.
+    /// Afterwards arbitrary object members can be added via the Member...() methods.<br/>
+    /// E.g by <see cref="MemberLong(ref string,long)"/> to add a key/value pair using an integer as value type
+    /// like { "count": 11 }<br/>
+    /// After all object members are serialized <see cref="ObjectEnd()"/> closes the previous started JSON object.<br/>
+    ///
+    /// To add a JSON array use <see cref="ArrayStart()"/>
+    /// Afterwards arbitrary array elements can be added via the Element...() methods.<br/>
+    /// E.g by <see cref="ElementLong(long)"/> to add an element with an integer as value type
+    /// like [ 11 ]<br/>
+    /// After all array elements are serialized <see cref="ArrayEnd()"/> closes the previous started JSON array.<br/>
+    ///
+    /// After creating the JSON document by using the appender methods, the JSON document is available
+    /// via <exception cref="dst"></exception> 
     /// </summary>
     public partial struct JsonSerializer : IDisposable
     {
+        /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
         public  Bytes                   dst;
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
@@ -32,6 +45,10 @@ namespace Friflo.Json.Burst
             Array
         }
 
+        /// <summary>
+        /// Before starting serializing a JSON document the serializer need to be initialized with this method to
+        /// create internal buffers.
+        /// </summary>
         public void InitSerializer() {
             if (!dst.buffer.IsCreated())
                 dst.InitBytes(128);
@@ -46,6 +63,10 @@ namespace Friflo.Json.Burst
             firstEntry[0] = true;
         }
 
+        /// <summary>
+        /// Dispose all internal used buffers.
+        /// Only required when running with JSON_BURST within Unity. 
+        /// </summary>
         public void Dispose() {
             if (firstEntry.IsCreated())
                 firstEntry.Dispose();
@@ -101,6 +122,7 @@ namespace Friflo.Json.Burst
         }
 
         // ----------------------------- object with properties -----------------------------
+        /// <summary>Start a JSON object for serialization</summary>
         public void ObjectStart() {
             if (elementType[level] == ElementType.Array)
                 AddSeparator();
@@ -109,12 +131,14 @@ namespace Friflo.Json.Burst
             elementType[level] = ElementType.Object;
         }
         
+        /// <summary>Finished a previous started JSON object for serialization</summary>
         public void ObjectEnd() {
             dst.AppendChar('}');
             firstEntry[--level] = false;
         }
 
         // --- comment to enable source alignment in WinMerge
+        /// <summary>Writes the key of key/value pair where the value will be an array</summary>
         public void MemberArray(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
@@ -122,6 +146,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar2('\"', ':');
         }
         
+        /// <summary>Writes the key of key/value pair where the value will be an object</summary>
         public void MemberObject(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
@@ -129,6 +154,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar2('\"', ':');
         }
         
+        /// <summary>Writes a key/value pair where the value is a "string"</summary>
         public void MemberString(ref Str32 key, ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -141,6 +167,7 @@ namespace Friflo.Json.Burst
         
 #if !JSON_BURST
         /// <summary>
+        /// Writes a key/value pair where the value is a <see cref="string"/></summary><br/>
         /// Method cant be used in a Unity Burst Job, because of using string as parameter
         /// </summary>
         public void MemberString(ref Str32 key, string value) {
@@ -153,7 +180,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
 #endif
-        
+        /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDouble(ref Str32 key, double value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -162,6 +189,7 @@ namespace Friflo.Json.Burst
             format.AppendDbl(ref dst, value);
         }
         
+        /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
         public void MemberLong(ref Str32 key, long value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -170,6 +198,7 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref dst, value);
         }
         
+        /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBool(ref Str32 key, bool value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -178,6 +207,7 @@ namespace Friflo.Json.Burst
             format.AppendBool(ref dst, value);
         }
         
+        /// <summary>Writes a key/value pair where the value is null</summary>
         public void MemberNull(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
@@ -229,6 +259,7 @@ namespace Friflo.Json.Burst
             firstEntry[--level] = false;
         }
         
+        /// <summary>Write an array element of type "string"</summary>
         public void ElementString(ref Bytes value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -237,6 +268,7 @@ namespace Friflo.Json.Burst
         }
         
 #if !JSON_BURST
+        /// <summary>Write an array element of type <see cref="string"/></summary>
         public void ElementString(string value) {
             AddSeparator();
             dst.AppendChar('"');
@@ -244,22 +276,25 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
 #endif
-        
+        /// <summary>Write an array element of type <see cref="double"/></summary>
         public void ElementDouble(double value) {
             AddSeparator();
             format.AppendDbl(ref dst, value);
         }
         
+        /// <summary>Write an array element of type <see cref="long"/></summary>
         public void ElementLong(long value) {
             AddSeparator();
             format.AppendLong(ref dst, value);
         }
         
+        /// <summary>Write an array element of type <see cref="bool"/></summary>
         public void ElementBool(bool value) {
             AddSeparator();
             format.AppendBool(ref dst, value);
         }
         
+        /// <summary>Writes null as array element</summary>
         public void ElementNull() {
             AddSeparator();
             dst.AppendStr32(ref @null);
