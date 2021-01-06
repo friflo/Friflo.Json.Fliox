@@ -6,36 +6,37 @@ namespace Friflo.Json.Burst
     {
         /// <summary>
         /// Found an object member { "name": "John" } with a string value in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element ["John"] in case the previous event was <see cref="ArrayStart"/>.
+        /// or an array element ["John"] in case the previous event was <see cref="ArrayStart"/>.<br/>
         /// The value is available via <see cref="JsonParser.value"/>.
+        /// To get its common .NET representation as a <see cref="string"/> use <see cref="Bytes.ToString()"/><br/>  
         /// In case of an object member <see cref="JsonParser.key"/> is set.  
         /// </summary>
         ValueString,
         /// <summary>
         /// Found an object member { "count": 11 } with a number value in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element [11] in case the previous event was <see cref="ArrayStart"/>.
-        /// In case of an object member <see cref="JsonParser.key"/> is set.  
+        /// or an array element [11] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// In case of an object member <see cref="JsonParser.key"/> is set.<br/>
         ///
-        /// The value is available via <see cref="JsonParser.value"/>.
-        /// If the number is floating point number <see cref="JsonParser.isFloat"/> is set. Other the value is an integer.
-        /// To get the value as double or float use <see cref="JsonParser.ValueAsDouble"/> or <see cref="JsonParser.ValueAsFloat"/>
+        /// The value is available via <see cref="JsonParser.value"/>.<br/>
+        /// If the number is floating point number <see cref="JsonParser.isFloat"/> is set. Otherwise the value is an integer.<br/>
+        /// To get the value as <see cref="double"/> or <see cref="float"/> use <see cref="JsonParser.ValueAsDouble"/> or <see cref="JsonParser.ValueAsFloat"/><br/>
         /// To get the value as long or int use <see cref="JsonParser.ValueAsLong"/> or <see cref="JsonParser.ValueAsInt"/>
         /// </summary>
         ValueNumber,
         /// <summary>
         /// Found an object member { "isAlive": true } with a boolean value in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element [true] in case the previous event was <see cref="ArrayStart"/>.
-        /// The value is available via <see cref="JsonParser.boolValue"/>.
+        /// or an array element [true] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// The value is available via <see cref="JsonParser.boolValue"/>.<br/>
         /// In case of an object member <see cref="JsonParser.key"/> is set.
         /// </summary>
-        ValueBool,		// true, false. key is set, if inside an object
+        ValueBool,
         /// <summary>
         /// Found an object member { "spouse": null } with a null value in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element [null] in case the previous event was <see cref="ArrayStart"/>.
-        /// Additional data is not available as the only value is null.
+        /// or an array element [null] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// Additional data is not available as the only value is null.<br/>
         /// In case of an object member <see cref="JsonParser.key"/> is set.
         /// </summary>
-        ValueNull,		// key is set, if inside an object
+        ValueNull,
 	
         ObjectStart,	// key is set, if inside an object
         ObjectEnd,
@@ -44,8 +45,16 @@ namespace Friflo.Json.Burst
         ArrayEnd,
 	
         // ReSharper disable once InconsistentNaming
-        EOF,            // After iteration of a valid JSON tree NextEvent() returns JsonEvent.EOF when reaching the end of the given payload. 
-        Error,          // Notify JSON error while parsing. Calling NextEvent() after JsonEvent.EOF return JsonEvent.Error
+        /// <summary>
+        /// After iteration of a valid JSON document <see cref="JsonParser.NextEvent()"/> returns <see cref="EOF"/>
+        /// when reaching the end of the given payload.
+        /// </summary>
+        EOF,
+        /// <summary>
+        /// Notify JSON error while parsing.<br/>
+        /// Calling <see cref="JsonParser.NextEvent()"/> after <see cref="EOF"/> returns always <see cref="Error"/>
+        /// </summary>
+        Error, 
     }
 
     public struct JsonEventUtils

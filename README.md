@@ -8,19 +8,24 @@
 
 ## Features
 
-- JSON parser - namespace: **Friflo.Json.Burst**
+- JSON parser `JsonParser` - namespace: **Friflo.Json.Burst**
 	- Optimized for performance and low memory footprint
-		- No (0) allocations after a few iterations by using a few internal byte & int buffers in the parser
+		- No (0) allocations after a few iterations by using a few internal byte & int buffers
 		- Support reusing of parser instance to avoid allocations on the heap
-	- Skipping of object members and elements (array elements and values on root)  
+	- Skipping of JSON object members and elements (array elements and values on root)  
 		Provide statistics (counts) about skipped JSON entries (arrays, objects, strings, integers, numbers, booleans and nulls)
-	- Support objects, arrays and values (string, number, boolean and null) on root level
 	- Clear/Compact API
-- Object Mapper - namespace: **Friflo.Json.Managed**
-	- Support deserialization to:
-		- newly created objects
-		- passed object instances.  
-			To avoid object allocation on the heap for the given instance and all its child objects
+	- Don't throw exceptions in case of invalid JSON. Provide a concept to return gracefully in application code.
+	- No heap allocation in case invalid JSON when creating an error message
+	- Support JSON objects, arrays and values (string, number, boolean and null) on root level
+	- Compatibly to Unity Burst Jobs.  
+	  This requires not using the heap in any way. This exclude the usage of managed types like classes, strings, arrays or exceptions.
+
+- Object Mapper `JsonReader` & `JsonWriter` - namespace: **Friflo.Json.Managed**
+	- Support deserialization in two ways:
+		- Created new objects and deserialize to them which is the common practice of many object mapper implementations.
+		- Deserialize to passed object instances while reusing also their child objects referenced by fields, arrays and `List`'s. Right now not supported for `Dictionary` (maps).
+		  This avoid avoid object allocation on the heap for the given instance and all its child objects
 	- Support polymorphism
 	- Optimized for performance and low memory footprint
 		- Create an immutable Type description for each Type to invoke only the minimum required reflection calls while de-/serializing
@@ -31,9 +36,9 @@
 - Compatible to .NET Standard.
 	That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 - No dependencies to 3rd party libraries
-- Allow single quotation marks for strings
-- Expressive error messages when parsing invalid JSON
-- Compatibly to Unity Burst Jobs
+- Allow single quotation marks for strings. E.g. {'name':'John'}
+- Expressive error messages when parsing invalid JSON. E.g.  
+  `Error: JsonParser error - unexpected character - expect key. Found: v path: 'map.key1' at position: 23`
 - Small library (Friflo.Json.Burst.dll - 70kb )
 
 
