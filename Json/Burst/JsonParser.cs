@@ -14,11 +14,11 @@ using Friflo.Json.Burst.Utils;
 namespace Friflo.Json.Burst
 {
     /// <summary>
-    /// Contains the count of elements and members skipped while parsing a JSON document.
+    /// Contains the count of JSON nodes (object members and array elements) skipped while parsing a JSON document.
     ///
-    /// These numbers are categories by: arrays, booleans, floats, integers, nulls, objects and strings.
-    /// These numbers are increased while parsing while calling on of the JsonParser Skip() methods.
-    /// <see cref="JsonParser.SkipTree()"/> <see cref="JsonParser.SkipObject()"/> <see cref="JsonParser.SkipArray()"/> 
+    /// These count numbers are categorized by: arrays, booleans, floats, integers, nulls, objects and strings.
+    /// The count numbers are incremented while skipping via one of the <see cref="JsonParser"/> Skip...() methods like
+    /// <see cref="JsonParser.SkipTree()"/> and <see cref="JsonParser.SkipEvent"/>. 
     /// </summary>
     public struct SkipInfo {
         public int arrays;
@@ -683,7 +683,8 @@ namespace Friflo.Json.Burst
         }
 
         /// <summary>
-        /// Skip parsing a complete JSON node which can be object member, an array element or a value on root. 
+        /// Skip parsing a complete JSON node which can be object member, an array element or a value on root.<br/>
+        /// While skipping a tree of nodes inside a JSON document all counts inside <see cref="skipInfo"/> are incremented. 
         /// </summary>
         /// <returns>Returns true if skipping was successful</returns>
         public bool SkipTree()
@@ -790,7 +791,11 @@ namespace Friflo.Json.Burst
         
         /// <summary>
         /// Skip parsing a complete JSON node which can be object member, an array element or a value on root
-        /// with an already consumed <see cref="JsonEvent"/>  
+        /// with an already consumed <see cref="JsonEvent"/><br/>
+        /// In case of a (primitive) Value... event of <see cref="JsonEvent"/> it only increments the
+        /// related <see cref="skipInfo"/> count.<br/>
+        /// In case of <see cref="JsonEvent.ObjectStart"/> or <see cref="JsonEvent.ArrayStart"/> it skips the
+        /// whole JSON tree while incrementing the counts of <see cref="skipInfo"/> of all iterated JSON nodes. 
         /// </summary>
         /// <param name="ev">The previous consumed event returned by <see cref="NextEvent()"/></param>
         /// <returns></returns>
