@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using NUnit.Framework;
 
@@ -12,31 +13,42 @@ namespace Friflo.Json.Tests.Common.Examples
         public void ParseJson() {
             string jsonString = @"
 {
-    ""name"": ""John"",
-    ""age"":  24
+    ""name"":       ""John"",
+    ""age"":        24,
+    ""hobbies"":    [""gaming"", ""star wars""]
 }";
-            String name = "";
-            int age = 0;
+            String  name = "";
+            int     age = 0;
+            var     hobbies = new List<string>();
             
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString); 
+            
             p.InitParser(json);
-            if (p.NextEvent() == JsonEvent.ObjectStart) {
-                ReadObject read = new ReadObject();
-                while (read.NextEvent(ref p)) {
-                    if      (read.UseStr(ref p, "name")) {
-                        name = p.value.ToString();
-                    }
-                    else if (read.UseNum(ref p, "age")) {
-                        age = p.ValueAsInt(out _);
+            if (p.NextEvent() != JsonEvent.ObjectStart)
+                Fail("Expect: ObjectStart");
+
+            ReadObject readRoot = new ReadObject();
+            while (readRoot.NextEvent(ref p)) {
+                if      (readRoot.UseStr(ref p, "name")) {
+                    name = p.value.ToString();
+                }
+                else if (readRoot.UseNum(ref p, "age")) {
+                    age = p.ValueAsInt(out _);
+                }
+                else if (readRoot.UseArr(ref p, "hobbies")) { // descend to array node
+                    ReadArray readHobbies = new ReadArray();
+                    while (readHobbies.NextEvent(ref p)) {
+                        if (readHobbies.UseStr(ref p)) {
+                            hobbies.Add(p.value.ToString());
+                        }
                     }
                 }
-            } else {
-                Fail("Expect: ObjectStart");
             }
-
-            AreEqual("John",    name.ToString());
-            AreEqual(24,        age);
+            AreEqual("John",        name);
+            AreEqual(24,            age);
+            AreEqual("gaming",      hobbies[0]);
+            AreEqual("star wars",   hobbies[1]);
         }
     }
 }
