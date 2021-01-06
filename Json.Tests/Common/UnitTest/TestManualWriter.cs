@@ -2,10 +2,9 @@
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common
+namespace Friflo.Json.Tests.Common.UnitTest
 {
     public class TestManualWriter  : LeakTestsFixture
     {

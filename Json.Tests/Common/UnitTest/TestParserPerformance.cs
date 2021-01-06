@@ -2,10 +2,9 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common
+namespace Friflo.Json.Tests.Common.UnitTest
 {
     public class TestParserPerformance
     {

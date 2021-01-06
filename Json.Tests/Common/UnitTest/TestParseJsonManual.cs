@@ -3,7 +3,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 
 #if JSON_BURST
@@ -13,7 +12,7 @@ using static NUnit.Framework.Assert;
 #endif
 
 
-namespace Friflo.Json.Tests.Common
+namespace Friflo.Json.Tests.Common.UnitTest
 {
     public struct Int3
     {

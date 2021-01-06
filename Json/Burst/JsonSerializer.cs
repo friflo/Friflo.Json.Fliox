@@ -167,7 +167,7 @@ namespace Friflo.Json.Burst
         
 #if !JSON_BURST
         /// <summary>
-        /// Writes a key/value pair where the value is a <see cref="string"/></summary><br/>
+        /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// Method cant be used in a Unity Burst Job, because of using string as parameter
         /// </summary>
         public void MemberString(ref Str32 key, string value) {
