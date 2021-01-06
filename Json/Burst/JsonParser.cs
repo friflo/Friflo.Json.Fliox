@@ -300,13 +300,13 @@ namespace Friflo.Json.Burst
 		            	stateLevel--;
 		            	return JsonEvent.ObjectEnd;
 		            case  -1:
-		            	return SetError("unexpected EOF - expect key");
+		            	return SetError("unexpected EOF > expect key");
 		            case '"':
 		            	if (curState == ExpectMember)
 		            		return SetError ("expect member separator");
 		            	break;
 		            default:
-		            	return SetErrorChar("unexpected character - expect key. Found: ", (char)c);
+		            	return SetErrorChar("unexpected character > expect key. Found: ", (char)c);
 				}
 	        	// case: c == '"'
 				state[stateLevel] = ExpectMember;

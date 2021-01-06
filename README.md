@@ -28,7 +28,7 @@ The implementation strives towards maximizing CPU utilization and minimizing mem
 	  [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
 	  in the parser implementation.  
 	  In short this is the absense of using the heap in any way. This exclude the usage of managed types like classes, strings, arrays or exceptions.  
-	  To support this subset the library need be be compiled with `JSON_BURST`.  
+	  To support this subset the library need to be compiled with `JSON_BURST`.  
 	  The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
 - **Object Mapper**
@@ -37,12 +37,12 @@ The implementation strives towards maximizing CPU utilization and minimizing mem
 		- Created new objects and deserialize to them which is the common practice of many object mapper implementations.
 		- Deserialize to passed object instances while reusing also their child objects referenced by fields,
 		  arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
-		  This avoid avoid object allocation on the heap for the given instance and all its child objects
+		  This avoids object allocation on the heap for the given instance and all its child objects
 	- Support polymorphism
 	- Optimized for performance and low memory footprint
-		- Create an immutable Type description for each Type to invoke only the minimum required reflection calls while de-/serializing
+		- Create an immutable type description for each `Type` to invoke only the minimum required reflection calls while de-/serializing
 		- Support reusing of object mapper instance to avoid allocations on the heap
-	- Support the container types: arrays, List, IList, Dictionary & IDictionary
+	- Support the container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
 	- Uses internally the JSON parser mentioned above
 - UTF-8 support
 - Compatible to .NET Standard.
@@ -50,7 +50,7 @@ The implementation strives towards maximizing CPU utilization and minimizing mem
 - No dependencies to 3rd party libraries
 - Allow single quotation marks for strings. E.g. {'name':'John'}
 - Expressive error messages when parsing invalid JSON. E.g.  
-  `Error: JsonParser error - unexpected character - expect key. Found: v path: 'map.key1' at position: 23`
+  `JsonParser error - unexpected character > expect key. Found: v path: 'map.key1' at position: 23`
 - Small library (Friflo.Json.Burst.dll - 70kb )
 
 
