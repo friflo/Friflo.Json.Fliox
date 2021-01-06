@@ -1,50 +1,50 @@
 {
-	"map" : { "key1":{"val":1}, "key2" : null },
-	"map2": { "key1":{"val":1}, "key2" : null },
-	"map3": { "key1":{"val":1}, "key2" : null },
-	"map4": { "key1":{"val":1}, "key2" : null },
-	"mapDerived": { "key1":{"val":1}, "key2" : null },
-	"mapDerivedNull": { "key1":{"val":1}, "key2" : null },
-	"map5": { "key1":"str1", "key2" : null },
-	
-	"list" : [{"i64":11},null,{"i64":13},{"i64":14}],
-	"list2": [{"i64":11},null,{"i64":13},{"i64":14}],
-	"list3": [{"i64":11},null,{"i64":13},{"i64":14}],
-	"list4": [{"i64":11},null,{"i64":13},{"i64":14}],
-	"listDerived": [{"i64":11},null,{"i64":13},{"i64":14}],
-	"listDerivedNull": [{"i64":11},null,{"i64":13},{"i64":14}],
-	
-	"listStr": ["str0"],
-	"listObj": [{
-		"$type": "Sub",
-		"i64": 101
-	}],
-	
-	"arr" : [
-		{"i64":21},
-		null,
-		{"i64":23},
-		{"i64":24}
-	],
-	"i64" : 6400000000000000000,
-	"i64Neg" : -640,
-	"i32" : 32,
-	"i16" : 16,
-	"i8" : 8,
-	"dbl" : 22.5,
-	"flt" : 11.5,
-	"fltSkip" : 33.5,
-	"str" : "string-ý",
-	"escChars" : "_\"_\\_\b_\f_\r_\n_\t_",
-	"strNull" : null,
-	"n" : null,
-	"subType": {
-		"$type": "Sub",
-		"i64": 99
-	},
-	"t" : true,
-	"f" : false,
-	"sub":{"i64":1},
-	"i64Arr" : [1, 2, 3],
-	"boolArr" : [false, true]
+    "map" : { "key1":{"val":1}, "key2" : null },
+    "map2": { "key1":{"val":1}, "key2" : null },
+    "map3": { "key1":{"val":1}, "key2" : null },
+    "map4": { "key1":{"val":1}, "key2" : null },
+    "mapDerived": { "key1":{"val":1}, "key2" : null },
+    "mapDerivedNull": { "key1":{"val":1}, "key2" : null },
+    "map5": { "key1":"str1", "key2" : null },
+    
+    "list" : [{"i64":11},null,{"i64":13},{"i64":14}],
+    "list2": [{"i64":11},null,{"i64":13},{"i64":14}],
+    "list3": [{"i64":11},null,{"i64":13},{"i64":14}],
+    "list4": [{"i64":11},null,{"i64":13},{"i64":14}],
+    "listDerived": [{"i64":11},null,{"i64":13},{"i64":14}],
+    "listDerivedNull": [{"i64":11},null,{"i64":13},{"i64":14}],
+    
+    "listStr": ["str0"],
+    "listObj": [{
+        "$type": "Sub",
+        "i64": 101
+    }],
+    
+    "arr" : [
+        {"i64":21},
+        null,
+        {"i64":23},
+        {"i64":24}
+    ],
+    "i64" : 6400000000000000000,
+    "i64Neg" : -640,
+    "i32" : 32,
+    "i16" : 16,
+    "i8" : 8,
+    "dbl" : 22.5,
+    "flt" : 11.5,
+    "fltSkip" : 33.5,
+    "str" : "string-ý",
+    "escChars" : "_\"_\\_\b_\f_\r_\n_\t_",
+    "strNull" : null,
+    "n" : null,
+    "subType": {
+        "$type": "Sub",
+        "i64": 99
+    },
+    "t" : true,
+    "f" : false,
+    "sub":{"i64":1},
+    "i64Arr" : [1, 2, 3],
+    "boolArr" : [false, true]
 }

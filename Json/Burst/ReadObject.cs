@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 #if JSON_BURST
-	using Str32 = Unity.Collections.FixedString32;
+    using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
 #endif

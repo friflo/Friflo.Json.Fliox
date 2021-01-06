@@ -5,7 +5,7 @@ using System;
 #if JSON_BURST
     using Str128 = Unity.Collections.FixedString128;
 #else
-	using Str128 = System.String;
+    using Str128 = System.String;
 #endif
 
 
@@ -14,10 +14,10 @@ namespace Friflo.Json.Burst.Utils
     // Intended to be passed as ref parameter to be able notify a possible error 
     public struct ErrorCx : IDisposable
     {
-        public         	bool		throwException; // has only effect in managed code
-        public	        bool	    ErrSet  { get; private set; }
+        public          bool        throwException; // has only effect in managed code
+        public          bool        ErrSet  { get; private set; }
         public          Bytes       msg;
-        public			int			Pos     { get; private set; }
+        public          int         Pos     { get; private set; }
 
         public void InitErrorCx(int capacity) {
             msg.InitBytes(capacity);
@@ -40,9 +40,9 @@ namespace Friflo.Json.Burst.Utils
         public void Clear() {
             ErrSet = false;
         }
-	
+    
         public override String ToString () {
             return msg.ToString();
-        }	
+        }   
     }
 }

@@ -2,7 +2,7 @@
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
-	using Str32 = Unity.Collections.FixedString32;
+    using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
 #endif
@@ -11,7 +11,7 @@ namespace Friflo.Json.Burst
 {
     public partial struct JsonSerializer : IDisposable
     {
-        public  Bytes			        dst;
+        public  Bytes                   dst;
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
         private ValueArray<ElementType> elementType;
@@ -105,7 +105,7 @@ namespace Friflo.Json.Burst
             firstEntry[--level] = false;
         }
 
-		// --- comment to enable source alignment in WinMerge
+        // --- comment to enable source alignment in WinMerge
         public void PropertyArray(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');

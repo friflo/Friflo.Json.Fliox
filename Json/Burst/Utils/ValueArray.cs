@@ -12,7 +12,7 @@ namespace Friflo.Json.Burst.Utils
         public ValueArray(int size) {
             array = new Unity.Collections.NativeArray<T>(size, Unity.Collections.Allocator.Persistent);
         }
-	    
+        
         public T this[int index]
         {
             get {

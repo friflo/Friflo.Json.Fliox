@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.Utils
     {
         public static string GetBasePath() {
 #if UNITY_5_3_OR_NEWER
-	        string baseDir = UnityUtils.GetProjectFolder();
+            string baseDir = UnityUtils.GetProjectFolder();
 #else
             string baseDir = Directory.GetCurrentDirectory() + "/../../../";
 #endif

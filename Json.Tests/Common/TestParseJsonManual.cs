@@ -7,7 +7,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 #if JSON_BURST
-	using Str32 = Unity.Collections.FixedString32;
+    using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
 #endif
@@ -240,7 +240,7 @@ namespace Friflo.Json.Tests.Common
                     else if (obj.UseNum(ref p, ref nm.flt))        { flt = p.ValueAsFloat(out _); }
                 }
             }
-	        
+            
             void ReadListStr(ref JsonParser p) {
                 JsonEvent ev;
                 do {

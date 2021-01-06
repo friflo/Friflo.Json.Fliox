@@ -30,21 +30,21 @@ namespace Friflo.Json.Burst.Utils
             return bytePos == end && strPos == str.Length;
         }
         
-        private static readonly int 	m_1ooooooo = 0x80;
-        private static readonly int 	m_11oooooo = 0xc0;
-        private static readonly int 	m_111ooooo = 0xe0;
-        private static readonly int 	m_1111oooo = 0xf0;
-	
-        private static readonly int 	m_ooooo111 = 0x07;
-        private static readonly int 	m_oooo1111 = 0x0f;
-        private static readonly int 	m_ooo11111 = 0x1f;
-        private static readonly int 	m_oo111111 = 0x3f;
+        private static readonly int     m_1ooooooo = 0x80;
+        private static readonly int     m_11oooooo = 0xc0;
+        private static readonly int     m_111ooooo = 0xe0;
+        private static readonly int     m_1111oooo = 0xf0;
+    
+        private static readonly int     m_ooooo111 = 0x07;
+        private static readonly int     m_oooo1111 = 0x0f;
+        private static readonly int     m_ooo11111 = 0x1f;
+        private static readonly int     m_oo111111 = 0x3f;
         
         static int UnicodeFromUtf8Bytes(ByteList byteArray, ref int n) {
             var bytes = byteArray.array;
             int b = bytes[n++];
-		
-            if 	(b < m_1ooooooo )
+        
+            if  (b < m_1ooooooo )
             {
                 // 0000 0000 0000 007F
                 return b;

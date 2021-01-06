@@ -13,7 +13,7 @@ namespace Friflo.Json.Burst.Utils
             var allocator = AllocUtils.AsAllocator(allocType);
             array = new Unity.Collections.NativeList<byte>(size, allocator);
         }
-	    
+        
         /* public byte this[int index]
         {
             get {
