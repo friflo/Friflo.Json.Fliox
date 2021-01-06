@@ -8,6 +8,7 @@ namespace Friflo.Json.Tests.Common.Examples
 {
     public class ParseJson
     {
+        // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
 {
     ""firstName"":  ""John"",
@@ -15,7 +16,8 @@ namespace Friflo.Json.Tests.Common.Examples
     ""hobbies"":    [
         {""name"":  ""Gaming"" },
         {""name"":  ""STAR WARS""}
-    ]
+    ],
+    ""unknownMember"": { ""anotherUnknown"": 42}
 }";
         public class Buddy {
             public  string       firstName;
@@ -43,11 +45,11 @@ namespace Friflo.Json.Tests.Common.Examples
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString); 
             p.InitParser(json);
-            p.NextEvent(); // expect JsonEvent.ObjectStart
             
-            ReadBuddy(ref p, ref buddy);
-            
-            AreEqual(JsonEvent.EOF, p.NextEvent());
+            var obj = new ReadObject();
+            while (obj.NextEvent(ref p)) {
+                ReadBuddy(ref p, ref buddy);    
+            }
             if (p.error.ErrSet)
                 Fail(p.error.msg.ToString());
             AreEqual("John",        buddy.firstName);
@@ -58,7 +60,7 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
             var obj = new ReadObject();
-            while (obj.NextEvent(ref p)) {                     // descend to root object & iterate key/values
+            while (obj.NextEvent(ref p)) {
                 if      (obj.UseStr(ref p, "firstName")) {
                     buddy.firstName = p.value.ToString();
                 }
@@ -73,7 +75,7 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList) {
             var arr = new ReadArray();
-            while (arr.NextEvent(ref p)) {          // descend to hobbies array & iterate elements
+            while (arr.NextEvent(ref p)) {
                 if (arr.UseObj(ref p)) {        
                     var hobby = new Hobby();
                     ReadHobby(ref p, ref hobby);
@@ -84,7 +86,7 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadHobby(ref JsonParser p, ref Hobby hobby) {
             var obj = new ReadObject();
-            while (obj.NextEvent(ref p)) {    // descend to hobby object & iterate key/values
+            while (obj.NextEvent(ref p)) {
                 if (obj.UseStr(ref p, "name")) {
                     hobby.name = p.value.ToString();
                 }
