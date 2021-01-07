@@ -49,6 +49,7 @@ namespace Friflo.Json.Tests.Common.Examples
             p.NextEvent();
             ReadBuddy(ref p, ref buddy);    
 
+            AreEqual(JsonEvent.EOF, p.NextEvent());
             if (p.error.ErrSet)
                 Fail(p.error.msg.ToString());
             AreEqual("John",        buddy.firstName);

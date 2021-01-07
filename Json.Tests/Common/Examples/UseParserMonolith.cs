@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.Examples
                     }
                 }
             }
-
+            AreEqual(JsonEvent.EOF, p.NextEvent());
             if (p.error.ErrSet)
                 Fail(p.error.msg.ToString());
             AreEqual("John",        buddy.firstName);
