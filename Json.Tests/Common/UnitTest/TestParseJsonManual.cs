@@ -81,19 +81,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         manual.Root2(ref parser);
                         memLog.Snapshot();
                     }
-
-                    manual.AssertParseResult(ref parser);
-                    memLog.AssertNoAllocations();
-                }
-                using (ParseManual manual = new ParseManual(Default.Constructor)) {
-                    memLog.Reset();
-                    for (int i = 0; i < iterations; i++) {
-                        parser.InitParser(bytes);
-                        parser.NextEvent(); // ObjectStart
-                        manual.Root3(ref parser);
-                        memLog.Snapshot();
-                    }
-
                     manual.AssertParseResult(ref parser);
                     memLog.AssertNoAllocations();
                 }
@@ -216,29 +203,17 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 }
             }
             
-            public void Root3(ref JsonParser p) {
-                while (p.NextObjectMember()) {
-                    if      (p.IsMemberObj(ref nm.map))         { p.SkipTree(); }
-                    else if (p.IsMemberObj(ref nm.map2))        { p.SkipTree(); }
-                    else if (p.IsMemberArr(ref nm.listStr))     { ReadListStr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.arr))         { ReadArr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.boolArr))     { ReadBoolArr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.i64Arr))      { int3.Read2(ref p); }
-                    else if (p.IsMemberNum(ref nm.i64))         { i64 = p.ValueAsLong(out _); }
-                    else if (p.IsMemberNum(ref nm.i64Neg))      { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.IsMemberStr(ref nm.str))         { str.Set(ref p.value); }
-                    else if (p.IsMemberBln(ref nm.t))           { t = p.boolValue; }
-                    else if (p.IsMemberNul(ref nm.n))           { foundNull = true; }
-                    else if (p.IsMemberNum(ref nm.dbl))         { dbl = p.ValueAsDouble(out _); }
-                    else if (p.IsMemberNum(ref nm.flt))         { flt = p.ValueAsFloat(out _); }
-                }
-            }
-            
             void ReadListStr(ref JsonParser p) {
                 while (p.NextArrayElement()) {
                     p.UseElement();
                     if      (p.Event == JsonEvent.ValueString)      { strElement.Set( ref p.value); }
                     else                                            { p.SkipEvent(); }
+                }
+            }
+            
+            void ReadListStr2(ref JsonParser p) {
+                while (p.NextArrayElement()) {
+                    if      (p.IsElementStr())                 { strElement.Set( ref p.value); }
                 }
             }
             
@@ -255,13 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     if      (p.IsElementNul())                 { foundNullElement = true; }
                 }
             }
-            
-            void ReadListStr2(ref JsonParser p) {
-                while (p.NextArrayElement()) {
-                    if      (p.IsElementStr())                 { strElement.Set( ref p.value); }
-                }
-            }
-            
+
             void ReadBoolArr(ref JsonParser p) {
                 while (p.NextArrayElement()) {
                     p.UseElement();
