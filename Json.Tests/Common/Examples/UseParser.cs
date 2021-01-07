@@ -74,9 +74,8 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList) {
-            var arr = new ReadArray();
-            while (arr.NextElement(ref p)) {
-                if (arr.UseObj(ref p)) {        
+            while (p.NextArrayElement()) {
+                if (p.IsElementObj()) {        
                     var hobby = new Hobby();
                     ReadHobby(ref p, ref hobby);                // descend array element
                     hobbyList.Add(hobby);

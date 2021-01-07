@@ -26,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void Read (ref JsonParser p) {
             int index = 0;
             while (p.NextArrayElement()) {
+                p.UseElement();
                 if      (p.Event == JsonEvent.ValueNumber)  { this[index++] = p.ValueAsInt(out _); }
                 else                                        { p.SkipEvent(); }
             }
@@ -33,9 +34,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         public void Read2 (ref JsonParser p) {
             int index = 0;
-            var arr = new ReadArray();
-            while (arr.NextElement(ref p)) {
-                if (arr.UseNum(ref p))       { this[index++] = p.ValueAsInt(out _); }
+            while (p.NextArrayElement()) {
+                if (p.IsElementNum())       { this[index++] = p.ValueAsInt(out _); }
             }
         }
     }
@@ -201,10 +201,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 while (p.NextObjectMember()) {
                     if      (p.IsMemberObj(ref nm.map))       { p.SkipTree(); }
                     else if (p.IsMemberObj(ref nm.map2))      { p.SkipTree(); }
-                    else if (p.IsMemberArr(ref nm.listStr))   { ReadListStr(ref p); }
-                    else if (p.IsMemberArr(ref nm.arr))       { ReadArr(ref p); }
-                    else if (p.IsMemberArr(ref nm.boolArr))   { ReadBoolArr(ref p); }
-                    else if (p.IsMemberArr(ref nm.i64Arr))    { int3.Read(ref p); }
+                    else if (p.IsMemberArr(ref nm.listStr))   { ReadListStr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.arr))       { ReadArr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.boolArr))   { ReadBoolArr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.i64Arr))    { int3.Read2(ref p); }
                     else if (p.IsMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
                     else if (p.IsMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
                     else if (p.IsMemberStr(ref nm.str))       { str.Set(ref p.value); }
@@ -236,6 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadListStr(ref JsonParser p) {
                 while (p.NextArrayElement()) {
+                    p.UseElement();
                     if      (p.Event == JsonEvent.ValueString)      { strElement.Set( ref p.value); }
                     else                                            { p.SkipEvent(); }
                 }
@@ -243,36 +244,35 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadArr(ref JsonParser p) {
                 while (p.NextArrayElement()) {
+                    p.UseElement();
                     if      (p.Event == JsonEvent.ValueNull)        { foundNullElement = true; }
                     else                                            { p.SkipEvent(); }
                 }
             }
             
             void ReadArr2(ref JsonParser p) {
-                var arr = new ReadArray();
-                while (arr.NextElement(ref p)) {
-                    if      (arr.UseNul(ref p))                 { foundNullElement = true; }
+                while (p.NextArrayElement()) {
+                    if      (p.IsElementNul())                 { foundNullElement = true; }
                 }
             }
             
             void ReadListStr2(ref JsonParser p) {
-                var arr = new ReadArray();
-                while (arr.NextElement(ref p)) {
-                    if      (arr.UseStr(ref p))                 { strElement.Set( ref p.value); }
+                while (p.NextArrayElement()) {
+                    if      (p.IsElementStr())                 { strElement.Set( ref p.value); }
                 }
             }
             
             void ReadBoolArr(ref JsonParser p) {
                 while (p.NextArrayElement()) {
+                    p.UseElement();
                     if      (p.Event == JsonEvent.ValueBool)    { trueElement = p.boolValue; }
                     else                                        { p.SkipEvent(); }
                 }
             }
             
             void ReadBoolArr2(ref JsonParser p) {
-                var arr = new ReadArray();
-                while (arr.NextElement(ref p)) {
-                    if      (arr.UseBln(ref p))                 { trueElement = p.boolValue; }
+                while (p.NextArrayElement()) {
+                    if      (p.IsElementBln())                 { trueElement = p.boolValue; }
                 }
             }
             

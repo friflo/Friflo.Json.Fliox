@@ -49,9 +49,8 @@ namespace Friflo.Json.Tests.Common.Examples
                     if      (p.IsMemberStr("firstName"))   { buddy.firstName = p.value.ToString(); }
                     else if (p.IsMemberNum("age"))         { buddy.age = p.ValueAsInt(out _); }
                     else if (p.IsMemberArr("hobbies")) {
-                        var readHobbies = new ReadArray();
-                        while (readHobbies.NextElement(ref p)) {
-                            if (readHobbies.UseObj(ref p)) {
+                        while (p.NextArrayElement()) {
+                            if (p.IsElementObj()) {
                                 var hobby = new Hobby();
                                 while (p.NextObjectMember()) {
                                     if (p.IsMemberStr("name")) { hobby.name = p.value.ToString(); }

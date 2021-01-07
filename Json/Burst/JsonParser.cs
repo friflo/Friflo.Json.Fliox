@@ -377,6 +377,20 @@ namespace Friflo.Json.Burst
         
         public bool NextArrayElement () {
             int level = stateLevel;
+            if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
+                level--;
+            State curState = state[level];
+
+            //if (curState != ExpectEof && curState != ExpectMemberFirst && curState != ExpectMember)
+            //    throw new InvalidOperationException("JsonParser.NextObjectMember() - expect being in an object");
+
+            if (curState == State.ExpectElement) {
+                bool foundElement = (nodeFlags[level] & NodeFlags.Found) != 0;
+                if (foundElement)
+                    nodeFlags[level] &= ~NodeFlags.Found; // clear found flag for next iteration
+                else
+                    SkipEvent();
+            }
 
             JsonEvent ev = NextEvent();
             switch (ev) {
