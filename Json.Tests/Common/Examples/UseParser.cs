@@ -59,22 +59,16 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
             var obj = new ReadObject();
-            while (obj.ContinueObject(ref p)) {                      // iterate Buddy key/value pairs
-                if      (obj.UseStr(ref p, "firstName")) {
-                    buddy.firstName = p.value.ToString();
-                }
-                else if (obj.UseNum(ref p, "age")) {
-                    buddy.age = p.ValueAsInt(out _);
-                }
-                else if (obj.UseArr(ref p, "hobbies")) {        // descend hobbies array
-                    ReadHobbyList(ref p, ref buddy.hobbies);
-                }
+            while (obj.NextMember(ref p)) {
+                if      (obj.UseStr(ref p, "firstName"))    { buddy.firstName = p.value.ToString(); }
+                else if (obj.UseNum(ref p, "age"))          { buddy.age = p.ValueAsInt(out _); }
+                else if (obj.UseArr(ref p, "hobbies"))      { ReadHobbyList(ref p, ref buddy.hobbies); }
             }
         }
         
         private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList) {
             var arr = new ReadArray();
-            while (arr.ContinueArray(ref p)) {                      // iterate array elements
+            while (arr.NextElement(ref p)) {
                 if (arr.UseObj(ref p)) {        
                     var hobby = new Hobby();
                     ReadHobby(ref p, ref hobby);                // descend array element
@@ -85,10 +79,8 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadHobby(ref JsonParser p, ref Hobby hobby) {
             var obj = new ReadObject();
-            while (obj.ContinueObject(ref p)) {                      // iterate Hobby key/value pairs
-                if (obj.UseStr(ref p, "name")) {
-                    hobby.name = p.value.ToString();
-                }
+            while (obj.NextMember(ref p)) {
+                if (obj.UseStr(ref p, "name"))  { hobby.name = p.value.ToString(); }
             }
         }
     }

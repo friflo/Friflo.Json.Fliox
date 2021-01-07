@@ -45,25 +45,18 @@ namespace Friflo.Json.Tests.Common.Examples
 
             p.NextEvent();
             var readRoot = new ReadObject();
-            while (readRoot.ContinueObject(ref p)) {                     // iterate root object key/values
-                if (readRoot.UseStr(ref p, "firstName")) {
-                    buddy.firstName = p.value.ToString();
-                }
-                else if (readRoot.UseNum(ref p, "age")) {
-                    buddy.age = p.ValueAsInt(out _);
-                }
-                else if (readRoot.UseArr(ref p, "hobbies")) {        // descend hobbies array
+            while (readRoot.NextMember(ref p)) {
+                if      (readRoot.UseStr(ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
+                else if (readRoot.UseNum(ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
+                else if (readRoot.UseArr(ref p, "hobbies")) {
                     var readHobbies = new ReadArray();
-                    while (readHobbies.ContinueArray(ref p)) {           // iterate hobbies array elements
-                        if (readHobbies.UseObj(ref p)) {             // descend array element
+                    while (readHobbies.NextElement(ref p)) {
+                        if (readHobbies.UseObj(ref p)) {
                             var hobby = new Hobby();
                             var readHobby = new ReadObject();
-                            while (readHobby.ContinueObject(ref p)) {     // iterate hobby key/values
-                                if (readHobby.UseStr(ref p, "name")) {
-                                    hobby.name = p.value.ToString();
-                                }
+                            while (readHobby.NextMember(ref p)) {
+                                if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
                             }
-
                             buddy.hobbies.Add(hobby);
                         }
                     }

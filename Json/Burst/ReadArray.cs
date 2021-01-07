@@ -20,7 +20,7 @@ namespace Friflo.Json.Burst
             return $"{{ found: {foundElement} }}";
         }
 
-        public bool ContinueArray(ref JsonParser parser) {
+        public bool NextElement(ref JsonParser parser) {
             if (hasIterated) {
                 if (!foundElement) 
                     parser.SkipEvent();
