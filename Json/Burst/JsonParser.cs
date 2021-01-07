@@ -80,7 +80,7 @@ namespace Friflo.Json.Burst
         private ValueArray<int> arrIndex; // used for current path
         private ValueArray<bool> usedMember; // used for current path
 
-        public ErrorCx error;
+        public JsonError error;
 
         /// <summary>
         /// Contains the <see cref="JsonEvent"/> set by the last call to <see cref="NextEvent()"/>,
@@ -284,7 +284,7 @@ namespace Friflo.Json.Burst
             pathPos = new ValueArray<int>(32);
             arrIndex = new ValueArray<int>(32);
             usedMember = new ValueArray<bool>(32);
-            error.InitErrorCx(128);
+            error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);
             errVal.InitBytes(32);

@@ -9,17 +9,17 @@ using System;
 #endif
 
 
-namespace Friflo.Json.Burst.Utils
+namespace Friflo.Json.Burst
 {
     // Intended to be passed as ref parameter to be able notify a possible error 
-    public struct ErrorCx : IDisposable
+    public struct JsonError : IDisposable
     {
         public          bool        throwException; // has only effect in managed code
         public          bool        ErrSet  { get; private set; }
         public          Bytes       msg;
         public          int         Pos     { get; private set; }
 
-        public void InitErrorCx(int capacity) {
+        public void InitJsonError(int capacity) {
             msg.InitBytes(capacity);
         }
 

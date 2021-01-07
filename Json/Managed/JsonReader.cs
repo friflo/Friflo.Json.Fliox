@@ -18,7 +18,7 @@ namespace Friflo.Json.Managed
 
         private readonly    Bytes               type = new Bytes ("$type"); 
 
-        public              ErrorCx             Error  =>  parser.error;
+        public              JsonError           Error  =>  parser.error;
         public              SkipInfo            SkipInfo  =>  parser.skipInfo;
         
         public JsonReader(PropType.Store store)
