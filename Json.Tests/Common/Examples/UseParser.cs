@@ -45,11 +45,10 @@ namespace Friflo.Json.Tests.Common.Examples
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString); 
             p.InitParser(json);
-            
-            var obj = new ReadObject();
-            while (obj.ContinueObject(ref p)) {                      // descend root object
-                ReadBuddy(ref p, ref buddy);    
-            }
+
+            p.NextEvent();
+            ReadBuddy(ref p, ref buddy);    
+
             if (p.error.ErrSet)
                 Fail(p.error.msg.ToString());
             AreEqual("John",        buddy.firstName);

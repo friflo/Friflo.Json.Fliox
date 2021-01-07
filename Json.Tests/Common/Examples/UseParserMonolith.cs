@@ -42,35 +42,34 @@ namespace Friflo.Json.Tests.Common.Examples
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString); 
             p.InitParser(json);
-            
-            var readRoot = new ReadObject();
-            while (readRoot.ContinueObject(ref p)) {                         // descend root object
-                var readBase = new ReadObject();
-                while (readBase.ContinueObject(ref p)) {                     // iterate root object key/values
-                    if (readBase.UseStr(ref p, "firstName")) {
-                        buddy.firstName = p.value.ToString();
-                    }
-                    else if (readBase.UseNum(ref p, "age")) {
-                        buddy.age = p.ValueAsInt(out _);
-                    }
-                    else if (readBase.UseArr(ref p, "hobbies")) {        // descend hobbies array
-                        var readHobbies = new ReadArray();
-                        while (readHobbies.ContinueArray(ref p)) {           // iterate hobbies array elements
-                            if (readHobbies.UseObj(ref p)) {             // descend array element
-                                var hobby = new Hobby();
-                                var readHobby = new ReadObject();
-                                while (readHobby.ContinueObject(ref p)) {     // iterate hobby key/values
-                                    if (readHobby.UseStr(ref p, "name")) {
-                                        hobby.name = p.value.ToString();
-                                    }
-                                }
 
-                                buddy.hobbies.Add(hobby);
+            p.NextEvent();
+            var readRoot = new ReadObject();
+            while (readRoot.ContinueObject(ref p)) {                     // iterate root object key/values
+                if (readRoot.UseStr(ref p, "firstName")) {
+                    buddy.firstName = p.value.ToString();
+                }
+                else if (readRoot.UseNum(ref p, "age")) {
+                    buddy.age = p.ValueAsInt(out _);
+                }
+                else if (readRoot.UseArr(ref p, "hobbies")) {        // descend hobbies array
+                    var readHobbies = new ReadArray();
+                    while (readHobbies.ContinueArray(ref p)) {           // iterate hobbies array elements
+                        if (readHobbies.UseObj(ref p)) {             // descend array element
+                            var hobby = new Hobby();
+                            var readHobby = new ReadObject();
+                            while (readHobby.ContinueObject(ref p)) {     // iterate hobby key/values
+                                if (readHobby.UseStr(ref p, "name")) {
+                                    hobby.name = p.value.ToString();
+                                }
                             }
+
+                            buddy.hobbies.Add(hobby);
                         }
                     }
                 }
             }
+
             if (p.error.ErrSet)
                 Fail(p.error.msg.ToString());
             AreEqual("John",        buddy.firstName);

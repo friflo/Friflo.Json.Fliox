@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+using System;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
@@ -20,8 +21,12 @@ namespace Friflo.Json.Burst
         }
 
         public bool ContinueObject(ref JsonParser parser) {
-            if (!foundMember && hasIterated) {
-                parser.SkipEvent();
+            if (hasIterated) {
+                if (!foundMember)
+                    parser.SkipEvent();
+            } else {
+                if (parser.Event != JsonEvent.ObjectStart)
+                    throw new InvalidOperationException("ReadObject.ContinueObject() - expect ObjectStart on first entry");
             }
             hasIterated = true;
             foundMember = false;
