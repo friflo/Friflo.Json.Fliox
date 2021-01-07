@@ -25,8 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         public void Read (ref JsonParser p) {
             int index = 0;
-            while (p.NextArrayElement()) {
-                p.UseElement();
+            while (p.NoSkipNextArrayElement()) {
                 if      (p.Event == JsonEvent.ValueNumber)  { this[index++] = p.ValueAsInt(out _); }
                 else                                        { p.SkipEvent(); }
             }
@@ -165,8 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
             public void Root1(ref JsonParser p) {
                 ref var key = ref p.key;
-                while (p.NextObjectMember()) {
-                    p.UseMember();
+                while (p.NoSkipNextObjectMember()) {
                     if      (key.IsEqual32(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStr(ref p); }
@@ -204,8 +202,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadListStr(ref JsonParser p) {
-                while (p.NextArrayElement()) {
-                    p.UseElement();
+                while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueString)      { strElement.Set( ref p.value); }
                     else                                            { p.SkipEvent(); }
                 }
@@ -218,8 +215,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadArr(ref JsonParser p) {
-                while (p.NextArrayElement()) {
-                    p.UseElement();
+                while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueNull)        { foundNullElement = true; }
                     else                                            { p.SkipEvent(); }
                 }
@@ -232,8 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
 
             void ReadBoolArr(ref JsonParser p) {
-                while (p.NextArrayElement()) {
-                    p.UseElement();
+                while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueBool)    { trueElement = p.boolValue; }
                     else                                        { p.SkipEvent(); }
                 }

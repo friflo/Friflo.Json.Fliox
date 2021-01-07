@@ -100,22 +100,6 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        // ---
-        public void UseMember() {
-            switch (Event) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                    usedMember[stateLevel] = true;
-                    break;
-                case JsonEvent.ObjectStart:
-                case JsonEvent.ArrayStart:
-                    usedMember[stateLevel - 1] = true;
-                    break;
-            }
-        }
-
         // ----------- array element checks -----------
         public bool UseElementObj() {
             if (Event != JsonEvent.ObjectStart)
@@ -157,10 +141,6 @@ namespace Friflo.Json.Burst
                 return false;
             usedMember[stateLevel] = true;
             return true;
-        }
-
-        public void UseElement() {
-            UseMember();
         }
     }
 }

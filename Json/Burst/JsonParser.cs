@@ -395,6 +395,42 @@ namespace Friflo.Json.Burst
             }
             return false;
         }
+        
+        public bool NoSkipNextObjectMember () {
+            JsonEvent ev = NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException("unexpected ArrayEnd in JsonParser.NoSkipNextObjectMember()");
+                case JsonEvent.ObjectEnd:
+                    break;
+            }
+            return false;
+        }
+        
+        public bool NoSkipNextArrayElement () {
+            JsonEvent ev = NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    break;
+                case JsonEvent.ObjectEnd:
+                    throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NoSkipNextArrayElement()");
+            }
+            return false;
+        }
 
         /// <summary>
         /// Used to iterate a JSON document.<br/>
