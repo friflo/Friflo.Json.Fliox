@@ -51,14 +51,14 @@ namespace Friflo.Json.Tests.Common.Examples
                 else if (readRoot.UseArr(ref p, "hobbies")) {
                     var readHobbies = new ReadArray();
                     while (readHobbies.NextElement(ref p)) {
-                        if (readHobbies.UseObj(ref p)) {
-                            var hobby = new Hobby();
-                            var readHobby = new ReadObject();
-                            while (readHobby.NextMember(ref p)) {
-                                if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
-                            }
-                            buddy.hobbies.Add(hobby);
+                        if (!readHobbies.UseObj(ref p))
+                            continue;
+                        var hobby = new Hobby();
+                        var readHobby = new ReadObject();
+                        while (readHobby.NextMember(ref p)) {
+                            if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
                         }
+                        buddy.hobbies.Add(hobby);
                     }
                 }
             }
