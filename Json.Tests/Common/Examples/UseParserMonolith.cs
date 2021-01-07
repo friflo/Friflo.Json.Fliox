@@ -6,7 +6,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples
 {
-    public class ParseJsonMonolith
+    public class UseParserMonolith
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.Examples
         /// <summary>
         /// Demonstrating an anti pattern having multiple nested while loops is not recommended.
         ///
-        /// Overall fewer lines of code than <see cref="ParseJson"/> but lacks readability and is harder to maintain.
+        /// Overall fewer lines of code than <see cref="UseParser"/> but lacks readability and is harder to maintain.
         /// The sample was introduced to show the fact which may happen when evolving a JSON reader over time.   
         /// </summary>
         [Test]

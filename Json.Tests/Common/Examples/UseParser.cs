@@ -6,7 +6,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples
 {
-    public class ParseJson
+    public class UseParser
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.Examples
         /// - unit testing
         /// - enables the possibility to create readable code via a code generator
         ///
-        /// A weak example is shown at <see cref="ParseJsonMonolith"/> doing exactly the same processing. 
+        /// A weak example is shown at <see cref="UseParserMonolith"/> doing exactly the same processing. 
         /// </summary>
         [Test]
         public void ReadJson() {
