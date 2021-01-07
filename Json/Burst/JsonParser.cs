@@ -326,6 +326,48 @@ namespace Friflo.Json.Burst
             lastEvent = ev;
             return ev;
         } */
+        
+        public bool ContinueObject () {
+            NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException("unexpected ArrayEnd in ContinueObject");
+                case JsonEvent.ObjectEnd:
+                    return false;
+                default:
+                    return false;
+            }
+            // unreachable
+        }
+        
+        public bool ContinueArray () {
+            NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    return false;
+                case JsonEvent.ObjectEnd:
+                    throw new InvalidOperationException("unexpected ObjectEnd in ContinueArray");
+                default:
+                    return false;
+            }
+            // unreachable
+        }
+
+        public JsonEvent ev { get; private set; }
 
         /// <summary>
         /// Used to iterate a JSON document.<br/>
@@ -339,7 +381,11 @@ namespace Friflo.Json.Burst
         /// <returns>Returns successively all <see cref="JsonEvent"/>'s while iterating a JSON document.<br/>
         /// After full iteration of a JSON document an additional call to <see cref="NextEvent"/>
         /// returns <see cref="JsonEvent.EOF"/></returns>
-        public JsonEvent NextEvent()
+        public JsonEvent NextEvent() {
+            return ev = NextEventInt();
+        }
+
+        private JsonEvent NextEventInt()
         {
             int c = ReadWhiteSpace();
             int curState = state[stateLevel];
@@ -699,8 +745,8 @@ namespace Friflo.Json.Burst
             case ExpectElementFirst:
                 return SkipArray();
             case ExpectRoot:
-                JsonEvent ev = NextEvent();
-                return SkipEvent(ev);
+                NextEvent();
+                return SkipEvent();
             default:
                 // dont set error. It would overwrite a previous error (parser state did not change)
                 return false;
@@ -799,7 +845,7 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="ev">The previous consumed event returned by <see cref="NextEvent()"/></param>
         /// <returns></returns>
-        public bool SkipEvent (JsonEvent ev) {
+        public bool SkipEvent () {
             switch (ev) {
                 case JsonEvent.ArrayStart:
                 case JsonEvent.ObjectStart:

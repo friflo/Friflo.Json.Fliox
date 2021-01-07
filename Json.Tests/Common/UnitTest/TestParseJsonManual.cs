@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             do {
                 ev = p.NextEvent();
                 if      (ev == JsonEvent.ValueNumber)   { this[index++] = p.ValueAsInt(out _); }
-                else                                    { p.SkipEvent(ev); }
+                else                                    { p.SkipEvent(); }
             } while (p.ContinueArray(ev));
         }
         
@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
                     else if (key.IsEqual32(ref nm.dbl)      && ev == JsonEvent.ValueNumber) { dbl = p.ValueAsDouble(out _); }
                     else if (key.IsEqual32(ref nm.flt)      && ev == JsonEvent.ValueNumber) { flt = p.ValueAsFloat(out _); }
-                    else                                                                    { p.SkipEvent(ev); }
+                    else                                                                    { p.SkipEvent(); }
                 } while(p.ContinueObject(ev));
             }
             
@@ -204,20 +204,20 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 JsonEvent ev;
                 do {
                     ev = p.NextEvent();
-                    if      (p.IsObj(ev, ref nm.map))       { p.SkipTree(); }
-                    else if (p.IsObj(ev, ref nm.map2))      { p.SkipTree(); }
-                    else if (p.IsArr(ev, ref nm.listStr))   { ReadListStr(ref p); }
-                    else if (p.IsArr(ev, ref nm.arr))       { ReadArr(ref p); }
-                    else if (p.IsArr(ev, ref nm.boolArr))   { ReadBoolArr(ref p); }
-                    else if (p.IsArr(ev, ref nm.i64Arr))    { int3.Read(ref p); }
-                    else if (p.IsNum(ev, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
-                    else if (p.IsNum(ev, ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.IsStr(ev, ref nm.str))       { str.Set(ref p.value); }
-                    else if (p.IsBln(ev, ref nm.t))         { t = p.boolValue; }
-                    else if (p.IsNul(ev, ref nm.n))         { foundNull = true; }
-                    else if (p.IsNum(ev, ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
-                    else if (p.IsNum(ev, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
-                    else                                    { p.SkipEvent(ev); }
+                    if      (p.IsMemberObj(ref nm.map))       { p.SkipTree(); }
+                    else if (p.IsMemberObj(ref nm.map2))      { p.SkipTree(); }
+                    else if (p.IsMemberArr(ref nm.listStr))   { ReadListStr(ref p); }
+                    else if (p.IsMemberArr(ref nm.arr))       { ReadArr(ref p); }
+                    else if (p.IsMemberArr(ref nm.boolArr))   { ReadBoolArr(ref p); }
+                    else if (p.IsMemberArr(ref nm.i64Arr))    { int3.Read(ref p); }
+                    else if (p.IsMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (p.IsMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
+                    else if (p.IsMemberStr(ref nm.str))       { str.Set(ref p.value); }
+                    else if (p.IsMemberBln(ref nm.t))         { t = p.boolValue; }
+                    else if (p.IsMemberNul(ref nm.n))         { foundNull = true; }
+                    else if (p.IsMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
+                    else if (p.IsMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
+                    else                                      { p.SkipEvent(); }
                 } while(p.ContinueObject(ev));
             }
             
@@ -245,7 +245,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 do {
                     ev = p.NextEvent();
                     if      (ev == JsonEvent.ValueString)   { strElement.Set( ref p.value); }
-                    else                                    { p.SkipEvent(ev); }
+                    else                                    { p.SkipEvent(); }
                 } while (p.ContinueArray(ev));
             }
             
@@ -254,7 +254,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 do {
                     ev = p.NextEvent();
                     if      (ev == JsonEvent.ValueNull)     { foundNullElement = true; }
-                    else                                    { p.SkipEvent(ev); }
+                    else                                    { p.SkipEvent(); }
                 } while (p.ContinueArray(ev));
             }
             
@@ -277,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 do {
                     ev = p.NextEvent();
                     if      (ev == JsonEvent.ValueBool)     { trueElement = p.boolValue; }
-                    else                                    { p.SkipEvent(ev); }
+                    else                                    { p.SkipEvent(); }
                 } while (p.ContinueArray(ev));
             }
             
