@@ -12,15 +12,14 @@ namespace Friflo.Json.Burst
     
     public struct ReadArray
     {
-        // private JsonEvent ev; // Note: Dont make public! The intention is to use Use...() which support auto skipping
         private bool foundElement;
         private bool hasIterated;
 
-        /* public override string ToString() {
-            return $"{{ event: {ev}, found: {foundElement} }}";
-        } */
+        public override string ToString() {
+            return $"{{ found: {foundElement} }}";
+        }
 
-        public bool NextEvent(ref JsonParser parser) {
+        public bool ContinueArray(ref JsonParser parser) {
             if (!foundElement && hasIterated) {
                 parser.SkipEvent();
             }

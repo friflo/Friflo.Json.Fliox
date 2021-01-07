@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void Read2 (ref JsonParser p) {
             int index = 0;
             var arr = new ReadArray();
-            while (arr.NextEvent(ref p)) {
+            while (arr.ContinueArray(ref p)) {
                 if (arr.UseNum(ref p))       { this[index++] = p.ValueAsInt(out _); }
             }
         }
@@ -217,7 +217,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             public void Root3(ref JsonParser p) {
                 var obj = new ReadObject();
-                while (obj.NextEvent(ref p)) {
+                while (obj.ContinueObject(ref p)) {
                     if      (obj.UseObj(ref p, ref nm.map))        { p.SkipTree(); }
                     else if (obj.UseObj(ref p, ref nm.map2))       { p.SkipTree(); }
                     else if (obj.UseArr(ref p, ref nm.listStr))    { ReadListStr2(ref p); }
@@ -250,14 +250,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadArr2(ref JsonParser p) {
                 var arr = new ReadArray();
-                while (arr.NextEvent(ref p)) {
+                while (arr.ContinueArray(ref p)) {
                     if      (arr.UseNul(ref p))                 { foundNullElement = true; }
                 }
             }
             
             void ReadListStr2(ref JsonParser p) {
                 var arr = new ReadArray();
-                while (arr.NextEvent(ref p)) {
+                while (arr.ContinueArray(ref p)) {
                     if      (arr.UseStr(ref p))                 { strElement.Set( ref p.value); }
                 }
             }
@@ -271,7 +271,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadBoolArr2(ref JsonParser p) {
                 var arr = new ReadArray();
-                while (arr.NextEvent(ref p)) {
+                while (arr.ContinueArray(ref p)) {
                     if      (arr.UseBln(ref p))              { trueElement = p.boolValue; }
                 }
             }

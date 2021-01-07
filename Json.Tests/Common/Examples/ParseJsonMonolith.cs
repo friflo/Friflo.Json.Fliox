@@ -44,9 +44,9 @@ namespace Friflo.Json.Tests.Common.Examples
             p.InitParser(json);
             
             var readRoot = new ReadObject();
-            while (readRoot.NextEvent(ref p)) {                         // descend root object
+            while (readRoot.ContinueObject(ref p)) {                         // descend root object
                 var readBase = new ReadObject();
-                while (readBase.NextEvent(ref p)) {                     // iterate root object key/values
+                while (readBase.ContinueObject(ref p)) {                     // iterate root object key/values
                     if (readBase.UseStr(ref p, "firstName")) {
                         buddy.firstName = p.value.ToString();
                     }
@@ -55,11 +55,11 @@ namespace Friflo.Json.Tests.Common.Examples
                     }
                     else if (readBase.UseArr(ref p, "hobbies")) {        // descend hobbies array
                         var readHobbies = new ReadArray();
-                        while (readHobbies.NextEvent(ref p)) {           // iterate hobbies array elements
+                        while (readHobbies.ContinueArray(ref p)) {           // iterate hobbies array elements
                             if (readHobbies.UseObj(ref p)) {             // descend array element
                                 var hobby = new Hobby();
                                 var readHobby = new ReadObject();
-                                while (readHobby.NextEvent(ref p)) {     // iterate hobby key/values
+                                while (readHobby.ContinueObject(ref p)) {     // iterate hobby key/values
                                     if (readHobby.UseStr(ref p, "name")) {
                                         hobby.name = p.value.ToString();
                                     }
