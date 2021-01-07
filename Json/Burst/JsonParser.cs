@@ -78,7 +78,7 @@ namespace Friflo.Json.Burst
         private ValueArray<State> state;
         private ValueArray<int> pathPos; // used for current path
         private ValueArray<int> arrIndex; // used for current path
-        private ValueArray<NodeFlags> nodeFlags; // used for current path
+        private ValueArray<bool> usedMember; // used for current path
 
         public ErrorCx error;
 
@@ -278,7 +278,7 @@ namespace Friflo.Json.Burst
             state =  new ValueArray<State>(32);
             pathPos = new ValueArray<int>(32);
             arrIndex = new ValueArray<int>(32);
-            nodeFlags = new ValueArray<NodeFlags>(32);
+            usedMember = new ValueArray<bool>(32);
             error.InitErrorCx(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -306,7 +306,7 @@ namespace Friflo.Json.Burst
             path.Dispose();
             key.Dispose();
             error.Dispose();
-            if (nodeFlags.IsCreated())  nodeFlags.Dispose();
+            if (usedMember.IsCreated())  usedMember.Dispose();
             if (arrIndex.IsCreated())   arrIndex.Dispose();
             if (pathPos.IsCreated())    pathPos.Dispose();
             if (state.IsCreated())      state.Dispose();
@@ -330,7 +330,7 @@ namespace Friflo.Json.Burst
             InitContainers();
             stateLevel = 0;
             state[0] = State.ExpectRoot;
-            nodeFlags[0] = 0;
+            usedMember[0] = false;
 
             this.pos = start;
             this.startPos = start;
@@ -345,18 +345,12 @@ namespace Friflo.Json.Burst
             if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
                 level--;
             State curState = state[level];
-
-            //if (curState != ExpectEof && curState != ExpectMemberFirst && curState != ExpectMember)
-            //    throw new InvalidOperationException("JsonParser.NextObjectMember() - expect being in an object");
-
             if (curState == State.ExpectMember) {
-                bool foundMember = (nodeFlags[level] & NodeFlags.Found) != 0;
-                if (foundMember)
-                    nodeFlags[level] &= ~NodeFlags.Found; // clear found flag for next iteration
+                if (usedMember[level])
+                    usedMember[level] = false; // clear found flag for next iteration
                 else
                     SkipEvent();
             }
-
             JsonEvent ev = NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
@@ -371,7 +365,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ObjectEnd:
                     break;
             }
-            nodeFlags[level] = 0; // clear flags when leaving iteration loop
+            usedMember[level] = false; // clear flags when leaving iteration loop
             return false;
         }
         
@@ -380,18 +374,12 @@ namespace Friflo.Json.Burst
             if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
                 level--;
             State curState = state[level];
-
-            //if (curState != ExpectEof && curState != ExpectMemberFirst && curState != ExpectMember)
-            //    throw new InvalidOperationException("JsonParser.NextObjectMember() - expect being in an object");
-
             if (curState == State.ExpectElement) {
-                bool foundElement = (nodeFlags[level] & NodeFlags.Found) != 0;
-                if (foundElement)
-                    nodeFlags[level] &= ~NodeFlags.Found; // clear found flag for next iteration
+                if (usedMember[level])
+                    usedMember[level] = false; // clear found flag for next iteration
                 else
                     SkipEvent();
             }
-
             JsonEvent ev = NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
@@ -406,7 +394,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ObjectEnd:
                     throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NextArrayElement()");
             }
-            nodeFlags[level] = 0; // clear flags when leaving iteration loop
+            usedMember[level] = false; // clear flags when leaving iteration loop
             return false;
         }
 

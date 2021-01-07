@@ -15,28 +15,28 @@ namespace Friflo.Json.Burst
         public bool UseMemberObj(ref Str32 name) {
             if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseMemberObj(Str32 name) {
             if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         // ---
         public bool UseMemberArr(ref Str32 name) {
             if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseMemberArr(Str32 name) {
             if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
@@ -44,14 +44,14 @@ namespace Friflo.Json.Burst
         public bool UseMemberNum(ref Str32 name) {
             if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseMemberNum(Str32 name) {
             if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
@@ -59,14 +59,14 @@ namespace Friflo.Json.Burst
         public bool UseMemberStr(ref Str32 name) {
             if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseMemberStr(Str32 name) {
             if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
@@ -74,14 +74,14 @@ namespace Friflo.Json.Burst
         public bool UseMemberBln(ref Str32 name) {
             if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseMemberBln(Str32 name) {
             if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
@@ -89,14 +89,14 @@ namespace Friflo.Json.Burst
         public bool UseMemberNul(ref Str32 name) {
             if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseMemberNul(Str32 name) {
             if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
@@ -107,11 +107,11 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ValueNumber:
                 case JsonEvent.ValueBool:
                 case JsonEvent.ValueNull:
-                    nodeFlags[stateLevel] |= NodeFlags.Found;
+                    usedMember[stateLevel] = true;
                     break;
                 case JsonEvent.ObjectStart:
                 case JsonEvent.ArrayStart:
-                    nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+                    usedMember[stateLevel - 1] = true;
                     break;
             }
         }
@@ -120,56 +120,56 @@ namespace Friflo.Json.Burst
         public bool UseElementObj() {
             if (Event != JsonEvent.ObjectStart)
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseElementObj(Str32 name) {
             if (Event != JsonEvent.ObjectStart)
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseElementArr() {
             if (Event != JsonEvent.ArrayStart)
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseElementArr(Str32 name) {
             if (Event != JsonEvent.ArrayStart)
                 return false;
-            nodeFlags[stateLevel - 1] |= NodeFlags.Found;
+            usedMember[stateLevel - 1] = true;
             return true;
         }
         
         public bool UseElementNum() {
             if (Event != JsonEvent.ValueNumber)
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseElementStr() {
             if (Event != JsonEvent.ValueString)
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseElementBln() {
             if (Event != JsonEvent.ValueBool)
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
         
         public bool UseElementNul() {
             if (Event != JsonEvent.ValueNull)
                 return false;
-            nodeFlags[stateLevel] |= NodeFlags.Found;
+            usedMember[stateLevel] = true;
             return true;
         }
 
