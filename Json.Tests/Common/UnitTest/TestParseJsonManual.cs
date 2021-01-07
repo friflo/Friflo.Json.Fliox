@@ -25,12 +25,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         public void Read (ref JsonParser p) {
             int index = 0;
-            JsonEvent ev;
-            do {
-                ev = p.NextEvent();
-                if      (ev == JsonEvent.ValueNumber)   { this[index++] = p.ValueAsInt(out _); }
-                else                                    { p.SkipEvent(); }
-            } while (p.ContinueArray(ev));
+            while (p.ContinueArray()) {
+                if      (p.ev == JsonEvent.ValueNumber)     { this[index++] = p.ValueAsInt(out _); }
+                else                                        { p.SkipEvent(); }
+            }
         }
         
         public void Read2 (ref JsonParser p) {
@@ -180,30 +178,26 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
             public void Root1(ref JsonParser p) {
                 ref var key = ref p.key;
-                JsonEvent ev;
-                do {
-                    ev = p.NextEvent();
-                    if      (key.IsEqual32(ref nm.map)      && ev == JsonEvent.ObjectStart) { p.SkipTree(); }
-                    else if (key.IsEqual32(ref nm.map2)     && ev == JsonEvent.ObjectStart) { p.SkipTree(); }
-                    else if (key.IsEqual32(ref nm.listStr)  && ev == JsonEvent.ArrayStart)  { ReadListStr(ref p); }
-                    else if (key.IsEqual32(ref nm.arr)      && ev == JsonEvent.ArrayStart)  { ReadArr(ref p); }
-                    else if (key.IsEqual32(ref nm.boolArr)  && ev == JsonEvent.ArrayStart)  { ReadBoolArr(ref p); }
-                    else if (key.IsEqual32(ref nm.i64Arr)   && ev == JsonEvent.ArrayStart)  { int3.Read(ref p); }
-                    else if (key.IsEqual32(ref nm.i64)      && ev == JsonEvent.ValueNumber) { i64 = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(ref nm.i64Neg)   && ev == JsonEvent.ValueNumber) { i64Neg = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(ref nm.str)      && ev == JsonEvent.ValueString) { str.Set(ref p.value); }
-                    else if (key.IsEqual32(ref nm.t)        && ev == JsonEvent.ValueBool)   { t = p.boolValue; }
-                    else if (key.IsEqual32(ref nm.n)        && ev == JsonEvent.ValueNull)   { foundNull = true; }
-                    else if (key.IsEqual32(ref nm.dbl)      && ev == JsonEvent.ValueNumber) { dbl = p.ValueAsDouble(out _); }
-                    else if (key.IsEqual32(ref nm.flt)      && ev == JsonEvent.ValueNumber) { flt = p.ValueAsFloat(out _); }
-                    else                                                                    { p.SkipEvent(); }
-                } while(p.ContinueObject(ev));
+                while (p.ContinueObject()) {
+                    if      (key.IsEqual32(ref nm.map)      && p.ev == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32(ref nm.map2)     && p.ev == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32(ref nm.listStr)  && p.ev == JsonEvent.ArrayStart)    { ReadListStr(ref p); }
+                    else if (key.IsEqual32(ref nm.arr)      && p.ev == JsonEvent.ArrayStart)    { ReadArr(ref p); }
+                    else if (key.IsEqual32(ref nm.boolArr)  && p.ev == JsonEvent.ArrayStart)    { ReadBoolArr(ref p); }
+                    else if (key.IsEqual32(ref nm.i64Arr)   && p.ev == JsonEvent.ArrayStart)    { int3.Read(ref p); }
+                    else if (key.IsEqual32(ref nm.i64)      && p.ev == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32(ref nm.i64Neg)   && p.ev == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32(ref nm.str)      && p.ev == JsonEvent.ValueString)   { str.Set(ref p.value); }
+                    else if (key.IsEqual32(ref nm.t)        && p.ev == JsonEvent.ValueBool)     { t = p.boolValue; }
+                    else if (key.IsEqual32(ref nm.n)        && p.ev == JsonEvent.ValueNull)     { foundNull = true; }
+                    else if (key.IsEqual32(ref nm.dbl)      && p.ev == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
+                    else if (key.IsEqual32(ref nm.flt)      && p.ev == JsonEvent.ValueNumber)   { flt = p.ValueAsFloat(out _); }
+                    else                                                                        { p.SkipEvent(); }
+                }
             }
             
             public void Root2(ref JsonParser p) {
-                JsonEvent ev;
-                do {
-                    ev = p.NextEvent();
+                while (p.ContinueObject()) {
                     if      (p.IsMemberObj(ref nm.map))       { p.SkipTree(); }
                     else if (p.IsMemberObj(ref nm.map2))      { p.SkipTree(); }
                     else if (p.IsMemberArr(ref nm.listStr))   { ReadListStr(ref p); }
@@ -218,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     else if (p.IsMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
                     else if (p.IsMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                     else                                      { p.SkipEvent(); }
-                } while(p.ContinueObject(ev));
+                }
             }
             
             public void Root3(ref JsonParser p) {
@@ -241,44 +235,38 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadListStr(ref JsonParser p) {
-                JsonEvent ev;
-                do {
-                    ev = p.NextEvent();
-                    if      (ev == JsonEvent.ValueString)   { strElement.Set( ref p.value); }
-                    else                                    { p.SkipEvent(); }
-                } while (p.ContinueArray(ev));
+                while (p.ContinueArray()) {
+                    if      (p.ev == JsonEvent.ValueString)     { strElement.Set( ref p.value); }
+                    else                                        { p.SkipEvent(); }
+                }
             }
             
             void ReadArr(ref JsonParser p) {
-                JsonEvent ev;
-                do {
-                    ev = p.NextEvent();
-                    if      (ev == JsonEvent.ValueNull)     { foundNullElement = true; }
-                    else                                    { p.SkipEvent(); }
-                } while (p.ContinueArray(ev));
+                while (p.ContinueArray()) {
+                    if      (p.ev == JsonEvent.ValueNull)       { foundNullElement = true; }
+                    else                                        { p.SkipEvent(); }
+                }
             }
             
             void ReadArr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
-                    if      (arr.UseNul(ref p))              { foundNullElement = true; }
+                    if      (arr.UseNul(ref p))                 { foundNullElement = true; }
                 }
             }
             
             void ReadListStr2(ref JsonParser p) {
                 var arr = new ReadArray();
                 while (arr.NextEvent(ref p)) {
-                    if      (arr.UseStr(ref p))              { strElement.Set( ref p.value); }
+                    if      (arr.UseStr(ref p))                 { strElement.Set( ref p.value); }
                 }
             }
             
             void ReadBoolArr(ref JsonParser p) {
-                JsonEvent ev;
-                do {
-                    ev = p.NextEvent();
-                    if      (ev == JsonEvent.ValueBool)     { trueElement = p.boolValue; }
-                    else                                    { p.SkipEvent(); }
-                } while (p.ContinueArray(ev));
+                while (p.ContinueArray()) {
+                    if      (p.ev == JsonEvent.ValueBool)       { trueElement = p.boolValue; }
+                    else                                        { p.SkipEvent(); }
+                }
             }
             
             void ReadBoolArr2(ref JsonParser p) {

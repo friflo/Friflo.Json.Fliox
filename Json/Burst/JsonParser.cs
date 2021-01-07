@@ -874,7 +874,7 @@ namespace Friflo.Json.Burst
             }
             return true; // unreachable
         }
-        
+        /*
         public bool ContinueObject (JsonEvent ev) {
             switch (ev) {
                 case JsonEvent.ArrayEnd:
@@ -897,7 +897,7 @@ namespace Friflo.Json.Burst
                     return false;
             }
             return true;
-        }
+        } */
 
         /// <summary>
         /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>

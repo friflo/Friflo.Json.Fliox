@@ -303,10 +303,8 @@ namespace Friflo.Json.Burst
         // ----------------- utilities
         public bool WriteObject(ref JsonParser p) {
             ObjectStart();
-            JsonEvent ev;
-            do {
-                ev = p.NextEvent();
-                switch (ev) {
+            while (p.ContinueObject()) {
+                switch (p.ev) {
                     case JsonEvent.ArrayStart:
                         MemberArrayKey(ref p.key);
                         WriteArray(ref p);
@@ -339,27 +337,28 @@ namespace Friflo.Json.Burst
                         MemberNull(ref p.key);
                         break;
                     case JsonEvent.ObjectEnd:
-                        ObjectEnd();
-                        return true;
                     case JsonEvent.ArrayEnd:
-                        // unreachable
-                        return false;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
-                        return false;
+                        throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
                 }
             }
-            while (p.ContinueObject(ev));
-            
+
+            switch (p.ev) {
+                case JsonEvent.ObjectEnd:
+                    ObjectEnd();
+                    break;
+                case JsonEvent.Error:
+                case JsonEvent.EOF:
+                    return false;
+            }
             return true;
         }
         
         public bool WriteArray(ref JsonParser p) {
             ArrayStart();
-            JsonEvent ev;
-            do {
-                ev = p.NextEvent();
-                switch (ev) {
+            while (p.ContinueArray()) {
+                switch (p.ev) {
                     case JsonEvent.ArrayStart:
                         WriteArray(ref p);
                         break;
@@ -380,18 +379,20 @@ namespace Friflo.Json.Burst
                         ElementNull();
                         break;
                     case JsonEvent.ObjectEnd:
-                        // unreachable
-                        return false;
                     case JsonEvent.ArrayEnd:
-                        ArrayEnd();
-                        return true;
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
-                        return false;
+                        throw new InvalidOperationException("WriteArray() unreachable");  // because of behaviour of ContinueArray()
                 }
             }
-            while (p.ContinueArray(ev));
-            
+            switch (p.ev) {
+                case JsonEvent.ArrayEnd:
+                    ArrayEnd();
+                    break;
+                case JsonEvent.Error:
+                case JsonEvent.EOF:
+                    return false;
+            }
             return true;
         }
 
