@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.Examples
             while (p.NextArrayElement()) {
                 if (p.UseElementObj()) {        
                     var hobby = new Hobby();
-                    ReadHobby(ref p, ref hobby);                // descend array element
+                    ReadHobby(ref p, ref hobby);
                     hobbyList.Add(hobby);
                 }
             }
