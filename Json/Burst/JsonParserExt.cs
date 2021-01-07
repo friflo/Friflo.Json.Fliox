@@ -12,28 +12,28 @@ namespace Friflo.Json.Burst
     public partial struct JsonParser
     {
         // ----------- object member checks -----------
-        public bool IsMemberObj(ref Str32 name) {
+        public bool UseMemberObj(ref Str32 name) {
             if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberObj(Str32 name) {
+        public bool UseMemberObj(Str32 name) {
             if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         // ---
-        public bool IsMemberArr(ref Str32 name) {
+        public bool UseMemberArr(ref Str32 name) {
             if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberArr(Str32 name) {
+        public bool UseMemberArr(Str32 name) {
             if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
@@ -41,14 +41,14 @@ namespace Friflo.Json.Burst
         }
         
         // ---
-        public bool IsMemberNum(ref Str32 name) {
+        public bool UseMemberNum(ref Str32 name) {
             if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberNum(Str32 name) {
+        public bool UseMemberNum(Str32 name) {
             if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
@@ -56,14 +56,14 @@ namespace Friflo.Json.Burst
         }
         
         // ---
-        public bool IsMemberStr(ref Str32 name) {
+        public bool UseMemberStr(ref Str32 name) {
             if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberStr(Str32 name) {
+        public bool UseMemberStr(Str32 name) {
             if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
@@ -71,14 +71,14 @@ namespace Friflo.Json.Burst
         }
         
         // ---
-        public bool IsMemberBln(ref Str32 name) {
+        public bool UseMemberBln(ref Str32 name) {
             if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberBln(Str32 name) {
+        public bool UseMemberBln(Str32 name) {
             if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
@@ -86,14 +86,14 @@ namespace Friflo.Json.Burst
         }
         
         // ---
-        public bool IsMemberNul(ref Str32 name) {
+        public bool UseMemberNul(ref Str32 name) {
             if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsMemberNul(Str32 name) {
+        public bool UseMemberNul(Str32 name) {
             if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
@@ -117,56 +117,56 @@ namespace Friflo.Json.Burst
         }
 
         // ----------- array element checks -----------
-        public bool IsElementObj() {
+        public bool UseElementObj() {
             if (Event != JsonEvent.ObjectStart)
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementObj(Str32 name) {
+        public bool UseElementObj(Str32 name) {
             if (Event != JsonEvent.ObjectStart)
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementArr() {
+        public bool UseElementArr() {
             if (Event != JsonEvent.ArrayStart)
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementArr(Str32 name) {
+        public bool UseElementArr(Str32 name) {
             if (Event != JsonEvent.ArrayStart)
                 return false;
             nodeFlags[stateLevel - 1] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementNum() {
+        public bool UseElementNum() {
             if (Event != JsonEvent.ValueNumber)
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementStr() {
+        public bool UseElementStr() {
             if (Event != JsonEvent.ValueString)
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementBln() {
+        public bool UseElementBln() {
             if (Event != JsonEvent.ValueBool)
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;
             return true;
         }
         
-        public bool IsElementNul() {
+        public bool UseElementNul() {
             if (Event != JsonEvent.ValueNull)
                 return false;
             nodeFlags[stateLevel] |= NodeFlags.Found;

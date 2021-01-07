@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void Read2 (ref JsonParser p) {
             int index = 0;
             while (p.NextArrayElement()) {
-                if (p.IsElementNum())       { this[index++] = p.ValueAsInt(out _); }
+                if (p.UseElementNum())       { this[index++] = p.ValueAsInt(out _); }
             }
         }
     }
@@ -186,19 +186,19 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             public void Root2(ref JsonParser p) {
                 while (p.NextObjectMember()) {
-                    if      (p.IsMemberObj(ref nm.map))       { p.SkipTree(); }
-                    else if (p.IsMemberObj(ref nm.map2))      { p.SkipTree(); }
-                    else if (p.IsMemberArr(ref nm.listStr))   { ReadListStr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.arr))       { ReadArr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.boolArr))   { ReadBoolArr2(ref p); }
-                    else if (p.IsMemberArr(ref nm.i64Arr))    { int3.Read2(ref p); }
-                    else if (p.IsMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
-                    else if (p.IsMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.IsMemberStr(ref nm.str))       { str.Set(ref p.value); }
-                    else if (p.IsMemberBln(ref nm.t))         { t = p.boolValue; }
-                    else if (p.IsMemberNul(ref nm.n))         { foundNull = true; }
-                    else if (p.IsMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
-                    else if (p.IsMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
+                    if      (p.UseMemberObj(ref nm.map))       { p.SkipTree(); }
+                    else if (p.UseMemberObj(ref nm.map2))      { p.SkipTree(); }
+                    else if (p.UseMemberArr(ref nm.listStr))   { ReadListStr2(ref p); }
+                    else if (p.UseMemberArr(ref nm.arr))       { ReadArr2(ref p); }
+                    else if (p.UseMemberArr(ref nm.boolArr))   { ReadBoolArr2(ref p); }
+                    else if (p.UseMemberArr(ref nm.i64Arr))    { int3.Read2(ref p); }
+                    else if (p.UseMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (p.UseMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
+                    else if (p.UseMemberStr(ref nm.str))       { str.Set(ref p.value); }
+                    else if (p.UseMemberBln(ref nm.t))         { t = p.boolValue; }
+                    else if (p.UseMemberNul(ref nm.n))         { foundNull = true; }
+                    else if (p.UseMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
+                    else if (p.UseMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                     // else                                      { p.SkipEvent(); }
                 }
             }
@@ -213,7 +213,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadListStr2(ref JsonParser p) {
                 while (p.NextArrayElement()) {
-                    if      (p.IsElementStr())                 { strElement.Set( ref p.value); }
+                    if      (p.UseElementStr())                 { strElement.Set( ref p.value); }
                 }
             }
             
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadArr2(ref JsonParser p) {
                 while (p.NextArrayElement()) {
-                    if      (p.IsElementNul())                 { foundNullElement = true; }
+                    if      (p.UseElementNul())                 { foundNullElement = true; }
                 }
             }
 
@@ -241,7 +241,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadBoolArr2(ref JsonParser p) {
                 while (p.NextArrayElement()) {
-                    if      (p.IsElementBln())                 { trueElement = p.boolValue; }
+                    if      (p.UseElementBln())                 { trueElement = p.boolValue; }
                 }
             }
             
