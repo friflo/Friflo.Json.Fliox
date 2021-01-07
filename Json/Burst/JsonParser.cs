@@ -82,6 +82,11 @@ namespace Friflo.Json.Burst
 
         public ErrorCx error;
 
+        /// <summary>
+        /// Contains the <see cref="JsonEvent"/> set by the last call to <see cref="NextEvent()"/>,
+        /// <see cref="NextObjectMember()"/> and <see cref="NextArrayElement()"/>
+        /// </summary>
+        // Note: Did not mention NoSkipNextObjectMember() & NoSkipNextArrayElement() to avoid setting focus to these methods. 
         public JsonEvent Event { get; private set; }
 
         /// <summary>Contains the boolean value of an object member or an array element after <see cref="NextEvent()"/>
