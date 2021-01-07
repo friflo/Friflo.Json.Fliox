@@ -365,7 +365,6 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ObjectEnd:
                     break;
             }
-            usedMember[level] = false; // clear flags when leaving iteration loop
             return false;
         }
         
@@ -394,7 +393,6 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ObjectEnd:
                     throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NextArrayElement()");
             }
-            usedMember[level] = false; // clear flags when leaving iteration loop
             return false;
         }
 
