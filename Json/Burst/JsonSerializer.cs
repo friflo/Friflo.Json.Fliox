@@ -304,6 +304,7 @@ namespace Friflo.Json.Burst
         public bool WriteObject(ref JsonParser p) {
             ObjectStart();
             while (p.NextObjectMember()) {
+                p.UseMember();
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         MemberArrayKey(ref p.key);
@@ -358,6 +359,7 @@ namespace Friflo.Json.Burst
         public bool WriteArray(ref JsonParser p) {
             ArrayStart();
             while (p.NextArrayElement()) {
+                p.UseElement();
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         WriteArray(ref p);

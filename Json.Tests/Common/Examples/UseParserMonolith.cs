@@ -45,18 +45,16 @@ namespace Friflo.Json.Tests.Common.Examples
                 p.InitParser(json);
 
                 p.NextEvent();
-                var readRoot = new ReadObject();
-                while (readRoot.NextMember(ref p)) {
-                    if      (readRoot.UseStr(ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
-                    else if (readRoot.UseNum(ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
-                    else if (readRoot.UseArr(ref p, "hobbies")) {
+                while (p.NextObjectMember()) {
+                    if      (p.IsMemberStr("firstName"))   { buddy.firstName = p.value.ToString(); }
+                    else if (p.IsMemberNum("age"))         { buddy.age = p.ValueAsInt(out _); }
+                    else if (p.IsMemberArr("hobbies")) {
                         var readHobbies = new ReadArray();
                         while (readHobbies.NextElement(ref p)) {
                             if (readHobbies.UseObj(ref p)) {
                                 var hobby = new Hobby();
-                                var readHobby = new ReadObject();
-                                while (readHobby.NextMember(ref p)) {
-                                    if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
+                                while (p.NextObjectMember()) {
+                                    if (p.IsMemberStr("name")) { hobby.name = p.value.ToString(); }
                                 }
                                 buddy.hobbies.Add(hobby);
                             }

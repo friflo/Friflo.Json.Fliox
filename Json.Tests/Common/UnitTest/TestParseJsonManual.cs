@@ -179,6 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public void Root1(ref JsonParser p) {
                 ref var key = ref p.key;
                 while (p.NextObjectMember()) {
+                    p.UseMember();
                     if      (key.IsEqual32(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStr(ref p); }
@@ -211,26 +212,25 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     else if (p.IsMemberNul(ref nm.n))         { foundNull = true; }
                     else if (p.IsMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
                     else if (p.IsMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
-                    else                                      { p.SkipEvent(); }
+                    // else                                      { p.SkipEvent(); }
                 }
             }
             
             public void Root3(ref JsonParser p) {
-                var obj = new ReadObject();
-                while (obj.NextMember(ref p)) {
-                    if      (obj.UseObj(ref p, ref nm.map))         { p.SkipTree(); }
-                    else if (obj.UseObj(ref p, ref nm.map2))        { p.SkipTree(); }
-                    else if (obj.UseArr(ref p, ref nm.listStr))     { ReadListStr2(ref p); }
-                    else if (obj.UseArr(ref p, ref nm.arr))         { ReadArr2(ref p); }
-                    else if (obj.UseArr(ref p, ref nm.boolArr))     { ReadBoolArr2(ref p); }
-                    else if (obj.UseArr(ref p, ref nm.i64Arr))      { int3.Read2(ref p); }
-                    else if (obj.UseNum(ref p, ref nm.i64))         { i64 = p.ValueAsLong(out _); }
-                    else if (obj.UseNum(ref p, ref nm.i64Neg))      { i64Neg = p.ValueAsLong(out _); }
-                    else if (obj.UseStr(ref p, ref nm.str))         { str.Set(ref p.value); }
-                    else if (obj.UseBln(ref p, ref nm.t))           { t = p.boolValue; }
-                    else if (obj.UseNul(ref p, ref nm.n))           { foundNull = true; }
-                    else if (obj.UseNum(ref p, ref nm.dbl))         { dbl = p.ValueAsDouble(out _); }
-                    else if (obj.UseNum(ref p, ref nm.flt))         { flt = p.ValueAsFloat(out _); }
+                while (p.NextObjectMember()) {
+                    if      (p.IsMemberObj(ref nm.map))         { p.SkipTree(); }
+                    else if (p.IsMemberObj(ref nm.map2))        { p.SkipTree(); }
+                    else if (p.IsMemberArr(ref nm.listStr))     { ReadListStr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.arr))         { ReadArr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.boolArr))     { ReadBoolArr2(ref p); }
+                    else if (p.IsMemberArr(ref nm.i64Arr))      { int3.Read2(ref p); }
+                    else if (p.IsMemberNum(ref nm.i64))         { i64 = p.ValueAsLong(out _); }
+                    else if (p.IsMemberNum(ref nm.i64Neg))      { i64Neg = p.ValueAsLong(out _); }
+                    else if (p.IsMemberStr(ref nm.str))         { str.Set(ref p.value); }
+                    else if (p.IsMemberBln(ref nm.t))           { t = p.boolValue; }
+                    else if (p.IsMemberNul(ref nm.n))           { foundNull = true; }
+                    else if (p.IsMemberNum(ref nm.dbl))         { dbl = p.ValueAsDouble(out _); }
+                    else if (p.IsMemberNum(ref nm.flt))         { flt = p.ValueAsFloat(out _); }
                 }
             }
             

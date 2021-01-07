@@ -44,7 +44,7 @@ namespace Friflo.Json.Burst
             return ToStr128().ToString();
         }
     }
-    
+
     /// <summary>
     /// The basic JSON Parser API required to parse a JSON document.
     ///
@@ -61,63 +61,77 @@ namespace Friflo.Json.Burst
     /// </summary>
     public partial struct JsonParser : IDisposable
     {
-        private             int                 pos;
-        private             ByteList            buf;
-        private             int                 bufEnd;
-        private             int                 stateLevel;
-        private             int                 startPos;
+        [Flags]
+        enum NodeFlags : int
+        {
+            Found = 1,
+            HasIterated = 2
+        }
 
-        private             int                 preErrorState;
-        private             ValueArray<int>     state;
-        private             ValueArray<int>     pathPos;    // used for current path
-        private             ValueArray<int>     arrIndex;   // used for current path
-        public              ErrorCx             error;
-        
-        public              JsonEvent           Event { get; private set; }
+        private int pos;
+        private ByteList buf;
+        private int bufEnd;
+        private int stateLevel;
+        private int startPos;
+
+        private State preErrorState;
+        private ValueArray<State> state;
+        private ValueArray<int> pathPos; // used for current path
+        private ValueArray<int> arrIndex; // used for current path
+        private ValueArray<NodeFlags> nodeFlags; // used for current path
+
+        public ErrorCx error;
+
+        public JsonEvent Event { get; private set; }
 
         /// <summary>Contains the boolean value of an object member or an array element after <see cref="NextEvent()"/>
         /// returned <see cref="JsonEvent.ValueBool"/></summary>
-        public              bool                boolValue;
+        public bool boolValue;
+
         /// <summary>Contains the key on an object member after <see cref="NextEvent()"/> returned one of the
         /// <see cref="JsonEvent"/>'s starting with Value... and the previous event was <see cref="JsonEvent.ObjectStart"/>
         /// </summary>
-        public              Bytes               key;
+        public Bytes key;
+
         /// <summary>Contains the (string) value of an object member or an array element after <see cref="NextEvent()"/>
         /// returned <see cref="JsonEvent.ValueString"/></summary>
-        public              Bytes               value;
-        private             Bytes               path;       // used for current path storing the path segments names
-        private             Bytes               errVal;     // used for conversion of an additional value in error message creation
-        private             Bytes               getPathBuf; // MUST be used only in GetPath()
-        
-        private             ValueFormat         format;
-        private             ValueParser         valueParser;
+        public Bytes value;
 
-        private             Str32               @true;
-        private             Str32               @false;
-        private             Str32               @null;
-        private             Str32               emptyArray;
+        private Bytes path; // used for current path storing the path segments names
+        private Bytes errVal; // used for conversion of an additional value in error message creation
+        private Bytes getPathBuf; // MUST be used only in GetPath()
+
+        private ValueFormat format;
+        private ValueParser valueParser;
+
+        private Str32 @true;
+        private Str32 @false;
+        private Str32 @null;
+        private Str32 emptyArray;
         /// <summary>In case the event returned by <see cref="NextEvent()"/> was <see cref="JsonEvent.ValueNumber"/> the flag
         /// indicates that the value of an object member or array element is a floating point number (e.g. 2.34).<br/>
         /// Otherwise false indicates that the value is of an integral type (e.g. 11) 
         /// </summary>
-        public              bool                isFloat;
+        public bool isFloat;
         /// <summary>Contains number of skipped JSON nodes when using one of the Skip...() methods like <see cref="SkipTree()"/> while parsing</summary>
-        public              SkipInfo            skipInfo;
-        
-    
-        private const int   ExpectMember =          0;
-        private const int   ExpectMemberFirst =     1;
-    
-        private const int   ExpectElement =         2;
-        private const int   ExpectElementFirst =    3;
-    
-        private const int   ExpectRoot =            4; // only set at state[0]
-        private const int   ExpectEof =             5; // only set at state[0]
-        
-        private const int   JsonError =             6;
-        private const int   Finished =              7; // only set at state[0]
-    
-        /// <summary>Returns the current depth inside the JSON document while parsing</summary>
+        public SkipInfo skipInfo;
+
+
+        enum State : int {
+            ExpectMember        = 0,
+            ExpectMemberFirst   = 1,
+
+            ExpectElement       = 2,
+            ExpectElementFirst  = 3,
+
+            ExpectRoot          = 4, // only set at state[0]
+            ExpectEof           = 5, // only set at state[0]
+
+            JsonError           = 6,
+            Finished            = 7, // only set at state[0]
+        }
+
+    /// <summary>Returns the current depth inside the JSON document while parsing</summary>
         public int          GetLevel()  {   return stateLevel;      }
 
         // ---------------------- error message creation - begin
@@ -132,7 +146,7 @@ namespace Friflo.Json.Burst
         public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
             Event = JsonEvent.Error;
             preErrorState = state[stateLevel]; 
-            state[stateLevel] = JsonError;
+            state[stateLevel] = State.JsonError;
             if (error.ErrSet)
                 throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
             
@@ -222,27 +236,27 @@ namespace Friflo.Json.Burst
             int initialEnd = str.end;
             int lastPos = 0;
             int level = stateLevel;
-            bool errored = state[level] == JsonError;
+            bool errored = state[level] == State.JsonError;
             if (errored)
                 level++;
             for (int n = 1; n <= level; n++) {
-                int curState = state[n];
+                State curState = state[n];
                 int index = n;
                 if (errored && n == level) {
                     curState = preErrorState;
                     index = n - 1;
                 }
                 switch (curState) {
-                    case ExpectMember:
+                    case State.ExpectMember:
                         if (index > 1)
                             str.AppendChar('.');
                         str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
                         break;
-                    case ExpectMemberFirst:
+                    case State.ExpectMemberFirst:
                         str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
                         break;
-                    case ExpectElement:
-                    case ExpectElementFirst:
+                    case State.ExpectElement:
+                    case State.ExpectElementFirst:
                         if (arrIndex[index] != -1)
                         {
                             str.AppendChar('[');
@@ -261,9 +275,10 @@ namespace Friflo.Json.Burst
         private void InitContainers() {
             if (state.IsCreated())
                 return;
-            state =  new ValueArray<int>(32);
+            state =  new ValueArray<State>(32);
             pathPos = new ValueArray<int>(32);
             arrIndex = new ValueArray<int>(32);
+            nodeFlags = new ValueArray<NodeFlags>(32);
             error.InitErrorCx(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -291,6 +306,7 @@ namespace Friflo.Json.Burst
             path.Dispose();
             key.Dispose();
             error.Dispose();
+            if (nodeFlags.IsCreated())  nodeFlags.Dispose();
             if (arrIndex.IsCreated())   arrIndex.Dispose();
             if (pathPos.IsCreated())    pathPos.Dispose();
             if (state.IsCreated())      state.Dispose();
@@ -313,7 +329,8 @@ namespace Friflo.Json.Burst
         public void InitParser(ByteList bytes, int start, int len) {
             InitContainers();
             stateLevel = 0;
-            state[0] = ExpectRoot;
+            state[0] = State.ExpectRoot;
+            nodeFlags[0] = 0;
 
             this.pos = start;
             this.startPos = start;
@@ -324,8 +341,24 @@ namespace Friflo.Json.Burst
         }
 
         public bool NextObjectMember () {
-            NextEvent();
-            switch (Event) {
+            int level = stateLevel;
+            if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
+                level--;
+            State curState = state[level];
+
+            //if (curState != ExpectEof && curState != ExpectMemberFirst && curState != ExpectMember)
+            //    throw new InvalidOperationException("JsonParser.NextObjectMember() - expect being in an object");
+
+            if (curState == State.ExpectMember) {
+                bool foundMember = (nodeFlags[level] & NodeFlags.Found) != 0;
+                if (foundMember)
+                    nodeFlags[level] &= ~NodeFlags.Found; // clear found flag for next iteration
+                else
+                    SkipEvent();
+            }
+
+            JsonEvent ev = NextEvent();
+            switch (ev) {
                 case JsonEvent.ValueString:
                 case JsonEvent.ValueNumber:
                 case JsonEvent.ValueBool:
@@ -336,16 +369,17 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayEnd:
                     throw new InvalidOperationException("unexpected ArrayEnd in JsonParser.NextObjectMember()");
                 case JsonEvent.ObjectEnd:
-                    return false;
-                default:
-                    return false;
+                    break;
             }
-            // unreachable
+            nodeFlags[level] = 0; // clear flags when leaving iteration loop
+            return false;
         }
         
         public bool NextArrayElement () {
-            NextEvent();
-            switch (Event) {
+            int level = stateLevel;
+
+            JsonEvent ev = NextEvent();
+            switch (ev) {
                 case JsonEvent.ValueString:
                 case JsonEvent.ValueNumber:
                 case JsonEvent.ValueBool:
@@ -354,13 +388,12 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayStart:
                     return true;
                 case JsonEvent.ArrayEnd:
-                    return false;
+                    break;
                 case JsonEvent.ObjectEnd:
                     throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NextArrayElement()");
-                default:
-                    return false;
             }
-            // unreachable
+            nodeFlags[level] = 0; // clear flags when leaving iteration loop
+            return false;
         }
 
         /// <summary>
@@ -378,15 +411,15 @@ namespace Friflo.Json.Burst
         public JsonEvent NextEvent()
         {
             int c = ReadWhiteSpace();
-            int curState = state[stateLevel];
+            State curState = state[stateLevel];
             switch (curState)
             {
-            case ExpectMember:
-            case ExpectMemberFirst:
+            case State.ExpectMember:
+            case State.ExpectMemberFirst:
                 switch (c)
                 {
                     case ',':
-                        if (curState == ExpectMemberFirst)
+                        if (curState == State.ExpectMemberFirst)
                             return SetError ("unexpected member separator");
                         c = ReadWhiteSpace();
                         if (c != '"')
@@ -398,14 +431,14 @@ namespace Friflo.Json.Burst
                     case  -1:
                         return SetError("unexpected EOF > expect key");
                     case '"':
-                        if (curState == ExpectMember)
+                        if (curState == State.ExpectMember)
                             return SetError ("expect member separator");
                         break;
                     default:
                         return SetErrorChar("unexpected character > expect key. Found: ", (char)c);
                 }
                 // case: c == '"'
-                state[stateLevel] = ExpectMember;
+                state[stateLevel] = State.ExpectMember;
                 if (!ReadString(ref key))
                     return JsonEvent.Error;
                 // update current path
@@ -419,35 +452,35 @@ namespace Friflo.Json.Burst
                 c = ReadWhiteSpace();
                 break;
             
-            case ExpectElement:
-            case ExpectElementFirst:
+            case State.ExpectElement:
+            case State.ExpectElementFirst:
                 arrIndex[stateLevel]++;
                 if (c == ']')
                 {
                     stateLevel--;
                     return Event = JsonEvent.ArrayEnd;
                 }
-                if (curState == ExpectElement)
+                if (curState == State.ExpectElement)
                 {
                     if (c != ',')
                         return SetErrorChar("expected array separator ','. Found: ", (char)c);
                     c = ReadWhiteSpace();
                 }
                 else
-                    state[stateLevel] = ExpectElement;
+                    state[stateLevel] = State.ExpectElement;
                 break;
             
-            case ExpectRoot:
-                state[0] = ExpectEof;
+            case State.ExpectRoot:
+                state[0] = State.ExpectEof;
                 switch (c)
                 {
                     case '{':
                         pathPos[stateLevel+1] = pathPos[stateLevel];
-                        state[++stateLevel] = ExpectMemberFirst;
+                        state[++stateLevel] = State.ExpectMemberFirst;
                         return Event = JsonEvent.ObjectStart;
                     case '[':
                         pathPos[stateLevel+1] = pathPos[stateLevel];
-                        state[++stateLevel] = ExpectElementFirst;
+                        state[++stateLevel] = State.ExpectElementFirst;
                         arrIndex[stateLevel] = -1;
                         return Event = JsonEvent.ArrayStart;
                     case -1:
@@ -456,17 +489,17 @@ namespace Friflo.Json.Burst
                 }
                 break;
             
-            case ExpectEof:
+            case State.ExpectEof:
                 if (c == -1) {
-                    state[0] = Finished;
+                    state[0] = State.Finished;
                     return Event = JsonEvent.EOF;
                 }
                 return SetError("Expected EOF");
             
-            case Finished:
+            case State.Finished:
                 return SetError("Parsing already finished");
             
-            case JsonError:
+            case State.JsonError:
                 return JsonEvent.Error;
             }
         
@@ -479,11 +512,11 @@ namespace Friflo.Json.Burst
                     return JsonEvent.Error;
                 case '{':
                     pathPos[stateLevel+1] = pathPos[stateLevel];
-                    state[++stateLevel] = ExpectMemberFirst;
+                    state[++stateLevel] = State.ExpectMemberFirst;
                     return Event = JsonEvent.ObjectStart;
                 case '[':
                     pathPos[stateLevel+1] = pathPos[stateLevel];
-                    state[++stateLevel] = ExpectElementFirst;
+                    state[++stateLevel] = State.ExpectElementFirst;
                     arrIndex[stateLevel] = -1;
                     return Event = JsonEvent.ArrayStart;
                 case '0':   case '1':   case '2':   case '3':   case '4':
@@ -566,7 +599,7 @@ namespace Friflo.Json.Burst
                 SetErrorChar("unexpected character while reading number. Found : ", (char)c);
                 return false;
             }
-            if (state[stateLevel] != ExpectEof) 
+            if (state[stateLevel] != State.ExpectEof) 
                 return SetErrorFalse("unexpected EOF while reading number");
             value.Clear();
             value.AppendArray(ref buf, start, pos);
@@ -725,16 +758,16 @@ namespace Friflo.Json.Burst
         /// <returns>Returns true if skipping was successful</returns>
         public bool SkipTree()
         {
-            int curState = state[stateLevel];
+            State curState = state[stateLevel];
             switch (curState)
             {
-            case ExpectMember:
-            case ExpectMemberFirst:
+            case State.ExpectMember:
+            case State.ExpectMemberFirst:
                 return SkipObject();
-            case ExpectElement:
-            case ExpectElementFirst:
+            case State.ExpectElement:
+            case State.ExpectElementFirst:
                 return SkipArray();
-            case ExpectRoot:
+            case State.ExpectRoot:
                 NextEvent();
                 return SkipEvent();
             default:
