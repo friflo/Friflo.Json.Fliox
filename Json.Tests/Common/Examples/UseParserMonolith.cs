@@ -40,35 +40,43 @@ namespace Friflo.Json.Tests.Common.Examples
             Buddy buddy = new Buddy();
             
             JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString); 
-            p.InitParser(json);
+            Bytes json = new Bytes(jsonString);
+            try {
+                p.InitParser(json);
 
-            p.NextEvent();
-            var readRoot = new ReadObject();
-            while (readRoot.NextMember(ref p)) {
-                if      (readRoot.UseStr(ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
-                else if (readRoot.UseNum(ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
-                else if (readRoot.UseArr(ref p, "hobbies")) {
-                    var readHobbies = new ReadArray();
-                    while (readHobbies.NextElement(ref p)) {
-                        if (readHobbies.UseObj(ref p)) {
-                            var hobby = new Hobby();
-                            var readHobby = new ReadObject();
-                            while (readHobby.NextMember(ref p)) {
-                                if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
+                p.NextEvent();
+                var readRoot = new ReadObject();
+                while (readRoot.NextMember(ref p)) {
+                    if      (readRoot.UseStr(ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
+                    else if (readRoot.UseNum(ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
+                    else if (readRoot.UseArr(ref p, "hobbies")) {
+                        var readHobbies = new ReadArray();
+                        while (readHobbies.NextElement(ref p)) {
+                            if (readHobbies.UseObj(ref p)) {
+                                var hobby = new Hobby();
+                                var readHobby = new ReadObject();
+                                while (readHobby.NextMember(ref p)) {
+                                    if (readHobby.UseStr(ref p, "name")) { hobby.name = p.value.ToString(); }
+                                }
+                                buddy.hobbies.Add(hobby);
                             }
-                            buddy.hobbies.Add(hobby);
                         }
                     }
                 }
+                AreEqual(JsonEvent.EOF, p.NextEvent());
+                if (p.error.ErrSet)
+                    Fail(p.error.msg.ToString());
+                AreEqual("John",        buddy.firstName);
+                AreEqual(24,            buddy.age);
+                AreEqual("Gaming",      buddy.hobbies[0].name);
+                AreEqual("STAR WARS",   buddy.hobbies[1].name);
+            
             }
-            AreEqual(JsonEvent.EOF, p.NextEvent());
-            if (p.error.ErrSet)
-                Fail(p.error.msg.ToString());
-            AreEqual("John",        buddy.firstName);
-            AreEqual(24,            buddy.age);
-            AreEqual("Gaming",      buddy.hobbies[0].name);
-            AreEqual("STAR WARS",   buddy.hobbies[1].name);
+            finally {
+                // only required for Unity/JSON_BURST
+                json.Dispose(); 
+                p.Dispose();
+            }
         }
     }
 }

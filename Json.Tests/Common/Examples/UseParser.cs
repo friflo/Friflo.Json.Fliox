@@ -43,19 +43,26 @@ namespace Friflo.Json.Tests.Common.Examples
             Buddy buddy = new Buddy();
             
             JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString); 
-            p.InitParser(json);
+            Bytes json = new Bytes(jsonString);
+            try {
+                p.InitParser(json);
 
-            p.NextEvent();
-            ReadBuddy(ref p, ref buddy);    
+                p.NextEvent();
+                ReadBuddy(ref p, ref buddy);
 
-            AreEqual(JsonEvent.EOF, p.NextEvent());
-            if (p.error.ErrSet)
-                Fail(p.error.msg.ToString());
-            AreEqual("John",        buddy.firstName);
-            AreEqual(24,            buddy.age);
-            AreEqual("Gaming",      buddy.hobbies[0].name);
-            AreEqual("STAR WARS",   buddy.hobbies[1].name);
+                AreEqual(JsonEvent.EOF, p.NextEvent());
+                if (p.error.ErrSet)
+                    Fail(p.error.msg.ToString());
+                AreEqual("John", buddy.firstName);
+                AreEqual(24, buddy.age);
+                AreEqual("Gaming", buddy.hobbies[0].name);
+                AreEqual("STAR WARS", buddy.hobbies[1].name);
+            }
+            finally {
+                // only required for Unity/JSON_BURST
+                json.Dispose();
+                p.Dispose();
+            }
         }
         
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
