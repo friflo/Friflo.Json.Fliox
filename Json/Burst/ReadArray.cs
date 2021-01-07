@@ -29,7 +29,7 @@ namespace Friflo.Json.Burst
         }
         
         public bool UseObj(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ObjectStart) {
+            if (!foundElement && parser.Event == JsonEvent.ObjectStart) {
                 foundElement = true;
                 return true;
             }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Burst
         }
         
         public bool UseArr(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ArrayStart) {
+            if (!foundElement && parser.Event == JsonEvent.ArrayStart) {
                 foundElement = true;
                 return true;
             }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseNum(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ValueNumber){
+            if (!foundElement && parser.Event == JsonEvent.ValueNumber){
                 foundElement = true;
                 return true;
             }
@@ -53,7 +53,7 @@ namespace Friflo.Json.Burst
         }
         
         public bool UseStr(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ValueString) {
+            if (!foundElement && parser.Event == JsonEvent.ValueString) {
                 foundElement = true;
                 return true;
             }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Burst
         }
         
         public bool UseBln(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ValueBool) {
+            if (!foundElement && parser.Event == JsonEvent.ValueBool) {
                 foundElement = true;
                 return true;
             }
@@ -69,7 +69,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseNul(ref JsonParser parser) {
-            if (!foundElement && parser.ev == JsonEvent.ValueNull) {
+            if (!foundElement && parser.Event == JsonEvent.ValueNull) {
                 foundElement = true;
                 return true;
             }

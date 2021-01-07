@@ -304,7 +304,7 @@ namespace Friflo.Json.Burst
         public bool WriteObject(ref JsonParser p) {
             ObjectStart();
             while (p.ContinueObject()) {
-                switch (p.ev) {
+                switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         MemberArrayKey(ref p.key);
                         WriteArray(ref p);
@@ -344,7 +344,7 @@ namespace Friflo.Json.Burst
                 }
             }
 
-            switch (p.ev) {
+            switch (p.Event) {
                 case JsonEvent.ObjectEnd:
                     ObjectEnd();
                     break;
@@ -358,7 +358,7 @@ namespace Friflo.Json.Burst
         public bool WriteArray(ref JsonParser p) {
             ArrayStart();
             while (p.ContinueArray()) {
-                switch (p.ev) {
+                switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         WriteArray(ref p);
                         break;
@@ -385,7 +385,7 @@ namespace Friflo.Json.Burst
                         throw new InvalidOperationException("WriteArray() unreachable");  // because of behaviour of ContinueArray()
                 }
             }
-            switch (p.ev) {
+            switch (p.Event) {
                 case JsonEvent.ArrayEnd:
                     ArrayEnd();
                     break;

@@ -33,7 +33,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseObj(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ObjectStart && parser.key.IsEqual32(ref name)) {
+            if (!foundMember && parser.Event == JsonEvent.ObjectStart && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
             }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseArr(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ArrayStart && parser.key.IsEqual32(ref name)) {
+            if (!foundMember && parser.Event == JsonEvent.ArrayStart && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
             }
@@ -57,7 +57,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseNum(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ValueNumber && parser.key.IsEqual32(ref name)){
+            if (!foundMember && parser.Event == JsonEvent.ValueNumber && parser.key.IsEqual32(ref name)){
                 foundMember = true;
                 return true;
             }
@@ -69,7 +69,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseStr(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ValueString && parser.key.IsEqual32(ref name)) {
+            if (!foundMember && parser.Event == JsonEvent.ValueString && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
             }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseBln(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ValueBool && parser.key.IsEqual32(ref name)) {
+            if (!foundMember && parser.Event == JsonEvent.ValueBool && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
             }
@@ -93,7 +93,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool UseNul(ref JsonParser parser, ref Str32 name) {
-            if (!foundMember && parser.ev == JsonEvent.ValueNull && parser.key.IsEqual32(ref name)) {
+            if (!foundMember && parser.Event == JsonEvent.ValueNull && parser.key.IsEqual32(ref name)) {
                 foundMember = true;
                 return true;
             }

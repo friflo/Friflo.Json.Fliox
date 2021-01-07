@@ -329,7 +329,7 @@ namespace Friflo.Json.Burst
         
         public bool ContinueObject () {
             NextEvent();
-            switch (ev) {
+            switch (Event) {
                 case JsonEvent.ValueString:
                 case JsonEvent.ValueNumber:
                 case JsonEvent.ValueBool:
@@ -349,7 +349,7 @@ namespace Friflo.Json.Burst
         
         public bool ContinueArray () {
             NextEvent();
-            switch (ev) {
+            switch (Event) {
                 case JsonEvent.ValueString:
                 case JsonEvent.ValueNumber:
                 case JsonEvent.ValueBool:
@@ -367,7 +367,7 @@ namespace Friflo.Json.Burst
             // unreachable
         }
 
-        public JsonEvent ev { get; private set; }
+        public JsonEvent Event { get; private set; }
 
         /// <summary>
         /// Used to iterate a JSON document.<br/>
@@ -382,7 +382,7 @@ namespace Friflo.Json.Burst
         /// After full iteration of a JSON document an additional call to <see cref="NextEvent"/>
         /// returns <see cref="JsonEvent.EOF"/></returns>
         public JsonEvent NextEvent() {
-            return ev = NextEventInt();
+            return Event = NextEventInt();
         }
 
         private JsonEvent NextEventInt()
@@ -846,7 +846,7 @@ namespace Friflo.Json.Burst
         /// <param name="ev">The previous consumed event returned by <see cref="NextEvent()"/></param>
         /// <returns></returns>
         public bool SkipEvent () {
-            switch (ev) {
+            switch (Event) {
                 case JsonEvent.ArrayStart:
                 case JsonEvent.ObjectStart:
                     return SkipTree();
