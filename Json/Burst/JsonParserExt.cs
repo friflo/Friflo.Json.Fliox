@@ -124,21 +124,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementObj(Str32 name) {
-            if (Event != JsonEvent.ObjectStart)
-                return false;
-            usedMember[stateLevel - 1] = true;
-            return true;
-        }
-        
         public bool UseElementArr() {
-            if (Event != JsonEvent.ArrayStart)
-                return false;
-            usedMember[stateLevel - 1] = true;
-            return true;
-        }
-        
-        public bool UseElementArr(Str32 name) {
             if (Event != JsonEvent.ArrayStart)
                 return false;
             usedMember[stateLevel - 1] = true;
