@@ -31,7 +31,7 @@ namespace Friflo.Json.Burst
             }
             hasIterated = true;
             foundElement = false;
-            return parser.ContinueArray();
+            return parser.NextArrayElement();
         }
         
         public bool UseObj(ref JsonParser parser) {

@@ -30,7 +30,7 @@ namespace Friflo.Json.Burst
             }
             hasIterated = true;
             foundMember = false;
-            return parser.ContinueObject();
+            return parser.NextObjectMember();
         }
 
         public bool UseObj(ref JsonParser parser, Str32 name) {

@@ -323,7 +323,7 @@ namespace Friflo.Json.Burst
             error.Clear();
         }
 
-        public bool ContinueObject () {
+        public bool NextObjectMember () {
             NextEvent();
             switch (Event) {
                 case JsonEvent.ValueString:
@@ -334,7 +334,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayStart:
                     return true;
                 case JsonEvent.ArrayEnd:
-                    throw new InvalidOperationException("unexpected ArrayEnd in ContinueObject");
+                    throw new InvalidOperationException("unexpected ArrayEnd in JsonParser.NextObjectMember()");
                 case JsonEvent.ObjectEnd:
                     return false;
                 default:
@@ -343,7 +343,7 @@ namespace Friflo.Json.Burst
             // unreachable
         }
         
-        public bool ContinueArray () {
+        public bool NextArrayElement () {
             NextEvent();
             switch (Event) {
                 case JsonEvent.ValueString:
@@ -356,7 +356,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayEnd:
                     return false;
                 case JsonEvent.ObjectEnd:
-                    throw new InvalidOperationException("unexpected ObjectEnd in ContinueArray");
+                    throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NextArrayElement()");
                 default:
                     return false;
             }
