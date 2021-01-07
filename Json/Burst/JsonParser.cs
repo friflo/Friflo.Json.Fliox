@@ -129,6 +129,7 @@ namespace Friflo.Json.Burst
         /// <param name="value">An optional value appended after the <see cref="msg"/> to give more specific info about the error</param>
         /// <exception cref="InvalidOperationException"></exception>
         public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
+            Event = JsonEvent.Error;
             preErrorState = state[stateLevel]; 
             state[stateLevel] = JsonError;
             if (error.ErrSet)
@@ -381,11 +382,7 @@ namespace Friflo.Json.Burst
         /// <returns>Returns successively all <see cref="JsonEvent"/>'s while iterating a JSON document.<br/>
         /// After full iteration of a JSON document an additional call to <see cref="NextEvent"/>
         /// returns <see cref="JsonEvent.EOF"/></returns>
-        public JsonEvent NextEvent() {
-            return Event = NextEventInt();
-        }
-
-        private JsonEvent NextEventInt()
+        public JsonEvent NextEvent()
         {
             int c = ReadWhiteSpace();
             int curState = state[stateLevel];
@@ -404,7 +401,7 @@ namespace Friflo.Json.Burst
                         break;
                     case '}':
                         stateLevel--;
-                        return JsonEvent.ObjectEnd;
+                        return Event = JsonEvent.ObjectEnd;
                     case  -1:
                         return SetError("unexpected EOF > expect key");
                     case '"':
@@ -435,7 +432,7 @@ namespace Friflo.Json.Burst
                 if (c == ']')
                 {
                     stateLevel--;
-                    return JsonEvent.ArrayEnd;
+                    return Event = JsonEvent.ArrayEnd;
                 }
                 if (curState == ExpectElement)
                 {
@@ -454,12 +451,12 @@ namespace Friflo.Json.Burst
                     case '{':
                         pathPos[stateLevel+1] = pathPos[stateLevel];
                         state[++stateLevel] = ExpectMemberFirst;
-                        return JsonEvent.ObjectStart;
+                        return Event = JsonEvent.ObjectStart;
                     case '[':
                         pathPos[stateLevel+1] = pathPos[stateLevel];
                         state[++stateLevel] = ExpectElementFirst;
                         arrIndex[stateLevel] = -1;
-                        return JsonEvent.ArrayStart;
+                        return Event = JsonEvent.ArrayStart;
                     case -1:
                         return SetError("unexpected EOF on root");
                     // default: read following bytes as value  
@@ -469,7 +466,7 @@ namespace Friflo.Json.Burst
             case ExpectEof:
                 if (c == -1) {
                     state[0] = Finished;
-                    return JsonEvent.EOF;
+                    return Event = JsonEvent.EOF;
                 }
                 return SetError("Expected EOF");
             
@@ -485,37 +482,37 @@ namespace Friflo.Json.Burst
             {
                 case '"':
                     if (ReadString(ref value))
-                        return JsonEvent.ValueString;
+                        return Event = JsonEvent.ValueString;
                     return JsonEvent.Error;
                 case '{':
                     pathPos[stateLevel+1] = pathPos[stateLevel];
                     state[++stateLevel] = ExpectMemberFirst;
-                    return JsonEvent.ObjectStart;
+                    return Event = JsonEvent.ObjectStart;
                 case '[':
                     pathPos[stateLevel+1] = pathPos[stateLevel];
                     state[++stateLevel] = ExpectElementFirst;
                     arrIndex[stateLevel] = -1;
-                    return JsonEvent.ArrayStart;
+                    return Event = JsonEvent.ArrayStart;
                 case '0':   case '1':   case '2':   case '3':   case '4':
                 case '5':   case '6':   case '7':   case '8':   case '9':
                 case '-':   case '+':   case '.':
                     if (ReadNumber())
-                        return JsonEvent.ValueNumber;
+                        return Event = JsonEvent.ValueNumber;
                     return JsonEvent.Error;
                 case 't':
                     if (!ReadKeyword(ref @true ))
                         return JsonEvent.Error;
                     boolValue= true;
-                    return JsonEvent.ValueBool;
+                    return Event = JsonEvent.ValueBool;
                 case 'f':
                     if (!ReadKeyword(ref @false))
                         return JsonEvent.Error;
                     boolValue= false;
-                    return JsonEvent.ValueBool;
+                    return Event = JsonEvent.ValueBool;
                 case 'n':
                     if (!ReadKeyword(ref @null))
                         return JsonEvent.Error;
-                    return JsonEvent.ValueNull;
+                    return Event = JsonEvent.ValueNull;
                 case  -1:
                     return SetError("unexpected EOF while reading value");
                 default:
