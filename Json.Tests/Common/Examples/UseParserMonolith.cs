@@ -43,8 +43,7 @@ namespace Friflo.Json.Tests.Common.Examples
             Bytes json = new Bytes(jsonString);
             try {
                 p.InitParser(json);
-
-                p.NextEvent();
+                p.NextEvent(); // ObjectStart
                 while (p.NextObjectMember()) {
                     if      (p.UseMemberStr("firstName"))   { buddy.firstName = p.value.ToString(); }
                     else if (p.UseMemberNum("age"))         { buddy.age = p.ValueAsInt(out _); }
@@ -67,7 +66,6 @@ namespace Friflo.Json.Tests.Common.Examples
                 AreEqual(24,            buddy.age);
                 AreEqual("Gaming",      buddy.hobbies[0].name);
                 AreEqual("STAR WARS",   buddy.hobbies[1].name);
-            
             }
             finally {
                 // only required for Unity/JSON_BURST

@@ -46,8 +46,7 @@ namespace Friflo.Json.Tests.Common.Examples
             Bytes json = new Bytes(jsonString);
             try {
                 p.InitParser(json);
-
-                p.NextEvent();
+                p.NextEvent(); // ObjectStart
                 ReadBuddy(ref p, ref buddy);
 
                 AreEqual(JsonEvent.EOF, p.NextEvent());
