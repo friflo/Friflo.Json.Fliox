@@ -66,7 +66,6 @@ namespace Friflo.Json.Burst
         private             int                 bufEnd;
         private             int                 stateLevel;
         private             int                 startPos;
-    //  public              JsonEvent           lastEvent { get ; private set; } bad idea, lastEvent is only relevant for the api user
 
         private             int                 preErrorState;
         private             ValueArray<int>     state;
@@ -74,6 +73,8 @@ namespace Friflo.Json.Burst
         private             ValueArray<int>     arrIndex;   // used for current path
         public              ErrorCx             error;
         
+        public              JsonEvent           Event { get; private set; }
+
         /// <summary>Contains the boolean value of an object member or an array element after <see cref="NextEvent()"/>
         /// returned <see cref="JsonEvent.ValueBool"/></summary>
         public              bool                boolValue;
@@ -322,12 +323,6 @@ namespace Friflo.Json.Burst
             error.Clear();
         }
 
-        /* public JsonEvent NextEvent() {
-            JsonEvent ev = nextEvent();
-            lastEvent = ev;
-            return ev;
-        } */
-        
         public bool ContinueObject () {
             NextEvent();
             switch (Event) {
@@ -367,8 +362,6 @@ namespace Friflo.Json.Burst
             }
             // unreachable
         }
-
-        public JsonEvent Event { get; private set; }
 
         /// <summary>
         /// Used to iterate a JSON document.<br/>
