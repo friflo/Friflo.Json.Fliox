@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
@@ -65,6 +66,20 @@ namespace Friflo.Json.Burst
             @null = "null"; 
             level = 0;
             firstEntry[0] = true;
+        }
+        
+        [Conditional("DEBUG")]
+        private void AssertMember() {
+            if (nodeType[level] == NodeType.Object)
+                return;
+            throw new InvalidOperationException("Member...() method must be called method only within an object");
+        }
+        
+        [Conditional("DEBUG")]
+        private void AssertElement() {
+            if (level == 0 || nodeType[level] == NodeType.Array)
+                return;
+            throw new InvalidOperationException("Element...() method must be called method only within an array or on root level");
         }
 
         /// <summary>
@@ -146,6 +161,7 @@ namespace Friflo.Json.Burst
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
         public void MemberArrayStart(ref Str32 key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -155,6 +171,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
         public void MemberObjectStart(ref Str32 key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -164,6 +181,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
         public void MemberString(ref Str32 key, ref Bytes value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -184,6 +202,7 @@ namespace Friflo.Json.Burst
         }
 #else
         public void MemberString(string key, string value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -195,6 +214,7 @@ namespace Friflo.Json.Burst
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDouble(ref Str32 key, double value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -204,6 +224,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
         public void MemberLong(ref Str32 key, long value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -213,6 +234,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBool(ref Str32 key, bool value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -222,6 +244,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is null</summary>
         public void MemberNull(ref Str32 key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -274,6 +297,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Write an array element of type "string"</summary>
         public void ElementString(ref Bytes value) {
+            AssertElement();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
@@ -283,6 +307,7 @@ namespace Friflo.Json.Burst
 #if !JSON_BURST
         /// <summary>Write an array element of type <see cref="string"/></summary>
         public void ElementString(string value) {
+            AssertElement();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
@@ -291,24 +316,28 @@ namespace Friflo.Json.Burst
 #endif
         /// <summary>Write an array element of type <see cref="double"/></summary>
         public void ElementDouble(double value) {
+            AssertElement();
             AddSeparator();
             format.AppendDbl(ref dst, value);
         }
         
         /// <summary>Write an array element of type <see cref="long"/></summary>
         public void ElementLong(long value) {
+            AssertElement();
             AddSeparator();
             format.AppendLong(ref dst, value);
         }
         
         /// <summary>Write an array element of type <see cref="bool"/></summary>
         public void ElementBool(bool value) {
+            AssertElement();
             AddSeparator();
             format.AppendBool(ref dst, value);
         }
         
         /// <summary>Writes null as array element</summary>
         public void ElementNull() {
+            AssertElement();
             AddSeparator();
             dst.AppendStr32(ref @null);
         }

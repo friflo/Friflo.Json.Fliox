@@ -79,6 +79,7 @@ namespace Friflo.Json.Burst
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
         public void MemberArrayStart(ref Bytes key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -88,6 +89,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
         public void MemberObjectStart(ref Bytes key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -97,6 +99,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
         public void MemberString(ref Bytes key, ref Bytes value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -112,6 +115,7 @@ namespace Friflo.Json.Burst
         /// Method cant be used in a Unity Burst Job, because of using string as parameter
         /// </summary>
         public void MemberString(ref Bytes key, string value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -123,6 +127,7 @@ namespace Friflo.Json.Burst
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDouble(ref Bytes key, double value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -132,6 +137,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
         public void MemberLong(ref Bytes key, long value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -141,6 +147,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBool(ref Bytes key, bool value) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
@@ -150,6 +157,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Writes a key/value pair where the value is null</summary>
         public void MemberNull(ref Bytes key) {
+            AssertMember();
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
