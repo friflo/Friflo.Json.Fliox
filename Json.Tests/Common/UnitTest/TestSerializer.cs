@@ -94,8 +94,19 @@ namespace Friflo.Json.Tests.Common.UnitTest
             });
             Throws<InvalidOperationException>(()=> {
                 ser.InitSerializer();
-                ser.MemberBool("Test", true); // member not in object
+                ser.MemberBool("Test", true); // member not in root
             });
+            Throws<InvalidOperationException>(()=> {
+                ser.InitSerializer();
+                ser.ArrayStart();
+                ser.MemberBool("Test", true); // member not in array
+            });
+            Throws<InvalidOperationException>(()=> {
+                ser.InitSerializer();
+                ser.ObjectStart();
+                ser.ElementBool(true); // element not in object
+            });
+
 #endif
         }
     }
