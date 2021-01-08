@@ -56,7 +56,10 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - UTF-8 support
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
-- No dependencies to 3rd party libraries
+- No dependencies to 3rd party libraries.  
+  Except when compiling within Unity with **UNITY_BURST** it requires
+  [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
+  to enable using `NativeArray` & `NativeList`
 - Expressive error messages when parsing invalid JSON. E.g.  
   `JsonParser error - unexpected character > expect key. Found: v path: 'map.key1' at position: 23`
 - Small library (Friflo.Json.Burst.dll - 70kb )
@@ -80,9 +83,20 @@ with additional assertions:
 - No leaks of `native containers` are left over after tear down a unit test.  
   This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
 
+## Examples
+
+The unit test also contain a folder explaining single file (self contained) examples illustrating usage and
+anti patterns how to use (and how not to use) the `JsonParser` and `JsonSerializer`.
+
+The examples can be found at [Json.Tests/Common/Examples/](Json.Tests/Common/Examples)
+
+
 ## Performance .NET CLR (Common Language Runtime)
 
-The test cases contain also JSON parser performance tests. Various JSON examples files are parsed by iteration them from begin to end. The parser results like JSON keys and values like strings, numbers, booleans are nulls are ready to be consumed.  
+The test cases contain also JSON parser performance tests.
+Various JSON examples files are parsed by iteration them from begin to end. The parser results like JSON keys
+ and values like strings, numbers, booleans are nulls are ready to be consumed at this stage.  
+
 To reduce side effects in measurement by NUnit of throughput increase `impliedThroughput`
 at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
 
