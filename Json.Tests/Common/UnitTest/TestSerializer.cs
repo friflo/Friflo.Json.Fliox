@@ -19,6 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
 
         private void RunSerializer(ref JsonSerializer serializer) {
+            JsonSerializer ser = serializer; // capture
             {
                 serializer.InitSerializer();
                 serializer.ObjectStart();
@@ -29,17 +30,31 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 serializer.ArrayStart();
                 serializer.ArrayEnd();
                 AreEqual("[]", serializer.dst.ToString());
-            }
-            {
+            } {
                 serializer.InitSerializer();
                 serializer.ArrayStart();
                     serializer.ArrayStart();
                     serializer.ArrayEnd();
                     serializer.ArrayStart();
                     serializer.ArrayEnd();
+                    serializer.ObjectStart();
+                    serializer.ObjectEnd();
                 serializer.ArrayEnd();
-                AreEqual("[[],[]]", serializer.dst.ToString());
+                AreEqual("[[],[],{}]", serializer.dst.ToString());
             }
+#if DEBUG
+            // test DEBUG safety guards
+            Throws<InvalidOperationException>(()=> {
+                ser.InitSerializer();
+                ser.ObjectStart();
+                ser.ObjectStart();
+            });
+            Throws<InvalidOperationException>(()=> {
+                ser.InitSerializer();
+                ser.ObjectStart();
+                ser.ArrayStart();
+            });
+#endif
         }
     }
 }
