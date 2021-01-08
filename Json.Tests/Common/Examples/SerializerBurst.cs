@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.Examples
             public  int                 age;
             public  ValueList<Hobby>    hobbies;
 
-            public void Dispose() {
+            public void Dispose() { // only required for Unity/JSON_BURST
                 hobbies.Dispose();
             }
         }
