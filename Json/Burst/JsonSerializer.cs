@@ -339,7 +339,17 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-#if !JSON_BURST
+#if JSON_BURST
+        public void ElementString(Unity.Collections.FixedString128 value) {
+            strBuf.Clear();
+            strBuf.AppendStr128(ref value);
+            AssertElement();
+            AddSeparator();
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref strBuf);
+            dst.AppendChar('"');
+        }
+#else
         /// <summary>Write an array element of type <see cref="string"/></summary>
         public void ElementString(string value) {
             AssertElement();
