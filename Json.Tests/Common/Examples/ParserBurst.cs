@@ -12,7 +12,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples
 {
-    public class UseParserBurst
+    public class ParserBurst
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
