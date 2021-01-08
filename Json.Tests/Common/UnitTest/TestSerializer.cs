@@ -113,35 +113,35 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     ser.MemberBool("Test", true); // member not in root
                 });
-                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+                AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ArrayStart();
                     ser.MemberBool("Test", true); // member not in array
                 });
-                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+                AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ObjectStart();
                     ser.ElementBool(true); // element not in object
                 });
-                AreEqual("Element...() methods and ArrayEnd() must be called method only within an array or on root level", e.Message);
+                AreEqual("Element...() methods and ArrayEnd() must be called only within an array or on root level", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ObjectStart();
                     ser.ArrayEnd();
                 });
-                AreEqual("Element...() methods and ArrayEnd() must be called method only within an array or on root level", e.Message);
+                AreEqual("Element...() methods and ArrayEnd() must be called only within an array or on root level", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(() => {
                     ser.InitSerializer();
                     ser.ArrayStart();
                     ser.ObjectEnd();
                 });
-                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+                AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
             }
 #endif
         }

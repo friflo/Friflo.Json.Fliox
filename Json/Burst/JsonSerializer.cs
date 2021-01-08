@@ -79,14 +79,14 @@ namespace Friflo.Json.Burst
             startGuard[level] = false;
             if (nodeType[level] == NodeType.Object)
                 return;
-            throw new InvalidOperationException("Member...() methods and ObjectEnd() must be called method only within an object");
+            throw new InvalidOperationException("Member...() methods and ObjectEnd() must be called only within an object");
         }
         
         [Conditional("DEBUG")]
         private void AssertElement() {
             if (level == 0 || nodeType[level] == NodeType.Array)
                 return;
-            throw new InvalidOperationException("Element...() methods and ArrayEnd() must be called method only within an array or on root level");
+            throw new InvalidOperationException("Element...() methods and ArrayEnd() must be called only within an array or on root level");
         }
         
         [Conditional("DEBUG")]
