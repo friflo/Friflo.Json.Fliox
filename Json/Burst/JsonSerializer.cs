@@ -4,7 +4,6 @@ using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
 #endif
@@ -72,14 +71,14 @@ namespace Friflo.Json.Burst
         private void AssertMember() {
             if (nodeType[level] == NodeType.Object)
                 return;
-            throw new InvalidOperationException("Member...() method must be called method only within an object");
+            throw new InvalidOperationException("Member...() methods and ObjectEnd() must be called method only within an object");
         }
         
         [Conditional("DEBUG")]
         private void AssertElement() {
             if (level == 0 || nodeType[level] == NodeType.Array)
                 return;
-            throw new InvalidOperationException("Element...() method must be called method only within an array or on root level");
+            throw new InvalidOperationException("Element...() methods and ArrayEnd() must be called method only within an array or on root level");
         }
 
         /// <summary>
@@ -154,6 +153,7 @@ namespace Friflo.Json.Burst
         
         /// <summary>Finished a previous started JSON object for serialization</summary>
         public void ObjectEnd() {
+            AssertMember();
             dst.AppendChar('}');
             firstEntry[--level] = false;
         }
@@ -195,7 +195,7 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberString(Str32 key, Str128 value) {
+        public void MemberString(Str32 key, Unity.Collections.FixedString128 value) {
             strBuf.Clear();
             strBuf.AppendStr128(ref value);
             MemberString(ref key, ref strBuf);
@@ -291,6 +291,7 @@ namespace Friflo.Json.Burst
         }
         
         public void ArrayEnd() {
+            AssertElement();
             dst.AppendChar(']');
             firstEntry[--level] = false;
         }
