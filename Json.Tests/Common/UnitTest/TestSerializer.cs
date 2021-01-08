@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 s.ObjectStart();
                 s.ObjectEnd();
                 AreEqual("{}", s.dst.ToString());
+                AreEqual(0, s.Level);
             } {
                 s.InitSerializer();
                 s.ArrayStart();
@@ -113,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     ser.MemberBool("Test", true); // member not in root
                 });
-                AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
+                AreEqual("Member...() methods and ObjectEnd() must not be called on root level", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
@@ -142,6 +143,18 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.ObjectEnd();
                 });
                 AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(() => {
+                    ser.InitSerializer();
+                    ser.ObjectEnd();
+                });
+                AreEqual("Member...() methods and ObjectEnd() must not be called on root level", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(() => {
+                    ser.InitSerializer();
+                    ser.ArrayEnd();
+                });
+                AreEqual("ArrayEnd...() must not be called below root level", e.Message);
             }
 #endif
         }

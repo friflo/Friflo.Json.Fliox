@@ -34,14 +34,16 @@ namespace Friflo.Json.Burst
     public partial struct JsonSerializer : IDisposable
     {
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
-        public  Bytes                   dst;
-        private ValueFormat             format;
-        private ValueArray<bool>        firstEntry;
-        private ValueArray<bool>        startGuard;
-        private ValueArray<NodeType>    nodeType;
-        private Bytes                   strBuf;
-        private int                     level;
-        private Str32                   @null;
+        public      Bytes                   dst;
+        private     ValueFormat             format;
+        private     ValueArray<bool>        firstEntry;
+        private     ValueArray<bool>        startGuard;
+        private     ValueArray<NodeType>    nodeType;
+        private     Bytes                   strBuf;
+        private     int                     level;
+        private     Str32                   @null;
+
+        public      int                     Level => level;
 
         enum NodeType {
             Undefined,
@@ -76,6 +78,8 @@ namespace Friflo.Json.Burst
         
         [Conditional("DEBUG")]
         private void AssertMember() {
+            if (level == 0)
+                throw new InvalidOperationException("Member...() methods and ObjectEnd() must not be called on root level");
             startGuard[level] = false;
             if (nodeType[level] == NodeType.Object)
                 return;
@@ -104,7 +108,7 @@ namespace Friflo.Json.Burst
         private void ClearStartGuard() {
             startGuard[level] = false;
         }
-
+        
         /// <summary>
         /// Dispose all internal used buffers.
         /// Only required when running with JSON_BURST within Unity. 
@@ -325,6 +329,8 @@ namespace Friflo.Json.Burst
         }
         
         public void ArrayEnd() {
+            if (level == 0)
+                throw new InvalidOperationException("ArrayEnd...() must not be called below root level");
             AssertElement();
             dst.AppendChar(']');
             firstEntry[--level] = false;
