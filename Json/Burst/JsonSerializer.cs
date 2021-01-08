@@ -44,6 +44,7 @@ namespace Friflo.Json.Burst
         private Str32                   @null;
 
         enum NodeType {
+            Undefined,
             Object,
             Array
         }
@@ -70,6 +71,7 @@ namespace Friflo.Json.Burst
             @null = "null"; 
             level = 0;
             firstEntry[0] = true;
+            nodeType[0] = NodeType.Undefined;
         }
         
         [Conditional("DEBUG")]
