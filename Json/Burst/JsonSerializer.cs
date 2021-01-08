@@ -154,11 +154,12 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObject(ref Str32 key) {
+        public void MemberObjectStart(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            ObjectStart();
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
@@ -233,8 +234,8 @@ namespace Friflo.Json.Burst
             MemberArrayStart(ref key);
         }
         
-        public void MemberObjectKey(Str32 key) {
-            MemberObject(ref key);
+        public void MemberObjectStart(Str32 key) {
+            MemberObjectStart(ref key);
         }
         
         public void MemberString(Str32 key, ref Bytes value) {
@@ -314,7 +315,6 @@ namespace Friflo.Json.Burst
         
         // ----------------- utilities
         public bool WriteObject(ref JsonParser p) {
-            ObjectStart();
             while (p.NoSkipNextObjectMember()) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -322,7 +322,7 @@ namespace Friflo.Json.Burst
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        MemberObjectKey(ref p.key);
+                        MemberObjectStart(ref p.key);
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
@@ -375,6 +375,7 @@ namespace Friflo.Json.Burst
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
+                        ObjectStart();
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
@@ -412,6 +413,7 @@ namespace Friflo.Json.Burst
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ObjectStart:
+                    ObjectStart();
                     return WriteObject(ref p);
                 case JsonEvent.ArrayStart:
                     ArrayStart();

@@ -34,6 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         parser.InitParser(bytes);
                         ser.InitSerializer();
                         parser.NextEvent(); // ObjectStart
+                        ser.ObjectStart();
                         ser.WriteObject(ref parser);
                         memLog.Snapshot();
                     }

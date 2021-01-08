@@ -87,11 +87,12 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObjectKey(ref Bytes key) {
+        public void MemberObjectStart(ref Bytes key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            ObjectStart();
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
