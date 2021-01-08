@@ -57,6 +57,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     serializer.MemberNull("null");
                 serializer.ObjectEnd();
                 AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", serializer.dst.ToString());
+            } {
+                serializer.InitSerializer();
+                serializer.ObjectStart();
+                    serializer.MemberArrayStart("array");
+                    serializer.ArrayEnd();
+                    
+                    serializer.MemberObjectStart("object");
+                    serializer.ObjectEnd();
+                serializer.ObjectEnd();
+                AreEqual("{\"array\":[],\"object\":{}}", serializer.dst.ToString());
             }
             // --- Primitives on root level ---
             {
