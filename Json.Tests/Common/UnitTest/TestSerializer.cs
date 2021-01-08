@@ -93,53 +93,56 @@ namespace Friflo.Json.Tests.Common.UnitTest
             JsonSerializer ser = s; // capture
             
             // --- test DEBUG safety guard exceptions ---
-            var e = Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ObjectStart();
-                ser.ObjectStart(); // object can only start in an object via MemberObjectStart();
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            e = Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ObjectStart();
-                ser.ArrayStart(); // array can only start in an object via MemberArrayStart();
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.MemberBool("Test", true); // member not in root
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ArrayStart();
-                ser.MemberBool("Test", true); // member not in array
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ObjectStart();
-                ser.ElementBool(true); // element not in object
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ObjectStart();
-                ser.ArrayEnd();
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
-            
-            Throws<InvalidOperationException>(()=> {
-                ser.InitSerializer();
-                ser.ArrayStart();
-                ser.ObjectEnd();
-            });
-            AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
+            {
+                var e = Throws<InvalidOperationException>(() =>
+                {
+                    ser.InitSerializer();
+                    ser.ObjectStart();
+                    ser.ObjectStart(); // object can only start in an object via MemberObjectStart();
+                });
+                AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(()=> {
+                    ser.InitSerializer();
+                    ser.ObjectStart();
+                    ser.ArrayStart(); // array can only start in an object via MemberArrayStart();
+                });
+                AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(()=> {
+                    ser.InitSerializer();
+                    ser.MemberBool("Test", true); // member not in root
+                });
+                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(()=> {
+                    ser.InitSerializer();
+                    ser.ArrayStart();
+                    ser.MemberBool("Test", true); // member not in array
+                });
+                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(()=> {
+                    ser.InitSerializer();
+                    ser.ObjectStart();
+                    ser.ElementBool(true); // element not in object
+                });
+                AreEqual("Element...() methods and ArrayEnd() must be called method only within an array or on root level", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(()=> {
+                    ser.InitSerializer();
+                    ser.ObjectStart();
+                    ser.ArrayEnd();
+                });
+                AreEqual("Element...() methods and ArrayEnd() must be called method only within an array or on root level", e.Message);
+            } {
+                var e = Throws<InvalidOperationException>(() => {
+                    ser.InitSerializer();
+                    ser.ArrayStart();
+                    ser.ObjectEnd();
+                });
+                AreEqual("Member...() methods and ObjectEnd() must be called method only within an object", e.Message);
+            }
 #endif
         }
     }
