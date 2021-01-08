@@ -41,6 +41,7 @@ namespace Friflo.Json.Burst
         }
         
         public override string ToString() {
+            // ReSharper disable once RedundantToStringCall - required for JSON_BURST
             return ToStr128().ToString();
         }
     }
@@ -61,13 +62,6 @@ namespace Friflo.Json.Burst
     /// </summary>
     public partial struct JsonParser : IDisposable
     {
-        [Flags]
-        enum NodeFlags : int
-        {
-            Found = 1,
-            HasIterated = 2
-        }
-
         private int pos;
         private ByteList buf;
         private int bufEnd;
@@ -122,7 +116,7 @@ namespace Friflo.Json.Burst
         public SkipInfo skipInfo;
 
 
-        enum State : int {
+        enum State {
             ExpectMember        = 0,
             ExpectMemberFirst   = 1,
 
@@ -907,7 +901,6 @@ namespace Friflo.Json.Burst
         /// In case of <see cref="JsonEvent.ObjectStart"/> or <see cref="JsonEvent.ArrayStart"/> it skips the
         /// whole JSON tree while incrementing the counts of <see cref="skipInfo"/> of all iterated JSON nodes. 
         /// </summary>
-        /// <param name="ev">The previous consumed event returned by <see cref="NextEvent()"/></param>
         /// <returns></returns>
         public bool SkipEvent () {
             switch (Event) {

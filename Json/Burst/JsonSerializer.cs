@@ -134,6 +134,7 @@ namespace Friflo.Json.Burst
             int end = src.Length;
             var srcArr = src; 
             for (int n = 0; n < end; n++) {
+                // ReSharper disable once RedundantCast - required for JSON_BURST
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
