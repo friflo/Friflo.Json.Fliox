@@ -81,9 +81,9 @@ namespace Friflo.Json.Burst.Utils
             if (size <= array.Length)
                 return;
             T[] newArr = new T[size];
-            Buffer.BlockCopy (array, 0, newArr, 0, len);
-            // for (int i = 0; i < len; i++)
-            //    newArr[i] = array[i];
+            // Buffer.BlockCopy (array, 0, newArr, 0, len);
+            for (int i = 0; i < len; i++)
+                newArr[i] = array[i];
             DebugUtils.UntrackAllocation(array);
             DebugUtils.TrackAllocation(newArr);
             array = newArr;

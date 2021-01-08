@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -25,14 +26,18 @@ namespace Friflo.Json.Tests.Common.Examples
     ],
     ""unknownMember"": { ""anotherUnknown"": 42}
 }";
-        public class Buddy {
-            public  string       firstName;
-            public  int          age;
-            public  List<Hobby>  hobbies = new List<Hobby>();
+        public struct Buddy : IDisposable {
+            public  Str32               firstName;
+            public  int                 age;
+            public  ValueList<Hobby>    hobbies;
+            
+            public void Dispose() {
+                hobbies.Dispose();
+            }
         }
     
         public struct Hobby {
-            public string   name;
+            public Str32 name;
         }
         
         public struct Keys {
@@ -57,6 +62,7 @@ namespace Friflo.Json.Tests.Common.Examples
         [Test]
         public void ReadJson() {
             Buddy   buddy = new Buddy();
+            buddy.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
             Keys    k = new Keys(Default.Constructor);
             
             JsonParser p = new JsonParser();
@@ -69,15 +75,16 @@ namespace Friflo.Json.Tests.Common.Examples
                 AreEqual(JsonEvent.EOF, p.NextEvent());
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
-                AreEqual("John", buddy.firstName);
-                AreEqual(24, buddy.age);
-                AreEqual("Gaming", buddy.hobbies[0].name);
-                AreEqual("STAR WARS", buddy.hobbies[1].name);
+                AreEqual("John",        buddy.firstName);
+                AreEqual(24,            buddy.age);
+                AreEqual("Gaming",      buddy.hobbies.array[0].name);
+                AreEqual("STAR WARS",   buddy.hobbies.array[1].name);
             }
             finally {
                 // only required for Unity/JSON_BURST
                 json.Dispose();
                 p.Dispose();
+                buddy.Dispose();
             }
         }
         
@@ -89,7 +96,7 @@ namespace Friflo.Json.Tests.Common.Examples
             }
         }
         
-        private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList, ref Keys k) {
+        private static void ReadHobbyList(ref JsonParser p, ref ValueList<Hobby> hobbyList, ref Keys k) {
             while (p.NextArrayElement()) {
                 if (p.UseElementObj()) {        
                     var hobby = new Hobby();

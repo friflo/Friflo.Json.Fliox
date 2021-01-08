@@ -52,10 +52,10 @@ namespace Friflo.Json.Tests.Common.Examples
                 AreEqual(JsonEvent.EOF, p.NextEvent());
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
-                AreEqual("John", buddy.firstName);
-                AreEqual(24, buddy.age);
-                AreEqual("Gaming", buddy.hobbies[0].name);
-                AreEqual("STAR WARS", buddy.hobbies[1].name);
+                AreEqual("John",        buddy.firstName);
+                AreEqual(24,            buddy.age);
+                AreEqual("Gaming",      buddy.hobbies[0].name);
+                AreEqual("STAR WARS",   buddy.hobbies[1].name);
             }
             finally {
                 // only required for Unity/JSON_BURST
