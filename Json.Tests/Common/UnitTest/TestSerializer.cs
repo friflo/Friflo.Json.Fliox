@@ -19,79 +19,80 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
         }
 
-        private void RunSerializer(ref JsonSerializer serializer) {
-            JsonSerializer ser = serializer; // capture
+        private void RunSerializer(ref JsonSerializer s) {
             {
-                serializer.InitSerializer();
-                serializer.ObjectStart();
-                serializer.ObjectEnd();
-                AreEqual("{}", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ObjectStart();
+                s.ObjectEnd();
+                AreEqual("{}", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ArrayStart();
-                serializer.ArrayEnd();
-                AreEqual("[]", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ArrayStart();
+                s.ArrayEnd();
+                AreEqual("[]", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ArrayStart();
-                    serializer.ArrayStart();
-                    serializer.ArrayEnd();
-                    serializer.ArrayStart();
-                    serializer.ArrayEnd();
-                    serializer.ObjectStart();
-                    serializer.ObjectEnd();
-                    serializer.ElementString("hello");
-                    serializer.ElementDouble(10.5);
-                    serializer.ElementLong(42);
-                    serializer.ElementBool(true);
-                    serializer.ElementNull();
-                serializer.ArrayEnd();
-                AreEqual("[[],[],{},\"hello\",10.5,42,true,null]", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ArrayStart();
+                    s.ArrayStart();
+                    s.ArrayEnd();
+                    s.ArrayStart();
+                    s.ArrayEnd();
+                    s.ObjectStart();
+                    s.ObjectEnd();
+                    s.ElementString("hello");
+                    s.ElementDouble(10.5);
+                    s.ElementLong(42);
+                    s.ElementBool(true);
+                    s.ElementNull();
+                s.ArrayEnd();
+                AreEqual("[[],[],{},\"hello\",10.5,42,true,null]", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ObjectStart();
-                    serializer.MemberString("string", "World");
-                    serializer.MemberDouble("double", 10.5);
-                    serializer.MemberLong("long", 42);
-                    serializer.MemberBool("bool", true);
-                    serializer.MemberNull("null");
-                serializer.ObjectEnd();
-                AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ObjectStart();
+                    s.MemberString("string", "World");
+                    s.MemberDouble("double", 10.5);
+                    s.MemberLong("long", 42);
+                    s.MemberBool("bool", true);
+                    s.MemberNull("null");
+                s.ObjectEnd();
+                AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ObjectStart();
-                    serializer.MemberArrayStart("array");
-                    serializer.ArrayEnd();
+                s.InitSerializer();
+                s.ObjectStart();
+                    s.MemberArrayStart("array");
+                    s.ArrayEnd();
                     
-                    serializer.MemberObjectStart("object");
-                    serializer.ObjectEnd();
-                serializer.ObjectEnd();
-                AreEqual("{\"array\":[],\"object\":{}}", serializer.dst.ToString());
+                    s.MemberObjectStart("object");
+                    s.ObjectEnd();
+                s.ObjectEnd();
+                AreEqual("{\"array\":[],\"object\":{}}", s.dst.ToString());
             }
             // --- Primitives on root level ---
             {
-                serializer.InitSerializer();
-                serializer.ElementString("hello");
-                AreEqual("\"hello\"", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ElementString("hello");
+                AreEqual("\"hello\"", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ElementLong(42);
-                AreEqual("42", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ElementLong(42);
+                AreEqual("42", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ElementDouble(10.5);
-                AreEqual("10.5", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ElementDouble(10.5);
+                AreEqual("10.5", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ElementBool(true);
-                AreEqual("true", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ElementBool(true);
+                AreEqual("true", s.dst.ToString());
             } {
-                serializer.InitSerializer();
-                serializer.ElementNull();
-                AreEqual("null", serializer.dst.ToString());
+                s.InitSerializer();
+                s.ElementNull();
+                AreEqual("null", s.dst.ToString());
             }
 #if DEBUG
-            // test DEBUG safety guards
+            JsonSerializer ser = s; // capture
+            
+            // --- test DEBUG safety guard exceptions ---
             Throws<InvalidOperationException>(()=> {
                 ser.InitSerializer();
                 ser.ObjectStart();
@@ -116,7 +117,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 ser.ObjectStart();
                 ser.ElementBool(true); // element not in object
             });
-
 #endif
         }
     }
