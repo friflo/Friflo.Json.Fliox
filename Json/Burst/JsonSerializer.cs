@@ -37,12 +37,12 @@ namespace Friflo.Json.Burst
         public  Bytes                   dst;
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
-        private ValueArray<ElementType> elementType;
+        private ValueArray<NodeType>    nodeType;
         private Bytes                   strBuf;
         private int                     level;
         private Str32                   @null;
 
-        enum ElementType {
+        enum NodeType {
             Object,
             Array
         }
@@ -58,8 +58,8 @@ namespace Friflo.Json.Burst
             format.InitTokenFormat();
             if (!firstEntry.IsCreated())
                 firstEntry = new ValueArray<bool>(32);
-            if (!elementType.IsCreated())
-                elementType = new ValueArray<ElementType>(32);
+            if (!nodeType.IsCreated())
+                nodeType = new ValueArray<NodeType>(32);
             if (!strBuf.buffer.IsCreated())
                 strBuf.InitBytes(128);
             @null = "null"; 
@@ -76,8 +76,8 @@ namespace Friflo.Json.Burst
                 firstEntry.Dispose();
             if (strBuf.buffer.IsCreated())
                 strBuf.Dispose();
-            if (elementType.IsCreated())
-                elementType.Dispose();
+            if (nodeType.IsCreated())
+                nodeType.Dispose();
             if (dst.buffer.IsCreated())
                 dst.Dispose();
             format.Dispose();
@@ -130,11 +130,11 @@ namespace Friflo.Json.Burst
         // ----------------------------- object with properties -----------------------------
         /// <summary>Start a JSON object for serialization</summary>
         public void ObjectStart() {
-            if (elementType[level] == ElementType.Array)
+            if (nodeType[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('{');
             firstEntry[++level] = true;
-            elementType[level] = ElementType.Object;
+            nodeType[level] = NodeType.Object;
         }
         
         /// <summary>Finished a previous started JSON object for serialization</summary>
@@ -258,11 +258,11 @@ namespace Friflo.Json.Burst
 
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart() {
-            if (elementType[level] == ElementType.Array)
+            if (nodeType[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('[');
             firstEntry[++level] = true;
-            elementType[level] = ElementType.Array;
+            nodeType[level] = NodeType.Array;
         }
         
         public void ArrayEnd() {
