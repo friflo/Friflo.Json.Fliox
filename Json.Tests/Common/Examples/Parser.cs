@@ -4,15 +4,9 @@ using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-#endif
-
 namespace Friflo.Json.Tests.Common.Examples
 {
-    public class UseParserBurst
+    public class Parser
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
@@ -34,37 +28,26 @@ namespace Friflo.Json.Tests.Common.Examples
         public struct Hobby {
             public string   name;
         }
-        
-        public struct Keys {
-            public Str32    firstName;
-            public Str32    age;
-            public Str32    hobbies;
-            public Str32    name;
-
-            public Keys(Default _) {
-                firstName   = "firstName";
-                age         = "age";
-                hobbies     = "hobbies";
-                name        = "name";
-            }
-        }
 
         /// <summary>
-        /// Exactly the same as <see cref="UseParser"/> except is uses a struct containing all JSON key names.
-        /// This avoids copying all characters of a FixedString32 key name each time a UseMember...() method is called.
-        /// It also enhance source code navigation by finding usage of all reader and writer methods using the same key.
+        /// The following JSON reader is split into multiple Read...() methods each having only one while loop to support:
+        /// - good readability
+        /// - good maintainability
+        /// - unit testing
+        /// - enables the possibility to create readable code via a code generator
+        ///
+        /// A weak example is shown at <see cref="UseParserMonolith"/> doing exactly the same processing. 
         /// </summary>
         [Test]
         public void ReadJson() {
-            Buddy   buddy = new Buddy();
-            Keys    k = new Keys(Default.Constructor);
+            Buddy buddy = new Buddy();
             
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString);
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadBuddy(ref p, ref buddy, ref k);
+                ReadBuddy(ref p, ref buddy);
 
                 AreEqual(JsonEvent.EOF, p.NextEvent());
                 if (p.error.ErrSet)
@@ -81,27 +64,27 @@ namespace Friflo.Json.Tests.Common.Examples
             }
         }
         
-        private static void ReadBuddy(ref JsonParser p, ref Buddy buddy, ref Keys k) {
+        private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
             while (p.NextObjectMember()) {
-                if      (p.UseMemberStr (k.firstName))    { buddy.firstName = p.value.ToString(); }
-                else if (p.UseMemberNum (k.age))          { buddy.age = p.ValueAsInt(out _); }
-                else if (p.UseMemberArr (k.hobbies))      { ReadHobbyList(ref p, ref buddy.hobbies, ref k); }
+                if      (p.UseMemberStr ("firstName"))    { buddy.firstName = p.value.ToString(); }
+                else if (p.UseMemberNum ("age"))          { buddy.age = p.ValueAsInt(out _); }
+                else if (p.UseMemberArr ("hobbies"))      { ReadHobbyList(ref p, ref buddy.hobbies); }
             }
         }
         
-        private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList, ref Keys k) {
+        private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList) {
             while (p.NextArrayElement()) {
                 if (p.UseElementObj()) {        
                     var hobby = new Hobby();
-                    ReadHobby(ref p, ref hobby, ref k);
+                    ReadHobby(ref p, ref hobby);
                     hobbyList.Add(hobby);
                 }
             }
         }
         
-        private static void ReadHobby(ref JsonParser p, ref Hobby hobby, ref Keys k) {
+        private static void ReadHobby(ref JsonParser p, ref Hobby hobby) {
             while (p.NextObjectMember()) {
-                if (p.UseMemberStr(k.name))  { hobby.name = p.value.ToString(); }
+                if (p.UseMemberStr("name"))  { hobby.name = p.value.ToString(); }
             }
         }
     }

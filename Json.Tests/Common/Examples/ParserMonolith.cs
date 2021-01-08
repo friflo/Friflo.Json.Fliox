@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.Examples
         /// <summary>
         /// Demonstrating an anti pattern having multiple nested while loops is not recommended.
         ///
-        /// Overall fewer lines of code than <see cref="UseParser"/> but lacks readability and is harder to maintain.
+        /// Overall fewer lines of code than <see cref="Parser"/> but lacks readability and is harder to maintain.
         /// The sample was introduced to show the fact which may happen when evolving a JSON reader over time.   
         /// </summary>
         [Test]
