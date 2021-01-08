@@ -48,17 +48,11 @@ namespace Friflo.Json.Tests.Common.Examples
                 name        = "name";
             }
         }
-        
-
 
         /// <summary>
-        /// The following JSON reader is split into multiple Read...() methods each having only one while loop to support:
-        /// - good readability
-        /// - good maintainability
-        /// - unit testing
-        /// - enables the possibility to create readable code via a code generator
-        ///
-        /// A weak example is shown at <see cref="UseParserMonolith"/> doing exactly the same processing. 
+        /// Exactly the same as <see cref="UseParser"/> except is uses a struct containing all JSON key names.
+        /// This avoids copying all characters of a FixedString32 key name each time a UseMember...() method is called.
+        /// It also enhance source code navigation by finding usage of all reader and writer methods using the same key.
         /// </summary>
         [Test]
         public void ReadJson() {
