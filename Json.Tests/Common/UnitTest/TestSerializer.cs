@@ -36,8 +36,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 s.ArrayStart();
                     s.ArrayStart();
                     s.ArrayEnd();
-                    s.ArrayStart();
-                    s.ArrayEnd();
                     s.ObjectStart();
                     s.ObjectEnd();
                     s.ElementString("hello");
@@ -46,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     s.ElementBool(true);
                     s.ElementNull();
                 s.ArrayEnd();
-                AreEqual("[[],[],{},\"hello\",10.5,42,true,null]", s.dst.ToString());
+                AreEqual("[[],{},\"hello\",10.5,42,true,null]", s.dst.ToString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
@@ -68,6 +66,36 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 s.ObjectEnd();
                 AreEqual("{\"array\":[],\"object\":{}}", s.dst.ToString());
             }
+            // --- ensure coverage of methods using Bytes as parameter
+            Bytes textValue = new Bytes("textValue");
+            Bytes str = new Bytes("str");
+            Bytes dbl = new Bytes("dbl");
+            Bytes lng = new Bytes("lng");
+            try {
+                // - array
+                s.InitSerializer();
+                s.ArrayStart();
+                s.ElementString(ref textValue);
+                s.ArrayEnd();
+                AreEqual("[\"textValue\"]", s.dst.ToString());
+                
+                // - object
+                s.InitSerializer();
+                s.ObjectStart();
+                s.MemberString(ref str, "hello");
+                s.MemberDouble(ref dbl, 10.5);
+                s.MemberLong(ref lng, 42);
+                s.ObjectEnd();
+                AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.dst.ToString());
+            }
+            finally {
+                // only required for Unity/JSON_BURST
+                lng.Dispose();
+                str.Dispose();
+                dbl.Dispose();
+                textValue.Dispose();
+            }
+
             // --- Primitives on root level ---
             {
                 s.InitSerializer();

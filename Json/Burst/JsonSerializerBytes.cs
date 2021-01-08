@@ -111,11 +111,21 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-#if !JSON_BURST
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
-        /// Method cant be used in a Unity Burst Job, because of using string as parameter
         /// </summary>
+#if JSON_BURST
+        public void MemberString(ref Bytes key, Unity.Collections.FixedString32 value) {
+            AssertMember();
+            AddSeparator();
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar2('\"', ':');
+            dst.AppendChar('"');
+            AppendEscString(ref dst, ref value);
+            dst.AppendChar('"');
+        }
+#else
         public void MemberString(ref Bytes key, string value) {
             AssertMember();
             AddSeparator();
