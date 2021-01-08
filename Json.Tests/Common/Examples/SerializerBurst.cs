@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.Examples
     public class SerializerBurst
     {
         static Buddy CreateBuddy() {
-            Buddy buddy = new Buddy();
+            Buddy buddy;
             buddy.firstName = "John";
             buddy.age = 24;
             buddy.hobbies = new ValueList<Hobby>(2, AllocType.Persistent);
