@@ -145,11 +145,12 @@ namespace Friflo.Json.Burst
 
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArray(ref Str32 key) {
+        public void MemberArrayStart(ref Str32 key) {
             AddSeparator();
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            ArrayStart();
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
@@ -228,8 +229,8 @@ namespace Friflo.Json.Burst
         }
         
         // ------------- non-ref Str32 Member...() versions for convenience  -------------
-        public void MemberArrayKey(Str32 key) {
-            MemberArray(ref key);
+        public void MemberArrayStart(Str32 key) {
+            MemberArrayStart(ref key);
         }
         
         public void MemberObjectKey(Str32 key) {
@@ -317,7 +318,7 @@ namespace Friflo.Json.Burst
             while (p.NoSkipNextObjectMember()) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
-                        MemberArrayKey(ref p.key);
+                        MemberArrayStart(ref p.key);
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
@@ -367,10 +368,10 @@ namespace Friflo.Json.Burst
         }
         
         public bool WriteArray(ref JsonParser p) {
-            ArrayStart();
             while (p.NoSkipNextArrayElement()) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
+                        ArrayStart();
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
@@ -413,6 +414,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ObjectStart:
                     return WriteObject(ref p);
                 case JsonEvent.ArrayStart:
+                    ArrayStart();
                     return WriteArray(ref p);
                 case JsonEvent.ValueString:
                     ElementString(ref p.value);

@@ -47,8 +47,7 @@ namespace Friflo.Json.Tests.Common.Examples
                 s.ObjectStart();
                     s.MemberString  ("firstName",   buddy.firstName);
                     s.MemberLong    ("age",         buddy.age);
-                    s.MemberArrayKey("hobbies");
-                    s.ArrayStart();
+                    s.MemberArrayStart("hobbies");
                     for (int n = 0; n < buddy.hobbies.Length; n++) {
                         s.ObjectStart();
                         s.MemberString  ("name", buddy.hobbies.array[n].name);
