@@ -84,6 +84,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            SetStartGuard();
             ArrayStart();
         }
         
@@ -94,6 +95,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            SetStartGuard();
             ObjectStart();
         }
         

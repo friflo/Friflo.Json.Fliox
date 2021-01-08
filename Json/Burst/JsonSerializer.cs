@@ -37,6 +37,7 @@ namespace Friflo.Json.Burst
         public  Bytes                   dst;
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
+        private ValueArray<bool>        startGuard;
         private ValueArray<NodeType>    nodeType;
         private Bytes                   strBuf;
         private int                     level;
@@ -58,6 +59,10 @@ namespace Friflo.Json.Burst
             format.InitTokenFormat();
             if (!firstEntry.IsCreated())
                 firstEntry = new ValueArray<bool>(32);
+#if DEBUG
+            if (!startGuard.IsCreated())
+                startGuard = new ValueArray<bool>(32);
+#endif
             if (!nodeType.IsCreated())
                 nodeType = new ValueArray<NodeType>(32);
             if (!strBuf.buffer.IsCreated())
@@ -69,6 +74,7 @@ namespace Friflo.Json.Burst
         
         [Conditional("DEBUG")]
         private void AssertMember() {
+            startGuard[level] = false;
             if (nodeType[level] == NodeType.Object)
                 return;
             throw new InvalidOperationException("Member...() methods and ObjectEnd() must be called method only within an object");
@@ -80,12 +86,32 @@ namespace Friflo.Json.Burst
                 return;
             throw new InvalidOperationException("Element...() methods and ArrayEnd() must be called method only within an array or on root level");
         }
+        
+        [Conditional("DEBUG")]
+        private void AssertStart() {
+            if (level > 0 && startGuard[level] == false)
+                throw new InvalidOperationException("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method");
+        }
+        
+        [Conditional("DEBUG")]
+        private void SetStartGuard() {
+            startGuard[level] = true;
+        }
+        
+        [Conditional("DEBUG")]
+        private void ClearStartGuard() {
+            startGuard[level] = false;
+        }
 
         /// <summary>
         /// Dispose all internal used buffers.
         /// Only required when running with JSON_BURST within Unity. 
         /// </summary>
         public void Dispose() {
+#if DEBUG
+            if (startGuard.IsCreated())
+                startGuard.Dispose();
+#endif            
             if (firstEntry.IsCreated())
                 firstEntry.Dispose();
             if (strBuf.buffer.IsCreated())
@@ -140,15 +166,17 @@ namespace Friflo.Json.Burst
             }
             dst.AppendChar(',');
         }
-
+        
         // ----------------------------- object with properties -----------------------------
         /// <summary>Start a JSON object for serialization</summary>
         public void ObjectStart() {
+            AssertStart();
             if (nodeType[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('{');
             firstEntry[++level] = true;
             nodeType[level] = NodeType.Object;
+            ClearStartGuard();
         }
         
         /// <summary>Finished a previous started JSON object for serialization</summary>
@@ -166,6 +194,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            SetStartGuard();
             ArrayStart();
         }
         
@@ -176,6 +205,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
+            SetStartGuard();
             ObjectStart();
         }
         
@@ -283,11 +313,13 @@ namespace Friflo.Json.Burst
 
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart() {
+            AssertStart();
             if (nodeType[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('[');
             firstEntry[++level] = true;
             nodeType[level] = NodeType.Array;
+            SetStartGuard();
         }
         
         public void ArrayEnd() {
