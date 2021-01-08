@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             set { fixed (int* array = &x)       { array[index] = value; } }
         }
         
-        public void ReadNs (ref JsonParser p) {
+        public void ReadManual (ref JsonParser p) {
             int index = 0;
             while (p.NoSkipNextArrayElement()) {
                 if      (p.Event == JsonEvent.ValueNumber)  { this[index++] = p.ValueAsInt(out _); }
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
         }
         
-        public void ReadAs (ref JsonParser p) {
+        public void ReadAuto (ref JsonParser p) {
             int index = 0;
             while (p.NextArrayElement()) {
                 if (p.UseElementNum())                      { this[index++] = p.ValueAsInt(out _); }
@@ -41,47 +41,50 @@ namespace Friflo.Json.Tests.Common.UnitTest
     
     public class TestParseJsonManual : LeakTestsFixture
     {
-
+        public enum SkipMode {
+            Manual,
+            Auto
+        }
 
         [Test]
-        public void ParseNoSkip() {
+        public void ManualSkip() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                RunParser(bytes, true, 1, MemoryLog.Disabled);
+                RunParser(bytes, SkipMode.Manual, 1, MemoryLog.Disabled);
             }
         }
         
         [Test]
-        public void ParseNoSkipCheckAllocations() {
+        public void ManualSkipCheckAllocations() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                RunParser(bytes, true, 1000, MemoryLog.Enabled);
+                RunParser(bytes, SkipMode.Manual, 1000, MemoryLog.Enabled);
             }
         }
         
         [Test]
-        public void ParseAutoSkip() {
+        public void AutoSkip() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                RunParser(bytes, false, 1, MemoryLog.Disabled);
+                RunParser(bytes, SkipMode.Auto, 1, MemoryLog.Disabled);
             }
         }
         
         [Test]
-        public void ParseAutoSkipCheckAllocations() {
+        public void AutoSkipCheckAllocations() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                RunParser(bytes, false, 1000, MemoryLog.Enabled);
+                RunParser(bytes, SkipMode.Auto, 1000, MemoryLog.Enabled);
             }
         }
 
-        private void RunParser(Bytes bytes, bool noSkip, int iterations, MemoryLog memoryLog) {
+        private void RunParser(Bytes bytes, SkipMode skipMode, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
             var parser = new JsonParser();
             try {
-                if (noSkip) {
+                if (skipMode == SkipMode.Manual) {
                     using (ParseManual manual = new ParseManual(Default.Constructor)) {
                         memLog.Reset();
                         for (int i = 0; i < iterations; i++) {
                             parser.InitParser(bytes);
                             parser.NextEvent(); // ObjectStart
-                            manual.RootNoSkip(ref parser);
+                            manual.RootManualSkip(ref parser);
                             memLog.Snapshot();
                         }
                         manual.AssertParseResult(ref parser);
@@ -179,15 +182,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 str.Dispose();
             }
 
-            public void RootNoSkip(ref JsonParser p) {
+            public void RootManualSkip(ref JsonParser p) {
                 ref var key = ref p.key;
                 while (p.NoSkipNextObjectMember()) {
                     if      (key.IsEqual32(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
-                    else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrNs(ref p); }
-                    else if (key.IsEqual32(ref nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrNs(ref p); }
-                    else if (key.IsEqual32(ref nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrNs(ref p); }
-                    else if (key.IsEqual32(ref nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadNs(ref p); }
+                    else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
+                    else if (key.IsEqual32(ref nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrManual(ref p); }
+                    else if (key.IsEqual32(ref nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrManual(ref p); }
+                    else if (key.IsEqual32(ref nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
                     else if (key.IsEqual32(ref nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
                     else if (key.IsEqual32(ref nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
                     else if (key.IsEqual32(ref nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(ref p.value); }
@@ -203,10 +206,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 while (p.NextObjectMember()) {
                     if      (p.UseMemberObj(ref nm.map))       { p.SkipTree(); }
                     else if (p.UseMemberObj(ref nm.map2))      { p.SkipTree(); }
-                    else if (p.UseMemberArr(ref nm.listStr))   { ReadListStrAs(ref p); }
-                    else if (p.UseMemberArr(ref nm.arr))       { ReadArrAs(ref p); }
-                    else if (p.UseMemberArr(ref nm.boolArr))   { ReadBoolArrAs(ref p); }
-                    else if (p.UseMemberArr(ref nm.i64Arr))    { int3.ReadAs(ref p); }
+                    else if (p.UseMemberArr(ref nm.listStr))   { ReadListStrAuto(ref p); }
+                    else if (p.UseMemberArr(ref nm.arr))       { ReadArrAuto(ref p); }
+                    else if (p.UseMemberArr(ref nm.boolArr))   { ReadBoolArrAuto(ref p); }
+                    else if (p.UseMemberArr(ref nm.i64Arr))    { int3.ReadAuto(ref p); }
                     else if (p.UseMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
                     else if (p.UseMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
                     else if (p.UseMemberStr(ref nm.str))       { str.Set(ref p.value); }
@@ -217,40 +220,40 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 }
             }
             
-            void ReadListStrNs(ref JsonParser p) {
+            void ReadListStrManual(ref JsonParser p) {
                 while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueString) { strElement.Set( ref p.value); }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadListStrAs(ref JsonParser p) {
+            void ReadListStrAuto(ref JsonParser p) {
                 while (p.NextArrayElement()) {
                     if      (p.UseElementStr())                { strElement.Set( ref p.value); }
                 }
             }
             
-            void ReadArrNs(ref JsonParser p) {
+            void ReadArrManual(ref JsonParser p) {
                 while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueNull)   { foundNullElement = true; }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadArrAs(ref JsonParser p) {
+            void ReadArrAuto(ref JsonParser p) {
                 while (p.NextArrayElement()) {
                     if      (p.UseElementNul())                { foundNullElement = true; }
                 }
             }
 
-            void ReadBoolArrNs(ref JsonParser p) {
+            void ReadBoolArrManual(ref JsonParser p) {
                 while (p.NoSkipNextArrayElement()) {
                     if      (p.Event == JsonEvent.ValueBool)   { trueElement = p.boolValue; }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadBoolArrAs(ref JsonParser p) {
+            void ReadBoolArrAuto(ref JsonParser p) {
                 while (p.NextArrayElement()) {
                     if      (p.UseElementBln())                { trueElement = p.boolValue; }
                 }
