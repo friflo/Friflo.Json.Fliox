@@ -31,22 +31,27 @@ namespace Friflo.Json.Tests.Common.Examples
             Buddy buddy = CreateBuddy();
             var s = new JsonSerializer();
             s.InitSerializer();
-            
-            s.ObjectStart();
-                s.MemberString  ("firstName",   buddy.firstName);
-                s.MemberLong    ("age",         buddy.age);
-                s.MemberArrayKey("hobbies");
-                s.ArrayStart();
-                for (int n = 0; n < buddy.hobbies.Count; n++) {
-                    s.ObjectStart();
-                    s.MemberString  ("name", buddy.hobbies[n].name);
-                    s.ObjectEnd();
-                }
-                s.ArrayEnd();
-            s.ObjectEnd();
+            try {
+                s.ObjectStart();
+                    s.MemberString  ("firstName",   buddy.firstName);
+                    s.MemberLong    ("age",         buddy.age);
+                    s.MemberArrayKey("hobbies");
+                    s.ArrayStart();
+                    for (int n = 0; n < buddy.hobbies.Count; n++) {
+                        s.ObjectStart();
+                        s.MemberString  ("name", buddy.hobbies[n].name);
+                        s.ObjectEnd();
+                    }
+                    s.ArrayEnd();
+                s.ObjectEnd();
 
-            var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
-            AreEqual(expect, s.dst.ToString());
+                var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
+                AreEqual(expect, s.dst.ToString());
+            }
+            finally {
+                // only required for Unity/JSON_BURST
+                s.Dispose();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
+    using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
 #endif
@@ -37,6 +38,7 @@ namespace Friflo.Json.Burst
         private ValueFormat             format;
         private ValueArray<bool>        firstEntry;
         private ValueArray<ElementType> elementType;
+        private Bytes                   strBuf;
         private int                     level;
         private Str32                   @null;
 
@@ -58,6 +60,8 @@ namespace Friflo.Json.Burst
                 firstEntry = new ValueArray<bool>(32);
             if (!elementType.IsCreated())
                 elementType = new ValueArray<ElementType>(32);
+            if (!strBuf.buffer.IsCreated())
+                strBuf.InitBytes(128);
             @null = "null"; 
             level = 0;
             firstEntry[0] = true;
@@ -70,6 +74,8 @@ namespace Friflo.Json.Burst
         public void Dispose() {
             if (firstEntry.IsCreated())
                 firstEntry.Dispose();
+            if (strBuf.buffer.IsCreated())
+                strBuf.Dispose();
             if (elementType.IsCreated())
                 elementType.Dispose();
             if (dst.buffer.IsCreated())
@@ -165,11 +171,16 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
         
-#if !JSON_BURST
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
-        /// Method cant be used in a Unity Burst Job, because of using string as parameter
         /// </summary>
+#if JSON_BURST
+        public void MemberString(Str32 key, Str128 value) {
+            strBuf.Clear();
+            strBuf.AppendStr128(ref value);
+            MemberString(ref key, ref strBuf);
+        }
+#else
         public void MemberString(string key, string value) {
             AddSeparator();
             dst.AppendChar('"');
