@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
 
 
-        public static void TestParseFile(Bytes bytes) {
+        public static void TestNextEvent(Bytes bytes) {
             JsonParser parser = new JsonParser();
             try {
                 parser.InitParser (bytes);                                  CheckPath(ref parser, "(root)");
@@ -327,9 +327,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
 
         [Test]
-        public void TestParseFile() {
+        public void TestNextEvent() {
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/parse.json")) {
-                TestParserImpl.TestParseFile(bytes);
+                TestParserImpl.TestNextEvent(bytes);
             }
         }
         
