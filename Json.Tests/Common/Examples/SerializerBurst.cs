@@ -42,6 +42,7 @@ namespace Friflo.Json.Tests.Common.Examples
             public Str128   name;
         }
 
+        // Using a struct containing JSON key names enables using them by ref to avoid memcpy
         public struct Keys {
             public Str32    firstName;
             public Str32    age;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Burst.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+#pragma warning disable 618
 
 // ReSharper disable InconsistentNaming
 
@@ -11,23 +11,19 @@ namespace Friflo.Json.Tests.Common.Examples
     public class Serializer
     {
         static Buddy CreateBuddy() {
-            Buddy buddy;
+            Buddy buddy = new Buddy();
             buddy.firstName = "John";
             buddy.age = 24;
-            buddy.hobbies = new ValueList<Hobby>(2, AllocType.Persistent);
+            buddy.hobbies = new List<Hobby>();
             buddy.hobbies.Add(new Hobby{ name = "Gaming"});
             buddy.hobbies.Add(new Hobby{ name = "STAR WARS"});
             return buddy;
         }
         
-        public struct Buddy : IDisposable {
+        public class Buddy {
             public  string              firstName;
             public  int                 age;
-            public  ValueList<Hobby>    hobbies;
-
-            public void Dispose() { // only required for Unity/JSON_BURST
-                hobbies.Dispose();
-            }
+            public  List<Hobby>     hobbies;
         }
     
         public struct Hobby {
@@ -48,7 +44,6 @@ namespace Friflo.Json.Tests.Common.Examples
             finally {
                 // only required for Unity/JSON_BURST
                 s.Dispose();
-                buddy.Dispose();
             }
         }
 
@@ -57,13 +52,13 @@ namespace Friflo.Json.Tests.Common.Examples
             s.MemberString  ("firstName",   buddy.firstName);
             s.MemberLong    ("age",         buddy.age);
             s.MemberArrayStart("hobbies");
-            for (int n = 0; n < buddy.hobbies.Length; n++) 
-                WriteHobby(ref s, ref buddy.hobbies.ElementAt(n));
+            for (int n = 0; n < buddy.hobbies.Count; n++) 
+                WriteHobby(ref s, buddy.hobbies[n]);
             s.ArrayEnd();
             s.ObjectEnd();
         }
         
-        private static void WriteHobby(ref JsonSerializer s, ref Hobby buddy) {
+        private static void WriteHobby(ref JsonSerializer s, Hobby buddy) {
             s.ObjectStart();
             s.MemberString("name", buddy.name);
             s.ObjectEnd();
