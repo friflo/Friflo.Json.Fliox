@@ -1,4 +1,4 @@
-#if UNITY_5_3_OR_NEWER && JSON_BURST
+#if UNITY_2020_1_OR_NEWER
 
 #if !UNITY_DOTSRUNTIME
 #endif
@@ -103,4 +103,4 @@ namespace Friflo.Json.Tests.Unity.Utils
         }
     }
 }
-#endif // UNITY_5_3_OR_NEWER
+#endif // UNITY_2020_1_OR_NEWER
