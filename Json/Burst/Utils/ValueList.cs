@@ -14,9 +14,8 @@ namespace Friflo.Json.Burst.Utils
             array = new Unity.Collections.NativeList<T>(size, allocator);
         }
 
-        public int Length {
-            get { return array.Length; }
-        }
+        // public int Length => array.Length;
+        public int Count => array.Length;
 
         public void Clear() {
             array.Clear();
@@ -56,7 +55,8 @@ namespace Friflo.Json.Burst.Utils
             DebugUtils.TrackAllocation(array);
         }
  
-        public int Length => len;
+        // public int Length => len;
+        public int Count => len;
         
         public void Clear() {
             len = 0;

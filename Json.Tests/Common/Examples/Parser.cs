@@ -57,6 +57,7 @@ namespace Friflo.Json.Tests.Common.Examples
                     Fail(p.error.msg.ToString());
                 AreEqual("John",        buddy.firstName);
                 AreEqual(24,            buddy.age);
+                AreEqual(2,             buddy.hobbies.Count);
                 AreEqual("Gaming",      buddy.hobbies[0].name);
                 AreEqual("STAR WARS",   buddy.hobbies[1].name);
             }

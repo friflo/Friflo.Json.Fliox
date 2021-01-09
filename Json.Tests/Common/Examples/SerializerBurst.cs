@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.Examples
             s.MemberString  (ref k.firstName,   ref buddy.firstName);
             s.MemberLong    (ref k.age,         buddy.age);
             s.MemberArrayStart(ref k.hobbies);
-            for (int n = 0; n < buddy.hobbies.Length; n++) 
+            for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, ref k, ref buddy.hobbies.ElementAt(n));
             s.ArrayEnd();
             s.ObjectEnd();
