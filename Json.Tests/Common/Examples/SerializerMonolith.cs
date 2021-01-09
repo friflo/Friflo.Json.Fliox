@@ -28,6 +28,12 @@ namespace Friflo.Json.Tests.Common.Examples
             public string   name;
         }
 
+        /// <summary>
+        /// Demonstrating an anti pattern having multiple nested loops is not recommended.
+        ///
+        /// Overall fewer lines of code than <see cref="Serializer"/> but lacks readability and is harder to maintain.
+        /// The sample was introduced to show the fact which may happen when evolving a JSON reader over time.   
+        /// </summary>
         [Test]
         public void WriteJson() {
             Buddy buddy = CreateBuddy();

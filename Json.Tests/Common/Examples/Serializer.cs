@@ -30,6 +30,10 @@ namespace Friflo.Json.Tests.Common.Examples
             public string   name;
         }
 
+        /// <summary>
+        /// The following JSON writer is split into multiple Write...() methods to apply the principles mentioned in <see cref="Parser"/>
+        /// A weak counterpart example is shown at <see cref="SerializerMonolith"/> doing exactly the same processing. 
+        /// </summary>
         [Test]
         public void WriteJson() {
             Buddy buddy = CreateBuddy();

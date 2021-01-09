@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.Examples
         /// The sample was introduced to show the fact which may happen when evolving a JSON reader over time.   
         /// </summary>
         [Test]
-        public void ReadJsonMonolith() {
+        public void ReadJson() {
             Buddy buddy = new Buddy();
             
             JsonParser p = new JsonParser();
