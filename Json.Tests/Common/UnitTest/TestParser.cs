@@ -185,10 +185,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
     }
 
-    public class TestJsonParser : LeakTestsFixture
+    public class TestParser : LeakTestsFixture
     {
         [Test]
-        public void TestParser() {
+        public void BasicParser() {
             TestParserImpl.BasicJsonParser();
         }
         
