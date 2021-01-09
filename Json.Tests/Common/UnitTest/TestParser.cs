@@ -357,5 +357,47 @@ namespace Friflo.Json.Tests.Common.UnitTest
             // TestContext.Out.WriteLine(memLog.MemorySnapshots());
             // FFLog.log("ParseJson: " + json + " : " + stopwatch.Time());
         }
+
+        [Test]
+        public void TestAutoSkip() {
+            using (JsonParser parser = new JsonParser()) {
+                using (var json = new Bytes("{}")) {
+                    parser.InitParser(json);
+                    parser.NextEvent();
+                    while (parser.NextObjectMember()) {
+                        Fail("Expect no members in empty object");
+                    }
+                    AreEqual(JsonEvent.ObjectEnd, parser.Event);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                }
+                using (var json = new Bytes("[]")) {
+                    parser.InitParser(json);
+                    parser.NextEvent();
+                    while (parser.NextArrayElement()) {
+                        Fail("Expect no elements in empty array");
+                    }
+                    AreEqual(JsonEvent.ArrayEnd, parser.Event);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                }
+                
+                // --- test invalid access
+                using (var json = new Bytes("[]")) {
+                    parser.InitParser(json);
+                    parser.NextEvent();
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.NextObjectMember();
+                    });
+                    AreEqual("unexpected ArrayEnd in JsonParser.NextObjectMember()", e.Message);
+                }
+                using (var json = new Bytes("{}")) {
+                    parser.InitParser(json);
+                    parser.NextEvent();
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.NextArrayElement();
+                    });
+                    AreEqual("unexpected ObjectEnd in JsonParser.NextArrayElement()", e.Message);
+                }
+            }
+        }
     }
 }
