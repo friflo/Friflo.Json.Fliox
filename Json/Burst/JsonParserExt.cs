@@ -17,7 +17,7 @@ namespace Friflo.Json.Burst
         [Conditional("DEBUG")]
         private void AssertObject() {
             int level = stateLevel;
-            if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
+            if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             State curState = state[level];
             if (curState == State.ExpectMember || curState == State.ExpectMemberFirst)
@@ -27,7 +27,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberObj(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -35,7 +35,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberObj(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ObjectStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -43,7 +43,7 @@ namespace Friflo.Json.Burst
         // ---
         public bool UseMemberArr(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -51,7 +51,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberArr(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ArrayStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -60,7 +60,7 @@ namespace Friflo.Json.Burst
         // ---
         public bool UseMemberNum(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -68,7 +68,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberNum(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueNumber || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Burst
         // ---
         public bool UseMemberStr(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberStr(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueString || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -94,7 +94,7 @@ namespace Friflo.Json.Burst
         // ---
         public bool UseMemberBln(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberBln(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueBool || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -111,7 +111,7 @@ namespace Friflo.Json.Burst
         // ---
         public bool UseMemberNul(ref Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -119,7 +119,7 @@ namespace Friflo.Json.Burst
         
         public bool UseMemberNul(Str32 name) {
             AssertObject();
-            if (Event != JsonEvent.ValueNull || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(name))
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -129,7 +129,7 @@ namespace Friflo.Json.Burst
         [Conditional("DEBUG")]
         private void AssertArray() {
             int level = stateLevel;
-            if (Event == JsonEvent.ObjectStart || Event == JsonEvent.ArrayStart)
+            if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             State curState = state[level];
             if (curState == State.ExpectElement || curState == State.ExpectElementFirst)
@@ -139,7 +139,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementObj() {
             AssertArray();
-            if (Event != JsonEvent.ObjectStart)
+            if (lastEvent != JsonEvent.ObjectStart)
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -147,7 +147,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementArr() {
             AssertArray();
-            if (Event != JsonEvent.ArrayStart)
+            if (lastEvent != JsonEvent.ArrayStart)
                 return false;
             usedMember[stateLevel - 1] = true;
             return true;
@@ -155,7 +155,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementNum() {
             AssertArray();
-            if (Event != JsonEvent.ValueNumber)
+            if (lastEvent != JsonEvent.ValueNumber)
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -163,7 +163,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementStr() {
             AssertArray();
-            if (Event != JsonEvent.ValueString)
+            if (lastEvent != JsonEvent.ValueString)
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -171,7 +171,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementBln() {
             AssertArray();
-            if (Event != JsonEvent.ValueBool)
+            if (lastEvent != JsonEvent.ValueBool)
                 return false;
             usedMember[stateLevel] = true;
             return true;
@@ -179,7 +179,7 @@ namespace Friflo.Json.Burst
         
         public bool UseElementNul() {
             AssertArray();
-            if (Event != JsonEvent.ValueNull)
+            if (lastEvent != JsonEvent.ValueNull)
                 return false;
             usedMember[stateLevel] = true;
             return true;

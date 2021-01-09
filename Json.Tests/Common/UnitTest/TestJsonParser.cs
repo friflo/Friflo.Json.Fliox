@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                 AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.GetLevel());
+                AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual("test", parser.key.ToString());
                 AreEqual("hello", parser.value.ToString());
                 AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.GetLevel());
+                AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());
                 AreEqual("ab\r\nc", parser.value.ToString());
                 AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.GetLevel());
+                AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
                 AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
-                AreEqual(0, parser.GetLevel());
+                AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
