@@ -41,8 +41,12 @@ namespace Friflo.Json.Managed.Prop
         
         public Object CreateInstance()
         {
-            if (constructor == null)
-                throw new FrifloException("No default constructor available for: " + nativeType. Name);
+            if (constructor == null) {
+                // Is it a struct?
+                if (nativeType.IsValueType)
+                    return Activator.CreateInstance(nativeType);
+                throw new FrifloException("No default constructor available for: " + nativeType.Name);
+            }
             return Reflect.CreateInstance(constructor);
         }
 

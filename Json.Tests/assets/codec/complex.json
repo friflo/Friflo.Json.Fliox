@@ -19,6 +19,9 @@
         "$type": "Sub",
         "i64": 101
     }],
+	"listStruct": [{
+        "val": 42
+    }],
     
     "arr" : [
         {"i64":21},
@@ -45,6 +48,9 @@
     "t" : true,
     "f" : false,
     "sub":{"i64":1},
+	"structValue": {
+		"val": 43
+	},
     "i64Arr" : [1, 2, 3],
     "boolArr" : [false, true]
 }

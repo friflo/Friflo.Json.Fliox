@@ -94,6 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             AreEqual (        true, obj.t);
             AreEqual (       false, obj.f);
             AreEqual (          1L, obj.sub.i64);
+            AreEqual (          43, obj.structValue.val);
             AreEqual (         21L, obj.arr[0].i64);
             AreEqual (        null, obj.arr[1]    );
             AreEqual (         23L, obj.arr[2].i64);
@@ -107,6 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             CheckList (obj.listDerivedNull);
             AreEqual (      "str0", obj.listStr [0] );
             AreEqual (        101L, ((Sub)obj.listObj [0]) .i64 );
+            AreEqual (        42, obj.listStruct[0].val );
             CheckMap (obj.map);
             CheckMap (obj.map2);
             CheckMap (obj.map3);
@@ -146,6 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             obj.f = false;
             obj.sub = new Sub();
             obj.sub.i64 = 1L;
+            obj.structValue.val = 43;
             obj.arr = new Sub[4];
             obj.arr[0] = new Sub(21L);
             obj.arr[1]    = null;
@@ -162,6 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             SetList (obj.listDerivedNull);
             obj.listStr. Add ("str0");
             obj.listObj. Add (new Sub(101));
+            obj.listStruct.Add(new JsonStruct{ val = 42 });
             obj.map = new Dictionary <String, JsonSimple>();
             SetMap (obj.map);
             SetMap (obj.map2);

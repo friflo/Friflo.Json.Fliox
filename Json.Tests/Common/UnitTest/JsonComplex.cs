@@ -27,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public bool             t;
         public bool             f;
         public Sub              sub;
+        public JsonStruct       structValue;    // struct's are a 'value type'
         public IList <Sub>      list = null;
         public IList <Sub>      list2 =         new List <Sub>();
         public List <Sub>       list3 =         null;
@@ -35,6 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public DerivedList      listDerivedNull = null;
         public List <String>    listStr =       new List <String>();
         public List <Object>    listObj =       new List <Object>();
+        public List <JsonStruct>listStruct =    new List <JsonStruct>();
         public Sub[]            arr;
         public int[]            i64Arr;
         public bool[]           boolArr;
@@ -52,6 +54,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
         {
             this.val = val;
         }
+    }
+    
+    public struct JsonStruct
+    {
+        public long val;
     }
 
     public class Sub
