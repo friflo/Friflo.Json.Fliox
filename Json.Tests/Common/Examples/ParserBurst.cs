@@ -8,8 +8,10 @@ using static NUnit.Framework.Assert;
 // ReSharper disable InconsistentNaming
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
+    using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
+    using Str128 = System.String;
 #endif
 
 namespace Friflo.Json.Tests.Common.Examples
@@ -38,7 +40,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
     
         public struct Hobby {
-            public Str32 name;
+            public Str128 name;
         }
         
         public struct Keys {
@@ -109,7 +111,7 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadHobby(ref JsonParser p, ref Hobby hobby, ref Keys k) {
             while (p.NextObjectMember()) {
-                if (p.UseMemberStr(ref k.name))  { hobby.name = p.value.ToString(); }
+                if (p.UseMemberStr(ref k.name))  { hobby.name = p.value.ToStr128(); }
             }
         }
     }
