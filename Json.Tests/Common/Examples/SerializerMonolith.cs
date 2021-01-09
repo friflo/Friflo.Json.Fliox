@@ -7,7 +7,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples
 {
-    public class Serializer
+    public class SerializerMonolith
     {
         static Buddy CreateBuddy() {
             Buddy buddy = new Buddy();
