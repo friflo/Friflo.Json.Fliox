@@ -6,7 +6,7 @@ using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using static NUnit.Framework.Assert;
 
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER && JSON_BURST
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 

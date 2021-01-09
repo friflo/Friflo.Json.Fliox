@@ -1,4 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
+﻿#if UNITY_5_3_OR_NEWER && JSON_BURST
 
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
