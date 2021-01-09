@@ -33,9 +33,10 @@ namespace Friflo.Json.Tests.Common.Examples
 
         /// <summary>
         /// The following JSON reader is split into multiple Read...() methods each having only one while loop to support:
-        /// - good readability
-        /// - good maintainability
-        /// - unit testing
+        /// - Read...() methods can be reused enabling the DRY principle
+        /// - Read...() methods can be unit tested
+        /// - enhance readability
+        /// - enhance maintainability
         /// - enables the possibility to create readable code via a code generator
         ///
         /// A weak example is shown at <see cref="ParserMonolith"/> doing exactly the same processing. 
