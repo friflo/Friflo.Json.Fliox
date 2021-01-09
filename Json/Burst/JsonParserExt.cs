@@ -33,6 +33,9 @@ namespace Friflo.Json.Burst
             return true;
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberObj(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(name))
@@ -49,6 +52,9 @@ namespace Friflo.Json.Burst
             return true;
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberArr(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(name))
@@ -66,6 +72,9 @@ namespace Friflo.Json.Burst
             return true;
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberNum(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(name))
@@ -82,7 +91,9 @@ namespace Friflo.Json.Burst
             usedMember[stateLevel] = true;
             return true;
         }
-        
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberStr(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(name))
@@ -100,6 +111,9 @@ namespace Friflo.Json.Burst
             return true;
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberBln(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(name))
@@ -116,7 +130,10 @@ namespace Friflo.Json.Burst
             usedMember[stateLevel] = true;
             return true;
         }
-        
+
+#if JSON_BURST
+        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+#endif
         public bool UseMemberNul(Str32 name) {
             AssertObject();
             if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(name))

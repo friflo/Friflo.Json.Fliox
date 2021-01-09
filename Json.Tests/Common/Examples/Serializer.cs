@@ -2,6 +2,7 @@
 using Friflo.Json.Burst;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+// ReSharper disable InconsistentNaming
 
 namespace Friflo.Json.Tests.Common.Examples
 {

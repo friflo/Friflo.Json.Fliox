@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
 
+// ReSharper disable InconsistentNaming
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
 #else
@@ -90,9 +91,9 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy, ref Keys k) {
             while (p.NextObjectMember()) {
-                if      (p.UseMemberStr (k.firstName))    { buddy.firstName = p.value.ToString(); }
-                else if (p.UseMemberNum (k.age))          { buddy.age = p.ValueAsInt(out _); }
-                else if (p.UseMemberArr (k.hobbies))      { ReadHobbyList(ref p, ref buddy.hobbies, ref k); }
+                if      (p.UseMemberStr (ref k.firstName))    { buddy.firstName = p.value.ToString(); }
+                else if (p.UseMemberNum (ref k.age))          { buddy.age = p.ValueAsInt(out _); }
+                else if (p.UseMemberArr (ref k.hobbies))      { ReadHobbyList(ref p, ref buddy.hobbies, ref k); }
             }
         }
         
@@ -108,7 +109,7 @@ namespace Friflo.Json.Tests.Common.Examples
         
         private static void ReadHobby(ref JsonParser p, ref Hobby hobby, ref Keys k) {
             while (p.NextObjectMember()) {
-                if (p.UseMemberStr(k.name))  { hobby.name = p.value.ToString(); }
+                if (p.UseMemberStr(ref k.name))  { hobby.name = p.value.ToString(); }
             }
         }
     }

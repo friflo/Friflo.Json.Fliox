@@ -4,6 +4,8 @@ using Friflo.Json.Burst.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable InconsistentNaming
+
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
 #else
