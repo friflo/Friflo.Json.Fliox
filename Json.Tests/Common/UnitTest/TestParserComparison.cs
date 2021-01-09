@@ -39,7 +39,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
     }
     
-    public class TestParseJsonManual : LeakTestsFixture
+    /// <summary>
+    /// Compare the usage of the <see cref="JsonParser"/> in two similar ways<br/>
+    /// 1. using <see cref="JsonParser.NoSkipNextObjectMember"/> and <see cref="JsonParser.NoSkipNextArrayElement"/>
+    /// 2. using <see cref="JsonParser.NextObjectMember"/> and <see cref="JsonParser.NextArrayElement"/> 
+    /// </summary>
+    public class TestParserComparison : LeakTestsFixture
     {
         public enum SkipMode {
             Manual,
