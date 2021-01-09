@@ -8,8 +8,10 @@ using static NUnit.Framework.Assert;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
+    using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
+    using Str128 = System.String;
 #endif
 
 namespace Friflo.Json.Tests.Common.Examples
@@ -27,7 +29,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         public struct Buddy : IDisposable {
-            public  Str32               firstName;
+            public  Str128              firstName;
             public  int                 age;
             public  ValueList<Hobby>    hobbies;
 
@@ -37,22 +39,37 @@ namespace Friflo.Json.Tests.Common.Examples
         }
     
         public struct Hobby {
-            public Str32   name;
+            public Str128   name;
         }
 
+        public struct Keys {
+            public Str32    firstName;
+            public Str32    age;
+            public Str32    hobbies;
+            public Str32    name;
+
+            public Keys(Default _) {
+                firstName   = "firstName";
+                age         = "age";
+                hobbies     = "hobbies";
+                name        = "name";
+            }
+        }
+        
         [Test]
         public void WriteJson() {
             Buddy buddy = CreateBuddy();
             var s = new JsonSerializer();
+            Keys    k = new Keys(Default.Constructor);
             s.InitSerializer();
             try {
                 s.ObjectStart();
-                    s.MemberString  ("firstName",   buddy.firstName);
-                    s.MemberLong    ("age",         buddy.age);
-                    s.MemberArrayStart("hobbies");
+                    s.MemberString  (ref k.firstName,   ref buddy.firstName);
+                    s.MemberLong    (ref k.age,         buddy.age);
+                    s.MemberArrayStart(ref k.hobbies);
                     for (int n = 0; n < buddy.hobbies.Length; n++) {
                         s.ObjectStart();
-                        s.MemberString  ("name", buddy.hobbies.array[n].name);
+                        s.MemberString(ref k.name, ref buddy.hobbies.ElementAt(n).name);
                         s.ObjectEnd();
                     }
                     s.ArrayEnd();

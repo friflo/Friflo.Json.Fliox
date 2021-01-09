@@ -34,7 +34,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberObj(Str32 name) {
             AssertObject();
@@ -53,7 +53,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberArr(Str32 name) {
             AssertObject();
@@ -73,7 +73,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberNum(Str32 name) {
             AssertObject();
@@ -92,7 +92,7 @@ namespace Friflo.Json.Burst
             return true;
         }
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberStr(Str32 name) {
             AssertObject();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberBln(Str32 name) {
             AssertObject();
@@ -132,7 +132,7 @@ namespace Friflo.Json.Burst
         }
 
 #if JSON_BURST
-        [Obsolete("Performance degradation > to avoid use the (ref FixedString32) version", false)]
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberNul(Str32 name) {
             AssertObject();

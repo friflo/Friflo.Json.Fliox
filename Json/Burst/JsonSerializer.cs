@@ -215,7 +215,7 @@ namespace Friflo.Json.Burst
             SetStartGuard();
             ObjectStart();
         }
-        
+
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
         public void MemberString(ref Str32 key, ref Bytes value) {
             AssertMember();
@@ -227,18 +227,18 @@ namespace Friflo.Json.Burst
             AppendEscString(ref dst, ref value);
             dst.AppendChar('"');
         }
-        
+
         /// <summary>
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberString(Str32 key, Unity.Collections.FixedString128 value) {
+        public void MemberString(ref Str32 key, ref Unity.Collections.FixedString128 value) {
             strBuf.Clear();
             strBuf.AppendStr128(ref value);
             MemberString(ref key, ref strBuf);
         }
 #else
-        public void MemberString(string key, string value) {
+        public void MemberString(ref string key, ref string value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -290,30 +290,62 @@ namespace Friflo.Json.Burst
         }
         
         // ------------- non-ref Str32 Member...() versions for convenience  -------------
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberArrayStart(Str32 key) {
             MemberArrayStart(ref key);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberObjectStart(Str32 key) {
             MemberObjectStart(ref key);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+        public void MemberString(Str32 key, Unity.Collections.FixedString128 value) {
+            MemberString(ref key, ref value);
+        }
+#else
+        public void MemberString(string key, string value) {
+            MemberString(ref key, ref value);
+        }
+#endif
+        
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberString(Str32 key, ref Bytes value) {
             MemberString(ref key, ref value);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberDouble(Str32 key, double value) {
             MemberDouble(ref key, value);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberLong(Str32 key, long value) {
             MemberLong(ref key, value);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberBool(Str32 key, bool value) {
             MemberBool(ref key, value);
         }
         
+#if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
+#endif
         public void MemberNull(Str32 key) {
             MemberNull(ref key);
         }

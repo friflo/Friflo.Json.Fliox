@@ -1,10 +1,5 @@
 ﻿
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-#endif
 
 namespace Friflo.Json.Burst
 {

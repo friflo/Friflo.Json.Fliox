@@ -22,6 +22,10 @@ namespace Friflo.Json.Burst.Utils
             array.Clear();
         }
 
+        public ref T ElementAt(int index) {
+            return ref array.ElementAt(index);
+        }
+
         public void Resize(int size) {
             array.Resize(size, Unity.Collections.NativeArrayOptions.ClearMemory);
         }
@@ -56,6 +60,10 @@ namespace Friflo.Json.Burst.Utils
         
         public void Clear() {
             len = 0;
+        }
+
+        public ref T ElementAt(int index) {
+            return ref array[index];
         }
         
         public void Resize(int size) {
