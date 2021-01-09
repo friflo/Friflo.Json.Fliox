@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.Examples
             var s = new JsonSerializer();
             s.InitSerializer();
             try {
-                WriteBuddy(ref s, ref buddy);
+                WriteBuddy(ref s, buddy);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
                 AreEqual(expect, s.dst.ToString());
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.Examples
             }
         }
 
-        private static void WriteBuddy(ref JsonSerializer s, ref Buddy buddy) {
+        private static void WriteBuddy(ref JsonSerializer s, Buddy buddy) {
             s.ObjectStart();
             s.MemberString  ("firstName",   buddy.firstName);
             s.MemberLong    ("age",         buddy.age);
