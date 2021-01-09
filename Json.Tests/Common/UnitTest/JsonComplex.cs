@@ -57,9 +57,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
     }
     
-    public struct JsonStruct
+    public readonly struct JsonStruct
     {
-        public long val;
+        public readonly long val;
+
+        public JsonStruct(long val) {
+            this.val = val;
+        }
     }
 
     public class Sub

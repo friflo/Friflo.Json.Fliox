@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             obj.f = false;
             obj.sub = new Sub();
             obj.sub.i64 = 1L;
-            obj.structValue.val = 43;
+            obj.structValue = new JsonStruct(43);
             obj.arr = new Sub[4];
             obj.arr[0] = new Sub(21L);
             obj.arr[1]    = null;
@@ -166,14 +166,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
             SetList (obj.listDerivedNull);
             obj.listStr. Add ("str0");
             obj.listObj. Add (new Sub(101));
-            obj.listStruct.Add(new JsonStruct{ val = 42 });
+            obj.listStruct.Add(new JsonStruct(42));
             obj.map = new Dictionary <String, JsonSimple>();
             SetMap (obj.map);
             SetMap (obj.map2);
             obj.map3 = new Dictionary <String, JsonSimple>();
             SetMap (obj.map3);
             SetMap (obj.map4);
-            obj.mapStruct["key1"] = new JsonStruct { val = 1 };
+            obj.mapStruct["key1"] = new JsonStruct(1);
             SetMap (obj.mapDerived);
             obj.mapDerivedNull = new DerivedMap();
             SetMap (obj.mapDerivedNull);
