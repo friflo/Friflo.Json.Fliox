@@ -80,7 +80,7 @@ namespace Friflo.Json.Burst
         public Bytes(ByteList array) {
             hc = 0;
             start = 0;
-            end = array.Length;
+            end = array.Count;
             buffer = array;
         }
 
@@ -553,10 +553,10 @@ namespace Friflo.Json.Burst
         }
         
         public void EnsureCapacityAbs(int size) {
-            if (size <= buffer. Length)
+            if (size <= buffer. Count)
                 return;
-            if (size < 2 * buffer. Length)
-                size = 2 * buffer. Length;
+            if (size < 2 * buffer. Count)
+                size = 2 * buffer. Count;
 
             buffer.Resize(size);
         }

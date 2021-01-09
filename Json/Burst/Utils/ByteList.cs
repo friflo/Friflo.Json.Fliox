@@ -24,9 +24,8 @@ namespace Friflo.Json.Burst.Utils
             }
         } */
 
-        public int Length {
-            get { return array.Length; }
-        }
+        // public int Length => len;
+        public int Count => array.Length;
 
         public void Resize(int size) {
             array.Resize(size, Unity.Collections.NativeArrayOptions.ClearMemory);
@@ -58,10 +57,9 @@ namespace Friflo.Json.Burst.Utils
             }
         } */
  
-        public int Length {
-            get { return array.Length; }
-        }
-        
+        // public int Length => len;
+        public int Count => array.Length;
+
         public void Resize(int size) {
             byte[] newArr = new byte[size];
             int len = size < array.Length ? size : array.Length;
