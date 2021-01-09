@@ -63,17 +63,7 @@ namespace Friflo.Json.Tests.Common.Examples
             Keys    k = new Keys(Default.Constructor);
             s.InitSerializer();
             try {
-                s.ObjectStart();
-                    s.MemberString  (ref k.firstName,   ref buddy.firstName);
-                    s.MemberLong    (ref k.age,         buddy.age);
-                    s.MemberArrayStart(ref k.hobbies);
-                    for (int n = 0; n < buddy.hobbies.Length; n++) {
-                        s.ObjectStart();
-                        s.MemberString(ref k.name, ref buddy.hobbies.ElementAt(n).name);
-                        s.ObjectEnd();
-                    }
-                    s.ArrayEnd();
-                s.ObjectEnd();
+                WriteBuddy(ref s, ref k, ref buddy);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
                 AreEqual(expect, s.dst.ToString());
@@ -83,6 +73,23 @@ namespace Friflo.Json.Tests.Common.Examples
                 s.Dispose();
                 buddy.Dispose();
             }
+        }
+
+        private void WriteBuddy(ref JsonSerializer s, ref Keys k, ref Buddy buddy) {
+            s.ObjectStart();
+            s.MemberString  (ref k.firstName,   ref buddy.firstName);
+            s.MemberLong    (ref k.age,         buddy.age);
+            s.MemberArrayStart(ref k.hobbies);
+            for (int n = 0; n < buddy.hobbies.Length; n++) 
+                WriteHobby(ref s, ref k, ref buddy.hobbies.ElementAt(n));
+            s.ArrayEnd();
+            s.ObjectEnd();
+        }
+        
+        private void WriteHobby(ref JsonSerializer s, ref Keys k, ref Hobby buddy) {
+            s.ObjectStart();
+            s.MemberString(ref k.name, ref buddy.name);
+            s.ObjectEnd();
         }
     }
 }
