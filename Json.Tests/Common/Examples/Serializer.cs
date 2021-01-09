@@ -6,14 +6,6 @@ using static NUnit.Framework.Assert;
 
 // ReSharper disable InconsistentNaming
 
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
-#else
-    using Str32 = System.String;
-    using Str128 = System.String;
-#endif
-
 namespace Friflo.Json.Tests.Common.Examples
 {
     public class Serializer
@@ -29,7 +21,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         public struct Buddy : IDisposable {
-            public  Str128              firstName;
+            public  string              firstName;
             public  int                 age;
             public  ValueList<Hobby>    hobbies;
 
@@ -39,7 +31,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
     
         public struct Hobby {
-            public Str128   name;
+            public string   name;
         }
 
         [Test]
