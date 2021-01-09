@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
+                AreEqual("JsonParser error - Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("{'test':'hello'}")) {
                 parser.InitParser(bytes);
@@ -93,18 +94,24 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var bytes = CommonUtils.FromString("")) { // empty string is not valid JSON
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
+                AreEqual("JsonParser error - unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("str")) {
                 parser.InitParser(bytes);
+                AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
+                AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
                 AreEqual(JsonEvent.Error, parser.NextEvent());
+                AreEqual("JsonParser error - unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("tx")) { // start as a bool (true)
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
+                AreEqual("JsonParser error - invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("1a")) { // start as a number
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
+                AreEqual("JsonParser error - unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
             parser.Dispose();
