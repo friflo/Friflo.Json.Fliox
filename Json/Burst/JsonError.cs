@@ -39,6 +39,7 @@ namespace Friflo.Json.Burst
 
         public void Clear() {
             ErrSet = false;
+            msg.Clear();
         }
     
         public override String ToString () {
