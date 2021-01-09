@@ -113,6 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             CheckMap (obj.map2);
             CheckMap (obj.map3);
             CheckMap (obj.map4);
+            AreEqual (         1, obj.mapStruct["key1"].val); 
             CheckMap (obj.mapDerived);
             CheckMap (obj.mapDerivedNull);
             AreEqual (      "str1", obj.map5 [ "key1" ]);
@@ -172,6 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             obj.map3 = new Dictionary <String, JsonSimple>();
             SetMap (obj.map3);
             SetMap (obj.map4);
+            obj.mapStruct["key1"] = new JsonStruct { val = 1 };
             SetMap (obj.mapDerived);
             obj.mapDerivedNull = new DerivedMap();
             SetMap (obj.mapDerivedNull);

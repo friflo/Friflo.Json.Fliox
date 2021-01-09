@@ -9,6 +9,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public IDictionary  <String, JsonSimple>    map2 = new Dictionary <String, JsonSimple>();
         public Dictionary   <String, JsonSimple>    map3 = null;
         public Dictionary   <String, JsonSimple>    map4 = new Dictionary <String, JsonSimple>();
+        public Dictionary   <String, JsonStruct>    mapStruct = new Dictionary <String, JsonStruct>();
         public DerivedMap                           mapDerived = new DerivedMap();
         public DerivedMap                           mapDerivedNull = null;
         public IDictionary  <String, String>        map5;

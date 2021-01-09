@@ -289,11 +289,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(8,     p.skipInfo.arrays);
                 AreEqual(1,     p.skipInfo.booleans);
                 AreEqual(1,     p.skipInfo.floats);
-                AreEqual(35,    p.skipInfo.integers);
+                AreEqual(36,    p.skipInfo.integers);
                 AreEqual(14,    p.skipInfo.nulls);
-                AreEqual(39,    p.skipInfo.objects);
+                AreEqual(41,    p.skipInfo.objects);
                 AreEqual(4,     p.skipInfo.strings);
-                AreEqual(102,   p.skipInfo.Sum);
+                AreEqual(105,   p.skipInfo.Sum);
             }
         }
     }

@@ -3,6 +3,7 @@
     "map2": { "key1":{"val":1}, "key2" : null },
     "map3": { "key1":{"val":1}, "key2" : null },
     "map4": { "key1":{"val":1}, "key2" : null },
+	"mapStruct": { "key1": { "val": 1} },
     "mapDerived": { "key1":{"val":1}, "key2" : null },
     "mapDerivedNull": { "key1":{"val":1}, "key2" : null },
     "map5": { "key1":"str1", "key2" : null },
