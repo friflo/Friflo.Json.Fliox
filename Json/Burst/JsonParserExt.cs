@@ -4,7 +4,7 @@
 using System; // Required for [Obsolete] 
 
 #if JSON_BURST
-using Str32 = Unity.Collections.FixedString32;
+    using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
 #endif
@@ -139,23 +139,24 @@ namespace Friflo.Json.Burst
                 return false;
             
             if (i.hasIterated)  {
+#if DEBUG
                 int level = stateLevel;
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 State curState = state[level];
-                if (curState == State.ExpectMember) {
-                    if (i.usedMember) {
-                        i.usedMember = false; // clear found flag for next iteration
-                    } else {
-                        if (!SkipEvent())
-                            return false;
-                    }
+                if (curState != State.ExpectMember)
+                    throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
+#endif
+                if (i.usedMember) {
+                    i.usedMember = false; // clear found flag for next iteration
                 } else {
-                    return SetApplicationError("NextObjectMember() - expect subsequent iteration being inside an object");
+                    if (!SkipEvent())
+                        return false;
                 }
             } else {
+                // assertion is cheap -> throw exception also in DEBUG & RELEASE
                 if (lastEvent != JsonEvent.ObjectStart)
-                    return SetApplicationError("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
+                    throw new InvalidOperationException("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
                 i.hasIterated = true;
             }
             JsonEvent ev = NextEvent();
@@ -179,24 +180,26 @@ namespace Friflo.Json.Burst
             if (lastEvent == JsonEvent.Error)
                 return false;
             
-            if (i.hasIterated){
+            if (i.hasIterated) {
+#if DEBUG
                 int level = stateLevel;
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 State curState = state[level];
-                if (curState == State.ExpectElement) {
-                    if (i.usedMember) {
-                        i.usedMember = false; // clear found flag for next iteration
-                    } else {
-                        if (!SkipEvent())
-                            return false;
-                    }
-                } else {
-                    return SetApplicationError("NextArrayElement() - expect subsequent iteration being inside an array");
+                if (curState != State.ExpectElement) 
+                    throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");
+#endif
+                if (i.usedMember) {
+                    i.usedMember = false; // clear found flag for next iteration
+                }
+                else {
+                    if (!SkipEvent())
+                        return false;
                 }
             } else {
+                // assertion is cheap -> throw exception also in DEBUG & RELEASE
                 if (lastEvent != JsonEvent.ArrayStart)
-                    return SetApplicationError("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
+                    throw new InvalidOperationException("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
                 i.hasIterated = true;
             }
             JsonEvent ev = NextEvent();
@@ -217,18 +220,16 @@ namespace Friflo.Json.Burst
         }
 
         public ObjectIterator GetObjectIterator() {
-#if DEBUG
+            // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ObjectStart)
                 throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
-#endif
             return new ObjectIterator(stateLevel);
         }
 
         public ArrayIterator GetArrayIterator() {
-#if DEBUG
+            // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ArrayStart)
                 throw new InvalidOperationException("Expect ArrayStart in GetObjectIterator()");
-#endif
             return new ArrayIterator(stateLevel);
         }
     }
