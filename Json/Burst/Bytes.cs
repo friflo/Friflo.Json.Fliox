@@ -503,11 +503,13 @@ namespace Friflo.Json.Burst
                 return new String(sbytePtr, pos, size, Encoding.UTF8);
             }
 #else
+            /*
             sbyte[] sbyteData = (sbyte[]) (Array)data.array;
             unsafe {
                 fixed (sbyte* sbytePtr = sbyteData)
                     return new String(sbytePtr, pos, size, Encoding.UTF8);
-            }
+            } */
+            return Encoding.UTF8.GetString(data.array, pos, size);
 #endif
         }
 
