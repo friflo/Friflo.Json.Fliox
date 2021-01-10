@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.Examples
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadBuddy(ref p, ref buddy, ref k);
+                ReadBuddy(ref p, ref k, ref buddy);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -93,27 +93,27 @@ namespace Friflo.Json.Tests.Common.Examples
             }
         }
         
-        private static void ReadBuddy(ref JsonParser p, ref Buddy buddy, ref Keys k) {
+        private static void ReadBuddy(ref JsonParser p, ref Keys k, ref Buddy buddy) {
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
                 if      (p.UseMemberStr (ref i, ref k.firstName))    { buddy.firstName = p.value.ToString(); }
                 else if (p.UseMemberNum (ref i, ref k.age))          { buddy.age = p.ValueAsInt(out _); }
-                else if (p.UseMemberArr (ref i, ref k.hobbies))      { ReadHobbyList(ref p, ref buddy.hobbies, ref k); }
+                else if (p.UseMemberArr (ref i, ref k.hobbies))      { ReadHobbyList(ref p, ref k, ref buddy.hobbies); }
             }
         }
         
-        private static void ReadHobbyList(ref JsonParser p, ref ValueList<Hobby> hobbyList, ref Keys k) {
+        private static void ReadHobbyList(ref JsonParser p, ref Keys k, ref ValueList<Hobby> hobbyList) {
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
                 if (p.UseElementObj(ref i)) {        
                     var hobby = new Hobby();
-                    ReadHobby(ref p, ref hobby, ref k);
+                    ReadHobby(ref p, ref k, ref hobby);
                     hobbyList.Add(hobby);
                 }
             }
         }
         
-        private static void ReadHobby(ref JsonParser p, ref Hobby hobby, ref Keys k) {
+        private static void ReadHobby(ref JsonParser p, ref Keys k, ref Hobby hobby) {
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
                 if (p.UseMemberStr(ref i, ref k.name))  { hobby.name = p.value.ToStr128(); }
