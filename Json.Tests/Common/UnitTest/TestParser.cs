@@ -391,10 +391,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 using (var json = new Bytes("[]")) {
                     parser.InitParser(json);
                     parser.NextEvent();
+                    
                     var arr = new ArrayIterator();
-                    while (parser.NextArrayElement(ref arr)) {
+                    while (parser.NextArrayElement(ref arr))
                         Fail("Expect no elements in empty array");
-                    }
                     AreEqual(JsonEvent.ArrayEnd, parser.Event);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
@@ -403,46 +403,41 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 using (var json = new Bytes("[]")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var e = Throws<InvalidOperationException>(() => {
-                        var obj = new ObjectIterator ();
-                        parser.NextObjectMember(ref obj);
-                    });
-                    AreEqual("NextObjectMember() - expect initial iteration with an object (ObjectStart)", e.Message);
+                    
+                    var obj = new ObjectIterator ();
+                    parser.NextObjectMember(ref obj);
+                    StringAssert.StartsWith("internal JsonParser error - NextObjectMember() - expect initial iteration with an object (ObjectStart)", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var e = Throws<InvalidOperationException>(() => {
-                        var arr = new ArrayIterator();
-                        parser.NextArrayElement(ref arr);
-                    });
-                    AreEqual("NextArrayElement() - expect initial iteration with an array (ArrayStart)", e.Message);
+                    var arr = new ArrayIterator();
+                    parser.NextArrayElement(ref arr);
+                    StringAssert.StartsWith("internal JsonParser error - NextArrayElement() - expect initial iteration with an array (ArrayStart)", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var e = Throws<InvalidOperationException>(() => {
-                        var obj = new ObjectIterator ();
-                        parser.NextObjectMember(ref obj);
-                        AreEqual(JsonEvent.ValueNumber, parser.Event);
-                        parser.NextEvent(); // call to NextObjectMember() would return false
-                        AreEqual(JsonEvent.ObjectEnd, parser.Event);
-                        parser.NextObjectMember(ref obj);
-                    });
-                    AreEqual("NextObjectMember() - expect subsequent iteration being inside an object", e.Message);
+                    
+                    var obj = new ObjectIterator ();
+                    parser.NextObjectMember(ref obj);
+                    AreEqual(JsonEvent.ValueNumber, parser.Event);
+                    parser.NextEvent(); // call to NextObjectMember() would return false
+                    AreEqual(JsonEvent.ObjectEnd, parser.Event);
+                    parser.NextObjectMember(ref obj);
+                    StringAssert.StartsWith("internal JsonParser error - NextObjectMember() - expect subsequent iteration being inside an object", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("[42]")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var e = Throws<InvalidOperationException>(() => {
-                        var arr = new ArrayIterator ();
-                        parser.NextArrayElement(ref arr);
-                        AreEqual(JsonEvent.ValueNumber, parser.Event);
-                        parser.NextEvent(); // call to NextArrayElement() would return false
-                        AreEqual(JsonEvent.ArrayEnd, parser.Event);
-                        parser.NextArrayElement(ref arr);
-                    });
-                    AreEqual("NextArrayElement() - expect subsequent iteration being inside an array", e.Message);
+
+                    var arr = new ArrayIterator ();
+                    parser.NextArrayElement(ref arr);
+                    AreEqual(JsonEvent.ValueNumber, parser.Event);
+                    parser.NextEvent(); // call to NextArrayElement() would return false
+                    AreEqual(JsonEvent.ArrayEnd, parser.Event);
+                    parser.NextArrayElement(ref arr);
+                    StringAssert.StartsWith("internal JsonParser error - NextArrayElement() - expect subsequent iteration being inside an array", parser.error.msg.ToString());
                 }
             }
         }

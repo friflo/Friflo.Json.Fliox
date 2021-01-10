@@ -192,10 +192,15 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        private bool SetErrorFalse (Str128 msg)
-        {
+        private bool SetErrorFalse (Str128 msg) {
             errVal.Clear();
             Error("JsonParser", ref msg, ref errVal);
+            return false;
+        }
+        
+        private bool SetInternalError (Str128 msg) {
+            errVal.Clear();
+            Error("internal JsonParser", ref msg, ref errVal);
             return false;
         }
         
