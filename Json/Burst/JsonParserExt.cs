@@ -204,16 +204,21 @@ namespace Friflo.Json.Burst
         
         // ------------------------------------------------------------------------------------------------
         public bool NextObjectMember (ref ObjectIterator i) {
+            if (lastEvent == JsonEvent.Error)
+                return false;
+            
             if (i.hasIterated)  {
                 int level = stateLevel;
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 State curState = state[level];
                 if (curState == State.ExpectMember) {
-                    if (usedMember[level])
+                    if (usedMember[level]) {
                         usedMember[level] = false; // clear found flag for next iteration
-                    else
-                        SkipEvent();
+                    } else {
+                        if (!SkipEvent())
+                            return false;
+                    }
                 } else {
                     return SetInternalError("NextObjectMember() - expect subsequent iteration being inside an object");
                 }
@@ -232,7 +237,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayStart:
                     return true;
                 case JsonEvent.ArrayEnd:
-                    return SetInternalError ("unexpected ArrayEnd in JsonParser.NextObjectMember()");
+                    return SetInternalError ("unexpected ArrayEnd in NextObjectMember()");
                 case JsonEvent.ObjectEnd:
                     break;
             }
@@ -240,16 +245,21 @@ namespace Friflo.Json.Burst
         }
         
         public bool NextArrayElement (ref ArrayIterator i) {
+            if (lastEvent == JsonEvent.Error)
+                return false;
+            
             if (i.hasIterated){
                 int level = stateLevel;
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 State curState = state[level];
                 if (curState == State.ExpectElement) {
-                    if (usedMember[level])
+                    if (usedMember[level]) {
                         usedMember[level] = false; // clear found flag for next iteration
-                    else
-                        SkipEvent();
+                    } else {
+                        if (!SkipEvent())
+                            return false;
+                    }
                 } else {
                     return SetInternalError("NextArrayElement() - expect subsequent iteration being inside an array");
                 }
@@ -270,7 +280,43 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayEnd:
                     break;
                 case JsonEvent.ObjectEnd:
-                    return SetInternalError("unexpected ObjectEnd in JsonParser.NextArrayElement()");
+                    return SetInternalError("unexpected ObjectEnd in NextArrayElement()");
+            }
+            return false;
+        }
+        
+        public bool NoSkipNextObjectMember () {
+            JsonEvent ev = NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException("unexpected ArrayEnd in NoSkipNextObjectMember()");
+                case JsonEvent.ObjectEnd:
+                    break;
+            }
+            return false;
+        }
+        
+        public bool NoSkipNextArrayElement () {
+            JsonEvent ev = NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    break;
+                case JsonEvent.ObjectEnd:
+                    throw new InvalidOperationException("unexpected ObjectEnd in NoSkipNextArrayElement()");
             }
             return false;
         }
