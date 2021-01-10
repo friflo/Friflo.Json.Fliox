@@ -219,15 +219,40 @@ namespace Friflo.Json.Burst
             }
             return false;
         }
+
+        public ObjectIterator GetObjectIterator() {
+            return new ObjectIterator(pos, stateLevel);
+        }
+
+        public ArrayIterator GetArrayIterator() {
+            return new ArrayIterator(pos, stateLevel);
+        }
     }
 
-    public ref struct ObjectIterator {
-        public bool hasIterated;
-        public bool usedMember;
+    public ref struct ObjectIterator
+    {
+        internal ObjectIterator(int pos, int level) {
+            this.pos = pos;
+            this.level = level;
+            hasIterated = false;
+            usedMember = false;
+        }
+        internal int pos;
+        internal int level;
+        internal bool hasIterated;
+        internal bool usedMember;
     }
     
     public ref struct ArrayIterator {
-        public bool hasIterated;
-        public bool usedMember;
+        internal ArrayIterator(int pos, int level) {
+            this.pos = pos;
+            this.level = level;
+            hasIterated = false;
+            usedMember = false;
+        }
+        internal int pos;
+        internal int level;
+        internal bool hasIterated;
+        internal bool usedMember;
     }
 }

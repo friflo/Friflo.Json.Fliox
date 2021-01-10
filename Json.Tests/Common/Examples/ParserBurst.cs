@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy, ref Keys k) {
-            var i = new ObjectIterator();
+            var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
                 if      (p.UseMemberStr (ref i, ref k.firstName))    { buddy.firstName = p.value.ToString(); }
                 else if (p.UseMemberNum (ref i, ref k.age))          { buddy.age = p.ValueAsInt(out _); }
@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         private static void ReadHobbyList(ref JsonParser p, ref ValueList<Hobby> hobbyList, ref Keys k) {
-            var i = new ArrayIterator();
+            var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
                 if (p.UseElementObj(ref i)) {        
                     var hobby = new Hobby();
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.Examples
         }
         
         private static void ReadHobby(ref JsonParser p, ref Hobby hobby, ref Keys k) {
-            var i = new ObjectIterator();
+            var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
                 if (p.UseMemberStr(ref i, ref k.name))  { hobby.name = p.value.ToStr128(); }
             }

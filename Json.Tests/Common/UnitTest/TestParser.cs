@@ -364,7 +364,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var obj = new ObjectIterator ();
+                    var obj = parser.GetObjectIterator ();
                     while (parser.NextObjectMember(ref obj)) {
                         Fail("Expect no members in empty object");
                     }
@@ -375,11 +375,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     parser.InitParser(json);
                     parser.NextEvent();
                     int arrCount = 0;
-                    var obj = new ObjectIterator ();
+                    var obj = parser.GetObjectIterator ();
                     while (parser.NextObjectMember(ref obj)) {
                         if (parser.UseMemberArr(ref obj, "arr")) {
                             arrCount++;
-                            var arr = new ArrayIterator();
+                            var arr = parser.GetArrayIterator();
                             while (parser.NextArrayElement(ref arr))
                                 Fail("Expect no array elements");
                         }
@@ -392,7 +392,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     parser.InitParser(json);
                     parser.NextEvent();
                     
-                    var arr = new ArrayIterator();
+                    var arr = parser.GetArrayIterator();
                     while (parser.NextArrayElement(ref arr))
                         Fail("Expect no elements in empty array");
                     AreEqual(JsonEvent.ArrayEnd, parser.Event);
@@ -404,14 +404,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
                                         
-                                                    var obj = new ObjectIterator ();
+                                                    var obj = parser.GetObjectIterator ();
                     IsFalse(                        parser.NextObjectMember(ref obj));
                     StringAssert.StartsWith("JsonParser/application error: NextObjectMember() - expect initial iteration with an object (ObjectStart)", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("{}")) {
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
-                                                    var arr = new ArrayIterator();
+                                                    var arr = parser.GetArrayIterator();
                     IsFalse(                        parser.NextArrayElement(ref arr));
                     StringAssert.StartsWith("JsonParser/application error: NextArrayElement() - expect initial iteration with an array (ArrayStart)", parser.error.msg.ToString());
                 }
@@ -419,7 +419,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
                                         
-                                                    var obj = new ObjectIterator ();
+                                                    var obj = parser.GetObjectIterator ();
                                                     parser.NextObjectMember(ref obj);   AreEqual(JsonEvent.ValueNumber, parser.Event);
                                     
                                                     // call to NextObjectMember() would return false
@@ -431,7 +431,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
                     
-                                                    var arr = new ArrayIterator ();
+                                                    var arr = parser.GetArrayIterator ();
                                                     parser.NextArrayElement(ref arr);  AreEqual(JsonEvent.ValueNumber, parser.Event);
                                         
                                                     // call to NextArrayElement() would return false
@@ -443,7 +443,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
                                 
-                                                    var arr = new ArrayIterator ();
+                                                    var arr = parser.GetArrayIterator ();
                                                     parser.NextArrayElement(ref arr); AreEqual(JsonEvent.ObjectStart, parser.Event);
                     AreEqual(true,                  parser.UseElementObj(ref arr)); // used object without skipping
                     IsFalse(                        parser.NextArrayElement(ref arr));
@@ -453,7 +453,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
                                 
-                                                    var obj = new ObjectIterator ();
+                                                    var obj = parser.GetObjectIterator ();
                                                     parser.NextObjectMember(ref obj); AreEqual(JsonEvent.ArrayStart, parser.Event);
                     AreEqual(true,                  parser.UseMemberArr(ref obj, "arr")); // used array without skipping
                     IsFalse(                        parser.NextObjectMember(ref obj));

@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         public void ReadAuto (ref JsonParser p) {
             int index = 0;
-            var i = new ArrayIterator();
+            var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
                 if (p.UseElementNum(ref i))                      { this[index++] = p.ValueAsInt(out _); }
             }
@@ -209,7 +209,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             public void RootAutoSkip(ref JsonParser p) {
-                var i = new ObjectIterator();
+                var i = p.GetObjectIterator();
                 while (p.NextObjectMember(ref i)) {
                     if      (p.UseMemberObj(ref i, ref nm.map))       { p.SkipTree(); }
                     else if (p.UseMemberObj(ref i, ref nm.map2))      { p.SkipTree(); }
@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadListStrAuto(ref JsonParser p) {
-                var i = new ArrayIterator();
+                var i = p.GetArrayIterator();
                 while (p.NextArrayElement(ref i)) {
                     if      (p.UseElementStr(ref i))                { strElement.Set( ref p.value); }
                 }
@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadArrAuto(ref JsonParser p) {
-                var i = new ArrayIterator();
+                var i = p.GetArrayIterator();
                 while (p.NextArrayElement(ref i)) {
                     if      (p.UseElementNul(ref i))                { foundNullElement = true; }
                 }
@@ -263,7 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadBoolArrAuto(ref JsonParser p) {
-                var i = new ArrayIterator();
+                var i = p.GetArrayIterator();
                 while (p.NextArrayElement(ref i)) {
                     if      (p.UseElementBln(ref i))                { trueElement = p.boolValue; }
                 }
