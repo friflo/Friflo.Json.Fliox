@@ -217,15 +217,19 @@ namespace Friflo.Json.Burst
         }
 
         public ObjectIterator GetObjectIterator() {
-            int level = lastEvent == JsonEvent.ObjectStart ? stateLevel : -1;
-            //  throw new InvalidOperationException("Invalid ObjectIterator");
-            return new ObjectIterator(level);
+#if DEBUG
+            if (lastEvent != JsonEvent.ObjectStart)
+                throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
+#endif
+            return new ObjectIterator(stateLevel);
         }
 
         public ArrayIterator GetArrayIterator() {
-            int level = lastEvent == JsonEvent.ArrayStart ? stateLevel : -1;
-            // throw new InvalidOperationException("Invalid ArrayIterator");
-            return new ArrayIterator(level);
+#if DEBUG
+            if (lastEvent != JsonEvent.ArrayStart)
+                throw new InvalidOperationException("Expect ArrayStart in GetObjectIterator()");
+#endif
+            return new ArrayIterator(stateLevel);
         }
     }
 
