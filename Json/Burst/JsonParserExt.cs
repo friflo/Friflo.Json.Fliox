@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-using System;
-using System.Diagnostics;
+
+using System; // Required for [Obsolete] 
 
 #if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
+using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
 #endif
@@ -15,17 +15,20 @@ namespace Friflo.Json.Burst
     {
         // ----------- object member checks -----------
         private bool UseMember(ref ObjectIterator iterator, JsonEvent expect, ref Str32 name) {
+#if DEBUG
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
+            if (level != iterator.level)
+                throw new InvalidOperationException("Unexpected level in UseMember...() method. ");
             State curState = state[level];
-            if (curState == State.ExpectMember) {
-                if (lastEvent != expect || !key.IsEqual32(name))
-                    return false;
-                iterator.usedMember = true;
-                return true;
-            }
-            return SetApplicationError("Must call UseMember...() method only within an object");
+            if (curState != State.ExpectMember)
+                throw new InvalidOperationException("Must call UseMember...() method only within an object");
+#endif
+            if (lastEvent != expect || !key.IsEqual32(name))
+                return false;
+            iterator.usedMember = true;
+            return true;
         }
         
         public bool UseMemberObj(ref ObjectIterator iterator, ref Str32 name) {
@@ -100,17 +103,18 @@ namespace Friflo.Json.Burst
         
         // ----------- array element checks -----------
         private bool UseElement(ref ArrayIterator iterator, JsonEvent expect) {
+#if DEBUG
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             State curState = state[level];
-            if (curState == State.ExpectElement) {
-                if (lastEvent != expect)
-                    return false;
-                iterator.usedMember = true;
-                return true;
-            }
-            return SetApplicationError("Must call UseElement...() method on within an array");
+            if (curState != State.ExpectElement)
+                throw new InvalidOperationException("Must call UseElement...() method on within an array");
+#endif
+            if (lastEvent != expect)
+                return false;
+            iterator.usedMember = true;
+            return true;
         }
         
         public bool UseElementObj(ref ArrayIterator iterator) {
@@ -221,36 +225,38 @@ namespace Friflo.Json.Burst
         }
 
         public ObjectIterator GetObjectIterator() {
-            return new ObjectIterator(pos, stateLevel);
+            int level = lastEvent == JsonEvent.ObjectStart ? stateLevel : -1;
+            //  throw new InvalidOperationException("Invalid ObjectIterator");
+            return new ObjectIterator(level);
         }
 
         public ArrayIterator GetArrayIterator() {
-            return new ArrayIterator(pos, stateLevel);
+            int level = lastEvent == JsonEvent.ArrayStart ? stateLevel : -1;
+            // throw new InvalidOperationException("Invalid ArrayIterator");
+            return new ArrayIterator(level);
         }
     }
 
     public ref struct ObjectIterator
     {
-        internal ObjectIterator(int pos, int level) {
-            this.pos = pos;
+        internal ObjectIterator(int level) {
+
             this.level = level;
             hasIterated = false;
             usedMember = false;
         }
-        internal int pos;
         internal int level;
         internal bool hasIterated;
         internal bool usedMember;
     }
     
     public ref struct ArrayIterator {
-        internal ArrayIterator(int pos, int level) {
-            this.pos = pos;
+        internal ArrayIterator(int level) {
+
             this.level = level;
             hasIterated = false;
             usedMember = false;
         }
-        internal int pos;
         internal int level;
         internal bool hasIterated;
         internal bool usedMember;

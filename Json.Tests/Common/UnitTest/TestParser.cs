@@ -400,6 +400,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 }
                 
                 // -------------------- test application errors -----------------------
+                /*
                 using (var json = new Bytes("[]")) {
                                                     parser.InitParser(json);
                                                     parser.NextEvent();
@@ -458,7 +459,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(true,                  parser.UseMemberArr(ref obj, "arr")); // used array without skipping
                     IsFalse(                        parser.NextObjectMember(ref obj));
                     StringAssert.StartsWith("JsonParser/application error: unexpected ArrayEnd in NextObjectMember()", parser.error.msg.ToString());
-                }
+                }*/
             }
         }
     }
