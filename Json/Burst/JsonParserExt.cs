@@ -142,7 +142,7 @@ namespace Friflo.Json.Burst
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             if (level != iterator.level)
-                throw new InvalidOperationException("Unexpected level in UseElement...() method");
+                throw new InvalidOperationException("Unexpected iterator level in UseElement...() method");
             State curState = state[level];
             if (curState != State.ExpectElement)
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
@@ -207,7 +207,7 @@ namespace Friflo.Json.Burst
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 if (level != iterator.level)
-                    throw new InvalidOperationException("Unexpected level in NextObjectMember()");
+                    throw new InvalidOperationException("Unexpected iterator level in NextObjectMember()");
                 State curState = state[level];
                 if (curState != State.ExpectMember)
                     throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
@@ -251,7 +251,7 @@ namespace Friflo.Json.Burst
                 if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                     level--;
                 if (level != iterator.level)
-                    throw new InvalidOperationException("Unexpected level in NextArrayElement()");
+                    throw new InvalidOperationException("Unexpected iterator level in NextArrayElement()");
                 State curState = state[level];
                 if (curState != State.ExpectElement) 
                     throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");

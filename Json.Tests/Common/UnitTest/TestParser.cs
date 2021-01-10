@@ -433,7 +433,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
                         IsFalse(parser.NextObjectMember(ref obj));
                     });
-                    AreEqual("Unexpected level in NextObjectMember()", e.Message);
+                    AreEqual("Unexpected iterator level in NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("[42]")) {
                     var e = Throws<InvalidOperationException>(() => {
@@ -448,7 +448,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
                         IsFalse(parser.NextArrayElement(ref arr));
                     });
-                    AreEqual("Unexpected level in NextArrayElement()", e.Message);
+                    AreEqual("Unexpected iterator level in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("[{}]")) {
                     var e = Throws<InvalidOperationException>(() => {
