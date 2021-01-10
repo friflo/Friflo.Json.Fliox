@@ -46,14 +46,17 @@ namespace Friflo.Json.Tests.Common.Examples
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                while (p.NextObjectMember()) {
+                var i0 = new ObjectIterator();
+                while (p.NextObjectMember(ref i0)) {
                     if      (p.UseMemberStr("firstName"))   { buddy.firstName = p.value.ToString(); }
                     else if (p.UseMemberNum("age"))         { buddy.age = p.ValueAsInt(out _); }
                     else if (p.UseMemberArr("hobbies")) {
-                        while (p.NextArrayElement()) {
+                        var i1 = new ArrayIterator();
+                        while (p.NextArrayElement(ref i1)) {
                             if (p.UseElementObj()) {
                                 var hobby = new Hobby();
-                                while (p.NextObjectMember()) {
+                                var i2 = new ObjectIterator();
+                                while (p.NextObjectMember(ref i2)) {
                                     if (p.UseMemberStr("name")) { hobby.name = p.value.ToString(); }
                                 }
                                 buddy.hobbies.Add(hobby);
