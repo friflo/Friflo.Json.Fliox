@@ -46,18 +46,18 @@ namespace Friflo.Json.Tests.Common.Examples
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                var i0 = p.GetObjectIterator();
-                while (p.NextObjectMember(ref i0)) {
-                    if      (p.UseMemberStr(ref i0, "firstName"))   { buddy.firstName = p.value.ToString(); }
-                    else if (p.UseMemberNum(ref i0, "age"))         { buddy.age = p.ValueAsInt(out _); }
-                    else if (p.UseMemberArr(ref i0, "hobbies")) {
-                        var i1 = p.GetArrayIterator();
-                        while (p.NextArrayElement(ref i1)) {
-                            if (p.UseElementObj(ref i1)) {
+                var i1 = p.GetObjectIterator();
+                while (p.NextObjectMember(ref i1)) {
+                    if      (p.UseMemberStr(ref i1, "firstName"))   { buddy.firstName = p.value.ToString(); }
+                    else if (p.UseMemberNum(ref i1, "age"))         { buddy.age = p.ValueAsInt(out _); }
+                    else if (p.UseMemberArr(ref i1, "hobbies")) {
+                        var i2 = p.GetArrayIterator();
+                        while (p.NextArrayElement(ref i2)) {
+                            if (p.UseElementObj(ref i2)) {
                                 var hobby = new Hobby();
-                                var i2 = p.GetObjectIterator();
-                                while (p.NextObjectMember(ref i2)) {
-                                    if (p.UseMemberStr(ref i2, "name")) { hobby.name = p.value.ToString(); }
+                                var i3 = p.GetObjectIterator();
+                                while (p.NextObjectMember(ref i3)) {
+                                    if (p.UseMemberStr(ref i3, "name")) { hobby.name = p.value.ToString(); }
                                 }
                                 buddy.hobbies.Add(hobby);
                             }
