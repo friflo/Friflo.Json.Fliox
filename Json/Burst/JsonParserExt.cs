@@ -107,6 +107,8 @@ namespace Friflo.Json.Burst
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
+            if (level != iterator.level)
+                throw new InvalidOperationException("Unexpected level in UseElement...() method. ");
             State curState = state[level];
             if (curState != State.ExpectElement)
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
@@ -245,9 +247,9 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal int level;
-        internal bool hasIterated;
-        internal bool usedMember;
+        internal readonly   int level;
+        internal            bool hasIterated;
+        internal            bool usedMember;
     }
     
     public ref struct ArrayIterator {
@@ -257,8 +259,8 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal int level;
-        internal bool hasIterated;
-        internal bool usedMember;
+        internal readonly   int level;
+        internal            bool hasIterated;
+        internal            bool usedMember;
     }
 }
