@@ -340,62 +340,6 @@ namespace Friflo.Json.Burst
             error.Clear();
         }
 
-        public bool NextObjectMember () {
-            int level = stateLevel;
-            if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
-                level--;
-            State curState = state[level];
-            if (curState == State.ExpectMember) {
-                if (usedMember[level])
-                    usedMember[level] = false; // clear found flag for next iteration
-                else
-                    SkipEvent();
-            }
-            JsonEvent ev = NextEvent();
-            switch (ev) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                case JsonEvent.ObjectStart:
-                case JsonEvent.ArrayStart:
-                    return true;
-                case JsonEvent.ArrayEnd:
-                    throw new InvalidOperationException("unexpected ArrayEnd in JsonParser.NextObjectMember()");
-                case JsonEvent.ObjectEnd:
-                    break;
-            }
-            return false;
-        }
-        
-        public bool NextArrayElement () {
-            int level = stateLevel;
-            if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
-                level--;
-            State curState = state[level];
-            if (curState == State.ExpectElement) {
-                if (usedMember[level])
-                    usedMember[level] = false; // clear found flag for next iteration
-                else
-                    SkipEvent();
-            }
-            JsonEvent ev = NextEvent();
-            switch (ev) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                case JsonEvent.ObjectStart:
-                case JsonEvent.ArrayStart:
-                    return true;
-                case JsonEvent.ArrayEnd:
-                    break;
-                case JsonEvent.ObjectEnd:
-                    throw new InvalidOperationException("unexpected ObjectEnd in JsonParser.NextArrayElement()");
-            }
-            return false;
-        }
-        
         public bool NoSkipNextObjectMember () {
             JsonEvent ev = NextEvent();
             switch (ev) {
