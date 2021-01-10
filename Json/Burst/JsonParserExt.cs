@@ -14,7 +14,7 @@ namespace Friflo.Json.Burst
     public partial struct JsonParser
     {
         // ----------- object member checks -----------
-        private bool UseObject(JsonEvent expect, ref Str32 name) {
+        private bool UseMember(JsonEvent expect, ref Str32 name) {
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
@@ -29,73 +29,73 @@ namespace Friflo.Json.Burst
         }
         
         public bool UseMemberObj(ref Str32 name) {
-            return UseObject(JsonEvent.ObjectStart, ref name);
+            return UseMember(JsonEvent.ObjectStart, ref name);
         }
         
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberObj(Str32 name) {
-            return UseObject(JsonEvent.ObjectStart, ref name);
+            return UseMember(JsonEvent.ObjectStart, ref name);
         }
         
         // ---
         public bool UseMemberArr(ref Str32 name) {
-            return UseObject(JsonEvent.ArrayStart, ref name);
+            return UseMember(JsonEvent.ArrayStart, ref name);
         }
         
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberArr(Str32 name) {
-            return UseObject(JsonEvent.ArrayStart, ref name);
+            return UseMember(JsonEvent.ArrayStart, ref name);
         }
         
         // ---
         public bool UseMemberNum(ref Str32 name) {
-            return UseObject(JsonEvent.ValueNumber, ref name);
+            return UseMember(JsonEvent.ValueNumber, ref name);
         }
         
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberNum(Str32 name) {
-            return UseObject(JsonEvent.ValueNumber, ref name);
+            return UseMember(JsonEvent.ValueNumber, ref name);
         }
         
         // ---
         public bool UseMemberStr(ref Str32 name) {
-            return UseObject(JsonEvent.ValueString, ref name);
+            return UseMember(JsonEvent.ValueString, ref name);
         }
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberStr(Str32 name) {
-            return UseObject(JsonEvent.ValueString, ref name);
+            return UseMember(JsonEvent.ValueString, ref name);
         }
         
         // ---
         public bool UseMemberBln(ref Str32 name) {
-            return UseObject(JsonEvent.ValueBool, ref name);
+            return UseMember(JsonEvent.ValueBool, ref name);
         }
         
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberBln(Str32 name) {
-            return UseObject(JsonEvent.ValueBool, ref name);
+            return UseMember(JsonEvent.ValueBool, ref name);
         }
         
         // ---
         public bool UseMemberNul(ref Str32 name) {
-            return UseObject(JsonEvent.ValueNull, ref name);
+            return UseMember(JsonEvent.ValueNull, ref name);
         }
 
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberNul(Str32 name) {
-            return UseObject(JsonEvent.ValueNull, ref name);
+            return UseMember(JsonEvent.ValueNull, ref name);
         }
         
         // ----------- array element checks -----------
