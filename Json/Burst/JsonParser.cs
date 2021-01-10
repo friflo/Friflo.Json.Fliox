@@ -139,14 +139,6 @@ namespace Friflo.Json.Burst
         }
 
         // ---------------------- error message creation - begin
-        /// <summary>
-        /// Set the parser to error state.<br/>
-        /// Subsequent calls to <see cref="NextEvent()"/> will return <see cref="JsonEvent.Error"/> 
-        /// </summary>
-        /// <param name="module">Name of the module raising the error</param>
-        /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
-        /// <param name="value">An optional value appended after the <see cref="msg"/> to give more specific info about the error</param>
-        /// <exception cref="InvalidOperationException"></exception>
         void Error (Str32 module, ErrorType errorType, ref Str128 msg, ref Bytes value) {
             lastEvent = JsonEvent.Error;
             preErrorState = state[stateLevel]; 
@@ -178,6 +170,12 @@ namespace Friflo.Json.Burst
             error.Error(pos);
         }
         
+        /// <summary>
+        /// Set the parser to error state.<br/>
+        /// Subsequent calls to <see cref="NextEvent()"/> will return <see cref="JsonEvent.Error"/> 
+        /// </summary>
+        /// <param name="module">Name of the module raising the error</param>
+        /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
         public void Error(Str32 module, Str128 msg) {
             errVal.Clear();
             Error(module, ErrorType.ExternalError, ref msg, ref errVal);
@@ -207,6 +205,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
+        // ReSharper disable once UnusedMember.Local
         private bool SetApplicationError (Str128 msg) {
             errVal.Clear();
             Error("JsonParser", ErrorType.ApplicationError, ref msg, ref errVal);

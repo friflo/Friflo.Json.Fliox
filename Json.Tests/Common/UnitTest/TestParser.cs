@@ -97,11 +97,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
+                AreEqual(1, parser.error.Pos);              // ensuring code coverage
             }
             using (var bytes = CommonUtils.FromString("tx")) { // start as a bool (true)
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
+                AreEqual(2, parser.error.Pos);
             }
             using (var bytes = CommonUtils.FromString("1a")) { // start as a number
                 parser.InitParser(bytes);

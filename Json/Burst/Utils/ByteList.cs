@@ -42,6 +42,7 @@ namespace Friflo.Json.Burst.Utils
 #else // MANAGED
         public byte[] array;
 
+        // ReSharper disable once UnusedParameter.Local
         public ByteList(int size, AllocType allocType) {
             array = new byte[size];
             DebugUtils.TrackAllocation(array);

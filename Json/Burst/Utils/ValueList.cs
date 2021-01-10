@@ -49,6 +49,7 @@ namespace Friflo.Json.Burst.Utils
         public T[] array;
         private int len;
 
+        // ReSharper disable once UnusedParameter.Local
         public ValueList(int size, AllocType allocType) {
             array = new T[size];
             len = 0;

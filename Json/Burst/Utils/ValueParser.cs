@@ -35,13 +35,12 @@ namespace Friflo.Json.Burst.Utils
         public void Dispose() {
         }
         
-        private static bool SetErrorFalse (Str128 msg, ref Bytes value, ref Bytes dst) {
+        private static void SetErrorFalse (Str128 msg, ref Bytes value, ref Bytes dst) {
             if (dst.buffer.IsCreated()) {
                 dst.Clear();
                 dst.AppendStr128(ref msg);
                 dst.AppendBytes(ref value);
             }
-            return false;
         }
         
         public int ParseInt(ref Bytes bytes, ref Bytes valueError, out bool success) {
