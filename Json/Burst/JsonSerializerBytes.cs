@@ -32,6 +32,7 @@ namespace Friflo.Json.Burst
             int end = src.end;
             var srcArr = src.buffer.array; 
             for (int n = src.start; n < end; n++) {
+                // ReSharper disable once RedundantCast - required for JSON_BURST
                 char c = (char) srcArr[n];
                 switch (c) {
                     case '"':
