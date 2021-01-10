@@ -31,20 +31,14 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberObj(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ObjectStart, ref name);
-        }
-        
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberObj(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ObjectStart, ref name);
         }
-        
-        // ---
-        public bool UseMemberArr(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ArrayStart, ref name);
+        public bool UseMemberObj(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ObjectStart, ref name);
         }
         
 #if JSON_BURST
@@ -53,10 +47,8 @@ namespace Friflo.Json.Burst
         public bool UseMemberArr(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ArrayStart, ref name);
         }
-        
-        // ---
-        public bool UseMemberNum(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ValueNumber, ref name);
+        public bool UseMemberArr(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ArrayStart, ref name);
         }
         
 #if JSON_BURST
@@ -65,21 +57,18 @@ namespace Friflo.Json.Burst
         public bool UseMemberNum(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ValueNumber, ref name);
         }
-        
-        // ---
-        public bool UseMemberStr(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ValueString, ref name);
+        public bool UseMemberNum(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ValueNumber, ref name);
         }
+        
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberStr(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ValueString, ref name);
         }
-        
-        // ---
-        public bool UseMemberBln(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ValueBool, ref name);
+        public bool UseMemberStr(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ValueString, ref name);
         }
         
 #if JSON_BURST
@@ -88,19 +77,20 @@ namespace Friflo.Json.Burst
         public bool UseMemberBln(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ValueBool, ref name);
         }
-        
-        // ---
-        public bool UseMemberNul(ref ObjectIterator iterator, ref Str32 name) {
-            return UseMember(ref iterator, JsonEvent.ValueNull, ref name);
+        public bool UseMemberBln(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ValueBool, ref name);
         }
-
+        
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
         public bool UseMemberNul(ref ObjectIterator iterator, Str32 name) {
             return UseMember(ref iterator, JsonEvent.ValueNull, ref name);
         }
-        
+        public bool UseMemberNul(ref ObjectIterator iterator, ref Str32 name) {
+            return UseMember(ref iterator, JsonEvent.ValueNull, ref name);
+        }
+
         // ----------- array element checks -----------
         private bool UseElement(ref ArrayIterator iterator, JsonEvent expect) {
 #if DEBUG
