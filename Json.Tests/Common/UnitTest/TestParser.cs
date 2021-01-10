@@ -399,67 +399,84 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
                 
-                // -------------------- test application errors -----------------------
-                /*
+                // -------------------- test application exceptions -----------------------
+#if DEBUG
                 using (var json = new Bytes("[]")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
                                         
-                                                    var obj = parser.GetObjectIterator ();
-                    IsFalse(                        parser.NextObjectMember(ref obj));
-                    StringAssert.StartsWith("JsonParser/application error: NextObjectMember() - expect initial iteration with an object (ObjectStart)", parser.error.msg.ToString());
+                        var obj = parser.GetObjectIterator ();
+                        parser.NextObjectMember(ref obj);
+                    });
+                    AreEqual("Expect ObjectStart in GetObjectIterator()", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
-                                                    var arr = parser.GetArrayIterator();
-                    IsFalse(                        parser.NextArrayElement(ref arr));
-                    StringAssert.StartsWith("JsonParser/application error: NextArrayElement() - expect initial iteration with an array (ArrayStart)", parser.error.msg.ToString());
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
+                        var arr = parser.GetArrayIterator();
+                        parser.NextArrayElement(ref arr);
+                    });
+                    AreEqual("Expect ArrayStart in GetObjectIterator()", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
-                                        
-                                                    var obj = parser.GetObjectIterator ();
-                                                    parser.NextObjectMember(ref obj);   AreEqual(JsonEvent.ValueNumber, parser.Event);
-                                    
-                                                    // call to NextObjectMember() would return false
-                    AreEqual(                       JsonEvent.ObjectEnd, parser.NextEvent());
-                    IsFalse(                        parser.NextObjectMember(ref obj));
-                    StringAssert.StartsWith("JsonParser/application error: NextObjectMember() - expect subsequent iteration being inside an object", parser.error.msg.ToString());
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
+
+                        var obj = parser.GetObjectIterator();
+                        parser.NextObjectMember(ref obj);
+                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+
+                        // call to NextObjectMember() would return false
+                        AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+                        IsFalse(parser.NextObjectMember(ref obj));
+                    });
+                    AreEqual("NextObjectMember() - expect subsequent iteration being inside an object", e.Message);
                 }
                 using (var json = new Bytes("[42]")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
-                    
-                                                    var arr = parser.GetArrayIterator ();
-                                                    parser.NextArrayElement(ref arr);  AreEqual(JsonEvent.ValueNumber, parser.Event);
-                                        
-                                                    // call to NextArrayElement() would return false
-                    AreEqual(JsonEvent.ArrayEnd,    parser.NextEvent());
-                    IsFalse(                        parser.NextArrayElement(ref arr));
-                    StringAssert.StartsWith("JsonParser/application error: NextArrayElement() - expect subsequent iteration being inside an array", parser.error.msg.ToString());
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
+
+                        var arr = parser.GetArrayIterator();
+                        parser.NextArrayElement(ref arr);
+                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+
+                        // call to NextArrayElement() would return false
+                        AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
+                        IsFalse(parser.NextArrayElement(ref arr));
+                    });
+                    AreEqual("NextArrayElement() - expect subsequent iteration being inside an array", e.Message);
                 }
                 using (var json = new Bytes("[{}]")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
-                                
-                                                    var arr = parser.GetArrayIterator ();
-                                                    parser.NextArrayElement(ref arr); AreEqual(JsonEvent.ObjectStart, parser.Event);
-                    AreEqual(true,                  parser.UseElementObj(ref arr)); // used object without skipping
-                    IsFalse(                        parser.NextArrayElement(ref arr));
-                    StringAssert.StartsWith("JsonParser/application error: unexpected ObjectEnd in NextArrayElement()", parser.error.msg.ToString());
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
+
+                        var arr = parser.GetArrayIterator();
+                        parser.NextArrayElement(ref arr);
+                        AreEqual(JsonEvent.ObjectStart, parser.Event);
+                        AreEqual(true, parser.UseElementObj(ref arr)); // used object without skipping
+                        IsFalse(parser.NextArrayElement(ref arr));
+                    });
+                    AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("{\"arr\":[]}")) {
-                                                    parser.InitParser(json);
-                                                    parser.NextEvent();
-                                
-                                                    var obj = parser.GetObjectIterator ();
-                                                    parser.NextObjectMember(ref obj); AreEqual(JsonEvent.ArrayStart, parser.Event);
-                    AreEqual(true,                  parser.UseMemberArr(ref obj, "arr")); // used array without skipping
-                    IsFalse(                        parser.NextObjectMember(ref obj));
-                    StringAssert.StartsWith("JsonParser/application error: unexpected ArrayEnd in NextObjectMember()", parser.error.msg.ToString());
-                }*/
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.InitParser(json);
+                        parser.NextEvent();
+
+                        var obj = parser.GetObjectIterator();
+                        parser.NextObjectMember(ref obj);
+                        AreEqual(JsonEvent.ArrayStart, parser.Event);
+                        AreEqual(true, parser.UseMemberArr(ref obj, "arr")); // used array without skipping
+                        IsFalse(parser.NextObjectMember(ref obj));
+                    });
+                    AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
+                }
+#endif
             }
         }
     }

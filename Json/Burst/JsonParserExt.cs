@@ -21,7 +21,7 @@ namespace Friflo.Json.Burst
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             if (level != iterator.level)
-                throw new InvalidOperationException("Unexpected level in UseMember...() method. ");
+                throw new InvalidOperationException("Unexpected level in UseMember...() method");
             State curState = state[level];
             if (curState != State.ExpectMember)
                 throw new InvalidOperationException("Must call UseMember...() method only within an object");
@@ -142,7 +142,7 @@ namespace Friflo.Json.Burst
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
             if (level != iterator.level)
-                throw new InvalidOperationException("Unexpected level in UseElement...() method. ");
+                throw new InvalidOperationException("Unexpected level in UseElement...() method");
             State curState = state[level];
             if (curState != State.ExpectElement)
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
@@ -232,7 +232,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayStart:
                     return true;
                 case JsonEvent.ArrayEnd:
-                    return SetApplicationError ("unexpected ArrayEnd in NextObjectMember()");
+                    throw new InvalidOperationException ("unexpected ArrayEnd in NextObjectMember()");
                 case JsonEvent.ObjectEnd:
                     break;
             }
@@ -277,7 +277,8 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayEnd:
                     break;
                 case JsonEvent.ObjectEnd:
-                    return SetApplicationError("unexpected ObjectEnd in NextArrayElement()");
+                    // assertion is cheap -> throw exception also in DEBUG & RELEASE
+                    throw new InvalidOperationException("unexpected ObjectEnd in NextArrayElement()");
             }
             return false;
         }
