@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         public void ReadManual (ref JsonParser p) {
             int index = 0;
-            while (p.NoSkipNextArrayElement()) {
+            while (TestParserComparison.NextArrayElement(ref p)) {
                 if      (p.Event == JsonEvent.ValueNumber)  { this[index++] = p.ValueAsInt(out _); }
                 else                                        { p.SkipEvent(); }
             }
@@ -190,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
             public void RootManualSkip(ref JsonParser p) {
                 ref var key = ref p.key;
-                while (p.NoSkipNextObjectMember()) {
+                while (NextObjectMember(ref p)) {
                     if      (key.IsEqual32(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
                     else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadListStrManual(ref JsonParser p) {
-                while (p.NoSkipNextArrayElement()) {
+                while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueString) { strElement.Set( ref p.value); }
                     else                                       { p.SkipEvent(); }
                 }
@@ -242,7 +242,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             void ReadArrManual(ref JsonParser p) {
-                while (p.NoSkipNextArrayElement()) {
+                while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueNull)   { foundNullElement = true; }
                     else                                       { p.SkipEvent(); }
                 }
@@ -256,7 +256,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
 
             void ReadBoolArrManual(ref JsonParser p) {
-                while (p.NoSkipNextArrayElement()) {
+                while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueBool)   { trueElement = p.boolValue; }
                     else                                       { p.SkipEvent(); }
                 }
@@ -300,6 +300,42 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(4,     p.skipInfo.strings);
                 AreEqual(105,   p.skipInfo.Sum);
             }
+        }
+        
+        public static bool NextObjectMember (ref JsonParser p) {
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException("unexpected ArrayEnd in NoSkipNextObjectMember()");
+                case JsonEvent.ObjectEnd:
+                    break;
+            }
+            return false;
+        }
+        
+        public static bool NextArrayElement (ref JsonParser p) {
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    break;
+                case JsonEvent.ObjectEnd:
+                    throw new InvalidOperationException("unexpected ObjectEnd in NoSkipNextArrayElement()");
+            }
+            return false;
         }
     }
 }

@@ -428,7 +428,7 @@ namespace Friflo.Json.Burst
         
         // ----------------- utilities
         public bool WriteObject(ref JsonParser p) {
-            while (p.NoSkipNextObjectMember()) {
+            while (NextObjectMember(ref p)) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         MemberArrayStart(ref p.key);
@@ -481,7 +481,7 @@ namespace Friflo.Json.Burst
         }
         
         public bool WriteArray(ref JsonParser p) {
-            while (p.NoSkipNextArrayElement()) {
+            while (NextArrayElement(ref p)) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         ArrayStart();
@@ -546,5 +546,42 @@ namespace Friflo.Json.Burst
             }
             return false;
         }
+        
+        private static bool NextObjectMember (ref JsonParser p) {
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException("unexpected ArrayEnd in NoSkipNextObjectMember()");
+                case JsonEvent.ObjectEnd:
+                    break;
+            }
+            return false;
+        }
+        
+        private static bool NextArrayElement (ref JsonParser p) {
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    break;
+                case JsonEvent.ObjectEnd:
+                    throw new InvalidOperationException("unexpected ObjectEnd in NoSkipNextArrayElement()");
+            }
+            return false;
+        }
+
     }
 }
