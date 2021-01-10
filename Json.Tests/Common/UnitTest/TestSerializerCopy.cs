@@ -38,13 +38,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         ser.WriteObject(ref parser);
                         memLog.Snapshot();
                     }
-
                     memLog.AssertNoAllocations();
                 }
                 CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
                 if (parser.error.ErrSet)
                     Fail(parser.error.msg.ToString());
-
+                AreEqual(JsonEvent.EOF, parser.NextEvent());   // Important to ensure absence of application errors
+                
                 parser.InitParser(bytes);
                 parser.SkipTree();
                 SkipInfo srcSkipInfo = parser.skipInfo;

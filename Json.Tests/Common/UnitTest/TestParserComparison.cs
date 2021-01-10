@@ -270,13 +270,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
             
             public void AssertParseResult(ref JsonParser p) {
-                if (p.error.ErrSet) {
+                if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
-                }
-                else {
-                    AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
-                }
+                AreEqual(JsonEvent.EOF, p.NextEvent());   // Important to ensure absence of application errors
+                AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
+
                 AreEqual(1,                     int3.x);
                 AreEqual(2,                     int3.y);
                 AreEqual(3,                     int3.z);

@@ -52,9 +52,9 @@ namespace Friflo.Json.Tests.Common.Examples
                 p.NextEvent(); // ObjectStart
                 ReadBuddy(ref p, ref buddy);
 
-                AreEqual(JsonEvent.EOF, p.NextEvent());
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
+                AreEqual(JsonEvent.EOF, p.NextEvent()); // Important to ensure absence of application errors
                 AreEqual("John",        buddy.firstName);
                 AreEqual(24,            buddy.age);
                 AreEqual(2,             buddy.hobbies.Count);
