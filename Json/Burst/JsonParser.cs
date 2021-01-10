@@ -72,7 +72,6 @@ namespace Friflo.Json.Burst
         private     ValueArray<State>   state;
         private     ValueArray<int>     pathPos; // used for current path
         private     ValueArray<int>     arrIndex; // used for current path
-        private     ValueArray<bool>    usedMember; // used for current path
 
         public      JsonError           error;
 
@@ -293,7 +292,6 @@ namespace Friflo.Json.Burst
             state =  new ValueArray<State>(32);
             pathPos = new ValueArray<int>(32);
             arrIndex = new ValueArray<int>(32);
-            usedMember = new ValueArray<bool>(32);
             error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -321,7 +319,6 @@ namespace Friflo.Json.Burst
             path.Dispose();
             key.Dispose();
             error.Dispose();
-            if (usedMember.IsCreated())  usedMember.Dispose();
             if (arrIndex.IsCreated())   arrIndex.Dispose();
             if (pathPos.IsCreated())    pathPos.Dispose();
             if (state.IsCreated())      state.Dispose();
@@ -345,7 +342,6 @@ namespace Friflo.Json.Burst
             InitContainers();
             stateLevel = 0;
             state[0] = State.ExpectRoot;
-            usedMember[0] = false;
 
             this.pos = start;
             this.startPos = start;

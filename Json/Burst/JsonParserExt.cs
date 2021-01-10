@@ -22,7 +22,7 @@ namespace Friflo.Json.Burst
             if (curState == State.ExpectMember) {
                 if (lastEvent != expect || !key.IsEqual32(name))
                     return false;
-                usedMember[level] = true;
+                iterator.usedMember = true;
                 return true;
             }
             return SetApplicationError("Must call UseMember...() method only within an object");
@@ -107,7 +107,7 @@ namespace Friflo.Json.Burst
             if (curState == State.ExpectElement) {
                 if (lastEvent != expect)
                     return false;
-                usedMember[level] = true;
+                iterator.usedMember = true;
                 return true;
             }
             return SetApplicationError("Must call UseElement...() method on within an array");
@@ -148,8 +148,8 @@ namespace Friflo.Json.Burst
                     level--;
                 State curState = state[level];
                 if (curState == State.ExpectMember) {
-                    if (usedMember[level]) {
-                        usedMember[level] = false; // clear found flag for next iteration
+                    if (i.usedMember) {
+                        i.usedMember = false; // clear found flag for next iteration
                     } else {
                         if (!SkipEvent())
                             return false;
@@ -189,8 +189,8 @@ namespace Friflo.Json.Burst
                     level--;
                 State curState = state[level];
                 if (curState == State.ExpectElement) {
-                    if (usedMember[level]) {
-                        usedMember[level] = false; // clear found flag for next iteration
+                    if (i.usedMember) {
+                        i.usedMember = false; // clear found flag for next iteration
                     } else {
                         if (!SkipEvent())
                             return false;
@@ -223,9 +223,11 @@ namespace Friflo.Json.Burst
 
     public ref struct ObjectIterator {
         public bool hasIterated;
+        public bool usedMember;
     }
     
     public ref struct ArrayIterator {
         public bool hasIterated;
+        public bool usedMember;
     }
 }
