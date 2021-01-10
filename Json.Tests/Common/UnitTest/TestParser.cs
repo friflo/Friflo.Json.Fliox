@@ -377,7 +377,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     int arrCount = 0;
                     var obj = new ObjectIterator ();
                     while (parser.NextObjectMember(ref obj)) {
-                        if (parser.UseMemberArr("arr")) {
+                        if (parser.UseMemberArr(ref obj, "arr")) {
                             arrCount++;
                             var arr = new ArrayIterator();
                             while (parser.NextArrayElement(ref arr))
@@ -445,7 +445,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                 
                                                     var arr = new ArrayIterator ();
                                                     parser.NextArrayElement(ref arr); AreEqual(JsonEvent.ObjectStart, parser.Event);
-                    AreEqual(true,                  parser.UseElementObj()); // used object without skipping
+                    AreEqual(true,                  parser.UseElementObj(ref arr)); // used object without skipping
                     IsFalse(                        parser.NextArrayElement(ref arr));
                     StringAssert.StartsWith("JsonParser/application error: unexpected ObjectEnd in NextArrayElement()", parser.error.msg.ToString());
                 }
@@ -455,7 +455,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                                 
                                                     var obj = new ObjectIterator ();
                                                     parser.NextObjectMember(ref obj); AreEqual(JsonEvent.ArrayStart, parser.Event);
-                    AreEqual(true,                  parser.UseMemberArr("arr")); // used array without skipping
+                    AreEqual(true,                  parser.UseMemberArr(ref obj, "arr")); // used array without skipping
                     IsFalse(                        parser.NextObjectMember(ref obj));
                     StringAssert.StartsWith("JsonParser/application error: unexpected ArrayEnd in NextObjectMember()", parser.error.msg.ToString());
                 }

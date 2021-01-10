@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             int index = 0;
             var i = new ArrayIterator();
             while (p.NextArrayElement(ref i)) {
-                if (p.UseElementNum())                      { this[index++] = p.ValueAsInt(out _); }
+                if (p.UseElementNum(ref i))                      { this[index++] = p.ValueAsInt(out _); }
             }
         }
     }
@@ -211,19 +211,19 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public void RootAutoSkip(ref JsonParser p) {
                 var i = new ObjectIterator();
                 while (p.NextObjectMember(ref i)) {
-                    if      (p.UseMemberObj(ref nm.map))       { p.SkipTree(); }
-                    else if (p.UseMemberObj(ref nm.map2))      { p.SkipTree(); }
-                    else if (p.UseMemberArr(ref nm.listStr))   { ReadListStrAuto(ref p); }
-                    else if (p.UseMemberArr(ref nm.arr))       { ReadArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref nm.boolArr))   { ReadBoolArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref nm.i64Arr))    { int3.ReadAuto(ref p); }
-                    else if (p.UseMemberNum(ref nm.i64))       { i64 = p.ValueAsLong(out _); }
-                    else if (p.UseMemberNum(ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.UseMemberStr(ref nm.str))       { str.Set(ref p.value); }
-                    else if (p.UseMemberBln(ref nm.t))         { t = p.boolValue; }
-                    else if (p.UseMemberNul(ref nm.n))         { foundNull = true; }
-                    else if (p.UseMemberNum(ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
-                    else if (p.UseMemberNum(ref nm.flt))       { flt = p.ValueAsFloat(out _); }
+                    if      (p.UseMemberObj(ref i, ref nm.map))       { p.SkipTree(); }
+                    else if (p.UseMemberObj(ref i, ref nm.map2))      { p.SkipTree(); }
+                    else if (p.UseMemberArr(ref i, ref nm.listStr))   { ReadListStrAuto(ref p); }
+                    else if (p.UseMemberArr(ref i, ref nm.arr))       { ReadArrAuto(ref p); }
+                    else if (p.UseMemberArr(ref i, ref nm.boolArr))   { ReadBoolArrAuto(ref p); }
+                    else if (p.UseMemberArr(ref i, ref nm.i64Arr))    { int3.ReadAuto(ref p); }
+                    else if (p.UseMemberNum(ref i, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (p.UseMemberNum(ref i, ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
+                    else if (p.UseMemberStr(ref i, ref nm.str))       { str.Set(ref p.value); }
+                    else if (p.UseMemberBln(ref i, ref nm.t))         { t = p.boolValue; }
+                    else if (p.UseMemberNul(ref i, ref nm.n))         { foundNull = true; }
+                    else if (p.UseMemberNum(ref i, ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
+                    else if (p.UseMemberNum(ref i, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                 }
             }
             
@@ -237,7 +237,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             void ReadListStrAuto(ref JsonParser p) {
                 var i = new ArrayIterator();
                 while (p.NextArrayElement(ref i)) {
-                    if      (p.UseElementStr())                { strElement.Set( ref p.value); }
+                    if      (p.UseElementStr(ref i))                { strElement.Set( ref p.value); }
                 }
             }
             
@@ -251,7 +251,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             void ReadArrAuto(ref JsonParser p) {
                 var i = new ArrayIterator();
                 while (p.NextArrayElement(ref i)) {
-                    if      (p.UseElementNul())                { foundNullElement = true; }
+                    if      (p.UseElementNul(ref i))                { foundNullElement = true; }
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             void ReadBoolArrAuto(ref JsonParser p) {
                 var i = new ArrayIterator();
                 while (p.NextArrayElement(ref i)) {
-                    if      (p.UseElementBln())                { trueElement = p.boolValue; }
+                    if      (p.UseElementBln(ref i))                { trueElement = p.boolValue; }
                 }
             }
             
