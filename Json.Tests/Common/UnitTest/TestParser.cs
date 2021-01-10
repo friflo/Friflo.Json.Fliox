@@ -424,7 +424,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     var e = Throws<InvalidOperationException>(() => {
                         var obj = new ObjectIterator ();
                         parser.NextObjectMember(ref obj);
-                        parser.NextEvent();
+                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+                        parser.NextEvent(); // call to NextObjectMember() would return false
+                        AreEqual(JsonEvent.ObjectEnd, parser.Event);
                         parser.NextObjectMember(ref obj);
                     });
                     AreEqual("NextObjectMember() - expect subsequent iteration being inside an object", e.Message);
@@ -435,7 +437,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     var e = Throws<InvalidOperationException>(() => {
                         var arr = new ArrayIterator ();
                         parser.NextArrayElement(ref arr);
-                        parser.NextEvent();
+                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+                        parser.NextEvent(); // call to NextArrayElement() would return false
+                        AreEqual(JsonEvent.ArrayEnd, parser.Event);
                         parser.NextArrayElement(ref arr);
                     });
                     AreEqual("NextArrayElement() - expect subsequent iteration being inside an array", e.Message);
