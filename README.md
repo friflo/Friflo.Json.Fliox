@@ -22,11 +22,12 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - Optimized for performance and low memory footprint
         - No (0) allocations after a few iterations by using a few internal byte & int buffers
         - Support reusing of parser instance to avoid allocations on the heap
+    - Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
     - Skipping of JSON object members and elements (array elements and values on root)  
         Provide statistics (counts) about skipped JSON entries:
         arrays, objects, strings, integers, numbers, booleans and nulls
-    - Clear/Compact API
-    - Don't throw exceptions in case of invalid JSON. Provide a concept to return gracefully in application code.
+    - Don't throw exceptions in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
+    - Throw exceptions in `Debug` build to notice applications errors when using the library.
     - No heap allocation in case of invalid JSON when creating an error message
     - Support JSON objects, arrays and values (string, number, boolean and null) on root level
     - Compatible to [Unity Burst Jobs](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
@@ -56,12 +57,16 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - UTF-8 support
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
+- No unsafe code in CLR library
+- Fail safe in case of JSON and application errors
 - No dependencies to 3rd party libraries.  
   Except when compiling within Unity with **UNITY_BURST** it requires
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
-  to enable using `NativeArray` & `NativeList`
+  to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 - Expressive error messages when parsing invalid JSON. E.g.  
-  `JsonParser error - unexpected character > expect key. Found: v path: 'map.key1' at position: 23`
+    ```
+    JsonParser/JSON error: unexpected character > expect key. Found: v path: 'map.key1' at position: 23
+    ```
 - Small library (Friflo.Json.Burst.dll - 70kb )
 
 
