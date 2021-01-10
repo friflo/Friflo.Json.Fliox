@@ -220,11 +220,11 @@ namespace Friflo.Json.Burst
                             return false;
                     }
                 } else {
-                    return SetInternalError("NextObjectMember() - expect subsequent iteration being inside an object");
+                    return SetApplicationError("NextObjectMember() - expect subsequent iteration being inside an object");
                 }
             } else {
                 if (lastEvent != JsonEvent.ObjectStart)
-                    return SetInternalError("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
+                    return SetApplicationError("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
                 i.hasIterated = true;
             }
             JsonEvent ev = NextEvent();
@@ -237,7 +237,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayStart:
                     return true;
                 case JsonEvent.ArrayEnd:
-                    return SetInternalError ("unexpected ArrayEnd in NextObjectMember()");
+                    return SetApplicationError ("unexpected ArrayEnd in NextObjectMember()");
                 case JsonEvent.ObjectEnd:
                     break;
             }
@@ -261,11 +261,11 @@ namespace Friflo.Json.Burst
                             return false;
                     }
                 } else {
-                    return SetInternalError("NextArrayElement() - expect subsequent iteration being inside an array");
+                    return SetApplicationError("NextArrayElement() - expect subsequent iteration being inside an array");
                 }
             } else {
                 if (lastEvent != JsonEvent.ArrayStart)
-                    return SetInternalError("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
+                    return SetApplicationError("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
                 i.hasIterated = true;
             }
             JsonEvent ev = NextEvent();
@@ -280,7 +280,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ArrayEnd:
                     break;
                 case JsonEvent.ObjectEnd:
-                    return SetInternalError("unexpected ObjectEnd in NextArrayElement()");
+                    return SetApplicationError("unexpected ObjectEnd in NextArrayElement()");
             }
             return false;
         }

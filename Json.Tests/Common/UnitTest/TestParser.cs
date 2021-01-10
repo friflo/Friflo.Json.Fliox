@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(0, parser.Level);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser error - Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
+                AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("{'test':'hello'}")) {
                 parser.InitParser(bytes);
@@ -89,24 +89,24 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var bytes = CommonUtils.FromString("")) { // empty string is not valid JSON
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser error - unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
+                AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("str")) {
                 parser.InitParser(bytes);
                 AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
                 AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
                 AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser error - unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
+                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("tx")) { // start as a bool (true)
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser error - invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
+                AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
             }
             using (var bytes = CommonUtils.FromString("1a")) { // start as a number
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser error - unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
+                AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
             parser.Dispose();
@@ -406,14 +406,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     
                     var obj = new ObjectIterator ();
                     parser.NextObjectMember(ref obj);
-                    StringAssert.StartsWith("internal JsonParser error - NextObjectMember() - expect initial iteration with an object (ObjectStart)", parser.error.msg.ToString());
+                    StringAssert.StartsWith("JsonParser/application error: NextObjectMember() - expect initial iteration with an object (ObjectStart)", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
                     var arr = new ArrayIterator();
                     parser.NextArrayElement(ref arr);
-                    StringAssert.StartsWith("internal JsonParser error - NextArrayElement() - expect initial iteration with an array (ArrayStart)", parser.error.msg.ToString());
+                    StringAssert.StartsWith("JsonParser/application error: NextArrayElement() - expect initial iteration with an array (ArrayStart)", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     parser.InitParser(json);
@@ -425,7 +425,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     parser.NextEvent(); // call to NextObjectMember() would return false
                     AreEqual(JsonEvent.ObjectEnd, parser.Event);
                     parser.NextObjectMember(ref obj);
-                    StringAssert.StartsWith("internal JsonParser error - NextObjectMember() - expect subsequent iteration being inside an object", parser.error.msg.ToString());
+                    StringAssert.StartsWith("JsonParser/application error: NextObjectMember() - expect subsequent iteration being inside an object", parser.error.msg.ToString());
                 }
                 using (var json = new Bytes("[42]")) {
                     parser.InitParser(json);
@@ -437,7 +437,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     parser.NextEvent(); // call to NextArrayElement() would return false
                     AreEqual(JsonEvent.ArrayEnd, parser.Event);
                     parser.NextArrayElement(ref arr);
-                    StringAssert.StartsWith("internal JsonParser error - NextArrayElement() - expect subsequent iteration being inside an array", parser.error.msg.ToString());
+                    StringAssert.StartsWith("JsonParser/application error: NextArrayElement() - expect subsequent iteration being inside an array", parser.error.msg.ToString());
                 }
             }
         }

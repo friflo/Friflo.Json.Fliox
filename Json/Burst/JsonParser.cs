@@ -134,6 +134,12 @@ namespace Friflo.Json.Burst
         /// <summary>Returns the current depth inside the JSON document while parsing</summary>
         public int          Level => stateLevel;
 
+        enum ErrorType {
+            JsonError,
+            ApplicationError,
+            ExternalError
+        }
+
         // ---------------------- error message creation - begin
         /// <summary>
         /// Set the parser to error state.<br/>
@@ -143,7 +149,7 @@ namespace Friflo.Json.Burst
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
         /// <param name="value">An optional value appended after the <see cref="msg"/> to give more specific info about the error</param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void Error (Str32 module, ref Str128 msg, ref Bytes value) {
+        void Error (Str32 module, ErrorType errorType, ref Str128 msg, ref Bytes value) {
             lastEvent = JsonEvent.Error;
             preErrorState = state[stateLevel]; 
             state[stateLevel] = State.JsonError;
@@ -159,7 +165,12 @@ namespace Friflo.Json.Burst
             ref Bytes errMsg = ref error.msg;
             errMsg.Clear();
             errMsg.AppendStr32(ref module);
-            errMsg.AppendStr32(" error - ");
+            switch (errorType) {
+                case ErrorType.JsonError:           errMsg.AppendStr32("/JSON error: ");           break;
+                case ErrorType.ApplicationError:    errMsg.AppendStr32("/application error: ");    break;
+                case ErrorType.ExternalError:       errMsg.AppendStr32("/external error: ");       break;
+            }
+
             errMsg.AppendStr128(ref msg);
             errMsg.AppendBytes(ref value);
             errMsg.AppendStr32(" path: '");
@@ -171,36 +182,36 @@ namespace Friflo.Json.Burst
         
         public void Error(Str32 module, Str128 msg) {
             errVal.Clear();
-            Error(module, ref msg, ref errVal);
+            Error(module, ErrorType.ExternalError, ref msg, ref errVal);
         }
         
         private JsonEvent SetError (Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
             return JsonEvent.Error;
         }
         
         private JsonEvent SetErrorChar (Str128 msg, char c) {
             errVal.Clear();
             errVal.AppendChar(c);
-            Error("JsonParser", ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
             return JsonEvent.Error;
         }
         
         private bool SetErrorValue (Str128 msg, ref Bytes value) {
-            Error("JsonParser", ref msg, ref value);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref value);
             return false;
         }
 
         private bool SetErrorFalse (Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
             return false;
         }
         
-        private bool SetInternalError (Str128 msg) {
+        private bool SetApplicationError (Str128 msg) {
             errVal.Clear();
-            Error("internal JsonParser", ref msg, ref errVal);
+            Error("JsonParser", ErrorType.ApplicationError, ref msg, ref errVal);
             return false;
         }
         
@@ -208,7 +219,7 @@ namespace Friflo.Json.Burst
         {
             errVal.Clear();
             JsonEventUtils.AppendEvent(ev, ref errVal);
-            Error("JsonParser", ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
             return false;
         }
         // ---------------------- error message creation - end

@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
                     AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser error - unexpected EOF while reading value path: '[0]' at position: 1", parser.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", parser.error.msg.ToString());
                 }
 
                 using (var bytes = CommonUtils.FromString("{")) {
@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
                     AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser error - unexpected EOF > expect key path: '(root)' at position: 1", parser.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", parser.error.msg.ToString());
                 }
 
                 using (var bytes = CommonUtils.FromString("")) {
@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
                     AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser error - unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
                 }
 
                 using (var bytes = CommonUtils.FromString("a")) {
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
                     AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser error - unexpected character while reading value. Found: a path: '(root)' at position: 1", parser.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", parser.error.msg.ToString());
                 }
             }
             finally {
