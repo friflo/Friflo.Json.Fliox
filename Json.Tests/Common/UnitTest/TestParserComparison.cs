@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void ReadAuto (ref JsonParser p) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (p.NextArrayElement(ref i, Skip.Auto)) {
                 if (p.UseElementNum(ref i))                      { this[index++] = p.ValueAsInt(out _); }
             }
         }
@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             public void RootAutoSkip(ref JsonParser p) {
                 var i = p.GetObjectIterator();
-                while (p.NextObjectMember(ref i)) {
+                while (p.NextObjectMember(ref i, Skip.Auto)) {
                     if      (p.UseMemberObj(ref i, ref nm.map))       { p.SkipTree(); }
                     else if (p.UseMemberObj(ref i, ref nm.map2))      { p.SkipTree(); }
                     else if (p.UseMemberArr(ref i, ref nm.listStr))   { ReadListStrAuto(ref p); }
@@ -236,7 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadListStrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i)) {
+                while (p.NextArrayElement(ref i, Skip.Auto)) {
                     if      (p.UseElementStr(ref i))                { strElement.Set( ref p.value); }
                 }
             }
@@ -250,7 +250,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i)) {
+                while (p.NextArrayElement(ref i, Skip.Auto)) {
                     if      (p.UseElementNul(ref i))                { foundNullElement = true; }
                 }
             }
@@ -264,7 +264,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             void ReadBoolArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i)) {
+                while (p.NextArrayElement(ref i, Skip.Auto)) {
                     if      (p.UseElementBln(ref i))                { trueElement = p.boolValue; }
                 }
             }

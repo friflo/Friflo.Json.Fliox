@@ -12,6 +12,12 @@ using System.Diagnostics;
 
 namespace Friflo.Json.Burst
 {
+    
+    public enum Skip {
+        No,
+        Auto
+    }
+    
     public partial struct JsonParser
     {
         // ----------- object member checks -----------
@@ -197,7 +203,7 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------------------------------------------------------------------------
-        public bool NextObjectMember (ref ObjectIterator iterator) {
+        public bool NextObjectMember (ref ObjectIterator iterator, Skip skip) {
             if (lastEvent == JsonEvent.Error)
                 return false;
             
@@ -212,11 +218,13 @@ namespace Friflo.Json.Burst
                 if (curState != State.ExpectMember)
                     throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
 #endif
-                if (iterator.usedMember) {
-                    iterator.usedMember = false; // clear found flag for next iteration
-                } else {
-                    if (!SkipEvent())
-                        return false;
+                if (skip == Skip.Auto) {
+                    if (iterator.usedMember) {
+                        iterator.usedMember = false; // clear found flag for next iteration
+                    } else {
+                        if (!SkipEvent())
+                            return false;
+                    }
                 }
             } else {
                 // assertion is cheap -> throw exception also in DEBUG & RELEASE
@@ -241,7 +249,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool NextArrayElement (ref ArrayIterator iterator) {
+        public bool NextArrayElement (ref ArrayIterator iterator, Skip skip) {
             if (lastEvent == JsonEvent.Error)
                 return false;
             
@@ -256,12 +264,14 @@ namespace Friflo.Json.Burst
                 if (curState != State.ExpectElement) 
                     throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");
 #endif
-                if (iterator.usedMember) {
-                    iterator.usedMember = false; // clear found flag for next iteration
-                }
-                else {
-                    if (!SkipEvent())
-                        return false;
+                if (skip == Skip.Auto) {
+                    if (iterator.usedMember) {
+                        iterator.usedMember = false; // clear found flag for next iteration
+                    }
+                    else {
+                        if (!SkipEvent())
+                            return false;
+                    }
                 }
             } else {
                 // assertion is cheap -> throw exception also in DEBUG & RELEASE
