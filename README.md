@@ -19,9 +19,6 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - **JSON parser/serializer**
     - [**JsonParser**](Json/Burst/JsonParser.cs) / [**JsonSerializer**](Json/Burst/JsonSerializer.cs)
       in namespace: **`Friflo.Json.Burst`**
-    - Optimized for performance and low memory footprint
-        - No (0) allocations after a few iterations by using a few internal byte & int buffers
-        - Support reusing of parser instance to avoid allocations on the heap
     - Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
     - Skipping of JSON object members and elements (array elements and values on root)  
         Provide statistics (counts) about skipped JSON entries:
@@ -29,7 +26,16 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - Don't throw exceptions in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
     - Throw exceptions in `Debug` build to notice applications errors when using the library.
     - No heap allocation in case of invalid JSON when creating an error message
-    - Support JSON objects, arrays and values (string, number, boolean and null) on root level
+    - Support parsing/serializing of JSON objects, arrays and values (string, number, boolean and null) on root level
+    - Optimization principles:
+        - Minimize **memory footprint**
+            - No (0) allocations after a few iterations by using a few internal byte & int buffers
+            - Support reusing parser instances to avoid allocations on the heap
+        - Minimize **CPU load**
+            - Using only struct's, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
+                As a result the complete parser/serializer state lives on the stack.
+            - Pass method parameters of struct's - a value type in .NET - always by `ref`.
+            - No string copy or memcpy
     - Compatible to [Unity Burst Jobs](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
       which requires using a
       [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
