@@ -30,7 +30,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - Optimization principles:
         - Minimize **memory footprint**
             - No (0) allocations after a few iterations by using a few internal byte & int buffers
-            - Support reusing parser instances to avoid allocations on the heap
+            - Support reusing parser & serializer instances to avoid allocations on the heap
         - Minimize **CPU load**
             - Using only struct's, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
                 As a result the complete parser/serializer state lives on the stack.
@@ -45,11 +45,11 @@ CPU/memory resources to the main thread being the critical path in game loops.
       To support this subset the library need to be compiled with `JSON_BURST`.  
       The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
-- **Object Mapper**
+- **Object Mapper reader/writer**
     - [**JsonReader**](Json/Managed/JsonReader.cs) / [**JsonWriter**](Json/Managed/JsonWriter.cs)
       in namespace: **`Friflo.Json.Managed`**
     - Support deserialization in two ways:
-        - Created new objects and deserialize to them which is the common practice of many object mapper implementations.
+        - Create new object instances and deserialize to them which is the common practice of many object mapper implementations.
         - Deserialize to passed object instances while reusing also their child objects referenced by fields,
           arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
           This avoids object allocation on the heap for the given instance and all its child objects
@@ -60,6 +60,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
         - Support reusing of object mapper instance to avoid allocations on the heap
     - Support the container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
     - Uses internally the JSON parser mentioned above
+
 - UTF-8 support
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
