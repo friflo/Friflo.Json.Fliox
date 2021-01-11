@@ -116,7 +116,7 @@ A minimal *Hello world* example showing how to parse a given JSON string.
                 if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
                 if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
             }
-            Console.WriteLine($"{say}, {to}");
+            Console.WriteLine($"{say}, {to}"); // your console may not support Unicode
         }
 ```
 
@@ -128,9 +128,9 @@ A minimal *Hello world* using the serializer to create JSON.
             s.InitSerializer();
             s.ObjectStart();
             s.MemberStr("say", "Hello 👋");
-            s.MemberStr("to",  "World 🌍!");
+            s.MemberStr("to",  "World 🌍");
             s.ObjectEnd();
-            Console.WriteLine(s.dst.ToString());
+            Console.WriteLine(s.dst.ToString()); // your console may not support Unicode
         }
 ```
 

@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
                 if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
             }
-            Console.WriteLine($"{say}, {to}");
+            Console.WriteLine($"{say}, {to}"); // your console may not support Unicode
         }
         
         [Test]
@@ -28,9 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
             s.InitSerializer();
             s.ObjectStart();
             s.MemberStr("say", "Hello 👋");
-            s.MemberStr("to",  "World 🌍!");
+            s.MemberStr("to",  "World 🌍");
             s.ObjectEnd();
-            Console.WriteLine(s.dst.ToString());
+            Console.WriteLine(s.dst.ToString()); // your console may not support Unicode
         }
     }
 #endif
