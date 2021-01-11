@@ -64,6 +64,24 @@ namespace Friflo.Json.Managed
                     return ReadObject(null, type);
                 case JsonEvent. ArrayStart:
                     return ReadJsonArray(null, PropCollection.Info.CreateCollection(type));
+                case JsonEvent.ValueString:
+                    if (parser.error.ErrSet)
+                        return null;
+                    return parser.value.ToString();
+                case JsonEvent.ValueNumber:
+                    if (parser.error.ErrSet)
+                        return null;
+                    if (parser.isFloat)
+                        return parser.ValueAsDouble(out _); 
+                    return parser.ValueAsLong(out _);
+                case JsonEvent.ValueBool:
+                    if (parser.error.ErrSet)
+                        return null;
+                    return parser.boolValue;
+                case JsonEvent.ValueNull:
+                    if (parser.error.ErrSet)
+                        return null;
+                    return null;
                 case JsonEvent. Error:
                     return null;
                 default:

@@ -219,5 +219,24 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 }
             }
         }
+        
+        [Test]
+        public void ReadPrimitive()
+        {
+            using (TypeStore typeStore = createStore())
+            using (JsonReader enc = new JsonReader(typeStore))
+            using (var hello =      new Bytes ("\"hello\""))
+            using (var @double =    new Bytes ("12.5"))
+            using (var @long =      new Bytes ("42"))
+            using (var @true =      new Bytes ("true"))
+            using (var @null =      new Bytes ("null"))
+            {
+                AreEqual("hello",   enc.Read<string>(hello));
+                AreEqual(12.5,      enc.Read<double>(@double));
+                AreEqual(42,        enc.Read<long>(@long));
+                AreEqual(true,      enc.Read<bool>(@true));
+                // AreEqual(null,      enc.Read<null>(@null));
+            }
+        }
     }
 }
