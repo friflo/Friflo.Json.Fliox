@@ -132,7 +132,7 @@ namespace Friflo.Json.Burst
                 dst.Dispose();
             format.Dispose();
         }
-        
+#if !JSON_BURST
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, ref Str32 src) {
             int end = src.Length;
@@ -170,6 +170,7 @@ namespace Friflo.Json.Burst
                 }
             }
         }
+#endif
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {

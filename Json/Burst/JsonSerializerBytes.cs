@@ -1,6 +1,7 @@
 ﻿
 
 
+
 namespace Friflo.Json.Burst
 {
     public partial struct JsonSerializer
@@ -23,17 +24,48 @@ namespace Friflo.Json.Burst
         
         
         
-        
-        
-        
-        
+#if JSON_BURST
+        public static void AppendEscString(ref Bytes dst, ref Unity.Collections.FixedString32 src) {
+            int end = src.Length;
+            var srcArr = src; 
+            for (int n = 0; n < end; n++) {
+                char c = (char) srcArr[n];
+                switch (c) {
+                    case '"':
+                        dst.AppendChar2('\\', '\"');
+                        break;
+                    case '\\':
+                        dst.AppendChar2('\\', '\\');
+                        break;
+                    case '\b':
+                        dst.AppendChar2('\\', 'b');
+                        break;
+                    case '\f':
+                        dst.AppendChar2('\\', 'f');
+                        break;
+                    case '\r':
+                        dst.AppendChar2('\\', 'r');
+                        break;
+                    case '\n':
+                        dst.AppendChar2('\\', 'n');
+                        break;
+                    case '\t':
+                        dst.AppendChar2('\\', 't');
+                        break;
+                    default:
+                        dst.AppendChar(c);
+                        break;
+                }
+            }
+        }
+#endif
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, ref Bytes src) {
             int end = src.end;
             var srcArr = src.buffer.array; 
             for (int n = src.start; n < end; n++) {
-                // ReSharper disable once RedundantCast - required for JSON_BURST
                 char c = (char) srcArr[n];
+
                 switch (c) {
                     case '"':
                         dst.AppendChar2('\\', '\"');

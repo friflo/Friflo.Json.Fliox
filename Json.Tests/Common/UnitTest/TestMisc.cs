@@ -5,6 +5,12 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#if JSON_BURST
+    using Str32 = Unity.Collections.FixedString32;
+#else
+    using Str32 = System.String;
+#endif
+
 #pragma warning disable 618 // Performance degradation by string copy
 
 namespace Friflo.Json.Tests.Common.UnitTest
@@ -62,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
         }
 
-        private void AssertUnicodeToByte (ref Bytes dst, String src) {
+        private void AssertUnicodeToByte (ref Bytes dst, string src) {
             dst.Clear();
             int c = char.ConvertToUtf32 (src, 0);
             Utf8Utils.AppendUnicodeToBytes(ref dst, c);
@@ -77,6 +83,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AssertUnicodeToByte(ref dst, "©");
                 AssertUnicodeToByte(ref dst, "€");
                 AssertUnicodeToByte(ref dst, "😎");
+
+                Str32 src = "a©€😎🌍";
+                dst.Clear();
+                JsonSerializer.AppendEscString(ref dst, ref src);
+                AreEqual(src, dst.ToString());
             }
         }
 
