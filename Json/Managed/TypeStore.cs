@@ -11,8 +11,9 @@ namespace Friflo.Json.Managed
     /// </summary>
     public class TypeStore : IDisposable
     {
-        private   readonly  HashMapLang <Type, PropType>    typeMap=    new HashMapLang <Type, PropType >();
-        internal  readonly  HashMapLang <Bytes, PropType>   nameMap=    new HashMapLang <Bytes, PropType >();
+        private   readonly  HashMapLang <Type, PropType>        typeMap=    new HashMapLang <Type,  PropType >();
+        internal  readonly  HashMapLang <Bytes, PropType>       nameMap=    new HashMapLang <Bytes, PropType >();
+        private   readonly  HashMapLang <Type, PropCollection>  colMap=     new HashMapLang <Type,  PropCollection >();
             
         public void Dispose() {
             lock (nameMap) {
@@ -20,8 +21,21 @@ namespace Friflo.Json.Managed
                     type.Dispose();
             }
         }
-            
-        internal PropType GetInternal (Type type, String name)
+
+        internal PropCollection GetCollection (Type type)
+        {
+            lock (colMap)
+            {
+                PropCollection colType = colMap.Get(type);
+                if (colType == null) {
+                    colType = PropCollection.Info.CreateCollection(type);
+                    colMap.Put(type, colType);
+                }
+                return colType;
+            }
+        }
+        
+        internal PropType GetType (Type type, String name)
         {
             lock (typeMap)
             {
@@ -39,7 +53,7 @@ namespace Friflo.Json.Managed
         {
             lock (nameMap)
             {
-                PropType propType = GetInternal(type, name); 
+                PropType propType = GetType(type, name); 
                 if (!propType.typeName.buffer.IsCreated())
                     throw new FrifloException("Type already created without registered name");
                 if (!propType.typeName.IsEqualString(name))

@@ -38,7 +38,7 @@ namespace Friflo.Json.Managed
             bytes.InitBytes(128);
             strBuf.InitBytes(128);
             format.InitTokenFormat();
-            PropType objType = typeCache.Get(obj.GetType());
+            PropType objType = typeCache.GetType(obj.GetType());
             WriteObject(objType, obj);
         }
 
@@ -61,7 +61,7 @@ namespace Friflo.Json.Managed
             bytes.AppendChar('{');
             Type objType = obj.GetType();
             if (type.nativeType != objType) {
-                type = typeCache.Get(objType);
+                type = typeCache.GetType(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref this.type);
                 Bytes subType = type.typeName;
@@ -173,7 +173,7 @@ namespace Friflo.Json.Managed
                         break;
                     case SimpleType.Id.Object:
                         if (collection.elementPropType == null)
-                            collection.elementPropType = typeCache.Get(collection.elementType);
+                            collection.elementPropType = typeCache.GetType(collection.elementType);
                         WriteArrayObject(collection.elementPropType, (Object[]) col);
                         break;
                     default:
@@ -196,7 +196,7 @@ namespace Friflo.Json.Managed
         private void WriteList(PropCollection collection, IList list) {
             bytes.AppendChar('[');
             if (collection.elementPropType == null)
-                collection.elementPropType = typeCache.Get(collection.elementType);
+                collection.elementPropType = typeCache.GetType(collection.elementType);
             PropType itemType = collection.elementPropType;
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) bytes.AppendChar(',');
@@ -241,7 +241,7 @@ namespace Friflo.Json.Managed
             else {
                 // Map<String, Object>
                 if (collection.elementPropType == null)
-                    collection.elementPropType = typeCache.Get(collection.elementType);
+                    collection.elementPropType = typeCache.GetType(collection.elementType);
                 PropType itemType = collection.elementPropType;
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');

@@ -26,7 +26,7 @@ namespace Friflo.Json.Managed.Prop
         {
             if (fieldPropType != null)
                 return fieldPropType;
-            return fieldPropType = cache.Get(fieldType);        
+            return fieldPropType = cache.GetType(fieldType);        
         }
     
         internal PropField (PropType declType, String name, SimpleType.Id type, Type fieldType, PropCollection.Info info)

@@ -67,21 +67,31 @@ namespace Friflo.Json.Managed.Prop
         /// </summary>
         public class Cache
         {
-            private readonly    HashMapLang <Type, PropType>    typeMap = new HashMapLang <Type, PropType >();
-            private readonly    HashMapLang <Bytes, PropType>   nameMap = new HashMapLang <Bytes, PropType >();
-            private readonly    TypeStore                       typeStore;
+            private readonly    HashMapLang <Type, PropType>        typeMap =   new HashMapLang <Type,  PropType >();
+            private readonly    HashMapLang <Bytes, PropType>       nameMap =   new HashMapLang <Bytes, PropType >();
+            private readonly    HashMapLang <Type, PropCollection>  colMap =    new HashMapLang <Type,  PropCollection >();
+            private readonly    TypeStore                           typeStore;
             
             public Cache (TypeStore typeStore)
             {
                 this.typeStore = typeStore;
             }
             
-            public PropType Get (Type type)
+            internal PropCollection GetCollection (Type type)
+            {
+                PropCollection colType = colMap.Get(type);
+                if (colType == null) {
+                    colType = typeStore.GetCollection(type);
+                    colMap.Put(type, colType);
+                }
+                return colType;
+            }
+            
+            public PropType GetType (Type type)
             {
                 PropType propType = typeMap.Get(type);
-                if (propType == null)
-                {
-                    propType = typeStore.GetInternal(type, null);
+                if (propType == null) {
+                    propType = typeStore.GetType(type, null);
                     typeMap.Put(type, propType);
                 }
                 return propType;

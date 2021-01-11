@@ -63,7 +63,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ObjectStart:
                     return ReadObject(null, type);
                 case JsonEvent. ArrayStart:
-                    return ReadJsonArray(null, PropCollection.Info.CreateCollection(type));
+                    return ReadJsonArray(null, typeCache.GetCollection(type));
                 case JsonEvent.ValueString:
                     return parser.value.ToString();
                 case JsonEvent.ValueNumber:
@@ -114,13 +114,13 @@ namespace Friflo.Json.Managed
         }
     
         protected Object ReadObject (Object obj, Type type) {
-            PropType propType = typeCache.Get (type );
+            PropType propType = typeCache.GetType (type );
             return ReadObjectType(obj, propType);
         }
 
         private Object ReadObjectType (Object obj, PropType propType) {
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
-                PropCollection collection = PropCollection.Info.CreateCollection(propType.nativeType);
+                PropCollection collection = typeCache.GetCollection(propType.nativeType);
                 obj = collection.CreateInstance();
                 return ReadMapType(obj, collection);
             }
@@ -252,7 +252,7 @@ namespace Friflo.Json.Managed
         // @SuppressWarnings("unchecked")
         private Object ReadMapType (Object obj, PropCollection collection) {
             if (collection.elementPropType == null)
-                collection.elementPropType = typeCache.Get(collection.elementType);
+                collection.elementPropType = typeCache.GetType(collection.elementType);
             IDictionary map = (IDictionary) obj;        
             while (true)
             {
@@ -340,7 +340,7 @@ namespace Friflo.Json.Managed
             }
             
             if (collection.elementPropType == null)
-                collection.elementPropType = typeCache.Get(collection.elementType);
+                collection.elementPropType = typeCache.GetType(collection.elementType);
             int index = 0;
             while (true)
             {
@@ -390,7 +390,7 @@ namespace Friflo.Json.Managed
             if (col == null)
                 col = collection.CreateInstance();
             if (collection.elementPropType == null)
-                collection.elementPropType = typeCache.Get(collection.elementType);
+                collection.elementPropType = typeCache.GetType(collection.elementType);
             IList list = (IList) col;
             if (collection.id != SimpleType.Id.Object)
                 list. Clear();

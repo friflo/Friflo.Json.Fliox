@@ -71,7 +71,6 @@ namespace Friflo.Json.Managed.Prop
                 return info;
             }
 
-            // todo: need to be cached in TypeStore
             public static PropCollection CreateCollection (Type type)
             {
                 Info info = new Info();
