@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Utils;
@@ -193,15 +194,15 @@ namespace Friflo.Json.Burst
             this.hc = BytesConst.notHashed;
         }
 
-        public bool StartsWith(Bytes cs)
+        public bool StartsWith(Bytes value)
         {
-            if (this.Len < cs.Len)
+            if (Len < value.Len)
                 return false;
-            ref var str = ref buffer.array;
-            ref var str2 = ref cs.buffer.array;
-            int     end = start + cs.Len;
-            int     i2 = cs.start;
-            for (int i = start; i < end; i++ )
+            ref var str     = ref buffer.array;
+            ref var str2    = ref value.buffer.array;
+            int     valEnd  = start + value.Len;
+            int     i2 = value.start;
+            for (int i = start; i < valEnd; i++ )
             {
                 if (str[i] != str2[i2++])
                     return false;
@@ -209,15 +210,15 @@ namespace Friflo.Json.Burst
             return true;
         }
 
-        public bool EndsWith(Bytes suffix)
+        public bool EndsWith(Bytes value)
         {
-            if (this.Len < suffix.Len)
+            if (Len < value.Len)
                 return false;
             ref var str     = ref buffer.array;
-            ref var str2    = ref suffix.buffer.array;
-            int     end     = suffix.end;
-            int     i       = this.end - suffix.Len;
-            for (int i2 = suffix.start; i2 < end; i2++ )
+            ref var str2    = ref value.buffer.array;
+            int     valEnd     = value.end;
+            int     i       = this.end - value.Len;
+            for (int i2 = value.start; i2 < valEnd; i2++ )
             {
                 if (str[i++] != str2[i2])
                     return false;
@@ -293,20 +294,20 @@ namespace Friflo.Json.Burst
 
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public bool IsEqual32(Str32 str2) {
-            return IsEqual32(ref str2);
+        public bool IsEqual32(Str32 value) {
+            return IsEqual32(ref value);
         }
 
-        public bool IsEqual32(ref Str32 str2) {
-            int len = this.Len;
-            if (len != str2.Length)
+        public bool IsEqual32(ref Str32 value) {
+            int len = Len;
+            if (len != value.Length)
                 return false;
             ref var str = ref buffer.array;
-            int end = start + len;
+            int valEnd  = start + len;
             int i2 = 0;
             // ref ByteList str2 = ref fix;
-            for (int i = start; i < end; i++) {
-                if (str[i] != str2[i2++])
+            for (int i = start; i < valEnd; i++) {
+                if (str[i] != value[i2++])
                     return false;
             }
             return true;
@@ -321,16 +322,16 @@ namespace Friflo.Json.Burst
         }
 #endif
 
-        public bool IsEqualBytes(Bytes cs)
+        public bool IsEqualBytes(Bytes value)
         {
-            int len = this.Len;
-            if (len != cs.Len)
+            int len = Len;
+            if (len != value.Len)
                 return false;
-            ref var str = ref buffer.array;
-            int     end = start + len;
-            int     i2 = cs.start;
-            ref var str2 = ref cs.buffer.array;
-            for (int i = start; i < end; i++ )
+            ref var str     = ref buffer.array;
+            int     valEnd  = start + len;
+            int     i2      = value.start;
+            ref var str2 = ref value.buffer.array;
+            for (int i = start; i < valEnd; i++ )
             {
                 if (str[i] != str2[i2++])
                     return false;
@@ -340,12 +341,12 @@ namespace Friflo.Json.Burst
 
         public bool IsEqualManagedArray (byte[] bytes, int start, int length)
         {
-            int len = this.Len;
+            int len = Len;
             if (len != length - start)
                 return false;
-            ref var str = ref buffer.array;
-            int end = start + len;
-            for (int i = start; i < end; i++ )
+            ref var str     = ref buffer.array;
+            int bytesEnd    = start + len;
+            for (int i = start; i < bytesEnd; i++ )
             {
                 if (str[i] != bytes[start++])
                     return false;
@@ -421,10 +422,11 @@ namespace Friflo.Json.Burst
             return -1;      
         }
 
-        public override bool Equals (Object obj)
-        {
-            Bytes cs = (Bytes)obj;
-            return IsEqualBytes(cs);
+        public override bool Equals (Object obj) {
+            if (obj == null)
+                return false;
+            Bytes value = (Bytes)obj;
+            return IsEqualBytes(value);
         }
 
         internal int GetHash()
@@ -432,6 +434,7 @@ namespace Friflo.Json.Burst
             return hc;
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             if (hc != BytesConst.notHashed)
@@ -447,21 +450,21 @@ namespace Friflo.Json.Burst
         public int Split (char separator, params Bytes [] param)
         {
             int     count   = 0;
-            ref var str = ref buffer.array;
-            int     start   = this.start;
-            int     end     = this.end;
-            for (int i = start; i < end; i++)
+            ref var str         = ref buffer.array;
+            int     lclStart    = this.start;
+            int     lclEnd      = this.end;
+            for (int i = lclStart; i < lclEnd; i++)
             {
                 if (str[i] == separator)
                 {
                     if (count++ >= param. Length)
                         continue;
-                    param[count-1].Set(ref this, start, i);
-                    start = i + 1;
+                    param[count-1].Set(ref this, lclStart, i);
+                    lclStart = i + 1;
                 }
             }
-            if (start < end && count++ < param. Length)
-                param[count-1].Set(ref this, start, end);
+            if (lclStart < lclEnd && count++ < param. Length)
+                param[count-1].Set(ref this, lclStart, lclEnd);
             return count;       
         }
 #if JSON_BURST
