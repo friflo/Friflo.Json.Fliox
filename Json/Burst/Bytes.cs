@@ -11,6 +11,7 @@ using Friflo.Json.Managed.Utils;
 #else
     using Str32 = System.String;
     using Str128 = System.String;
+    // ReSharper disable InconsistentNaming
 #endif
 
 namespace Friflo.Json.Burst

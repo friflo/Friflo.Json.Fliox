@@ -6,6 +6,7 @@ using Friflo.Json.Burst.Utils;
     using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
+    // ReSharper disable InconsistentNaming
 #endif
 
 namespace Friflo.Json.Burst

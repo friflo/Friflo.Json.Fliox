@@ -6,6 +6,7 @@ using System;
     using Str128 = Unity.Collections.FixedString128;
 #else
     using Str128 = System.String;
+    // ReSharper disable InconsistentNaming
 #endif
 
 
