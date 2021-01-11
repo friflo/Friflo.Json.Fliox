@@ -73,5 +73,39 @@ namespace Friflo.Json.Burst.Utils
                     | ((bytes[n++]      & m_oo111111) << 6)
                     |  (bytes[n++]      & m_oo111111);
         }
+        
+
+        public static void AppendUnicodeToBytes(ref Bytes dst, int uni) {
+            // UTF-8 Encoding
+            dst.EnsureCapacity(4);
+            ref var str = ref dst.buffer.array;
+            int i = dst.End;
+            if (uni < 0x80)
+            {
+                str[i] =    (byte)uni;
+                dst.SetEnd(i + 1);
+                return;
+            }
+            if (uni < 0x800)
+            {
+                str[i]   =  (byte)(m_11oooooo | (uni >> 6));
+                str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
+                dst.SetEnd(i + 2);
+                return;
+            }
+            if (uni < 0x10000)
+            {
+                str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
+                str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                dst.SetEnd(i + 3);
+                return;
+            }
+            str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
+            str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
+            str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+            str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
+            dst.SetEnd(i + 4);
+        }
     }
 }

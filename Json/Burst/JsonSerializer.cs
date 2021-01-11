@@ -138,8 +138,10 @@ namespace Friflo.Json.Burst
             int end = src.Length;
             var srcArr = src; 
             for (int n = 0; n < end; n++) {
-                // ReSharper disable once RedundantCast - required for JSON_BURST
-                char c = (char) srcArr[n];
+                int c = char.ConvertToUtf32 (srcArr, n);
+                if (char.IsSurrogatePair(srcArr, n))
+                    n++;
+                
                 switch (c) {
                     case '"':
                         dst.AppendChar2('\\', '\"');
@@ -163,7 +165,7 @@ namespace Friflo.Json.Burst
                         dst.AppendChar2('\\', 't');
                         break;
                     default:
-                        dst.AppendChar(c);
+                        Utf8Utils.AppendUnicodeToBytes(ref dst, c);
                         break;
                 }
             }

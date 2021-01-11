@@ -62,6 +62,24 @@ namespace Friflo.Json.Tests.Common.UnitTest
             }
         }
 
+        private void AssertUnicodeToByte (ref Bytes dst, String src) {
+            dst.Clear();
+            int c = char.ConvertToUtf32 (src, 0);
+            Utf8Utils.AppendUnicodeToBytes(ref dst, c);
+            AreEqual(src, dst.ToString());
+        }
+
+        [Test]
+        public void TestUnicodeToBytes() {
+            using (var destination = new Bytes("")) {
+                var dst = destination;
+                AssertUnicodeToByte(ref dst, "a");
+                AssertUnicodeToByte(ref dst, "©");
+                AssertUnicodeToByte(ref dst, "€");
+                AssertUnicodeToByte(ref dst, "😎");
+            }
+        }
+
         [Test]
         public void TestBurstStringInterpolation() {
             using (Bytes bytes = new Bytes(128)) {
@@ -77,6 +95,20 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual("Hello World With Bytes 42 43 a", err.value);
             }
         }
+
+        [Test]
+        public void TestSerializeUnicode() {
+            using (var s = new JsonSerializer()) {
+                s.InitSerializer();
+                s.ObjectStart();
+                s.MemberStr("test", "a©€😎🌍");
+                s.ObjectEnd();
+                Console.WriteLine(s.dst.ToString());
+                string dst = s.dst.ToString();
+                AreEqual(@"{""test"":""a©€😎🌍""}", dst);
+            }
+        }
+        
     }
     
     struct Struct
