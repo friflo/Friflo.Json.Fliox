@@ -155,19 +155,9 @@ namespace Friflo.Json.Managed
                     field = propType.GetField(parser.key);
                     if (field == null)
                         break;
-                    if (!SimpleType.IsNumber(field.type))
-                        return ErrorNull("Field is not a number. Field type: " + field.type);
-                    if (parser.isFloat) {
-                        double val = parser.ValueAsDouble(out bool success);
-                        field.SetDouble(obj, val);
-                        if (!success)
-                            return ValueParseError();
-                    } else {
-                        long val = parser.ValueAsLong(out bool success);
-                        field.SetLong(obj, val);
-                        if (!success)
-                            return ValueParseError();
-                    }
+                    bool success = field.SetNumber(ref parser, obj);
+                    if (!success)
+                        return ValueParseError();
                     break;
                 case JsonEvent. ValueBool:
                     field = propType.GetField(parser.key);

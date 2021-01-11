@@ -257,22 +257,26 @@ namespace Friflo.Json.Managed.Prop
             }
         }
 
-        public void SetDouble (Object prop, double val)
-        {
+        public bool SetNumber (ref JsonParser parser, Object prop) {
             try
             {
+                bool success;
                 switch (type)
                 {
-                case SimpleType.Id. String:     InternalSetString   (prop, val .ToString (NumberFormatInfo.InvariantInfo));     break;
-                case SimpleType.Id. Long:       InternalSetLong     (prop, (long)   val);           break;
-                case SimpleType.Id. Integer:    InternalSetInt      (prop, (int)    val);           break;
-                case SimpleType.Id. Short:      InternalSetShort    (prop, (short)  val);           break;
-                case SimpleType.Id. Byte:       InternalSetByte     (prop, (byte)   val);           break;
-                case SimpleType.Id. Bool:       InternalSetBool     (prop,          val != 0 );     break; 
-                case SimpleType.Id. Double:     InternalSetDouble   (prop,          val);           break;
-                case SimpleType.Id. Float:      InternalSetFloat    (prop, (float)  val);           break;
+                case SimpleType.Id. String:     InternalSetString   (prop, parser.value.ToString());
+                    return true;
+                case SimpleType.Id. Long:       InternalSetLong     (prop, parser.ValueAsLong   (out success)); break;
+                case SimpleType.Id. Integer:    InternalSetInt      (prop, parser.ValueAsInt    (out success)); break;
+                case SimpleType.Id. Short:      InternalSetShort    (prop, parser.ValueAsShort  (out success)); break;
+                case SimpleType.Id. Byte:       InternalSetByte     (prop, parser.ValueAsByte   (out success)); break;
+                case SimpleType.Id. Bool:      
+                    parser.Error("PropField", $"Field is not a number type. Field type: {type}");
+                    return false; 
+                case SimpleType.Id. Double:     InternalSetDouble   (prop, parser.ValueAsDouble (out success)); break;
+                case SimpleType.Id. Float:      InternalSetFloat    (prop, parser.ValueAsFloat  (out success)); break;
                 default:                        throw new FrifloException ("no conversion to double. type: " + type);
                 }
+                return success;
             }
             catch (Exception e)
             {
