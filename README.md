@@ -133,14 +133,15 @@ A minimal *Hello world* using the serializer to create JSON.
 ## Performance .NET CLR (Common Language Runtime)
 
 The test cases contain also JSON parser performance tests.
-Various JSON examples files are parsed by iteration them from begin to end. The parser results like JSON keys
- and values like strings, numbers, booleans are nulls are ready to be consumed at this stage.  
+Various JSON examples files are parsed by iteration them from begin to end.
+The parser returns the JSON tree structure via an iterator. The keys and the JSON
+values (strings, numbers, booleans are nulls) are ready to be consumed at this stage.
 
 To reduce side effects in measurement by NUnit of throughput increase `impliedThroughput`
 at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
 
 On the used development system (Intel Core i7-4790k 4Ghz, Windows 10) the throughput of the example JSON files
-within the CLR are at **200-550 MB/sec**.
+within the CLR are at **200-550 MB/sec**. All tests are measured on one core.
 
 ## Performance Unity
 
