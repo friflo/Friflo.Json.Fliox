@@ -286,21 +286,15 @@ namespace Friflo.Json.Managed
                     break;
                 case JsonEvent.ValueNumber:
                     key = parser.key.ToString();
-                    if (parser.isFloat) {
-                        double dbl = parser.ValueAsDouble(out bool success);
-                        if (!success)
-                            return null;
-                        map[key] = SimpleType.ObjectFromDouble(collection.id, dbl, out success);
-                        if (!success)
-                            return ErrorNull($"Conversion from number {parser.value.ToString()} to Dictionary value type {collection.id} failed");
-                    } else {
-                        long lng = parser.ValueAsLong(out bool success);
-                        if (!success)
-                            return null;
-                        map[key] = SimpleType.ObjectFromLong(collection.id, lng, out success);
-                        if (!success)
-                            return ErrorNull($"Conversion from number {parser.value.ToString()} to Dictionary value type {collection.id} failed");
-                    }
+                    map[key] = NumberFromValue(collection.id, out bool successNum);
+                    if (!successNum)
+                        return null;
+                    break;
+                case JsonEvent.ValueBool:
+                    key = parser.key.ToString();
+                    map[key] = BoolFromValue(collection.id, out bool successBool);
+                    if (!successBool)
+                        return null;
                     break;
                 case JsonEvent. ObjectEnd:
                     return obj;
@@ -712,5 +706,39 @@ namespace Friflo.Json.Managed
             }
         }
         //
+        public object NumberFromValue(SimpleType.Id? id, out bool success) {
+            if (id == null) {
+                success = false;
+                return null;
+            }
+            switch (id) {
+                case SimpleType.Id. Long:
+                    return parser.ValueAsLong(out success);
+                case SimpleType.Id. Integer:
+                    return parser.ValueAsInt(out success);
+                case SimpleType.Id. Short:
+                    return parser.ValueAsShort(out success);
+                case SimpleType.Id. Byte:
+                    return parser.ValueAsByte(out success);
+                case SimpleType.Id. Double:
+                    return  parser.ValueAsDouble(out success);
+                case SimpleType.Id. Float:
+                    return  parser.ValueAsFloat(out success);
+                default:
+                    success = false;
+                    return ErrorNull($"Cant convert number to {id}");
+            }
+        }
+        
+        public object BoolFromValue(SimpleType.Id? id, out bool success) {
+            if (id == null) {
+                success = false;
+                return null;
+            }
+            if (id == SimpleType.Id.Bool)
+                return parser.ValueAsBool(out success);
+            success = false;
+            return ErrorNull($"Cant convert number to {id}");
+        }
     }
 }

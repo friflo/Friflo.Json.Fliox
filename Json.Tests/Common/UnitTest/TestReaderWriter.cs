@@ -232,6 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @null =      new Bytes ("null"))
             using (var array =      new Bytes ("[1,2,3]"))
             using (var mapNum =     new Bytes ("{\"key\":42}"))
+            using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
             using (var invalid =    new Bytes ("invalid"))
             {
@@ -249,14 +250,33 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                 AreEqual(new [] {1,2,3},      enc.Read<int[]>(array));
                 {
+                    var expect = new Dictionary<string, long> {{"key", 42}};
+                    AreEqual(expect, enc.Read<Dictionary<string, long>>(mapNum));
+                } {
                     var expect = new Dictionary<string, int> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, int>>(mapNum));
                 } {
+                    var expect = new Dictionary<string, short> {{"key", 42}};
+                    AreEqual(expect, enc.Read<Dictionary<string, short>>(mapNum));
+                } {
+                    var expect = new Dictionary<string, byte> {{"key", 42}};
+                    AreEqual(expect, enc.Read<Dictionary<string, byte>>(mapNum));
+                }
+                
+                {
+                    var expect = new Dictionary<string, double> {{"key", 42}};
+                    AreEqual(expect, enc.Read<Dictionary<string, double>>(mapNum));
+                } {
                     var expect = new Dictionary<string, float> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
-                } {
+                } 
+                
+                {
                     var expect = new Dictionary<string, string> {{"key", "value" }};
                     AreEqual(expect, enc.Read<Dictionary<string, string>>(mapStr));
+                } {
+                    var expect = new Dictionary<string, bool> {{"key", true }};
+                    AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
                 }
 
             }

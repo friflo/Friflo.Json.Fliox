@@ -887,11 +887,11 @@ namespace Friflo.Json.Burst
             if (!success) 
                 SetErrorValue("", ref errVal);
             if (result < float.MinValue) {
-                SetErrorValue("float is less than float.MinValue. ", ref value);
+                SetErrorValue("value is less than float.MinValue. ", ref value);
                 return 0;
             }
             if (result > float.MaxValue) {
-                SetErrorValue("float is greater than float.MaxValue. ", ref value);
+                SetErrorValue("value is greater than float.MaxValue. ", ref value);
                 return 0;
             }
             return (float)result;
@@ -918,6 +918,46 @@ namespace Friflo.Json.Burst
                 SetErrorValue("", ref errVal);
             return result;
         }
+        
+        public short ValueAsShort(out bool success) {
+            long result = valueParser.ParseInt(ref value, ref errVal, out success);
+            if (!success)
+                SetErrorValue("", ref errVal);
+            if (result < short.MinValue) {
+                SetErrorValue("value is less than short.MinValue. ", ref value);
+                return 0;
+            }
+            if (result > short.MaxValue) {
+                SetErrorValue("value is greater than short.MaxValue. ", ref value);
+                return 0;
+            }
+            return (short)result;
+        }
+        
+        public byte ValueAsByte(out bool success) {
+            long result = valueParser.ParseInt(ref value, ref errVal, out success);
+            if (!success)
+                SetErrorValue("", ref errVal);
+            if (result < byte.MinValue) {
+                SetErrorValue("value is less than byte.MinValue. ", ref value);
+                return 0;
+            }
+            if (result > byte.MaxValue) {
+                SetErrorValue("value is greater than byte.MaxValue. ", ref value);
+                return 0;
+            }
+            return (byte)result;
+        }
+        
+        public bool ValueAsBool(out bool success) {
+            if (lastEvent != JsonEvent.ValueBool) {
+                success = false;
+                return false;
+            }
+            success = true;
+            return boolValue;
+        }
+
 
     }
 }

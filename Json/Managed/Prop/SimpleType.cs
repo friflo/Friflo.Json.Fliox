@@ -99,7 +99,7 @@ namespace Friflo.Json.Managed.Prop
                     return null;
             }
         }
-        
+        /*
         public static object ObjectFromLong(Id? id, long value, out bool success) {
             if (id == null) {
                 success = false;
@@ -138,8 +138,8 @@ namespace Friflo.Json.Managed.Prop
                     success = false;
                     return null;
             }
-        }  
-
+        }  */
+        
 /*      public static bool IsAssignable (SimpleType.ID typeID)
         {
             switch (typeID)
@@ -159,5 +159,6 @@ namespace Friflo.Json.Managed.Prop
             }   
         }
         */
+
     }
 }
