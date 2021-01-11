@@ -38,13 +38,16 @@ namespace Friflo.Json.Burst
         public      Bytes                   dst;
         private     ValueFormat             format;
         private     ValueArray<bool>        firstEntry;
-        private     ValueArray<bool>        startGuard;
         private     ValueArray<NodeType>    nodeType;
         private     Bytes                   strBuf;
         private     int                     level;
         private     Str32                   @null;
 
         public      int                     Level => level;
+        
+#pragma warning disable 649  // Field 'startGuard' is never assigned
+        private     ValueArray<bool>        startGuard;
+#pragma warning restore 649
 
         enum NodeType {
             Undefined,
