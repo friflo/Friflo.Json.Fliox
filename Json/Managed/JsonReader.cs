@@ -194,17 +194,19 @@ namespace Friflo.Json.Managed
                     {
                         Object sub = field.GetObject(obj);
                         PropCollection collection = field.collection;
-                        if (collection != null)
-                        {
+                        if (collection != null) {
                             Type collectionInterface = collection.typeInterface;
-                            if (collectionInterface == typeof( IDictionary<,> ))
-                            {
-                                if (field.collection.elementType == typeof( String ))
-                                    sub = ReadMapString(sub, field);
-                                else
-                                    sub = ReadMapType(sub, field);
-                            }
-                            else
+                            if (collectionInterface == typeof( IDictionary<,> )) {
+                                if (collection.elementType == typeof(String)) {
+                                    if (sub == null)
+                                        sub = field.CreateCollection();
+                                    sub = ReadMapString(sub);
+                                } else {
+                                    if (sub == null)
+                                        sub = field.CreateCollection();
+                                    sub = ReadMapType(sub, collection);
+                                }
+                            } else
                                 return ErrorNull("unsupported collection Type: " + collectionInterface. Name);
                         }
                         else
@@ -251,11 +253,7 @@ namespace Friflo.Json.Managed
         }
 
         // @SuppressWarnings("unchecked")
-        private Object ReadMapType (Object obj, PropField field) {
-            if (obj == null)
-                obj = field.CreateCollection();
-        
-            PropCollection collection = field.collection;
+        private Object ReadMapType (Object obj, PropCollection collection) {
             if (collection.elementPropType == null)
                 collection.elementPropType = typeCache.Get(collection.elementType);
             IDictionary map = (IDictionary) obj;        
@@ -286,9 +284,7 @@ namespace Friflo.Json.Managed
         }
 
 
-        private Object ReadMapString (Object obj, PropField field) {
-            if (obj == null)
-                obj = field.CreateCollection();
+        private Object ReadMapString (Object obj) {
             
             IDictionary <String,String> map = (IDictionary <String,String>) obj;        
             while (true)
