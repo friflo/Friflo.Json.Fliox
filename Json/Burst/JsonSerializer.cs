@@ -73,41 +73,41 @@ namespace Friflo.Json.Burst
                 strBuf.InitBytes(128);
             @null = "null"; 
             level = 0;
-            firstEntry[0] = true;
-            nodeType[0] = NodeType.Undefined;
+            firstEntry.array[0] = true;
+            nodeType.array[0] = NodeType.Undefined;
         }
         
         [Conditional("DEBUG")]
         private void AssertMember() {
             if (level == 0)
                 throw new InvalidOperationException("Member...() methods and ObjectEnd() must not be called on root level");
-            startGuard[level] = false;
-            if (nodeType[level] == NodeType.Object)
+            startGuard.array[level] = false;
+            if (nodeType.array[level] == NodeType.Object)
                 return;
             throw new InvalidOperationException("Member...() methods and ObjectEnd() must be called only within an object");
         }
         
         [Conditional("DEBUG")]
         private void AssertElement() {
-            if (level == 0 || nodeType[level] == NodeType.Array)
+            if (level == 0 || nodeType.array[level] == NodeType.Array)
                 return;
             throw new InvalidOperationException("Element...() methods and ArrayEnd() must be called only within an array or on root level");
         }
         
         [Conditional("DEBUG")]
         private void AssertStart() {
-            if (level > 0 && startGuard[level] == false)
+            if (level > 0 && startGuard.array[level] == false)
                 throw new InvalidOperationException("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method");
         }
         
         [Conditional("DEBUG")]
         private void SetStartGuard() {
-            startGuard[level] = true;
+            startGuard.array[level] = true;
         }
         
         [Conditional("DEBUG")]
         private void ClearStartGuard() {
-            startGuard[level] = false;
+            startGuard.array[level] = false;
         }
         
         /// <summary>
@@ -168,8 +168,8 @@ namespace Friflo.Json.Burst
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {
-            if (firstEntry[level]) {
-                firstEntry[level] = false;
+            if (firstEntry.array[level]) {
+                firstEntry.array[level] = false;
                 return;
             }
             dst.AppendChar(',');
@@ -179,11 +179,11 @@ namespace Friflo.Json.Burst
         /// <summary>Start a JSON object for serialization</summary>
         public void ObjectStart() {
             AssertStart();
-            if (nodeType[level] == NodeType.Array)
+            if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('{');
-            firstEntry[++level] = true;
-            nodeType[level] = NodeType.Object;
+            firstEntry.array[++level] = true;
+            nodeType.array[level] = NodeType.Object;
             ClearStartGuard();
         }
         
@@ -191,7 +191,7 @@ namespace Friflo.Json.Burst
         public void ObjectEnd() {
             AssertMember();
             dst.AppendChar('}');
-            firstEntry[--level] = false;
+            firstEntry.array[--level] = false;
         }
 
         // --- comment to enable source alignment in WinMerge
@@ -354,11 +354,11 @@ namespace Friflo.Json.Burst
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart() {
             AssertStart();
-            if (nodeType[level] == NodeType.Array)
+            if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('[');
-            firstEntry[++level] = true;
-            nodeType[level] = NodeType.Array;
+            firstEntry.array[++level] = true;
+            nodeType.array[level] = NodeType.Array;
             SetStartGuard();
         }
         
@@ -367,7 +367,7 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("ArrayEnd...() must not be called below root level");
             AssertElement();
             dst.AppendChar(']');
-            firstEntry[--level] = false;
+            firstEntry.array[--level] = false;
         }
         
         /// <summary>Write an array element of type "string"</summary>

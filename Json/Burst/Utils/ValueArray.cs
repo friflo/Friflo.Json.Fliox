@@ -13,16 +13,6 @@ namespace Friflo.Json.Burst.Utils
             array = new Unity.Collections.NativeArray<T>(size, Unity.Collections.Allocator.Persistent);
         }
         
-        public T this[int index]
-        {
-            get {
-                return array[index];
-            }
-            set {
-                array[index] = value;
-            }
-        }
-
         public int Length {
             get { return array.Length; }
         }
@@ -44,16 +34,6 @@ namespace Friflo.Json.Burst.Utils
             DebugUtils.TrackAllocation(array);
         }
         
-        public T this[int index]
-        {
-            get {
-                return array[index];
-            }
-            set {
-                array[index] = value;
-            }
-        }
-
         public int Length {
             get { return array.Length; }
         }

@@ -64,13 +64,13 @@ namespace Friflo.Json.Burst.Utils
             int len = 0;
             while (i > 0)
             {
-                digit[len++] = i % 10;
+                digit.array[len++] = i % 10;
                 i /= 10;                
             }
             owned.EnsureCapacity (len);
             int last = owned.end + len - 1;
             for (int n = 0; n < len; n++)
-                owned.buffer.array[last - n] = (byte)('0' + digit [n]);
+                owned.buffer.array[last - n] = (byte)('0' + digit.array [n]);
             owned.end += len;
             owned.hc = BytesConst.notHashed;
         }
@@ -90,13 +90,13 @@ namespace Friflo.Json.Burst.Utils
             int len = 0;
             while (i > 0)
             {
-                digit[len++] = (int)(i % 10);
+                digit.array[len++] = (int)(i % 10);
                 i /= 10;                
             }
             owned.EnsureCapacity (len);
             int last = owned.end + len - 1;
             for (int n = 0; n < len; n++)
-                owned.buffer.array[last - n] = (byte)('0' + digit [n]);
+                owned.buffer.array[last - n] = (byte)('0' + digit.array [n]);
             owned.end += len;
             owned.hc = BytesConst.notHashed;
         }
@@ -244,13 +244,13 @@ namespace Friflo.Json.Burst.Utils
                     first = digitNum;
                     do
                     {
-                        digit[digitNum++] = (int)(i % 10);
+                        digit.array[digitNum++] = (int)(i % 10);
                         i /= 10;
                     }
                     while (i > 0);
                     break;
                 }
-                digit[digitNum++] = d;
+                digit.array[digitNum++] = d;
                 i /= 10;                
             }
             int end = owned.end;
@@ -264,13 +264,13 @@ namespace Friflo.Json.Burst.Utils
                 owned.EnsureCapacity (digitNum + 8); // digitNum + worst cast: -1.0E-300  => 8
                 if (negative)
                     bytes[pos++] = (byte) '-';
-                bytes[pos++] = (byte)('0' + digit [digitNum- 1]);
+                bytes[pos++] = (byte)('0' + digit.array [digitNum- 1]);
                 bytes[pos++] = (byte) '.';
                 int from = digitNum - 2;
                 if (from >= first)
                 {
                     for (int n = from; n >= first; n--)
-                        bytes[pos++] = (byte)('0' + digit [n]);
+                        bytes[pos++] = (byte)('0' + digit.array [n]);
                 }
                 else
                     bytes[pos++] = (byte) '0';
@@ -290,11 +290,11 @@ namespace Friflo.Json.Burst.Utils
                 while (i > 0)
                 {
                     int d = (int)(i % 10);
-                    digit[digitNum++] = d;
+                    digit.array[digitNum++] = d;
                     i /= 10;                
                 }
                 for (int n = digitNum - 1; n >= 0; n--)
-                    bytes[pos++] = (byte)('0' + digit [n]);     
+                    bytes[pos++] = (byte)('0' + digit.array [n]);     
             }
             else
             // --- render in common presentation. E.g: 123.456
@@ -309,19 +309,19 @@ namespace Friflo.Json.Burst.Utils
                     for (int n = -exp; n > 1; n--)
                         bytes[pos++] = (byte) '0';
                     for (int n = digitNum - 1; n >= first; n--)
-                        bytes[pos++] = (byte)('0' + digit [n]);
+                        bytes[pos++] = (byte)('0' + digit.array [n]);
                 }
                 else
                 {
                     int to = digitNum - exp - 1;
                     int n = digitNum - 1;
                     for ( ; n >= to; n--)
-                        bytes[pos++] = (byte)('0' + digit [n]);
+                        bytes[pos++] = (byte)('0' + digit.array [n]);
                     bytes[pos++] = (byte) '.';
                     if (to > first)
                     {
                         for ( ; n >= first; n--)
-                            bytes[pos++] = (byte)('0' + digit [n]);
+                            bytes[pos++] = (byte)('0' + digit.array [n]);
                     }
                     else
                         bytes[pos++] = (byte) '0';

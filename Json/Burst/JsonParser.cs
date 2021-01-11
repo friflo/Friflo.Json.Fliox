@@ -142,8 +142,8 @@ namespace Friflo.Json.Burst
         // ---------------------- error message creation - begin
         void Error (Str32 module, ErrorType errorType, ref Str128 msg, ref Bytes value) {
             lastEvent = JsonEvent.Error;
-            preErrorState = state[stateLevel]; 
-            state[stateLevel] = State.JsonError;
+            preErrorState = state.array[stateLevel]; 
+            state.array[stateLevel] = State.JsonError;
             if (error.ErrSet)
                 throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
             
@@ -252,11 +252,11 @@ namespace Friflo.Json.Burst
             int initialEnd = str.end;
             int lastPos = 0;
             int level = stateLevel;
-            bool errored = state[level] == State.JsonError;
+            bool errored = state.array[level] == State.JsonError;
             if (errored)
                 level++;
             for (int n = 1; n <= level; n++) {
-                State curState = state[n];
+                State curState = state.array[n];
                 int index = n;
                 if (errored && n == level) {
                     curState = preErrorState;
@@ -266,17 +266,17 @@ namespace Friflo.Json.Burst
                     case State.ExpectMember:
                         if (index > 1)
                             str.AppendChar('.');
-                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
+                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos.array[index]);
                         break;
                     case State.ExpectMemberFirst:
-                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos[index]);
+                        str.AppendArray(ref path.buffer, lastPos, lastPos= pathPos.array[index]);
                         break;
                     case State.ExpectElement:
                     case State.ExpectElementFirst:
-                        if (arrIndex[index] != -1)
+                        if (arrIndex.array[index] != -1)
                         {
                             str.AppendChar('[');
-                            format.AppendInt(ref str, arrIndex[index]);
+                            format.AppendInt(ref str, arrIndex.array[index]);
                             str.AppendChar(']');
                         }
                         else
@@ -345,7 +345,7 @@ namespace Friflo.Json.Burst
         public void InitParser(ByteList bytes, int start, int len) {
             InitContainers();
             stateLevel = 0;
-            state[0] = State.ExpectRoot;
+            state.array[0] = State.ExpectRoot;
 
             this.pos = start;
             this.startPos = start;
@@ -370,7 +370,7 @@ namespace Friflo.Json.Burst
         public JsonEvent NextEvent()
         {
             int c = ReadWhiteSpace();
-            State curState = state[stateLevel];
+            State curState = state.array[stateLevel];
             switch (curState)
             {
             case State.ExpectMember:
@@ -397,13 +397,13 @@ namespace Friflo.Json.Burst
                         return SetErrorChar("unexpected character > expect key. Found: ", (char)c);
                 }
                 // case: c == '"'
-                state[stateLevel] = State.ExpectMember;
+                state.array[stateLevel] = State.ExpectMember;
                 if (!ReadString(ref key))
                     return JsonEvent.Error;
                 // update current path
-                path.SetEnd(pathPos[stateLevel-1]);  // "Clear"
+                path.SetEnd(pathPos.array[stateLevel-1]);  // "Clear"
                 path.AppendBytes(ref key);
-                pathPos[stateLevel] = path.End;
+                pathPos.array[stateLevel] = path.End;
                 //
                 c = ReadWhiteSpace();
                 if (c != ':')
@@ -413,7 +413,7 @@ namespace Friflo.Json.Burst
             
             case State.ExpectElement:
             case State.ExpectElementFirst:
-                arrIndex[stateLevel]++;
+                arrIndex.array[stateLevel]++;
                 if (c == ']')
                 {
                     stateLevel--;
@@ -426,21 +426,21 @@ namespace Friflo.Json.Burst
                     c = ReadWhiteSpace();
                 }
                 else
-                    state[stateLevel] = State.ExpectElement;
+                    state.array[stateLevel] = State.ExpectElement;
                 break;
             
             case State.ExpectRoot:
-                state[0] = State.ExpectEof;
+                state.array[0] = State.ExpectEof;
                 switch (c)
                 {
                     case '{':
-                        pathPos[stateLevel+1] = pathPos[stateLevel];
-                        state[++stateLevel] = State.ExpectMemberFirst;
+                        pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
+                        state.array[++stateLevel] = State.ExpectMemberFirst;
                         return lastEvent = JsonEvent.ObjectStart;
                     case '[':
-                        pathPos[stateLevel+1] = pathPos[stateLevel];
-                        state[++stateLevel] = State.ExpectElementFirst;
-                        arrIndex[stateLevel] = -1;
+                        pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
+                        state.array[++stateLevel] = State.ExpectElementFirst;
+                        arrIndex.array[stateLevel] = -1;
                         return lastEvent = JsonEvent.ArrayStart;
                     case -1:
                         return SetError("unexpected EOF on root");
@@ -450,7 +450,7 @@ namespace Friflo.Json.Burst
             
             case State.ExpectEof:
                 if (c == -1) {
-                    state[0] = State.Finished;
+                    state.array[0] = State.Finished;
                     return lastEvent = JsonEvent.EOF;
                 }
                 return SetError("Expected EOF");
@@ -470,13 +470,13 @@ namespace Friflo.Json.Burst
                         return lastEvent = JsonEvent.ValueString;
                     return JsonEvent.Error;
                 case '{':
-                    pathPos[stateLevel+1] = pathPos[stateLevel];
-                    state[++stateLevel] = State.ExpectMemberFirst;
+                    pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
+                    state.array[++stateLevel] = State.ExpectMemberFirst;
                     return lastEvent = JsonEvent.ObjectStart;
                 case '[':
-                    pathPos[stateLevel+1] = pathPos[stateLevel];
-                    state[++stateLevel] = State.ExpectElementFirst;
-                    arrIndex[stateLevel] = -1;
+                    pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
+                    state.array[++stateLevel] = State.ExpectElementFirst;
+                    arrIndex.array[stateLevel] = -1;
                     return lastEvent = JsonEvent.ArrayStart;
                 case '0':   case '1':   case '2':   case '3':   case '4':
                 case '5':   case '6':   case '7':   case '8':   case '9':
@@ -558,7 +558,7 @@ namespace Friflo.Json.Burst
                 SetErrorChar("unexpected character while reading number. Found : ", (char)c);
                 return false;
             }
-            if (state[stateLevel] != State.ExpectEof) 
+            if (state.array[stateLevel] != State.ExpectEof) 
                 return SetErrorFalse("unexpected EOF while reading number");
             value.Clear();
             value.AppendArray(ref buf, start, pos);
@@ -717,7 +717,7 @@ namespace Friflo.Json.Burst
         /// <returns>Returns true if skipping was successful</returns>
         public bool SkipTree()
         {
-            State curState = state[stateLevel];
+            State curState = state.array[stateLevel];
             switch (curState)
             {
             case State.ExpectMember:
