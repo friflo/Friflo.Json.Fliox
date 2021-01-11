@@ -122,8 +122,6 @@ namespace Friflo.Json.Managed
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = PropCollection.Info.CreateCollection(propType.nativeType);
                 obj = collection.CreateInstance();
-                if (collection.elementType == typeof(String))
-                    return ReadMapString(obj);
                 return ReadMapType(obj, collection);
             }
             JsonEvent ev = parser.NextEvent();
@@ -204,11 +202,7 @@ namespace Friflo.Json.Managed
                             if (collectionInterface == typeof( IDictionary<,> )) {
                                 if (sub == null)
                                     sub = field.CreateCollection();
-                                if (collection.elementType == typeof(String)) {
-                                    sub = ReadMapString(sub);
-                                } else {
-                                    sub = ReadMapType(sub, collection);
-                                }
+                                sub = ReadMapType(sub, collection);
                             } else
                                 return ErrorNull("unsupported collection Type: " + collectionInterface. Name);
                         }
@@ -293,33 +287,6 @@ namespace Friflo.Json.Managed
                     map[key] = BoolFromValue(collection.id, out bool successBool);
                     if (!successBool)
                         return null;
-                    break;
-                case JsonEvent. ObjectEnd:
-                    return obj;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ErrorNull("unexpected state: " + ev. ToString());
-                }
-            }
-        }
-
-
-        private Object ReadMapString (Object obj) {
-            
-            IDictionary <String,String> map = (IDictionary <String,String>) obj;        
-            while (true)
-            {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNull:
-                    String key = parser.key.ToString();
-                    map [ key ]= null ;
-                    break;
-                case JsonEvent. ValueString:
-                    key = parser.key.ToString();
-                    map [ key ]= parser.value.ToString() ;
                     break;
                 case JsonEvent. ObjectEnd:
                     return obj;
