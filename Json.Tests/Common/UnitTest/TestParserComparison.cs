@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
     
     /// <summary>
     /// Compare the usage of the <see cref="JsonParser"/> in two similar ways<br/>
-    /// 1. using <see cref="JsonParser.NoSkipNextObjectMember"/> and <see cref="JsonParser.NoSkipNextArrayElement"/>
+    /// 1. using <see cref="NextObjectMember"/> and <see cref="NextArrayElement"/>
     /// 2. using <see cref="JsonParser.NextObjectMember"/> and <see cref="JsonParser.NextArrayElement"/> 
     /// </summary>
     public class TestParserComparison : LeakTestsFixture

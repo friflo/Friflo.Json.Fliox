@@ -203,6 +203,10 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------------------------------------------------------------------------
+        public bool NextObjectMember(ref ObjectIterator iterator) {
+            return NextObjectMember(ref iterator, Skip.Auto);
+        }
+
         public bool NextObjectMember (ref ObjectIterator iterator, Skip skip) {
             if (lastEvent == JsonEvent.Error)
                 return false;
@@ -247,6 +251,10 @@ namespace Friflo.Json.Burst
                     break;
             }
             return false;
+        }
+        
+        public bool NextArrayElement(ref ArrayIterator iterator) {
+            return NextArrayElement(ref iterator, Skip.Auto);
         }
         
         public bool NextArrayElement (ref ArrayIterator iterator, Skip skip) {
