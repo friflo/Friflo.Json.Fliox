@@ -29,8 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-            s.MemberStr("say", "Hello");
-            s.MemberStr("to",  "World 🌎");
+                s.MemberStr("say", "Hello");
+                s.MemberStr("to",  "World 🌎");
             s.ObjectEnd();
             Console.WriteLine($"Output: {s.dst}");
             // Output: {"say":"Hello","to":"World 🌎"}
