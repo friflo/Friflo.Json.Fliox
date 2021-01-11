@@ -278,6 +278,12 @@ namespace Friflo.Json.Managed
                         return null;
                     map [ key ] = value ;
                     break;
+                case JsonEvent.ValueString:
+                    key = parser.key.ToString();
+                    if (collection.id != SimpleType.Id.String)
+                        return ErrorNull($"Expect Dictionary value type string. Found {collection.elementType}");
+                    map[key] = parser.value.ToString();
+                    break;
                 case JsonEvent.ValueNumber:
                     key = parser.key.ToString();
                     if (parser.isFloat) {
@@ -286,14 +292,14 @@ namespace Friflo.Json.Managed
                             return null;
                         map[key] = SimpleType.ObjectFromDouble(collection.id, dbl, out success);
                         if (!success)
-                            return null;
+                            return ErrorNull($"Conversion from number {parser.value.ToString()} to Dictionary value type {collection.id} failed");
                     } else {
                         long lng = parser.ValueAsLong(out bool success);
                         if (!success)
                             return null;
                         map[key] = SimpleType.ObjectFromLong(collection.id, lng, out success);
                         if (!success)
-                            return null;       
+                            return ErrorNull($"Conversion from number {parser.value.ToString()} to Dictionary value type {collection.id} failed");
                     }
                     break;
                 case JsonEvent. ObjectEnd:
