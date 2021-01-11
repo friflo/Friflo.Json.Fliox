@@ -45,7 +45,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberObj(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberArr(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberNum(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberStr(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberBln(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -135,7 +135,7 @@ namespace Friflo.Json.Burst
         }
         public bool UseMemberNul(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(ref name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -328,9 +328,9 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal readonly   int level;
-        internal            bool hasIterated;
-        internal            bool usedMember;
+        internal readonly   int     level;
+        internal            bool    hasIterated;
+        internal            bool    usedMember;
     }
     
     public ref struct ArrayIterator {
@@ -340,8 +340,8 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal readonly   int level;
-        internal            bool hasIterated;
-        internal            bool usedMember;
+        internal readonly   int     level;
+        internal            bool    hasIterated;
+        internal            bool    usedMember;
     }
 }

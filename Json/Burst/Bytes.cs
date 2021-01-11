@@ -291,6 +291,7 @@ namespace Friflo.Json.Burst
         }
 
 #if JSON_BURST
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
         public bool IsEqual32(Str32 str2) {
             return IsEqual32(ref str2);
         }
@@ -603,6 +604,7 @@ namespace Friflo.Json.Burst
         }
 
         // Note: Prefer using AppendStr32 (ref Str32 str)
+        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
         public void AppendStr32(Str32 str) {
             AppendStr32(ref str);
         }
