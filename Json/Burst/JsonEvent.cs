@@ -77,6 +77,7 @@ namespace Friflo.Json.Burst
 
     public struct JsonEventUtils
     {
+#pragma warning disable 618 // Performance degradation by string copy
         public static void AppendEvent(JsonEvent ev, ref Bytes bytes) {
             switch (ev) {
                 case JsonEvent.ValueString: bytes.AppendStr32("ValueString");   break; 
@@ -90,6 +91,7 @@ namespace Friflo.Json.Burst
                 case JsonEvent.EOF:         bytes.AppendStr32("EOF");           break; 
                 case JsonEvent.Error:       bytes.AppendStr32("Error");         break; 
             }
+#pragma warning restore 618
         }
     }
 }

@@ -5,6 +5,8 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#pragma warning disable 618 // Performance degradation by string copy
+
 namespace Friflo.Json.Tests.Common.UnitTest
 {
     public class TestMisc

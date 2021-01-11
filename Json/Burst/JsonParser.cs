@@ -284,8 +284,10 @@ namespace Friflo.Json.Burst
                         break;
                 }
             }
+#pragma warning disable 618 // Performance degradation by string copy
             if (initialEnd == str.end)
                 str.AppendStr32("(root)");
+#pragma warning restore 618
         }
 
         private void InitContainers() {
