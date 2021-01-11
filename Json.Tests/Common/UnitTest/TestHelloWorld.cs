@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void HelloWorldParser() {
             string say = "", to = "";
             var p = new JsonParser();
-            p.InitParser(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
+            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
@@ -29,8 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-            s.MemberStr("say", "Hello 👋");
-            s.MemberStr("to",  "World 🌍");
+            s.MemberStr("say", "Hello");
+            s.MemberStr("to",  "World 🌎");
             s.ObjectEnd();
             Console.WriteLine(s.dst.ToString()); // your console may not support Unicode
         }
@@ -43,14 +43,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
         [Test]
         public void HelloWorldReader() {
             var r = new JsonReader(new PropType.Store());
-            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
+            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
             Console.WriteLine($"{msg.say}, {msg.to}"); // your console may not support Unicode
         }
         
         [Test]
         public void HelloWorldWriter() {
             var r = new JsonWriter(new PropType.Store());
-            r.Write(new Message {say = "Hello 👋", to = "World 🌍"});
+            r.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine(r.Output.ToString()); // your console may not support Unicode
         }
 

@@ -109,7 +109,7 @@ A minimal *Hello world* example showing how to parse a given JSON string via the
         public void HelloWorldParser() {
             string say = "", to = "";
             var p = new JsonParser();
-            p.InitParser(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
+            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
@@ -127,14 +127,14 @@ A minimal *Hello world* using the serializer to create JSON via the `JsonSeriali
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-            s.MemberStr("say", "Hello 👋");
-            s.MemberStr("to",  "World 🌍");
+            s.MemberStr("say", "Hello");
+            s.MemberStr("to",  "World 🌎");
             s.ObjectEnd();
             Console.WriteLine(s.dst.ToString()); // your console may not support Unicode
         }
 ```
 
-## ObjectMapper - Reader & Writer
+## Object Mapper - Reader & Writer
 
 An ObjectMapper maps a class to a JSON string and vise vera. Given the following class:
 
@@ -150,7 +150,7 @@ Use the `JsonReader` to deserialize / unmarshal a JSON string to a class instanc
 ```csharp
         public void HelloWorldReader() {
             var r = new JsonReader(new PropType.Store());
-            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
+            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
             Console.WriteLine($"{msg.say}, {msg.to}"); // your console may not support Unicode
         }
 ```
@@ -160,7 +160,7 @@ Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
 ```csharp
         public void HelloWorldWriter() {
             var r = new JsonWriter(new PropType.Store());
-            r.Write(new Message {say = "Hello 👋", to = "World 🌍"});
+            r.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine(r.Output.ToString()); // your console may not support Unicode
         }
 ```
