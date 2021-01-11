@@ -39,25 +39,25 @@ namespace Friflo.Json.Burst.Utils
                 digit.Dispose();
         }
 
-        public void AppendBool (ref Bytes owned, bool val)
+        public void AppendBool (ref Bytes dst, bool val)
         {
             if (val)
-                owned.AppendStr32(ref @true);
+                dst.AppendStr32(ref @true);
             else
-                owned.AppendStr32(ref @false);
-            owned.hc = BytesConst.notHashed;
+                dst.AppendStr32(ref @false);
+            dst.hc = BytesConst.notHashed;
         }
 
-        public void AppendInt (ref Bytes owned, int val)
+        public void AppendInt (ref Bytes dst, int val)
         {
             if (val == 0) {
-                owned.AppendChar('0');
+                dst.AppendChar('0');
                 return;
             }
 
             if (val < 0)
             {
-                owned.AppendChar('-');
+                dst.AppendChar('-');
                 val = -val;
             }
             int i = val;
@@ -67,23 +67,23 @@ namespace Friflo.Json.Burst.Utils
                 digit.array[len++] = i % 10;
                 i /= 10;                
             }
-            owned.EnsureCapacity (len);
-            int last = owned.end + len - 1;
+            dst.EnsureCapacity (len);
+            int last = dst.end + len - 1;
             for (int n = 0; n < len; n++)
-                owned.buffer.array[last - n] = (byte)('0' + digit.array [n]);
-            owned.end += len;
-            owned.hc = BytesConst.notHashed;
+                dst.buffer.array[last - n] = (byte)('0' + digit.array [n]);
+            dst.end += len;
+            dst.hc = BytesConst.notHashed;
         }
 
-        public void AppendLong (ref Bytes owned, long val)
+        public void AppendLong (ref Bytes dst, long val)
         {
             if (val == 0) {
-                owned.AppendChar('0');
+                dst.AppendChar('0');
                 return;
             }
 
             if (val < 0) {
-                owned.AppendChar('-');
+                dst.AppendChar('-');
                 val = -val;
             }
             long i = val;
@@ -93,12 +93,12 @@ namespace Friflo.Json.Burst.Utils
                 digit.array[len++] = (int)(i % 10);
                 i /= 10;                
             }
-            owned.EnsureCapacity (len);
-            int last = owned.end + len - 1;
+            dst.EnsureCapacity (len);
+            int last = dst.end + len - 1;
             for (int n = 0; n < len; n++)
-                owned.buffer.array[last - n] = (byte)('0' + digit.array [n]);
-            owned.end += len;
-            owned.hc = BytesConst.notHashed;
+                dst.buffer.array[last - n] = (byte)('0' + digit.array [n]);
+            dst.end += len;
+            dst.hc = BytesConst.notHashed;
         }
 
         private static int GetExponent(double d)
@@ -134,27 +134,27 @@ namespace Friflo.Json.Burst.Utils
             return PowTable[powNeutral + exp];
         }
     
-        public void AppendFlt (ref Bytes owned, float val)
+        public void AppendFlt (ref Bytes dst, float val)
         {
             if (val == 0.0f) {
-                owned.AppendStr32(ref zero);
+                dst.AppendStr32(ref zero);
                 return;
             }
 
             // if (val == 1.0f / 0.0f) {
             if (float.IsPositiveInfinity(val)) {
-                owned.AppendStr32(ref infinity);
+                dst.AppendStr32(ref infinity);
                 return;
             }
 
             // if (val == -1.0f / 0.0f) {
             if (float.IsNegativeInfinity(val)) {
-                owned.AppendStr32(ref negInfinity);
+                dst.AppendStr32(ref negInfinity);
                 return;
             }
 
             if (Single.IsNaN(val)) {
-                owned.AppendStr32(ref nan);
+                dst.AppendStr32(ref nan);
                 return;
             }
 
@@ -174,31 +174,31 @@ namespace Friflo.Json.Burst.Utils
     //      System.out.println("sigShifted: " + sigShifted + "    shilft: " + shift);
     //      System.out.println("shiftExp10: " + shiftExp10);
         
-            WriteDecimal (ref owned, sigShifted, shiftExp10, negative);
+            WriteDecimal (ref dst, sigShifted, shiftExp10, negative);
     //      System.out.println("string:     " + this);
         }
             
-        public void AppendDbl (ref Bytes owned, double val)
+        public void AppendDbl (ref Bytes dst, double val)
         {
             if (val == 0.0) {
-                owned.AppendStr32(ref zero);
+                dst.AppendStr32(ref zero);
                 return;
             }
 
             // if (val == 1.0 / 0.0) {
             if (double.IsPositiveInfinity(val)) {
-                owned.AppendStr32(ref infinity);
+                dst.AppendStr32(ref infinity);
                 return;
             }
 
             // if (val == -1.0 / 0.0) {
             if (double.IsNegativeInfinity(val)) {
-                owned.AppendStr32(ref negInfinity);
+                dst.AppendStr32(ref negInfinity);
                 return;
             }
 
             if (Double.IsNaN(val)) {
-                owned.AppendStr32(ref nan);
+                dst.AppendStr32(ref nan);
                 return;
             }
 
@@ -210,7 +210,7 @@ namespace Friflo.Json.Burst.Utils
             // if (factor == 0.0 || factor == (1.0 / 0.0)) {
             if (factor == 0.0 || double.IsPositiveInfinity(factor)) {
                 string str = val.ToString(NumberFormatInfo.InvariantInfo); // TODO not Burst compatible 
-                owned.AppendString(str);
+                dst.AppendString(str);
                 return;
             }
 
@@ -226,12 +226,12 @@ namespace Friflo.Json.Burst.Utils
     //      System.out.println("sigShifted: " + sigShifted + "    shilft: " + shift);
     //      System.out.println("shiftExp10: " + shiftExp10);
         
-            WriteDecimal (ref owned, sigShifted, shiftExp10, negative);
+            WriteDecimal (ref dst, sigShifted, shiftExp10, negative);
     //      System.out.println("string:     " + this);
         }
     
         // >= 10.000.000 => 1.0E7   <= 0.0001 => 1.0E-4
-        private void WriteDecimal(ref Bytes owned, long sig, int shiftExp10, bool negative)
+        private void WriteDecimal(ref Bytes dst, long sig, int shiftExp10, bool negative)
         {
             long i = sig;
             int digitNum = 0;
@@ -253,15 +253,15 @@ namespace Friflo.Json.Burst.Utils
                 digit.array[digitNum++] = d;
                 i /= 10;                
             }
-            int end = owned.end;
+            int end = dst.end;
             int pos = end;      
             int exp = shiftExp10 + digitNum - 1;
 
-            ref var bytes = ref owned.buffer.array;
+            ref var bytes = ref dst.buffer.array;
             // --- render in "computerized scientific notation". E.g. -1.23E-300
             if (exp >= +7 || -4 >= exp)
             {
-                owned.EnsureCapacity (digitNum + 8); // digitNum + worst cast: -1.0E-300  => 8
+                dst.EnsureCapacity (digitNum + 8); // digitNum + worst cast: -1.0E-300  => 8
                 if (negative)
                     bytes[pos++] = (byte) '-';
                 bytes[pos++] = (byte)('0' + digit.array [digitNum- 1]);
@@ -299,7 +299,7 @@ namespace Friflo.Json.Burst.Utils
             else
             // --- render in common presentation. E.g: 123.456
             {
-                owned.EnsureCapacity (digitNum + 6); // digitNum + worst cast: -0.0001
+                dst.EnsureCapacity (digitNum + 6); // digitNum + worst cast: -0.0001
                 if (negative)
                     bytes[pos++] = (byte) '-';
                 if (exp < 0)
@@ -328,8 +328,8 @@ namespace Friflo.Json.Burst.Utils
                 }
             }
         
-            owned.end = pos;
-            owned.hc = BytesConst.notHashed;
+            dst.end = pos;
+            dst.hc = BytesConst.notHashed;
         }
     }
 }
