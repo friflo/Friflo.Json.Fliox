@@ -96,7 +96,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberString(ref Bytes key, ref Bytes value) {
+        public void MemberStr(ref Bytes key, ref Bytes value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -111,7 +111,7 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberString(ref Bytes key, Unity.Collections.FixedString32 value) {
+        public void MemberStr(ref Bytes key, Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -122,7 +122,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
 #else
-        public void MemberString(ref Bytes key, string value) {
+        public void MemberStr(ref Bytes key, string value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -134,7 +134,7 @@ namespace Friflo.Json.Burst
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
-        public void MemberDouble(ref Bytes key, double value) {
+        public void MemberDbl(ref Bytes key, double value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -144,7 +144,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberLong(ref Bytes key, long value) {
+        public void MemberDbl(ref Bytes key, long value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -154,7 +154,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
-        public void MemberBool(ref Bytes key, bool value) {
+        public void MemberBln(ref Bytes key, bool value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -164,7 +164,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
-        public void MemberNull(ref Bytes key) {
+        public void MemberNul(ref Bytes key) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');

@@ -41,12 +41,12 @@ namespace Friflo.Json.Tests.Common.Examples
             s.InitSerializer();
             try {
                 s.ObjectStart();
-                    s.MemberString  ("firstName",   buddy.firstName);
-                    s.MemberLong    ("age",         buddy.age);
+                    s.MemberStr ("firstName",   buddy.firstName);
+                    s.MemberDbl ("age",         buddy.age);
                     s.MemberArrayStart("hobbies");
                     for (int n = 0; n < buddy.hobbies.Count; n++) {
                         s.ObjectStart();
-                        s.MemberString  ("name", buddy.hobbies[n].name);
+                        s.MemberStr  ("name", buddy.hobbies[n].name);
                         s.ObjectEnd();
                     }
                     s.ArrayEnd();

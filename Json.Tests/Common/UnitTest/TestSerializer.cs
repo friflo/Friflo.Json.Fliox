@@ -39,21 +39,21 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     s.ArrayEnd();
                     s.ObjectStart();
                     s.ObjectEnd();
-                    s.ElementString("hello");
-                    s.ElementDouble(10.5);
-                    s.ElementLong(42);
-                    s.ElementBool(true);
-                    s.ElementNull();
+                    s.ElementStr("hello");
+                    s.ElementDbl(10.5);
+                    s.ElementLng(42);
+                    s.ElementBln(true);
+                    s.ElementNul();
                 s.ArrayEnd();
                 AreEqual("[[],{},\"hello\",10.5,42,true,null]", s.dst.ToString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
-                    s.MemberString("string", "World");
-                    s.MemberDouble("double", 10.5);
-                    s.MemberLong("long", 42);
-                    s.MemberBool("bool", true);
-                    s.MemberNull("null");
+                    s.MemberStr("string", "World");
+                    s.MemberDbl("double", 10.5);
+                    s.MemberDbl("long", 42);
+                    s.MemberBln("bool", true);
+                    s.MemberNul("null");
                 s.ObjectEnd();
                 AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", s.dst.ToString());
             } {
@@ -76,16 +76,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 // - array
                 s.InitSerializer();
                 s.ArrayStart();
-                s.ElementString(ref textValue);
+                s.ElementStr(ref textValue);
                 s.ArrayEnd();
                 AreEqual("[\"textValue\"]", s.dst.ToString());
                 
                 // - object
                 s.InitSerializer();
                 s.ObjectStart();
-                s.MemberString(ref str, "hello");
-                s.MemberDouble(ref dbl, 10.5);
-                s.MemberLong(ref lng, 42);
+                s.MemberStr(ref str, "hello");
+                s.MemberDbl(ref dbl, 10.5);
+                s.MemberDbl(ref lng, 42);
                 s.ObjectEnd();
                 AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.dst.ToString());
             }
@@ -100,23 +100,23 @@ namespace Friflo.Json.Tests.Common.UnitTest
             // --- Primitives on root level ---
             {
                 s.InitSerializer();
-                s.ElementString("hello");
+                s.ElementStr("hello");
                 AreEqual("\"hello\"", s.dst.ToString());
             } {
                 s.InitSerializer();
-                s.ElementLong(42);
+                s.ElementLng(42);
                 AreEqual("42", s.dst.ToString());
             } {
                 s.InitSerializer();
-                s.ElementDouble(10.5);
+                s.ElementDbl(10.5);
                 AreEqual("10.5", s.dst.ToString());
             } {
                 s.InitSerializer();
-                s.ElementBool(true);
+                s.ElementBln(true);
                 AreEqual("true", s.dst.ToString());
             } {
                 s.InitSerializer();
-                s.ElementNull();
+                s.ElementNul();
                 AreEqual("null", s.dst.ToString());
             }
 #if DEBUG
@@ -141,21 +141,21 @@ namespace Friflo.Json.Tests.Common.UnitTest
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
-                    ser.MemberBool("Test", true); // member not in root
+                    ser.MemberBln("Test", true); // member not in root
                 });
                 AreEqual("Member...() methods and ObjectEnd() must not be called on root level", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ArrayStart();
-                    ser.MemberBool("Test", true); // member not in array
+                    ser.MemberBln("Test", true); // member not in array
                 });
                 AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ObjectStart();
-                    ser.ElementBool(true); // element not in object
+                    ser.ElementBln(true); // element not in object
                 });
                 AreEqual("Element...() methods and ArrayEnd() must be called only within an array or on root level", e.Message);
             } {
