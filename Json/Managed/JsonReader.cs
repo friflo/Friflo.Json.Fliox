@@ -545,7 +545,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ValueNumber:
                     if (index >= len)
                         array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = (short)parser.ValueAsInt(out bool success);
+                    array[index++] = parser.ValueAsShort(out bool success);
                     if (!success)
                         return ValueParseError();
                     break;
@@ -573,7 +573,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ValueNumber:
                     if (index >= len)
                         array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = (byte) parser.ValueAsInt(out bool success);
+                    array[index++] = parser.ValueAsByte(out bool success);
                     if (!success)
                         return ValueParseError();
                     break;
@@ -655,7 +655,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ValueNumber:
                     if (index >= len)
                         array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = (float) parser.ValueAsDouble(out bool success);
+                    array[index++] = parser.ValueAsFloat(out bool success);
                     if (!success)
                         return ValueParseError();
                     break;
