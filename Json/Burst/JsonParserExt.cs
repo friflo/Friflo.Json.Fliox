@@ -316,7 +316,7 @@ namespace Friflo.Json.Burst
         public ArrayIterator GetArrayIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ArrayStart)
-                throw new InvalidOperationException("Expect ArrayStart in GetObjectIterator()");
+                throw new InvalidOperationException("Expect ArrayStart in GetArrayIterator()");
             return new ArrayIterator(stateLevel);
         }
     }

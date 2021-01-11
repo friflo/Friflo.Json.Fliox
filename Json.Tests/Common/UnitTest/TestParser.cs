@@ -421,7 +421,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         var arr = parser.GetArrayIterator();
                         parser.NextArrayElement(ref arr, Skip.Auto);
                     });
-                    AreEqual("Expect ArrayStart in GetObjectIterator()", e.Message);
+                    AreEqual("Expect ArrayStart in GetArrayIterator()", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     var e = Throws<InvalidOperationException>(() => {
