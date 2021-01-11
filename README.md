@@ -103,7 +103,7 @@ A minimal *Hello world* example showing how to parse a given JSON string.
         public void HelloWorldParser() {
             string say = "", to = "";
             var p = new JsonParser();
-            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌍!""}"));
+            p.InitParser(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
@@ -121,7 +121,7 @@ A minimal *Hello world* using the serializer to create JSON.
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-            s.MemberStr("say", "Hello");
+            s.MemberStr("say", "Hello 👋");
             s.MemberStr("to",  "World 🌍!");
             s.ObjectEnd();
             Console.WriteLine(s.dst.ToString());

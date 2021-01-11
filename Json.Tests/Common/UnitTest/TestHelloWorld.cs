@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void HelloWorldParser() {
             string say = "", to = "";
             var p = new JsonParser();
-            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌍!""}"));
+            p.InitParser(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-            s.MemberStr("say", "Hello");
+            s.MemberStr("say", "Hello 👋");
             s.MemberStr("to",  "World 🌍!");
             s.ObjectEnd();
             Console.WriteLine(s.dst.ToString());
