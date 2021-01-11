@@ -249,7 +249,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(new [] {1,2,3},      enc.Read<int[]>(array));
                 
                 var expectedMap = new Dictionary<string, int> {{"key", 42}};
-                // AreEqual(expectedMap, enc.Read<Dictionary<string,int>>(map));
+                AreEqual(expectedMap, enc.Read<Dictionary<string,int>>(map));
             }
         }
     }

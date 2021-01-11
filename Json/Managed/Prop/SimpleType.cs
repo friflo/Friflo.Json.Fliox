@@ -59,6 +59,86 @@ namespace Friflo.Json.Managed.Prop
                 throw new FrifloException("unsupported simple type: " + type. FullName + " of method " + method. Name);
             return id .Value;
         }
+        
+        public static object ObjectFromDouble(Id? id, double value, out bool success) {
+            if (id == null) {
+                success = false;
+                return null;
+            }
+            switch (id)
+            {
+                case Id. String:
+                    success = false;
+                    return null;
+                case Id. Long:
+                    success = true;
+                    return (long) value;
+                case Id. Integer:
+                    success = true;
+                    return (int) value;
+                case Id. Short:
+                    success = true;
+                    return (short) value;
+                case Id. Byte:
+                    success = true;
+                    return (byte) value;
+                case Id. Bool:
+                    success = false;
+                    return null;
+                case Id. Double:
+                    success = true;
+                    return value;
+                case Id. Float:
+                    success = true;
+                    return (float) value;
+                case Id. Object:
+                    success = false;
+                    return null;
+                default:
+                    success = false;
+                    return null;
+            }
+        }
+        
+        public static object ObjectFromLong(Id? id, long value, out bool success) {
+            if (id == null) {
+                success = false;
+                return null;
+            }
+            switch (id)
+            {
+                case Id. String:
+                    success = false;
+                    return null;
+                case Id. Long:
+                    success = true;
+                    return value;
+                case Id. Integer:
+                    success = true;
+                    return (int) value;
+                case Id. Short:
+                    success = true;
+                    return (short) value;
+                case Id. Byte:
+                    success = true;
+                    return (byte) value;
+                case Id. Bool:
+                    success = false;
+                    return null;
+                case Id. Double:
+                    success = true;
+                    return (double)value;
+                case Id. Float:
+                    success = true;
+                    return (float) value;
+                case Id. Object:
+                    success = false;
+                    return null;
+                default:
+                    success = false;
+                    return null;
+            }
+        }  
 
 /*      public static bool IsAssignable (SimpleType.ID typeID)
         {

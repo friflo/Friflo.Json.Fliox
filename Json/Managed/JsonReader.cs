@@ -121,6 +121,13 @@ namespace Friflo.Json.Managed
         }
 
         private Object ReadObjectType (Object obj, PropType propType) {
+            if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
+                PropCollection collection = PropCollection.Info.CreateCollection(propType.nativeType);
+                obj = collection.CreateInstance();
+                if (collection.elementType == typeof(String))
+                    return ReadMapString(obj);
+                return ReadMapType(obj, collection);
+            }
             JsonEvent ev = parser.NextEvent();
             if (obj == null)
             {
@@ -197,13 +204,11 @@ namespace Friflo.Json.Managed
                         if (collection != null) {
                             Type collectionInterface = collection.typeInterface;
                             if (collectionInterface == typeof( IDictionary<,> )) {
+                                if (sub == null)
+                                    sub = field.CreateCollection();
                                 if (collection.elementType == typeof(String)) {
-                                    if (sub == null)
-                                        sub = field.CreateCollection();
                                     sub = ReadMapString(sub);
                                 } else {
-                                    if (sub == null)
-                                        sub = field.CreateCollection();
                                     sub = ReadMapType(sub, collection);
                                 }
                             } else
@@ -272,6 +277,24 @@ namespace Friflo.Json.Managed
                     if (value == null)
                         return null;
                     map [ key ] = value ;
+                    break;
+                case JsonEvent.ValueNumber:
+                    key = parser.key.ToString();
+                    if (parser.isFloat) {
+                        double dbl = parser.ValueAsDouble(out bool success);
+                        if (!success)
+                            return null;
+                        map[key] = SimpleType.ObjectFromDouble(collection.id, dbl, out success);
+                        if (!success)
+                            return null;
+                    } else {
+                        long lng = parser.ValueAsLong(out bool success);
+                        if (!success)
+                            return null;
+                        map[key] = SimpleType.ObjectFromLong(collection.id, lng, out success);
+                        if (!success)
+                            return null;       
+                    }
                     break;
                 case JsonEvent. ObjectEnd:
                     return obj;
