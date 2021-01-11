@@ -153,6 +153,7 @@ namespace Friflo.Json.Burst
             // Note 2:  Even cascaded string interpolation does not work in Unity Burst. So using appenders make sense too.
 
             // Pseudo format: $"{module} error - {msg}{value} path: {path} at position: {position}";
+#pragma warning disable 618 // Performance degradation
             ref Bytes errMsg = ref error.msg;
             errMsg.Clear();
             errMsg.AppendStr32(ref module);
@@ -168,6 +169,7 @@ namespace Friflo.Json.Burst
             AppendPath(ref errMsg);
             errMsg.AppendStr32("' at position: ");
             format.AppendInt(ref errMsg, position);
+#pragma warning restore 618
             error.Error(pos);
         }
         
