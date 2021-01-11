@@ -101,9 +101,9 @@ anti patterns how to use (and how not to use) the `JsonParser` and `JsonSerializ
 
 The examples can be found at [Json.Tests/Common/Examples/](Json.Tests/Common/Examples)
 
-### Hello World parser & serializer
+## Parser & Serializer
 
-A minimal *Hello world* example showing how to parse a given JSON string.
+A minimal *Hello world* example showing how to parse a given JSON string via the `JsonParser`
 
 ```csharp
         public void HelloWorldParser() {
@@ -120,7 +120,7 @@ A minimal *Hello world* example showing how to parse a given JSON string.
         }
 ```
 
-A minimal *Hello world* using the serializer to create JSON.
+A minimal *Hello world* using the serializer to create JSON via the `JsonSerializer`
 
 ```csharp
         public void HelloWorldSerializer() {
@@ -134,6 +134,36 @@ A minimal *Hello world* using the serializer to create JSON.
         }
 ```
 
+## ObjectMapper - Reader & Writer
+
+An ObjectMapper maps a class to a JSON string and vise vera. Given the following class:
+
+```csharp
+        class Message {
+            public string say;
+            public string to;
+        }
+```
+
+Use the `JsonReader` to deserialize / unmarshal a JSON string to a class instance.
+
+```csharp
+        public void HelloWorldReader() {
+            var r = new JsonReader(new PropType.Store());
+            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World 🌍""}"));
+            Console.WriteLine($"{msg.say}, {msg.to}"); // your console may not support Unicode
+        }
+```
+
+Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
+
+```csharp
+        public void HelloWorldWriter() {
+            var r = new JsonWriter(new PropType.Store());
+            r.Write(new Message {say = "Hello 👋", to = "World 🌍"});
+            Console.WriteLine(r.Output.ToString()); // your console may not support Unicode
+        }
+```
 
 
 ## Performance .NET CLR (Common Language Runtime)

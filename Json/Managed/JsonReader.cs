@@ -21,8 +21,7 @@ namespace Friflo.Json.Managed
         public              JsonError           Error  =>  parser.error;
         public              SkipInfo            SkipInfo  =>  parser.skipInfo;
         
-        public JsonReader(PropType.Store store)
-        {
+        public JsonReader(PropType.Store store) {
             typeCache   = new PropType.Cache(store);
             parser      = new JsonParser();
             parser.error.throwException = false;
@@ -33,8 +32,7 @@ namespace Friflo.Json.Managed
             parser.Dispose();
         }
 
-        public Object ErrorNull (String msg)
-        {
+        public Object ErrorNull (String msg) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             parser.Error("JsonReader", msg);
             return null;
@@ -42,18 +40,19 @@ namespace Friflo.Json.Managed
 
         private static readonly int minLen = 8;
 
-        private static int Inc (int len)
-        {
+        private static int Inc (int len) {
             return len < 5 ? minLen : 2 * len;      
         }
-    
-        public Object Read(Bytes bytes, Type type)
-        {
+        
+        public T Read<T>(Bytes bytes) {
+            return (T)Read(bytes.buffer, bytes.Start, bytes.Len, typeof(T));
+        }
+        
+        public Object Read(Bytes bytes, Type type) {
             return Read(bytes.buffer, bytes.Start, bytes.Len, type);
         }
-    
-        public Object Read(ByteList bytes, int offset, int len, Type type)
-        {           
+
+        public Object Read(ByteList bytes, int offset, int len, Type type) {           
             parser.InitParser(bytes, offset, len);
         
             while (true)
@@ -73,8 +72,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        public Object ReadTo (Bytes bytes, Object obj)
-        {
+        public Object ReadTo (Bytes bytes, Object obj) {
             return ReadTo(bytes.buffer, bytes.Start, bytes.Len, obj);
         }
         
@@ -99,14 +97,12 @@ namespace Friflo.Json.Managed
             }
         }
     
-        protected Object ReadObject (Object obj, Type type)
-        {
+        protected Object ReadObject (Object obj, Type type) {
             PropType propType = typeCache.Get (type );
             return ReadObjectType(obj, propType);
         }
 
-        private Object ReadObjectType (Object obj, PropType propType)
-        {
+        private Object ReadObjectType (Object obj, PropType propType) {
             JsonEvent ev = parser.NextEvent();
             if (obj == null)
             {
@@ -237,8 +233,7 @@ namespace Friflo.Json.Managed
         }
 
         // @SuppressWarnings("unchecked")
-        private Object ReadMapType (Object obj, PropField field)
-        {
+        private Object ReadMapType (Object obj, PropField field) {
             if (obj == null)
                 obj = field.CreateCollection();
         
@@ -273,8 +268,7 @@ namespace Friflo.Json.Managed
         }
 
 
-        private Object ReadMapString (Object obj, PropField field)
-        {
+        private Object ReadMapString (Object obj, PropField field) {
             if (obj == null)
                 obj = field.CreateCollection();
             
@@ -302,8 +296,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadJsonArray (Object col, PropCollection collection)
-        {
+        private Object ReadJsonArray (Object col, PropCollection collection) {
             Type typeInterface = collection.typeInterface;
             if (typeInterface == typeof( Array ))
             {
@@ -328,8 +321,7 @@ namespace Friflo.Json.Managed
         }
     
 
-        private Object ReadArray (Object col, PropCollection collection)
-        {
+        private Object ReadArray (Object col, PropCollection collection) {
             int startLen;
             int len;
             Array array;
@@ -392,8 +384,7 @@ namespace Friflo.Json.Managed
         }
 
         // @SuppressWarnings("unchecked")
-        private Object ReadList (Object col, PropCollection collection)
-        {
+        private Object ReadList (Object col, PropCollection collection) {
             if (col == null)
                 col = collection.CreateInstance();
             if (collection.elementPropType == null)
@@ -454,13 +445,11 @@ namespace Friflo.Json.Managed
             return null; // ErrorNull(parser.parseCx.GetError().ToString());
         }
         
-        private Object ArrayUnexpected (JsonEvent ev)
-        {
+        private Object ArrayUnexpected (JsonEvent ev) {
             return ErrorNull("unexpected state in array: " + ev. ToString());
         }
 
-        private Object ReadArrayString (String[] array)
-        {
+        private Object ReadArrayString (String[] array) {
             if (array == null)
                 array = new String[minLen];
             int len = array. Length;
@@ -486,8 +475,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayLong (long[] array)
-        {
+        private Object ReadArrayLong (long[] array) {
             if (array == null)
                 array = new long[minLen];
             int len = array. Length;
@@ -515,8 +503,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayInt (int[] array)
-        {
+        private Object ReadArrayInt (int[] array) {
             if (array == null)
                 array = new int[minLen];
             int len = array. Length;
@@ -544,8 +531,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayShort (short[] array)
-        {
+        private Object ReadArrayShort (short[] array) {
             if (array == null)
                 array = new short[minLen];
             int len = array. Length;
@@ -573,8 +559,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayByte (byte[] array)
-        {
+        private Object ReadArrayByte (byte[] array) {
             if (array == null)
                 array = new byte[minLen];
             int len = array. Length;
@@ -602,8 +587,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayBool (bool[] array)
-        {
+        private Object ReadArrayBool (bool[] array) {
             if (array == null)
                 array = new bool [minLen];
             int len = array. Length;
@@ -629,8 +613,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayDouble (double[] array)
-        {
+        private Object ReadArrayDouble (double[] array) {
             if (array == null)
                 array = new double[minLen];
             int len = array. Length;
@@ -658,8 +641,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadArrayFloat (float[] array)
-        {
+        private Object ReadArrayFloat (float[] array) {
             if (array == null)
                 array = new float[minLen];
             int len = array. Length;

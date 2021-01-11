@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     writer.Write(obj);
 
                     using (JsonReader enc = new JsonReader(store)) {
-                        JsonComplex res = (JsonComplex) enc.Read(writer.Output, typeof(JsonComplex));
+                        JsonComplex res = enc.Read<JsonComplex>(writer.Output);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());
                         CheckJsonComplex(res);
