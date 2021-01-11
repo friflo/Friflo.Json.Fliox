@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
-using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -13,29 +12,29 @@ namespace Friflo.Json.Tests.Common.UnitTest
 {
     public class TestReaderWriter : LeakTestsFixture
     {
-        private PropType.Store createStore() {
-            PropType.Store      store = new PropType.Store();
-            store.RegisterType("Sub", typeof( Sub ));
-            return store;
+        private TypeStore createStore() {
+            TypeStore      typeStore = new TypeStore();
+            typeStore.RegisterType("Sub", typeof( Sub ));
+            return typeStore;
         }
 
         String JsonSimpleObj = "{'val':5}";
         
         [Test]
         public void EncodeJsonSimple()  {
-            using (PropType.Store store = createStore())
+            using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromString(JsonSimpleObj))
             {
-                JsonSimple obj = (JsonSimple) EncodeJson(bytes, typeof(JsonSimple), store);
+                JsonSimple obj = (JsonSimple) EncodeJson(bytes, typeof(JsonSimple), typeStore);
                 AreEqual(5L, obj.val);
             }
         }
         
         int                 num2 =              2;
         
-        private Object EncodeJson(Bytes json, Type type, PropType.Store store) {
+        private Object EncodeJson(Bytes json, Type type, TypeStore typeStore) {
             Object ret = null;
-            using (var enc = new JsonReader(store)) {
+            using (var enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.Read(json, type);
@@ -48,9 +47,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
             return ret;
         }
         
-        private Object EncodeJsonTo(Bytes json, Object obj, PropType.Store store) {
+        private Object EncodeJsonTo(Bytes json, Object obj, TypeStore typeStore) {
             Object ret = null;
-            using (JsonReader enc = new JsonReader(store)) {
+            using (JsonReader enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.ReadTo(json, obj);
@@ -185,19 +184,19 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
         [Test]
         public void EncodeJsonComplex() {
-            using (PropType.Store store = createStore())
+            using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                JsonComplex obj = (JsonComplex) EncodeJson(bytes, typeof(JsonComplex), store);
+                JsonComplex obj = (JsonComplex) EncodeJson(bytes, typeof(JsonComplex), typeStore);
                 CheckJsonComplex(obj);
             }
         }
         
         [Test]
         public void EncodeJsonToComplex()   {
-            using (PropType.Store store = createStore())
+            using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
                 JsonComplex obj = new JsonComplex();
-                obj = (JsonComplex) EncodeJsonTo(bytes, obj, store);
+                obj = (JsonComplex) EncodeJsonTo(bytes, obj, typeStore);
                 CheckJsonComplex(obj);
             }
         }
@@ -205,13 +204,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
         [Test]
         public void WriteJsonComplex()
         {
-            using (PropType.Store store = createStore()) {
+            using (TypeStore typeStore = createStore()) {
                 JsonComplex obj = new JsonComplex();
                 SetComplex(obj);
-                using (JsonWriter writer = new JsonWriter(store)) {
+                using (JsonWriter writer = new JsonWriter(typeStore)) {
                     writer.Write(obj);
 
-                    using (JsonReader enc = new JsonReader(store)) {
+                    using (JsonReader enc = new JsonReader(typeStore)) {
                         JsonComplex res = enc.Read<JsonComplex>(writer.Output);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());

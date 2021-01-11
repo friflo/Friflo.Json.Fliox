@@ -21,8 +21,8 @@ namespace Friflo.Json.Managed
         public              JsonError           Error  =>  parser.error;
         public              SkipInfo            SkipInfo  =>  parser.skipInfo;
         
-        public JsonReader(PropType.Store store) {
-            typeCache   = new PropType.Cache(store);
+        public JsonReader(TypeStore typeStore) {
+            typeCache   = new PropType.Cache(typeStore);
             parser      = new JsonParser();
             parser.error.throwException = false;
         }

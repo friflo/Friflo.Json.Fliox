@@ -59,59 +59,21 @@ namespace Friflo.Json.Managed.Prop
         {
             return fieldMap.Get(fieldName);
         }
-
-        // public static readonly Store store = new Store();
         
-        public class Store : IDisposable
-        {
-            private   readonly  HashMapLang <Type, PropType>    typeMap=    new HashMapLang <Type, PropType >();
-            internal  readonly  HashMapLang <Bytes, PropType>   nameMap=    new HashMapLang <Bytes, PropType >();
-            
-            public void Dispose() {
-                lock (nameMap) {
-                    foreach (var type in typeMap.Values)
-                        type.Dispose();
-                }
-            }
-            
-            internal PropType GetInternal (Type type, String name)
-            {
-                lock (typeMap)
-                {
-                    PropType propType = typeMap.Get(type);
-                    if (propType == null)
-                    {
-                        propType = new PropType(type, name);
-                        typeMap.Put(type, propType);
-                    }
-                    return propType;
-                }
-            }
-            
-            public void RegisterType (String name, Type type)
-            {
-                lock (nameMap)
-                {
-                    PropType propType = GetInternal(type, name); 
-                    if (!propType.typeName.buffer.IsCreated())
-                        throw new FrifloException("Type already created without registered name");
-                    if (!propType.typeName.IsEqualString(name))
-                        throw new FrifloException("Type already registered with different name: " + name);
-                    nameMap.Put(propType.typeName, propType);
-                }
-            }
-
-        }
-    
+        /// <summary>
+        /// In contrast to <see cref="typeStore"/> this Cache is by intention not thread safe.
+        /// It is created within a <see cref="JsonReader"/> and <see cref="JsonWriter"/> to access type information
+        /// without locking if already cached.
+        /// </summary>
         public class Cache
         {
             private readonly    HashMapLang <Type, PropType>    typeMap = new HashMapLang <Type, PropType >();
             private readonly    HashMapLang <Bytes, PropType>   nameMap = new HashMapLang <Bytes, PropType >();
-            private readonly    Store                           store;
+            private readonly    TypeStore                       typeStore;
             
-            public Cache (Store store)
+            public Cache (TypeStore typeStore)
             {
-                this.store = store;
+                this.typeStore = typeStore;
             }
             
             public PropType Get (Type type)
@@ -119,7 +81,7 @@ namespace Friflo.Json.Managed.Prop
                 PropType propType = typeMap.Get(type);
                 if (propType == null)
                 {
-                    propType = store.GetInternal(type, null);
+                    propType = typeStore.GetInternal(type, null);
                     typeMap.Put(type, propType);
                 }
                 return propType;
@@ -130,9 +92,9 @@ namespace Friflo.Json.Managed.Prop
                 PropType propType = nameMap.Get(name);
                 if (propType == null)
                 {
-                    lock (store.nameMap)
+                    lock (typeStore.nameMap)
                     {
-                        propType = store.nameMap.Get(name);
+                        propType = typeStore.nameMap.Get(name);
                     }
                     nameMap.Put(propType.typeName, propType);
                 }

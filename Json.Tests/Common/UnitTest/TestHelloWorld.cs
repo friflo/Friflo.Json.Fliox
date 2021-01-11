@@ -1,7 +1,6 @@
 ﻿using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
-using Friflo.Json.Managed.Prop;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest
@@ -44,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         [Test]
         public void HelloWorldReader() {
-            var r = new JsonReader(new PropType.Store());
+            var r = new JsonReader(new TypeStore());
             var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
@@ -52,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         [Test]
         public void HelloWorldWriter() {
-            var r = new JsonWriter(new PropType.Store());
+            var r = new JsonWriter(new TypeStore());
             r.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {r.Output}");
             // Output: {"say":"Hello 👋","to":"World"}

@@ -22,8 +22,8 @@ namespace Friflo.Json.Managed
 
         public          ref Bytes Output => ref bytes;
 
-        public JsonWriter(PropType.Store store) {
-            typeCache = new PropType.Cache(store);
+        public JsonWriter(TypeStore typeStore) {
+            typeCache = new PropType.Cache(typeStore);
         }
         
         public void Dispose() {

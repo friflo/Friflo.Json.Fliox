@@ -125,15 +125,18 @@ A minimal *Hello world* example showing how to parse a given JSON string via the
 A minimal *Hello world* using the serializer to create JSON via the `JsonSerializer`
 
 ```csharp
-        public void HelloWorldSerializer() {
-            var s = new JsonSerializer();
-            s.InitSerializer();
-            s.ObjectStart();
-            s.MemberStr("say", "Hello");
-            s.MemberStr("to",  "World 🌎");
-            s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}");
-            // Output: {"say":"Hello","to":"World 🌎"}
+        public void HelloWorldParser() {
+            string say = "", to = "";
+            var p = new JsonParser();
+            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
+            p.NextEvent();
+            var i = p.GetObjectIterator();
+            while (p.NextObjectMember(ref i)) {
+                if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
+                if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
+            }
+            Console.WriteLine($"Output: {say}, {to}");
+            // Output: Hello, World 🌎
         }
 ```
 
@@ -152,7 +155,7 @@ Use the `JsonReader` to deserialize / unmarshal a JSON string to a class instanc
 
 ```csharp
         public void HelloWorldReader() {
-            var r = new JsonReader(new PropType.Store());
+            var r = new JsonReader(new TypeStore());
             var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
@@ -163,7 +166,7 @@ Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
 
 ```csharp
         public void HelloWorldWriter() {
-            var r = new JsonWriter(new PropType.Store());
+            var r = new JsonWriter(new TypeStore());
             r.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {r.Output}");
             // Output: {"say":"Hello 👋","to":"World"}
