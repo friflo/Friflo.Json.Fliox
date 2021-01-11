@@ -108,7 +108,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state Read() : " + ev. ToString());
+                    return ErrorNull("unexpected state ReadTo() : " + ev);
                 }
             }
         }
@@ -661,7 +661,7 @@ namespace Friflo.Json.Managed
             }
         }
         //
-        public object NumberFromValue(SimpleType.Id? id, out bool success) {
+        private object NumberFromValue(SimpleType.Id? id, out bool success) {
             if (id == null) {
                 success = false;
                 return null;
@@ -684,12 +684,8 @@ namespace Friflo.Json.Managed
                     return ErrorNull($"Cant convert number to {id}");
             }
         }
-        
-        public object BoolFromValue(SimpleType.Id? id, out bool success) {
-            if (id == null) {
-                success = false;
-                return null;
-            }
+
+        private object BoolFromValue(SimpleType.Id? id, out bool success) {
             if (id == SimpleType.Id.Bool)
                 return parser.ValueAsBool(out success);
             success = false;
