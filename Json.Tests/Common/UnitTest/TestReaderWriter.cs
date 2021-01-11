@@ -230,12 +230,20 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
+            using (var invalid =    new Bytes ("invalid"))
             {
                 AreEqual("hello",   enc.Read<string>(hello));
                 AreEqual(12.5,      enc.Read<double>(@double));
                 AreEqual(42,        enc.Read<long>(@long));
                 AreEqual(true,      enc.Read<bool>(@true));
-                // AreEqual(null,      enc.Read<null>(@null));
+                
+                AreEqual(null,      enc.Read<object>(@null));
+                AreEqual(false,     enc.Error.ErrSet);
+                
+                AreEqual(null,      enc.Read<object>(invalid));
+                AreEqual(true,      enc.Error.ErrSet);
+                
+                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
             }
         }
     }
