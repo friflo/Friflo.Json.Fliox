@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
-            using (var array =      new Bytes ("[1,2,3]"))
+            using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -238,7 +238,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
             {
                 AreEqual("hello",   enc.Read<string>(hello));
                 AreEqual(12.5,      enc.Read<double>(@double));
+                AreEqual(12.5,      enc.Read<float>(@double));
+                
                 AreEqual(42,        enc.Read<long>(@long));
+                AreEqual(42,        enc.Read<int>(@long));
+                AreEqual(42,        enc.Read<short>(@long));
+                AreEqual(42,        enc.Read<byte>(@long));
+                
                 AreEqual(true,      enc.Read<bool>(@true));
                 
                 AreEqual(null,      enc.Read<object>(@null));
@@ -248,7 +254,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(true,      enc.Error.ErrSet);
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
 
-                AreEqual(new [] {1,2,3},      enc.Read<int[]>(array));
+                AreEqual(new [] {1,2,3},      enc.Read<long[]>(arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<int[]>(arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<short[]>(arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<byte[]>(arrNum));
+                
+                AreEqual(new [] {1,2,3},      enc.Read<double[]>(arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<float[]>(arrNum));
+                
+                
+                // --- maps - value type: integral 
                 {
                     var expect = new Dictionary<string, long> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, long>>(mapNum));
@@ -262,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     var expect = new Dictionary<string, byte> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, byte>>(mapNum));
                 }
-                
+                // --- maps - value type: floating point
                 {
                     var expect = new Dictionary<string, double> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, double>>(mapNum));
@@ -270,11 +285,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     var expect = new Dictionary<string, float> {{"key", 42}};
                     AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
                 } 
-                
+                // --- map - value type: string
                 {
                     var expect = new Dictionary<string, string> {{"key", "value" }};
                     AreEqual(expect, enc.Read<Dictionary<string, string>>(mapStr));
-                } {
+                }
+                // --- map - value type: bool
+                {
                     var expect = new Dictionary<string, bool> {{"key", true }};
                     AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
                 }
