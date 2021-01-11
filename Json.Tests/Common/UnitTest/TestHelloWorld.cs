@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
                 if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
             }
-            Console.WriteLine($"Output: {say}, {to}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {say}, {to}");    // Output: Hello, World 🌎
         }
         
         [Test]
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             s.MemberStr("say", "Hello");
             s.MemberStr("to",  "World 🌎");
             s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {s.dst}");    // Output: {"say":"Hello","to":"World 🌎"}
         }
 
         class Message {
@@ -44,14 +44,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public void HelloWorldReader() {
             var r = new JsonReader(new PropType.Store());
             var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
-            Console.WriteLine($"Output: {msg.say}, {msg.to}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {msg.say}, {msg.to}");    // Output: Hello 👋, World
         }
         
         [Test]
         public void HelloWorldWriter() {
             var r = new JsonWriter(new PropType.Store());
             r.Write(new Message {say = "Hello 👋", to = "World"});
-            Console.WriteLine($"Output: {r.Output}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {r.Output}");    // Output: {"say":"Hello 👋","to":"World"}
         }
 
     }

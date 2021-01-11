@@ -116,7 +116,8 @@ A minimal *Hello world* example showing how to parse a given JSON string via the
                 if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
                 if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
             }
-            Console.WriteLine($"Output: {say}, {to}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {say}, {to}");
+            // Output: Hello, World 🌎
         }
 ```
 
@@ -130,7 +131,8 @@ A minimal *Hello world* using the serializer to create JSON via the `JsonSeriali
             s.MemberStr("say", "Hello");
             s.MemberStr("to",  "World 🌎");
             s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {s.dst}");
+            // Output: {"say":"Hello","to":"World 🌎"}
         }
 ```
 
@@ -151,7 +153,8 @@ Use the `JsonReader` to deserialize / unmarshal a JSON string to a class instanc
         public void HelloWorldReader() {
             var r = new JsonReader(new PropType.Store());
             var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
-            Console.WriteLine($"Output: {msg.say}, {msg.to}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {msg.say}, {msg.to}");
+            // Output: Hello 👋, World
         }
 ```
 
@@ -161,7 +164,8 @@ Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
         public void HelloWorldWriter() {
             var r = new JsonWriter(new PropType.Store());
             r.Write(new Message {say = "Hello 👋", to = "World"});
-            Console.WriteLine($"Output: {r.Output}"); // your console may not support Unicode
+            Console.WriteLine($"Output: {r.Output}");
+            // Output: {"say":"Hello 👋","to":"World"}
         }
 ```
 
