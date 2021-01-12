@@ -14,12 +14,12 @@ namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
         public  readonly    Type            type;
-        public  readonly    JsonReader.ReadResolver objectResolver;
-        public  readonly    JsonReader.ReadResolver arrayResolver;
+        public  readonly    IReadResolver objectResolver;
+        public  readonly    IReadResolver arrayResolver;
 
         public abstract Object CreateInstance();
 
-        protected NativeType(Type type, JsonReader.ReadResolver objectResolver, JsonReader.ReadResolver arrayResolver) {
+        protected NativeType(Type type, IReadResolver objectResolver, IReadResolver arrayResolver) {
             this.type = type;
             this.objectResolver = objectResolver;
             this.arrayResolver = arrayResolver;
@@ -43,8 +43,8 @@ namespace Friflo.Json.Managed.Prop
                 Type typeInterface,
                 Type nativeType,
                 Type elementType,
-                JsonReader.ReadResolver objectResolver,
-                JsonReader.ReadResolver arrayResolver,
+                IReadResolver objectResolver,
+                IReadResolver arrayResolver,
                 int rank,
                 Type keyType) :
             base (nativeType, objectResolver, arrayResolver) {
@@ -135,7 +135,7 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
                     if (args != null) {
                         Type elementType = args[0];
-                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, null, JsonReader.ReadList, 1, null);
+                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, null, ReadList.Resolver, 1, null);
                         access =        new PropAccess      ( typeof( IList<>), type, elementType);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
@@ -148,24 +148,24 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        JsonReader.ReadResolver or = JsonReader.ReadMapType;
+                        IReadResolver or = ReadMap.Resolver;
                         collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, null, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }
 
-            JsonReader.ReadResolver GetArrayResolver(SimpleType.Id? id) {
+            IReadResolver GetArrayResolver(SimpleType.Id? id) {
                 switch (id) {
-                    case SimpleType.Id.String:  return ArrayReadResolver.ReadArrayString;
-                    case SimpleType.Id.Long:    return ArrayReadResolver.ReadArrayLong;
-                    case SimpleType.Id.Integer: return ArrayReadResolver.ReadArrayInt;
-                    case SimpleType.Id.Short:   return ArrayReadResolver.ReadArrayShort;
-                    case SimpleType.Id.Byte:    return ArrayReadResolver.ReadArrayByte;
-                    case SimpleType.Id.Bool:    return ArrayReadResolver.ReadArrayBool;
-                    case SimpleType.Id.Double:  return ArrayReadResolver.ReadArrayDouble;
-                    case SimpleType.Id.Float:   return ArrayReadResolver.ReadArrayFloat;
-                    case SimpleType.Id.Object:  return ArrayReadResolver.ReadArrayObject;
+                    case SimpleType.Id.String:  return ReadArrayString.Resolver;
+                    case SimpleType.Id.Long:    return ReadArrayLong.Resolver;
+                    case SimpleType.Id.Integer: return ReadArrayInt.Resolver;
+                    case SimpleType.Id.Short:   return ReadArrayShort.Resolver;
+                    case SimpleType.Id.Byte:    return ReadArrayByte.Resolver;
+                    case SimpleType.Id.Bool:    return ReadArrayBool.Resolver;
+                    case SimpleType.Id.Double:  return ReadArrayDouble.Resolver;
+                    case SimpleType.Id.Float:   return ReadArrayFloat.Resolver;
+                    case SimpleType.Id.Object:  return ReadArrayObject.Resolver;
                     default:
                         throw new NotSupportedException("unsupported array type: " + collection.id.ToString());
                 }
