@@ -66,10 +66,11 @@ namespace Friflo.Json.Managed.Prop
         /// </summary>
         public class Cache
         {
-            private readonly    HashMapLang <Type, NativeType>        typeMap =   new HashMapLang <Type,  NativeType >();
-            private readonly    HashMapLang <Bytes, NativeType>       nameMap =   new HashMapLang <Bytes, NativeType >();
+            private readonly    HashMapLang <Type, NativeType>  typeMap =   new HashMapLang <Type,  NativeType >();
+            private readonly    HashMapLang <Bytes, NativeType> nameMap =   new HashMapLang <Bytes, NativeType >();
             
-            private readonly    TypeStore                           typeStore;
+            private readonly    TypeStore                       typeStore;
+            public              int                             lookupCount;
             
             public Cache (TypeStore typeStore)
             {
@@ -78,6 +79,7 @@ namespace Friflo.Json.Managed.Prop
             
             public NativeType GetType (Type type)
             {
+                lookupCount++;
                 NativeType propType = typeMap.Get(type);
                 if (propType == null) {
                     propType = typeStore.GetType(type, null);
@@ -89,8 +91,7 @@ namespace Friflo.Json.Managed.Prop
             public NativeType GetTypeByName(Bytes name)
             {
                 NativeType propType = nameMap.Get(name);
-                if (propType == null)
-                {
+                if (propType == null) {
                     lock (typeStore.nameMap)
                     {
                         propType = typeStore.nameMap.Get(name);

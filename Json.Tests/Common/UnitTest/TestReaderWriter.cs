@@ -245,120 +245,123 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var invalid =    new Bytes ("invalid"))
             {
-                AreEqual("hello",   enc.Read<string>(hello));
-                AreEqual(12.5,      enc.Read<double>(@double));
-                AreEqual(12.5,      enc.Read<float>(@double));
-                
-                AreEqual(42,        enc.Read<long>(@long));
-                AreEqual(42,        enc.Read<int>(@long));
-                AreEqual(42,        enc.Read<short>(@long));
-                AreEqual(42,        enc.Read<byte>(@long));
-                
-                AreEqual(true,      enc.Read<bool>(@true));
-                
-                AreEqual(null,      enc.Read<object>(@null));
-                AreEqual(false,     enc.Error.ErrSet);
-                
-                AreEqual(null,      enc.Read<object>(invalid));
-                AreEqual(true,      enc.Error.ErrSet);
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
-                
-                AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));
-                AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));
-
-                AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));
+                for (int n = 0; n < 2; n++) {
+                    AreEqual("hello",   enc.Read<string>(hello));
+                    AreEqual(12.5,      enc.Read<double>(@double));
+                    AreEqual(12.5,      enc.Read<float>(@double));
                     
-                AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));
+                    AreEqual(42,        enc.Read<long>(@long));
+                    AreEqual(42,        enc.Read<int>(@long));
+                    AreEqual(42,        enc.Read<short>(@long));
+                    AreEqual(42,        enc.Read<byte>(@long));
                     
-                AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));
+                    AreEqual(true,      enc.Read<bool>(@true));
+                    
+                    AreEqual(null,      enc.Read<object>(@null));
+                    AreEqual(false,     enc.Error.ErrSet);
+                    
+                    AreEqual(null,      enc.Read<object>(invalid));
+                    AreEqual(true,      enc.Error.ErrSet);
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
+                    
+                    AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));
+                    AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));
 
-                {
-                    Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
-                    AreEqual(expect, enc.Read<Dictionary<string, int>[]>(arrObj));
-                }
+                    AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));
+                    AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));
+                    AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));
+                    AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));
+                        
+                    AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));
+                    AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));
+                        
+                    AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));
 
-                // --- array of array
-                {
-                    int[][] expect = {new []{1, 2, 3}};
-                    AreEqual(expect, enc.Read<int[][]>(arrArrNum));
-                }
-                {
-                    Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
-                    AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
-                }
-                // --- multi dimensional arrays
-                {
-                    // int[,] expect = {{1, 2, 3}};
-                    var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
-                    AreEqual("multidimensional arrays not supported. TypeSystem.Int32[,]", e.Message);
-                }
-                
-                // --- list
-                {
-                    List<int> expect = new List<int> {1, 2, 3};
-                    AreEqual(expect, enc.Read<List<int>>(arrNum));
-                } {
-                    List<bool> expect = new List<bool> {true, false};
-                    AreEqual(expect, enc.Read<List<bool>>(arrBln));
-                }
-                // --- list of list
-                {
-                    List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
-                    AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
-                }
+                    {
+                        Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
+                        AreEqual(expect, enc.Read<Dictionary<string, int>[]>(arrObj));
+                    }
 
-                // --- maps - value type: integral 
-                {
-                    var expect = new Dictionary<string, long> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, long>>(mapNum));
-                } {
-                    var expect = new Dictionary<string, int> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, int>>(mapNum));
-                } {
-                    var expect = new Dictionary<string, short> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, short>>(mapNum));
-                } {
-                    var expect = new Dictionary<string, byte> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, byte>>(mapNum));
-                }
-                // --- maps - value type: floating point
-                {
-                    var expect = new Dictionary<string, double> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, double>>(mapNum));
-                } {
-                    var expect = new Dictionary<string, float> {{"key", 42}};
-                    AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
-                } 
-                // --- map - value type: string
-                {
-                    var expect = new Dictionary<string, string> {{"key", "value" }};
-                    AreEqual(expect, enc.Read<Dictionary<string, string>>(mapStr));
-                }
-                // --- map - value type: bool
-                {
-                    var expect = new Dictionary<string, bool> {{"key", true }};
-                    AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
-                }
-                // --- map - value type: map
-                {
-                    var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
-                    AreEqual(expect, enc.Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
-                }
-                // --- map derivations                
-                {
-                    var expect = new Dictionary<string, long> {{"key", 42}};
-                    AreEqual(expect, enc.Read<ConcurrentDictionary<string, long>>(mapNum));
-                    // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
-                }
+                    // --- array of array
+                    {
+                        int[][] expect = {new []{1, 2, 3}};
+                        AreEqual(expect, enc.Read<int[][]>(arrArrNum));
+                    }
+                    {
+                        Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
+                        AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
+                    }
+                    // --- multi dimensional arrays
+                    {
+                        // int[,] expect = {{1, 2, 3}};
+                        var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
+                        AreEqual("multidimensional arrays not supported. TypeSystem.Int32[,]", e.Message);
+                    }
+                    
+                    // --- list
+                    {
+                        List<int> expect = new List<int> {1, 2, 3};
+                        AreEqual(expect, enc.Read<List<int>>(arrNum));
+                    } {
+                        List<bool> expect = new List<bool> {true, false};
+                        AreEqual(expect, enc.Read<List<bool>>(arrBln));
+                    }
+                    // --- list of list
+                    {
+                        List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
+                        AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
+                    }
 
-
-                
-
-
+                    // --- maps - value type: integral 
+                    {
+                        var expect = new Dictionary<string, long> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, long>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, int> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, int>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, short> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, short>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, byte> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, byte>>(mapNum));
+                    }
+                    // --- maps - value type: floating point
+                    {
+                        var expect = new Dictionary<string, double> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, double>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, float> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
+                    } 
+                    // --- map - value type: string
+                    {
+                        var expect = new Dictionary<string, string> {{"key", "value" }};
+                        AreEqual(expect, enc.Read<Dictionary<string, string>>(mapStr));
+                    }
+                    // --- map - value type: bool
+                    {
+                        var expect = new Dictionary<string, bool> {{"key", true }};
+                        AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
+                    }
+                    // --- map - value type: map
+                    {
+                        var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
+                        AreEqual(expect, enc.Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
+                    }
+                    // --- map derivations                
+                    {
+                        var expect = new Dictionary<string, long> {{"key", 42}};
+                        AreEqual(expect, enc.Read<ConcurrentDictionary<string, long>>(mapNum));
+                        // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
+                    }
+                    
+                    // Ensure a minimum required type lookups
+                    if (n == 0)
+                        enc.typeCache.lookupCount = 0;
+                    else 
+                        AreEqual(26, enc.typeCache.lookupCount);
+                }
             }
         }
     }
