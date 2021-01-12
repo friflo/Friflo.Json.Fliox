@@ -135,13 +135,9 @@ namespace Friflo.Json.Managed
         }
     
         public Object ReadJsonObject (Object obj, NativeType nativeType) {
-            // support also map in maps in ...
-            if (typeof(IDictionary).IsAssignableFrom(nativeType.type)) { //typeof( IDictionary<,> )
-                NativeType collection = typeCache.GetType(nativeType.type);
-                obj = collection.CreateInstance();
-                return ReadMapType(this, obj, collection);
-            }
-            return ReadObject(this, obj, nativeType);
+            if (nativeType.objectResolver != null)
+                return nativeType.objectResolver(this, obj, nativeType);
+            throw new InvalidOperationException("No object resolver for type: " + nativeType.type.FullName);
         }
             
         public static Object ReadObject (JsonReader reader, object obj, NativeType nativeType) {
@@ -209,13 +205,8 @@ namespace Friflo.Json.Managed
                         Object sub = field.GetObject(obj);
                         PropCollection collection = field.collection;
                         if (collection != null) {
-                            Type collectionInterface = collection.typeInterface;
-                            if (collectionInterface == typeof( IDictionary<,> )) {
-                                if (sub == null)
-                                    sub = field.CreateCollection();
-                                sub = ReadMapType(reader, sub, collection);
-                            } else
-                                return reader.ErrorNull("unsupported collection Type: ", collectionInterface. Name);
+                            // sub = ReadMapType(reader, sub, collection);
+                            sub = reader.ReadJsonObject(sub, collection);
                         }
                         else
                         {
@@ -260,10 +251,12 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private static Object ReadMapType (JsonReader reader, object obj, NativeType nativeType) {
+        public static Object ReadMapType (JsonReader reader, object obj, NativeType nativeType) {
+            PropCollection collection = (PropCollection)nativeType;
+            if (obj == null)
+                obj = collection.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            PropCollection collection = (PropCollection)nativeType;
             NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
             while (true)
             {

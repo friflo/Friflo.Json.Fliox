@@ -3,20 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Friflo.Json.Burst;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
-        public  readonly   Type            type;
-
+        public  readonly    Type            type;
+        public  readonly    Func<JsonReader, object, NativeType, object> objectResolver;
 
         public abstract Object CreateInstance();
 
-        protected NativeType(Type type) {
+        protected NativeType(Type type, Func<JsonReader, object, NativeType, object> objectResolver) {
             this.type = type;
-
+            this.objectResolver = objectResolver;
         }
 
         public virtual void Dispose() {
@@ -31,10 +30,10 @@ namespace Friflo.Json.Managed.Prop
         private             NativeType      elementPropType; // is set on first lookup
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
+
     
-        internal PropCollection (Type typeInterface, Type nativeType, Type elementType, int rank, Type keyType) :
-            base (nativeType)
-        {
+        internal PropCollection (Type typeInterface, Type nativeType, Type elementType, Func<JsonReader, object, NativeType, object> objectResolver, int rank, Type keyType) :
+            base (nativeType, objectResolver) {
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
@@ -108,7 +107,8 @@ namespace Friflo.Json.Managed.Prop
                 // void Property.Set(String name, Class<?> entryType)
                 if (type. IsArray) {
                     Type elementType = type.GetElementType();
-                    collection =    new PropCollection  ( typeof( Array ), type, elementType, type. GetArrayRank(), null);
+                    Func<JsonReader, object, NativeType, object> r = null;
+                    collection =    new PropCollection  ( typeof( Array ), type, elementType, r, type. GetArrayRank(), null);
                     access =        new PropAccess      ( typeof( Array ), type, elementType);
                 }
                 else
@@ -117,7 +117,8 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
                     if (args != null) {
                         Type elementType = args[0];
-                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, 1, null);
+                        Func<JsonReader, object, NativeType, object> r = null;
+                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, r, 1, null);
                         access =        new PropAccess      ( typeof( IList<>), type, elementType);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
@@ -130,7 +131,8 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, 1, args[0]);
+                        Func<JsonReader, object, NativeType, object> r = JsonReader.ReadMapType;
+                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, r, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
