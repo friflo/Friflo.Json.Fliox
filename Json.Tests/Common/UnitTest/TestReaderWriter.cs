@@ -274,6 +274,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
                     AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
                 }
+                // --- multi dimensional arrays
+                {
+                    // int[,] expect = {{1, 2, 3}};
+                    var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
+                    AreEqual("multidimensional arrays not supported. TypeSystem.Int32[,]", e.Message);
+                }
 
                 // --- maps - value type: integral 
                 {

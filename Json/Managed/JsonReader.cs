@@ -78,7 +78,7 @@ namespace Friflo.Json.Managed
                     return ReadObject(null, type);
                 case JsonEvent. ArrayStart:
                     PropCollection collection = typeCache.GetCollection(type); 
-                    return ReadJsonArray(null, collection);
+                    return ReadJsonArray(null, collection, 0);
                 case JsonEvent.ValueString:
                     return parser.value.ToString();
                 case JsonEvent.ValueNumber:
@@ -119,7 +119,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ObjectStart:
                     return ReadObject(obj, obj. GetType());
                 case JsonEvent. ArrayStart:
-                    return ReadJsonArray(null, null);
+                    return ReadJsonArray(null, null, 0);
                 case JsonEvent. Error:
                     return null;
                 default:
@@ -234,7 +234,7 @@ namespace Friflo.Json.Managed
                         if (field.collection == null)
                             return ErrorNull("expected field with array nature: ", ref field.nameBytes);
                         Object array = field.GetObject(obj);
-                        Object arrayRet = ReadJsonArray( array, field.collection);
+                        Object arrayRet = ReadJsonArray( array, field.collection, 0);
                         if (arrayRet != null)
                         {
                             if (array != arrayRet)
@@ -302,10 +302,11 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadJsonArray (Object col, PropCollection collection) {
+        private Object ReadJsonArray (Object col, PropCollection collection, int index) {
             Type typeInterface = collection.typeInterface;
-            if (typeInterface == typeof( Array ))
-            {
+            if (typeInterface == typeof( Array )) {
+                if (collection.rank > 1)
+                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
                 switch (collection.id)
                 {
                     case SimpleType.Id. String:     return ReadArrayString  ((String    [])col);
@@ -364,12 +365,12 @@ namespace Friflo.Json.Managed
                         PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
                         if (index < startLen) {
                             Object oldElement = array .GetValue( index );
-                            Object element = ReadJsonArray(oldElement, elementCollection);
+                            Object element = ReadJsonArray(oldElement, elementCollection, 0);
                             if (element == null)
                                 return null;
                             array.SetValue (element, index);
                         } else {
-                            Object element = ReadJsonArray(null, elementCollection);
+                            Object element = ReadJsonArray(null, elementCollection, 0);
                             if (element == null)
                                 return null;
                             if (index >= len)
