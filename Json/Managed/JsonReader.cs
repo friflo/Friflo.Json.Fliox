@@ -5,8 +5,6 @@ using System.Collections;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Prop;
-using Friflo.Json.Managed.Prop.Resolver;
-
 
 namespace Friflo.Json.Managed
 {
@@ -132,6 +130,8 @@ namespace Friflo.Json.Managed
                 }
             }
         }
+
+        public delegate object ReadResolver(JsonReader reader, object obj, NativeType nativeType);
     
         public Object ReadJsonObject (Object obj, NativeType nativeType) {
             if (nativeType.objectResolver != null)

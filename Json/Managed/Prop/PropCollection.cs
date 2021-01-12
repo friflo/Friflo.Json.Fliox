@@ -6,19 +6,20 @@ using System.Reflection;
 using Friflo.Json.Managed.Utils;
 using Friflo.Json.Managed.Prop.Resolver;
 
+// using ReadResolver = System.Func<Friflo.Json.Managed.JsonReader, object, Friflo.Json.Managed.Prop.NativeType, object>;
+
+
+
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
         public  readonly    Type            type;
-        public  readonly    Func<JsonReader, object, NativeType, object> objectResolver;
-        public  readonly    Func<JsonReader, object, NativeType, object> arrayResolver;
+        public  readonly    JsonReader.ReadResolver objectResolver;
+        public  readonly    JsonReader.ReadResolver arrayResolver;
 
         public abstract Object CreateInstance();
 
-        protected NativeType(
-                Type type,
-                Func<JsonReader, object, NativeType, object> objectResolver,
-                Func<JsonReader, object, NativeType, object> arrayResolver) {
+        protected NativeType(Type type, JsonReader.ReadResolver objectResolver, JsonReader.ReadResolver arrayResolver) {
             this.type = type;
             this.objectResolver = objectResolver;
             this.arrayResolver = arrayResolver;
@@ -42,8 +43,8 @@ namespace Friflo.Json.Managed.Prop
                 Type typeInterface,
                 Type nativeType,
                 Type elementType,
-                Func<JsonReader, object, NativeType, object> objectResolver,
-                Func<JsonReader, object, NativeType, object> arrayResolver,
+                JsonReader.ReadResolver objectResolver,
+                JsonReader.ReadResolver arrayResolver,
                 int rank,
                 Type keyType) :
             base (nativeType, objectResolver, arrayResolver) {
@@ -147,14 +148,14 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        Func<JsonReader, object, NativeType, object> or = JsonReader.ReadMapType;
+                        JsonReader.ReadResolver or = JsonReader.ReadMapType;
                         collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, null, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }
 
-            Func<JsonReader, object, NativeType, object> GetArrayResolver(SimpleType.Id? id) {
+            JsonReader.ReadResolver GetArrayResolver(SimpleType.Id? id) {
                 switch (id) {
                     case SimpleType.Id.String:  return ArrayReadResolver.ReadArrayString;
                     case SimpleType.Id.Long:    return ArrayReadResolver.ReadArrayLong;
