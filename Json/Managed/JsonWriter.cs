@@ -61,7 +61,7 @@ namespace Friflo.Json.Managed
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
-            if (type.nativeType != objType) {
+            if (type.type != objType) {
                 type = (PropType)typeCache.GetType(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref this.discriminator);

@@ -9,13 +9,13 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
-        public  readonly   Type            nativeType;
+        public  readonly   Type            type;
 
 
         public abstract Object CreateInstance();
 
         protected NativeType(Type type) {
-            nativeType = type;
+            this.type = type;
 
         }
 

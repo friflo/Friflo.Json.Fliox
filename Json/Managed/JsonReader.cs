@@ -136,8 +136,8 @@ namespace Friflo.Json.Managed
     
         public Object ReadJsonObject (Object obj, NativeType nativeType) {
             // support also map in maps in ...
-            if (typeof(IDictionary).IsAssignableFrom(nativeType.nativeType)) { //typeof( IDictionary<,> )
-                NativeType collection = typeCache.GetType(nativeType.nativeType);
+            if (typeof(IDictionary).IsAssignableFrom(nativeType.type)) { //typeof( IDictionary<,> )
+                NativeType collection = typeCache.GetType(nativeType.type);
                 obj = collection.CreateInstance();
                 return ReadMapType((IDictionary)obj, collection);
             }

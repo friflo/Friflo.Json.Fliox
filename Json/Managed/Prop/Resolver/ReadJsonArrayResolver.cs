@@ -10,7 +10,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             PropCollection collection = (PropCollection)nativeType;
             if (collection.typeInterface == typeof(Array)) {
                 if (collection.rank > 1)
-                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.nativeType);
+                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
                 switch (collection.id) {
                     case SimpleType.Id.String:  return ArrayReadResolver.ReadArrayString;
                     case SimpleType.Id.Long:    return ArrayReadResolver.ReadArrayLong;
