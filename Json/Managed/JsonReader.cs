@@ -2,9 +2,11 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed
 {
@@ -189,16 +191,115 @@ namespace Friflo.Json.Managed
     }
 
     public interface IJsonArray {
-        object Read (JsonReader reader, object obj, NativeType nativeType);
+        object  Read  (JsonReader reader, object obj, NativeType nativeType);
+        void    Write (JsonWriter writer, object obj, NativeType nativeType);
     }
     
     public interface IJsonObject {
-        object Read (JsonReader reader, object obj, NativeType nativeType);
+        object  Read  (JsonReader reader, object obj, NativeType nativeType);
+        void    Write (JsonWriter writer, object obj, NativeType nativeType);
     }
 
 
     public class ReadObject : IJsonObject {
         public static readonly ReadObject Resolver = new ReadObject();
+        
+        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+
+            ref var bytes = ref writer.bytes;
+            ref var format = ref writer.format;
+            
+            PropType type = (PropType)nativeType;
+            bool firstMember = true;
+            bytes.AppendChar('{');
+            Type objType = obj.GetType();
+            if (type.type != objType) {
+                type = (PropType)writer.typeCache.GetType(objType);
+                firstMember = false;
+                bytes.AppendBytes(ref writer.discriminator);
+                Bytes subType = type.typeName;
+                if (subType.buffer.IsCreated())
+                    bytes.AppendBytes(ref subType);
+                else
+                    throw new FrifloException("Serializing derived types must be registered: " + objType.Name);
+                bytes.AppendChar('\"');
+            }
+
+            PropField[] fields = type.propFields.fieldsSerializable;
+
+            for (int n = 0; n < fields.Length; n++) {
+                if (firstMember)
+                    firstMember = false;
+                else
+                    bytes.AppendChar(',');
+                PropField field = fields[n];
+                switch (field.type) {
+                    case SimpleType.Id.String:
+                        writer.WriteKey(field);
+                        String val = field.GetString(obj);
+                        if (val != null)
+                            writer.WriteString(val);
+                        else
+                            bytes.AppendBytes(ref writer.@null);
+                        break;
+                    case SimpleType.Id.Long:
+                        writer.WriteKey(field);
+                        format.AppendLong(ref bytes, field.GetLong(obj));
+                        break;
+                    case SimpleType.Id.Integer:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        break;
+                    case SimpleType.Id.Short:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        break;
+                    case SimpleType.Id.Byte:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        break;
+                    case SimpleType.Id.Bool:
+                        writer.WriteKey(field);
+                        format.AppendBool(ref bytes, field.GetBool(obj));
+                        break;
+                    case SimpleType.Id.Double:
+                        writer.WriteKey(field);
+                        format.AppendDbl(ref bytes, field.GetDouble(obj));
+                        break;
+                    //                                                  bytes.Append(field.GetString(obj));     break;  // precise conversion
+                    case SimpleType.Id.Float:
+                        writer.WriteKey(field);
+                        format.AppendFlt(ref bytes, field.GetFloat(obj));
+                        break;
+                    //                                                  bytes.Append(field.GetString(obj));     break;  // precise conversion
+                    case SimpleType.Id.Object:
+                        writer.WriteKey(field);
+                        Object child = field.GetObject(obj);
+                        if (child == null) {
+                            bytes.AppendBytes(ref writer.@null);
+                        }
+                        else {
+                            // todo: use field.GetFieldObject() - remove if, make PropField.collection private
+                            NativeType fieldObject = field.GetFieldObject(writer.typeCache);
+                            // NativeType subElementType = collection.GetElementType(writer.typeCache);
+                            // NativeType fieldType = field.GetFieldObject(writer.typeCache);
+                            writer.WriteJsonObject(child, fieldObject);
+                            /*
+                            NativeType collection = field.collection;
+                            if (collection == null)
+                                writer.WriteJsonObject(child, field.GetFieldObject(writer.typeCache));
+                            else
+                                writer.WriteJsonObject(child, collection);
+                                */
+                        }
+
+                        break;
+                    default:
+                        throw new FrifloException("invalid field type: " + field.type);
+                }
+            }
+            bytes.AppendChar('}');
+        }
             
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
             ref var parser = ref reader.parser;
@@ -315,6 +416,46 @@ namespace Friflo.Json.Managed
     {
         public static readonly ReadMap Resolver = new ReadMap();
         
+        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+            PropCollection collection = (PropCollection)nativeType;
+            IDictionary map = (IDictionary) obj;
+
+            ref var bytes = ref writer.bytes;
+            bytes.AppendChar('{');
+            int n = 0;
+            if (collection.elementType == typeof(String)) {
+                // Map<String, String>
+                // @SuppressWarnings("unchecked")
+                IDictionary<String, String> strMap = (IDictionary<String, String>) map;
+                foreach (KeyValuePair<String, String> entry in strMap) {
+                    if (n++ > 0) bytes.AppendChar(',');
+                    writer.WriteString(entry.Key);
+                    bytes.AppendChar(':');
+                    String value = entry.Value;
+                    if (value != null)
+                        writer.WriteString(value);
+                    else
+                        bytes.AppendBytes(ref writer.@null);
+                }
+            }
+            else {
+                // Map<String, Object>
+                NativeType elementType = collection.GetElementType(writer.typeCache);
+                foreach (DictionaryEntry entry in map) {
+                    if (n++ > 0) bytes.AppendChar(',');
+                    writer.WriteString((String) entry.Key);
+                    bytes.AppendChar(':');
+                    Object value = entry.Value;
+                    if (value != null)
+                        writer.WriteJsonObject(value, elementType);
+                    else
+                        bytes.AppendBytes(ref writer.@null);
+                }
+            }
+            bytes.AppendChar('}');
+
+        }
+        
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
             PropCollection collection = (PropCollection) nativeType;
             if (obj == null)
@@ -369,6 +510,34 @@ namespace Friflo.Json.Managed
     public class ReadList : IJsonArray
     {
         public static readonly ReadList Resolver = new ReadList();
+        
+        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+            IList list = (IList) obj;
+            PropCollection collection = (PropCollection) nativeType;
+            writer.bytes.AppendChar('[');
+            NativeType elementType = collection.GetElementType(writer.typeCache);
+            for (int n = 0; n < list.Count; n++) {
+                if (n > 0) writer.bytes.AppendChar(',');
+                Object item = list[n];
+                if (item != null) {
+                    switch (collection.id) {
+                        case SimpleType.Id.Object:
+                            writer.WriteJsonObject(item, elementType);
+                            break;
+                        case SimpleType.Id.String:
+                            writer.WriteString((String) item);
+                            break;
+                        default:
+                            throw new FrifloException("List element type not supported: " + collection.elementType.Name);
+                    }
+                }
+                else
+                    writer.bytes.AppendBytes(ref writer.@null);
+            }
+            writer.bytes.AppendChar(']');
+        }
+        
+
         
         public Object Read(JsonReader reader, object col, NativeType nativeType) {
             PropCollection collection = (PropCollection) nativeType;
