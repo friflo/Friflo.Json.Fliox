@@ -174,8 +174,8 @@ namespace Friflo.Json.Managed
                         WriteArrayFloat((float[]) col);
                         break;
                     case SimpleType.Id.Object:
-                        NativeType elementPropType = collection.GetElementPropType(typeCache);
-                        WriteArrayObject(elementPropType, (Object[]) col);
+                        NativeType subElementType = collection.GetElementType(typeCache);
+                        WriteArrayObject(subElementType, (Object[]) col);
                         break;
                     default:
                         throw new FrifloException("unsupported array type: " + collection.id);
@@ -196,14 +196,14 @@ namespace Friflo.Json.Managed
 
         private void WriteList(PropCollection collection, IList list) {
             bytes.AppendChar('[');
-            NativeType elementPropType = collection.GetElementPropType(typeCache);
+            NativeType elementType = collection.GetElementType(typeCache);
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
                     switch (collection.id) {
                         case SimpleType.Id.Object:
-                            WriteObject(elementPropType, item);
+                            WriteObject(elementType, item);
                             break;
                         case SimpleType.Id.String:
                             WriteString((String) item);
@@ -239,14 +239,14 @@ namespace Friflo.Json.Managed
             }
             else {
                 // Map<String, Object>
-                NativeType elementPropType = collection.GetElementPropType(typeCache);
+                NativeType elementType = collection.GetElementType(typeCache);
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     WriteString((String) entry.Key);
                     bytes.AppendChar(':');
                     Object value = entry.Value;
                     if (value != null)
-                        WriteObject(elementPropType, value);
+                        WriteObject(elementType, value);
                     else
                         bytes.AppendBytes(ref @null);
                 }

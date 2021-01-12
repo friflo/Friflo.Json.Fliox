@@ -23,7 +23,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
                 startLen = len = array.Length;
             }
 
-            NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
+            NativeType elementType = collection.GetElementType(reader.typeCache);
             int index = 0;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -39,16 +39,16 @@ namespace Friflo.Json.Managed.Prop.Resolver
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
-                        NativeType elementCollection = reader.typeCache.GetType(collection.elementType);
+                        NativeType subElementArray = collection.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJsonArray(oldElement, elementCollection, 0);
+                            Object element = reader.ReadJsonArray(oldElement, subElementArray, 0);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJsonArray(null, elementCollection, 0);
+                            Object element = reader.ReadJsonArray(null, subElementArray, 0);
                             if (element == null)
                                 return null;
                             if (index >= len)
@@ -61,13 +61,13 @@ namespace Friflo.Json.Managed.Prop.Resolver
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJsonObject(oldElement, elementPropType);
+                            Object element = reader.ReadJsonObject(oldElement, elementType);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJsonObject(null, elementPropType);
+                            Object element = reader.ReadJsonObject(null, elementType);
                             if (element == null)
                                 return null;
                             if (index >= len)

@@ -321,7 +321,7 @@ namespace Friflo.Json.Managed
                 obj = collection.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
+            NativeType elementType = collection.GetElementType(reader.typeCache);
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -331,7 +331,7 @@ namespace Friflo.Json.Managed
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        Object value = reader.ReadJsonObject(null, elementPropType);
+                        Object value = reader.ReadJsonObject(null, elementType);
                         if (value == null)
                             return null;
                         map[key] = value;
@@ -375,7 +375,7 @@ namespace Friflo.Json.Managed
             IList list = (IList) col;
             if (list == null)
                 list = (IList) collection.CreateInstance();
-            NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
+            NativeType elementType = collection.GetElementType(reader.typeCache);
             if (collection.id != SimpleType.Id.Object)
                 list.Clear();
             int startLen = list.Count;
@@ -406,16 +406,16 @@ namespace Friflo.Json.Managed
                         index++;
                         break;
                     case JsonEvent.ArrayStart:
-                        NativeType elementCollection = reader.typeCache.GetType(collection.elementType);
+                        NativeType subElementType = collection.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJsonArray(oldElement, elementCollection, 0);
+                            Object element = reader.ReadJsonArray(oldElement, subElementType, 0);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJsonArray(null, elementCollection, 0);
+                            Object element = reader.ReadJsonArray(null, subElementType, 0);
                             if (element == null)
                                 return null;
                             list.Add(element);
@@ -426,13 +426,13 @@ namespace Friflo.Json.Managed
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJsonObject(oldElement, elementPropType);
+                            Object element = reader.ReadJsonObject(oldElement, elementType);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJsonObject(null, elementPropType);
+                            Object element = reader.ReadJsonObject(null, elementType);
                             if (element == null)
                                 return null;
                             list.Add(element);

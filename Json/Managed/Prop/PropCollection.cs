@@ -32,8 +32,8 @@ namespace Friflo.Json.Managed.Prop
     {
         public   readonly   Type            typeInterface;
         public   readonly   Type            keyType;
-        public   readonly   Type            elementType;
         public   readonly   int             rank;
+        public   readonly   Type            elementType;     // use GetElementType() if NativeType is required - its cached
         private             NativeType      elementPropType; // is set on first lookup
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
@@ -51,12 +51,16 @@ namespace Friflo.Json.Managed.Prop
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
+            if (elementType == null)
+                throw new NullReferenceException("elementType is required");
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
             this.constructor    = GetConstructor (nativeType, typeInterface, keyType, elementType);
         }
-
-        public NativeType GetElementPropType(PropType.Cache typeCache) {
+        
+        public NativeType GetElementType(PropType.Cache typeCache) {
+            if (elementType == null)
+                return null;
             // simply reduce lookups
             if (elementPropType == null)
                 elementPropType = typeCache.GetType(elementType);
