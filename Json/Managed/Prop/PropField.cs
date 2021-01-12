@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed.Prop
         public   readonly   PropAccess      access;
         public   readonly   PropType        declType;
         internal            Bytes           nameBytes;
-        private             PropType        fieldPropType;
+        private             PropType        fieldPropType; // is set on first lookup
         private  readonly   ConstructorInfo collectionConstructor;
 
         public PropType GetFieldPropType(PropType.Cache cache)

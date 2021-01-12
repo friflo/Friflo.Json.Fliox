@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Prop
         public   readonly   Type            keyType;
         public   readonly   Type            elementType;
         public   readonly   int             rank;
-        private             PropType        elementPropType;
+        private             PropType        elementPropType; // is set on first lookup
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
     
