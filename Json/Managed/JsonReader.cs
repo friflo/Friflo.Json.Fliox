@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed
         private             JsonParser          parser;
         private readonly    PropType.Cache      typeCache;
 
-        private readonly    Bytes               type = new Bytes ("$type"); 
+        private readonly    Bytes               discriminator = new Bytes ("$type"); 
 
         public              JsonError           Error  =>  parser.error;
         public              SkipInfo            SkipInfo  =>  parser.skipInfo;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Managed
         }
         
         public void Dispose() {
-            type.Dispose();
+            discriminator.Dispose();
             parser.Dispose();
         }
 
@@ -134,21 +134,19 @@ namespace Friflo.Json.Managed
         }
     
         private Object ReadJsonObject (Object obj, PropType propType) {
-            // support map in maps in ...
+            // support also map in maps in ...
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
                 obj = collection.CreateInstance();
                 return ReadMapType((IDictionary)obj, collection);
             }
             JsonEvent ev = parser.NextEvent();
-            if (obj == null)
-            {
-                // Is first member "$type": "<typeName>" ?
-                if (ev == JsonEvent.ValueString && type.IsEqualBytes(parser.key))
-                {
-                    propType = typeCache.GetByName (parser.value);
+            if (obj == null) {
+                // Is first member is discriminator - "$type": "<typeName>" ?
+                if (ev == JsonEvent.ValueString && discriminator.IsEqualBytes(parser.key)) {
+                    propType = typeCache.GetTypeByName (parser.value);
                     if (propType == null)
-                        return ErrorNull("Object $type not found: ", ref parser.value);
+                        return ErrorNull("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
                 obj = propType.CreateInstance();
@@ -302,11 +300,13 @@ namespace Friflo.Json.Managed
             }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private Object ReadJsonArray (Object col, PropCollection collection, int index) {
             Type typeInterface = collection.typeInterface;
             if (typeInterface == typeof( Array )) {
                 if (collection.rank > 1)
                     throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (collection.id)
                 {
                     case SimpleType.Id. String:     return ReadArrayString  ((String    [])col);

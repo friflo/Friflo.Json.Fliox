@@ -97,7 +97,7 @@ namespace Friflo.Json.Managed.Prop
                 return propType;
             }
 
-            public PropType GetByName(Bytes name)
+            public PropType GetTypeByName(Bytes name)
             {
                 PropType propType = nameMap.Get(name);
                 if (propType == null)
