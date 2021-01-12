@@ -243,9 +243,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
-            using (var invalid =    new Bytes ("invalid"))
-            {
-                for (int n = 0; n < 2; n++) {
+            using (var invalid =    new Bytes ("invalid")) {
+                int iterations = 2; // dont use < 2
+                for (int n = 0; n < iterations; n++) {
                     AreEqual("hello",   enc.Read<string>(hello));
                     AreEqual(12.5,      enc.Read<double>(@double));
                     AreEqual(12.5,      enc.Read<float>(@double));
@@ -356,11 +356,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
                     }
                     
-                    // Ensure a minimum required type lookups
-                    if (n == 0)
-                        enc.typeCache.lookupCount = 0;
-                    else 
+                    // Ensure minimum required type lookups
+                    if (n > 0)
                         AreEqual(26, enc.typeCache.lookupCount);
+                    enc.typeCache.lookupCount = 0;
                 }
             }
         }
