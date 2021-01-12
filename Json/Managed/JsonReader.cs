@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Prop;
@@ -300,7 +299,7 @@ namespace Friflo.Json.Managed
         // ReSharper disable once UnusedParameter.Local
         public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
             PropCollection collection = (PropCollection) nativeType;
-            Func<JsonReader, object, NativeType, object> resolver = readJsonArrayResolver.GetReadResolver(collection);
+            Func<JsonReader, object, NativeType, object> resolver = nativeType.arrayResolver;
             if (resolver != null)
                 return resolver(this, col, collection);
 

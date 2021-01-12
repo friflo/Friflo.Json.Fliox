@@ -4,18 +4,24 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Managed.Utils;
+using Friflo.Json.Managed.Prop.Resolver;
 
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
         public  readonly    Type            type;
         public  readonly    Func<JsonReader, object, NativeType, object> objectResolver;
+        public  readonly    Func<JsonReader, object, NativeType, object> arrayResolver;
 
         public abstract Object CreateInstance();
 
-        protected NativeType(Type type, Func<JsonReader, object, NativeType, object> objectResolver) {
+        protected NativeType(
+                Type type,
+                Func<JsonReader, object, NativeType, object> objectResolver,
+                Func<JsonReader, object, NativeType, object> arrayResolver) {
             this.type = type;
             this.objectResolver = objectResolver;
+            this.arrayResolver = arrayResolver;
         }
 
         public virtual void Dispose() {
@@ -32,8 +38,15 @@ namespace Friflo.Json.Managed.Prop
         internal readonly   ConstructorInfo constructor;
 
     
-        internal PropCollection (Type typeInterface, Type nativeType, Type elementType, Func<JsonReader, object, NativeType, object> objectResolver, int rank, Type keyType) :
-            base (nativeType, objectResolver) {
+        internal PropCollection (
+                Type typeInterface,
+                Type nativeType,
+                Type elementType,
+                Func<JsonReader, object, NativeType, object> objectResolver,
+                Func<JsonReader, object, NativeType, object> arrayResolver,
+                int rank,
+                Type keyType) :
+            base (nativeType, objectResolver, arrayResolver) {
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
@@ -107,9 +120,13 @@ namespace Friflo.Json.Managed.Prop
                 // void Property.Set(String name, Class<?> entryType)
                 if (type. IsArray) {
                     Type elementType = type.GetElementType();
-                    Func<JsonReader, object, NativeType, object> r = null;
-                    collection =    new PropCollection  ( typeof( Array ), type, elementType, r, type. GetArrayRank(), null);
-                    access =        new PropAccess      ( typeof( Array ), type, elementType);
+                    int rank = type.GetArrayRank();
+                    if (rank > 1)
+                        throw new NotSupportedException("multidimensional arrays not supported. Type" + type.FullName);
+                    SimpleType.Id? id = SimpleType.IdFromType(elementType);
+                    var ar = GetArrayResolver(id);
+                    collection = new PropCollection(typeof(Array), type, elementType, null, ar, type.GetArrayRank(), null);
+                    access = new PropAccess(typeof(Array), type, elementType);
                 }
                 else
                 {
@@ -117,8 +134,7 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
                     if (args != null) {
                         Type elementType = args[0];
-                        Func<JsonReader, object, NativeType, object> r = null;
-                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, r, 1, null);
+                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, null, JsonReader.ReadList, 1, null);
                         access =        new PropAccess      ( typeof( IList<>), type, elementType);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
@@ -131,10 +147,26 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        Func<JsonReader, object, NativeType, object> r = JsonReader.ReadMapType;
-                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, r, 1, args[0]);
+                        Func<JsonReader, object, NativeType, object> or = JsonReader.ReadMapType;
+                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, null, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
+                }
+            }
+
+            Func<JsonReader, object, NativeType, object> GetArrayResolver(SimpleType.Id? id) {
+                switch (id) {
+                    case SimpleType.Id.String:  return ArrayReadResolver.ReadArrayString;
+                    case SimpleType.Id.Long:    return ArrayReadResolver.ReadArrayLong;
+                    case SimpleType.Id.Integer: return ArrayReadResolver.ReadArrayInt;
+                    case SimpleType.Id.Short:   return ArrayReadResolver.ReadArrayShort;
+                    case SimpleType.Id.Byte:    return ArrayReadResolver.ReadArrayByte;
+                    case SimpleType.Id.Bool:    return ArrayReadResolver.ReadArrayBool;
+                    case SimpleType.Id.Double:  return ArrayReadResolver.ReadArrayDouble;
+                    case SimpleType.Id.Float:   return ArrayReadResolver.ReadArrayFloat;
+                    case SimpleType.Id.Object:  return ArrayReadResolver.ReadArrayObject;
+                    default:
+                        throw new NotSupportedException("unsupported array type: " + collection.id.ToString());
                 }
             }
         }
