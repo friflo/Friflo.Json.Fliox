@@ -128,7 +128,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state ReadTo() : ", ev);
+                    return ErrorNull("ReadTo() can only used on an JSON object or array", ev);
                 }
             }
         }
