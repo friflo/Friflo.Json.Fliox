@@ -7,12 +7,22 @@ using Friflo.Json.Managed.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
+
 using static NUnit.Framework.Assert;
+// using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest
 {
+    public static class NoCheck
+    {
+        public static void AreEqual(object o1, object o2) { }
+        public static void Fail(string msg) { }
+    }
+    
     public class TestReaderWriter : LeakTestsFixture
     {
+
+        
         private TypeStore createStore() {
             TypeStore      typeStore = new TypeStore();
             typeStore.RegisterType("Sub", typeof( Sub ));
@@ -294,7 +304,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // --- multi dimensional arrays
                     {
                         // int[,] expect = {{1, 2, 3}};
-                        var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
+                        var e = Assert.Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
                         AreEqual("found no resolver for JSON array: Int32[,]", e.Message);
                     }
                     
