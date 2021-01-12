@@ -295,7 +295,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     {
                         // int[,] expect = {{1, 2, 3}};
                         var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
-                        AreEqual("multidimensional arrays not supported. TypeSystem.Int32[,]", e.Message);
+                        AreEqual("found no resolver for JSON array: Int32[,]", e.Message);
                     }
                     
                     // --- list

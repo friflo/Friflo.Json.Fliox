@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Prop
         internal readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
         public   readonly   Type            fieldType;
-        public   readonly   PropCollection  collection;
+        public   readonly   NativeType      collection;
         public   readonly   PropAccess      access;
         public   readonly   PropType        declType;
         internal            Bytes           nameBytes;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Managed.Prop
             this.fieldType              = fieldType;
             this.collection             = info.collection;
             this.access                 = info.access;
-            this.collectionConstructor  = collection != null ? collection.constructor : null;
+            this.collectionConstructor  = collection is PropCollection propCollection ? propCollection.constructor : null;
         }
 
         internal PropField (PropType declType, String name, MethodInfo method)

@@ -128,7 +128,7 @@ namespace Friflo.Json.Managed
                         }
                         else {
                             // todo: use field.GetFieldObject() - remove if, make PropField.collection private
-                            PropCollection collection = field.collection;
+                            NativeType collection = field.collection;
                             if (collection == null)
                                 WriteObject(field.GetFieldObject(typeCache), child);
                             else
@@ -144,7 +144,8 @@ namespace Friflo.Json.Managed
             bytes.AppendChar('}');
         }
 
-        private void WriteCollection(PropCollection collection, Object col) {
+        private void WriteCollection(NativeType nativeType, Object col) {
+            PropCollection collection = (PropCollection) nativeType;
             Type typeInterface = collection.typeInterface;
             if (typeInterface == typeof(Array)) {
                 bytes.AppendChar('[');

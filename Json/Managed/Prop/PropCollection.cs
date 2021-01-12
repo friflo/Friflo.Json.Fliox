@@ -28,6 +28,17 @@ namespace Friflo.Json.Managed.Prop
         public virtual void Dispose() {
         }
     }
+
+    public class TypeNotSupported : NativeType {
+        public TypeNotSupported(Type type) : 
+            base(type, null, null) {
+        }
+
+        public override object CreateInstance() {
+            throw new NotSupportedException("Type not supported. " + type.FullName);
+        }
+    }
+    
     public class PropCollection : NativeType
     {
         public   readonly   Type            typeInterface;
@@ -94,8 +105,8 @@ namespace Friflo.Json.Managed.Prop
 
         public  class Info
         {
-            internal PropCollection collection;
-            internal PropAccess     access;
+            internal NativeType collection;
+            internal PropAccess access;
     
             public  static Info Create (FieldInfo field)
             {
@@ -111,7 +122,7 @@ namespace Friflo.Json.Managed.Prop
                 return info;
             }
 
-            public static PropCollection CreateCollection (Type type)
+            public static NativeType CreateCollection (Type type)
             {
                 Info info = new Info();
                 info.Create (type );
@@ -126,8 +137,11 @@ namespace Friflo.Json.Managed.Prop
                 if (type. IsArray) {
                     Type elementType = type.GetElementType();
                     int rank = type.GetArrayRank();
-                    if (rank > 1)
-                        throw new NotSupportedException("multidimensional arrays not supported. Type" + type.FullName);
+                    if (rank > 1) {
+                        collection = new TypeNotSupported(type);
+                        return;
+                    }
+
                     SimpleType.Id? id = SimpleType.IdFromType(elementType);
                     var ar = GetArrayResolver(id);
                     collection = new PropCollection(typeof(Array), type, elementType, null, ar, type.GetArrayRank(), null);
@@ -171,7 +185,7 @@ namespace Friflo.Json.Managed.Prop
                     case SimpleType.Id.Float:   return ReadArrayFloat.Resolver;
                     case SimpleType.Id.Object:  return ReadArrayObject.Resolver;
                     default:
-                        throw new NotSupportedException("unsupported array type: " + collection.id.ToString());
+                        throw new NotSupportedException("unsupported array type: " + id.ToString());
                 }
             }
         }

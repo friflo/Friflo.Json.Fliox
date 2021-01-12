@@ -174,7 +174,7 @@ namespace Friflo.Json.Managed
         public Object ReadJsonObject(Object obj, NativeType nativeType) {
             if (nativeType.jsonObject != null)
                 return nativeType.jsonObject.Read(this, obj, nativeType);
-            throw new InvalidOperationException("found no resolver for JSON object: " + nativeType.type.FullName);
+            throw new NotSupportedException("found no resolver for JSON object: " + nativeType.type.FullName);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace Friflo.Json.Managed
         public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
             if (nativeType.jsonArray != null)
                 return nativeType.jsonArray.Read(this, col, nativeType);
-            throw new InvalidOperationException("found no resolver for JSON array: " + nativeType.type.Name);
+            throw new NotSupportedException("found no resolver for JSON array: " + nativeType.type.Name);
         }
     }
 

@@ -29,7 +29,7 @@ namespace Friflo.Json.Managed
                 NativeType propType = typeMap.Get(type);
                 if (propType == null)
                 {
-                    PropCollection propCollection = PropCollection.Info.CreateCollection(type);
+                    NativeType propCollection = PropCollection.Info.CreateCollection(type);
                     if (propCollection != null) {
                         propType = propCollection;
                     }
