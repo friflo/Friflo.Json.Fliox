@@ -139,17 +139,21 @@ namespace Friflo.Json.Managed
             if (typeof(IDictionary).IsAssignableFrom(nativeType.type)) { //typeof( IDictionary<,> )
                 NativeType collection = typeCache.GetType(nativeType.type);
                 obj = collection.CreateInstance();
-                return ReadMapType((IDictionary)obj, collection);
+                return ReadMapType(this, obj, collection);
             }
-
+            return ReadObject(this, obj, nativeType);
+        }
+            
+        public static Object ReadObject (JsonReader reader, object obj, NativeType nativeType) {
+            ref var parser = ref reader.parser;
             PropType propType = (PropType)nativeType;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
-                if (ev == JsonEvent.ValueString && discriminator.IsEqualBytes(parser.key)) {
-                    propType = (PropType)typeCache.GetTypeByName (parser.value);
+                if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(parser.key)) {
+                    propType = (PropType)reader.typeCache.GetTypeByName (parser.value);
                     if (propType == null)
-                        return ErrorNull("Object with discriminator $type not found: ", ref parser.value);
+                        return reader.ErrorNull("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
                 obj = propType.CreateInstance();
@@ -166,7 +170,7 @@ namespace Friflo.Json.Managed
                     if (field.type == SimpleType.Id.String)
                         field.SetString(obj, parser.value.ToString());
                     else
-                        return ErrorNull("Expected type String. Field type: ", ref field.nameBytes);
+                        return reader.ErrorNull("Expected type String. Field type: ", ref field.nameBytes);
                     break;
                 case JsonEvent. ValueNumber:
                     field = propType.GetField(parser.key);
@@ -174,7 +178,7 @@ namespace Friflo.Json.Managed
                         break;
                     bool success = field.SetNumber(ref parser, obj);
                     if (!success)
-                        return ValueParseError();
+                        return reader.ValueParseError();
                     break;
                 case JsonEvent. ValueBool:
                     field = propType.GetField(parser.key);
@@ -190,7 +194,7 @@ namespace Friflo.Json.Managed
                     {
                     case SimpleType.Id. String: field.SetString(obj, null); break;
                     case SimpleType.Id. Object: field.SetObject(obj, null); break;
-                    default:            return ErrorNull("Field type not nullable. Field type: ", ref field.nameBytes);
+                    default:            return reader.ErrorNull("Field type not nullable. Field type: ", ref field.nameBytes);
                     }   
                     break;
                 case JsonEvent. ObjectStart:
@@ -209,13 +213,13 @@ namespace Friflo.Json.Managed
                             if (collectionInterface == typeof( IDictionary<,> )) {
                                 if (sub == null)
                                     sub = field.CreateCollection();
-                                sub = ReadMapType((IDictionary)sub, collection);
+                                sub = ReadMapType(reader, sub, collection);
                             } else
-                                return ErrorNull("unsupported collection Type: ", collectionInterface. Name);
+                                return reader.ErrorNull("unsupported collection Type: ", collectionInterface. Name);
                         }
                         else
                         {
-                            sub = ReadJsonObject (sub, field.GetFieldPropType(typeCache));
+                            sub = reader.ReadJsonObject (sub, field.GetFieldPropType(reader.typeCache));
                         }
                         if (sub != null)
                             field.SetObject(obj, sub);
@@ -233,9 +237,9 @@ namespace Friflo.Json.Managed
                     else
                     {
                         if (field.collection == null)
-                            return ErrorNull("expected field with array nature: ", ref field.nameBytes);
+                            return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                         Object array = field.GetObject(obj);
-                        Object arrayRet = ReadJsonArray( array, field.collection, 0);
+                        Object arrayRet = reader.ReadJsonArray( array, field.collection, 0);
                         if (arrayRet != null)
                         {
                             if (array != arrayRet)
@@ -250,15 +254,17 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: ", ev);
+                    return reader.ErrorNull("unexpected state: ", ev);
                 }
                 ev = parser.NextEvent();
             }
         }
 
-        private Object ReadMapType (IDictionary map, NativeType nativeType) {
+        private static Object ReadMapType (JsonReader reader, object obj, NativeType nativeType) {
+            IDictionary map = (IDictionary) obj;
+            ref var parser = ref reader.parser;
             PropCollection collection = (PropCollection)nativeType;
-            NativeType elementPropType = collection.GetElementPropType(typeCache);
+            NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
             while (true)
             {
                 JsonEvent ev = parser.NextEvent();
@@ -270,7 +276,7 @@ namespace Friflo.Json.Managed
                     break;
                 case JsonEvent. ObjectStart:
                     key = parser.key.ToString();
-                    Object value = ReadJsonObject(null, elementPropType);
+                    Object value = reader.ReadJsonObject(null, elementPropType);
                     if (value == null)
                         return null;
                     map [ key ] = value ;
@@ -278,18 +284,18 @@ namespace Friflo.Json.Managed
                 case JsonEvent.ValueString:
                     key = parser.key.ToString();
                     if (collection.id != SimpleType.Id.String)
-                        return ErrorNull("Expect Dictionary value type string. Found: ", collection.elementType.Name);
+                        return reader.ErrorNull("Expect Dictionary value type string. Found: ", collection.elementType.Name);
                     map[key] = parser.value.ToString();
                     break;
                 case JsonEvent.ValueNumber:
                     key = parser.key.ToString();
-                    map[key] = NumberFromValue(collection.id, out bool successNum);
+                    map[key] = reader.NumberFromValue(collection.id, out bool successNum);
                     if (!successNum)
                         return null;
                     break;
                 case JsonEvent.ValueBool:
                     key = parser.key.ToString();
-                    map[key] = BoolFromValue(collection.id, out bool successBool);
+                    map[key] = reader.BoolFromValue(collection.id, out bool successBool);
                     if (!successBool)
                         return null;
                     break;
@@ -298,7 +304,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: ", ev);
+                    return reader.ErrorNull("unexpected state: ", ev);
                 }
             }
         }
