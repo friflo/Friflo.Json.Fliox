@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Prop
         public   readonly   Type            keyType;
         public   readonly   Type            elementType;
         public   readonly   int             rank;
-        public              PropType        elementPropType;
+        private             PropType        elementPropType;
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
     
@@ -27,6 +27,13 @@ namespace Friflo.Json.Managed.Prop
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
             this.constructor    = GetConstructor (type, typeInterface, keyType, elementType);
+        }
+        
+        public PropType GetElementPropType(PropType.Cache typeCache) {
+            // simply reduce lookups
+            if (elementPropType == null)
+                elementPropType = typeCache.GetType(elementType);
+            return elementPropType;
         }
 
         public Object CreateInstance ()
@@ -112,5 +119,7 @@ namespace Friflo.Json.Managed.Prop
                 }
             }
         }
+
+
     }
 }

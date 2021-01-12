@@ -172,9 +172,8 @@ namespace Friflo.Json.Managed
                         WriteArrayFloat((float[]) col);
                         break;
                     case SimpleType.Id.Object:
-                        if (collection.elementPropType == null)
-                            collection.elementPropType = typeCache.GetType(collection.elementType);
-                        WriteArrayObject(collection.elementPropType, (Object[]) col);
+                        PropType elementPropType = collection.GetElementPropType(typeCache);
+                        WriteArrayObject(elementPropType, (Object[]) col);
                         break;
                     default:
                         throw new FrifloException("unsupported array type: " + collection.id);
@@ -195,16 +194,14 @@ namespace Friflo.Json.Managed
 
         private void WriteList(PropCollection collection, IList list) {
             bytes.AppendChar('[');
-            if (collection.elementPropType == null)
-                collection.elementPropType = typeCache.GetType(collection.elementType);
-            PropType itemType = collection.elementPropType;
+            PropType elementPropType = collection.GetElementPropType(typeCache);
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
                     switch (collection.id) {
                         case SimpleType.Id.Object:
-                            WriteObject(itemType, item);
+                            WriteObject(elementPropType, item);
                             break;
                         case SimpleType.Id.String:
                             WriteString((String) item);
@@ -240,16 +237,14 @@ namespace Friflo.Json.Managed
             }
             else {
                 // Map<String, Object>
-                if (collection.elementPropType == null)
-                    collection.elementPropType = typeCache.GetType(collection.elementType);
-                PropType itemType = collection.elementPropType;
+                PropType elementPropType = collection.GetElementPropType(typeCache);
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     WriteString((String) entry.Key);
                     bytes.AppendChar(':');
                     Object value = entry.Value;
                     if (value != null)
-                        WriteObject(itemType, value);
+                        WriteObject(elementPropType, value);
                     else
                         bytes.AppendBytes(ref @null);
                 }

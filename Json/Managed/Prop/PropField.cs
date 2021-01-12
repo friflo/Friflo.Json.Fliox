@@ -24,6 +24,7 @@ namespace Friflo.Json.Managed.Prop
 
         public PropType GetFieldPropType(PropType.Cache cache)
         {
+            // simply reduce lookups
             if (fieldPropType != null)
                 return fieldPropType;
             return fieldPropType = cache.GetType(fieldType);        
