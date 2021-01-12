@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Prop;
-using Friflo.Json.Managed.Utils;
+using Friflo.Json.Managed.Prop.Resolver;
+
 
 namespace Friflo.Json.Managed
 {
     // JsonReader
     public class JsonReader : IDisposable
     {
-        private             JsonParser          parser;
-        private readonly    PropType.Cache      typeCache;
+        public              JsonParser          parser;
+        public readonly    PropType.Cache      typeCache;
 
         private readonly    Bytes               discriminator = new Bytes ("$type"); 
 
@@ -49,9 +50,9 @@ namespace Friflo.Json.Managed
             return null;
         }
 
-        private static readonly int minLen = 8;
+        public static readonly int minLen = 8;
 
-        private static int Inc (int len) {
+        public static int Inc (int len) {
             return len < 5 ? minLen : 2 * len;      
         }
         
@@ -133,7 +134,7 @@ namespace Friflo.Json.Managed
             }
         }
     
-        private Object ReadJsonObject (Object obj, PropType propType) {
+        public Object ReadJsonObject (Object obj, PropType propType) {
             // support also map in maps in ...
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
@@ -299,114 +300,20 @@ namespace Friflo.Json.Managed
             }
         }
 
+        private readonly ArrayReadResolver arrayReadResolver = new ArrayReadResolver();
+
         // ReSharper disable once UnusedParameter.Local
-        private Object ReadJsonArray (Object col, PropCollection collection, int index) {
+        public Object ReadJsonArray(Object col, PropCollection collection, int index) {
+            Func<JsonReader, object, PropCollection, object> resolver = arrayReadResolver.GetReadResolver(collection);
+            if (resolver != null)
+                return resolver(this, col, collection);
+            
             Type typeInterface = collection.typeInterface;
-            if (typeInterface == typeof( Array )) {
-                if (collection.rank > 1)
-                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
-                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-                switch (collection.id)
-                {
-                    case SimpleType.Id. String:     return ReadArrayString  ((String    [])col);
-                    case SimpleType.Id. Long:       return ReadArrayLong    ((long      [])col);
-                    case SimpleType.Id. Integer:    return ReadArrayInt     ((int       [])col);
-                    case SimpleType.Id. Short:      return ReadArrayShort   ((short     [])col);
-                    case SimpleType.Id. Byte:       return ReadArrayByte    ((byte      [])col);
-                    case SimpleType.Id. Bool:       return ReadArrayBool    ((bool      [])col);
-                    case SimpleType.Id. Double:     return ReadArrayDouble  ((double    [])col);
-                    case SimpleType.Id. Float:      return ReadArrayFloat   ((float     [])col);
-                    case SimpleType.Id. Object:     return ReadArray        (col, collection);
-                    default:
-                        return ErrorNull("unsupported array type: ", collection.id.ToString());
-                }
-            }
             if (typeInterface == typeof( IList<> ))
                 return ReadList ((IList)col, collection);
             return ErrorNull("unsupported collection interface: ", typeInterface.Name);
         }
     
-
-        private Object ReadArray (Object col, PropCollection collection) {
-            int startLen;
-            int len;
-            Array array;
-            if (col == null)
-            {
-                startLen = 0;
-                len = minLen;
-                array = Arrays.CreateInstance(collection.elementType, len);
-            }
-            else
-            {
-                array = (Array) col;
-                startLen = len = array.Length;
-            }
-            
-            PropType elementPropType = collection.GetElementPropType(typeCache);
-            int index = 0;
-            while (true)
-            {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                    case JsonEvent. ValueString:
-                    case JsonEvent. ValueNumber:
-                    case JsonEvent. ValueBool:
-                        // array of string, bool, int, long, float, double, short, byte are handled in ReadJsonArray()
-                        return ErrorNull("expect array item of type: ", collection.elementType. Name);
-                    case JsonEvent. ValueNull:
-                        if (index >= len)
-                            array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                        array.SetValue (null, index++ );
-                        break;
-                    case JsonEvent. ArrayStart:
-                        PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
-                        if (index < startLen) {
-                            Object oldElement = array .GetValue( index );
-                            Object element = ReadJsonArray(oldElement, elementCollection, 0);
-                            if (element == null)
-                                return null;
-                            array.SetValue (element, index);
-                        } else {
-                            Object element = ReadJsonArray(null, elementCollection, 0);
-                            if (element == null)
-                                return null;
-                            if (index >= len)
-                                array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                            array.SetValue (element, index);
-                        }
-                        index++;
-                        break;
-                    case JsonEvent. ObjectStart:
-                        if (index < startLen) {
-                            Object oldElement = array .GetValue( index );
-                            Object element = ReadJsonObject(oldElement, elementPropType);
-                            if (element == null)
-                                return null;
-                            array.SetValue (element, index);
-                        } else {
-                            Object element = ReadJsonObject(null, elementPropType);
-                            if (element == null)
-                                return null;
-                            if (index >= len)
-                                array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                            array.SetValue (element, index);
-                        }
-                        index++;
-                        break;
-                    case JsonEvent. ArrayEnd:
-                        if (index != len)
-                            array = Arrays.  CopyOfType (collection.elementType, array, index);
-                        return array;
-                    case JsonEvent. Error:
-                        return null;
-                    default:
-                        return ErrorNull("unexpected state: ", ev);
-                }
-            }
-        }
-
         private Object ReadList (IList list, PropCollection collection) {
             if (list == null)
                 list = (IList)collection.CreateInstance();
@@ -487,233 +394,11 @@ namespace Friflo.Json.Managed
 
         /* ----------------------------------------- array readers -------------------------------------------- */
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
-        private Object ValueParseError () {
+        public Object ValueParseError () {
             return null; // ErrorNull(parser.parseCx.GetError().ToString());
         }
         
-        private Object ArrayUnexpected (JsonEvent ev) {
-            return ErrorNull("unexpected state in array: ", ev);
-        }
-        
-        private Object ReadArrayString (String[] array) {
-            if (array == null)
-                array = new String[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                    case JsonEvent. ValueString:
-                        if (index >= len)
-                            array = Arrays.CopyOf (array, len = Inc(len));
-                        array[index++] = parser.value.ToString();
-                        break;
-                    case JsonEvent. ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf (array, index);
-                        return array;
-                    case JsonEvent. Error:
-                        return null;
-                    default:
-                        return ArrayUnexpected(ev);
-                }
-            }
-        }
 
-        private Object ReadArrayLong (long[] array) {
-            if (array == null)
-                array = new long[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {   
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsLong(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayInt (int[] array) {
-            if (array == null)
-                array = new int[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsInt(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayShort (short[] array) {
-            if (array == null)
-                array = new short[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsShort(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayByte (byte[] array) {
-            if (array == null)
-                array = new byte[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsByte(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayBool (bool[] array) {
-            if (array == null)
-                array = new bool [minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueBool:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.boolValue;
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayDouble (double[] array) {
-            if (array == null)
-                array = new double[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsDouble(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
-
-        private Object ReadArrayFloat (float[] array) {
-            if (array == null)
-                array = new float[minLen];
-            int len = array. Length;
-            int index = 0;
-            while (true) {
-                JsonEvent ev = parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.ValueAsFloat(out bool success);
-                    if (!success)
-                        return ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
-                }
-            }
-        }
         //
         private object NumberFromValue(SimpleType.Id? id, out bool success) {
             if (id == null) {
