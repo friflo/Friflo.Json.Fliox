@@ -23,8 +23,7 @@ namespace Friflo.Json.Managed
         
         public JsonReader(TypeStore typeStore) {
             typeCache   = new PropType.Cache(typeStore);
-            parser      = new JsonParser();
-            parser.error.throwException = false;
+            parser = new JsonParser {error = {throwException = false}};
         }
         
         public void Dispose() {
@@ -130,7 +129,7 @@ namespace Friflo.Json.Managed
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
                 obj = collection.CreateInstance();
-                return ReadMapType(obj, collection);
+                return ReadMapType((IDictionary)obj, collection);
             }
             return ReadObjectType(obj, propType);
         }
@@ -204,7 +203,7 @@ namespace Friflo.Json.Managed
                             if (collectionInterface == typeof( IDictionary<,> )) {
                                 if (sub == null)
                                     sub = field.CreateCollection();
-                                sub = ReadMapType(sub, collection);
+                                sub = ReadMapType((IDictionary)sub, collection);
                             } else
                                 return ErrorNull("unsupported collection Type: ", collectionInterface. Name);
                         }
@@ -251,11 +250,9 @@ namespace Friflo.Json.Managed
             }
         }
 
-        // @SuppressWarnings("unchecked")
-        private Object ReadMapType (Object obj, PropCollection collection) {
+        private Object ReadMapType (IDictionary map, PropCollection collection) {
             if (collection.elementPropType == null)
                 collection.elementPropType = typeCache.GetType(collection.elementType);
-            IDictionary map = (IDictionary) obj;        
             while (true)
             {
                 JsonEvent ev = parser.NextEvent();
@@ -291,7 +288,7 @@ namespace Friflo.Json.Managed
                         return null;
                     break;
                 case JsonEvent. ObjectEnd:
-                    return obj;
+                    return map;
                 case JsonEvent. Error:
                     return null;
                 default:
@@ -320,7 +317,7 @@ namespace Friflo.Json.Managed
                 }
             }
             if (typeInterface == typeof( IList<> ))
-                return ReadList (col, collection);
+                return ReadList ((IList)col, collection);
             return ErrorNull("unsupported collection interface: ", typeInterface.Name);
         }
     
@@ -387,13 +384,12 @@ namespace Friflo.Json.Managed
             }
         }
 
-        // @SuppressWarnings("unchecked")
-        private Object ReadList (Object col, PropCollection collection) {
-            if (col == null)
-                col = collection.CreateInstance();
+        private Object ReadList (IList list, PropCollection collection) {
+            if (list == null)
+                list = (IList)collection.CreateInstance();
             if (collection.elementPropType == null)
                 collection.elementPropType = typeCache.GetType(collection.elementType);
-            IList list = (IList) col;
+
             if (collection.id != SimpleType.Id.Object)
                 list. Clear();
             int startLen = list. Count;
@@ -434,7 +430,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ArrayEnd:
                     for (int n = startLen - 1; n >= index; n--)
                         list. Remove (n);
-                    return col;
+                    return list;
                 case JsonEvent. Error:
                     return null;
                 default:
