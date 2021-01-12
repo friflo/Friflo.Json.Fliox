@@ -232,6 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @null =      new Bytes ("null"))
             using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
+            using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -268,6 +269,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 {
                     int[][] expect = {new []{1, 2, 3}};
                     AreEqual(expect, enc.Read<int[][]>(arrArrNum));
+                }
+                {
+                    Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
+                    AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
                 }
 
                 // --- maps - value type: integral 
