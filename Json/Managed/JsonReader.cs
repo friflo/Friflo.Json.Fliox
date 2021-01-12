@@ -76,10 +76,10 @@ namespace Friflo.Json.Managed
                 switch (ev)
                 {
                 case JsonEvent. ObjectStart:
-                    PropType propType = typeCache.GetType (type);               // lookup required
+                    NativeType propType = typeCache.GetType (type);               // lookup required
                     return ReadJsonObject(null, propType);
                 case JsonEvent. ArrayStart:
-                    PropCollection collection = typeCache.GetCollection(type);  // lookup required 
+                    NativeType collection = typeCache.GetType(type);  // lookup required 
                     return ReadJsonArray(null, collection, 0);
                 case JsonEvent.ValueString:
                     return parser.value.ToString();
@@ -121,10 +121,10 @@ namespace Friflo.Json.Managed
                 switch (ev)
                 {
                 case JsonEvent. ObjectStart:
-                    PropType propType = typeCache.GetType (obj.GetType());              // lookup required
+                    NativeType propType = typeCache.GetType (obj.GetType());              // lookup required
                     return ReadJsonObject(obj, propType);
                 case JsonEvent. ArrayStart:
-                    PropCollection collection = typeCache.GetCollection(obj.GetType()); // lookup required
+                    NativeType collection = typeCache.GetType(obj.GetType()); // lookup required
                     return ReadJsonArray(obj, collection, 0);
                 case JsonEvent. Error:
                     return null;
@@ -134,18 +134,20 @@ namespace Friflo.Json.Managed
             }
         }
     
-        public Object ReadJsonObject (Object obj, PropType propType) {
+        public Object ReadJsonObject (Object obj, NativeType nativeType) {
             // support also map in maps in ...
-            if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
-                PropCollection collection = typeCache.GetCollection(propType.nativeType);
+            if (typeof(IDictionary).IsAssignableFrom(nativeType.nativeType)) { //typeof( IDictionary<,> )
+                NativeType collection = typeCache.GetType(nativeType.nativeType);
                 obj = collection.CreateInstance();
                 return ReadMapType((IDictionary)obj, collection);
             }
+
+            PropType propType = (PropType)nativeType;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
                 if (ev == JsonEvent.ValueString && discriminator.IsEqualBytes(parser.key)) {
-                    propType = typeCache.GetTypeByName (parser.value);
+                    propType = (PropType)typeCache.GetTypeByName (parser.value);
                     if (propType == null)
                         return ErrorNull("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
@@ -254,8 +256,9 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private Object ReadMapType (IDictionary map, PropCollection collection) {
-            PropType elementPropType = collection.GetElementPropType(typeCache);
+        private Object ReadMapType (IDictionary map, NativeType nativeType) {
+            PropCollection collection = (PropCollection)nativeType;
+            NativeType elementPropType = collection.GetElementPropType(typeCache);
             while (true)
             {
                 JsonEvent ev = parser.NextEvent();
@@ -303,19 +306,21 @@ namespace Friflo.Json.Managed
         private readonly ReadJsonArrayResolver readJsonArrayResolver = new ReadJsonArrayResolver();
 
         // ReSharper disable once UnusedParameter.Local
-        public Object ReadJsonArray(Object col, PropCollection collection, int index) {
-            Func<JsonReader, object, PropCollection, object> resolver = readJsonArrayResolver.GetReadResolver(collection);
+        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
+            PropCollection collection = (PropCollection) nativeType;
+            Func<JsonReader, object, NativeType, object> resolver = readJsonArrayResolver.GetReadResolver(collection);
             if (resolver != null)
                 return resolver(this, col, collection);
-            
+
             return ErrorNull("unsupported collection interface: ", collection.typeInterface.Name);
         }
     
-        public static Object ReadList (JsonReader reader, object col, PropCollection collection) {
+        public static Object ReadList (JsonReader reader, object col, NativeType nativeType) {
+            PropCollection collection = (PropCollection) nativeType;
             IList list = (IList) col;
             if (list == null)
                 list = (IList)collection.CreateInstance();
-            PropType elementPropType = collection.GetElementPropType(reader.typeCache);
+            NativeType elementPropType = collection.GetElementPropType(reader.typeCache);
             if (collection.id != SimpleType.Id.Object)
                 list. Clear();
             int startLen = list. Count;
@@ -348,7 +353,7 @@ namespace Friflo.Json.Managed
                     index++;
                     break;
                 case JsonEvent. ArrayStart:
-                    PropCollection elementCollection = reader.typeCache.GetCollection(collection.elementType);
+                    NativeType elementCollection = reader.typeCache.GetType(collection.elementType);
                     if (index < startLen) {
                         Object oldElement = list [ index ];
                         Object element = reader.ReadJsonArray(oldElement, elementCollection, 0);

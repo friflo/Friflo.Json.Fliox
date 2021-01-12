@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace Friflo.Json.Managed.Prop.Resolver
 {
     public class ReadJsonArrayResolver
     {
-        public Func<JsonReader, object, PropCollection, object> GetReadResolver(PropCollection collection) {
+        public Func<JsonReader, object, NativeType, object> GetReadResolver(NativeType nativeType) {
+            PropCollection collection = (PropCollection)nativeType;
             if (collection.typeInterface == typeof(Array)) {
                 if (collection.rank > 1)
-                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
+                    throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.nativeType);
                 switch (collection.id) {
                     case SimpleType.Id.String:  return ArrayReadResolver.ReadArrayString;
                     case SimpleType.Id.Long:    return ArrayReadResolver.ReadArrayLong;

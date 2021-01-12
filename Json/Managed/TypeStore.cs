@@ -11,9 +11,8 @@ namespace Friflo.Json.Managed
     /// </summary>
     public class TypeStore : IDisposable
     {
-        private   readonly  HashMapLang <Type, PropType>        typeMap=    new HashMapLang <Type,  PropType >();
-        internal  readonly  HashMapLang <Bytes, PropType>       nameMap=    new HashMapLang <Bytes, PropType >();
-        private   readonly  HashMapLang <Type, PropCollection>  colMap=     new HashMapLang <Type,  PropCollection >();
+        private   readonly  HashMapLang <Type,  NativeType>       typeMap=    new HashMapLang <Type,  NativeType >();
+        internal  readonly  HashMapLang <Bytes, NativeType>       nameMap=    new HashMapLang <Bytes, NativeType >();
             
         public void Dispose() {
             lock (nameMap) {
@@ -22,27 +21,27 @@ namespace Friflo.Json.Managed
             }
         }
 
-        internal PropCollection GetCollection (Type type)
-        {
-            lock (colMap)
-            {
-                PropCollection colType = colMap.Get(type);
-                if (colType == null) {
-                    colType = PropCollection.Info.CreateCollection(type);
-                    colMap.Put(type, colType);
-                }
-                return colType;
-            }
-        }
-        
-        internal PropType GetType (Type type, String name)
+       
+        internal NativeType GetType (Type type, String name)
         {
             lock (typeMap)
             {
-                PropType propType = typeMap.Get(type);
+                NativeType propType = typeMap.Get(type);
                 if (propType == null)
                 {
-                    propType = new PropType(type, name);
+                    PropCollection propCollection = PropCollection.Info.CreateCollection(type);
+                    if (propCollection != null) {
+                        propType = propCollection;
+                    }
+                    else if (type.IsClass) {
+                        propType = new PropType(type, name);
+                    }
+                    else if (type.IsValueType) {
+                        propType = new PropType(type, name);
+                    }
+                    else {
+                        throw new NotSupportedException($"Type not supported: " + type.FullName);
+                    }
                     typeMap.Put(type, propType);
                 }
                 return propType;
@@ -53,12 +52,15 @@ namespace Friflo.Json.Managed
         {
             lock (nameMap)
             {
-                PropType propType = GetType(type, name); 
-                if (!propType.typeName.buffer.IsCreated())
-                    throw new FrifloException("Type already created without registered name");
-                if (!propType.typeName.IsEqualString(name))
-                    throw new FrifloException("Type already registered with different name: " + name);
-                nameMap.Put(propType.typeName, propType);
+                NativeType nativeType = GetType(type, name);
+                if (nativeType is PropType) {
+                    PropType propType = (PropType)nativeType;
+                    if (!propType.typeName.buffer.IsCreated())
+                        throw new FrifloException("Type already created without registered name");
+                    if (!propType.typeName.IsEqualString(name))
+                        throw new FrifloException("Type already registered with different name: " + name);
+                    nameMap.Put(propType.typeName, propType);
+                }
             }
         }
 

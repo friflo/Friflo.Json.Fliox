@@ -18,7 +18,7 @@ namespace Friflo.Json.Managed
         private             Bytes       strBuf;
 
         private             Bytes       @null = new Bytes("null");
-        private             Bytes       type = new Bytes("\"$type\":\"");
+        private             Bytes       discriminator = new Bytes("\"$type\":\"");
 
         public          ref Bytes Output => ref bytes;
 
@@ -28,7 +28,7 @@ namespace Friflo.Json.Managed
         
         public void Dispose() {
             @null.Dispose();
-            type.Dispose();
+            discriminator.Dispose();
             format.Dispose();
             strBuf.Dispose();
             bytes.Dispose();
@@ -38,7 +38,7 @@ namespace Friflo.Json.Managed
             bytes.InitBytes(128);
             strBuf.InitBytes(128);
             format.InitTokenFormat();
-            PropType objType = typeCache.GetType(obj.GetType());
+            NativeType objType = typeCache.GetType(obj.GetType());
             WriteObject(objType, obj);
         }
 
@@ -56,14 +56,15 @@ namespace Friflo.Json.Managed
             bytes.AppendChar('\"');
         }
 
-        private void WriteObject(PropType type, Object obj) {
+        private void WriteObject(NativeType nativeType, Object obj) {
+            PropType type = (PropType)nativeType;
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
             if (type.nativeType != objType) {
-                type = typeCache.GetType(objType);
+                type = (PropType)typeCache.GetType(objType);
                 firstMember = false;
-                bytes.AppendBytes(ref this.type);
+                bytes.AppendBytes(ref this.discriminator);
                 Bytes subType = type.typeName;
                 if (subType.buffer.IsCreated())
                     bytes.AppendBytes(ref subType);
@@ -172,7 +173,7 @@ namespace Friflo.Json.Managed
                         WriteArrayFloat((float[]) col);
                         break;
                     case SimpleType.Id.Object:
-                        PropType elementPropType = collection.GetElementPropType(typeCache);
+                        NativeType elementPropType = collection.GetElementPropType(typeCache);
                         WriteArrayObject(elementPropType, (Object[]) col);
                         break;
                     default:
@@ -194,7 +195,7 @@ namespace Friflo.Json.Managed
 
         private void WriteList(PropCollection collection, IList list) {
             bytes.AppendChar('[');
-            PropType elementPropType = collection.GetElementPropType(typeCache);
+            NativeType elementPropType = collection.GetElementPropType(typeCache);
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) bytes.AppendChar(',');
                 Object item = list[n];
@@ -237,7 +238,7 @@ namespace Friflo.Json.Managed
             }
             else {
                 // Map<String, Object>
-                PropType elementPropType = collection.GetElementPropType(typeCache);
+                NativeType elementPropType = collection.GetElementPropType(typeCache);
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     WriteString((String) entry.Key);
@@ -316,7 +317,7 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private void WriteArrayObject(PropType elementPropType, Object[] arr) {
+        private void WriteArrayObject(NativeType elementPropType, Object[] arr) {
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) bytes.AppendChar(',');
                 if (arr[n] == null)

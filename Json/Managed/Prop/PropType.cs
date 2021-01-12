@@ -8,26 +8,25 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Prop
 {
     // PropType
-    public class PropType : IDisposable
+    public class PropType : NativeType
     {
-        public  readonly Type                       nativeType;
         public  readonly Bytes                      typeName;
-
         private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
         private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes, PropField>(11);
         public  readonly PropertyFields             propFields;
         private readonly ConstructorInfo            constructor;
         
         
-        public void Dispose() {
+        public override void Dispose() {
+            base.Dispose();
             typeName.Dispose();
             propFields.Dispose();
         }
 
         // PropType
-        internal PropType (Type type, String name)
+        internal PropType (Type type, String name) :
+            base (type)
         {
-            nativeType = type;
             typeName = new Bytes(name);
             propFields = new  PropertyFields (type, this, true, true);
             for (int n = 0; n < propFields.num; n++)
@@ -39,7 +38,7 @@ namespace Friflo.Json.Managed.Prop
             constructor = Reflect.GetDefaultConstructor (type);
         }
         
-        public Object CreateInstance()
+        public override Object CreateInstance()
         {
             if (constructor == null) {
                 // Is it a struct?
@@ -67,9 +66,9 @@ namespace Friflo.Json.Managed.Prop
         /// </summary>
         public class Cache
         {
-            private readonly    HashMapLang <Type, PropType>        typeMap =   new HashMapLang <Type,  PropType >();
-            private readonly    HashMapLang <Bytes, PropType>       nameMap =   new HashMapLang <Bytes, PropType >();
-            private readonly    HashMapLang <Type, PropCollection>  colMap =    new HashMapLang <Type,  PropCollection >();
+            private readonly    HashMapLang <Type, NativeType>        typeMap =   new HashMapLang <Type,  NativeType >();
+            private readonly    HashMapLang <Bytes, NativeType>       nameMap =   new HashMapLang <Bytes, NativeType >();
+            
             private readonly    TypeStore                           typeStore;
             
             public Cache (TypeStore typeStore)
@@ -77,19 +76,9 @@ namespace Friflo.Json.Managed.Prop
                 this.typeStore = typeStore;
             }
             
-            internal PropCollection GetCollection (Type type)
+            public NativeType GetType (Type type)
             {
-                PropCollection colType = colMap.Get(type);
-                if (colType == null) {
-                    colType = typeStore.GetCollection(type);
-                    colMap.Put(type, colType);
-                }
-                return colType;
-            }
-            
-            public PropType GetType (Type type)
-            {
-                PropType propType = typeMap.Get(type);
+                NativeType propType = typeMap.Get(type);
                 if (propType == null) {
                     propType = typeStore.GetType(type, null);
                     typeMap.Put(type, propType);
@@ -97,16 +86,17 @@ namespace Friflo.Json.Managed.Prop
                 return propType;
             }
 
-            public PropType GetTypeByName(Bytes name)
+            public NativeType GetTypeByName(Bytes name)
             {
-                PropType propType = nameMap.Get(name);
+                NativeType propType = nameMap.Get(name);
                 if (propType == null)
                 {
                     lock (typeStore.nameMap)
                     {
                         propType = typeStore.nameMap.Get(name);
+                        if (propType is PropType)
+                            nameMap.Put(((PropType)propType).typeName, propType);
                     }
-                    nameMap.Put(propType.typeName, propType);
                 }
                 return propType;
             }

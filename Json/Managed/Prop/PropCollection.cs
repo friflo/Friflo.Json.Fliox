@@ -3,40 +3,54 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
 {
-    public class PropCollection
+    public abstract class NativeType : IDisposable {
+        public  readonly   Type            nativeType;
+
+
+        public abstract Object CreateInstance();
+
+        protected NativeType(Type type) {
+            nativeType = type;
+
+        }
+
+        public virtual void Dispose() {
+        }
+    }
+    public class PropCollection : NativeType
     {
-        public   readonly   Type            type;
         public   readonly   Type            typeInterface;
         public   readonly   Type            keyType;
         public   readonly   Type            elementType;
         public   readonly   int             rank;
-        private             PropType        elementPropType; // is set on first lookup
+        private             NativeType      elementPropType; // is set on first lookup
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
     
-        internal PropCollection (Type typeInterface, Type type, Type elementType, int rank, Type keyType)
+        internal PropCollection (Type typeInterface, Type nativeType, Type elementType, int rank, Type keyType) :
+            base (nativeType)
         {
-            this.type           = type;
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
-            this.constructor    = GetConstructor (type, typeInterface, keyType, elementType);
+            this.constructor    = GetConstructor (nativeType, typeInterface, keyType, elementType);
         }
-        
-        public PropType GetElementPropType(PropType.Cache typeCache) {
+
+        public NativeType GetElementPropType(PropType.Cache typeCache) {
             // simply reduce lookups
             if (elementPropType == null)
                 elementPropType = typeCache.GetType(elementType);
             return elementPropType;
         }
 
-        public Object CreateInstance ()
+        public override Object CreateInstance ()
         {
             return Reflect.CreateInstance(constructor);
         }
