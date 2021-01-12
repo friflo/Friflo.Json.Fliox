@@ -127,15 +127,15 @@ namespace Friflo.Json.Managed
     
         protected Object ReadObject (Object obj, Type type) {
             PropType propType = typeCache.GetType (type );
-            return ReadObjectType(obj, propType);
-        }
-
-        private Object ReadObjectType (Object obj, PropType propType) {
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
                 obj = collection.CreateInstance();
                 return ReadMapType(obj, collection);
             }
+            return ReadObjectType(obj, propType);
+        }
+
+        private Object ReadObjectType (Object obj, PropType propType) {
             JsonEvent ev = parser.NextEvent();
             if (obj == null)
             {
