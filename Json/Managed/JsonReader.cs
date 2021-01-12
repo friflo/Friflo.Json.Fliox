@@ -195,23 +195,16 @@ namespace Friflo.Json.Managed
                     break;
                 case JsonEvent. ObjectStart:
                     field = propType.GetField(parser.key);
-                    if (field == null)
-                    {
+                    if (field == null) {
                         if (!parser.SkipTree())
                             return null;
-                    }
-                    else
-                    {
+                    } else {
                         Object sub = field.GetObject(obj);
-                        PropCollection collection = field.collection;
-                        if (collection != null) {
-                            // sub = ReadMapType(reader, sub, collection);
-                            sub = reader.ReadJsonObject(sub, collection);
-                        }
-                        else
-                        {
-                            sub = reader.ReadJsonObject (sub, field.GetFieldPropType(reader.typeCache));
-                        }
+                        NativeType fieldObject = field.GetFieldObject(reader.typeCache);
+                        if (fieldObject == null)
+                            throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.FullName);
+                        
+                        sub = reader.ReadJsonObject(sub, fieldObject);
                         if (sub != null)
                             field.SetObject(obj, sub);
                         else
@@ -225,12 +218,12 @@ namespace Friflo.Json.Managed
                         if (!parser.SkipTree())
                             return null;
                     }
-                    else
-                    {
-                        if (field.collection == null)
+                    else {
+                        NativeType fieldArray = field.GetFieldArray(reader.typeCache); 
+                        if (fieldArray == null)
                             return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                         Object array = field.GetObject(obj);
-                        Object arrayRet = reader.ReadJsonArray( array, field.collection, 0);
+                        Object arrayRet = reader.ReadJsonArray( array, fieldArray, 0);
                         if (arrayRet != null)
                         {
                             if (array != arrayRet)

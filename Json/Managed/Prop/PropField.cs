@@ -22,12 +22,18 @@ namespace Friflo.Json.Managed.Prop
         private             NativeType      fieldPropType; // is set on first lookup
         private  readonly   ConstructorInfo collectionConstructor;
 
-        public NativeType GetFieldPropType(PropType.Cache cache)
-        {
-            // simply reduce lookups
-            if (fieldPropType != null)
-                return fieldPropType;
-            return fieldPropType = cache.GetType(fieldType);        
+        public NativeType GetFieldArray(PropType.Cache cache) {
+            return collection; // can be null
+        }
+        
+        public NativeType GetFieldObject(PropType.Cache cache) {
+            if (fieldType != null) {
+                // simply reduce lookups
+                if (fieldPropType != null)
+                    return fieldPropType;
+                return fieldPropType = cache.GetType(fieldType);
+            }
+            return collection; // can be null
         }
     
         internal PropField (PropType declType, String name, SimpleType.Id type, Type fieldType, PropCollection.Info info)

@@ -127,9 +127,10 @@ namespace Friflo.Json.Managed
                             bytes.AppendBytes(ref @null);
                         }
                         else {
+                            // todo: use field.GetFieldObject() - remove if, make PropField.collection private
                             PropCollection collection = field.collection;
                             if (collection == null)
-                                WriteObject(field.GetFieldPropType(typeCache), child);
+                                WriteObject(field.GetFieldObject(typeCache), child);
                             else
                                 WriteCollection(collection, child);
                         }
