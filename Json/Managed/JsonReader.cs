@@ -29,30 +29,6 @@ namespace Friflo.Json.Managed
             parser.Dispose();
         }
 
-        public Object ErrorNull(string msg, string value) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + value);
-            return null;
-        }
-
-        public Object ErrorNull(string msg, JsonEvent ev) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + ev.ToString());
-            return null;
-        }
-
-        public Object ErrorNull(string msg, ref Bytes value) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + value.ToStr32());
-            return null;
-        }
-
-        public static readonly int minLen = 8;
-
-        public static int Inc(int len) {
-            return len < 5 ? minLen : 2 * len;
-        }
-
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
@@ -125,27 +101,35 @@ namespace Friflo.Json.Managed
                 }
             }
         }
-
-        // public delegate object ReadResolver(JsonReader reader, object obj, NativeType nativeType);
-
-        public Object ReadJsonObject(Object obj, NativeType nativeType) {
-            if (nativeType.jsonObject != null)
-                return nativeType.jsonObject.Read(this, obj, nativeType);
-            throw new InvalidOperationException("found no resolver for JSON object: " + nativeType.type.FullName);
+        
+        public Object ErrorNull(string msg, string value) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + value);
+            return null;
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
-            if (nativeType.jsonArray != null)
-                return nativeType.jsonArray.Read(this, col, nativeType);
-            throw new InvalidOperationException("found no resolver for JSON array: " + nativeType.type.Name);
+        public Object ErrorNull(string msg, JsonEvent ev) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + ev.ToString());
+            return null;
         }
 
+        public Object ErrorNull(string msg, ref Bytes value) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + value.ToStr32());
+            return null;
+        }
+        
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
         public Object ValueParseError() {
             return null; // ErrorNull(parser.parseCx.GetError().ToString());
         }
 
+        public static readonly int minLen = 8;
+
+        public static int Inc(int len) {
+            return len < 5 ? minLen : 2 * len;
+        }
 
         //
         public object NumberFromValue(SimpleType.Id? id, out bool success) {
@@ -182,6 +166,25 @@ namespace Friflo.Json.Managed
         
         public Object ArrayUnexpected (JsonReader reader, JsonEvent ev) {
             return reader.ErrorNull("unexpected state in array: ", ev);
+        }
+        
+        /// <summary>
+        /// Is called for every JSON object found during iteration 
+        /// </summary>
+        public Object ReadJsonObject(Object obj, NativeType nativeType) {
+            if (nativeType.jsonObject != null)
+                return nativeType.jsonObject.Read(this, obj, nativeType);
+            throw new InvalidOperationException("found no resolver for JSON object: " + nativeType.type.FullName);
+        }
+
+        /// <summary>
+        /// Is called for every JSON array found during iteration 
+        /// </summary>
+        // ReSharper disable once UnusedParameter.Local
+        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
+            if (nativeType.jsonArray != null)
+                return nativeType.jsonArray.Read(this, col, nativeType);
+            throw new InvalidOperationException("found no resolver for JSON array: " + nativeType.type.Name);
         }
     }
 
