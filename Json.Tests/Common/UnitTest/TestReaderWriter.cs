@@ -231,6 +231,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
             using (var arrNum =     new Bytes ("[1,2,3]"))
+            using (var arrBln =     new Bytes ("[true, false]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
             using (var mapNum =     new Bytes ("{\"key\":42}"))
@@ -264,6 +265,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 
                 AreEqual(new [] {1,2,3},      enc.Read<double[]>(arrNum));
                 AreEqual(new [] {1,2,3},      enc.Read<float[]>(arrNum));
+                
+                AreEqual(new [] {true, false},enc.Read<bool[]>(arrBln));
 
                 // --- array of array
                 {
@@ -279,6 +282,20 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // int[,] expect = {{1, 2, 3}};
                     var e = Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
                     AreEqual("multidimensional arrays not supported. TypeSystem.Int32[,]", e.Message);
+                }
+                
+                // --- list
+                {
+                    List<int> expect = new List<int> {1, 2, 3};
+                    AreEqual(expect, enc.Read<List<int>>(arrNum));
+                } {
+                    List<bool> expect = new List<bool> {true, false};
+                    AreEqual(expect, enc.Read<List<bool>>(arrBln));
+                }
+                // --- list of list
+                {
+                    List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
+                    AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
                 }
 
                 // --- maps - value type: integral 

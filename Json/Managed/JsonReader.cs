@@ -427,8 +427,17 @@ namespace Friflo.Json.Managed
                     list. Add (parser.value.ToString());
                     break;
                 case JsonEvent. ValueNumber:
+                    object num = NumberFromValue(collection.id, out bool success);
+                    if (!success)
+                        return null;
+                    list.Add(num);
+                    break;
                 case JsonEvent. ValueBool:
-                    return ErrorNull("expect array item of type: ", collection.elementType. Name);
+                    object bln = BoolFromValue(collection.id, out bool boolSuccess);
+                    if (!boolSuccess)
+                        return null;
+                    list.Add(bln);
+                    break;
                 case JsonEvent. ValueNull:
                     if (index < startLen)
                         list [ index ] = null ;
@@ -436,6 +445,22 @@ namespace Friflo.Json.Managed
                         list. Add (null);
                     index++;
                     break;
+                case JsonEvent. ArrayStart:
+                    PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
+                    if (index < startLen) {
+                        Object oldElement = list [ index ];
+                        Object element = ReadJsonArray(oldElement, elementCollection, 0);
+                        if (element == null)
+                            return null;
+                        list [ index ] = element ;
+                    } else {
+                        Object element = ReadJsonArray(null, elementCollection, 0);
+                        if (element == null)
+                            return null;
+                        list. Add (element);
+                    }
+                    index++;
+                    break;            
                 case JsonEvent. ObjectStart:
                     if (index < startLen) {
                         Object oldElement = list [ index ];
