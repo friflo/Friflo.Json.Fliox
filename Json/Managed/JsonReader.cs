@@ -32,9 +32,21 @@ namespace Friflo.Json.Managed
             parser.Dispose();
         }
 
-        public Object ErrorNull (String msg) {
+        public Object ErrorNull (string msg, string value) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg);
+            parser.Error("JsonReader", msg + value);
+            return null;
+        }
+        
+        public Object ErrorNull (string msg, JsonEvent ev) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + ev.ToString());
+            return null;
+        }
+        
+        public Object ErrorNull (string msg, ref Bytes value) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + value.ToStr32());
             return null;
         }
 
@@ -83,7 +95,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state in Read() : " + ev. ToString());
+                    return ErrorNull("unexpected state in Read() : ", ev);
                 }
             }
         }
@@ -108,7 +120,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state ReadTo() : " + ev);
+                    return ErrorNull("unexpected state ReadTo() : ", ev);
                 }
             }
         }
@@ -132,7 +144,7 @@ namespace Friflo.Json.Managed
                 {
                     propType = typeCache.GetByName (parser.value);
                     if (propType == null)
-                        return ErrorNull("Object $type not found: " + parser.value);
+                        return ErrorNull("Object $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
                 obj = propType.CreateInstance();
@@ -149,7 +161,7 @@ namespace Friflo.Json.Managed
                     if (field.type == SimpleType.Id.String)
                         field.SetString(obj, parser.value.ToString());
                     else
-                        return ErrorNull("Expected type String. Field type: " + field.type);
+                        return ErrorNull("Expected type String. Field type: ", ref field.nameBytes);
                     break;
                 case JsonEvent. ValueNumber:
                     field = propType.GetField(parser.key);
@@ -173,7 +185,7 @@ namespace Friflo.Json.Managed
                     {
                     case SimpleType.Id. String: field.SetString(obj, null); break;
                     case SimpleType.Id. Object: field.SetObject(obj, null); break;
-                    default:            return ErrorNull("Field type not nullable. Field type: " + field.type);
+                    default:            return ErrorNull("Field type not nullable. Field type: ", ref field.nameBytes);
                     }   
                     break;
                 case JsonEvent. ObjectStart:
@@ -194,7 +206,7 @@ namespace Friflo.Json.Managed
                                     sub = field.CreateCollection();
                                 sub = ReadMapType(sub, collection);
                             } else
-                                return ErrorNull("unsupported collection Type: " + collectionInterface. Name);
+                                return ErrorNull("unsupported collection Type: ", collectionInterface. Name);
                         }
                         else
                         {
@@ -216,7 +228,7 @@ namespace Friflo.Json.Managed
                     else
                     {
                         if (field.collection == null)
-                            return ErrorNull("expected field with array nature: " + field.name);
+                            return ErrorNull("expected field with array nature: ", ref field.nameBytes);
                         Object array = field.GetObject(obj);
                         Object arrayRet = ReadJsonArray( array, field.collection);
                         if (arrayRet != null)
@@ -233,7 +245,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: " + ev. ToString());
+                    return ErrorNull("unexpected state: ", ev);
                 }
                 ev = parser.NextEvent();
             }
@@ -263,7 +275,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent.ValueString:
                     key = parser.key.ToString();
                     if (collection.id != SimpleType.Id.String)
-                        return ErrorNull($"Expect Dictionary value type string. Found {collection.elementType}");
+                        return ErrorNull("Expect Dictionary value type string. Found: ", collection.elementType.Name);
                     map[key] = parser.value.ToString();
                     break;
                 case JsonEvent.ValueNumber:
@@ -283,7 +295,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: " + ev. ToString());
+                    return ErrorNull("unexpected state: ", ev);
                 }
             }
         }
@@ -304,12 +316,12 @@ namespace Friflo.Json.Managed
                 case SimpleType.Id. Float:      return ReadArrayFloat   ((float     [])col);
                 case SimpleType.Id. Object:     return ReadArray        (col, collection);
                 default:
-                    return ErrorNull("unsupported array type: " + collection.id);
+                    return ErrorNull("unsupported array type: ", collection.id.ToString());
                 }
             }
             if (typeInterface == typeof( IList<> ))
                 return ReadList (col, collection);
-            return ErrorNull("unsupported collection interface: " + typeInterface);
+            return ErrorNull("unsupported collection interface: ", typeInterface.Name);
         }
     
 
@@ -340,7 +352,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ValueString:
                 case JsonEvent. ValueNumber:
                 case JsonEvent. ValueBool:
-                    return ErrorNull("expect array item of type: " + collection.elementType. Name);
+                    return ErrorNull("expect array item of type: ", collection.elementType. Name);
                 case JsonEvent. ValueNull:
                     if (index >= len)
                         array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
@@ -370,7 +382,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: " + ev. ToString());
+                    return ErrorNull("unexpected state: ", ev);
                 }
             }
         }
@@ -396,7 +408,7 @@ namespace Friflo.Json.Managed
                     break;
                 case JsonEvent. ValueNumber:
                 case JsonEvent. ValueBool:
-                    return ErrorNull("expect array item of type: " + collection.elementType. Name);
+                    return ErrorNull("expect array item of type: ", collection.elementType. Name);
                 case JsonEvent. ValueNull:
                     if (index < startLen)
                         list [ index ] = null ;
@@ -426,7 +438,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: " + ev. ToString());
+                    return ErrorNull("unexpected state: ", ev);
                 }
             }
         }
@@ -438,7 +450,7 @@ namespace Friflo.Json.Managed
         }
         
         private Object ArrayUnexpected (JsonEvent ev) {
-            return ErrorNull("unexpected state in array: " + ev. ToString());
+            return ErrorNull("unexpected state in array: ", ev);
         }
 
         private Object ReadArrayString (String[] array) {
@@ -681,7 +693,7 @@ namespace Friflo.Json.Managed
                     return  parser.ValueAsFloat(out success);
                 default:
                     success = false;
-                    return ErrorNull($"Cant convert number to {id}");
+                    return ErrorNull("Cant convert number to: ", id.ToString());
             }
         }
 
@@ -689,7 +701,7 @@ namespace Friflo.Json.Managed
             if (id == SimpleType.Id.Bool)
                 return parser.ValueAsBool(out success);
             success = false;
-            return ErrorNull($"Cant convert number to {id}");
+            return ErrorNull("Cant convert number to: ", id.ToString());
         }
     }
 }
