@@ -136,7 +136,14 @@ namespace Friflo.Json.Managed
         public Object ReadJsonObject (Object obj, NativeType nativeType) {
             if (nativeType.objectResolver != null)
                 return nativeType.objectResolver(this, obj, nativeType);
-            throw new InvalidOperationException("No object resolver for type: " + nativeType.type.FullName);
+            throw new InvalidOperationException("found no resolver for JSON object: " + nativeType.type.FullName);
+        }
+        
+        // ReSharper disable once UnusedParameter.Local
+        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
+            if (nativeType.arrayResolver != null)
+                return nativeType.arrayResolver(this, col, nativeType);
+            throw new InvalidOperationException("found no resolver for JSON array: " + nativeType.type.Name);
         }
             
         public static Object ReadObject (JsonReader reader, object obj, NativeType nativeType) {
@@ -292,18 +299,6 @@ namespace Friflo.Json.Managed
                     return reader.ErrorNull("unexpected state: ", ev);
                 }
             }
-        }
-
-        private readonly ReadJsonArrayResolver readJsonArrayResolver = new ReadJsonArrayResolver();
-
-        // ReSharper disable once UnusedParameter.Local
-        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
-            PropCollection collection = (PropCollection) nativeType;
-            Func<JsonReader, object, NativeType, object> resolver = nativeType.arrayResolver;
-            if (resolver != null)
-                return resolver(this, col, collection);
-
-            return ErrorNull("unsupported collection interface: ", collection.typeInterface.Name);
         }
     
         public static Object ReadList (JsonReader reader, object col, NativeType nativeType) {
