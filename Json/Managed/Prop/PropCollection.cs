@@ -92,29 +92,32 @@ namespace Friflo.Json.Managed.Prop
                 // If retrieving element type gets to buggy, change retrieving element type of collections.
                 // In this case element type have to be specified via:
                 // void Property.Set(String name, Class<?> entryType)
-                if (type. IsArray)
-                {
-                    collection =    new PropCollection  ( typeof( Array ), type, type. GetElementType(), type. GetArrayRank(), null);
-                    access =        new PropAccess      ( typeof( Array ), type, type. GetElementType());
+                if (type. IsArray) {
+                    Type elementType = type.GetElementType();
+                    collection =    new PropCollection  ( typeof( Array ), type, elementType, type. GetArrayRank(), null);
+                    access =        new PropAccess      ( typeof( Array ), type, elementType);
                 }
                 else
                 {
                     Type[] args;
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
-                    if (args != null)
-                    {
-                        collection =    new PropCollection  ( typeof( IList<>), type, args[0], 1, null);
-                        access =        new PropAccess      ( typeof( IList<>), type, args[0]);
+                    if (args != null) {
+                        Type elementType = args[0];
+                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, 1, null);
+                        access =        new PropAccess      ( typeof( IList<>), type, elementType);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
-                    if (args != null)
-                        access =        new PropAccess      ( typeof( IKeySet <> ),type, args[0]);
-    
+                    if (args != null) {
+                        Type elementType = args[0];
+                        access = new PropAccess(typeof(IKeySet<>), type, elementType);
+                    }
+
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
                     if (args != null)
                     {
-                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, args[1], 1, args[0]);
-                        access =        new PropAccess      ( typeof( IDictionary<,> ), type, args[1]);
+                        Type elementType = args[1];
+                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, 1, args[0]);
+                        access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }
