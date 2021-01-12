@@ -351,6 +351,15 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev)
                 {
+                    case JsonEvent. ValueString:
+                    case JsonEvent. ValueNumber:
+                    case JsonEvent. ValueBool:
+                        return ErrorNull("expect array item of type: ", collection.elementType. Name);
+                    case JsonEvent. ValueNull:
+                        if (index >= len)
+                            array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
+                        array.SetValue (null, index++ );
+                        break;
                     case JsonEvent. ArrayStart:
                         PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
                         if (index < startLen) {
@@ -368,15 +377,6 @@ namespace Friflo.Json.Managed
                             array.SetValue (element, index);
                         }
                         index++;
-                        break;
-                    case JsonEvent. ValueString:
-                    case JsonEvent. ValueNumber:
-                    case JsonEvent. ValueBool:
-                        return ErrorNull("expect array item of type: ", collection.elementType. Name);
-                    case JsonEvent. ValueNull:
-                        if (index >= len)
-                            array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                        array.SetValue (null, index++ );
                         break;
                     case JsonEvent. ObjectStart:
                         if (index < startLen) {
