@@ -355,6 +355,7 @@ namespace Friflo.Json.Managed
                     case JsonEvent. ValueString:
                     case JsonEvent. ValueNumber:
                     case JsonEvent. ValueBool:
+                        // array of string, bool, int, long, float, double, short, byte are handled in ReadJsonArray()
                         return ErrorNull("expect array item of type: ", collection.elementType. Name);
                     case JsonEvent. ValueNull:
                         if (index >= len)

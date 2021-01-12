@@ -230,10 +230,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
+                
             using (var arrNum =     new Bytes ("[1,2,3]"))
+            using (var arrStr =     new Bytes ("[\"hello\"]"))
             using (var arrBln =     new Bytes ("[true, false]"))
+            using (var arrObj =     new Bytes ("[{\"key\":42}]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
+                
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -257,16 +261,23 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual(null,      enc.Read<object>(invalid));
                 AreEqual(true,      enc.Error.ErrSet);
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
+                
+                AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));
 
-                AreEqual(new [] {1,2,3},      enc.Read<long[]>(arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<int[]>(arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<short[]>(arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<byte[]>(arrNum));
-                
-                AreEqual(new [] {1,2,3},      enc.Read<double[]>(arrNum));
-                AreEqual(new [] {1,2,3},      enc.Read<float[]>(arrNum));
-                
-                AreEqual(new [] {true, false},enc.Read<bool[]>(arrBln));
+                AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));
+                    
+                AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));
+                AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));
+                    
+                AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));
+
+                {
+                    Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
+                    AreEqual(expect, enc.Read<Dictionary<string, int>[]>(arrObj));
+                }
 
                 // --- array of array
                 {
