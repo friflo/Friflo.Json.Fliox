@@ -300,44 +300,42 @@ namespace Friflo.Json.Managed
             }
         }
 
-        private readonly ArrayReadResolver arrayReadResolver = new ArrayReadResolver();
+        private readonly ReadJsonArrayResolver readJsonArrayResolver = new ReadJsonArrayResolver();
 
         // ReSharper disable once UnusedParameter.Local
         public Object ReadJsonArray(Object col, PropCollection collection, int index) {
-            Func<JsonReader, object, PropCollection, object> resolver = arrayReadResolver.GetReadResolver(collection);
+            Func<JsonReader, object, PropCollection, object> resolver = readJsonArrayResolver.GetReadResolver(collection);
             if (resolver != null)
                 return resolver(this, col, collection);
             
-            Type typeInterface = collection.typeInterface;
-            if (typeInterface == typeof( IList<> ))
-                return ReadList ((IList)col, collection);
-            return ErrorNull("unsupported collection interface: ", typeInterface.Name);
+            return ErrorNull("unsupported collection interface: ", collection.typeInterface.Name);
         }
     
-        private Object ReadList (IList list, PropCollection collection) {
+        public static Object ReadList (JsonReader reader, object col, PropCollection collection) {
+            IList list = (IList) col;
             if (list == null)
                 list = (IList)collection.CreateInstance();
-            PropType elementPropType = collection.GetElementPropType(typeCache);
+            PropType elementPropType = collection.GetElementPropType(reader.typeCache);
             if (collection.id != SimpleType.Id.Object)
                 list. Clear();
             int startLen = list. Count;
             int index = 0;
             while (true)
             {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = reader.parser.NextEvent();
                 switch (ev)
                 {
                 case JsonEvent. ValueString:
-                    list. Add (parser.value.ToString());
+                    list. Add (reader.parser.value.ToString());
                     break;
                 case JsonEvent. ValueNumber:
-                    object num = NumberFromValue(collection.id, out bool success);
+                    object num = reader.NumberFromValue(collection.id, out bool success);
                     if (!success)
                         return null;
                     list.Add(num);
                     break;
                 case JsonEvent. ValueBool:
-                    object bln = BoolFromValue(collection.id, out bool boolSuccess);
+                    object bln = reader.BoolFromValue(collection.id, out bool boolSuccess);
                     if (!boolSuccess)
                         return null;
                     list.Add(bln);
@@ -350,15 +348,15 @@ namespace Friflo.Json.Managed
                     index++;
                     break;
                 case JsonEvent. ArrayStart:
-                    PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
+                    PropCollection elementCollection = reader.typeCache.GetCollection(collection.elementType);
                     if (index < startLen) {
                         Object oldElement = list [ index ];
-                        Object element = ReadJsonArray(oldElement, elementCollection, 0);
+                        Object element = reader.ReadJsonArray(oldElement, elementCollection, 0);
                         if (element == null)
                             return null;
                         list [ index ] = element ;
                     } else {
-                        Object element = ReadJsonArray(null, elementCollection, 0);
+                        Object element = reader.ReadJsonArray(null, elementCollection, 0);
                         if (element == null)
                             return null;
                         list. Add (element);
@@ -368,12 +366,12 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ObjectStart:
                     if (index < startLen) {
                         Object oldElement = list [ index ];
-                        Object element = ReadJsonObject(oldElement, elementPropType);
+                        Object element = reader.ReadJsonObject(oldElement, elementPropType);
                         if (element == null)
                             return null;
                         list [ index ] = element ;
                     } else {
-                        Object element = ReadJsonObject(null, elementPropType);
+                        Object element = reader.ReadJsonObject(null, elementPropType);
                         if (element == null)
                             return null;
                         list. Add (element);
@@ -387,7 +385,7 @@ namespace Friflo.Json.Managed
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return ErrorNull("unexpected state: ", ev);
+                    return reader.ErrorNull("unexpected state: ", ev);
                 }
             }
         }

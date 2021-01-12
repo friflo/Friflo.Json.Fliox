@@ -4,30 +4,9 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop.Resolver
 {
-    public class ArrayReadResolver
+    public static class ArrayReadResolver
     {
-        public Func<JsonReader, object, PropCollection, object> GetReadResolver(PropCollection collection) {
-            if (collection.typeInterface != typeof(Array))
-                return null;
-            if (collection.rank > 1)
-                throw new NotSupportedException("multidimensional arrays not supported. Type" + collection.type);
-            switch (collection.id)
-            {
-                case SimpleType.Id. String:     return ReadArrayString;
-                case SimpleType.Id. Long:       return ReadArrayLong;
-                case SimpleType.Id. Integer:    return ReadArrayInt;
-                case SimpleType.Id. Short:      return ReadArrayShort;
-                case SimpleType.Id. Byte:       return ReadArrayByte;
-                case SimpleType.Id. Bool:       return ReadArrayBool;
-                case SimpleType.Id. Double:     return ReadArrayDouble;
-                case SimpleType.Id. Float:      return ReadArrayFloat;
-                case SimpleType.Id. Object:     return ReadArrayObject;
-                default:
-                    throw new NotSupportedException ("unsupported array type: " + collection.id.ToString());
-            }
-        }
-        
-        private static object ReadArrayObject (JsonReader reader, object col, PropCollection collection) {
+        public static object ReadArrayObject (JsonReader reader, object col, PropCollection collection) {
             int startLen;
             int len;
             Array array;
@@ -111,7 +90,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             return reader.ErrorNull("unexpected state in array: ", ev);
         }
         
-        private static Object ReadArrayString (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayString (JsonReader reader, Object col, PropCollection collection) {
             String[] array = (String[])col;
             if (array == null)
                 array = new String[JsonReader.minLen];
@@ -138,7 +117,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayLong (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayLong (JsonReader reader, Object col, PropCollection collection) {
             long[] array = (long[])col;
             if (array == null)
                 array = new long[JsonReader.minLen];
@@ -167,7 +146,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayInt (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayInt (JsonReader reader, Object col, PropCollection collection) {
             int[] array = (int[])col;
             if (array == null)
                 array = new int[JsonReader.minLen];
@@ -196,7 +175,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayShort (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayShort (JsonReader reader, Object col, PropCollection collection) {
             short[] array = (short[])col;
             if (array == null)
                 array = new short[JsonReader.minLen];
@@ -225,7 +204,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayByte (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayByte (JsonReader reader, Object col, PropCollection collection) {
             byte[] array = (byte[])col;
             if (array == null)
                 array = new byte[JsonReader.minLen];
@@ -254,7 +233,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayBool (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayBool (JsonReader reader, Object col, PropCollection collection) {
             bool[] array = (bool[])col;
             if (array == null)
                 array = new bool [JsonReader.minLen];
@@ -281,7 +260,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayDouble (JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayDouble (JsonReader reader, Object col, PropCollection collection) {
             double[] array = (double[]) col;
             if (array == null)
                 array = new double[JsonReader.minLen];
@@ -310,7 +289,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
             }
         }
 
-        private static Object ReadArrayFloat(JsonReader reader, Object col, PropCollection collection) {
+        public static Object ReadArrayFloat(JsonReader reader, Object col, PropCollection collection) {
             float[] array = (float[])col;
             if (array == null)
                 array = new float[JsonReader.minLen];
