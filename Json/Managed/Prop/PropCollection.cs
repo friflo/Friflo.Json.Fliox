@@ -13,16 +13,16 @@ using Friflo.Json.Managed.Prop.Resolver;
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
-        public  readonly    Type            type;
-        public  readonly    IReadResolver objectResolver;
-        public  readonly    IReadResolver arrayResolver;
+        public  readonly    Type        type;
+        public  readonly    IJsonObject jsonObject;
+        public  readonly    IJsonArray  jsonArray;
 
         public abstract Object CreateInstance();
 
-        protected NativeType(Type type, IReadResolver objectResolver, IReadResolver arrayResolver) {
+        protected NativeType(Type type, IJsonObject jsonObject, IJsonArray jsonArray) {
             this.type = type;
-            this.objectResolver = objectResolver;
-            this.arrayResolver = arrayResolver;
+            this.jsonObject = jsonObject;
+            this.jsonArray =  jsonArray;
         }
 
         public virtual void Dispose() {
@@ -40,14 +40,14 @@ namespace Friflo.Json.Managed.Prop
 
     
         internal PropCollection (
-                Type typeInterface,
-                Type nativeType,
-                Type elementType,
-                IReadResolver objectResolver,
-                IReadResolver arrayResolver,
-                int rank,
-                Type keyType) :
-            base (nativeType, objectResolver, arrayResolver) {
+                Type        typeInterface,
+                Type        nativeType,
+                Type        elementType,
+                IJsonObject jsonObject,
+                IJsonArray  jsonArray,
+                int         rank,
+                Type        keyType) :
+            base (nativeType, jsonObject, jsonArray) {
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
@@ -148,14 +148,14 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        IReadResolver or = ReadMap.Resolver;
+                        IJsonObject or = ReadMap.Resolver;
                         collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, null, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }
 
-            IReadResolver GetArrayResolver(SimpleType.Id? id) {
+            IJsonArray GetArrayResolver(SimpleType.Id? id) {
                 switch (id) {
                     case SimpleType.Id.String:  return ReadArrayString.Resolver;
                     case SimpleType.Id.Long:    return ReadArrayLong.Resolver;

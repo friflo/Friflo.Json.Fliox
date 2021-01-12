@@ -4,7 +4,7 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop.Resolver
 {
-    public class ReadArrayObject : IReadResolver
+    public class ReadArrayObject : IJsonArray
     {
         public static readonly ReadArrayObject Resolver = new ReadArrayObject();
 
@@ -92,7 +92,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
 
  
 
-    public class ReadArrayString : IReadResolver
+    public class ReadArrayString : IJsonArray
     {
         public static readonly ReadArrayString Resolver = new ReadArrayString();
 
@@ -123,7 +123,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayLong : IReadResolver
+    public class ReadArrayLong : IJsonArray
     {
         public static readonly ReadArrayLong Resolver = new ReadArrayLong();
 
@@ -156,7 +156,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayInt : IReadResolver
+    public class ReadArrayInt : IJsonArray
     {
         public static readonly ReadArrayInt Resolver = new ReadArrayInt();
             
@@ -189,7 +189,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayShort : IReadResolver
+    public class ReadArrayShort : IJsonArray
     {
         public static readonly ReadArrayShort Resolver = new ReadArrayShort();
 
@@ -222,7 +222,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayByte : IReadResolver
+    public class ReadArrayByte : IJsonArray
     {
         public static readonly ReadArrayByte Resolver = new ReadArrayByte();
 
@@ -255,7 +255,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayBool : IReadResolver
+    public class ReadArrayBool : IJsonArray
     {
         public static readonly ReadArrayBool Resolver = new ReadArrayBool();
 
@@ -286,7 +286,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayDouble : IReadResolver
+    public class ReadArrayDouble : IJsonArray
     {
         public static readonly ReadArrayDouble Resolver = new ReadArrayDouble();
 
@@ -319,7 +319,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayFloat : IReadResolver
+    public class ReadArrayFloat : IJsonArray
     {
         public static readonly ReadArrayFloat Resolver = new ReadArrayFloat();
         

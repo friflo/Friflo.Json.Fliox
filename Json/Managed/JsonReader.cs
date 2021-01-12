@@ -129,15 +129,15 @@ namespace Friflo.Json.Managed
         // public delegate object ReadResolver(JsonReader reader, object obj, NativeType nativeType);
 
         public Object ReadJsonObject(Object obj, NativeType nativeType) {
-            if (nativeType.objectResolver != null)
-                return nativeType.objectResolver.Read(this, obj, nativeType);
+            if (nativeType.jsonObject != null)
+                return nativeType.jsonObject.Read(this, obj, nativeType);
             throw new InvalidOperationException("found no resolver for JSON object: " + nativeType.type.FullName);
         }
 
         // ReSharper disable once UnusedParameter.Local
         public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
-            if (nativeType.arrayResolver != null)
-                return nativeType.arrayResolver.Read(this, col, nativeType);
+            if (nativeType.jsonArray != null)
+                return nativeType.jsonArray.Read(this, col, nativeType);
             throw new InvalidOperationException("found no resolver for JSON array: " + nativeType.type.Name);
         }
 
@@ -185,12 +185,16 @@ namespace Friflo.Json.Managed
         }
     }
 
-    public interface IReadResolver {
+    public interface IJsonArray {
+        object Read (JsonReader reader, object obj, NativeType nativeType);
+    }
+    
+    public interface IJsonObject {
         object Read (JsonReader reader, object obj, NativeType nativeType);
     }
 
 
-    public class ReadObject : IReadResolver {
+    public class ReadObject : IJsonObject {
         public static readonly ReadObject Resolver = new ReadObject();
             
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
@@ -304,7 +308,7 @@ namespace Friflo.Json.Managed
         }
     }
 
-    public class ReadMap : IReadResolver
+    public class ReadMap : IJsonObject
     {
         public static readonly ReadMap Resolver = new ReadMap();
         
@@ -359,7 +363,7 @@ namespace Friflo.Json.Managed
         }
     }
 
-    public class ReadList : IReadResolver
+    public class ReadList : IJsonArray
     {
         public static readonly ReadList Resolver = new ReadList();
         
