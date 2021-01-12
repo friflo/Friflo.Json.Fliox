@@ -234,6 +234,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
+            using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var invalid =    new Bytes ("invalid"))
             {
                 AreEqual("hello",   enc.Read<string>(hello));
@@ -294,6 +295,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 {
                     var expect = new Dictionary<string, bool> {{"key", true }};
                     AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
+                }
+                // --- map - value type: map
+                {
+                    var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
+                    AreEqual(expect, enc.Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
                 }
 
             }

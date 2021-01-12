@@ -56,7 +56,9 @@ namespace Friflo.Json.Managed
         }
         
         public T Read<T>(Bytes bytes) {
-            return (T)Read(bytes.buffer, bytes.Start, bytes.Len, typeof(T));
+            int start = bytes.Start;
+            int len = bytes.Len;
+            return (T)Read(bytes.buffer, start, len, typeof(T));
         }
         
         public Object Read(Bytes bytes, Type type) {
@@ -126,15 +128,16 @@ namespace Friflo.Json.Managed
     
         protected Object ReadObject (Object obj, Type type) {
             PropType propType = typeCache.GetType (type );
+            return ReadObjectType(obj, propType);
+        }
+
+        private Object ReadObjectType (Object obj, PropType propType) {
+            // support map in maps in ...
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
                 obj = collection.CreateInstance();
                 return ReadMapType((IDictionary)obj, collection);
             }
-            return ReadObjectType(obj, propType);
-        }
-
-        private Object ReadObjectType (Object obj, PropType propType) {
             JsonEvent ev = parser.NextEvent();
             if (obj == null)
             {
