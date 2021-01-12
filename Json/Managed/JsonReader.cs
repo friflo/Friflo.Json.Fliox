@@ -75,7 +75,8 @@ namespace Friflo.Json.Managed
                 switch (ev)
                 {
                 case JsonEvent. ObjectStart:
-                    return ReadObject(null, type);
+                    PropType propType = typeCache.GetType (type);
+                    return ReadJsonObject(null, propType);
                 case JsonEvent. ArrayStart:
                     PropCollection collection = typeCache.GetCollection(type); 
                     return ReadJsonArray(null, collection, 0);
@@ -104,7 +105,9 @@ namespace Friflo.Json.Managed
         }
 
         public Object ReadTo (Bytes bytes, Object obj) {
-            return ReadTo(bytes.buffer, bytes.Start, bytes.Len, obj);
+            int start = bytes.Start;
+            int len = bytes.Len;
+            return ReadTo(bytes.buffer, start, len, obj);
         }
         
         public Object ReadTo (ByteList bytes, int offset, int len, Object obj)
@@ -117,9 +120,11 @@ namespace Friflo.Json.Managed
                 switch (ev)
                 {
                 case JsonEvent. ObjectStart:
-                    return ReadObject(obj, obj. GetType());
+                    PropType propType = typeCache.GetType (obj.GetType());
+                    return ReadJsonObject(obj, propType);
                 case JsonEvent. ArrayStart:
-                    return ReadJsonArray(null, null, 0);
+                    PropCollection collection = typeCache.GetCollection(obj.GetType()); 
+                    return ReadJsonArray(obj, collection, 0);
                 case JsonEvent. Error:
                     return null;
                 default:
@@ -128,12 +133,7 @@ namespace Friflo.Json.Managed
             }
         }
     
-        protected Object ReadObject (Object obj, Type type) {
-            PropType propType = typeCache.GetType (type );
-            return ReadObjectType(obj, propType);
-        }
-
-        private Object ReadObjectType (Object obj, PropType propType) {
+        private Object ReadJsonObject (Object obj, PropType propType) {
             // support map in maps in ...
             if (typeof(IDictionary).IsAssignableFrom(propType.nativeType)) { //typeof( IDictionary<,> )
                 PropCollection collection = typeCache.GetCollection(propType.nativeType);
@@ -214,7 +214,7 @@ namespace Friflo.Json.Managed
                         }
                         else
                         {
-                            sub = ReadObjectType (sub, field.GetFieldPropType(typeCache));
+                            sub = ReadJsonObject (sub, field.GetFieldPropType(typeCache));
                         }
                         if (sub != null)
                             field.SetObject(obj, sub);
@@ -269,7 +269,7 @@ namespace Friflo.Json.Managed
                     break;
                 case JsonEvent. ObjectStart:
                     key = parser.key.ToString();
-                    Object value = ReadObjectType(null, collection.elementPropType);
+                    Object value = ReadJsonObject(null, collection.elementPropType);
                     if (value == null)
                         return null;
                     map [ key ] = value ;
@@ -383,12 +383,12 @@ namespace Friflo.Json.Managed
                     case JsonEvent. ObjectStart:
                         if (index < startLen) {
                             Object oldElement = array .GetValue( index );
-                            Object element = ReadObjectType(oldElement, collection.elementPropType);
+                            Object element = ReadJsonObject(oldElement, collection.elementPropType);
                             if (element == null)
                                 return null;
                             array.SetValue (element, index);
                         } else {
-                            Object element = ReadObjectType(null, collection.elementPropType);
+                            Object element = ReadJsonObject(null, collection.elementPropType);
                             if (element == null)
                                 return null;
                             if (index >= len)
@@ -465,12 +465,12 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ObjectStart:
                     if (index < startLen) {
                         Object oldElement = list [ index ];
-                        Object element = ReadObjectType(oldElement, collection.elementPropType);
+                        Object element = ReadJsonObject(oldElement, collection.elementPropType);
                         if (element == null)
                             return null;
                         list [ index ] = element ;
                     } else {
-                        Object element = ReadObjectType(null, collection.elementPropType);
+                        Object element = ReadJsonObject(null, collection.elementPropType);
                         if (element == null)
                             return null;
                         list. Add (element);

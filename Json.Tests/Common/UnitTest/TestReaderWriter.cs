@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
@@ -263,6 +264,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
                 
                 AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));
+                AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));
 
                 AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));
                 AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));
@@ -346,6 +348,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
                     AreEqual(expect, enc.Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
                 }
+                // --- map derivations                
+                {
+                    var expect = new Dictionary<string, long> {{"key", 42}};
+                    AreEqual(expect, enc.Read<ConcurrentDictionary<string, long>>(mapNum));
+                    // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
+                }
+
+
+                
+
 
             }
         }
