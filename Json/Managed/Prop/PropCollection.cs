@@ -13,16 +13,18 @@ namespace Friflo.Json.Managed.Prop
         public   readonly   Type            typeInterface;
         public   readonly   Type            keyType;
         public   readonly   Type            elementType;
+        public   readonly   int             rank;
         public              PropType        elementPropType;
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
     
-        internal PropCollection (Type typeInterface, Type type, Type elementType, Type keyType)
+        internal PropCollection (Type typeInterface, Type type, Type elementType, int rank, Type keyType)
         {
             this.type           = type;
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
+            this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
             this.constructor    = GetConstructor (type, typeInterface, keyType, elementType);
         }
@@ -85,7 +87,7 @@ namespace Friflo.Json.Managed.Prop
                 // void Property.Set(String name, Class<?> entryType)
                 if (type. IsArray)
                 {
-                    collection =    new PropCollection  ( typeof( Array ), type, type. GetElementType(), null);
+                    collection =    new PropCollection  ( typeof( Array ), type, type. GetElementType(), type. GetArrayRank(), null);
                     access =        new PropAccess      ( typeof( Array ), type, type. GetElementType());
                 }
                 else
@@ -94,7 +96,7 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
                     if (args != null)
                     {
-                        collection =    new PropCollection  ( typeof( IList<>), type, args[0], null);
+                        collection =    new PropCollection  ( typeof( IList<>), type, args[0], 1, null);
                         access =        new PropAccess      ( typeof( IList<>), type, args[0]);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
@@ -104,7 +106,7 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
                     if (args != null)
                     {
-                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, args[1], args[0]);
+                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, args[1], 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, args[1]);
                     }
                 }

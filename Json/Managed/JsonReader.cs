@@ -58,7 +58,8 @@ namespace Friflo.Json.Managed
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
-            return (T)Read(bytes.buffer, start, len, typeof(T));
+            var ret = Read(bytes.buffer, start, len, typeof(T));
+            return (T) ret;
         }
         
         public Object Read(Bytes bytes, Type type) {
@@ -76,7 +77,8 @@ namespace Friflo.Json.Managed
                 case JsonEvent. ObjectStart:
                     return ReadObject(null, type);
                 case JsonEvent. ArrayStart:
-                    return ReadJsonArray(null, typeCache.GetCollection(type));
+                    PropCollection collection = typeCache.GetCollection(type); 
+                    return ReadJsonArray(null, collection);
                 case JsonEvent.ValueString:
                     return parser.value.ToString();
                 case JsonEvent.ValueNumber:
@@ -306,17 +308,17 @@ namespace Friflo.Json.Managed
             {
                 switch (collection.id)
                 {
-                case SimpleType.Id. String:     return ReadArrayString  ((String    [])col);
-                case SimpleType.Id. Long:       return ReadArrayLong    ((long      [])col);
-                case SimpleType.Id. Integer:    return ReadArrayInt     ((int       [])col);
-                case SimpleType.Id. Short:      return ReadArrayShort   ((short     [])col);
-                case SimpleType.Id. Byte:       return ReadArrayByte    ((byte      [])col);
-                case SimpleType.Id. Bool:       return ReadArrayBool    ((bool      [])col);
-                case SimpleType.Id. Double:     return ReadArrayDouble  ((double    [])col);
-                case SimpleType.Id. Float:      return ReadArrayFloat   ((float     [])col);
-                case SimpleType.Id. Object:     return ReadArray        (col, collection);
-                default:
-                    return ErrorNull("unsupported array type: ", collection.id.ToString());
+                    case SimpleType.Id. String:     return ReadArrayString  ((String    [])col);
+                    case SimpleType.Id. Long:       return ReadArrayLong    ((long      [])col);
+                    case SimpleType.Id. Integer:    return ReadArrayInt     ((int       [])col);
+                    case SimpleType.Id. Short:      return ReadArrayShort   ((short     [])col);
+                    case SimpleType.Id. Byte:       return ReadArrayByte    ((byte      [])col);
+                    case SimpleType.Id. Bool:       return ReadArrayBool    ((bool      [])col);
+                    case SimpleType.Id. Double:     return ReadArrayDouble  ((double    [])col);
+                    case SimpleType.Id. Float:      return ReadArrayFloat   ((float     [])col);
+                    case SimpleType.Id. Object:     return ReadArray        (col, collection);
+                    default:
+                        return ErrorNull("unsupported array type: ", collection.id.ToString());
                 }
             }
             if (typeInterface == typeof( IList<> ))
@@ -349,40 +351,58 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev)
                 {
-                case JsonEvent. ValueString:
-                case JsonEvent. ValueNumber:
-                case JsonEvent. ValueBool:
-                    return ErrorNull("expect array item of type: ", collection.elementType. Name);
-                case JsonEvent. ValueNull:
-                    if (index >= len)
-                        array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                    array.SetValue (null, index++ );
-                    break;
-                case JsonEvent. ObjectStart:
-                    if (index < startLen) {
-                        Object oldElement = array .GetValue( index );
-                        Object element = ReadObjectType(oldElement, collection.elementPropType);
-                        if (element == null)
-                            return null;
-                        array.SetValue (element, index);
-                    } else {
-                        Object element = ReadObjectType(null, collection.elementPropType);
-                        if (element == null)
-                            return null;
+                    case JsonEvent. ArrayStart:
+                        PropCollection elementCollection = typeCache.GetCollection(collection.elementType);
+                        if (index < startLen) {
+                            Object oldElement = array .GetValue( index );
+                            Object element = ReadJsonArray(oldElement, elementCollection);
+                            if (element == null)
+                                return null;
+                            array.SetValue (element, index);
+                        } else {
+                            Object element = ReadJsonArray(null, elementCollection);
+                            if (element == null)
+                                return null;
+                            if (index >= len)
+                                array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
+                            array.SetValue (element, index);
+                        }
+                        index++;
+                        break;
+                    case JsonEvent. ValueString:
+                    case JsonEvent. ValueNumber:
+                    case JsonEvent. ValueBool:
+                        return ErrorNull("expect array item of type: ", collection.elementType. Name);
+                    case JsonEvent. ValueNull:
                         if (index >= len)
                             array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
-                        array.SetValue (element, index);
-                    }
-                    index++;
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.  CopyOfType (collection.elementType, array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ErrorNull("unexpected state: ", ev);
+                        array.SetValue (null, index++ );
+                        break;
+                    case JsonEvent. ObjectStart:
+                        if (index < startLen) {
+                            Object oldElement = array .GetValue( index );
+                            Object element = ReadObjectType(oldElement, collection.elementPropType);
+                            if (element == null)
+                                return null;
+                            array.SetValue (element, index);
+                        } else {
+                            Object element = ReadObjectType(null, collection.elementPropType);
+                            if (element == null)
+                                return null;
+                            if (index >= len)
+                                array = Arrays. CopyOfType(collection.elementType, array, len = Inc(len));
+                            array.SetValue (element, index);
+                        }
+                        index++;
+                        break;
+                    case JsonEvent. ArrayEnd:
+                        if (index != len)
+                            array = Arrays.  CopyOfType (collection.elementType, array, index);
+                        return array;
+                    case JsonEvent. Error:
+                        return null;
+                    default:
+                        return ErrorNull("unexpected state: ", ev);
                 }
             }
         }
@@ -451,7 +471,7 @@ namespace Friflo.Json.Managed
         private Object ArrayUnexpected (JsonEvent ev) {
             return ErrorNull("unexpected state in array: ", ev);
         }
-
+        
         private Object ReadArrayString (String[] array) {
             if (array == null)
                 array = new String[minLen];
@@ -461,19 +481,19 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev)
                 {
-                case JsonEvent. ValueString:
-                    if (index >= len)
-                        array = Arrays.CopyOf (array, len = Inc(len));
-                    array[index++] = parser.value.ToString();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    return array;
-                case JsonEvent. Error:
-                    return null;
-                default:
-                    return ArrayUnexpected(ev);
+                    case JsonEvent. ValueString:
+                        if (index >= len)
+                            array = Arrays.CopyOf (array, len = Inc(len));
+                        array[index++] = parser.value.ToString();
+                        break;
+                    case JsonEvent. ArrayEnd:
+                        if (index != len)
+                            array = Arrays.CopyOf (array, index);
+                        return array;
+                    case JsonEvent. Error:
+                        return null;
+                    default:
+                        return ArrayUnexpected(ev);
                 }
             }
         }
