@@ -63,20 +63,14 @@ namespace Friflo.Json.Managed
                         NativeType collection = typeCache.GetType(type); // lookup required 
                         return ReadJson(null, collection, 0);
                     case JsonEvent.ValueString:
-                        if (type == typeof(string))
-                            return parser.value.ToString();
                         NativeType valueType = typeCache.GetType(type);
                         return ReadJson(null, valueType, 0);
                     case JsonEvent.ValueNumber:
-                        object num = NumberFromValue(SimpleType.IdFromType(type), out bool success);
-                        if (success)
-                            return num;
-                        return null;
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType, 0);;
                     case JsonEvent.ValueBool:
-                        object bln = BoolFromValue(SimpleType.IdFromType(type), out bool successBool);
-                        if (successBool)
-                            return bln;
-                        return parser.boolValue;
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType, 0);;
                     case JsonEvent.ValueNull:
                         if (parser.error.ErrSet)
                             return null;

@@ -2,7 +2,7 @@
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
-using Friflo.Json.Managed.Utils;
+
 
 namespace Friflo.Json.Managed.Codecs
 {
@@ -24,16 +24,11 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
-            while (true) {
-                switch (reader.parser.Event) {
-                    case JsonEvent.ValueString:
-                        return BigInteger.Parse(reader.parser.value.ToString());
-                    case JsonEvent.Error:
-                        return null;
-                    default:
-                        return null;
-                }
+            if (reader.parser.Event == JsonEvent.ValueString) { 
+                if (BigInteger.TryParse(reader.parser.value.ToString(), out BigInteger ret))
+                    return ret;
             }
+            return null;
         }
     }
 }

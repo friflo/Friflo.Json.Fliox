@@ -59,6 +59,15 @@ namespace Friflo.Json.Managed.Codecs
             // Specific types on top
             if ((handler = BigIntCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
             //
+            if ((handler = StringCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = DoubleCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = FloatCodec.              Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = LongCodec.               Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = IntCodec.                Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = ShortCodec.              Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = ByteCodec.               Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = BoolCodec.               Resolver.CreateHandler(this, type)) != null) return handler;
+            //
             if ((handler = StringArrayCodec.        Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = LongArrayCodec.          Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = IntArrayCodec.           Resolver.CreateHandler(this, type)) != null) return handler;
@@ -110,38 +119,5 @@ namespace Friflo.Json.Managed.Codecs
             throw new NotSupportedException("Type not supported. type: " + nativeType.type.FullName);
         }
     }
-    
-    // -------------------------------------------------------------------------------
-    public class Primitive : NativeType {
-        public Primitive(Type type) : 
-            base(type, PrimitiveCodec.Resolver) {
-        }
 
-        public override object CreateInstance() {
-            throw new NotSupportedException("primitives don't use a codec" + type.FullName);
-        }
-    }
-    
-    public class PrimitiveCodec : IJsonCodec
-    {
-        public static readonly PrimitiveCodec Resolver = new PrimitiveCodec();
-
-        public static bool IsPrimitive(Type type) {
-            return type.IsPrimitive || type == typeof(string);
-        } 
-
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
-            if (IsPrimitive(type))
-                return new Primitive(type);
-            return null;
-        }
-
-        public object Read(JsonReader reader, object obj, NativeType nativeType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + nativeType.type.FullName);
-        }
-
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + nativeType.type.FullName);
-        }
-    }
 }
