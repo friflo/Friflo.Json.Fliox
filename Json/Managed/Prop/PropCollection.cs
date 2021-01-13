@@ -38,11 +38,12 @@ namespace Friflo.Json.Managed.Prop
 
     
         internal PropCollection (
-                Type        nativeType,
-                Type        elementType,
-                IJsonCodec  jsonCodec,
-                int         rank,
-                Type        keyType) :
+                Type            nativeType,
+                Type            elementType,
+                IJsonCodec      jsonCodec,
+                int             rank,
+                Type            keyType,
+                ConstructorInfo constructor) :
             base (nativeType, jsonCodec) {
             this.keyType        = keyType;
             this.elementType    = elementType;
@@ -50,7 +51,10 @@ namespace Friflo.Json.Managed.Prop
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
-            this.constructor    = jsonCodec.GetConstructor (nativeType, keyType, elementType);
+            // todo: this check need to be here
+            // if (constructor == null)
+            //    throw new NullReferenceException("constructor is required");
+            this.constructor    = constructor;
         }
         
         public NativeType GetElementType(PropType.Cache typeCache) {
@@ -66,25 +70,5 @@ namespace Friflo.Json.Managed.Prop
         {
             return Reflect.CreateInstance(constructor);
         }
-        /*
-        internal static ConstructorInfo GetConstructor (Type type, Type typeInterface, Type keyType, Type elementType)
-        {
-            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
-            if (constructor != null)
-                return constructor;
-            if  (typeInterface == typeof( Array ))
-            {
-                return null; // For arrays Arrays.CreateInstance(componentType, length) is used
-            }
-            if  (typeInterface == typeof( IList<> ))
-            {
-                return Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-            }
-            if (typeInterface == typeof( IDictionary<,> ))
-            {
-                return Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-            }
-            throw new FrifloException ("interface type not supported");
-        } */
     }
 }

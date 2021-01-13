@@ -23,7 +23,7 @@ namespace Friflo.Json.Managed.Prop
         }
 
         // PropType
-        internal PropType (TypeResolver resolver, Type type, IJsonCodec jsonCodec) :
+        internal PropType (TypeResolver resolver, Type type, IJsonCodec jsonCodec, ConstructorInfo constructor) :
             base (type, jsonCodec)
         {
             propFields = new  PropertyFields (resolver, type, this, true, true);
@@ -35,7 +35,10 @@ namespace Friflo.Json.Managed.Prop
                 strMap.Put(field.name, field);
                 fieldMap.Put(field.nameBytes, field);
             }
-            constructor = Reflect.GetDefaultConstructor (type);
+            // todo: this check need be be here
+            // if (constructor == null)
+            //    throw new NullReferenceException("constructor is required");
+            this.constructor = constructor;
         }
         
         public override Object CreateInstance()

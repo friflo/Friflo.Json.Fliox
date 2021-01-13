@@ -96,10 +96,6 @@ namespace Friflo.Json.Managed.Codecs
                 return new Primitive(type);
             return null;
         }
-        
-        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + type.FullName);
-        }
 
         public object Read(JsonReader reader, object obj, NativeType nativeType) {
             throw new NotSupportedException("Type not supported. type: " + nativeType.type.FullName);
@@ -129,10 +125,6 @@ namespace Friflo.Json.Managed.Codecs
             if (type.IsPrimitive)
                 return new Primitive(type);
             return null;
-        }
-        
-        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + type.FullName);
         }
 
         public object Read(JsonReader reader, object obj, NativeType nativeType) {

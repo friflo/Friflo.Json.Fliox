@@ -18,14 +18,13 @@ namespace Friflo.Json.Managed.Codecs
                 int rank = type.GetArrayRank();
                 if (rank > 1)
                     return new TypeNotSupported(type);
-                if (Reflect.IsAssignableFrom(typeof(Object), elementType))
-                    return new PropCollection(type, elementType, this, type.GetArrayRank(), null);
+                if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
+                    ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
+                    // ReSharper disable once ExpressionIsAlwaysNull
+                    return new PropCollection(type, elementType, this, type.GetArrayRank(), null, constructor);
+                }
             }
             return null;
-        }
-        
-        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
-            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

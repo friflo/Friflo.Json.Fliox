@@ -11,7 +11,6 @@ namespace Friflo.Json.Managed.Codecs
     public interface IJsonCodec
     {
         NativeType CreateHandler(TypeResolver resolver, Type type);
-        ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType);
         object  Read  (JsonReader reader, object obj, NativeType nativeType);
         void    Write (JsonWriter writer, object obj, NativeType nativeType);
     }

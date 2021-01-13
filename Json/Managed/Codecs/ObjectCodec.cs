@@ -14,15 +14,12 @@ namespace Friflo.Json.Managed.Codecs
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type.IsPrimitive)
                 return null;
+            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
-                return new PropType(resolver, type, this);
+                return new PropType(resolver, type, this, constructor);
             if (type.IsValueType)
-                return new PropType(resolver, type, this);
+                return new PropType(resolver, type, this, constructor);
             return null;
-        }
-        
-        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
-            return Reflect.GetDefaultConstructor(type);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

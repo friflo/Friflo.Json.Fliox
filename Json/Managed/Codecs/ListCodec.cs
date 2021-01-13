@@ -18,16 +18,12 @@ namespace Friflo.Json.Managed.Codecs
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
-                return new PropCollection  (type, elementType, this, 1, null);
+                ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+                if (constructor == null)
+                    constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
+                return new PropCollection  (type, elementType, this, 1, null, constructor);
             }
             return null;
-        }
-
-        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
-            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
-            if (constructor != null)
-                return constructor;
-            return Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
         }
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
