@@ -103,11 +103,11 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public object Read(JsonReader reader, object obj, NativeType nativeType) {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("primitives don't use a codec");
         }
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("primitives don't use a codec");
         }
     }
 }
