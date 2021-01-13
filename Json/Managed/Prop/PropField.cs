@@ -35,7 +35,7 @@ namespace Friflo.Json.Managed.Prop
             return collection; // can be null
         }
     
-        internal PropField (PropType declType, String name, SimpleType.Id type, Type fieldType, PropCollection.Info info)
+        internal PropField (PropType declType, String name, SimpleType.Id type, Type fieldType, NativeType nativeType)
         {
             this.declType               = declType;
             this.name                   = name;
@@ -43,7 +43,7 @@ namespace Friflo.Json.Managed.Prop
             this.method                 = null;
             this.type                   = type;
             this.fieldType              = fieldType;
-            this.collection             = info.collection;
+            this.collection             = nativeType;
             this.collectionConstructor  = collection is PropCollection propCollection ? propCollection.constructor : null;
         }
 

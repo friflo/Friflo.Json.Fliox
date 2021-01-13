@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Reflection;
+using Friflo.Json.Managed.Codecs;
+
 // ReSharper disable PossibleNullReferenceException
 
 namespace Friflo.Json.Managed.Prop
@@ -15,7 +17,7 @@ namespace Friflo.Json.Managed.Prop
         //
         internal PropFieldAccessor(PropType declType, String name, Type type, PropertyInfo getter, PropertyInfo setter)
         :
-            base (declType, name, SimpleType.IdFromMethod( getter  ), type, PropCollection.Info.Create(getter)) {
+            base (declType, name, SimpleType.IdFromMethod( getter  ), type, TypeResolver.Create(getter)) {
             this.getter = getter;
             this.setter = setter;
         }
