@@ -9,17 +9,17 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
 {
-    public abstract class NativeType : IDisposable {
+    public class NativeType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonCodec jsonCodec;
+        public  readonly    IJsonCodec  jsonCodec;
 
+        public virtual Object CreateInstance() {
+            return null;
+        }
 
-        public abstract Object CreateInstance();
-
-        protected NativeType(Type type, IJsonCodec jsonCodec) {
+        public NativeType(Type type, IJsonCodec jsonCodec) {
             this.type = type;
             this.jsonCodec = jsonCodec;
-
         }
 
         public virtual void Dispose() {

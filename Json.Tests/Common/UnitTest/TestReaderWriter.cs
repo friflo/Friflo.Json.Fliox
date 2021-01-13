@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Utils;
@@ -257,8 +258,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public int key;
         }
         
-        private void TestPrimitiveInternal()
-        {
+        private void TestPrimitiveInternal() {
+            String bigIntStr = "1234567890123456789012345678901234567890";
+            
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
             using (var hello =      new Bytes ("\"hello\""))
@@ -266,6 +268,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
+            using (var bigInt =     new Bytes ($"\"{bigIntStr}\""))
                 
             using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
@@ -392,10 +395,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     }
                     // ----
                     AreEqual(new TestStruct{ key = 42 },      enc.Read<TestStruct>    (mapNum));
-                    
+                    {
+                        BigInteger expect = BigInteger.Parse(bigIntStr);
+                        AreEqual(expect, enc.Read<BigInteger>(bigInt));
+                    }
+
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(27, enc.typeCache.LookupCount);
+                        AreEqual(28, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }

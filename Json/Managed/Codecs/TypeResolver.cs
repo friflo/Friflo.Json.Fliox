@@ -26,6 +26,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         private readonly IJsonCodec[] resolvers = {
+            BigIntCodec.Resolver,
+            //
             StringArrayCodec.Resolver,
             LongArrayCodec.Resolver,
             IntArrayCodec.Resolver,
@@ -40,7 +42,8 @@ namespace Friflo.Json.Managed.Codecs
             MapCodec.Resolver,
             ObjectCodec.Resolver,
             PrimitiveCodec.Resolver,
-            TypeNotSupportedCodec.Resolver
+            //
+            TypeNotSupportedCodec.Resolver // Should be last
         }; 
         
         private NativeType CreateType (Type type) {
@@ -53,6 +56,9 @@ namespace Friflo.Json.Managed.Codecs
             // search manually to simplify debugging 
             NativeType handler;
             
+            // Specific types on top
+            if ((handler = BigIntCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
+            //
             if ((handler = StringArrayCodec.        Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = LongArrayCodec.          Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = IntArrayCodec.           Resolver.CreateHandler(this, type)) != null) return handler;
@@ -62,13 +68,13 @@ namespace Friflo.Json.Managed.Codecs
             if ((handler = DoubleArrayCodec.        Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = FloatArrayCodec.         Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = ObjectArrayCodec.        Resolver.CreateHandler(this, type)) != null) return handler;
-                
+            //
             if ((handler = ListCodec.               Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = MapCodec.                Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = ObjectCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = PrimitiveCodec.          Resolver.CreateHandler(this, type)) != null) return handler;
-            
-            handler = TypeNotSupportedCodec.        Resolver.CreateHandler(this, type);
+            //
+            handler = TypeNotSupportedCodec.        Resolver.CreateHandler(this, type); // Should be last
 
             return handler;
         }
