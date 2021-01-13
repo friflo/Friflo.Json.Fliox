@@ -9,7 +9,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Prop
 {
     // PropType
-    public class PropType : NativeType
+    public class ClassType : NativeType
     {
         private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
         private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes,  PropField>(11);
@@ -23,7 +23,7 @@ namespace Friflo.Json.Managed.Prop
         }
 
         // PropType
-        internal PropType (TypeResolver resolver, Type type, IJsonCodec jsonCodec, ConstructorInfo constructor) :
+        internal ClassType (TypeResolver resolver, Type type, IJsonCodec jsonCodec, ConstructorInfo constructor) :
             base (type, jsonCodec)
         {
             propFields = new  PropertyFields (resolver, type, this, true, true);

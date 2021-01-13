@@ -16,9 +16,9 @@ namespace Friflo.Json.Managed.Codecs
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
-                return new PropType(resolver, type, this, constructor);
+                return new ClassType(resolver, type, this, constructor);
             if (type.IsValueType)
-                return new PropType(resolver, type, this, constructor);
+                return new ClassType(resolver, type, this, constructor);
             return null;
         }
         
@@ -27,12 +27,12 @@ namespace Friflo.Json.Managed.Codecs
             ref var bytes = ref writer.bytes;
             ref var format = ref writer.format;
             
-            PropType type = (PropType)nativeType;
+            ClassType type = (ClassType)nativeType;
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
             if (type.type != objType) {
-                type = (PropType)writer.typeCache.GetType(objType);
+                type = (ClassType)writer.typeCache.GetType(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref writer.discriminator);
                 writer.typeCache.AppendDiscriminator(ref bytes, type);
@@ -103,23 +103,23 @@ namespace Friflo.Json.Managed.Codecs
             
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
             ref var parser = ref reader.parser;
-            PropType propType = (PropType) nativeType;
+            ClassType classType = (ClassType) nativeType;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
                 if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
-                    propType = (PropType) reader.typeCache.GetTypeByName(ref parser.value);
-                    if (propType == null)
+                    classType = (ClassType) reader.typeCache.GetTypeByName(ref parser.value);
+                    if (classType == null)
                         return reader.ErrorNull("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
-                obj = propType.CreateInstance();
+                obj = classType.CreateInstance();
             }
 
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        PropField field = propType.GetField(parser.key);
+                        PropField field = classType.GetField(parser.key);
                         if (field == null)
                             break;
                         if (field.type == SimpleType.Id.String)
@@ -128,7 +128,7 @@ namespace Friflo.Json.Managed.Codecs
                             return reader.ErrorNull("Expected type String. Field type: ", ref field.nameBytes);
                         break;
                     case JsonEvent.ValueNumber:
-                        field = propType.GetField(parser.key);
+                        field = classType.GetField(parser.key);
                         if (field == null)
                             break;
                         bool success = field.SetNumber(ref parser, obj);
@@ -136,13 +136,13 @@ namespace Friflo.Json.Managed.Codecs
                             return reader.ValueParseError();
                         break;
                     case JsonEvent.ValueBool:
-                        field = propType.GetField(parser.key);
+                        field = classType.GetField(parser.key);
                         if (field == null)
                             break;
                         field.SetBool(obj, parser.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        field = propType.GetField(parser.key);
+                        field = classType.GetField(parser.key);
                         if (field == null)
                             break;
                         switch (field.type) {
@@ -158,7 +158,7 @@ namespace Friflo.Json.Managed.Codecs
 
                         break;
                     case JsonEvent.ObjectStart:
-                        field = propType.GetField(parser.key);
+                        field = classType.GetField(parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return null;
@@ -178,7 +178,7 @@ namespace Friflo.Json.Managed.Codecs
 
                         break;
                     case JsonEvent.ArrayStart:
-                        field = propType.GetField(parser.key);
+                        field = classType.GetField(parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return null;

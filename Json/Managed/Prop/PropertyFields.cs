@@ -19,13 +19,13 @@ namespace Friflo.Json.Managed.Prop
         private     readonly    Type                        type;
         private     readonly    bool                        listFields;
         private     readonly    bool                        listMethods;
-        private     readonly    PropType                    declType;
+        private     readonly    ClassType                   declType;
         private     readonly    TypeResolver                resolver; 
 
 
         private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
 
-        public PropertyFields (TypeResolver resolver, Type type, PropType declType, bool listFields, bool listMethods)
+        public PropertyFields (TypeResolver resolver, Type type, ClassType declType, bool listFields, bool listMethods)
         {
             this.type           = type;
             this.listFields     = listFields;
@@ -115,7 +115,7 @@ namespace Friflo.Json.Managed.Prop
         class PropFieldMethod : PropField
         {
             //
-            internal PropFieldMethod(PropType declType, String name, MethodInfo method)
+            internal PropFieldMethod(ClassType declType, String name, MethodInfo method)
             :
                 base (declType, name, method) {
             }

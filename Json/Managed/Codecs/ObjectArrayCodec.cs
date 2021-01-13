@@ -21,17 +21,17 @@ namespace Friflo.Json.Managed.Codecs
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new PropCollection(type, elementType, this, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, this, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
-            PropCollection collection = (PropCollection) nativeType;
+            CollectionType collectionType = (CollectionType) nativeType;
             Array arr = (Array) obj;
             writer.bytes.AppendChar('[');
-            NativeType elementType = collection.GetElementType(writer.typeCache);
+            NativeType elementType = collectionType.GetElementType(writer.typeCache);
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public object Read(JsonReader reader, object col, NativeType nativeType) {
-            var collection = (PropCollection) nativeType;
+            var collection = (CollectionType) nativeType;
             int startLen;
             int len;
             Array array;

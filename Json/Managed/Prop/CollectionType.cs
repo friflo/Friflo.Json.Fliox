@@ -26,7 +26,7 @@ namespace Friflo.Json.Managed.Prop
         }
     }
 
-    public class PropCollection : NativeType
+    public class CollectionType : NativeType
     {
         public   readonly   Type            keyType;
         public   readonly   int             rank;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Managed.Prop
         internal readonly   ConstructorInfo constructor;
 
     
-        internal PropCollection (
+        internal CollectionType (
                 Type            nativeType,
                 Type            elementType,
                 IJsonCodec      jsonCodec,

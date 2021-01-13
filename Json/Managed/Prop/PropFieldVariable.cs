@@ -13,7 +13,7 @@ namespace Friflo.Json.Managed.Prop
     {
         private readonly    FieldInfo   field;
         
-        internal PropFieldVariable(TypeResolver resolver, PropType declType, String name, FieldInfo field)
+        internal PropFieldVariable(TypeResolver resolver, ClassType declType, String name, FieldInfo field)
         :
             base (declType, name, SimpleType.IdFromField( field ), field. FieldType, resolver.GetNativeType(field. FieldType)) {
             this.field          = field;

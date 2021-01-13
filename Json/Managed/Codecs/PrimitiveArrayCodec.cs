@@ -18,7 +18,7 @@ namespace Friflo.Json.Managed.Codecs
                 if (elementType == itemType) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new PropCollection(type, elementType, jsonCodec, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, jsonCodec, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;

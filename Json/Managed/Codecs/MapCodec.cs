@@ -22,19 +22,19 @@ namespace Friflo.Json.Managed.Codecs
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                return new PropCollection  (type, elementType, this, 1, keyType, constructor);
+                return new CollectionType  (type, elementType, this, 1, keyType, constructor);
             }
             return null;
         }
 
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
-            PropCollection collection = (PropCollection)nativeType;
+            CollectionType collectionType = (CollectionType)nativeType;
             IDictionary map = (IDictionary) obj;
 
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             int n = 0;
-            if (collection.elementType == typeof(String)) {
+            if (collectionType.elementType == typeof(String)) {
                 // Map<String, String>
                 IDictionary<String, String> strMap = (IDictionary<String, String>) map;
                 foreach (KeyValuePair<String, String> entry in strMap) {
@@ -50,7 +50,7 @@ namespace Friflo.Json.Managed.Codecs
             }
             else {
                 // Map<String, Object>
-                NativeType elementType = collection.GetElementType(writer.typeCache);
+                NativeType elementType = collectionType.GetElementType(writer.typeCache);
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
@@ -67,12 +67,12 @@ namespace Friflo.Json.Managed.Codecs
         }
         
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
-            PropCollection collection = (PropCollection) nativeType;
+            CollectionType collectionType = (CollectionType) nativeType;
             if (obj == null)
-                obj = collection.CreateInstance();
+                obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            NativeType elementType = collection.GetElementType(reader.typeCache);
+            NativeType elementType = collectionType.GetElementType(reader.typeCache);
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -89,20 +89,20 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
-                        if (collection.id != SimpleType.Id.String)
+                        if (collectionType.id != SimpleType.Id.String)
                             return reader.ErrorNull("Expect Dictionary value type string. Found: ",
-                                collection.elementType.Name);
+                                collectionType.elementType.Name);
                         map[key] = parser.value.ToString();
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
-                        map[key] = reader.NumberFromValue(collection.id, out bool successNum);
+                        map[key] = reader.NumberFromValue(collectionType.id, out bool successNum);
                         if (!successNum)
                             return null;
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        map[key] = reader.BoolFromValue(collection.id, out bool successBool);
+                        map[key] = reader.BoolFromValue(collectionType.id, out bool successBool);
                         if (!successBool)
                             return null;
                         break;
