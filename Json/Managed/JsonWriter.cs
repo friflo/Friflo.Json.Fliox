@@ -31,6 +31,10 @@ namespace Friflo.Json.Managed
             bytes.Dispose();
         }
 
+        public void InitWriter() {
+            bytes.Clear();
+        }
+
         public void Write(Object obj) {
             bytes.InitBytes(128);
             strBuf.InitBytes(128);

@@ -263,6 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
+            using (JsonWriter write = new JsonWriter(typeStore))
             using (var hello =      new Bytes ("\"hello\""))
             using (var @double =    new Bytes ("12.5"))
             using (var @long =      new Bytes ("42"))
@@ -398,6 +399,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     {
                         BigInteger expect = BigInteger.Parse(bigIntStr);
                         AreEqual(expect, enc.Read<BigInteger>(bigInt));
+                        write.InitWriter();
+                        write.Write(expect);
+                        AreEqual(bigInt.ToString(), write.Output.ToString());
                     }
 
                     // Ensure minimum required type lookups
