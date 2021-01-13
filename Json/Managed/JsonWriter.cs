@@ -57,10 +57,7 @@ namespace Friflo.Json.Managed
         /// Is called for every C# object & container (array, map, list) during object tree iteration 
         /// </summary>
         public void WriteJson(Object obj, NativeType nativeType) {
-            if (nativeType.jsonCodec != null)
-                nativeType.jsonCodec.Write(this, obj, nativeType);
-            else
-                throw new NotSupportedException("found no resolver for JSON object: " + nativeType.type.FullName);
+            nativeType.jsonCodec.Write(this, obj, nativeType);
         }
     }
 }

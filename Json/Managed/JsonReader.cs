@@ -171,9 +171,7 @@ namespace Friflo.Json.Managed
         /// Is called for every JSON object & array found during JSON iteration 
         /// </summary>
         public Object ReadJson(Object obj, NativeType nativeType, int index) {
-            if (nativeType.jsonCodec != null)
-                return nativeType.jsonCodec.Read(this, obj, nativeType);
-            throw new NotSupportedException("found no resolver for JSON object: " + nativeType.type.FullName);
+            return nativeType.jsonCodec.Read(this, obj, nativeType);
         }
     }
 }
