@@ -17,11 +17,12 @@ namespace Friflo.Json.Managed.Codecs
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
+                Type keyType = args[0];
                 Type elementType = args[1];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
-                    constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(args[0], elementType) );
-                return new PropCollection  (type, elementType, this, 1, args[0], constructor);
+                    constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
+                return new PropCollection  (type, elementType, this, 1, keyType, constructor);
             }
             return null;
         }
