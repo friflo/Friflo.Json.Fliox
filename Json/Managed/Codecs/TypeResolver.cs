@@ -14,15 +14,7 @@ namespace Friflo.Json.Managed.Codecs
             this.typeStore = typeStore;
         }
 
-        public  NativeType Create (FieldInfo field) {
-            return Create (field. FieldType);
-        }
-
-        public  NativeType Create (PropertyInfo getter) {
-            return Create (getter. PropertyType);
-        }
-
-        public NativeType CreateCollection (Type type) {
+        public NativeType CreateNativeType (Type type) {
             return Create (type);
         }
 
