@@ -38,7 +38,6 @@ namespace Friflo.Json.Managed.Prop
 
     
         internal PropCollection (
-                Type        typeInterface,
                 Type        nativeType,
                 Type        elementType,
                 IJsonCodec  jsonCodec,

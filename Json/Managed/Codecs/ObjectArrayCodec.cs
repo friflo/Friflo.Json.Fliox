@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed.Codecs
                 if (rank > 1)
                     return new TypeNotSupported(type);
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType))
-                    return new PropCollection(typeof(Array), type, elementType, this, type.GetArrayRank(), null);
+                    return new PropCollection(type, elementType, this, type.GetArrayRank(), null);
             }
             return null;
         }

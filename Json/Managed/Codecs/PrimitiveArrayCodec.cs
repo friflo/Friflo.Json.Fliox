@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed.Codecs
                 if (rank > 1)
                     return new TypeNotSupported(type);
                 if (elementType == itemType)
-                    return new PropCollection(typeof(Array), type, elementType, jsonCodec, type.GetArrayRank(), null);
+                    return new PropCollection(type, elementType, jsonCodec, type.GetArrayRank(), null);
             }
             return null;
         }

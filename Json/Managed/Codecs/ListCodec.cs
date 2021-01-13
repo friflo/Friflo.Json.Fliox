@@ -18,7 +18,7 @@ namespace Friflo.Json.Managed.Codecs
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
-                return new PropCollection  ( typeof( IList<>), type, elementType, this, 1, null);
+                return new PropCollection  (type, elementType, this, 1, null);
             }
             return null;
         }
