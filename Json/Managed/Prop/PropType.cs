@@ -11,7 +11,6 @@ namespace Friflo.Json.Managed.Prop
     // PropType
     public class PropType : NativeType
     {
-        public  readonly Bytes                      typeName;
         private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
         private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes, PropField>(11);
         public  readonly PropertyFields             propFields;
@@ -20,19 +19,19 @@ namespace Friflo.Json.Managed.Prop
         
         public override void Dispose() {
             base.Dispose();
-            typeName.Dispose();
             propFields.Dispose();
         }
 
         // PropType
-        internal PropType (Type type, String name) :
+        internal PropType (TypeResolver resolver, Type type) :
             base (type, ObjectCodec.Resolver)
         {
-            typeName = new Bytes(name);
-            propFields = new  PropertyFields (type, this, true, true);
+            propFields = new  PropertyFields (resolver, type, this, true, true);
             for (int n = 0; n < propFields.num; n++)
             {
                 PropField   field = propFields.fields[n];
+                if (strMap.Get(field.name) != null)
+                    throw new InvalidOperationException();
                 strMap.Put(field.name, field);
                 fieldMap.Put(field.nameBytes, field);
             }
@@ -67,42 +66,51 @@ namespace Friflo.Json.Managed.Prop
         /// </summary>
         public class Cache
         {
-            private readonly    HashMapLang <Type, NativeType>  typeMap =   new HashMapLang <Type,  NativeType >();
-            private readonly    HashMapLang <Bytes, NativeType> nameMap =   new HashMapLang <Bytes, NativeType >();
+            private readonly    HashMapLang <Type,  NativeType> typeMap =      new HashMapLang <Type,  NativeType >();
+            //
+            private readonly    HashMapLang <Bytes, NativeType> nameToType =   new HashMapLang <Bytes, NativeType >();
+            private readonly    HashMapLang <Type, Bytes>       typeToName =   new HashMapLang <Type,  Bytes >();
             
             private readonly    TypeStore                       typeStore;
             public              int                             lookupCount;
             
-            public Cache (TypeStore typeStore)
-            {
+            public Cache (TypeStore typeStore) {
                 this.typeStore = typeStore;
             }
             
-            public NativeType GetType (Type type)
-            {
+            public NativeType GetType (Type type) {
                 lookupCount++;
                 NativeType propType = typeMap.Get(type);
                 if (propType == null) {
-                    propType = typeStore.GetType(type, null);
+                    propType = typeStore.GetType(type);
                     typeMap.Put(type, propType);
                 }
                 return propType;
             }
 
-            public NativeType GetTypeByName(Bytes name)
-            {
-                NativeType propType = nameMap.Get(name);
+            public NativeType GetTypeByName(ref Bytes name) {
+                NativeType propType = nameToType.Get(name);
                 if (propType == null) {
-                    lock (typeStore.nameMap)
-                    {
-                        propType = typeStore.nameMap.Get(name);
-                        if (propType is PropType)
-                            nameMap.Put(((PropType)propType).typeName, propType);
+                    lock (typeStore) {
+                        propType = typeStore.nameToType.Get(name);
                     }
                 }
+                if (propType == null)
+                    throw new InvalidOperationException("No type registered with discriminator: " + name);
                 return propType;
             }
 
+            public void AppendDiscriminator(ref Bytes dst, NativeType type) {
+                Bytes name = typeToName.Get(type.type);
+                if (!name.buffer.IsCreated()) {
+                    lock (typeStore) {
+                        name = typeStore.typeToName.Get(type.type);
+                    }
+                }
+                if (!name.buffer.IsCreated())
+                    throw new InvalidOperationException("no discriminator registered for type: " + type.type.FullName);
+                dst.AppendBytes(ref name);
+            }
         }
     }   
 }

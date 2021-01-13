@@ -21,11 +21,7 @@ namespace Friflo.Json.Managed.Codecs
                 type = (PropType)writer.typeCache.GetType(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref writer.discriminator);
-                Bytes subType = type.typeName;
-                if (subType.buffer.IsCreated())
-                    bytes.AppendBytes(ref subType);
-                else
-                    throw new FrifloException("Serializing derived types must be registered: " + objType.Name);
+                writer.typeCache.AppendDiscriminator(ref bytes, type);
                 bytes.AppendChar('\"');
             }
 
@@ -112,7 +108,7 @@ namespace Friflo.Json.Managed.Codecs
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
                 if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(parser.key)) {
-                    propType = (PropType) reader.typeCache.GetTypeByName(parser.value);
+                    propType = (PropType) reader.typeCache.GetTypeByName(ref parser.value);
                     if (propType == null)
                         return reader.ErrorNull("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();

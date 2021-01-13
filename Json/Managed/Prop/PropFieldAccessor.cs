@@ -15,9 +15,9 @@ namespace Friflo.Json.Managed.Prop
         private readonly    PropertyInfo    setter;
 
         //
-        internal PropFieldAccessor(PropType declType, String name, Type type, PropertyInfo getter, PropertyInfo setter)
+        internal PropFieldAccessor(TypeResolver resolver, PropType declType, String name, Type type, PropertyInfo getter, PropertyInfo setter)
         :
-            base (declType, name, SimpleType.IdFromMethod( getter  ), type, TypeResolver.Create(getter)) {
+            base (declType, name, SimpleType.IdFromMethod( getter  ), type, resolver.Create(getter)) {
             this.getter = getter;
             this.setter = setter;
         }

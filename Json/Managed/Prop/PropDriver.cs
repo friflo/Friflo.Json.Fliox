@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Reflection;
+using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Prop
 {
@@ -11,9 +12,9 @@ namespace Friflo.Json.Managed.Prop
     
         private class DefaultDriver : IPropDriver
         {
-            public PropField CreateVariable(PropType declType, String name, FieldInfo field)
+            public PropField CreateVariable(TypeResolver resolver,PropType declType, String name, FieldInfo field)
             {
-                return new PropFieldVariable(declType, name, field);
+                return new PropFieldVariable(resolver, declType, name, field);
             }       
         }   
     

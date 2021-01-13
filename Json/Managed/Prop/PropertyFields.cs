@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
@@ -20,16 +21,18 @@ namespace Friflo.Json.Managed.Prop
         private     readonly    bool                        listMethods;
         private     readonly    PropType                    declType;
         private     readonly    IPropDriver                 propDriver = PropDriver.GetDriver();
+        private     readonly    TypeResolver                resolver; 
 
 
         private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
 
-        public PropertyFields (Type type, PropType declType, bool listFields, bool listMethods)
+        public PropertyFields (TypeResolver resolver, Type type, PropType declType, bool listFields, bool listMethods)
         {
             this.type           = type;
             this.listFields     = listFields;
             this.listMethods    = listMethods;
             this.declType       = declType;
+            this.resolver       = resolver;
             this.typeName       = type. FullName;
             try
             {
@@ -72,7 +75,7 @@ namespace Friflo.Json.Managed.Prop
             if (getter != null)
             {
                 PropertyInfo setter = Reflect.GetPropertySet(type, fieldName );
-                PropField pf =  new PropFieldAccessor(declType, name, getter. PropertyType, getter, setter);
+                PropField pf =  new PropFieldAccessor(resolver, declType, name, getter. PropertyType, getter, setter);
                 fieldList. Add (pf);
                 return;
             }
@@ -80,7 +83,7 @@ namespace Friflo.Json.Managed.Prop
             FieldInfo field = Reflect.GetField(type, fieldName );
             if (field != null)
             {
-                PropField pf =  propDriver.CreateVariable(declType, name, field);
+                PropField pf =  propDriver.CreateVariable(resolver, declType, name, field);
                 fieldList. Add (pf);
                 return;
             }

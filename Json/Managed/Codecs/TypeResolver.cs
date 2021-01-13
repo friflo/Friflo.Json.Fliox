@@ -6,21 +6,33 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public static class TypeResolver {
-
-        public  static NativeType Create (FieldInfo field) {
-            return Create (field. FieldType );
+    public class TypeResolver
+    {
+        private readonly TypeStore typeStore;
+        
+        public TypeResolver(TypeStore typeStore) {
+            this.typeStore = typeStore;
         }
 
-        public  static NativeType Create (PropertyInfo getter) {
+        public  NativeType Create (FieldInfo field) {
+            return Create (field. FieldType);
+        }
+
+        public  NativeType Create (PropertyInfo getter) {
             return Create (getter. PropertyType);
         }
 
-        public static NativeType CreateCollection (Type type) {
-            return Create (type );
+        public NativeType CreateCollection (Type type) {
+            return Create (type);
         }
 
-        private static NativeType Create (Type type )
+        private NativeType Create(Type type) {
+            NativeType nativeType = CreateType(type);
+            typeStore.typeMap.Put(type, nativeType);
+            return nativeType;
+        }
+
+        private NativeType CreateType (Type type)
         {
             // If retrieving element type gets to buggy, change retrieving element type of collections.
             // In this case element type have to be specified via:
@@ -49,6 +61,14 @@ namespace Friflo.Json.Managed.Codecs
                 Type elementType = args[1];
                 IJsonCodec or = MapCodec.Resolver;
                 return new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, 1, args[0]);
+            }
+            
+            if (type.IsClass) {
+                return new PropType(this, type);
+            }
+            
+            if (type.IsValueType) {
+                return new PropType(this, type);
             }
 
             return null;
