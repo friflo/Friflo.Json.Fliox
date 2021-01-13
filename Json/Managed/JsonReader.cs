@@ -31,15 +31,26 @@ namespace Friflo.Json.Managed
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
-            var ret = Read(bytes.buffer, start, len, typeof(T));
+            var ret = ReadStart(bytes.buffer, start, len, typeof(T));
+            parser.NextEvent(); // EOF
             return (T) ret;
         }
 
         public Object Read(Bytes bytes, Type type) {
-            return Read(bytes.buffer, bytes.Start, bytes.Len, type);
+            int start = bytes.Start;
+            int len = bytes.Len;
+            var ret = ReadStart(bytes.buffer, start, len, type);
+            parser.NextEvent(); // EOF
+            return ret;
         }
 
-        public Object Read(ByteList bytes, int offset, int len, Type type) {
+        public Object Read(ByteList buffer, int offset, int len, Type type) {
+            var ret = ReadStart(buffer, offset, len, type);
+            parser.NextEvent(); // EOF
+            return ret;
+        }
+
+        private Object ReadStart(ByteList bytes, int offset, int len, Type type) {
             parser.InitParser(bytes, offset, len);
 
             while (true) {
@@ -81,7 +92,9 @@ namespace Friflo.Json.Managed
         public Object ReadTo(Bytes bytes, Object obj) {
             int start = bytes.Start;
             int len = bytes.Len;
-            return ReadTo(bytes.buffer, start, len, obj);
+            var ret = ReadTo(bytes.buffer, start, len, obj);
+            parser.NextEvent();
+            return ret;
         }
 
         public Object ReadTo(ByteList bytes, int offset, int len, Object obj) {

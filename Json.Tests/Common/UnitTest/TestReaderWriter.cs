@@ -285,16 +285,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var invalid =    new Bytes ("invalid")) {
                 int iterations = 2; // dont use < 2
                 for (int n = 0; n < iterations; n++) {
-                    AreEqual("hello",   enc.Read<string>(hello));
-                    AreEqual(12.5,      enc.Read<double>(@double));
-                    AreEqual(12.5,      enc.Read<float>(@double));
+                    AreEqual("hello",   enc.Read<string>(hello));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(12.5,      enc.Read<double>(@double));         AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(12.5,      enc.Read<float>(@double));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(42,        enc.Read<long>(@long));
-                    AreEqual(42,        enc.Read<int>(@long));
-                    AreEqual(42,        enc.Read<short>(@long));
-                    AreEqual(42,        enc.Read<byte>(@long));
+                    AreEqual(42,        enc.Read<long>(@long));             AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(42,        enc.Read<int>(@long));              AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(42,        enc.Read<short>(@long));            AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(42,        enc.Read<byte>(@long));             AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(true,      enc.Read<bool>(@true));
+                    AreEqual(true,      enc.Read<bool>(@true));             AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     AreEqual(null,      enc.Read<object>(@null));
                     AreEqual(false,     enc.Error.ErrSet);
@@ -303,47 +303,52 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(true,      enc.Error.ErrSet);
                     AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
                     
-                    AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));
-                    AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));
+                    AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
 
-                    AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));
-                    AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));
-                    AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));
-                    AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));
-                        
-                    AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));
-                    AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));
-                        
-                    AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));
+                    AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                            
+                    AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                            
+                    AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
 
                     {
                         Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
                         AreEqual(expect, enc.Read<Dictionary<string, int>[]>(arrObj));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
 
                     // --- array of array
                     {
                         int[][] expect = {new []{1, 2, 3}};
                         AreEqual(expect, enc.Read<int[][]>(arrArrNum));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     {
                         Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
                         AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- multi dimensional arrays
                     {
                         // int[,] expect = {{1, 2, 3}};
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
-                        AreEqual("Type not supported. type: System.Int32[,]", e.Message);
+                        AreEqual("Type not supported. type: System.Int32[,]", e.Message);              
                     }
                     
                     // --- list
                     {
                         List<int> expect = new List<int> {1, 2, 3};
                         AreEqual(expect, enc.Read<List<int>>(arrNum));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<bool> expect = new List<bool> {true, false};
                         AreEqual(expect, enc.Read<List<bool>>(arrBln));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- list of list
                     {
@@ -399,6 +404,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     {
                         BigInteger expect = BigInteger.Parse(bigIntStr);
                         AreEqual(expect, enc.Read<BigInteger>(bigInt));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                        
                         write.InitWriter();
                         write.Write(expect);
                         AreEqual(bigInt.ToString(), write.Output.ToString());
