@@ -3,12 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
     public class MapCodec : IJsonCodec
     {
         public static readonly MapCodec Resolver = new MapCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
+            if (args != null) {
+                Type elementType = args[1];
+                return new PropCollection  ( typeof( IDictionary<,> ), type, elementType, this, 1, args[0]);
+            }
+            return null;
+        }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             PropCollection collection = (PropCollection)nativeType;

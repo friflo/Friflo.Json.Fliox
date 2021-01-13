@@ -5,9 +5,34 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
+    public static class ArrayCodec {
+        public static NativeType CreatePrimitiveHandler(Type type, Type itemType, IJsonCodec jsonCodec) {
+            if (type. IsArray) {
+                Type elementType = type.GetElementType();
+                int rank = type.GetArrayRank();
+                if (rank > 1)
+                    return new TypeNotSupported(type);
+                if (elementType == itemType)
+                    return new PropCollection(typeof(Array), type, elementType, jsonCodec, type.GetArrayRank(), null);
+            }
+            return null;
+        }
+    }
     public class ObjectArrayCodec : IJsonCodec
     {
         public static readonly ObjectArrayCodec Resolver = new ObjectArrayCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            if (type. IsArray) {
+                Type elementType = type.GetElementType();
+                int rank = type.GetArrayRank();
+                if (rank > 1)
+                    return new TypeNotSupported(type);
+                if (Reflect.IsAssignableFrom(typeof(Object), elementType))
+                    return new PropCollection(typeof(Array), type, elementType, this, type.GetArrayRank(), null);
+            }
+            return null;
+        }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             PropCollection collection = (PropCollection) nativeType;
@@ -113,6 +138,10 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly StringArrayCodec Resolver = new StringArrayCodec();
         
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
+        }
+        
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             string[] arr = (string[]) obj;
             writer.bytes.AppendChar('[');
@@ -158,6 +187,10 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongArrayCodec Resolver = new LongArrayCodec();
 
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
+        }
+
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             long[] arr = (long[]) obj;
             writer.bytes.AppendChar('[');
@@ -200,6 +233,10 @@ namespace Friflo.Json.Managed.Codecs
     public class IntArrayCodec : IJsonCodec
     {
         public static readonly IntArrayCodec Resolver = new IntArrayCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
+        }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             int[] arr = (int[]) obj;
@@ -244,6 +281,10 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortArrayCodec Resolver = new ShortArrayCodec();
         
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
+        }
+        
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             short[] arr = (short[]) obj;
             writer.bytes.AppendChar('[');
@@ -286,6 +327,10 @@ namespace Friflo.Json.Managed.Codecs
     public class ByteArrayCodec : IJsonCodec
     {
         public static readonly ByteArrayCodec Resolver = new ByteArrayCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
+        }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             byte[] arr = (byte[]) obj;
@@ -330,6 +375,10 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolArrayCodec Resolver = new BoolArrayCodec();
         
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
+        }
+        
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             bool[] arr =(bool[])obj;
             writer.bytes.AppendChar('[');
@@ -370,6 +419,10 @@ namespace Friflo.Json.Managed.Codecs
     public class DoubleArrayCodec : IJsonCodec
     {
         public static readonly DoubleArrayCodec Resolver = new DoubleArrayCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
+        }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             double[] arr = (double[]) obj;
@@ -415,6 +468,10 @@ namespace Friflo.Json.Managed.Codecs
     public class FloatArrayCodec : IJsonCodec
     {
         public static readonly FloatArrayCodec Resolver = new FloatArrayCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            return ArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);
+        }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             float[] arr = (float[]) obj;

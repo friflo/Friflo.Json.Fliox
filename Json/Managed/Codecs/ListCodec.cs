@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
@@ -9,6 +10,15 @@ namespace Friflo.Json.Managed.Codecs
     public class ListCodec : IJsonCodec
     {
         public static readonly ListCodec Resolver = new ListCodec();
+        
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
+            if (args != null) {
+                Type elementType = args[0];
+                return new PropCollection  ( typeof( IList<>), type, elementType, this, 1, null);
+            }
+            return null;
+        }
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             IList list = (IList) obj;

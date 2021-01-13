@@ -8,6 +8,14 @@ namespace Friflo.Json.Managed.Codecs
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Resolver = new ObjectCodec();
         
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            if (type.IsClass)
+                return new PropType(resolver, type, this);
+            if (type.IsValueType)
+                return new PropType(resolver, type, this);
+            return null;
+        }
+        
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
 
             ref var bytes = ref writer.bytes;
