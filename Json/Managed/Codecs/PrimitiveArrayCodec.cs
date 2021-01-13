@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
@@ -27,6 +28,10 @@ namespace Friflo.Json.Managed.Codecs
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
+        }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -77,6 +82,10 @@ namespace Friflo.Json.Managed.Codecs
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
         }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
+        }
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             long[] arr = (long[]) obj;
@@ -123,6 +132,10 @@ namespace Friflo.Json.Managed.Codecs
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
+        }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
         }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
@@ -172,6 +185,10 @@ namespace Friflo.Json.Managed.Codecs
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
+        }
+        
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             short[] arr = (short[]) obj;
             writer.bytes.AppendChar('[');
@@ -217,6 +234,10 @@ namespace Friflo.Json.Managed.Codecs
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
+        }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
         }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
@@ -266,6 +287,10 @@ namespace Friflo.Json.Managed.Codecs
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
+        }
+        
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             bool[] arr =(bool[])obj;
             writer.bytes.AppendChar('[');
@@ -309,6 +334,10 @@ namespace Friflo.Json.Managed.Codecs
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
+        }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
         }
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
@@ -358,6 +387,10 @@ namespace Friflo.Json.Managed.Codecs
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);
         }
         
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return null; // For arrays Arrays.CreateInstance(componentType, length) is used
+        }
+
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             float[] arr = (float[]) obj;
             writer.bytes.AppendChar('[');

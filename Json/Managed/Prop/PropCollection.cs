@@ -51,7 +51,7 @@ namespace Friflo.Json.Managed.Prop
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
-            this.constructor    = GetConstructor (nativeType, typeInterface, keyType, elementType);
+            this.constructor    = jsonCodec.GetConstructor (nativeType, keyType, elementType);
         }
         
         public NativeType GetElementType(PropType.Cache typeCache) {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Managed.Prop
         {
             return Reflect.CreateInstance(constructor);
         }
-
+        /*
         internal static ConstructorInfo GetConstructor (Type type, Type typeInterface, Type keyType, Type elementType)
         {
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
@@ -86,6 +86,6 @@ namespace Friflo.Json.Managed.Prop
                 return Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
             }
             throw new FrifloException ("interface type not supported");
-        }
+        } */
     }
 }

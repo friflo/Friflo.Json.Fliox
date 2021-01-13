@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
@@ -18,6 +19,10 @@ namespace Friflo.Json.Managed.Codecs
             if (type.IsValueType)
                 return new PropType(resolver, type, this);
             return null;
+        }
+        
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            return Reflect.GetDefaultConstructor(type);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

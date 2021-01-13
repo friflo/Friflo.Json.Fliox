@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Prop;
 using Friflo.Json.Managed.Utils;
@@ -20,6 +21,13 @@ namespace Friflo.Json.Managed.Codecs
                 return new PropCollection  ( typeof( IList<>), type, elementType, this, 1, null);
             }
             return null;
+        }
+
+        public ConstructorInfo GetConstructor(Type type, Type keyType, Type elementType) {
+            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+            if (constructor != null)
+                return constructor;
+            return Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
         }
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
