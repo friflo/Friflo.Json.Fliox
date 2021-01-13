@@ -248,6 +248,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 Assert.AreEqual(startBytes, endBytes);
             }
         }
+
+        public struct TestStruct {
+            public int key;
+        }
         
         private void TestPrimitiveInternal()
         {
@@ -382,10 +386,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(expect, enc.Read<ConcurrentDictionary<string, long>>(mapNum));
                         // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
                     }
+                    // ----
+                    AreEqual(new TestStruct{ key = 42 },      enc.Read<TestStruct>    (mapNum));
                     
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(26, enc.typeCache.LookupCount);
+                        AreEqual(27, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }

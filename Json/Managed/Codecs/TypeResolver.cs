@@ -120,8 +120,12 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly PrimitiveCodec Resolver = new PrimitiveCodec();
 
+        public static bool IsPrimitive(Type type) {
+            return type.IsPrimitive || type == typeof(string);
+        } 
+
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
-            if (type.IsPrimitive)
+            if (IsPrimitive(type))
                 return new Primitive(type);
             return null;
         }

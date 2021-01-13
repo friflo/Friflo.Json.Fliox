@@ -35,9 +35,6 @@ namespace Friflo.Json.Managed.Prop
                 strMap.Put(field.name, field);
                 fieldMap.Put(field.nameBytes, field);
             }
-            // todo: this check need be be here
-            // if (constructor == null)
-            //    throw new NullReferenceException("constructor is required");
             this.constructor = constructor;
         }
         

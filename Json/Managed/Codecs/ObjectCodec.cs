@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly ObjectCodec Resolver = new ObjectCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
-            if (type.IsPrimitive)
+            if (PrimitiveCodec.IsPrimitive(type))
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
