@@ -62,9 +62,49 @@ namespace Friflo.Json.Managed.Codecs
             if ((handler = ListCodec.           Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = MapCodec.            Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = ObjectCodec.         Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = PrimitiveCodec.      Resolver.CreateHandler(this, type)) != null) return handler;
 
             return null;
         }
 
+    }
+    
+    public class TypeNotSupported : NativeType {
+        public TypeNotSupported(Type type) : 
+            base(type, null) {
+        }
+
+        public override object CreateInstance() {
+            throw new NotSupportedException("Type not supported." + type.FullName);
+        }
+    }
+    
+    public class Primitive : NativeType {
+        public Primitive(Type type) : 
+            base(type, null) {
+        }
+
+        public override object CreateInstance() {
+            throw new NotSupportedException("primitives don't use a codec" + type.FullName);
+        }
+    }
+    
+    public class PrimitiveCodec : IJsonCodec
+    {
+        public static readonly PrimitiveCodec Resolver = new PrimitiveCodec();
+
+        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+            if (type.IsPrimitive)
+                return new Primitive(type);
+            return null;
+        }
+
+        public object Read(JsonReader reader, object obj, NativeType nativeType) {
+            throw new NotImplementedException();
+        }
+
+        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -27,16 +27,6 @@ namespace Friflo.Json.Managed.Prop
         }
     }
 
-    public class TypeNotSupported : NativeType {
-        public TypeNotSupported(Type type) : 
-            base(type, null) {
-        }
-
-        public override object CreateInstance() {
-            throw new NotSupportedException("Type not supported. " + type.FullName);
-        }
-    }
-    
     public class PropCollection : NativeType
     {
         public   readonly   Type            keyType;
