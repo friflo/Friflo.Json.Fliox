@@ -103,7 +103,6 @@ namespace Friflo.Json.Managed.Prop
         public  class Info
         {
             internal NativeType collection;
-            internal PropAccess access;
     
             public  static Info Create (FieldInfo field)
             {
@@ -142,7 +141,6 @@ namespace Friflo.Json.Managed.Prop
                     SimpleType.Id? id = SimpleType.IdFromType(elementType);
                     var ar = GetArrayResolver(id);
                     collection = new PropCollection(typeof(Array), type, elementType, ar, type.GetArrayRank(), null);
-                    access = new PropAccess(typeof(Array), type, elementType);
                 }
                 else
                 {
@@ -151,12 +149,6 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null) {
                         Type elementType = args[0];
                         collection =    new PropCollection  ( typeof( IList<>), type, elementType, ListCodec.Resolver, 1, null);
-                        access =        new PropAccess      ( typeof( IList<>), type, elementType);
-                    }
-                    args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
-                    if (args != null) {
-                        Type elementType = args[0];
-                        access = new PropAccess(typeof(IKeySet<>), type, elementType);
                     }
 
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
@@ -165,7 +157,6 @@ namespace Friflo.Json.Managed.Prop
                         Type elementType = args[1];
                         IJsonCodec or = MapCodec.Resolver;
                         collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, 1, args[0]);
-                        access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }

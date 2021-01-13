@@ -16,7 +16,6 @@ namespace Friflo.Json.Managed.Prop
         internal readonly   SimpleType.Id   type;
         public   readonly   Type            fieldType;
         public   readonly   NativeType      collection;
-        public   readonly   PropAccess      access;
         public   readonly   PropType        declType;
         internal            Bytes           nameBytes;
         private             NativeType      fieldPropType; // is set on first lookup
@@ -45,7 +44,6 @@ namespace Friflo.Json.Managed.Prop
             this.type                   = type;
             this.fieldType              = fieldType;
             this.collection             = info.collection;
-            this.access                 = info.access;
             this.collectionConstructor  = collection is PropCollection propCollection ? propCollection.constructor : null;
         }
 
@@ -58,7 +56,6 @@ namespace Friflo.Json.Managed.Prop
             this.type                   = SimpleType.Id.Method;
             this.fieldType              = null;
             this.collection             = null;
-            this.access                 = null;
             this.collectionConstructor  = null;
         }
 
