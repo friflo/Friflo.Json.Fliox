@@ -20,7 +20,6 @@ namespace Friflo.Json.Managed.Prop
         private     readonly    bool                        listFields;
         private     readonly    bool                        listMethods;
         private     readonly    PropType                    declType;
-        private     readonly    IPropDriver                 propDriver = PropDriver.GetDriver();
         private     readonly    TypeResolver                resolver; 
 
 
@@ -81,9 +80,8 @@ namespace Friflo.Json.Managed.Prop
             }
             // create property from field
             FieldInfo field = Reflect.GetField(type, fieldName );
-            if (field != null)
-            {
-                PropField pf =  propDriver.CreateVariable(resolver, declType, name, field);
+            if (field != null) {
+                PropField pf = new PropFieldVariable(resolver, declType, name, field);
                 fieldList. Add (pf);
                 return;
             }
