@@ -36,7 +36,8 @@ namespace Friflo.Json.Managed.Codecs
             //
             ListCodec.Resolver,
             MapCodec.Resolver,
-            ObjectCodec.Resolver
+            ObjectCodec.Resolver,
+            PrimitiveCodec.Resolver
         }; 
         
         private NativeType CreateType (Type type) {

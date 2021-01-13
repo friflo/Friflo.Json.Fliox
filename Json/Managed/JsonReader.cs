@@ -10,13 +10,13 @@ namespace Friflo.Json.Managed
     // JsonReader
     public class JsonReader : IDisposable
     {
-        public JsonParser parser;
-        public readonly PropType.Cache typeCache;
+        public          JsonParser      parser;
+        public readonly PropType.Cache  typeCache;
 
-        public readonly Bytes discriminator = new Bytes("$type");
+        public readonly Bytes           discriminator = new Bytes("$type");
 
-        public JsonError Error => parser.error;
-        public SkipInfo SkipInfo => parser.skipInfo;
+        public          JsonError       Error => parser.error;
+        public          SkipInfo        SkipInfo => parser.skipInfo;
 
         public JsonReader(TypeStore typeStore) {
             typeCache = new PropType.Cache(typeStore);
