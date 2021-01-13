@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Prop
         
         internal PropFieldVariable(TypeResolver resolver, PropType declType, String name, FieldInfo field)
         :
-            base (declType, name, SimpleType.IdFromField( field ), field. FieldType, resolver.CreateNativeType(field. FieldType)) {
+            base (declType, name, SimpleType.IdFromField( field ), field. FieldType, resolver.GetNativeType(field. FieldType)) {
             this.field          = field;
         }
     

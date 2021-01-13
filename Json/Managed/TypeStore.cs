@@ -36,18 +36,11 @@ namespace Friflo.Json.Managed
         {
             lock (this)
             {
-                NativeType propType = typeMap.Get(type);
-                if (propType == null)
-                {
-                    NativeType nativeType = typeResolver.CreateNativeType(type);
-                    if (nativeType != null) {
-                        propType = nativeType;
-                    }
-                    else {
-                        throw new NotSupportedException($"Type not supported: " + type.FullName);
-                    }
-                }
-                return propType;
+                NativeType nativeType = typeResolver.GetNativeType(type);
+                if (nativeType != null)
+                    return nativeType;
+                
+                throw new NotSupportedException($"Type not supported: " + type.FullName);
             }
         }
             

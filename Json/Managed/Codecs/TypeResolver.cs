@@ -11,12 +11,12 @@ namespace Friflo.Json.Managed.Codecs
             this.typeStore = typeStore;
         }
 
-        public NativeType CreateNativeType (Type type) {
-            return Create (type);
-        }
-
-        private NativeType Create(Type type) {
-            NativeType nativeType = CreateType(type);
+        public NativeType GetNativeType (Type type) {
+            NativeType nativeType = typeStore.typeMap.Get(type);
+            if (nativeType != null)
+                return nativeType;
+            
+            nativeType = CreateType(type);
             typeStore.typeMap.Put(type, nativeType);
             return nativeType;
         }
@@ -43,11 +43,9 @@ namespace Friflo.Json.Managed.Codecs
                 if (typeHandler != null)
                     return typeHandler;
             } */
+            
+            // search manually to simplify debugging 
             NativeType handler;
-            /*
-            handler = typeStore.GetType(type);
-            if (handler != null)
-                return handler; */
             
             if ((handler = StringArrayCodec.    Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = LongArrayCodec.      Resolver.CreateHandler(this, type)) != null) return handler;
