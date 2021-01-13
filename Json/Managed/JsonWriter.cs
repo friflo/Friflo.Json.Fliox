@@ -54,7 +54,7 @@ namespace Friflo.Json.Managed
         }
         
         /// <summary>
-        /// Is called for every JSON object found during iteration 
+        /// Is called for every C# object & container (array, map, list) during object tree iteration 
         /// </summary>
         public void WriteJson(Object obj, NativeType nativeType) {
             if (nativeType.jsonCodec != null)

@@ -168,7 +168,7 @@ namespace Friflo.Json.Managed
         }
         
         /// <summary>
-        /// Is called for every JSON object found during iteration 
+        /// Is called for every JSON object & array found during JSON iteration 
         /// </summary>
         public Object ReadJson(Object obj, NativeType nativeType, int index) {
             if (nativeType.jsonCodec != null)
