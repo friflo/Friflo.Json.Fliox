@@ -367,9 +367,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     }
                     
                     // Ensure minimum required type lookups
-                    if (n > 0)
-                        AreEqual(26, enc.typeCache.lookupCount);
-                    enc.typeCache.lookupCount = 0;
+                    if (n > 0) {
+                        AreEqual(26, enc.typeCache.LookupCount);
+                        AreEqual( 0, enc.typeCache.StoreLookupCount);
+                        AreEqual( 0, enc.typeCache.TypeCreationCount);
+                    }
+                    enc.typeCache.ClearCounts();
                 }
             }
         }

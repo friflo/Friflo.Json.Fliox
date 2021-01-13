@@ -14,10 +14,12 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public NativeType GetNativeType (Type type) {
+            typeStore.storeLookupCount++;
             NativeType nativeType = typeStore.typeMap.Get(type);
             if (nativeType != null)
                 return nativeType;
             
+            typeStore.typeCreationCount++;
             nativeType = CreateType(type);
             typeStore.typeMap.Put(type, nativeType);
             return nativeType;

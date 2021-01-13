@@ -19,7 +19,10 @@ namespace Friflo.Json.Managed
         internal  readonly  HashMapLang <Bytes, NativeType> nameToType=     new HashMapLang <Bytes, NativeType >();
         internal  readonly  HashMapLang <Type,  Bytes>      typeToName =    new HashMapLang <Type,  Bytes >();
 
-        private   readonly TypeResolver typeResolver;
+        private   readonly  TypeResolver                    typeResolver;
+
+        public              int                             typeCreationCount;
+        public              int                             storeLookupCount;
 
         public TypeStore() {
             typeResolver = new TypeResolver(this);

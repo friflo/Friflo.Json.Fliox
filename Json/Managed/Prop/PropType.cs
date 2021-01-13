@@ -72,8 +72,14 @@ namespace Friflo.Json.Managed.Prop
             private readonly    HashMapLang <Type, Bytes>       typeToName =   new HashMapLang <Type,  Bytes >();
             
             private readonly    TypeStore                       typeStore;
-            public              int                             lookupCount;
+            private             int                            lookupCount;
+
+            public              int     LookupCount         => lookupCount;
+            public              int     StoreLookupCount    => typeStore.storeLookupCount;
+            public              int     TypeCreationCount   => typeStore.typeCreationCount;
             
+
+
             public Cache (TypeStore typeStore) {
                 this.typeStore = typeStore;
             }
@@ -86,6 +92,12 @@ namespace Friflo.Json.Managed.Prop
                     typeMap.Put(type, propType);
                 }
                 return propType;
+            }
+
+            public void ClearCounts() {
+                lookupCount = 0;
+                typeStore.storeLookupCount = 0;
+                typeStore.typeCreationCount = 0;
             }
 
             public NativeType GetTypeByName(ref Bytes name) {
