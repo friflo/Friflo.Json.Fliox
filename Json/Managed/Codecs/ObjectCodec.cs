@@ -105,7 +105,7 @@ namespace Friflo.Json.Managed.Codecs
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
-                if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(parser.key)) {
+                if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
                     propType = (PropType) reader.typeCache.GetTypeByName(ref parser.value);
                     if (propType == null)
                         return reader.ErrorNull("Object with discriminator $type not found: ", ref parser.value);

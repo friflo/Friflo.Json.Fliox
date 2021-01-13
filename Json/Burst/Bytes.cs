@@ -322,7 +322,7 @@ namespace Friflo.Json.Burst
         }
 #endif
 
-        public bool IsEqualBytes(Bytes value)
+        public bool IsEqualBytes(ref Bytes value)
         {
             int len = Len;
             if (len != value.Len)
@@ -426,7 +426,7 @@ namespace Friflo.Json.Burst
             if (obj == null)
                 return false;
             Bytes value = (Bytes)obj;
-            return IsEqualBytes(value);
+            return IsEqualBytes(ref value);
         }
 
         internal int GetHash()
