@@ -5,7 +5,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Managed.Prop;
 
-
 namespace Friflo.Json.Managed
 {
     public class JsonWriter : IDisposable

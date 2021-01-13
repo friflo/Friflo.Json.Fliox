@@ -8,8 +8,6 @@ using Friflo.Json.Managed.Utils;
 
 // using ReadResolver = System.Func<Friflo.Json.Managed.JsonReader, object, Friflo.Json.Managed.Prop.NativeType, object>;
 
-
-
 namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
