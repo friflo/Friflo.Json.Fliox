@@ -50,9 +50,7 @@ namespace Friflo.Json.Managed.Prop
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
             this.id             = SimpleType.IdFromType(elementType);
-            // todo: this check need to be here
-            // if (constructor == null)
-            //    throw new NullReferenceException("constructor is required");
+            // constructor can be null. E.g. All array types have none.
             this.constructor    = constructor;
         }
         
