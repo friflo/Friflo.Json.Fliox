@@ -12,11 +12,11 @@ namespace Friflo.Json.Managed.Prop
     public abstract class PropField : IDisposable
     {
         internal readonly   String          name;
-        internal readonly   MethodInfo      method;
+        private  readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
         public   readonly   Type            fieldType;
-        public   readonly   NativeType      collection;
-        public   readonly   PropType        declType;
+        private  readonly   NativeType      collection;
+        private  readonly   PropType        declType;
         internal            Bytes           nameBytes;
         private             NativeType      fieldPropType; // is set on first lookup
         private  readonly   ConstructorInfo collectionConstructor;

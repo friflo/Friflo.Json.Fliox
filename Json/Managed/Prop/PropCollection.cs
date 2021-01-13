@@ -39,7 +39,6 @@ namespace Friflo.Json.Managed.Prop
     
     public class PropCollection : NativeType
     {
-        public   readonly   Type            typeInterface;  // todo: remove when introducing IJsonObject.Write()
         public   readonly   Type            keyType;
         public   readonly   int             rank;
         public   readonly   Type            elementType;     // use GetElementType() if NativeType is required - its cached
@@ -56,7 +55,6 @@ namespace Friflo.Json.Managed.Prop
                 int         rank,
                 Type        keyType) :
             base (nativeType, jsonCodec) {
-            this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
             if (elementType == null)

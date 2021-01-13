@@ -29,7 +29,6 @@ namespace Friflo.Json.Managed.Codecs
             int n = 0;
             if (collection.elementType == typeof(String)) {
                 // Map<String, String>
-                // @SuppressWarnings("unchecked")
                 IDictionary<String, String> strMap = (IDictionary<String, String>) map;
                 foreach (KeyValuePair<String, String> entry in strMap) {
                     if (n++ > 0) bytes.AppendChar(',');

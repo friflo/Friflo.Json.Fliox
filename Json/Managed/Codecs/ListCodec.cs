@@ -117,7 +117,6 @@ namespace Friflo.Json.Managed.Codecs
                                 return null;
                             list.Add(element);
                         }
-
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:

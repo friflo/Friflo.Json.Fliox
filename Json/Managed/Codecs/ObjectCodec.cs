@@ -74,33 +74,19 @@ namespace Friflo.Json.Managed.Codecs
                         writer.WriteKey(field);
                         format.AppendDbl(ref bytes, field.GetDouble(obj));
                         break;
-                    //                                                  bytes.Append(field.GetString(obj));     break;  // precise conversion
                     case SimpleType.Id.Float:
                         writer.WriteKey(field);
                         format.AppendFlt(ref bytes, field.GetFloat(obj));
                         break;
-                    //                                                  bytes.Append(field.GetString(obj));     break;  // precise conversion
                     case SimpleType.Id.Object:
                         writer.WriteKey(field);
                         Object child = field.GetObject(obj);
                         if (child == null) {
                             bytes.AppendBytes(ref writer.@null);
-                        }
-                        else {
-                            // todo: use field.GetFieldObject() - remove if, make PropField.collection private
+                        } else {
                             NativeType fieldObject = field.GetFieldObject(writer.typeCache);
-                            // NativeType subElementType = collection.GetElementType(writer.typeCache);
-                            // NativeType fieldType = field.GetFieldObject(writer.typeCache);
                             writer.WriteJson(child, fieldObject);
-                            /*
-                            NativeType collection = field.collection;
-                            if (collection == null)
-                                writer.WriteJsonObject(child, field.GetFieldObject(writer.typeCache));
-                            else
-                                writer.WriteJsonObject(child, collection);
-                                */
                         }
-
                         break;
                     default:
                         throw new FrifloException("invalid field type: " + field.type);
@@ -175,8 +161,7 @@ namespace Friflo.Json.Managed.Codecs
                             Object sub = field.GetObject(obj);
                             NativeType fieldObject = field.GetFieldObject(reader.typeCache);
                             if (fieldObject == null)
-                                throw new InvalidOperationException("Field is not compatible to JSON object: " +
-                                                                    field.fieldType.FullName);
+                                throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.FullName);
 
                             sub = reader.ReadJson(sub, fieldObject, 0);
                             if (sub != null)
@@ -214,7 +199,6 @@ namespace Friflo.Json.Managed.Codecs
                     default:
                         return reader.ErrorNull("unexpected state: ", ev);
                 }
-
                 ev = parser.NextEvent();
             }
         }

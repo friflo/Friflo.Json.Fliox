@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Prop
     public class PropType : NativeType
     {
         private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
-        private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes, PropField>(11);
+        private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes,  PropField>(11);
         public  readonly PropertyFields             propFields;
         private readonly ConstructorInfo            constructor;
         
