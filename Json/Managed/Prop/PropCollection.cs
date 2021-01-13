@@ -14,15 +14,15 @@ namespace Friflo.Json.Managed.Prop
 {
     public abstract class NativeType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonObject jsonObject;
-        public  readonly    IJsonArray  jsonArray;
+        public  readonly    IJsonCodec jsonCodec;
+
 
         public abstract Object CreateInstance();
 
-        protected NativeType(Type type, IJsonObject jsonObject, IJsonArray jsonArray) {
+        protected NativeType(Type type, IJsonCodec jsonCodec) {
             this.type = type;
-            this.jsonObject = jsonObject;
-            this.jsonArray =  jsonArray;
+            this.jsonCodec = jsonCodec;
+
         }
 
         public virtual void Dispose() {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Managed.Prop
 
     public class TypeNotSupported : NativeType {
         public TypeNotSupported(Type type) : 
-            base(type, null, null) {
+            base(type, null) {
         }
 
         public override object CreateInstance() {
@@ -54,11 +54,10 @@ namespace Friflo.Json.Managed.Prop
                 Type        typeInterface,
                 Type        nativeType,
                 Type        elementType,
-                IJsonObject jsonObject,
-                IJsonArray  jsonArray,
+                IJsonCodec  jsonCodec,
                 int         rank,
                 Type        keyType) :
-            base (nativeType, jsonObject, jsonArray) {
+            base (nativeType, jsonCodec) {
             this.typeInterface  = typeInterface;
             this.keyType        = keyType;
             this.elementType    = elementType;
@@ -144,7 +143,7 @@ namespace Friflo.Json.Managed.Prop
 
                     SimpleType.Id? id = SimpleType.IdFromType(elementType);
                     var ar = GetArrayResolver(id);
-                    collection = new PropCollection(typeof(Array), type, elementType, null, ar, type.GetArrayRank(), null);
+                    collection = new PropCollection(typeof(Array), type, elementType, ar, type.GetArrayRank(), null);
                     access = new PropAccess(typeof(Array), type, elementType);
                 }
                 else
@@ -153,7 +152,7 @@ namespace Friflo.Json.Managed.Prop
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
                     if (args != null) {
                         Type elementType = args[0];
-                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, null, ReadList.Resolver, 1, null);
+                        collection =    new PropCollection  ( typeof( IList<>), type, elementType, ListCodec.Resolver, 1, null);
                         access =        new PropAccess      ( typeof( IList<>), type, elementType);
                     }
                     args = Reflect.GetGenericInterfaceArgs (type, typeof( IKeySet <>) );
@@ -166,24 +165,24 @@ namespace Friflo.Json.Managed.Prop
                     if (args != null)
                     {
                         Type elementType = args[1];
-                        IJsonObject or = ReadMap.Resolver;
-                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, null, 1, args[0]);
+                        IJsonCodec or = MapCodec.Resolver;
+                        collection =    new PropCollection  ( typeof( IDictionary<,> ), type, elementType, or, 1, args[0]);
                         access =        new PropAccess      ( typeof( IDictionary<,> ), type, elementType);
                     }
                 }
             }
 
-            IJsonArray GetArrayResolver(SimpleType.Id? id) {
+            IJsonCodec GetArrayResolver(SimpleType.Id? id) {
                 switch (id) {
-                    case SimpleType.Id.String:  return ReadArrayString.Resolver;
-                    case SimpleType.Id.Long:    return ReadArrayLong.Resolver;
-                    case SimpleType.Id.Integer: return ReadArrayInt.Resolver;
-                    case SimpleType.Id.Short:   return ReadArrayShort.Resolver;
-                    case SimpleType.Id.Byte:    return ReadArrayByte.Resolver;
-                    case SimpleType.Id.Bool:    return ReadArrayBool.Resolver;
-                    case SimpleType.Id.Double:  return ReadArrayDouble.Resolver;
-                    case SimpleType.Id.Float:   return ReadArrayFloat.Resolver;
-                    case SimpleType.Id.Object:  return ReadArrayObject.Resolver;
+                    case SimpleType.Id.String:  return StringArrayCodec.Resolver;
+                    case SimpleType.Id.Long:    return LongArrayCodec.Resolver;
+                    case SimpleType.Id.Integer: return IntArrayCodec.Resolver;
+                    case SimpleType.Id.Short:   return ShortArrayCodec.Resolver;
+                    case SimpleType.Id.Byte:    return ByteArrayCodec.Resolver;
+                    case SimpleType.Id.Bool:    return BoolArrayCodec.Resolver;
+                    case SimpleType.Id.Double:  return DoubleArrayCodec.Resolver;
+                    case SimpleType.Id.Float:   return FloatArrayCodec.Resolver;
+                    case SimpleType.Id.Object:  return ObjectArrayCodec.Resolver;
                     default:
                         throw new NotSupportedException("unsupported array type: " + id.ToString());
                 }

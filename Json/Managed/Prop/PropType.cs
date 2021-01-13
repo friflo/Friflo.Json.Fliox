@@ -25,7 +25,7 @@ namespace Friflo.Json.Managed.Prop
 
         // PropType
         internal PropType (Type type, String name) :
-            base (type, ReadObject.Resolver, null)
+            base (type, ObjectCodec.Resolver)
         {
             typeName = new Bytes(name);
             propFields = new  PropertyFields (type, this, true, true);

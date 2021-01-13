@@ -50,10 +50,10 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         NativeType propType = typeCache.GetType(type); // lookup required
-                        return ReadJsonObject(null, propType);
+                        return ReadJson(null, propType, 0);
                     case JsonEvent.ArrayStart:
                         NativeType collection = typeCache.GetType(type); // lookup required 
-                        return ReadJsonArray(null, collection, 0);
+                        return ReadJson(null, collection, 0);
                     case JsonEvent.ValueString:
                         return parser.value.ToString();
                     case JsonEvent.ValueNumber:
@@ -92,10 +92,10 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         NativeType propType = typeCache.GetType(obj.GetType()); // lookup required
-                        return ReadJsonObject(obj, propType);
+                        return ReadJson(obj, propType, 0);
                     case JsonEvent.ArrayStart:
                         NativeType collection = typeCache.GetType(obj.GetType()); // lookup required
-                        return ReadJsonArray(obj, collection, 0);
+                        return ReadJson(obj, collection, 0);
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -173,36 +173,21 @@ namespace Friflo.Json.Managed
         /// <summary>
         /// Is called for every JSON object found during iteration 
         /// </summary>
-        public Object ReadJsonObject(Object obj, NativeType nativeType) {
-            if (nativeType.jsonObject != null)
-                return nativeType.jsonObject.Read(this, obj, nativeType);
+        public Object ReadJson(Object obj, NativeType nativeType, int index) {
+            if (nativeType.jsonCodec != null)
+                return nativeType.jsonCodec.Read(this, obj, nativeType);
             throw new NotSupportedException("found no resolver for JSON object: " + nativeType.type.FullName);
         }
-
-        /// <summary>
-        /// Is called for every JSON array found during iteration 
-        /// </summary>
-        // ReSharper disable once UnusedParameter.Local
-        public Object ReadJsonArray(Object col, NativeType nativeType, int index) {
-            if (nativeType.jsonArray != null)
-                return nativeType.jsonArray.Read(this, col, nativeType);
-            throw new NotSupportedException("found no resolver for JSON array: " + nativeType.type.Name);
-        }
     }
 
-    public interface IJsonArray {
-        object  Read  (JsonReader reader, object obj, NativeType nativeType);
-        void    Write (JsonWriter writer, object obj, NativeType nativeType);
-    }
-    
-    public interface IJsonObject {
+    public interface IJsonCodec {
         object  Read  (JsonReader reader, object obj, NativeType nativeType);
         void    Write (JsonWriter writer, object obj, NativeType nativeType);
     }
 
 
-    public class ReadObject : IJsonObject {
-        public static readonly ReadObject Resolver = new ReadObject();
+    public class ObjectCodec : IJsonCodec {
+        public static readonly ObjectCodec Resolver = new ObjectCodec();
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
 
@@ -283,7 +268,7 @@ namespace Friflo.Json.Managed
                             NativeType fieldObject = field.GetFieldObject(writer.typeCache);
                             // NativeType subElementType = collection.GetElementType(writer.typeCache);
                             // NativeType fieldType = field.GetFieldObject(writer.typeCache);
-                            writer.WriteJsonObject(child, fieldObject);
+                            writer.WriteJson(child, fieldObject);
                             /*
                             NativeType collection = field.collection;
                             if (collection == null)
@@ -370,7 +355,7 @@ namespace Friflo.Json.Managed
                                 throw new InvalidOperationException("Field is not compatible to JSON object: " +
                                                                     field.fieldType.FullName);
 
-                            sub = reader.ReadJsonObject(sub, fieldObject);
+                            sub = reader.ReadJson(sub, fieldObject, 0);
                             if (sub != null)
                                 field.SetObject(obj, sub);
                             else
@@ -389,7 +374,7 @@ namespace Friflo.Json.Managed
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             Object array = field.GetObject(obj);
-                            Object arrayRet = reader.ReadJsonArray(array, fieldArray, 0);
+                            Object arrayRet = reader.ReadJson(array, fieldArray, 0);
                             if (arrayRet != null) {
                                 if (array != arrayRet)
                                     field.SetObject(obj, arrayRet);
@@ -412,9 +397,9 @@ namespace Friflo.Json.Managed
         }
     }
 
-    public class ReadMap : IJsonObject
+    public class MapCodec : IJsonCodec
     {
-        public static readonly ReadMap Resolver = new ReadMap();
+        public static readonly MapCodec Resolver = new MapCodec();
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             PropCollection collection = (PropCollection)nativeType;
@@ -447,7 +432,7 @@ namespace Friflo.Json.Managed
                     bytes.AppendChar(':');
                     Object value = entry.Value;
                     if (value != null)
-                        writer.WriteJsonObject(value, elementType);
+                        writer.WriteJson(value, elementType);
                     else
                         bytes.AppendBytes(ref writer.@null);
                 }
@@ -472,7 +457,7 @@ namespace Friflo.Json.Managed
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        Object value = reader.ReadJsonObject(null, elementType);
+                        Object value = reader.ReadJson(null, elementType, 0);
                         if (value == null)
                             return null;
                         map[key] = value;
@@ -507,9 +492,9 @@ namespace Friflo.Json.Managed
         }
     }
 
-    public class ReadList : IJsonArray
+    public class ListCodec : IJsonCodec
     {
-        public static readonly ReadList Resolver = new ReadList();
+        public static readonly ListCodec Resolver = new ListCodec();
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             IList list = (IList) obj;
@@ -522,7 +507,7 @@ namespace Friflo.Json.Managed
                 if (item != null) {
                     switch (collection.id) {
                         case SimpleType.Id.Object:
-                            writer.WriteJsonObject(item, elementType);
+                            writer.WriteJson(item, elementType);
                             break;
                         case SimpleType.Id.String:
                             writer.WriteString((String) item);
@@ -578,13 +563,13 @@ namespace Friflo.Json.Managed
                         NativeType subElementType = collection.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJsonArray(oldElement, subElementType, 0);
+                            Object element = reader.ReadJson(oldElement, subElementType, 0);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJsonArray(null, subElementType, 0);
+                            Object element = reader.ReadJson(null, subElementType, 0);
                             if (element == null)
                                 return null;
                             list.Add(element);
@@ -595,13 +580,13 @@ namespace Friflo.Json.Managed
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJsonObject(oldElement, elementType);
+                            Object element = reader.ReadJson(oldElement, elementType, 0);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJsonObject(null, elementType);
+                            Object element = reader.ReadJson(null, elementType, 0);
                             if (element == null)
                                 return null;
                             list.Add(element);

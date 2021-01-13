@@ -37,7 +37,7 @@ namespace Friflo.Json.Managed
             strBuf.InitBytes(128);
             format.InitTokenFormat();
             NativeType objType = typeCache.GetType(obj.GetType());
-            WriteJsonObject(obj, objType);
+            WriteJson(obj, objType);
         }
 
         public void WriteKey(PropField field) {
@@ -57,25 +57,11 @@ namespace Friflo.Json.Managed
         /// <summary>
         /// Is called for every JSON object found during iteration 
         /// </summary>
-        public void WriteJsonObject(Object obj, NativeType nativeType) {
-            if (nativeType.jsonObject != null)
-                nativeType.jsonObject.Write(this, obj, nativeType);
-            else if (nativeType.jsonArray != null)
-                nativeType.jsonArray.Write(this, obj, nativeType);
+        public void WriteJson(Object obj, NativeType nativeType) {
+            if (nativeType.jsonCodec != null)
+                nativeType.jsonCodec.Write(this, obj, nativeType);
             else
                 throw new NotSupportedException("found no resolver for JSON object: " + nativeType.type.FullName);
         }
-
-        /// <summary>
-        /// Is called for every JSON array found during iteration 
-        /// </summary>
-        // ReSharper disable once UnusedParameter.Local
-        public void WriteJsonArray(Object col, NativeType nativeType, int index) {
-            if (nativeType.jsonArray != null)
-                nativeType.jsonArray.Write(this, col, nativeType);
-            else
-                throw new NotSupportedException("found no resolver for JSON array: " + nativeType.type.Name);
-        }
-
     }
 }

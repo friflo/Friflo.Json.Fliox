@@ -4,9 +4,9 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop.Resolver
 {
-    public class ReadArrayObject : IJsonArray
+    public class ObjectArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayObject Resolver = new ReadArrayObject();
+        public static readonly ObjectArrayCodec Resolver = new ObjectArrayCodec();
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             PropCollection collection = (PropCollection) nativeType;
@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed.Prop.Resolver
                 if (item == null)
                     writer.bytes.AppendBytes(ref writer.@null);
                 else
-                    writer.WriteJsonObject(item, elementType);
+                    writer.WriteJson(item, elementType);
             }
             writer.bytes.AppendChar(']');
         }
@@ -58,13 +58,13 @@ namespace Friflo.Json.Managed.Prop.Resolver
                         NativeType subElementArray = collection.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJsonArray(oldElement, subElementArray, 0);
+                            Object element = reader.ReadJson(oldElement, subElementArray, 0);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJsonArray(null, subElementArray, 0);
+                            Object element = reader.ReadJson(null, subElementArray, 0);
                             if (element == null)
                                 return null;
                             if (index >= len)
@@ -77,13 +77,13 @@ namespace Friflo.Json.Managed.Prop.Resolver
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJsonObject(oldElement, elementType);
+                            Object element = reader.ReadJson(oldElement, elementType, 0);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJsonObject(null, elementType);
+                            Object element = reader.ReadJson(null, elementType, 0);
                             if (element == null)
                                 return null;
                             if (index >= len)
@@ -108,9 +108,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
 
  
 
-    public class ReadArrayString : IJsonArray
+    public class StringArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayString Resolver = new ReadArrayString();
+        public static readonly StringArrayCodec Resolver = new StringArrayCodec();
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
             string[] arr = (string[]) obj;
@@ -153,9 +153,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayLong : IJsonArray
+    public class LongArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayLong Resolver = new ReadArrayLong();
+        public static readonly LongArrayCodec Resolver = new LongArrayCodec();
 
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             long[] arr = (long[]) obj;
@@ -196,9 +196,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayInt : IJsonArray
+    public class IntArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayInt Resolver = new ReadArrayInt();
+        public static readonly IntArrayCodec Resolver = new IntArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             int[] arr = (int[]) obj;
@@ -239,9 +239,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayShort : IJsonArray
+    public class ShortArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayShort Resolver = new ReadArrayShort();
+        public static readonly ShortArrayCodec Resolver = new ShortArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             short[] arr = (short[]) obj;
@@ -282,9 +282,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayByte : IJsonArray
+    public class ByteArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayByte Resolver = new ReadArrayByte();
+        public static readonly ByteArrayCodec Resolver = new ByteArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             byte[] arr = (byte[]) obj;
@@ -325,9 +325,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayBool : IJsonArray
+    public class BoolArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayBool Resolver = new ReadArrayBool();
+        public static readonly BoolArrayCodec Resolver = new BoolArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             bool[] arr =(bool[])obj;
@@ -366,9 +366,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayDouble : IJsonArray
+    public class DoubleArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayDouble Resolver = new ReadArrayDouble();
+        public static readonly DoubleArrayCodec Resolver = new DoubleArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             double[] arr = (double[]) obj;
@@ -411,9 +411,9 @@ namespace Friflo.Json.Managed.Prop.Resolver
         }
     }
 
-    public class ReadArrayFloat : IJsonArray
+    public class FloatArrayCodec : IJsonCodec
     {
-        public static readonly ReadArrayFloat Resolver = new ReadArrayFloat();
+        public static readonly FloatArrayCodec Resolver = new FloatArrayCodec();
         
         public void Write(JsonWriter writer, object obj, NativeType nativeType) {
             float[] arr = (float[]) obj;

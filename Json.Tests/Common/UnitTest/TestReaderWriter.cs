@@ -305,7 +305,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     {
                         // int[,] expect = {{1, 2, 3}};
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
-                        AreEqual("found no resolver for JSON array: Int32[,]", e.Message);
+                        AreEqual("found no resolver for JSON object: System.Int32[,]", e.Message);
                     }
                     
                     // --- list
