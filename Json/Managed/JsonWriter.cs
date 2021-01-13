@@ -9,7 +9,7 @@ namespace Friflo.Json.Managed
 {
     public class JsonWriter : IDisposable
     {
-        public readonly     PropType.Cache typeCache;
+        public readonly     TypeCache   typeCache;
         public              Bytes       bytes;
         public              ValueFormat format;
         private             Bytes       strBuf;
@@ -20,7 +20,7 @@ namespace Friflo.Json.Managed
         public          ref Bytes Output => ref bytes;
 
         public JsonWriter(TypeStore typeStore) {
-            typeCache = new PropType.Cache(typeStore);
+            typeCache = new TypeCache(typeStore);
         }
         
         public void Dispose() {

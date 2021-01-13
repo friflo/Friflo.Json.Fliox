@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
@@ -57,7 +56,7 @@ namespace Friflo.Json.Managed.Prop
             this.constructor    = constructor;
         }
         
-        public NativeType GetElementType(PropType.Cache typeCache) {
+        public NativeType GetElementType(TypeCache typeCache) {
             if (elementType == null)
                 return null;
             // simply reduce lookups

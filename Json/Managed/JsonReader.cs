@@ -11,7 +11,7 @@ namespace Friflo.Json.Managed
     public class JsonReader : IDisposable
     {
         public          JsonParser      parser;
-        public readonly PropType.Cache  typeCache;
+        public readonly TypeCache       typeCache;
 
         public readonly Bytes           discriminator = new Bytes("$type");
 
@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed
         public          SkipInfo        SkipInfo => parser.skipInfo;
 
         public JsonReader(TypeStore typeStore) {
-            typeCache = new PropType.Cache(typeStore);
+            typeCache = new TypeCache(typeStore);
             parser = new JsonParser {error = {throwException = false}};
         }
 

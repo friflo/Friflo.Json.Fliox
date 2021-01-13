@@ -6,7 +6,7 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
 {
-    public class SimpleType
+    public static class SimpleType
     {
         public enum Id
         {
