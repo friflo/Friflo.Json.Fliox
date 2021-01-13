@@ -51,9 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         [Test]
         public void HelloWorldWriter() {
-            var r = new JsonWriter(new TypeStore());
-            r.Write(new Message {say = "Hello 👋", to = "World"});
-            Console.WriteLine($"Output: {r.Output}");
+            var w = new JsonWriter(new TypeStore());
+            w.Write(new Message {say = "Hello 👋", to = "World"});
+            Console.WriteLine($"Output: {w.Output}");
             // Output: {"say":"Hello 👋","to":"World"}
         }
 

@@ -236,6 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
         [Test]
         public void ReadPrimitive() {
+#if !UNITY_EDITOR
             GC.Collect();
             long startBytes = GC.GetAllocatedBytesForCurrentThread();
             
@@ -247,6 +248,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 Console.WriteLine($"startBytes: {startBytes} endBytes: {endBytes}");
                 Assert.AreEqual(startBytes, endBytes);
             }
+#else
+            TestPrimitiveInternal();
+#endif
         }
 
         public struct TestStruct {
