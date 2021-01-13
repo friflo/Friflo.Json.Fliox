@@ -8,21 +8,24 @@ using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
-using static NUnit.Framework.Assert;
-// using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
+// using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest
 {
     public static class NoCheck
     {
-        public static void AreEqual(object o1, object o2) { }
+        public static bool checkStaticMemoryUsage = false;
+        public static void AreEqual(object expect, object value) {
+            if (checkStaticMemoryUsage)
+                return;
+            Assert.AreEqual(expect, value);
+        }
         public static void Fail(string msg) { }
     }
     
     public class TestReaderWriter : LeakTestsFixture
     {
-
-        
         private TypeStore createStore() {
             TypeStore      typeStore = new TypeStore();
             typeStore.RegisterType("Sub", typeof( Sub ));
@@ -230,9 +233,23 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 }
             }
         }
-        
+
         [Test]
-        public void ReadPrimitive()
+        public void ReadPrimitive() {
+            GC.Collect();
+            long startBytes = GC.GetAllocatedBytesForCurrentThread();
+            
+            TestPrimitiveInternal();
+            
+            if (checkStaticMemoryUsage) {
+                GC.Collect();
+                long endBytes = GC.GetAllocatedBytesForCurrentThread();
+                Console.WriteLine($"startBytes: {startBytes} endBytes: {endBytes}");
+                Assert.AreEqual(startBytes, endBytes);
+            }
+        }
+        
+        private void TestPrimitiveInternal()
         {
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
@@ -375,6 +392,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     enc.typeCache.ClearCounts();
                 }
             }
+
         }
     }
 }
