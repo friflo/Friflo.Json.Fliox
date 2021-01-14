@@ -9,7 +9,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Codecs
 {
     public class ObjectCodec : IJsonCodec {
-        public static readonly ObjectCodec Resolver = new ObjectCodec();
+        public static readonly ObjectCodec Interface = new ObjectCodec();
         
         public static bool IsPrimitive(Type type) {
             return type.IsPrimitive && type == typeof(string);

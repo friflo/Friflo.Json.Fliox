@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class MapCodec : IJsonCodec
     {
-        public static readonly MapCodec Resolver = new MapCodec();
+        public static readonly MapCodec Interface = new MapCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );

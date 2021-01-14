@@ -9,12 +9,12 @@ namespace Friflo.Json.Managed.Codecs
 
     public class StringCodec : IJsonCodec
     {
-        public static readonly StringCodec Resolver = new StringCodec();
+        public static readonly StringCodec Interface = new StringCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(string))
                 return null;
-            return new NativeType(type, Resolver);
+            return new NativeType(type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -56,12 +56,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class DoubleCodec : IJsonCodec
     {
-        public static readonly DoubleCodec Resolver = new DoubleCodec();
+        public static readonly DoubleCodec Interface = new DoubleCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(double) && type != typeof(double?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -80,12 +80,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class FloatCodec : IJsonCodec
     {
-        public static readonly FloatCodec Resolver = new FloatCodec();
+        public static readonly FloatCodec Interface = new FloatCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(float) && type != typeof(float?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -104,12 +104,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class LongCodec : IJsonCodec
     {
-        public static readonly LongCodec Resolver = new LongCodec();
+        public static readonly LongCodec Interface = new LongCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(long) && type != typeof(long?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -128,12 +128,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class IntCodec : IJsonCodec
     {
-        public static readonly IntCodec Resolver = new IntCodec();
+        public static readonly IntCodec Interface = new IntCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(int) && type != typeof(int?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -152,12 +152,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class ShortCodec : IJsonCodec
     {
-        public static readonly ShortCodec Resolver = new ShortCodec();
+        public static readonly ShortCodec Interface = new ShortCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(short) && type != typeof(short?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -176,12 +176,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class ByteCodec : IJsonCodec
     {
-        public static readonly ByteCodec Resolver = new ByteCodec();
+        public static readonly ByteCodec Interface = new ByteCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -200,12 +200,12 @@ namespace Friflo.Json.Managed.Codecs
     
     public class BoolCodec : IJsonCodec
     {
-        public static readonly BoolCodec Resolver = new BoolCodec();
+        public static readonly BoolCodec Interface = new BoolCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(bool) && type != typeof(bool?))
                 return null;
-            return new PrimitiveType (type, Resolver);
+            return new PrimitiveType (type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

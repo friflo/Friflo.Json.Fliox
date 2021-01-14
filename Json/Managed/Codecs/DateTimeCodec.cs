@@ -10,12 +10,12 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class DateTimeCodec : IJsonCodec
     {
-        public static readonly DateTimeCodec Resolver = new DateTimeCodec();
+        public static readonly DateTimeCodec Interface = new DateTimeCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(DateTime))
                 return null;
-            return new PrimitiveType (typeof(DateTime), Resolver);
+            return new PrimitiveType (typeof(DateTime), Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

@@ -10,7 +10,7 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class ObjectArrayCodec : IJsonCodec
     {
-        public static readonly ObjectArrayCodec Resolver = new ObjectArrayCodec();
+        public static readonly ObjectArrayCodec Interface = new ObjectArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type. IsArray) {

@@ -7,7 +7,7 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class TypeNotSupported : NativeType {
         public TypeNotSupported(Type type) : 
-            base(type, TypeNotSupportedCodec.Resolver) {
+            base(type, TypeNotSupportedCodec.Interface) {
         }
 
         public override object CreateInstance() {
@@ -17,11 +17,11 @@ namespace Friflo.Json.Managed.Codecs
     
     public class TypeNotSupportedCodec : IJsonCodec
     {
-        public static readonly TypeNotSupportedCodec Resolver = new TypeNotSupportedCodec();
+        public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
 
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type.IsPrimitive)
-                return new NativeType(type, Resolver);
+                return new NativeType(type, Interface);
             return null;
         }
 

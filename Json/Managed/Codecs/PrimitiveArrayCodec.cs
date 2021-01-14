@@ -27,7 +27,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class StringArrayCodec : IJsonCodec
     {
-        public static readonly StringArrayCodec Resolver = new StringArrayCodec();
+        public static readonly StringArrayCodec Interface = new StringArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class LongArrayCodec : IJsonCodec
     {
-        public static readonly LongArrayCodec Resolver = new LongArrayCodec();
+        public static readonly LongArrayCodec Interface = new LongArrayCodec();
 
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
@@ -123,7 +123,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class IntArrayCodec : IJsonCodec
     {
-        public static readonly IntArrayCodec Resolver = new IntArrayCodec();
+        public static readonly IntArrayCodec Interface = new IntArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
@@ -170,7 +170,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class ShortArrayCodec : IJsonCodec
     {
-        public static readonly ShortArrayCodec Resolver = new ShortArrayCodec();
+        public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
@@ -217,7 +217,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class ByteArrayCodec : IJsonCodec
     {
-        public static readonly ByteArrayCodec Resolver = new ByteArrayCodec();
+        public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
@@ -264,7 +264,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class BoolArrayCodec : IJsonCodec
     {
-        public static readonly BoolArrayCodec Resolver = new BoolArrayCodec();
+        public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
@@ -309,7 +309,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class DoubleArrayCodec : IJsonCodec
     {
-        public static readonly DoubleArrayCodec Resolver = new DoubleArrayCodec();
+        public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
@@ -356,7 +356,7 @@ namespace Friflo.Json.Managed.Codecs
 
     public class FloatArrayCodec : IJsonCodec
     {
-        public static readonly FloatArrayCodec Resolver = new FloatArrayCodec();
+        public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);

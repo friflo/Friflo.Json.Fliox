@@ -10,12 +10,12 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class BigIntCodec : IJsonCodec
     {
-        public static readonly BigIntCodec Resolver = new BigIntCodec();
+        public static readonly BigIntCodec Interface = new BigIntCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(BigInteger))
                 return null;
-            return new PrimitiveType (typeof(BigInteger), Resolver);
+            return new PrimitiveType (typeof(BigInteger), Interface);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {

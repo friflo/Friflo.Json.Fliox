@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class ListCodec : IJsonCodec
     {
-        public static readonly ListCodec Resolver = new ListCodec();
+        public static readonly ListCodec Interface = new ListCodec();
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
