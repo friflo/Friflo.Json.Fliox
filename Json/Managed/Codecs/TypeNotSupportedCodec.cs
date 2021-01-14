@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type.IsPrimitive)
-                return new Primitive(type);
+                return new NativeType(type, Resolver);
             return null;
         }
 

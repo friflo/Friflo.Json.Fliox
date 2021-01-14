@@ -11,8 +11,12 @@ namespace Friflo.Json.Managed.Codecs
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Resolver = new ObjectCodec();
         
+        public static bool IsPrimitive(Type type) {
+            return type.IsPrimitive && type == typeof(string);
+        } 
+        
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
-            if (PrimitiveCodec.IsPrimitive(type))
+            if (IsPrimitive(type))
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)

@@ -41,7 +41,6 @@ namespace Friflo.Json.Managed.Codecs
             ListCodec.Resolver,
             MapCodec.Resolver,
             ObjectCodec.Resolver,
-            PrimitiveCodec.Resolver,
             //
             TypeNotSupportedCodec.Resolver // Should be last
         }; 
@@ -83,7 +82,6 @@ namespace Friflo.Json.Managed.Codecs
             if ((handler = ListCodec.               Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = MapCodec.                Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = ObjectCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
-            if ((handler = PrimitiveCodec.          Resolver.CreateHandler(this, type)) != null) return handler;
             //
             handler = TypeNotSupportedCodec.        Resolver.CreateHandler(this, type); // Should be last
 

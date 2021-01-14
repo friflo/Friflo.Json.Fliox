@@ -221,38 +221,4 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
     }
-    
-
-    public class Primitive : NativeType {
-        public Primitive(Type type) : 
-            base(type, PrimitiveCodec.Resolver) {
-        }
-
-        public override object CreateInstance() {
-            throw new NotSupportedException("primitives don't use a codec" + type.FullName);
-        }
-    }
-    
-    public class PrimitiveCodec : IJsonCodec
-    {
-        public static readonly PrimitiveCodec Resolver = new PrimitiveCodec();
-
-        public static bool IsPrimitive(Type type) {
-            return type.IsPrimitive && type == typeof(string);
-        } 
-
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
-            if (IsPrimitive(type))
-                return new Primitive(type);
-            return null;
-        }
-
-        public object Read(JsonReader reader, object obj, NativeType nativeType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + nativeType.type.FullName);
-        }
-
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
-            throw new InvalidOperationException("primitives don't use a codec. type: " + nativeType.type.FullName);
-        }
-    }
 }
