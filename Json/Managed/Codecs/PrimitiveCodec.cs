@@ -35,8 +35,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public readonly bool nullable;
         
-        public PrimitiveType(Type type, IJsonCodec jsonCodec)
-            : base(type, jsonCodec) {
+        public PrimitiveType(Type type, IJsonCodec codec)
+            : base(type, codec) {
             nullable = Nullable.GetUnderlyingType(type) != null;
         }
 

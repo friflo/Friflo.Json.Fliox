@@ -61,7 +61,7 @@ namespace Friflo.Json.Managed
         /// Is called for every C# object & container (array, map, list) during object tree iteration 
         /// </summary>
         public void WriteJson(Object obj, NativeType nativeType) {
-            nativeType.jsonCodec.Write(this, obj, nativeType);
+            nativeType.codec.Write(this, obj, nativeType);
         }
     }
 }

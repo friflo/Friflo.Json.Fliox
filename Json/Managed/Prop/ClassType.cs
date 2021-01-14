@@ -23,8 +23,8 @@ namespace Friflo.Json.Managed.Prop
         }
 
         // PropType
-        internal ClassType (TypeResolver resolver, Type type, IJsonCodec jsonCodec, ConstructorInfo constructor) :
-            base (type, jsonCodec)
+        internal ClassType (TypeResolver resolver, Type type, IJsonCodec codec, ConstructorInfo constructor) :
+            base (type, codec)
         {
             propFields = new  PropertyFields (resolver, type, this, true, true);
             for (int n = 0; n < propFields.num; n++)

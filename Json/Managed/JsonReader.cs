@@ -89,17 +89,17 @@ namespace Friflo.Json.Managed
                         NativeType collection = typeCache.GetType(type); // lookup required 
                         return ReadJson(null, collection, 0);
                     case JsonEvent.ValueString:
-                        NativeType valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);
+                        NativeType value = typeCache.GetType(type);
+                        return value.codec.Read(this, null, value);
                     case JsonEvent.ValueNumber:
-                        valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);
+                        value = typeCache.GetType(type);
+                        return ReadJson(null, value, 0);
                     case JsonEvent.ValueBool:
-                        valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);
+                        value = typeCache.GetType(type);
+                        return ReadJson(null, value, 0);
                     case JsonEvent.ValueNull:
-                        valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);
+                        value = typeCache.GetType(type);
+                        return ReadJson(null, value, 0);
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -206,7 +206,7 @@ namespace Friflo.Json.Managed
         /// Is called for every JSON object & array found during JSON iteration 
         /// </summary>
         public Object ReadJson(Object obj, NativeType nativeType, int index) {
-            return nativeType.jsonCodec.Read(this, obj, nativeType);
+            return nativeType.codec.Read(this, obj, nativeType);
         }
     }
 }

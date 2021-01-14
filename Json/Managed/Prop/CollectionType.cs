@@ -11,15 +11,15 @@ namespace Friflo.Json.Managed.Prop
 {
     public class NativeType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonCodec  jsonCodec;
+        public  readonly    IJsonCodec  codec;
 
         public virtual Object CreateInstance() {
             return null;
         }
 
-        public NativeType(Type type, IJsonCodec jsonCodec) {
+        public NativeType(Type type, IJsonCodec codec) {
             this.type = type;
-            this.jsonCodec = jsonCodec;
+            this.codec = codec;
         }
 
         public virtual void Dispose() {
@@ -39,11 +39,11 @@ namespace Friflo.Json.Managed.Prop
         internal CollectionType (
                 Type            nativeType,
                 Type            elementType,
-                IJsonCodec      jsonCodec,
+                IJsonCodec      codec,
                 int             rank,
                 Type            keyType,
                 ConstructorInfo constructor) :
-            base (nativeType, jsonCodec) {
+            base (nativeType, codec) {
             this.keyType        = keyType;
             this.elementType    = elementType;
             if (elementType == null)
