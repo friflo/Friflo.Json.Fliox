@@ -37,7 +37,7 @@ namespace Friflo.Json.Managed.Codecs
                 if (item != null) {
                     switch (collectionType.id) {
                         case SimpleType.Id.Object:
-                            writer.WriteJson(item, elementType);
+                            elementType.codec.Write(writer, item, elementType);
                             break;
                         case SimpleType.Id.String:
                             writer.WriteString((String) item);

@@ -91,7 +91,7 @@ namespace Friflo.Json.Managed.Codecs
                             bytes.AppendBytes(ref writer.@null);
                         } else {
                             NativeType fieldObject = field.GetFieldObject(writer.typeCache);
-                            writer.WriteJson(child, fieldObject);
+                            fieldObject.codec.Write(writer, child, fieldObject);
                         }
                         break;
                     default:

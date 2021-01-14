@@ -40,7 +40,7 @@ namespace Friflo.Json.Managed
             strBuf.InitBytes(128);
             format.InitTokenFormat();
             NativeType objType = typeCache.GetType(obj.GetType());
-            WriteJson(obj, objType);
+            objType.codec.Write(this, obj, objType);
         }
 
         public void WriteKey(PropField field) {
@@ -56,12 +56,6 @@ namespace Friflo.Json.Managed
             JsonSerializer.AppendEscString(ref bytes, ref strBuf);
             bytes.AppendChar('\"');
         }
-        
-        /// <summary>
-        /// Is called for every C# object & container (array, map, list) during object tree iteration 
-        /// </summary>
-        public void WriteJson(Object obj, NativeType nativeType) {
-            nativeType.codec.Write(this, obj, nativeType);
-        }
+
     }
 }

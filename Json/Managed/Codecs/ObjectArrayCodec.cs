@@ -38,7 +38,7 @@ namespace Friflo.Json.Managed.Codecs
                 if (item == null)
                     writer.bytes.AppendBytes(ref writer.@null);
                 else
-                    writer.WriteJson(item, elementType);
+                    elementType.codec.Write(writer, item, elementType);
             }
             writer.bytes.AppendChar(']');
         }

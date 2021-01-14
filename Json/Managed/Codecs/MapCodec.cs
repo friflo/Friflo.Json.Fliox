@@ -57,7 +57,7 @@ namespace Friflo.Json.Managed.Codecs
                     bytes.AppendChar(':');
                     object value = entry.Value;
                     if (value != null)
-                        writer.WriteJson(value, elementType);
+                        elementType.codec.Write(writer, value, elementType);
                     else
                         bytes.AppendBytes(ref writer.@null);
                 }
