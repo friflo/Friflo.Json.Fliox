@@ -135,7 +135,7 @@ namespace Friflo.Json.Burst
 
         enum ErrorType {
             JsonError,
-            ApplicationError,
+            Assertion,
             ExternalError
         }
 
@@ -158,9 +158,9 @@ namespace Friflo.Json.Burst
             errMsg.Clear();
             errMsg.AppendStr32(ref module);
             switch (errorType) {
-                case ErrorType.JsonError:           errMsg.AppendStr32("/JSON error: ");           break;
-                case ErrorType.ApplicationError:    errMsg.AppendStr32("/application error: ");    break;
-                case ErrorType.ExternalError:       errMsg.AppendStr32("/external error: ");       break;
+                case ErrorType.JsonError:           errMsg.AppendStr32("/JSON error: ");    break;
+                case ErrorType.Assertion:           errMsg.AppendStr32("/assertion: ");     break;
+                case ErrorType.ExternalError:       errMsg.AppendStr32("/error: ");         break;
             }
 
             errMsg.AppendStr128(ref msg);
@@ -211,7 +211,7 @@ namespace Friflo.Json.Burst
         // ReSharper disable once UnusedMember.Local
         private bool SetApplicationError (Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.ApplicationError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.Assertion, ref msg, ref errVal);
             return false;
         }
         
