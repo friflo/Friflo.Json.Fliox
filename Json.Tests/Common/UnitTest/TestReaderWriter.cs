@@ -259,7 +259,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
         
         private void TestPrimitiveInternal() {
-            String bigIntStr = "1234567890123456789012345678901234567890";
             
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
@@ -269,7 +268,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
-            using (var bigInt =     new Bytes ($"\"{bigIntStr}\""))
+            using (var bigInt =     new Bytes ("1234567890123456789012345678901234567890"))
+            using (var bigIntStr =  new Bytes ($"\"{bigInt.ToString()}\""))
                 
             using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
@@ -308,6 +308,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     StringAssert.Contains("primitive cannot be used within: ArrayStart", enc.Error.msg.ToString());
                     enc.ReadValue<double>(mapNum);
                     StringAssert.Contains("primitive cannot be used within: ObjectStart", enc.Error.msg.ToString());
+                    enc.ReadValue<long>(bigInt);
+                    StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
 
                     AreEqual(12.5,      enc.ReadValue<float>    (@double));
                     AreEqual(12.5,      enc.Read<float?>        (@double));
@@ -458,18 +460,18 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // ----
                     AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
                     {
-                        BigInteger expect = BigInteger.Parse(bigIntStr);
-                        AreEqual(expect, enc.ReadValue<BigInteger>(bigInt));
+                        BigInteger expect = BigInteger.Parse(bigInt.ToString());
+                        AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
                         write.InitWriter();
                         write.Write(expect);
-                        AreEqual(bigInt.ToString(), write.Output.ToString());
+                        AreEqual(bigIntStr.ToString(), write.Output.ToString());
                     }
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(69, enc.typeCache.LookupCount);
+                        AreEqual(70, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
