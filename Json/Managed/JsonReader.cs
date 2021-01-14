@@ -165,39 +165,6 @@ namespace Friflo.Json.Managed
             return len < 5 ? minLen : 2 * len;
         }
 
-        //
-        public object NumberFromValue(SimpleType.Id? id, out bool success) {
-            if (id == null) {
-                success = false;
-                return null;
-            }
-
-            switch (id) {
-                case SimpleType.Id.Long:
-                    return parser.ValueAsLong(out success);
-                case SimpleType.Id.Integer:
-                    return parser.ValueAsInt(out success);
-                case SimpleType.Id.Short:
-                    return parser.ValueAsShort(out success);
-                case SimpleType.Id.Byte:
-                    return parser.ValueAsByte(out success);
-                case SimpleType.Id.Double:
-                    return parser.ValueAsDouble(out success);
-                case SimpleType.Id.Float:
-                    return parser.ValueAsFloat(out success);
-                default:
-                    success = false;
-                    return ErrorNull("Cant convert number to: ", id.ToString());
-            }
-        }
-
-        public object BoolFromValue(SimpleType.Id? id, out bool success) {
-            if (id == SimpleType.Id.Bool)
-                return parser.ValueAsBool(out success);
-            success = false;
-            return ErrorNull("Cant convert number to: ", id.ToString());
-        }
-        
         public Object ArrayUnexpected (JsonReader reader, JsonEvent ev) {
             return reader.ErrorNull("unexpected state in array: ", ev);
         }
