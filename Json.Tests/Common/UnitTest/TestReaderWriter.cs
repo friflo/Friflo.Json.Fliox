@@ -288,9 +288,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual("hello",   enc.Read<string>(hello));
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(12.5,      enc.ReadValue<double>   (@double));
-                    AreEqual(12.5,      enc.Read<double?>       (@double));
-                    AreEqual(null,      enc.Read<double?>       (@null));
+                    AreEqual(12.5,                      enc.ReadValue<double>   (@double));
+                    AreEqual(12.5,                      enc.Read<double?>       (@double));
+                    AreEqual(null,                      enc.Read<double?>       (@null));
+                    AreEqual(1.2345678901234568E+39d,   enc.ReadValue<double>   (bigInt));
+
                     enc.ReadValue<double>(@null);
                     StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     {
@@ -471,7 +473,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(70, enc.typeCache.LookupCount);
+                        AreEqual(71, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }

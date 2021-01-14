@@ -69,7 +69,7 @@ namespace Friflo.Json.Managed.Codecs
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveType.CheckElse(reader, nativeType);
-            object num = reader.parser.ValueAsDouble(out bool success);
+            object num = reader.parser.ValueAsDoubleStd(out bool success);
             if (success)
                 return num;
             return null;
