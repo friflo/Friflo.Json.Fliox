@@ -94,7 +94,7 @@ namespace Friflo.Json.Managed.Codecs
                         if (child == null) {
                             bytes.AppendBytes(ref writer.@null);
                         } else {
-                            NativeType fieldObject = field.GetFieldObject(writer.typeCache);
+                            NativeType fieldObject = field.GetFieldType();
                             fieldObject.codec.Write(writer, child, fieldObject);
                         }
                         break;
@@ -131,7 +131,7 @@ namespace Friflo.Json.Managed.Codecs
                                 parser.SkipEvent();
                             break;
                         }
-                        NativeType valueType = field.GetFieldObject(reader.typeCache);
+                        NativeType valueType = field.GetFieldType();
                         object value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
                         break;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Managed.Codecs
                             parser.SkipEvent(); // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                             break;
                         }
-                        valueType = field.GetFieldObject(reader.typeCache);
+                        valueType = field.GetFieldType();
                         // todo room for improvement - in case of primitives codec.Read() should not be called.
                         value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
@@ -180,7 +180,7 @@ namespace Friflo.Json.Managed.Codecs
                         }
                         else {
                             Object sub = field.GetObject(obj);
-                            NativeType fieldObject = field.GetFieldObject(reader.typeCache);
+                            NativeType fieldObject = field.GetFieldType();
                             if (fieldObject == null)
                                 throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.FullName);
 
@@ -199,7 +199,7 @@ namespace Friflo.Json.Managed.Codecs
                                 return null;
                         }
                         else {
-                            NativeType fieldArray = field.GetFieldArray(reader.typeCache);
+                            NativeType fieldArray = field.GetFieldType();
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             Object array = field.GetObject(obj);
