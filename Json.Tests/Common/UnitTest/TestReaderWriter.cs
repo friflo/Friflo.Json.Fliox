@@ -296,12 +296,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     enc.ReadValue<double>(@null);
                     StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+#if !UNITY_EDITOR
                     {
                         enc.ThrowException = true;
                         var e = Throws<FrifloException>(() => enc.ReadValue<double>(@null));
                         StringAssert.Contains("primitive is not nullable.", e.Message);
                         enc.ThrowException = false;
                     }
+#endif
                     // error cases
                     enc.ReadValue<double>(@true);
                     StringAssert.Contains("primitive cannot be used within: ValueBool", enc.Error.msg.ToString());
@@ -314,9 +316,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     enc.ReadValue<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
                     enc.ReadValue<float>(bigInt);
-                    StringAssert.Contains("float value out of range. val:", enc.Error.msg.ToString());
+                    AreEqual(true, enc.Error.ErrSet);
+                    // StringAssert.Contains("float value out of range. val:", enc.Error.msg.ToString()); // Unity has different error message
                     enc.ReadValue<double>   (dblOverflow);
-                    StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());
+                    AreEqual(true, enc.Error.ErrSet);
+                    // StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());// Unity has different error message
 
 
                     AreEqual(12.5,                      enc.ReadValue<float>    (@double));
@@ -488,7 +492,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
+#if !UNITY_EDITOR
                         AreEqual(75, enc.typeCache.LookupCount);
+#endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
