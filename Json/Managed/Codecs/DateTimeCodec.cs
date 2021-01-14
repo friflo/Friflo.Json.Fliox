@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Globalization;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Types;
 
