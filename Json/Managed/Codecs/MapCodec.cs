@@ -49,13 +49,13 @@ namespace Friflo.Json.Managed.Codecs
                 }
             }
             else {
-                // Map<String, Object>
+                // Map<String, object>
                 NativeType elementType = collectionType.GetElementType(writer.typeCache);
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
                     bytes.AppendChar(':');
-                    Object value = entry.Value;
+                    object value = entry.Value;
                     if (value != null)
                         writer.WriteJson(value, elementType);
                     else
@@ -66,7 +66,7 @@ namespace Friflo.Json.Managed.Codecs
 
         }
         
-        public Object Read(JsonReader reader, object obj, NativeType nativeType) {
+        public object Read(JsonReader reader, object obj, NativeType nativeType) {
             CollectionType collectionType = (CollectionType) nativeType;
             if (obj == null)
                 obj = collectionType.CreateInstance();
@@ -82,29 +82,22 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        Object value = reader.ReadJson(null, elementType, 0);
+                        object value = reader.ReadJson(null, elementType, 0);
                         if (value == null)
                             return null;
                         map[key] = value;
                         break;
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
-                        if (collectionType.id != SimpleType.Id.String)
-                            return reader.ErrorNull("Expect Dictionary value type string. Found: ",
-                                collectionType.elementType.Name);
-                        map[key] = parser.value.ToString();
+                        map[key] = reader.ReadJson(null, elementType, 0);
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
-                        map[key] = reader.NumberFromValue(collectionType.id, out bool successNum);
-                        if (!successNum)
-                            return null;
+                        map[key] = reader.ReadJson(null, elementType, 0);
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        map[key] = reader.BoolFromValue(collectionType.id, out bool successBool);
-                        if (!successBool)
-                            return null;
+                        map[key] = reader.ReadJson(null, elementType, 0);
                         break;
                     case JsonEvent.ObjectEnd:
                         return map;
