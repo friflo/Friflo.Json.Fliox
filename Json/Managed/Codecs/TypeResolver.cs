@@ -26,28 +26,38 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         private readonly IJsonCodec[] resolvers = {
-            BigIntCodec.Interface,
+            BigIntCodec.            Interface,
+            DateTimeCodec.          Interface,
             //
-            StringArrayCodec.Interface,
-            LongArrayCodec.Interface,
-            IntArrayCodec.Interface,
-            ShortArrayCodec.Interface,
-            ByteArrayCodec.Interface,
-            BoolArrayCodec.Interface,
-            DoubleArrayCodec.Interface,
-            FloatArrayCodec.Interface,
-            ObjectArrayCodec.Interface,
+            StringCodec.            Interface,
+            DoubleCodec.            Interface,
+            FloatCodec.             Interface,
+            LongCodec.              Interface,
+            IntCodec.               Interface,
+            ShortCodec.             Interface,
+            ByteCodec.              Interface,
+            BoolCodec.              Interface,
+            //  
+            StringArrayCodec.       Interface,
+            LongArrayCodec.         Interface,
+            IntArrayCodec.          Interface,
+            ShortArrayCodec.        Interface,
+            ByteArrayCodec.         Interface,
+            BoolArrayCodec.         Interface,
+            DoubleArrayCodec.       Interface,
+            FloatArrayCodec.        Interface,
+            ObjectArrayCodec.       Interface,
+            //  
+            ListCodec.              Interface,
+            MapCodec.               Interface,
+            ObjectCodec.            Interface,
             //
-            ListCodec.Interface,
-            MapCodec.Interface,
-            ObjectCodec.Interface,
-            //
-            TypeNotSupportedCodec.Interface // Should be last
+            TypeNotSupportedCodec.  Interface //  need to be the last entry
         }; 
         
         private NativeType CreateType (Type type) {
-            /* for (int n = 0; n < resolvers.Length; n++) {
-                NativeType typeHandler = resolvers[n].AddTypeHandler(this, type);
+             /* for (int n = 0; n < resolvers.Length; n++) {
+                NativeType typeHandler = resolvers[n].CreateHandler(this, type);
                 if (typeHandler != null)
                     return typeHandler;
             } */
@@ -83,14 +93,11 @@ namespace Friflo.Json.Managed.Codecs
             if ((handler = MapCodec.                Interface.CreateHandler(this, type)) != null) return handler;
             if ((handler = ObjectCodec.             Interface.CreateHandler(this, type)) != null) return handler;
             //
-            handler = TypeNotSupportedCodec.        Interface.CreateHandler(this, type); // Should be last
+            handler = TypeNotSupportedCodec.        Interface.CreateHandler(this, type); // need to be the last entry
 
             return handler;
         }
 
     }
-    
-    // -------------------------------------------------------------------------------
-
-
 }
+
