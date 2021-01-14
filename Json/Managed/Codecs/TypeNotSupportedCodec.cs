@@ -5,15 +5,7 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public class TypeNotSupported : NativeType {
-        public TypeNotSupported(Type type) : 
-            base(type, TypeNotSupportedCodec.Interface) {
-        }
 
-        public override object CreateInstance() {
-            throw new NotSupportedException("Type not supported" + type.FullName);
-        }
-    }
     
     public class TypeNotSupportedCodec : IJsonCodec
     {

@@ -33,7 +33,7 @@ namespace Friflo.Json.Managed.Codecs
                         return ret;
                     return reader.ErrorNull("Failed parsing DateTime. value: ", reader.parser.value.ToString());
                 default:
-                    return PrimitiveType.CheckElse(reader, nativeType);
+                    return PrimitiveCodec.CheckElse(reader, nativeType);
             }
         }
     }

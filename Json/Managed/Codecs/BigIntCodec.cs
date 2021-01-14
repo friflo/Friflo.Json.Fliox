@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed.Codecs
                         return ret2;
                     return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
                 default:
-                    return PrimitiveType.CheckElse(reader, nativeType);
+                    return PrimitiveCodec.CheckElse(reader, nativeType);
             }
         }
     }

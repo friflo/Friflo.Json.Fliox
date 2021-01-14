@@ -7,9 +7,26 @@ using Friflo.Json.Managed.Types;
 namespace Friflo.Json.Managed.Codecs
 {
 
+    public static class PrimitiveCodec
+    {
+        public static object CheckElse(JsonReader reader, NativeType nativeType) {
+            switch (reader.parser.Event) {
+                case JsonEvent.ValueNull:
+                    if (((PrimitiveType) nativeType).nullable)
+                        return null;
+                    return reader.ErrorNull("primitive is not nullable. type: ", nativeType.type.FullName);
+                case JsonEvent.Error:
+                    return null;
+                default:
+                    return reader.ErrorNull("primitive cannot be used within: ", reader.parser.Event);
+            }
+        }
+    }
+
     public class StringCodec : IJsonCodec
     {
         public static readonly StringCodec Interface = new StringCodec();
+        
         
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(string))
@@ -31,29 +48,6 @@ namespace Friflo.Json.Managed.Codecs
         }
     }
     
-    public class PrimitiveType : NativeType
-    {
-        public readonly bool nullable;
-        
-        public PrimitiveType(Type type, IJsonCodec codec)
-            : base(type, codec) {
-            nullable = Nullable.GetUnderlyingType(type) != null;
-        }
-
-        public static object CheckElse(JsonReader reader, NativeType nativeType) {
-            switch (reader.parser.Event) {
-                case JsonEvent.ValueNull:
-                    if (((PrimitiveType) nativeType).nullable)
-                        return null;
-                    return reader.ErrorNull("primitive is not nullable. type: ", nativeType.type.FullName);
-                case JsonEvent.Error:
-                    return null;
-                default:
-                    return reader.ErrorNull("primitive cannot be used within: ", reader.parser.Event);
-            }
-        }
-    }
-    
     public class DoubleCodec : IJsonCodec
     {
         public static readonly DoubleCodec Interface = new DoubleCodec();
@@ -70,7 +64,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsDoubleStd(out bool success);
             if (success)
                 return num;
@@ -94,7 +88,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsFloatStd(out bool success);
             if (success)
                 return num;
@@ -118,7 +112,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsLong(out bool success);
             if (success)
                 return num;
@@ -142,7 +136,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsInt(out bool success);
             if (success)
                 return num;
@@ -166,7 +160,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsShort(out bool success);
             if (success)
                 return num;
@@ -190,7 +184,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsByte(out bool success);
             if (success)
                 return num;
@@ -214,7 +208,7 @@ namespace Friflo.Json.Managed.Codecs
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return PrimitiveType.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, nativeType);
             object num = reader.parser.ValueAsBool(out bool success);
             if (success)
                 return num;
