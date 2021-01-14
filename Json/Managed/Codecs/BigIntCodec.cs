@@ -13,7 +13,7 @@ namespace Friflo.Json.Managed.Codecs
         public NativeType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(BigInteger))
                 return null;
-            return new NativeType (typeof(BigInteger), Resolver);
+            return new PrimitiveType (typeof(BigInteger), Resolver);
         }
         
         public void Write (JsonWriter writer, object obj, NativeType nativeType) {
@@ -24,11 +24,21 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
-            if (reader.parser.Event == JsonEvent.ValueString) { 
-                if (BigInteger.TryParse(reader.parser.value.ToString(), out BigInteger ret))
-                    return ret;
+            ref var value = ref reader.parser.value;
+            switch (reader.parser.Event) {
+                case JsonEvent.ValueString:
+                    if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
+                        value.end--;
+                    if (BigInteger.TryParse(value.ToString(), out BigInteger ret))
+                        return ret;
+                    return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
+                case  JsonEvent.ValueNumber:
+                    if (BigInteger.TryParse(value.ToString(), out BigInteger ret2))
+                        return ret2;
+                    return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
+                default:
+                    return PrimitiveType.CheckElse(reader, nativeType);
             }
-            return null;
         }
     }
 }

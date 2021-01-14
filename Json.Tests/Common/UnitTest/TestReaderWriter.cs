@@ -271,6 +271,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var bigInt =     new Bytes ("1234567890123456789012345678901234567890"))
             using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
             using (var bigIntStr =  new Bytes ($"\"{bigInt.ToString()}\""))
+            using (var bigIntStrN =  new Bytes ($"\"{bigInt.ToString()}n\""))
                 
             using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
@@ -471,14 +472,23 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
+                        AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStrN));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                        
+                        AreEqual(expect, enc.ReadValue<BigInteger>(bigInt));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                        
                         write.InitWriter();
                         write.Write(expect);
                         AreEqual(bigIntStr.ToString(), write.Output.ToString());
                     }
+                    enc.ReadValue<BigInteger>(hello);
+                    StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
+                    
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(72, enc.typeCache.LookupCount);
+                        AreEqual(75, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
