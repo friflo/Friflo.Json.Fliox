@@ -23,6 +23,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
             Assert.AreEqual(expect, value);
         }
         public static void Fail(string msg) { }
+
+        public static TActual Throws<TActual>(TestDelegate code) where TActual : Exception {
+            try {
+                code();
+            } catch (Exception e) {
+                return (TActual)e;
+            }
+            return null;
+        }
     }
     
     public class TestReaderWriter : LeakTestsFixture
