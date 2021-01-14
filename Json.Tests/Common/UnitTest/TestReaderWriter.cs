@@ -292,16 +292,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(12.5,      enc.Read<double?>       (@double));
                     AreEqual(null,      enc.Read<double?>       (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<double>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<double>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(12.5,      enc.ReadValue<float>    (@double));
                     AreEqual(12.5,      enc.Read<float?>        (@double));
                     AreEqual(null,      enc.Read<float?>        (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<float>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<float>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
 
                     AreEqual(42,        enc.ReadValue<long>     (@long));
@@ -309,8 +309,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(42,        enc.Read<long?>         (@long));
                     AreEqual(null,      enc.Read<long?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<long>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<long>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(42,        enc.ReadValue<int>      (@long));
@@ -318,8 +318,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(42,        enc.Read<int?>          (@long));
                     AreEqual(null,      enc.Read<int?>          (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<int>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<int>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(42,        enc.ReadValue<short>    (@long));
@@ -327,8 +327,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(42,        enc.Read<short?>        (@long));
                     AreEqual(null,      enc.Read<short?>        (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<short>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<short>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(42,        enc.ReadValue<byte>     (@long));
@@ -336,8 +336,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(42,        enc.Read<byte?>         (@long));
                     AreEqual(null,      enc.Read<byte?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<byte>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<byte>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(true,      enc.ReadValue<bool>     (@true));
@@ -345,8 +345,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(true,      enc.Read<bool?>         (@true));
                     AreEqual(null,      enc.Read<bool?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<bool>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        enc.ReadValue<bool>(@null);
+                        StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
                     }
                     
                     AreEqual(null,      enc.Read<object>(@null));

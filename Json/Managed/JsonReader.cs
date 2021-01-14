@@ -17,6 +17,11 @@ namespace Friflo.Json.Managed
 
         public          JsonError       Error => parser.error;
         public          SkipInfo        SkipInfo => parser.skipInfo;
+        
+        public          bool            ThrowException {
+            get => parser.error.throwException;
+            set => parser.error.throwException = value;
+        }
 
         public JsonReader(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
@@ -28,15 +33,21 @@ namespace Friflo.Json.Managed
             parser.Dispose();
         }
         
+        /// <summary>
+        /// Dont throw exceptions in error case, if not enabled by <see cref="ThrowException"/>
+        /// In error case this information is available via <see cref="Error"/> 
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        // 
         public T ReadValue <T>(Bytes bytes) where T : struct {
             int start = bytes.Start;
             int len = bytes.Len;
             var ret = ReadStart(bytes.buffer, start, len, typeof(T));
             parser.NextEvent(); // EOF
             if (ret == null) {
-                if (Error.ErrSet)
-                    throw new InvalidOperationException(parser.error.msg.ToString()); 
-                throw new InvalidOperationException("cannot assign null to value type: " + typeof(T).FullName);
+                if (!Error.ErrSet)
+                    throw new InvalidOperationException("expect error is set");
+                return default;
             }
             return (T) ret;
         }
@@ -46,7 +57,7 @@ namespace Friflo.Json.Managed
             int len = bytes.Len;
             var ret = ReadStart(bytes.buffer, start, len, typeof(T));
             parser.NextEvent(); // EOF
-            if (typeof(T).IsPrimitive && ret == null && parser.error.ErrSet)
+            if (typeof(T).IsValueType && ret == null && parser.error.ErrSet)
                 throw new InvalidOperationException(parser.error.msg.ToString());
             return (T) ret;
         }
