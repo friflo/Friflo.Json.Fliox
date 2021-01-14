@@ -5,8 +5,8 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
-    public class TypeNotSupported : NativeType {
-        public TypeNotSupported(Type type) : 
+    public class NotSupportedType : NativeType {
+        public NotSupportedType(Type type) : 
             base(type, TypeNotSupportedCodec.Interface) {
         }
 

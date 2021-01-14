@@ -17,7 +17,7 @@ namespace Friflo.Json.Managed.Codecs
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
                 if (rank > 1)
-                    return new TypeNotSupported(type);
+                    return new NotSupportedType(type);
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     NativeType nativeElementType = resolver.GetNativeType(elementType);
