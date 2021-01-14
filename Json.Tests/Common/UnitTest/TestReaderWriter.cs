@@ -268,6 +268,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
 
         public class TestClass {
+            public TestClass    selfReference; // test cyclic references
             public int          key;
             public BigInteger   bigInt;
 
