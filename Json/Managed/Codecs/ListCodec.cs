@@ -21,7 +21,8 @@ namespace Friflo.Json.Managed.Codecs
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new CollectionType  (type, elementType, this, 1, null, constructor);
+                NativeType nativeElementType = resolver.GetNativeType(elementType);
+                return new CollectionType  (type, nativeElementType, this, 1, null, constructor);
             }
             return null;
         }
@@ -30,7 +31,7 @@ namespace Friflo.Json.Managed.Codecs
             IList list = (IList) obj;
             CollectionType collectionType = (CollectionType) nativeType;
             writer.bytes.AppendChar('[');
-            NativeType elementType = collectionType.GetElementType(writer.typeCache);
+            NativeType elementType = collectionType.elementType;
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
@@ -44,7 +45,7 @@ namespace Friflo.Json.Managed.Codecs
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +
-                                                      collectionType.elementType.Name);
+                                                      collectionType.elementType.type.Name);
                     }
                 }
                 else
@@ -61,7 +62,7 @@ namespace Friflo.Json.Managed.Codecs
             IList list = (IList) col;
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
-            NativeType elementType = collectionType.GetElementType(reader.typeCache);
+            NativeType elementType = collectionType.elementType;
             if (collectionType.id != SimpleType.Id.Object)
                 list.Clear();
             int startLen = list.Count;
@@ -86,7 +87,7 @@ namespace Friflo.Json.Managed.Codecs
                         index++;
                         break;
                     case JsonEvent.ArrayStart:
-                        NativeType subElementType = collectionType.GetElementType(reader.typeCache);
+                        NativeType subElementType = collectionType.elementType;
                         if (index < startLen) {
                             Object oldElement = list[index];
                             Object element = subElementType.codec.Read(reader, oldElement, subElementType);

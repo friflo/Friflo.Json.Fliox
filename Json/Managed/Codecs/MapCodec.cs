@@ -22,7 +22,8 @@ namespace Friflo.Json.Managed.Codecs
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                return new CollectionType  (type, elementType, this, 1, keyType, constructor);
+                NativeType nativeElementType = resolver.GetNativeType(elementType);
+                return new CollectionType  (type, nativeElementType, this, 1, keyType, constructor);
             }
             return null;
         }
@@ -34,7 +35,7 @@ namespace Friflo.Json.Managed.Codecs
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             int n = 0;
-            if (collectionType.elementType == typeof(String)) {
+            if (collectionType.elementType.type == typeof(String)) {
                 // Map<String, String>
                 IDictionary<String, String> strMap = (IDictionary<String, String>) map;
                 foreach (KeyValuePair<String, String> entry in strMap) {
@@ -50,7 +51,7 @@ namespace Friflo.Json.Managed.Codecs
             }
             else {
                 // Map<String, object>
-                NativeType elementType = collectionType.GetElementType(writer.typeCache);
+                NativeType elementType = collectionType.elementType;
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
@@ -72,7 +73,7 @@ namespace Friflo.Json.Managed.Codecs
                 obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            NativeType elementType = collectionType.GetElementType(reader.typeCache);
+            NativeType elementType = collectionType.elementType;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {

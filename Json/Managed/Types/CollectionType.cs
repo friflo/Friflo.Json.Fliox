@@ -15,15 +15,16 @@ namespace Friflo.Json.Managed.Types
     {
         public   readonly   Type            keyType;
         public   readonly   int             rank;
-        public   readonly   Type            elementType;     // use GetElementType() if NativeType is required - its cached
-        private             NativeType      elementPropType; // is set on first lookup
+        // public   readonly   Type            elementType;     // use GetElementType() if NativeType is required - its cached
+        public   readonly   NativeType      elementType;
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
 
     
         internal CollectionType (
                 Type            nativeType,
-                Type            elementType,
+                NativeType      elementType,
+                // Type         elementType,
                 IJsonCodec      codec,
                 int             rank,
                 Type            keyType,
@@ -34,19 +35,20 @@ namespace Friflo.Json.Managed.Types
             if (elementType == null)
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
-            this.id             = SimpleType.IdFromType(elementType);
+            this.id             = SimpleType.IdFromType(elementType.type);
             // constructor can be null. E.g. All array types have none.
             this.constructor    = constructor;
         }
         
+        /*
         public NativeType GetElementType(TypeCache typeCache) {
             if (elementType == null)
                 return null;
             // simply reduce lookups
             if (elementPropType == null)
                 elementPropType = typeCache.GetType(elementType);
-            return elementPropType;
-        }
+            return elementType;
+        } */
 
         public override Object CreateInstance ()
         {

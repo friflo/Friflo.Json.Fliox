@@ -15,15 +15,15 @@ namespace Friflo.Json.Managed.Types
         internal readonly   String          name;
         private  readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
-        public   readonly   Type            fieldType;
-        private  readonly   NativeType      nativeType;
+        public   readonly   Type            fieldType;  // can be null in case of a method, a field/property ia always non-null
+        private  readonly   NativeType      nativeType; 
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         // private          NativeType      fieldPropType; // is set on first lookup
         private  readonly   ConstructorInfo collectionConstructor;
 
         public NativeType GetFieldType() {
-            return nativeType; // can be null
+            return nativeType;
         }
         
         /*

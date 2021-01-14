@@ -20,8 +20,9 @@ namespace Friflo.Json.Managed.Codecs
                     return new TypeNotSupported(type);
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
+                    NativeType nativeElementType = resolver.GetNativeType(elementType);
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, this, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, nativeElementType, this, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;
@@ -31,7 +32,7 @@ namespace Friflo.Json.Managed.Codecs
             CollectionType collectionType = (CollectionType) nativeType;
             Array arr = (Array) obj;
             writer.bytes.AppendChar('[');
-            NativeType elementType = collectionType.GetElementType(writer.typeCache);
+            NativeType elementType = collectionType.elementType;
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
@@ -51,14 +52,14 @@ namespace Friflo.Json.Managed.Codecs
             if (col == null) {
                 startLen = 0;
                 len = JsonReader.minLen;
-                array = Arrays.CreateInstance(collection.elementType, len);
+                array = Arrays.CreateInstance(collection.elementType.type, len);
             }
             else {
                 array = (Array) col;
                 startLen = len = array.Length;
             }
 
-            NativeType elementType = collection.GetElementType(reader.typeCache);
+            NativeType elementType = collection.elementType;
             int index = 0;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -67,14 +68,14 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return reader.ErrorNull("expect array item of type: ", collection.elementType.Name);
+                        return reader.ErrorNull("expect array item of type: ", collection.elementType.type.Name);
                     case JsonEvent.ValueNull:
                         if (index >= len)
-                            array = Arrays.CopyOfType(collection.elementType, array, len = JsonReader.Inc(len));
+                            array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
-                        NativeType subElementArray = collection.GetElementType(reader.typeCache);
+                        NativeType subElementArray = collection.elementType;
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
                             Object element = subElementArray.codec.Read(reader, oldElement, subElementArray);
@@ -87,7 +88,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (element == null)
                                 return null;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.elementType, array, len = JsonReader.Inc(len));
+                                array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
                             array.SetValue(element, index);
                         }
 
@@ -106,7 +107,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (element == null)
                                 return null;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.elementType, array, len = JsonReader.Inc(len));
+                                array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
                             array.SetValue(element, index);
                         }
 
@@ -114,7 +115,7 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
-                            array = Arrays.CopyOfType(collection.elementType, array, index);
+                            array = Arrays.CopyOfType(collection.elementType.type, array, index);
                         return array;
                     case JsonEvent.Error:
                         return null;
