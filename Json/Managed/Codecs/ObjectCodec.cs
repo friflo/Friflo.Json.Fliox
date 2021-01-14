@@ -127,7 +127,8 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueString:
                         PropField field = classType.GetField(parser.key);
                         if (field == null) {
-                            parser.SkipEvent();
+                            if (!reader.discriminator.IsEqualBytes(ref parser.key)) // dont count discriminators
+                                parser.SkipEvent();
                             break;
                         }
                         NativeType valueType = field.GetFieldObject(reader.typeCache);
@@ -136,11 +137,14 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ValueNumber:
                         field = classType.GetField(parser.key);
-                        if (field == null)
+                        if (field == null) {
+                            parser.SkipEvent(); // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                             break;
-                        bool success = field.SetNumber(ref parser, obj);
-                        if (!success)
-                            return reader.ValueParseError();
+                        }
+                        valueType = field.GetFieldObject(reader.typeCache);
+                        // todo room for improvement - in case of primitives codec.Read() should not be called.
+                        value = valueType.codec.Read(reader, null, valueType);
+                        field.SetObject(obj, value); // set also to null in error case
                         break;
                     case JsonEvent.ValueBool:
                         field = classType.GetField(parser.key);

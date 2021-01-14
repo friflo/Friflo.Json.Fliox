@@ -15,11 +15,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public IDictionary  <String, String>        map5;
 
         public long             i64;
+        public long             i64Neg;
         public int              i32;
         public short            i16;
         public byte             i8;
         public double           dbl;
         public float            flt;
+        public float            fltSkip;
         public String           str;
         public String           strNull = "notNull";
         public String           escChars;
