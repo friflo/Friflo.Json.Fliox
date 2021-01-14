@@ -299,7 +299,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         StringAssert.Contains("primitive is not nullable.", e.Message);
                         enc.ThrowException = false;
                     }
-
+                    // error cases
+                    enc.ReadValue<double>(@true);
+                    StringAssert.Contains("primitive cannot be used within: ValueBool", enc.Error.msg.ToString());
+                    enc.ReadValue<double>(hello);
+                    StringAssert.Contains("primitive cannot be used within: ValueString", enc.Error.msg.ToString());
+                    enc.ReadValue<double>(arrNum);
+                    StringAssert.Contains("primitive cannot be used within: ArrayStart", enc.Error.msg.ToString());
+                    enc.ReadValue<double>(mapNum);
+                    StringAssert.Contains("primitive cannot be used within: ObjectStart", enc.Error.msg.ToString());
 
                     AreEqual(12.5,      enc.ReadValue<float>    (@double));
                     AreEqual(12.5,      enc.Read<float?>        (@double));
@@ -461,7 +469,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(65, enc.typeCache.LookupCount);
+                        AreEqual(69, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
