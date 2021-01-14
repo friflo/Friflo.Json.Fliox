@@ -31,15 +31,12 @@ namespace Friflo.Json.Managed
             bytes.Dispose();
         }
 
-        public void InitWriter() {
-            bytes.Clear();
-        }
-
-        public void Write(Object obj) {
+        public void Write(Object obj) { 
             bytes.InitBytes(128);
             strBuf.InitBytes(128);
             format.InitTokenFormat();
             StubType objType = typeCache.GetType(obj.GetType());
+            bytes.Clear();
             objType.codec.Write(this, obj, objType);
         }
 

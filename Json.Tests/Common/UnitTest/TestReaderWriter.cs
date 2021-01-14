@@ -428,6 +428,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(expect, value);
                     }
 
+                    TestClass root = new TestClass();
+                    TestClass curTestClass = root;
+                    for (int i = 0; i < 30; i++) {
+                        curTestClass.selfReference = new TestClass();
+                        curTestClass = curTestClass.selfReference;
+                    }
+                    write.Write(root);
+                    enc.Read<TestClass>(write.Output);
+                    AreEqual(JsonEvent.EOF, enc.parser.Event);
 
                     // ------------------------------------- Array -------------------------------------
                     
@@ -543,7 +552,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(expect, enc.ReadValue<BigInteger>(bigInt));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
-                        write.InitWriter();
                         write.Write(expect);
                         AreEqual(bigIntStr.ToString(), write.Output.ToString());
                     }
@@ -556,7 +564,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         DateTime value = enc.ReadValue<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         
-                        write.InitWriter();
                         write.Write(expect);
                         AreEqual(dateTimeStr.ToString(), write.Output.ToString());   
                     }
@@ -566,7 +573,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(78, enc.typeCache.LookupCount);
+                        AreEqual(79, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
