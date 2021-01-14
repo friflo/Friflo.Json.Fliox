@@ -58,6 +58,8 @@ namespace Friflo.Json.Managed.Codecs
             
             // Specific types on top
             if ((handler = BigIntCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
+            if ((handler = DateTimeCodec.           Resolver.CreateHandler(this, type)) != null) return handler;
+            
             //
             if ((handler = StringCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
             if ((handler = DoubleCodec.             Resolver.CreateHandler(this, type)) != null) return handler;
