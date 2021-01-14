@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Types
@@ -12,16 +11,15 @@ namespace Friflo.Json.Managed.Types
     // PropertyFields
     public sealed class PropertyFields : Property, IDisposable
     {
-        private     readonly    List<PropField>             fieldList = new List <PropField>();
-        public      readonly    String                      typeName;
-        public      readonly    PropField []                fields;
-        public      readonly    PropField []                fieldsSerializable;
-        public      readonly    int                         num;
-        private     readonly    Type                        type;
-        private     readonly    bool                        listFields;
-        private     readonly    bool                        listMethods;
-        private     readonly    ClassType                   declType;
-        private     readonly    TypeResolver                resolver; 
+        private     readonly    List<PropField>     fieldList = new List <PropField>();
+        public      readonly    String              typeName;
+        public      readonly    PropField []        fields;
+        public      readonly    PropField []        fieldsSerializable;
+        public      readonly    int                 num;
+        private     readonly    Type                type;
+        private     readonly    bool                listFields;
+        private     readonly    bool                listMethods;
+        internal                ClassType           declType;
 
 
         private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
@@ -32,7 +30,6 @@ namespace Friflo.Json.Managed.Types
             this.listFields     = listFields;
             this.listMethods    = listMethods;
             this.declType       = declType;
-            this.resolver       = resolver;
             this.typeName       = type. FullName;
             try
             {
@@ -75,14 +72,14 @@ namespace Friflo.Json.Managed.Types
             if (getter != null)
             {
                 PropertyInfo setter = Reflect.GetPropertySet(type, fieldName );
-                PropField pf =  new PropFieldAccessor(resolver, declType, name, getter. PropertyType, getter, setter);
+                PropField pf =  new PropFieldAccessor(declType, name, getter. PropertyType, getter, setter);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
             FieldInfo field = Reflect.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = new PropFieldVariable(resolver, declType, name, field);
+                PropField pf = new PropFieldVariable(declType, name, field);
                 fieldList. Add (pf);
                 return;
             }

@@ -3,7 +3,6 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Managed.Codecs;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -14,9 +13,9 @@ namespace Friflo.Json.Managed.Types
     {
         private readonly    FieldInfo   field;
         
-        internal PropFieldVariable(TypeResolver resolver, ClassType declType, String name, FieldInfo field)
+        internal PropFieldVariable(ClassType declType, String name, FieldInfo field)
         :
-            base (declType, name, SimpleType.IdFromField( field ), resolver.GetNativeType(field. FieldType)) {
+            base (declType, name, SimpleType.IdFromField( field ), field. FieldType) {
             this.field          = field;
         }
     

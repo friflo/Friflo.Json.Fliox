@@ -1,21 +1,18 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {
     public class TypeResolver
     {
-        private readonly TypeStore      typeStore;
+        private readonly    TypeStore       typeStore;
+        private readonly    List<StubType>  newTypes = new List<StubType>();
         
         public TypeResolver(TypeStore typeStore) {
             this.typeStore = typeStore;
-        }
-        
-        
-        public StubType GetStubType(Type fieldFieldTypeNative) {
-            throw new NotImplementedException();
         }
 
         public StubType GetNativeType (Type type) {
@@ -25,10 +22,26 @@ namespace Friflo.Json.Managed.Codecs
                 return stubType;
             
             typeStore.typeCreationCount++;
-            stubType = CreateType(type);
-            stubType.InitStubType(this);
+            stubType = GetStubType(type);
+
+            while (newTypes.Count > 0) {
+                int lastPos = newTypes.Count - 1;
+                StubType  last = newTypes[lastPos];
+                newTypes.RemoveAt(lastPos);
+                // Deferred initialization of StubType references by their related Type
+                last.InitStubType(this);
+            }
+            return stubType;
+        }
+        
+        public StubType GetStubType(Type type) {
+            StubType stubType = typeStore.typeMap.Get(type);
+            if (stubType != null)
+                return stubType;
             
+            stubType = CreateType(type);
             typeStore.typeMap.Put(type, stubType);
+            newTypes.Add(stubType);
             return stubType;
         }
 

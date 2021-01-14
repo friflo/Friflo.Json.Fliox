@@ -21,7 +21,7 @@ namespace Friflo.Json.Managed.Types
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         // private          NativeType      fieldPropType; // is set on first lookup
-        private  readonly   ConstructorInfo collectionConstructor;
+        internal            ConstructorInfo collectionConstructor;
 
         /* public NativeType GetFieldType() {
             return nativeType;
@@ -41,15 +41,14 @@ namespace Friflo.Json.Managed.Types
             return nativeType; // can be null
         } */
     
-        internal PropField (ClassType declType, String name, SimpleType.Id type, StubType fieldType)
+        internal PropField (ClassType declType, String name, SimpleType.Id type, Type fieldType)
         {
             this.declType               = declType;
             this.name                   = name;
             this.nameBytes              = new Bytes(name);
             this.method                 = null;
             this.type                   = type;
-            this.fieldType              = fieldType;
-            this.collectionConstructor  = fieldType is CollectionType propCollection ? propCollection.constructor : null;
+            this.fieldTypeNative        = fieldType;
         }
 
         internal PropField (ClassType declType, String name, MethodInfo method)
