@@ -120,7 +120,8 @@ namespace Friflo.Json.Managed.Codecs
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
-                        for (int n = startLen - 1; n >= index; n--)
+                        // Remove from tail to head to avoid copying items after remove index
+                       for (int n = startLen - 1; n >= index; n--)
                             list.Remove(n);
                         return list;
                     case JsonEvent.Error:
