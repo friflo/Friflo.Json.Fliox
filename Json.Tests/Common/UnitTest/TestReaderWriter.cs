@@ -257,6 +257,21 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public struct TestStruct {
             public int key;
         }
+
+        public class TestClass {
+            public int key;
+
+            public override bool Equals(object obj) {
+                if (obj == null)
+                    return false;
+                TestClass other = (TestClass)obj;
+                return key == other.key;
+            }
+
+            public override int GetHashCode() {
+                return 5;
+            }
+        }
         
         private void TestPrimitiveInternal() {
             
@@ -374,6 +389,16 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(true,      enc.Error.ErrSet);
                     AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
                     
+                    // ------------------------------------- class -------------------------------------
+                    {
+                        var expect = new TestClass { key = 42 };
+                        var value = enc.Read<TestClass>(mapNum);
+                        AreEqual(expect, value);
+                    }
+
+
+                    // ------------------------------------- Array -------------------------------------
+                    
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
 
@@ -411,7 +436,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual("Type not supported. type: System.Int32[,]", e.Message);              
                     }
                     
-                    // --- list
+                    // ------------------------------------- List<T> -------------------------------------
                     {
                         List<int> expect = new List<int> {1, 2, 3};
                         AreEqual(expect, enc.Read<List<int>> (arrNum));
@@ -428,6 +453,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
                     }
 
+                    // --------------------------------- Dictionary<K,V> ---------------------------------
                     // --- maps - value type: integral 
                     {
                         var expect = new Dictionary<string, long> {{"key", 42}};
@@ -508,7 +534,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(77, enc.typeCache.LookupCount);
+                        AreEqual(78, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
