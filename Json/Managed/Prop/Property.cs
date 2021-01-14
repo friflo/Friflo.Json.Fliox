@@ -6,6 +6,10 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Prop
 {
+    public interface IProperties
+    {
+        // void     SetProperties (Property prop) ; 
+    }
     public abstract class  Property
     {
         private static readonly     Type[] Types = new Type [] { typeof( Property ) };
