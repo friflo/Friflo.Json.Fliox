@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BigIntCodec Interface = new BigIntCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             if (type != typeof(BigInteger))
                 return null;
             return new PrimitiveType (typeof(BigInteger), Interface);

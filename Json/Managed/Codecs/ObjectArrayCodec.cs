@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ObjectArrayCodec Interface = new ObjectArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -20,9 +20,8 @@ namespace Friflo.Json.Managed.Codecs
                     return new NotSupportedType(type);
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    StubType nativeElementType = resolver.GetNativeType(elementType);
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, nativeElementType, this, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, this, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;

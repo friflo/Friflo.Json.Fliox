@@ -7,7 +7,7 @@ namespace Friflo.Json.Managed.Codecs
 {
     public interface IJsonCodec
     {
-        StubType  CreateHandler   (TypeResolver resolver, Type type);
+        StubType    CreateHandler   (Type type);
         object      Read            (JsonReader reader, object obj, StubType stubType);
         void        Write           (JsonWriter writer, object obj, StubType stubType);
     }

@@ -15,14 +15,14 @@ namespace Friflo.Json.Managed.Codecs
             return type.IsPrimitive && type == typeof(string);
         } 
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             if (IsPrimitive(type))
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
-                return new ClassType(resolver, type, this, constructor);
+                return new ClassType(type, this, constructor);
             if (type.IsValueType)
-                return new ClassType(resolver, type, this, constructor);
+                return new ClassType(type, this, constructor);
             return null;
         }
         

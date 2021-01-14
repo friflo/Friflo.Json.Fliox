@@ -11,7 +11,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
 
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             if (type.IsPrimitive)
                 return new StubType(type, Interface);
             return null;

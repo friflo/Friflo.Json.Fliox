@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly MapCodec Interface = new MapCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];
@@ -22,8 +22,7 @@ namespace Friflo.Json.Managed.Codecs
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                StubType nativeElementType = resolver.GetNativeType(elementType);
-                return new CollectionType  (type, nativeElementType, this, 1, keyType, constructor);
+                return new CollectionType  (type, elementType, this, 1, keyType, constructor);
             }
             return null;
         }

@@ -26,7 +26,7 @@ namespace Friflo.Json.Managed.Types
 
         private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
 
-        public PropertyFields (TypeResolver resolver, Type type, ClassType declType, bool listFields, bool listMethods)
+        public PropertyFields (Type type, ClassType declType, bool listFields, bool listMethods)
         {
             this.type           = type;
             this.listFields     = listFields;

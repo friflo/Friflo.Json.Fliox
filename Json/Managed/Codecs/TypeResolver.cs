@@ -12,6 +12,11 @@ namespace Friflo.Json.Managed.Codecs
         public TypeResolver(TypeStore typeStore) {
             this.typeStore = typeStore;
         }
+        
+        
+        public StubType GetStubType(Type fieldFieldTypeNative) {
+            throw new NotImplementedException();
+        }
 
         public StubType GetNativeType (Type type) {
             typeStore.storeLookupCount++;
@@ -21,6 +26,8 @@ namespace Friflo.Json.Managed.Codecs
             
             typeStore.typeCreationCount++;
             stubType = CreateType(type);
+            stubType.InitStubType(this);
+            
             typeStore.typeMap.Put(type, stubType);
             return stubType;
         }
@@ -66,34 +73,34 @@ namespace Friflo.Json.Managed.Codecs
             StubType handler;
             
             // Specific types on top
-            if ((handler = BigIntCodec.             Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = DateTimeCodec.           Interface.CreateHandler(this, type)) != null) return handler;
+            if ((handler = BigIntCodec.             Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = DateTimeCodec.           Interface.CreateHandler(type)) != null) return handler;
             
             //
-            if ((handler = StringCodec.             Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = DoubleCodec.             Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = FloatCodec.              Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = LongCodec.               Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = IntCodec.                Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ShortCodec.              Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ByteCodec.               Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = BoolCodec.               Interface.CreateHandler(this, type)) != null) return handler;
+            if ((handler = StringCodec.             Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = DoubleCodec.             Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = FloatCodec.              Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = LongCodec.               Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = IntCodec.                Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ShortCodec.              Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ByteCodec.               Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = BoolCodec.               Interface.CreateHandler(type)) != null) return handler;
             //
-            if ((handler = StringArrayCodec.        Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = LongArrayCodec.          Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = IntArrayCodec.           Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ShortArrayCodec.         Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ByteArrayCodec.          Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = BoolArrayCodec.          Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = DoubleArrayCodec.        Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = FloatArrayCodec.         Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ObjectArrayCodec.        Interface.CreateHandler(this, type)) != null) return handler;
+            if ((handler = StringArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = LongArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = IntArrayCodec.           Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ShortArrayCodec.         Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ByteArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = BoolArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = DoubleArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = FloatArrayCodec.         Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ObjectArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
             //
-            if ((handler = ListCodec.               Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = MapCodec.                Interface.CreateHandler(this, type)) != null) return handler;
-            if ((handler = ObjectCodec.             Interface.CreateHandler(this, type)) != null) return handler;
+            if ((handler = ListCodec.               Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = MapCodec.                Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ObjectCodec.             Interface.CreateHandler(type)) != null) return handler;
             //
-            handler = TypeNotSupportedCodec.        Interface.CreateHandler(this, type); // need to be the last entry
+            handler = TypeNotSupportedCodec.        Interface.CreateHandler(type); // need to be the last entry
 
             return handler;
         }

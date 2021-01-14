@@ -9,6 +9,10 @@ namespace Friflo.Json.Managed.Types
         public NotSupportedType(Type type) : 
             base(type, TypeNotSupportedCodec.Interface) {
         }
+        
+        public override void InitStubType(TypeResolver resolver) {
+        }
+
 
         public override object CreateInstance() {
             throw new NotSupportedException("Type not supported" + type.FullName);

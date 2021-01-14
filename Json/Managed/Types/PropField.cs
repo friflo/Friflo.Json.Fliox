@@ -16,7 +16,8 @@ namespace Friflo.Json.Managed.Types
         private  readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
         // public   readonly   Type         fieldType;
-        public   readonly   StubType        fieldType;   // can be null in case of a method, a field/property ia always non-null 
+        public              StubType        fieldType { get; internal set; }   // can be null in case of a method, a field/property ia always non-null 
+        public              Type            fieldTypeNative;
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         // private          NativeType      fieldPropType; // is set on first lookup

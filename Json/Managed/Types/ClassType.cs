@@ -24,10 +24,10 @@ namespace Friflo.Json.Managed.Types
         }
 
         // PropType
-        internal ClassType (TypeResolver resolver, Type type, IJsonCodec codec, ConstructorInfo constructor) :
+        internal ClassType (Type type, IJsonCodec codec, ConstructorInfo constructor) :
             base (type, codec)
         {
-            propFields = new  PropertyFields (resolver, type, this, true, true);
+            propFields = new  PropertyFields (type, this, true, true);
             for (int n = 0; n < propFields.num; n++)
             {
                 PropField   field = propFields.fields[n];
@@ -37,6 +37,13 @@ namespace Friflo.Json.Managed.Types
                 fieldMap.Put(field.nameBytes, field);
             }
             this.constructor = constructor;
+        }
+
+        public override void InitStubType(TypeResolver resolver) {
+            for (int n = 0; n < propFields.num; n++) {
+                PropField field = propFields.fields[n];
+                field.fieldType = resolver.GetStubType(field.fieldTypeNative);
+            }
         }
         
         public override Object CreateInstance()

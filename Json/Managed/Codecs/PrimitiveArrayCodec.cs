@@ -9,7 +9,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Codecs
 {
     public static class PrimitiveArrayCodec {
-        public static StubType CreatePrimitiveHandler(TypeResolver resolver, Type type, Type itemType, IJsonCodec jsonCodec) {
+        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonCodec jsonCodec) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -17,9 +17,8 @@ namespace Friflo.Json.Managed.Codecs
                     return new NotSupportedType(type);
                 if (elementType == itemType) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    StubType nativeElementType = resolver.GetNativeType(elementType);
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, nativeElementType, jsonCodec, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, jsonCodec, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;
@@ -30,8 +29,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly StringArrayCodec Interface = new StringArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(string), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
         }
         
         public void Write (JsonWriter writer, object obj, StubType stubType) {
@@ -79,8 +78,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongArrayCodec Interface = new LongArrayCodec();
 
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(long), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
         }
 
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -126,8 +125,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly IntArrayCodec Interface = new IntArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(int), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -173,8 +172,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(short), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -220,8 +219,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(byte), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -267,8 +266,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(bool), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -312,8 +311,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(double), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -359,8 +358,8 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(float), this);
+        public StubType CreateHandler(Type type) {
+            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);
         }
 
         public void Write(JsonWriter writer, object obj, StubType stubType) {

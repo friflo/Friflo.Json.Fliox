@@ -14,15 +14,14 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ListCodec Interface = new ListCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                StubType nativeElementType = resolver.GetNativeType(elementType);
-                return new CollectionType  (type, nativeElementType, this, 1, null, constructor);
+                return new CollectionType  (type, elementType, this, 1, null, constructor);
             }
             return null;
         }

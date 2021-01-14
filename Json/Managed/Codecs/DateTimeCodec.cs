@@ -11,7 +11,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DateTimeCodec Interface = new DateTimeCodec();
         
-        public StubType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(Type type) {
             if (type != typeof(DateTime))
                 return null;
             return new PrimitiveType (typeof(DateTime), Interface);

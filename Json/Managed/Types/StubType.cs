@@ -3,6 +3,7 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
+    // todo make StubType and InitStubType() abstract
     public class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonCodec  codec;
@@ -17,6 +18,10 @@ namespace Friflo.Json.Managed.Types
         }
 
         public virtual void Dispose() {
+        }
+
+        public virtual void InitStubType(TypeResolver resolver) {
+            
         }
     }
 

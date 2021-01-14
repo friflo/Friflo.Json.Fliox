@@ -13,6 +13,10 @@ namespace Friflo.Json.Managed.Types
             : base(type, codec) {
             nullable = nullable = Nullable.GetUnderlyingType(type) != null;
         }
+        
+        public override void InitStubType(TypeResolver resolver) {
+        }
+
 
     }
 }
