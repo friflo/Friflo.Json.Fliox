@@ -279,6 +279,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
         
         private void TestPrimitiveInternal() {
+            var unknownMember = @"""unknownMember"": { ""anotherUnknown"": 42}";
             
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
@@ -294,15 +295,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var bigIntStrN = new Bytes ($"\"{bigInt.ToString()}n\""))
             using (var dateTime =   new Bytes ("2021-01-14T09:59:40.101Z"))
             using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
-                
+                // --- arrays
             using (var arrNum =     new Bytes ("[1,2,3]"))
-            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr}}}"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
             using (var arrBln =     new Bytes ("[true, false]"))
             using (var arrObj =     new Bytes ("[{\"key\":42}]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
-
+                // --- class/map
+            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr},{unknownMember}}}")) 
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -400,6 +401,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
                         var expect = new TestClass { key = 42, bigInt = bigIntVal };
                         var value = enc.Read<TestClass>(testClass);
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                         AreEqual(expect, value);
                     }
 
