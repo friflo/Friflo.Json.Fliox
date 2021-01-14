@@ -279,7 +279,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
         
         private void TestPrimitiveInternal() {
-            var unknownMember = @"""unknownMember"": { ""anotherUnknown"": 42}";
+            var unknownMembers = @"
+""unknownMember"": {
+    ""anotherUnknown"": 42
+},
+""unknownStr"": ""str"", 
+""unknownNumber"":999,
+""unknownBool"":true
+";
             
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
@@ -303,7 +310,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
                 // --- class/map
-            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr},{unknownMember}}}")) 
+            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr},{unknownMembers}}}")) 
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -401,7 +408,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
                         var expect = new TestClass { key = 42, bigInt = bigIntVal };
                         var value = enc.Read<TestClass>(testClass);
-                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                        if (JsonEvent.EOF != enc.parser.Event)
+                            Fail(enc.Error.msg.ToString());
+                        AreEqual(new SkipInfo {arrays=0, booleans= 1, integers= 2, nulls= 0, objects= 1, strings= 1}, enc.parser.skipInfo);
+                            
                         AreEqual(expect, value);
                     }
 

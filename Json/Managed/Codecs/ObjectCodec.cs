@@ -148,14 +148,18 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ValueBool:
                         field = classType.GetField(parser.key);
-                        if (field == null)
+                        if (field == null) {
+                            parser.SkipEvent();
                             break;
+                        }
                         field.SetBool(obj, parser.boolValue);
                         break;
                     case JsonEvent.ValueNull:
                         field = classType.GetField(parser.key);
-                        if (field == null)
+                        if (field == null) {
+                            parser.SkipEvent();
                             break;
+                        }
                         switch (field.type) {
                             case SimpleType.Id.String:
                                 field.SetString(obj, null);

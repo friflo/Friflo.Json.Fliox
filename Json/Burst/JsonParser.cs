@@ -38,7 +38,7 @@ namespace Friflo.Json.Burst
         }
 
         public Str128 ToStr128() {
-            return $"[ arrays:{arrays} booleans: {booleans} floats: {floats} integers: {integers} nulls: {nulls} objects: {objects} strings: {strings} ]";
+            return $"[ arrays={arrays}, booleans= {booleans}, floats= {floats}, integers= {integers}, nulls= {nulls}, objects= {objects}, strings= {strings} ]";
         }
         
         public override string ToString() {
