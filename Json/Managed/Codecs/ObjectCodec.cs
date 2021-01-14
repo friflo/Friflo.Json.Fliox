@@ -126,12 +126,13 @@ namespace Friflo.Json.Managed.Codecs
                 switch (ev) {
                     case JsonEvent.ValueString:
                         PropField field = classType.GetField(parser.key);
-                        if (field == null)
+                        if (field == null) {
+                            parser.SkipEvent();
                             break;
-                        if (field.type == SimpleType.Id.String)
-                            field.SetString(obj, parser.value.ToString());
-                        else
-                            return reader.ErrorNull("Expected type String. Field type: ", ref field.nameBytes);
+                        }
+                        NativeType valueType = field.GetFieldObject(reader.typeCache);
+                        object value = valueType.codec.Read(reader, null, valueType);
+                        field.SetObject(obj, value); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
                         field = classType.GetField(parser.key);

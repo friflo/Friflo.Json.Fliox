@@ -140,19 +140,7 @@ namespace Friflo.Json.Managed.Types
 
         public void SetObject (Object prop, Object val)
         {
-            if (type == SimpleType.Id.Object)
-            {
-                try
-                {
-                    InternalSetObject(prop, val);
-                    return;
-                }
-                catch (Exception e)
-                {
-                    throw new FrifloException("Set field failed. field: " + name, e);
-                }
-            }
-            throw new FrifloException("unhandled case for field: " + name);
+            InternalSetObject(prop, val);
         }
 
         public long GetLong (Object prop)

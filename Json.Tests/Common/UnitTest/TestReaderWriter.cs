@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     if (ret == null)
                         throw new FrifloException(enc.Error.msg.ToString());
                 }
-                AreEqual(0, enc.SkipInfo.Sum);
+                AreEqual(2, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
                 // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());
                 return ret;
             }
@@ -259,17 +259,22 @@ namespace Friflo.Json.Tests.Common.UnitTest
         }
 
         public class TestClass {
-            public int key;
+            public int          key;
+            public BigInteger   bigInt;
 
             public override bool Equals(object obj) {
-                if (obj == null)
-                    return false;
-                TestClass other = (TestClass)obj;
-                return key == other.key;
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((TestClass) obj);
+            }
+
+            private bool Equals(TestClass other) {
+                return key == other.key && bigInt.Equals(other.bigInt);
             }
 
             public override int GetHashCode() {
-                return 5;
+                return HashCode.Combine(key, bigInt);
             }
         }
         
@@ -291,12 +296,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
                 
             using (var arrNum =     new Bytes ("[1,2,3]"))
+            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr}}}"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
             using (var arrBln =     new Bytes ("[true, false]"))
             using (var arrObj =     new Bytes ("[{\"key\":42}]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
-                
+
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -391,8 +397,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     
                     // ------------------------------------- class -------------------------------------
                     {
-                        var expect = new TestClass { key = 42 };
-                        var value = enc.Read<TestClass>(mapNum);
+                        BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
+                        var expect = new TestClass { key = 42, bigInt = bigIntVal };
+                        var value = enc.Read<TestClass>(testClass);
                         AreEqual(expect, value);
                     }
 
