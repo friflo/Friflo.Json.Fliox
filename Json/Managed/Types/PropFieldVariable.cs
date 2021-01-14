@@ -1,103 +1,101 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Reflection;
 using Friflo.Json.Managed.Codecs;
 
 // ReSharper disable PossibleNullReferenceException
 
-namespace Friflo.Json.Managed.Prop
+namespace Friflo.Json.Managed.Types
 {
-    // PropFieldAccessor
-    internal class PropFieldAccessor : PropField
+    // PropFieldVariable
+    internal class PropFieldVariable : PropField
     {
-        private readonly    PropertyInfo    getter;
-        private readonly    PropertyInfo    setter;
-
-        //
-        internal PropFieldAccessor(TypeResolver resolver, ClassType declType, String name, Type type, PropertyInfo getter, PropertyInfo setter)
+        private readonly    FieldInfo   field;
+        
+        internal PropFieldVariable(TypeResolver resolver, ClassType declType, String name, FieldInfo field)
         :
-            base (declType, name, SimpleType.IdFromMethod( getter  ), type, resolver.GetNativeType(getter. PropertyType)) {
-            this.getter = getter;
-            this.setter = setter;
+            base (declType, name, SimpleType.IdFromField( field ), field. FieldType, resolver.GetNativeType(field. FieldType)) {
+            this.field          = field;
         }
-
-        public override bool IsAssignable()  { return setter != null; }
-
+    
+        public override bool IsAssignable()  { return true; }
+        
         // ---- getter
         internal override Object InternalGetObject (Object obj)
         {
-            return getter.GetValue(obj, null);
+            return field. GetValue (obj);
         }
         internal override String InternalGetString (Object obj)
         {
-            return (String) getter.GetValue(obj, null);
+            return (String) field. GetValue (obj);
         }   
         internal override   long InternalGetLong (Object obj)
         {
-            return (long) getter.GetValue(obj, null);
+            return (long) field. GetValue (obj);
         }   
         internal override   int InternalGetInt (Object obj)
         {
-            return (int) getter.GetValue(obj, null);
+            return (int) field. GetValue (obj);
         }
         internal override   short InternalGetShort (Object obj)
         {
-            return (short) getter.GetValue(obj, null);
+            return (short) field. GetValue (obj);
         }
         internal override   byte InternalGetByte (Object obj)
         {
-            return (byte) getter.GetValue(obj, null);
+            return (byte) field. GetValue (obj);
         }   
         internal override   bool InternalGetBool (Object obj)
         {
-            return (bool) getter.GetValue(obj, null);
+            return (bool) field. GetValue (obj);
         }
         internal override   double InternalGetDouble (Object obj)
         {
-            return (double) getter.GetValue(obj, null);
+            return (double) field. GetValue (obj);
         }
         internal override   float InternalGetFloat (Object obj)
         {
-            return (float) getter.GetValue(obj, null);
+            return (float) field. GetValue (obj);
         }
         
         // ---- setter
         internal override   void InternalSetObject (Object obj, Object val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }   
         internal override   void InternalSetString (Object obj, String val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetLong (Object obj, long val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetInt (Object obj, int val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetShort (Object obj, short val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetByte (Object obj, byte val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }   
         internal override   void InternalSetBool (Object obj, bool val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetDouble (Object obj, double val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
         internal override   void InternalSetFloat (Object obj, float val)
         {
-            setter.SetValue(obj, val, null);
+            field. SetValue (obj, val);
         }
     }
 }

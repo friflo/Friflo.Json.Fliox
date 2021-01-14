@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {

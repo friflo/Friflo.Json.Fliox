@@ -1,12 +1,13 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
 
-namespace Friflo.Json.Managed.Prop
+namespace Friflo.Json.Managed.Types
 {
     // PropertyFields
     public sealed class PropertyFields : Property, IDisposable

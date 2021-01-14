@@ -3,7 +3,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Codecs;
-using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Types;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed

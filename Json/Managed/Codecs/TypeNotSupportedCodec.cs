@@ -1,5 +1,5 @@
 ﻿using System;
-using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {

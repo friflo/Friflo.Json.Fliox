@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Utils;
 
-namespace Friflo.Json.Managed.Prop
+namespace Friflo.Json.Managed.Types
 {
         /// <summary>
         /// In contrast to <see cref="typeStore"/> this Cache is by intention not thread safe.

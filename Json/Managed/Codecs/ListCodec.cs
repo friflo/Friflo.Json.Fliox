@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Prop;
+using Friflo.Json.Managed.Types;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
