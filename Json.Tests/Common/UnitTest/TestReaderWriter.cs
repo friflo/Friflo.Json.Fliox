@@ -280,12 +280,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         private void TestPrimitiveInternal() {
             var unknownMembers = @"
-""unknownMember"": {
+""unknownObject"": {
     ""anotherUnknown"": 42
 },
+""unknownArray"": [42],
 ""unknownStr"": ""str"", 
 ""unknownNumber"":999,
-""unknownBool"":true
+""unknownBool"":true,
+""unknownNull"":null
 ";
             
             using (TypeStore typeStore = createStore())
@@ -410,7 +412,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         var value = enc.Read<TestClass>(testClass);
                         if (JsonEvent.EOF != enc.parser.Event)
                             Fail(enc.Error.msg.ToString());
-                        AreEqual(new SkipInfo {arrays=0, booleans= 1, integers= 2, nulls= 0, objects= 1, strings= 1}, enc.parser.skipInfo);
+                        AreEqual(new SkipInfo { arrays=1, booleans= 1, floats= 0, integers= 3, nulls= 1, objects= 1, strings= 1 }, enc.parser.skipInfo);
                             
                         AreEqual(expect, value);
                     }
