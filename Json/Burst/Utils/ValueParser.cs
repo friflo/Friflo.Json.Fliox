@@ -298,8 +298,31 @@ namespace Friflo.Json.Burst.Utils
             valueError.Clear();
             String val = bytes.ToString();
             success = true;
-            if (double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result))
+            if (double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result)) {
+                if (double.IsInfinity(result) || double.IsNegativeInfinity(result)) {
+                    SetErrorFalse("double value out of range. val: ", ref bytes, ref valueError);
+                    success = false;
+                    return 0;
+                }
                 return result;
+            }
+            success = false;
+            SetErrorFalse ("Parsing double failed. val: ", ref bytes, ref valueError);
+            return 0;
+        }
+        
+        public float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
+            valueError.Clear();
+            String val = bytes.ToString();
+            success = true;
+            if (float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out float result)) {
+                if (float.IsInfinity(result) || float.IsNegativeInfinity(result)) {
+                    SetErrorFalse ("float value out of range. val: ", ref bytes, ref valueError);
+                    success = false;
+                    return 0;
+                }
+                return result;
+            }
             success = false;
             SetErrorFalse ("Parsing double failed. val: ", ref bytes, ref valueError);
             return 0;

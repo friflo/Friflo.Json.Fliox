@@ -269,6 +269,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
             using (var bigInt =     new Bytes ("1234567890123456789012345678901234567890"))
+            using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
             using (var bigIntStr =  new Bytes ($"\"{bigInt.ToString()}\""))
                 
             using (var arrNum =     new Bytes ("[1,2,3]"))
@@ -291,7 +292,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(12.5,                      enc.ReadValue<double>   (@double));
                     AreEqual(12.5,                      enc.Read<double?>       (@double));
                     AreEqual(null,                      enc.Read<double?>       (@null));
-                    AreEqual(1.2345678901234568E+39d,   enc.ReadValue<double>   (bigInt));
 
                     enc.ReadValue<double>(@null);
                     StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
@@ -312,10 +312,15 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     StringAssert.Contains("primitive cannot be used within: ObjectStart", enc.Error.msg.ToString());
                     enc.ReadValue<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
+                    enc.ReadValue<float>(bigInt);
+                    StringAssert.Contains("float value out of range. val:", enc.Error.msg.ToString());
+                    enc.ReadValue<double>   (dblOverflow);
+                    StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());
 
-                    AreEqual(12.5,      enc.ReadValue<float>    (@double));
-                    AreEqual(12.5,      enc.Read<float?>        (@double));
-                    AreEqual(null,      enc.Read<float?>        (@null));
+
+                    AreEqual(12.5,                      enc.ReadValue<float>    (@double));
+                    AreEqual(12.5,                      enc.Read<float?>        (@double));
+                    AreEqual(null,                      enc.Read<float?>        (@null));
                     enc.ReadValue<float>(@null);
                     StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
 
@@ -473,7 +478,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(71, enc.typeCache.LookupCount);
+                        AreEqual(72, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }

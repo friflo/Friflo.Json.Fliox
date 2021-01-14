@@ -868,6 +868,17 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>
+        /// Returns the <see cref="float"/> value of an object member or an array element after <see cref="NextEvent()"/>
+        /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
+        /// </summary>
+        public float ValueAsFloatStd(out bool success) {
+            float result = valueParser.ParseFloatStd(ref value, ref errVal, out success);
+            if (!success)
+                SetErrorValue("", ref errVal);
+            return result;
+        }
+        
+        /// <summary>
         /// Returns the <see cref="double"/> value of an object member or an array element after <see cref="NextEvent()"/>
         /// returned <see cref="JsonEvent.ValueNumber"/> and <see cref="isFloat"/> is true
         /// </summary>
