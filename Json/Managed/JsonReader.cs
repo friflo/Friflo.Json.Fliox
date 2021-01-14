@@ -84,22 +84,22 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         NativeType propType = typeCache.GetType(type); // lookup required
-                        return ReadJson(null, propType, 0);
+                        return ReadJson(null, propType);
                     case JsonEvent.ArrayStart:
                         NativeType collection = typeCache.GetType(type); // lookup required 
-                        return ReadJson(null, collection, 0);
+                        return ReadJson(null, collection);
                     case JsonEvent.ValueString:
-                        NativeType value = typeCache.GetType(type);
-                        return value.codec.Read(this, null, value);
+                        NativeType valueType = typeCache.GetType(type);
+                        return valueType.codec.Read(this, null, valueType);
                     case JsonEvent.ValueNumber:
-                        value = typeCache.GetType(type);
-                        return ReadJson(null, value, 0);
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType);
                     case JsonEvent.ValueBool:
-                        value = typeCache.GetType(type);
-                        return ReadJson(null, value, 0);
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType);
                     case JsonEvent.ValueNull:
-                        value = typeCache.GetType(type);
-                        return ReadJson(null, value, 0);
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType);
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -124,10 +124,10 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                         NativeType propType = typeCache.GetType(obj.GetType()); // lookup required
-                        return ReadJson(obj, propType, 0);
+                        return ReadJson(obj, propType);
                     case JsonEvent.ArrayStart:
                         NativeType collection = typeCache.GetType(obj.GetType()); // lookup required
-                        return ReadJson(obj, collection, 0);
+                        return ReadJson(obj, collection);
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -205,7 +205,7 @@ namespace Friflo.Json.Managed
         /// <summary>
         /// Is called for every JSON object & array found during JSON iteration 
         /// </summary>
-        public Object ReadJson(Object obj, NativeType nativeType, int index) {
+        public object ReadJson(object obj, NativeType nativeType) {
             return nativeType.codec.Read(this, obj, nativeType);
         }
     }

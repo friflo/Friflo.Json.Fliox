@@ -77,13 +77,13 @@ namespace Friflo.Json.Managed.Codecs
                         NativeType subElementArray = collection.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJson(oldElement, subElementArray, 0);
+                            Object element = reader.ReadJson(oldElement, subElementArray);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJson(null, subElementArray, 0);
+                            Object element = reader.ReadJson(null, subElementArray);
                             if (element == null)
                                 return null;
                             if (index >= len)
@@ -96,13 +96,13 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
-                            Object element = reader.ReadJson(oldElement, elementType, 0);
+                            Object element = reader.ReadJson(oldElement, elementType);
                             if (element == null)
                                 return null;
                             array.SetValue(element, index);
                         }
                         else {
-                            Object element = reader.ReadJson(null, elementType, 0);
+                            Object element = reader.ReadJson(null, elementType);
                             if (element == null)
                                 return null;
                             if (index >= len)

@@ -82,22 +82,22 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        object value = reader.ReadJson(null, elementType, 0);
+                        object value = reader.ReadJson(null, elementType);
                         if (value == null)
                             return null;
                         map[key] = value;
                         break;
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
-                        map[key] = reader.ReadJson(null, elementType, 0);
+                        map[key] = reader.ReadJson(null, elementType);
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
-                        map[key] = reader.ReadJson(null, elementType, 0);
+                        map[key] = reader.ReadJson(null, elementType);
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        map[key] = reader.ReadJson(null, elementType, 0);
+                        map[key] = reader.ReadJson(null, elementType);
                         break;
                     case JsonEvent.ObjectEnd:
                         return map;
