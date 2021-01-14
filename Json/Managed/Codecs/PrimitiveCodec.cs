@@ -45,7 +45,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.ValueNull:
                     if (((PrimitiveType) nativeType).nullable)
                         return null;
-                    throw new InvalidOperationException("primitive is not nullable. type: " + nativeType.type.FullName);
+                    return reader.ErrorNull("primitive is not nullable. type: ", nativeType.type.FullName);
                 default:
                     return reader.ErrorNull("primitive cannot be used within: ", reader.parser.Event);
             }

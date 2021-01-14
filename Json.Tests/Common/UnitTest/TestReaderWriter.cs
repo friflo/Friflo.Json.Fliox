@@ -288,65 +288,65 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual("hello",   enc.Read<string>(hello));
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(12.5,      enc.Read<double>    (@double));
-                    AreEqual(12.5,      enc.Read<double?>   (@double));
-                    AreEqual(null,      enc.Read<double?>   (@null));
+                    AreEqual(12.5,      enc.ReadValue<double>   (@double));
+                    AreEqual(12.5,      enc.Read<double?>       (@double));
+                    AreEqual(null,      enc.Read<double?>       (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<double>(@null));
-                        AreEqual("primitive is not nullable. type: System.Double", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<double>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
-                    AreEqual(12.5,      enc.Read<float>     (@double));
-                    AreEqual(12.5,      enc.Read<float?>    (@double));
-                    AreEqual(null,      enc.Read<float?>    (@null));
+                    AreEqual(12.5,      enc.ReadValue<float>    (@double));
+                    AreEqual(12.5,      enc.Read<float?>        (@double));
+                    AreEqual(null,      enc.Read<float?>        (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<float>(@null));
-                        AreEqual("primitive is not nullable. type: System.Single", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<float>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
 
-                    AreEqual(42,        enc.Read<long>      (@long));
-                    AreEqual(42,        enc.Read<long>      (@long));
-                    AreEqual(42,        enc.Read<long?>     (@long));
-                    AreEqual(null,      enc.Read<long?>     (@null));
+                    AreEqual(42,        enc.ReadValue<long>     (@long));
+                    AreEqual(42,        enc.Read<long>          (@long));
+                    AreEqual(42,        enc.Read<long?>         (@long));
+                    AreEqual(null,      enc.Read<long?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<long>(@null));
-                        AreEqual("primitive is not nullable. type: System.Int64", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<long>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
-                    AreEqual(42,        enc.Read<int>       (@long));
-                    AreEqual(42,        enc.Read<int>       (@long));
-                    AreEqual(42,        enc.Read<int?>      (@long));
-                    AreEqual(null,      enc.Read<int?>      (@null));
+                    AreEqual(42,        enc.ReadValue<int>      (@long));
+                    AreEqual(42,        enc.Read<int>           (@long));
+                    AreEqual(42,        enc.Read<int?>          (@long));
+                    AreEqual(null,      enc.Read<int?>          (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<int>(@null));
-                        AreEqual("primitive is not nullable. type: System.Int32", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<int>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
-                    AreEqual(42,        enc.Read<short>     (@long));
-                    AreEqual(42,        enc.Read<short>     (@long));
-                    AreEqual(42,        enc.Read<short?>    (@long));
-                    AreEqual(null,      enc.Read<short?>    (@null));
+                    AreEqual(42,        enc.ReadValue<short>    (@long));
+                    AreEqual(42,        enc.Read<short>         (@long));
+                    AreEqual(42,        enc.Read<short?>        (@long));
+                    AreEqual(null,      enc.Read<short?>        (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<short>(@null));
-                        AreEqual("primitive is not nullable. type: System.Int16", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<short>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
-                    AreEqual(42,        enc.Read<byte>      (@long));
-                    AreEqual(42,        enc.Read<byte>      (@long));
-                    AreEqual(42,        enc.Read<byte?>     (@long));
-                    AreEqual(null,      enc.Read<byte?>     (@null));
+                    AreEqual(42,        enc.ReadValue<byte>     (@long));
+                    AreEqual(42,        enc.Read<byte>          (@long));
+                    AreEqual(42,        enc.Read<byte?>         (@long));
+                    AreEqual(null,      enc.Read<byte?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<byte>(@null));
-                        AreEqual("primitive is not nullable. type: System.Byte", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<byte>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
-                    AreEqual(true,      enc.Read<bool>      (@true));
-                    AreEqual(true,      enc.Read<bool>      (@true));
-                    AreEqual(true,      enc.Read<bool?>     (@true));
-                    AreEqual(null,      enc.Read<bool?>     (@null));
+                    AreEqual(true,      enc.ReadValue<bool>     (@true));
+                    AreEqual(true,      enc.Read<bool>          (@true));
+                    AreEqual(true,      enc.Read<bool?>         (@true));
+                    AreEqual(null,      enc.Read<bool?>         (@null));
                     {
-                        var e = Throws<InvalidOperationException>(() => enc.Read<bool>(@null));
-                        AreEqual("primitive is not nullable. type: System.Boolean", e.Message);
+                        var e = Throws<InvalidOperationException>(() => enc.ReadValue<bool>(@null));
+                        StringAssert.Contains("primitive is not nullable.", e.Message);
                     }
                     
                     AreEqual(null,      enc.Read<object>(@null));
@@ -454,10 +454,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
                     }
                     // ----
-                    AreEqual(new TestStruct{ key = 42 },      enc.Read<TestStruct>    (mapNum));
+                    AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
                     {
                         BigInteger expect = BigInteger.Parse(bigIntStr);
-                        AreEqual(expect, enc.Read<BigInteger>(bigInt));
+                        AreEqual(expect, enc.ReadValue<BigInteger>(bigInt));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
                         write.InitWriter();

@@ -27,15 +27,30 @@ namespace Friflo.Json.Managed
             discriminator.Dispose();
             parser.Dispose();
         }
-
+        
+        public T ReadValue <T>(Bytes bytes) where T : struct {
+            int start = bytes.Start;
+            int len = bytes.Len;
+            var ret = ReadStart(bytes.buffer, start, len, typeof(T));
+            parser.NextEvent(); // EOF
+            if (ret == null) {
+                if (Error.ErrSet)
+                    throw new InvalidOperationException(parser.error.msg.ToString()); 
+                throw new InvalidOperationException("cannot assign null to value type: " + typeof(T).FullName);
+            }
+            return (T) ret;
+        }
+        
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
             var ret = ReadStart(bytes.buffer, start, len, typeof(T));
             parser.NextEvent(); // EOF
+            if (typeof(T).IsPrimitive && ret == null && parser.error.ErrSet)
+                throw new InvalidOperationException(parser.error.msg.ToString());
             return (T) ret;
         }
-
+        
         public Object Read(Bytes bytes, Type type) {
             int start = bytes.Start;
             int len = bytes.Len;
