@@ -104,6 +104,8 @@ namespace Friflo.Json.Managed.Codecs
         public Object Read(JsonReader reader, object obj, NativeType nativeType) {
             ref var parser = ref reader.parser;
             ClassType classType = (ClassType) nativeType;
+            if (parser.Event == JsonEvent.ValueNull)
+                return null;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?

@@ -285,19 +285,72 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var invalid =    new Bytes ("invalid")) {
                 int iterations = 2; // dont use < 2
                 for (int n = 0; n < iterations; n++) {
-                    AreEqual("hello",   enc.Read<string>(hello));           AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(12.5,      enc.Read<double>(@double));         AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(12.5,      enc.Read<float>(@double));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual("hello",   enc.Read<string>(hello));
+                    AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(42,        enc.Read<long>(@long));             AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(42,        enc.Read<int>(@long));              AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(42,        enc.Read<short>(@long));            AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(42,        enc.Read<byte>(@long));             AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(12.5,      enc.Read<double>    (@double));
+                    AreEqual(12.5,      enc.Read<double?>   (@double));
+                    AreEqual(null,      enc.Read<double?>   (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<double>(@null));
+                        AreEqual("primitive is not nullable. type: System.Double", e.Message);
+                    }
                     
-                    AreEqual(true,      enc.Read<bool>(@true));             AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(12.5,      enc.Read<float>     (@double));
+                    AreEqual(12.5,      enc.Read<float?>    (@double));
+                    AreEqual(null,      enc.Read<float?>    (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<float>(@null));
+                        AreEqual("primitive is not nullable. type: System.Single", e.Message);
+                    }
+
+                    AreEqual(42,        enc.Read<long>      (@long));
+                    AreEqual(42,        enc.Read<long>      (@long));
+                    AreEqual(42,        enc.Read<long?>     (@long));
+                    AreEqual(null,      enc.Read<long?>     (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<long>(@null));
+                        AreEqual("primitive is not nullable. type: System.Int64", e.Message);
+                    }
+                    
+                    AreEqual(42,        enc.Read<int>       (@long));
+                    AreEqual(42,        enc.Read<int>       (@long));
+                    AreEqual(42,        enc.Read<int?>      (@long));
+                    AreEqual(null,      enc.Read<int?>      (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<int>(@null));
+                        AreEqual("primitive is not nullable. type: System.Int32", e.Message);
+                    }
+                    
+                    AreEqual(42,        enc.Read<short>     (@long));
+                    AreEqual(42,        enc.Read<short>     (@long));
+                    AreEqual(42,        enc.Read<short?>    (@long));
+                    AreEqual(null,      enc.Read<short?>    (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<short>(@null));
+                        AreEqual("primitive is not nullable. type: System.Int16", e.Message);
+                    }
+                    
+                    AreEqual(42,        enc.Read<byte>      (@long));
+                    AreEqual(42,        enc.Read<byte>      (@long));
+                    AreEqual(42,        enc.Read<byte?>     (@long));
+                    AreEqual(null,      enc.Read<byte?>     (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<byte>(@null));
+                        AreEqual("primitive is not nullable. type: System.Byte", e.Message);
+                    }
+                    
+                    AreEqual(true,      enc.Read<bool>      (@true));
+                    AreEqual(true,      enc.Read<bool>      (@true));
+                    AreEqual(true,      enc.Read<bool?>     (@true));
+                    AreEqual(null,      enc.Read<bool?>     (@null));
+                    {
+                        var e = Throws<InvalidOperationException>(() => enc.Read<bool>(@null));
+                        AreEqual("primitive is not nullable. type: System.Boolean", e.Message);
+                    }
                     
                     AreEqual(null,      enc.Read<object>(@null));
-                    AreEqual(false,     enc.Error.ErrSet);
+                    AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     AreEqual(null,      enc.Read<object>(invalid));
                     AreEqual(true,      enc.Error.ErrSet);
@@ -343,7 +396,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // --- list
                     {
                         List<int> expect = new List<int> {1, 2, 3};
-                        AreEqual(expect, enc.Read<List<int>>(arrNum));
+                        AreEqual(expect, enc.Read<List<int>> (arrNum));
+                        AreEqual(expect, enc.Read<List<int?>>(arrNum));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<bool> expect = new List<bool> {true, false};
@@ -413,7 +467,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(36, enc.typeCache.LookupCount);
+                        AreEqual(64, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }

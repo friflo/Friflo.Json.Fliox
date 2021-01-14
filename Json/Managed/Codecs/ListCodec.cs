@@ -70,19 +70,13 @@ namespace Friflo.Json.Managed.Codecs
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        list.Add(reader.parser.value.ToString());
+                        list.Add(reader.ReadJson(null, elementType, 0));
                         break;
                     case JsonEvent.ValueNumber:
-                        object num = reader.NumberFromValue(collectionType.id, out bool success);
-                        if (!success)
-                            return null;
-                        list.Add(num);
+                        list.Add(reader.ReadJson(null, elementType, 0));
                         break;
                     case JsonEvent.ValueBool:
-                        object bln = reader.BoolFromValue(collectionType.id, out bool boolSuccess);
-                        if (!boolSuccess)
-                            return null;
-                        list.Add(bln);
+                        list.Add(reader.ReadJson(null, elementType, 0));
                         break;
                     case JsonEvent.ValueNull:
                         if (index < startLen)

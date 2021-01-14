@@ -67,14 +67,13 @@ namespace Friflo.Json.Managed
                         return ReadJson(null, valueType, 0);
                     case JsonEvent.ValueNumber:
                         valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);;
+                        return ReadJson(null, valueType, 0);
                     case JsonEvent.ValueBool:
                         valueType = typeCache.GetType(type);
-                        return ReadJson(null, valueType, 0);;
+                        return ReadJson(null, valueType, 0);
                     case JsonEvent.ValueNull:
-                        if (parser.error.ErrSet)
-                            return null;
-                        return null;
+                        valueType = typeCache.GetType(type);
+                        return ReadJson(null, valueType, 0);
                     case JsonEvent.Error:
                         return null;
                     default:
