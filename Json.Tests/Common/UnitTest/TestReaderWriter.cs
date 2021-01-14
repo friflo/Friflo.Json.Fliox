@@ -282,8 +282,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 return key == other.key && bigInt.Equals(other.bigInt);
             }
 
+            // ReSharper disable NonReadonlyMemberInGetHashCode
             public override int GetHashCode() {
-                return HashCode.Combine(key, bigInt);
+                return key + bigInt.GetHashCode();
             }
         }
         
