@@ -70,13 +70,13 @@ namespace Friflo.Json.Managed.Codecs
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        list.Add(reader.ReadJson(null, elementType));
+                        list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueNumber:
-                        list.Add(reader.ReadJson(null, elementType));
+                        list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueBool:
-                        list.Add(reader.ReadJson(null, elementType));
+                        list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueNull:
                         if (index < startLen)
@@ -89,13 +89,13 @@ namespace Friflo.Json.Managed.Codecs
                         NativeType subElementType = collectionType.GetElementType(reader.typeCache);
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJson(oldElement, subElementType);
+                            Object element = subElementType.codec.Read(reader, oldElement, subElementType);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJson(null, subElementType);
+                            Object element = subElementType.codec.Read(reader, null, subElementType);
                             if (element == null)
                                 return null;
                             list.Add(element);
@@ -106,13 +106,13 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             Object oldElement = list[index];
-                            Object element = reader.ReadJson(oldElement, elementType);
+                            Object element = elementType.codec.Read(reader, oldElement, elementType);
                             if (element == null)
                                 return null;
                             list[index] = element;
                         }
                         else {
-                            Object element = reader.ReadJson(null, elementType);
+                            Object element = elementType.codec.Read(reader, null, elementType);
                             if (element == null)
                                 return null;
                             list.Add(element);

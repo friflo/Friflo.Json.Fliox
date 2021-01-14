@@ -171,7 +171,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (fieldObject == null)
                                 throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.FullName);
 
-                            sub = reader.ReadJson(sub, fieldObject);
+                            sub = fieldObject.codec.Read(reader, sub, fieldObject);
                             if (sub != null)
                                 field.SetObject(obj, sub);
                             else
@@ -190,7 +190,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             Object array = field.GetObject(obj);
-                            Object arrayRet = reader.ReadJson(array, fieldArray);
+                            Object arrayRet = fieldArray.codec.Read(reader, array, fieldArray);
                             if (arrayRet != null) {
                                 if (array != arrayRet)
                                     field.SetObject(obj, arrayRet);
