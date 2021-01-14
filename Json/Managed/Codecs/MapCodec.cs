@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly MapCodec Interface = new MapCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];
@@ -22,14 +22,14 @@ namespace Friflo.Json.Managed.Codecs
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                NativeType nativeElementType = resolver.GetNativeType(elementType);
+                StubType nativeElementType = resolver.GetNativeType(elementType);
                 return new CollectionType  (type, nativeElementType, this, 1, keyType, constructor);
             }
             return null;
         }
 
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
-            CollectionType collectionType = (CollectionType)nativeType;
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
+            CollectionType collectionType = (CollectionType)stubType;
             IDictionary map = (IDictionary) obj;
 
             ref var bytes = ref writer.bytes;
@@ -51,7 +51,7 @@ namespace Friflo.Json.Managed.Codecs
             }
             else {
                 // Map<String, object>
-                NativeType elementType = collectionType.elementType;
+                StubType elementType = collectionType.elementType;
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
@@ -67,13 +67,13 @@ namespace Friflo.Json.Managed.Codecs
 
         }
         
-        public object Read(JsonReader reader, object obj, NativeType nativeType) {
-            CollectionType collectionType = (CollectionType) nativeType;
+        public object Read(JsonReader reader, object obj, StubType stubType) {
+            CollectionType collectionType = (CollectionType) stubType;
             if (obj == null)
                 obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            NativeType elementType = collectionType.elementType;
+            StubType elementType = collectionType.elementType;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {

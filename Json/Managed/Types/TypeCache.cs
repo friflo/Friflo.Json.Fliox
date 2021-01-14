@@ -14,9 +14,9 @@ namespace Friflo.Json.Managed.Types
         /// </summary>
         public class TypeCache
         {
-            private readonly    HashMapLang <Type,  NativeType> typeMap =      new HashMapLang <Type,  NativeType >();
+            private readonly    HashMapLang <Type,  StubType>   typeMap =      new HashMapLang <Type,  StubType >();
             //
-            private readonly    HashMapLang <Bytes, NativeType> nameToType =   new HashMapLang <Bytes, NativeType >();
+            private readonly    HashMapLang <Bytes, StubType>   nameToType =   new HashMapLang <Bytes, StubType >();
             private readonly    HashMapLang <Type, Bytes>       typeToName =   new HashMapLang <Type,  Bytes >();
             
             private readonly    TypeStore                       typeStore;
@@ -32,9 +32,9 @@ namespace Friflo.Json.Managed.Types
                 this.typeStore = typeStore;
             }
             
-            public NativeType GetType (Type type) {
+            public StubType GetType (Type type) {
                 lookupCount++;
-                NativeType propType = typeMap.Get(type);
+                StubType propType = typeMap.Get(type);
                 if (propType == null) {
                     propType = typeStore.GetType(type);
                     typeMap.Put(type, propType);
@@ -48,8 +48,8 @@ namespace Friflo.Json.Managed.Types
                 typeStore.typeCreationCount = 0;
             }
 
-            public NativeType GetTypeByName(ref Bytes name) {
-                NativeType propType = nameToType.Get(name);
+            public StubType GetTypeByName(ref Bytes name) {
+                StubType propType = nameToType.Get(name);
                 if (propType == null) {
                     lock (typeStore) {
                         propType = typeStore.nameToType.Get(name);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Managed.Types
                 return propType;
             }
 
-            public void AppendDiscriminator(ref Bytes dst, NativeType type) {
+            public void AppendDiscriminator(ref Bytes dst, StubType type) {
                 Bytes name = typeToName.Get(type.type);
                 if (!name.buffer.IsCreated()) {
                     lock (typeStore) {

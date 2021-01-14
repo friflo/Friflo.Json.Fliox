@@ -9,12 +9,12 @@ namespace Friflo.Json.Managed.Codecs
 
     public static class PrimitiveCodec
     {
-        public static object CheckElse(JsonReader reader, NativeType nativeType) {
+        public static object CheckElse(JsonReader reader, StubType stubType) {
             switch (reader.parser.Event) {
                 case JsonEvent.ValueNull:
-                    if (((PrimitiveType) nativeType).nullable)
+                    if (((PrimitiveType) stubType).nullable)
                         return null;
-                    return reader.ErrorNull("primitive is not nullable. type: ", nativeType.type.FullName);
+                    return reader.ErrorNull("primitive is not nullable. type: ", stubType.type.FullName);
                 case JsonEvent.Error:
                     return null;
                 default:
@@ -28,19 +28,19 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly StringCodec Interface = new StringCodec();
         
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(string))
                 return null;
-            return new NativeType(type, Interface);
+            return new StubType(type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString((string) obj);
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event == JsonEvent.ValueString) {
                 return reader.parser.value.ToString();
             }
@@ -52,19 +52,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DoubleCodec Interface = new DoubleCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(double) && type != typeof(double?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendDbl(ref writer.bytes, (double) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsDoubleStd(out bool success);
             if (success)
                 return num;
@@ -76,19 +76,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly FloatCodec Interface = new FloatCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(float) && type != typeof(float?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendFlt(ref writer.bytes, (float) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsFloatStd(out bool success);
             if (success)
                 return num;
@@ -100,19 +100,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongCodec Interface = new LongCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(long) && type != typeof(long?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendLong(ref writer.bytes, (long) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsLong(out bool success);
             if (success)
                 return num;
@@ -124,19 +124,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly IntCodec Interface = new IntCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(int) && type != typeof(int?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, (int) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsInt(out bool success);
             if (success)
                 return num;
@@ -148,19 +148,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortCodec Interface = new ShortCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(short) && type != typeof(short?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, (short) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsShort(out bool success);
             if (success)
                 return num;
@@ -172,19 +172,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ByteCodec Interface = new ByteCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, (byte) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsByte(out bool success);
             if (success)
                 return num;
@@ -196,19 +196,19 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolCodec Interface = new BoolCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(bool) && type != typeof(bool?))
                 return null;
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             writer.format.AppendBool(ref writer.bytes, (bool) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return PrimitiveCodec.CheckElse(reader, nativeType);
+                return PrimitiveCodec.CheckElse(reader, stubType);
             object num = reader.parser.ValueAsBool(out bool success);
             if (success)
                 return num;

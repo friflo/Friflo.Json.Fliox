@@ -3,7 +3,7 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
-    public class NativeType : IDisposable {
+    public class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonCodec  codec;
 
@@ -11,7 +11,7 @@ namespace Friflo.Json.Managed.Types
             return null;
         }
 
-        public NativeType(Type type, IJsonCodec codec) {
+        public StubType(Type type, IJsonCodec codec) {
             this.type = type;
             this.codec = codec;
         }

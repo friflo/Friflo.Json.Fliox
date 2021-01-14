@@ -10,7 +10,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Types
 {
     // PropType
-    public class ClassType : NativeType
+    public class ClassType : StubType
     {
         private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
         private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes,  PropField>(11);

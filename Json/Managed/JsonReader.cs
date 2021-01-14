@@ -83,13 +83,13 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
-                        NativeType propType = typeCache.GetType(type); // lookup required
+                        StubType propType = typeCache.GetType(type); // lookup required
                         return propType.codec.Read(this, null, propType);
                     case JsonEvent.ArrayStart:
-                        NativeType collection = typeCache.GetType(type); // lookup required 
+                        StubType collection = typeCache.GetType(type); // lookup required 
                         return collection.codec.Read(this, null, collection);
                     case JsonEvent.ValueString:
-                        NativeType valueType = typeCache.GetType(type);
+                        StubType valueType = typeCache.GetType(type);
                         return valueType.codec.Read(this, null, valueType);
                     case JsonEvent.ValueNumber:
                         valueType = typeCache.GetType(type);
@@ -123,10 +123,10 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
-                        NativeType propType = typeCache.GetType(obj.GetType()); // lookup required
+                        StubType propType = typeCache.GetType(obj.GetType()); // lookup required
                         return propType.codec.Read(this, obj, propType);
                     case JsonEvent.ArrayStart:
-                        NativeType collection = typeCache.GetType(obj.GetType()); // lookup required
+                        StubType collection = typeCache.GetType(obj.GetType()); // lookup required
                         return collection.codec.Read(this, obj, collection);
                     case JsonEvent.Error:
                         return null;

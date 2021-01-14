@@ -11,20 +11,20 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DateTimeCodec Interface = new DateTimeCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(DateTime))
                 return null;
             return new PrimitiveType (typeof(DateTime), Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             DateTime value = (DateTime) obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
@@ -32,7 +32,7 @@ namespace Friflo.Json.Managed.Codecs
                         return ret;
                     return reader.ErrorNull("Failed parsing DateTime. value: ", reader.parser.value.ToString());
                 default:
-                    return PrimitiveCodec.CheckElse(reader, nativeType);
+                    return PrimitiveCodec.CheckElse(reader, stubType);
             }
         }
     }

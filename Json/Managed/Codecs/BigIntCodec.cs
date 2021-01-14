@@ -12,20 +12,20 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BigIntCodec Interface = new BigIntCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type != typeof(BigInteger))
                 return null;
             return new PrimitiveType (typeof(BigInteger), Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             BigInteger value = (BigInteger) obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object obj, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed.Codecs
                         return ret2;
                     return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
                 default:
-                    return PrimitiveCodec.CheckElse(reader, nativeType);
+                    return PrimitiveCodec.CheckElse(reader, stubType);
             }
         }
     }

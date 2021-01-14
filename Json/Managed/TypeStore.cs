@@ -14,9 +14,9 @@ namespace Friflo.Json.Managed
     /// </summary>
     public class TypeStore : IDisposable
     {
-        internal  readonly  HashMapLang <Type,  NativeType> typeMap=        new HashMapLang <Type,  NativeType >();
+        internal  readonly  HashMapLang <Type,  StubType>   typeMap=        new HashMapLang <Type,  StubType >();
         //
-        internal  readonly  HashMapLang <Bytes, NativeType> nameToType=     new HashMapLang <Bytes, NativeType >();
+        internal  readonly  HashMapLang <Bytes, StubType>   nameToType=     new HashMapLang <Bytes, StubType >();
         internal  readonly  HashMapLang <Type,  Bytes>      typeToName =    new HashMapLang <Type,  Bytes >();
 
         private   readonly  TypeResolver                    typeResolver;
@@ -37,13 +37,13 @@ namespace Friflo.Json.Managed
             }
         }
 
-        internal NativeType GetType (Type type)
+        internal StubType GetType (Type type)
         {
             lock (this)
             {
-                NativeType nativeType = typeResolver.GetNativeType(type);
-                if (nativeType != null)
-                    return nativeType;
+                StubType stubType = typeResolver.GetNativeType(type);
+                if (stubType != null)
+                    return stubType;
                 
                 throw new NotSupportedException($"Type not supported: " + type.FullName);
             }
@@ -53,16 +53,16 @@ namespace Friflo.Json.Managed
         {
             using (var bytesName = new Bytes(name)) {
                 lock (this) {
-                    NativeType nativeType = nameToType.Get(bytesName);
-                    if (nativeType != null) {
-                        if (type != nativeType.type)
+                    StubType stubType = nameToType.Get(bytesName);
+                    if (stubType != null) {
+                        if (type != stubType.type)
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
-                    nativeType = GetType(type);
+                    stubType = GetType(type);
                     Bytes discriminator = new Bytes(name);
-                    typeToName.Put(nativeType.type, discriminator);
-                    nameToType.Put(discriminator, nativeType);
+                    typeToName.Put(stubType.type, discriminator);
+                    nameToType.Put(discriminator, stubType);
                 }
             }
         }

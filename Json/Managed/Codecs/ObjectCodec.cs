@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Codecs
             return type.IsPrimitive && type == typeof(string);
         } 
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (IsPrimitive(type))
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
@@ -26,12 +26,12 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
 
             ref var bytes = ref writer.bytes;
             ref var format = ref writer.format;
             
-            ClassType type = (ClassType)nativeType;
+            ClassType type = (ClassType)stubType;
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
@@ -94,7 +94,7 @@ namespace Friflo.Json.Managed.Codecs
                         if (child == null) {
                             bytes.AppendBytes(ref writer.@null);
                         } else {
-                            NativeType fieldObject = field.fieldType;
+                            StubType fieldObject = field.fieldType;
                             fieldObject.codec.Write(writer, child, fieldObject);
                         }
                         break;
@@ -105,9 +105,9 @@ namespace Friflo.Json.Managed.Codecs
             bytes.AppendChar('}');
         }
             
-        public Object Read(JsonReader reader, object obj, NativeType nativeType) {
+        public Object Read(JsonReader reader, object obj, StubType stubType) {
             ref var parser = ref reader.parser;
-            ClassType classType = (ClassType) nativeType;
+            ClassType classType = (ClassType) stubType;
             if (parser.Event == JsonEvent.ValueNull)
                 return null;
             JsonEvent ev = parser.NextEvent();
@@ -131,7 +131,7 @@ namespace Friflo.Json.Managed.Codecs
                                 parser.SkipEvent();
                             break;
                         }
-                        NativeType valueType = field.fieldType;
+                        StubType valueType = field.fieldType;
                         object value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
                         break;
@@ -180,7 +180,7 @@ namespace Friflo.Json.Managed.Codecs
                         }
                         else {
                             Object sub = field.GetObject(obj);
-                            NativeType fieldObject = field.fieldType;
+                            StubType fieldObject = field.fieldType;
                             if (fieldObject == null)
                                 throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.type.FullName);
 
@@ -199,7 +199,7 @@ namespace Friflo.Json.Managed.Codecs
                                 return null;
                         }
                         else {
-                            NativeType fieldArray = field.fieldType;
+                            StubType fieldArray = field.fieldType;
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             Object array = field.GetObject(obj);

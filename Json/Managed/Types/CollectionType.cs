@@ -11,19 +11,19 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Types
 {
 
-    public class CollectionType : NativeType
+    public class CollectionType : StubType
     {
         public   readonly   Type            keyType;
         public   readonly   int             rank;
         // public   readonly   Type            elementType;     // use GetElementType() if NativeType is required - its cached
-        public   readonly   NativeType      elementType;
+        public   readonly   StubType      elementType;
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
 
     
         internal CollectionType (
                 Type            nativeType,
-                NativeType      elementType,
+                StubType        elementType,
                 // Type         elementType,
                 IJsonCodec      codec,
                 int             rank,

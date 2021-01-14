@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed
             bytes.InitBytes(128);
             strBuf.InitBytes(128);
             format.InitTokenFormat();
-            NativeType objType = typeCache.GetType(obj.GetType());
+            StubType objType = typeCache.GetType(obj.GetType());
             objType.codec.Write(this, obj, objType);
         }
 

@@ -13,16 +13,16 @@ namespace Friflo.Json.Managed.Codecs
             this.typeStore = typeStore;
         }
 
-        public NativeType GetNativeType (Type type) {
+        public StubType GetNativeType (Type type) {
             typeStore.storeLookupCount++;
-            NativeType nativeType = typeStore.typeMap.Get(type);
-            if (nativeType != null)
-                return nativeType;
+            StubType stubType = typeStore.typeMap.Get(type);
+            if (stubType != null)
+                return stubType;
             
             typeStore.typeCreationCount++;
-            nativeType = CreateType(type);
-            typeStore.typeMap.Put(type, nativeType);
-            return nativeType;
+            stubType = CreateType(type);
+            typeStore.typeMap.Put(type, stubType);
+            return stubType;
         }
 
         private readonly IJsonCodec[] resolvers = {
@@ -55,7 +55,7 @@ namespace Friflo.Json.Managed.Codecs
             TypeNotSupportedCodec.  Interface //  need to be the last entry
         }; 
         
-        private NativeType CreateType (Type type) {
+        private StubType CreateType (Type type) {
              /* for (int n = 0; n < resolvers.Length; n++) {
                 NativeType typeHandler = resolvers[n].CreateHandler(this, type);
                 if (typeHandler != null)
@@ -63,7 +63,7 @@ namespace Friflo.Json.Managed.Codecs
             } */
             
             // search manually to simplify debugging 
-            NativeType handler;
+            StubType handler;
             
             // Specific types on top
             if ((handler = BigIntCodec.             Interface.CreateHandler(this, type)) != null) return handler;

@@ -9,7 +9,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Codecs
 {
     public static class PrimitiveArrayCodec {
-        public static NativeType CreatePrimitiveHandler(TypeResolver resolver, Type type, Type itemType, IJsonCodec jsonCodec) {
+        public static StubType CreatePrimitiveHandler(TypeResolver resolver, Type type, Type itemType, IJsonCodec jsonCodec) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -17,7 +17,7 @@ namespace Friflo.Json.Managed.Codecs
                     return new NotSupportedType(type);
                 if (elementType == itemType) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    NativeType nativeElementType = resolver.GetNativeType(elementType);
+                    StubType nativeElementType = resolver.GetNativeType(elementType);
                     // ReSharper disable once ExpressionIsAlwaysNull
                     return new CollectionType(type, nativeElementType, jsonCodec, type.GetArrayRank(), null, constructor);
                 }
@@ -30,11 +30,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly StringArrayCodec Interface = new StringArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(string), this);
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
             string[] arr = (string[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -48,7 +48,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             String[] array = (String[]) col;
             if (array == null)
                 array = new String[JsonReader.minLen];
@@ -79,11 +79,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongArrayCodec Interface = new LongArrayCodec();
 
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(long), this);
         }
 
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             long[] arr = (long[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -93,7 +93,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             long[] array = (long[]) col;
             if (array == null)
                 array = new long[JsonReader.minLen];
@@ -126,11 +126,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly IntArrayCodec Interface = new IntArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(int), this);
         }
         
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             int[] arr = (int[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -140,7 +140,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public  Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public  Object Read(JsonReader reader, Object col, StubType stubType) {
             int[] array = (int[]) col;
             if (array == null)
                 array = new int[JsonReader.minLen];
@@ -173,11 +173,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(short), this);
         }
         
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             short[] arr = (short[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -187,7 +187,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             short[] array = (short[]) col;
             if (array == null)
                 array = new short[JsonReader.minLen];
@@ -220,11 +220,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(byte), this);
         }
         
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             byte[] arr = (byte[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -234,7 +234,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             byte[] array = (byte[]) col;
             if (array == null)
                 array = new byte[JsonReader.minLen];
@@ -267,11 +267,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(bool), this);
         }
         
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             bool[] arr =(bool[])obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -281,7 +281,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             bool[] array = (bool[]) col;
             if (array == null)
                 array = new bool [JsonReader.minLen];
@@ -312,11 +312,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(double), this);
         }
         
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             double[] arr = (double[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -326,7 +326,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             double[] array = (double[]) col;
             if (array == null)
                 array = new double[JsonReader.minLen];
@@ -359,11 +359,11 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(resolver, type, typeof(float), this);
         }
 
-        public void Write(JsonWriter writer, object obj, NativeType nativeType) {
+        public void Write(JsonWriter writer, object obj, StubType stubType) {
             float[] arr = (float[]) obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -373,7 +373,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, NativeType nativeType) {
+        public Object Read(JsonReader reader, Object col, StubType stubType) {
             float[] array = (float[])col;
             if (array == null)
                 array = new float[JsonReader.minLen];

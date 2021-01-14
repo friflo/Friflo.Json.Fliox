@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ObjectArrayCodec Interface = new ObjectArrayCodec();
         
-        public NativeType CreateHandler(TypeResolver resolver, Type type) {
+        public StubType CreateHandler(TypeResolver resolver, Type type) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -20,7 +20,7 @@ namespace Friflo.Json.Managed.Codecs
                     return new NotSupportedType(type);
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    NativeType nativeElementType = resolver.GetNativeType(elementType);
+                    StubType nativeElementType = resolver.GetNativeType(elementType);
                     // ReSharper disable once ExpressionIsAlwaysNull
                     return new CollectionType(type, nativeElementType, this, type.GetArrayRank(), null, constructor);
                 }
@@ -28,11 +28,11 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public void Write (JsonWriter writer, object obj, NativeType nativeType) {
-            CollectionType collectionType = (CollectionType) nativeType;
+        public void Write (JsonWriter writer, object obj, StubType stubType) {
+            CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) obj;
             writer.bytes.AppendChar('[');
-            NativeType elementType = collectionType.elementType;
+            StubType elementType = collectionType.elementType;
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
@@ -44,8 +44,8 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public object Read(JsonReader reader, object col, NativeType nativeType) {
-            var collection = (CollectionType) nativeType;
+        public object Read(JsonReader reader, object col, StubType stubType) {
+            var collection = (CollectionType) stubType;
             int startLen;
             int len;
             Array array;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Managed.Codecs
                 startLen = len = array.Length;
             }
 
-            NativeType elementType = collection.elementType;
+            StubType elementType = collection.elementType;
             int index = 0;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -75,7 +75,7 @@ namespace Friflo.Json.Managed.Codecs
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
-                        NativeType subElementArray = collection.elementType;
+                        StubType subElementArray = collection.elementType;
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
                             Object element = subElementArray.codec.Read(reader, oldElement, subElementArray);

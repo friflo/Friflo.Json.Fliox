@@ -5,7 +5,7 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
-    public class PrimitiveType : NativeType
+    public class PrimitiveType : StubType
     {
         public readonly bool nullable;
         

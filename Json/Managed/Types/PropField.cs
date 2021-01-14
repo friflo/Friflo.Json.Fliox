@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed.Types
         private  readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
         // public   readonly   Type         fieldType;
-        public   readonly   NativeType      fieldType;   // can be null in case of a method, a field/property ia always non-null 
+        public   readonly   StubType        fieldType;   // can be null in case of a method, a field/property ia always non-null 
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         // private          NativeType      fieldPropType; // is set on first lookup
@@ -40,7 +40,7 @@ namespace Friflo.Json.Managed.Types
             return nativeType; // can be null
         } */
     
-        internal PropField (ClassType declType, String name, SimpleType.Id type, NativeType fieldType)
+        internal PropField (ClassType declType, String name, SimpleType.Id type, StubType fieldType)
         {
             this.declType               = declType;
             this.name                   = name;
