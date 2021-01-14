@@ -30,7 +30,7 @@ namespace Friflo.Json.Managed.Codecs
             IList list = (IList) obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.elementType;
+            StubType elementType = collectionType.ElementType;
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
@@ -44,7 +44,7 @@ namespace Friflo.Json.Managed.Codecs
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +
-                                                      collectionType.elementType.type.Name);
+                                                      collectionType.ElementType.type.Name);
                     }
                 }
                 else
@@ -61,7 +61,7 @@ namespace Friflo.Json.Managed.Codecs
             IList list = (IList) col;
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
-            StubType elementType = collectionType.elementType;
+            StubType elementType = collectionType.ElementType;
             if (collectionType.id != SimpleType.Id.Object)
                 list.Clear();
             int startLen = list.Count;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Managed.Codecs
                         index++;
                         break;
                     case JsonEvent.ArrayStart:
-                        StubType subElementType = collectionType.elementType;
+                        StubType subElementType = collectionType.ElementType;
                         if (index < startLen) {
                             Object oldElement = list[index];
                             Object element = subElementType.codec.Read(reader, oldElement, subElementType);

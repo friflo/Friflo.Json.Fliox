@@ -31,7 +31,7 @@ namespace Friflo.Json.Managed.Codecs
             CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) obj;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.elementType;
+            StubType elementType = collectionType.ElementType;
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
@@ -51,14 +51,14 @@ namespace Friflo.Json.Managed.Codecs
             if (col == null) {
                 startLen = 0;
                 len = JsonReader.minLen;
-                array = Arrays.CreateInstance(collection.elementType.type, len);
+                array = Arrays.CreateInstance(collection.ElementType.type, len);
             }
             else {
                 array = (Array) col;
                 startLen = len = array.Length;
             }
 
-            StubType elementType = collection.elementType;
+            StubType elementType = collection.ElementType;
             int index = 0;
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -67,14 +67,14 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return reader.ErrorNull("expect array item of type: ", collection.elementType.type.Name);
+                        return reader.ErrorNull("expect array item of type: ", collection.ElementType.type.Name);
                     case JsonEvent.ValueNull:
                         if (index >= len)
-                            array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
+                            array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
-                        StubType subElementArray = collection.elementType;
+                        StubType subElementArray = collection.ElementType;
                         if (index < startLen) {
                             Object oldElement = array.GetValue(index);
                             Object element = subElementArray.codec.Read(reader, oldElement, subElementArray);
@@ -87,7 +87,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (element == null)
                                 return null;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
+                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                             array.SetValue(element, index);
                         }
 
@@ -106,7 +106,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (element == null)
                                 return null;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.elementType.type, array, len = JsonReader.Inc(len));
+                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                             array.SetValue(element, index);
                         }
 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
-                            array = Arrays.CopyOfType(collection.elementType.type, array, index);
+                            array = Arrays.CopyOfType(collection.ElementType.type, array, index);
                         return array;
                     case JsonEvent.Error:
                         return null;

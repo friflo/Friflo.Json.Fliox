@@ -3,7 +3,6 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Managed.Codecs;
 
 // ReSharper disable PossibleNullReferenceException
 

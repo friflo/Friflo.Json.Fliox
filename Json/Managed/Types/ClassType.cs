@@ -43,8 +43,8 @@ namespace Friflo.Json.Managed.Types
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                field.fieldType = resolver.GetStubType(field.fieldTypeNative);
-                field.collectionConstructor  = field.fieldType is CollectionType propCollection ? propCollection.constructor : null;
+                field.FieldType = resolver.GetStubType(field.fieldTypeNative);
+                field.collectionConstructor  = field.FieldType is CollectionType propCollection ? propCollection.constructor : null;
             }
         }
         

@@ -15,8 +15,8 @@ namespace Friflo.Json.Managed.Types
     {
         public   readonly   Type            keyType;
         public   readonly   int             rank;
-        public              StubType        elementType { get; private set; }
-        public   readonly   Type            elementTypeNative;
+        public              StubType        ElementType { get; private set; }
+        private  readonly   Type            elementTypeNative;
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
 
@@ -41,7 +41,7 @@ namespace Friflo.Json.Managed.Types
         }
         
         public override void InitStubType(TypeResolver resolver) {
-            elementType = resolver.GetNativeType(elementTypeNative);
+            ElementType = resolver.GetNativeType(elementTypeNative);
         }
 
         

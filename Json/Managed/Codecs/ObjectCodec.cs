@@ -94,7 +94,7 @@ namespace Friflo.Json.Managed.Codecs
                         if (child == null) {
                             bytes.AppendBytes(ref writer.@null);
                         } else {
-                            StubType fieldObject = field.fieldType;
+                            StubType fieldObject = field.FieldType;
                             fieldObject.codec.Write(writer, child, fieldObject);
                         }
                         break;
@@ -131,7 +131,7 @@ namespace Friflo.Json.Managed.Codecs
                                 parser.SkipEvent();
                             break;
                         }
-                        StubType valueType = field.fieldType;
+                        StubType valueType = field.FieldType;
                         object value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
                         break;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Managed.Codecs
                             parser.SkipEvent(); // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                             break;
                         }
-                        valueType = field.fieldType;
+                        valueType = field.FieldType;
                         // todo room for improvement - in case of primitives codec.Read() should not be called.
                         value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
@@ -180,9 +180,9 @@ namespace Friflo.Json.Managed.Codecs
                         }
                         else {
                             Object sub = field.GetObject(obj);
-                            StubType fieldObject = field.fieldType;
+                            StubType fieldObject = field.FieldType;
                             if (fieldObject == null)
-                                throw new InvalidOperationException("Field is not compatible to JSON object: " + field.fieldType.type.FullName);
+                                throw new InvalidOperationException("Field is not compatible to JSON object: " + field.FieldType.type.FullName);
 
                             sub = fieldObject.codec.Read(reader, sub, fieldObject);
                             if (sub != null)
@@ -199,7 +199,7 @@ namespace Friflo.Json.Managed.Codecs
                                 return null;
                         }
                         else {
-                            StubType fieldArray = field.fieldType;
+                            StubType fieldArray = field.FieldType;
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             Object array = field.GetObject(obj);

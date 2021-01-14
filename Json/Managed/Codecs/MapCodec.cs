@@ -34,7 +34,7 @@ namespace Friflo.Json.Managed.Codecs
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             int n = 0;
-            if (collectionType.elementType.type == typeof(String)) {
+            if (collectionType.ElementType.type == typeof(String)) {
                 // Map<String, String>
                 IDictionary<String, String> strMap = (IDictionary<String, String>) map;
                 foreach (KeyValuePair<String, String> entry in strMap) {
@@ -50,7 +50,7 @@ namespace Friflo.Json.Managed.Codecs
             }
             else {
                 // Map<String, object>
-                StubType elementType = collectionType.elementType;
+                StubType elementType = collectionType.ElementType;
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Managed.Codecs
                 obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) obj;
             ref var parser = ref reader.parser;
-            StubType elementType = collectionType.elementType;
+            StubType elementType = collectionType.ElementType;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
