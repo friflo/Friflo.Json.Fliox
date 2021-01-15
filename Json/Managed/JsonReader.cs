@@ -163,8 +163,13 @@ namespace Friflo.Json.Managed
             return len < 5 ? minLen : 2 * len;
         }
 
-        public Object ArrayUnexpected (JsonReader reader, JsonEvent ev) {
-            return reader.ErrorNull("unexpected state in array: ", ev);
+        public Object ArrayUnexpected (JsonReader reader, StubType stubType) {
+            switch (reader.parser.Event) {
+                case JsonEvent.ValueNull:
+                    return reader.ErrorNull("Primitive array elements are not nullable. Element Type: ", stubType.type.FullName);
+                default:
+                    return reader.ErrorNull("Expect primitive elements in array, but got: ", reader.parser.Event);
+            }
         }
     }
 }

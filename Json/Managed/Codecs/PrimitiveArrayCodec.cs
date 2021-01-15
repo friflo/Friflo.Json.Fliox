@@ -86,7 +86,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -184,7 +184,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -233,7 +233,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -282,7 +282,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -329,7 +329,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -378,7 +378,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.Error:
                         return null;
                     default:
-                        return reader.ArrayUnexpected(reader, ev);
+                        return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }
@@ -428,7 +428,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent. Error:
                     return null;
                 default:
-                    return reader.ArrayUnexpected(reader, ev);
+                    return reader.ArrayUnexpected(reader, stubType);
                 }
             }
         }

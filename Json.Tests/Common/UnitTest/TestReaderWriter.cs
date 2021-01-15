@@ -332,6 +332,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var arrStr =     new Bytes ("[\"hello\"]"))
             using (var arrBln =     new Bytes ("[true, false]"))
             using (var arrObj =     new Bytes ("[{\"key\":42}]"))
+            using (var arrNull =    new Bytes ("[null]"))
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
                 // --- class/map
@@ -460,6 +461,11 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(null,                enc.Read<short[]>     (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(null,                enc.Read<byte[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(null,                enc.Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    
+                    enc.Read<TestStruct[]>(arrNull);
+                    StringAssert.Contains("Array element is not nullable. Element Type:", enc.Error.msg.ToString());
+                    enc.Read<int[]>(arrNull);
+                    StringAssert.Contains("Primitive array elements are not nullable. Element Type:", enc.Error.msg.ToString());
 
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -597,7 +603,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(89, enc.typeCache.LookupCount);
+                        AreEqual(91, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

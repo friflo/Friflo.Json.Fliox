@@ -75,6 +75,8 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNull:
                         if (index >= len)
                             array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
+                        if (!elementType.isNullable)
+                            return reader.ErrorNull("Array element is not nullable. Element Type: ", elementType.type.FullName);
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
