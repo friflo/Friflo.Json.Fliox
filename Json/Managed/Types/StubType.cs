@@ -6,6 +6,7 @@ namespace Friflo.Json.Managed.Types
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonCodec  codec;
+        public  readonly    bool        isNullable;
 
         /// <summary>
         /// Need to be overriden, in case the derived <see cref="StubType"/> uses <see cref="System.Type"/>'s
@@ -24,9 +25,10 @@ namespace Friflo.Json.Managed.Types
             return null;
         }
 
-        public StubType(Type type, IJsonCodec codec) {
-            this.type = type;
-            this.codec = codec;
+        public StubType(Type type, IJsonCodec codec, bool isNullable) {
+            this.type =         type;
+            this.codec =        codec;
+            this.isNullable =   isNullable;
         }
 
         public virtual void Dispose() {

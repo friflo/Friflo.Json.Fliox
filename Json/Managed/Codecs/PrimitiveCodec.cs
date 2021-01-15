@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
         public static object CheckElse(JsonReader reader, StubType stubType) {
             switch (reader.parser.Event) {
                 case JsonEvent.ValueNull:
-                    if (((PrimitiveType) stubType).nullable)
+                    if (stubType.isNullable)
                         return null;
                     return reader.ErrorNull("primitive is not nullable. type: ", stubType.type.FullName);
                 case JsonEvent.Error:

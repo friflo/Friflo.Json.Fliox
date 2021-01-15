@@ -7,7 +7,7 @@ namespace Friflo.Json.Managed.Types
 {
     public class NotSupportedType : StubType {
         public NotSupportedType(Type type) : 
-            base(type, TypeNotSupportedCodec.Interface) {
+            base(type, TypeNotSupportedCodec.Interface, false) {
         }
 
         public override object CreateInstance() {

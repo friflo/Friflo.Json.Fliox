@@ -26,7 +26,7 @@ namespace Friflo.Json.Managed.Types
             IJsonCodec      codec,
             int             rank,
             Type            keyType,
-            ConstructorInfo constructor) : base (type, codec)
+            ConstructorInfo constructor) : base (type, codec, true)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;

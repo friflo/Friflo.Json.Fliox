@@ -296,6 +296,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         private void TestPrimitiveInternal() {
             string testClassJson = $@"
 {{
+    ""intArray"":null,
     ""key"":42,
     ""bigInt"":""{BigInt}"",
     ""unknownObject"": {{
