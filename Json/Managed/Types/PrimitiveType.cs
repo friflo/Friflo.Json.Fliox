@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Types
             nullable = nullable = Nullable.GetUnderlyingType(type) != null;
         }
         
-        public override void InitStubType(TypeResolver resolver) {
+        public override void InitStubType(TypeStore typeStore) {
         }
 
 

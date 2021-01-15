@@ -40,8 +40,8 @@ namespace Friflo.Json.Managed.Types
             this.constructor    = constructor;
         }
         
-        public override void InitStubType(TypeResolver resolver) {
-            ElementType = resolver.GetNativeType(elementTypeNative);
+        public override void InitStubType(TypeStore typeStore) {
+            ElementType = typeStore.GetType(elementTypeNative);
         }
 
         

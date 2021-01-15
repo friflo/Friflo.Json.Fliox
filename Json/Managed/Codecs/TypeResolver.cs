@@ -8,43 +8,6 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class TypeResolver
     {
-        private readonly    TypeStore       typeStore;
-        private readonly    List<StubType>  newTypes = new List<StubType>();
-        
-        public TypeResolver(TypeStore typeStore) {
-            this.typeStore = typeStore;
-        }
-
-        public StubType GetNativeType (Type type) {
-            typeStore.storeLookupCount++;
-            StubType stubType = typeStore.typeMap.Get(type);
-            if (stubType != null)
-                return stubType;
-            
-            typeStore.typeCreationCount++;
-            stubType = GetStubType(type);
-
-            while (newTypes.Count > 0) {
-                int lastPos = newTypes.Count - 1;
-                StubType  last = newTypes[lastPos];
-                newTypes.RemoveAt(lastPos);
-                // Deferred initialization of StubType references by their related Type
-                last.InitStubType(this);
-            }
-            return stubType;
-        }
-        
-        public StubType GetStubType(Type type) {
-            StubType stubType = typeStore.typeMap.Get(type);
-            if (stubType != null)
-                return stubType;
-            
-            stubType = CreateType(type);
-            typeStore.typeMap.Put(type, stubType);
-            newTypes.Add(stubType);
-            return stubType;
-        }
-
         private readonly IJsonCodec[] resolvers = {
             BigIntCodec.            Interface,
             DateTimeCodec.          Interface,
@@ -75,7 +38,7 @@ namespace Friflo.Json.Managed.Codecs
             TypeNotSupportedCodec.  Interface //  need to be the last entry
         }; 
         
-        private StubType CreateType (Type type) {
+        public StubType CreateType (Type type) {
              /* for (int n = 0; n < resolvers.Length; n++) {
                 NativeType typeHandler = resolvers[n].CreateHandler(this, type);
                 if (typeHandler != null)

@@ -20,7 +20,7 @@ namespace Friflo.Json.Managed.Types
         public virtual void Dispose() {
         }
 
-        public virtual void InitStubType(TypeResolver resolver) {
+        public virtual void InitStubType(TypeStore typeStore) {
             
         }
     }

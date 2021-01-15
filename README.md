@@ -58,7 +58,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       e.g. JSON validation errors.  
       When avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation because of object creation the heap. The error handling modes are:
         1. Don't throw any exception and provide the error state via a boolean and a message.
-        2. Throw exception in error case
+        2. Throw exception in error case - which is useful for debugging.
     - Optimized for performance and low memory footprint
         - Create an immutable type description for each `Type` to invoke only the minimum required
           reflection calls while de-/serializing

@@ -10,7 +10,7 @@ namespace Friflo.Json.Managed.Types
             base(type, TypeNotSupportedCodec.Interface) {
         }
         
-        public override void InitStubType(TypeResolver resolver) {
+        public override void InitStubType(TypeStore typeStore) {
         }
 
 

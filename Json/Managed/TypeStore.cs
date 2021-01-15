@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Types;
@@ -14,10 +15,13 @@ namespace Friflo.Json.Managed
     /// </summary>
     public class TypeStore : IDisposable
     {
-        internal  readonly  HashMapLang <Type,  StubType>   typeMap=        new HashMapLang <Type,  StubType >();
+        private     readonly    HashMapLang <Type,  StubType>   typeMap=        new HashMapLang <Type,  StubType >();
         //
-        internal  readonly  HashMapLang <Bytes, StubType>   nameToType=     new HashMapLang <Bytes, StubType >();
-        internal  readonly  HashMapLang <Type,  Bytes>      typeToName =    new HashMapLang <Type,  Bytes >();
+        internal    readonly    HashMapLang <Bytes, StubType>   nameToType=     new HashMapLang <Bytes, StubType >();
+        internal    readonly    HashMapLang <Type,  Bytes>      typeToName =    new HashMapLang <Type,  Bytes >();
+        
+        private     readonly    List<StubType>                  newTypes =      new List<StubType>();
+
 
         private   readonly  TypeResolver                    typeResolver;
 
@@ -25,7 +29,7 @@ namespace Friflo.Json.Managed
         public              int                             storeLookupCount;
 
         public TypeStore() {
-            typeResolver = new TypeResolver(this);
+            typeResolver = new TypeResolver();
         }
             
         public void Dispose() {
@@ -41,12 +45,37 @@ namespace Friflo.Json.Managed
         {
             lock (this)
             {
-                StubType stubType = typeResolver.GetNativeType(type);
+                storeLookupCount++;
+                StubType stubType = typeMap.Get(type);
+                if (stubType != null)
+                    return stubType;
+
+                typeCreationCount++;
+                stubType = GetStubType(type);
+
+                while (newTypes.Count > 0) {
+                    int lastPos = newTypes.Count - 1;
+                    StubType last = newTypes[lastPos];
+                    newTypes.RemoveAt(lastPos);
+                    // Deferred initialization of StubType references by their related Type
+                    last.InitStubType(this);
+                }
                 if (stubType != null)
                     return stubType;
                 
                 throw new NotSupportedException($"Type not supported: " + type.FullName);
             }
+        }
+        
+        private StubType GetStubType(Type type) {
+            StubType stubType = typeMap.Get(type);
+            if (stubType != null)
+                return stubType;
+            
+            stubType = typeResolver.CreateType(type);
+            typeMap.Put(type, stubType);
+            newTypes.Add(stubType);
+            return stubType;
         }
             
         public void RegisterType (String name, Type type)

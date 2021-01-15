@@ -39,11 +39,11 @@ namespace Friflo.Json.Managed.Types
             this.constructor = constructor;
         }
 
-        public override void InitStubType(TypeResolver resolver) {
+        public override void InitStubType(TypeStore typeStore) {
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                field.FieldType = resolver.GetStubType(field.fieldTypeNative);
+                field.FieldType = typeStore.GetType(field.fieldTypeNative);
                 field.collectionConstructor  = field.FieldType is CollectionType propCollection ? propCollection.constructor : null;
             }
         }
