@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
+using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -37,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
     public class TestReaderWriter : LeakTestsFixture
     {
         private TypeStore createStore() {
-            TypeStore      typeStore = new TypeStore();
+            TypeStore      typeStore = new TypeStore(new DebugTypeResolver());
             typeStore.RegisterType("Sub", typeof( Sub ));
             return typeStore;
         }

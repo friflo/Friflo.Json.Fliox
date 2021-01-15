@@ -29,7 +29,11 @@ namespace Friflo.Json.Managed
         public                  int                             storeLookupCount;
 
         public TypeStore() {
-            typeResolver = new DebugTypeResolver();
+            typeResolver = new DefaultTypeResolver();
+        }
+        
+        public TypeStore(ITypeResolver resolver) {
+            typeResolver = resolver;
         }
             
         public void Dispose() {

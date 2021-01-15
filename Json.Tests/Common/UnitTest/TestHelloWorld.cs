@@ -1,6 +1,7 @@
 ﻿using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
+using Friflo.Json.Managed.Codecs;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest
@@ -51,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         
         [Test]
         public void HelloWorldWriter() {
-            var w = new JsonWriter(new TypeStore());
+            var w = new JsonWriter(new TypeStore(new DebugTypeResolver()));
             w.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {w.Output}");
             // Output: {"say":"Hello 👋","to":"World"}
