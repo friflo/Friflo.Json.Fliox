@@ -186,13 +186,6 @@ namespace Friflo.Json.Managed.Codecs
                                 return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
                             if (sub != subRet)
                                 field.SetObject(obj, subRet);
-                            /* Object sub = field.GetObject(obj);
-                            StubType fieldObject = field.FieldType;
-                            sub = fieldObject.codec.Read(reader, sub, fieldObject);
-                            if (sub != null)
-                                field.SetObject(obj, sub);
-                            else
-                                return null; */
                         }
                         break;
                     case JsonEvent.ArrayStart:
