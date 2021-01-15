@@ -76,28 +76,18 @@ namespace Friflo.Json.Managed
 
         private Object ReadStart(ByteList bytes, int offset, int len, Type type) {
             parser.InitParser(bytes, offset, len);
-
+            
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
-                        StubType propType = typeCache.GetType(type); // lookup required
-                        return propType.codec.Read(this, null, propType);
                     case JsonEvent.ArrayStart:
-                        StubType collection = typeCache.GetType(type); // lookup required 
-                        return collection.codec.Read(this, null, collection);
                     case JsonEvent.ValueString:
-                        StubType valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, null, valueType);
                     case JsonEvent.ValueNumber:
-                        valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, null, valueType);
                     case JsonEvent.ValueBool:
-                        valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, null, valueType);
                     case JsonEvent.ValueNull:
-                        valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, null, valueType);
+                        StubType valueType = typeCache.GetType(type);
+                        return valueType.codec.Read(this, null, valueType); // lookup required
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -121,11 +111,9 @@ namespace Friflo.Json.Managed
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
-                        StubType propType = typeCache.GetType(obj.GetType()); // lookup required
-                        return propType.codec.Read(this, obj, propType);
                     case JsonEvent.ArrayStart:
-                        StubType collection = typeCache.GetType(obj.GetType()); // lookup required
-                        return collection.codec.Read(this, obj, collection);
+                        StubType valueType = typeCache.GetType(obj.GetType()); // lookup required
+                        return valueType.codec.Read(this, obj, valueType);
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -163,15 +151,5 @@ namespace Friflo.Json.Managed
             return len < 5 ? minLen : 2 * len;
         }
 
-        public Object ArrayUnexpected (JsonReader reader, StubType stubType) {
-            switch (reader.parser.Event) {
-                case JsonEvent.ValueNull:
-                    return reader.ErrorNull("Primitive array elements are not nullable. Element Type: ", stubType.type.FullName);
-                default:
-                    CollectionType collection = (CollectionType)stubType;
-                    string elementType = collection.ElementType.type.FullName;
-                    return reader.ErrorNull("Incompatible array element type. Expect:", $"{elementType} but got: '{reader.parser.Event}'");
-            }
-        }
     }
 }
