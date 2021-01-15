@@ -91,7 +91,7 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
-                            return reader.ErrorNull("List element is not nullable. Expect element Type: ", elementType.type.FullName);
+                            return reader.ErrorIncompatible("Cannot assign null to List element. Expect: ", elementType, ref parser);
                         if (index < startLen)
                             list[index] = null;
                         else

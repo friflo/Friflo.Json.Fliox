@@ -525,7 +525,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     }
                     
                     enc.Read<List<int>>(arrNull);
-                    StringAssert.Contains("List element is not nullable. Expect element Type:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to List element. Expect:", enc.Error.msg.ToString());
                     
                     enc.Read<List<int>>(arrStr);
                     StringAssert.Contains("Cannot assign string to List element. Expect:", enc.Error.msg.ToString());
