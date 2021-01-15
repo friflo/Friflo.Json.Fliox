@@ -14,6 +14,9 @@ namespace Friflo.Json.Managed.Codecs
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;
+            if (StubType.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
+                return null;
+            
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
                 return new ClassType(type, this, constructor);

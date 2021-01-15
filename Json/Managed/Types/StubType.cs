@@ -22,6 +22,15 @@ namespace Friflo.Json.Managed.Types
         
         public static bool IsStandardType(Type type) {
             return type.IsPrimitive || type == typeof(string) || type.IsArray;
+        }
+        
+        public static bool IsGenericType(Type type) {
+            while (type != null) {
+                if (type.IsConstructedGenericType)
+                    return true;
+                type = type.BaseType;
+            }
+            return false;
         } 
 
         public virtual void InitStubType(TypeStore typeStore) {
