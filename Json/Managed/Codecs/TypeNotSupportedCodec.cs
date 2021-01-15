@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
 
         public StubType CreateStubType(Type type) {
-            return new StubType(type, Interface);
+            return new NotSupportedType(type);
         }
 
         public object Read(JsonReader reader, object obj, StubType stubType) {
