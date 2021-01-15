@@ -563,6 +563,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
+                    AreEqual(default(TestStruct), enc.ReadValue<TestStruct>(@null));
+                    StringAssert.Contains("Type is not nullable. Type:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));
@@ -595,7 +597,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(88, enc.typeCache.LookupCount);
+                        AreEqual(89, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

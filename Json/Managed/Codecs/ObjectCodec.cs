@@ -109,7 +109,9 @@ namespace Friflo.Json.Managed.Codecs
             // Ensure preconditions are fulfilled
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
-                    return null;
+                    if (stubType.isNullable)
+                        return null;
+                    return reader.ErrorNull("Type is not nullable. Type: ", stubType.type.FullName);
                 case JsonEvent.ObjectStart:
                     break;
                 default:

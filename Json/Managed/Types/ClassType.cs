@@ -25,7 +25,7 @@ namespace Friflo.Json.Managed.Types
 
         // PropType
         internal ClassType (Type type, IJsonCodec codec, ConstructorInfo constructor) :
-            base (type, codec, true)
+            base (type, codec, IsNullable(type))
         {
             propFields = new  PropertyFields (type, this, true, true);
             for (int n = 0; n < propFields.num; n++)
@@ -46,6 +46,10 @@ namespace Friflo.Json.Managed.Types
                 field.FieldType = typeStore.GetType(field.fieldTypeNative);
                 field.collectionConstructor  = field.FieldType is CollectionType propCollection ? propCollection.constructor : null;
             }
+        }
+        
+        private static bool IsNullable(Type type) {
+            return !type.IsValueType;
         }
         
         public override Object CreateInstance()
