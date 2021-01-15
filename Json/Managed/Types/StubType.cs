@@ -19,6 +19,10 @@ namespace Friflo.Json.Managed.Types
 
         public virtual void Dispose() {
         }
+        
+        public static bool IsStandardType(Type type) {
+            return type.IsPrimitive || type == typeof(string) || type.IsArray;
+        } 
 
         public virtual void InitStubType(TypeStore typeStore) {
             

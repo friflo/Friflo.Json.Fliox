@@ -15,6 +15,8 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly ListCodec Interface = new ListCodec();
         
         public StubType CreateStubType(Type type) {
+            if (StubType.IsStandardType(type)) // dont handle standard types
+                return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];

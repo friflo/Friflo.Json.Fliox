@@ -11,12 +11,8 @@ namespace Friflo.Json.Managed.Codecs
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Interface = new ObjectCodec();
 
-        private static bool IsPrimitive(Type type) {
-            return type.IsPrimitive || type == typeof(string);
-        } 
-        
         public StubType CreateStubType(Type type) {
-            if (IsPrimitive(type) || type.IsArray)
+            if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
