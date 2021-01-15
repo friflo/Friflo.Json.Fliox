@@ -13,53 +13,22 @@ namespace Friflo.Json.Managed.Types
     public abstract class PropField : IDisposable
     {
         internal readonly   String          name;
-        private  readonly   MethodInfo      method;
         internal readonly   SimpleType.Id   type;
-        // public   readonly   Type         fieldType;
-        public              StubType        FieldType { get; internal set; }   // can be null in case of a method, a field/property ia always non-null 
-        internal readonly   Type            fieldTypeNative;
+        public              StubType        FieldType { get; internal set; }    // never null 
+        internal readonly   Type            fieldTypeNative;                    // never null 
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
-        // private          NativeType      fieldPropType; // is set on first lookup
         internal            ConstructorInfo collectionConstructor;
 
-        /* public NativeType GetFieldType() {
-            return nativeType;
-        } */
-        
-        /*
-        public NativeType GetFieldObject(TypeCache typeCache) {
-            if (fieldType != null) {
-                // simply reduce lookups
-                if (fieldPropType != null)
-                    return fieldPropType;
-                fieldPropType = typeCache.GetType(fieldType);
-                if (fieldPropType != nativeType)
-                    Console.Write("");
-                return fieldPropType;
-            }
-            return nativeType; // can be null
-        } */
-    
         internal PropField (ClassType declType, String name, SimpleType.Id type, Type fieldType)
         {
             this.declType               = declType;
             this.name                   = name;
             this.nameBytes              = new Bytes(name);
-            this.method                 = null;
             this.type                   = type;
             this.fieldTypeNative        = fieldType;
-        }
-
-        internal PropField (ClassType declType, String name, MethodInfo method)
-        {
-            this.declType               = declType;
-            this.name                   = name;
-            this.nameBytes              = new Bytes(name);
-            this.method                 = method;
-            this.type                   = SimpleType.Id.Method;
-            this.FieldType              = null;
-            this.collectionConstructor  = null;
+            if (fieldType == null)
+                throw new InvalidOperationException("Expect fieldType non null");
         }
 
         public void Dispose() {
@@ -69,13 +38,6 @@ namespace Friflo.Json.Managed.Types
         public void AppendName(ref Bytes bb)
         {
             bb.AppendBytes(ref nameBytes);
-        }
-
-        public Object CreateCollection ()
-        {
-            if (collectionConstructor != null)
-                return Reflect.CreateInstance(collectionConstructor);
-            return null;
         }
 
         public String GetString (Object prop)

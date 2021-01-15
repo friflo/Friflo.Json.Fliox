@@ -18,8 +18,6 @@ namespace Friflo.Json.Managed.Types
         public abstract void    Set(String name) ;
         public abstract void    Set(String name, String field) ;
 
-        public abstract void    SetMethod(String name) ;
-
         public static MethodInfo GetPropertiesDeclaration (Type type)
         {
             return Reflect.GetMethodEx(type, "SetProperties", Types);

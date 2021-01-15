@@ -97,29 +97,5 @@ namespace Friflo.Json.Managed.Types
             if (listFields)
                 CreatePropField (name, field);
         }
-
-        public override void    SetMethod(String name)
-        {
-            if (!listMethods)
-                return;
-            MethodInfo method = Reflect.GetMethod(type, name, Types );
-            if (method == null)
-                throw new FrifloException ("Method '" + name + "' ('" + name + "') not found in type " + type. FullName);
-            PropField pf =  new PropFieldMethod(declType, name, method);
-            fieldList. Add (pf);
-        }
-
-        //
-        class PropFieldMethod : PropField
-        {
-            //
-            internal PropFieldMethod(ClassType declType, String name, MethodInfo method)
-            :
-                base (declType, name, method) {
-            }
-    
-            public override bool IsAssignable() { return false; }
-        }
-
     }
 }

@@ -192,9 +192,6 @@ namespace Friflo.Json.Managed.Codecs
                         else {
                             Object sub = field.GetObject(obj);
                             StubType fieldObject = field.FieldType;
-                            if (fieldObject == null)
-                                throw new InvalidOperationException("Field is not compatible to JSON object: " + field.FieldType.type.FullName);
-
                             sub = fieldObject.codec.Read(reader, sub, fieldObject);
                             if (sub != null)
                                 field.SetObject(obj, sub);

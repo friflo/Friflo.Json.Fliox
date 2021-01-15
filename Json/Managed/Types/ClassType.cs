@@ -32,7 +32,7 @@ namespace Friflo.Json.Managed.Types
             {
                 PropField   field = propFields.fields[n];
                 if (strMap.Get(field.name) != null)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Put(field.name, field);
                 fieldMap.Put(field.nameBytes, field);
             }

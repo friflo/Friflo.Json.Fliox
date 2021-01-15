@@ -37,8 +37,6 @@ namespace Friflo.Json.Managed
         /// Dont throw exceptions in error case, if not enabled by <see cref="ThrowException"/>
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
-        // 
         public T ReadValue <T>(Bytes bytes) where T : struct {
             int start = bytes.Start;
             int len = bytes.Len;
