@@ -45,13 +45,7 @@ namespace Friflo.Json.Managed
         {
             lock (this)
             {
-                storeLookupCount++;
-                StubType stubType = typeMap.Get(type);
-                if (stubType != null)
-                    return stubType;
-
-                typeCreationCount++;
-                stubType = GetStubType(type);
+                StubType stubType = GetStubType(type);
 
                 while (newTypes.Count > 0) {
                     int lastPos = newTypes.Count - 1;
@@ -68,10 +62,12 @@ namespace Friflo.Json.Managed
         }
         
         private StubType GetStubType(Type type) {
+            storeLookupCount++;
             StubType stubType = typeMap.Get(type);
             if (stubType != null)
                 return stubType;
             
+            typeCreationCount++;
             stubType = typeResolver.CreateType(type);
             typeMap.Put(type, stubType);
             newTypes.Add(stubType);
