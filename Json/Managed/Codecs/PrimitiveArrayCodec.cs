@@ -29,7 +29,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly StringArrayCodec Interface = new StringArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
         }
         
@@ -78,7 +78,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongArrayCodec Interface = new LongArrayCodec();
 
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
         }
 
@@ -125,7 +125,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly IntArrayCodec Interface = new IntArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
         }
         
@@ -172,7 +172,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
@@ -219,7 +219,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
         }
         
@@ -266,7 +266,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
@@ -311,7 +311,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
         }
         
@@ -358,7 +358,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);
         }
 

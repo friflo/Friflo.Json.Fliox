@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Codecs
             return type.IsPrimitive && type == typeof(string);
         } 
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (IsPrimitive(type))
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);

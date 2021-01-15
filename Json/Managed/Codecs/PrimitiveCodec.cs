@@ -28,7 +28,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly StringCodec Interface = new StringCodec();
         
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(string))
                 return null;
             return new StubType(type, Interface);
@@ -52,7 +52,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly DoubleCodec Interface = new DoubleCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(double) && type != typeof(double?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly FloatCodec Interface = new FloatCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(float) && type != typeof(float?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly LongCodec Interface = new LongCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(long) && type != typeof(long?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -124,7 +124,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly IntCodec Interface = new IntCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(int) && type != typeof(int?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -148,7 +148,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ShortCodec Interface = new ShortCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(short) && type != typeof(short?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -172,7 +172,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ByteCodec Interface = new ByteCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
                 return null;
             return new PrimitiveType (type, Interface);
@@ -196,7 +196,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly BoolCodec Interface = new BoolCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type != typeof(bool) && type != typeof(bool?))
                 return null;
             return new PrimitiveType (type, Interface);

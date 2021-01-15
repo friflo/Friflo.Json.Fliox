@@ -14,7 +14,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly MapCodec Interface = new MapCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];

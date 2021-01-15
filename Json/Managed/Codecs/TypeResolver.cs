@@ -9,7 +9,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public StubType CreateStubType(Type type) {
             for (int n = 0; n < resolvers.Length; n++) {
-                StubType typeHandler = resolvers[n].CreateHandler(type);
+                StubType typeHandler = resolvers[n].CreateStubType(type);
                 if (typeHandler != null)
                     return typeHandler;
             }
@@ -52,32 +52,32 @@ namespace Friflo.Json.Managed.Codecs
             StubType handler;
             
             // Specific types on top
-            if ((handler = BigIntCodec.             Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = DateTimeCodec.           Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = BigIntCodec.             Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = DateTimeCodec.           Interface.CreateStubType(type)) != null) return handler;
             
             //
-            if ((handler = StringCodec.             Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = DoubleCodec.             Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = FloatCodec.              Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = LongCodec.               Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = IntCodec.                Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ShortCodec.              Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ByteCodec.               Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = BoolCodec.               Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = StringCodec.             Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = DoubleCodec.             Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = FloatCodec.              Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = LongCodec.               Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = IntCodec.                Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ShortCodec.              Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ByteCodec.               Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = BoolCodec.               Interface.CreateStubType(type)) != null) return handler;
             //
-            if ((handler = StringArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = LongArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = IntArrayCodec.           Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ShortArrayCodec.         Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ByteArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = BoolArrayCodec.          Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = DoubleArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = FloatArrayCodec.         Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ObjectArrayCodec.        Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = StringArrayCodec.        Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = LongArrayCodec.          Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = IntArrayCodec.           Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ShortArrayCodec.         Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ByteArrayCodec.          Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = BoolArrayCodec.          Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = DoubleArrayCodec.        Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = FloatArrayCodec.         Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ObjectArrayCodec.        Interface.CreateStubType(type)) != null) return handler;
             //
-            if ((handler = ListCodec.               Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = MapCodec.                Interface.CreateHandler(type)) != null) return handler;
-            if ((handler = ObjectCodec.             Interface.CreateHandler(type)) != null) return handler;
+            if ((handler = ListCodec.               Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = MapCodec.                Interface.CreateStubType(type)) != null) return handler;
+            if ((handler = ObjectCodec.             Interface.CreateStubType(type)) != null) return handler;
 
             return null;
         }

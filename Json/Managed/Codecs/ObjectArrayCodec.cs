@@ -12,7 +12,7 @@ namespace Friflo.Json.Managed.Codecs
     {
         public static readonly ObjectArrayCodec Interface = new ObjectArrayCodec();
         
-        public StubType CreateHandler(Type type) {
+        public StubType CreateStubType(Type type) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
