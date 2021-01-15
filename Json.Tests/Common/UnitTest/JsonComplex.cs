@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
         public bool             t;
         public bool             f;
         public Sub              sub;
-        public JsonStruct       structValue;    // struct's are a 'value type'
+        public JsonStruct       structValue = new JsonStruct (43);    // struct's are a 'value type'
         public IList <Sub>      list = null;
         public IList <Sub>      list2 =         new List <Sub>();
         public List <Sub>       list3 =         null;

@@ -268,8 +268,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public int key;
         }
 
+        public class TestChild {
+        }
+
         public class TestClass {
             public TestClass    selfReference; // test cyclic references
+            public TestChild    testChild;
             public int          key;
             public BigInteger   bigInt;
             public int[]        intArray;
@@ -297,6 +301,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             string testClassJson = $@"
 {{
     ""intArray"":null,
+    ""testChild"":null,
     ""key"":42,
     ""bigInt"":""{BigInt}"",
     ""unknownObject"": {{

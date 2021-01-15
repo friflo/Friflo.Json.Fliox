@@ -164,58 +164,53 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNull:
                         field = classType.GetField(parser.key);
                         if (field == null) {
-                            parser.SkipEvent();
+                            parser.SkipEvent(); // count skipping
                             break;
                         }
-                        switch (field.type) {
-                            case SimpleType.Id.String:
-                                field.SetString(obj, null);
-                                break;
-                            case SimpleType.Id.Object:
-                                field.SetObject(obj, null);
-                                break;
-                            default:
-                                return reader.ErrorNull("Field type not nullable. Field type: ", ref field.nameBytes);
-                        }
-
+                        if (field.FieldType.isNullable)
+                            field.SetObject(obj, null);
+                        else
+                            return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
                         break;
                     case JsonEvent.ObjectStart:
                         field = classType.GetField(parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return null;
-                        }
-                        else {
-                            Object sub = field.GetObject(obj);
+                        } else {
+                            object sub = field.GetObject(obj);
+                            StubType fieldObject = field.FieldType;
+                            object subRet = fieldObject.codec.Read(reader, sub, fieldObject);
+                            
+                            if (!field.FieldType.isNullable && subRet == null)
+                                return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
+                            if (sub != subRet)
+                                field.SetObject(obj, subRet);
+                            /* Object sub = field.GetObject(obj);
                             StubType fieldObject = field.FieldType;
                             sub = fieldObject.codec.Read(reader, sub, fieldObject);
                             if (sub != null)
                                 field.SetObject(obj, sub);
                             else
-                                return null;
+                                return null; */
                         }
-
                         break;
                     case JsonEvent.ArrayStart:
                         field = classType.GetField(parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return null;
-                        }
-                        else {
+                        } else {
                             StubType fieldArray = field.FieldType;
                             if (fieldArray == null)
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
-                            Object array = field.GetObject(obj);
-                            Object arrayRet = fieldArray.codec.Read(reader, array, fieldArray);
-                            if (arrayRet != null) {
-                                if (array != arrayRet)
-                                    field.SetObject(obj, arrayRet);
-                            }
-                            else
-                                return null;
+                            object array = field.GetObject(obj);
+                            object arrayRet = fieldArray.codec.Read(reader, array, fieldArray);
+                            if (!field.FieldType.isNullable && arrayRet == null)
+                                return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
+                            if (array != arrayRet)
+                                field.SetObject(obj, arrayRet);
                         }
-
                         break;
                     case JsonEvent.ObjectEnd:
                         return obj;
