@@ -20,16 +20,14 @@ namespace Friflo.Json.Managed.Types
         public   readonly   SimpleType.Id ? id;
         internal readonly   ConstructorInfo constructor;
 
-    
         internal CollectionType (
-                Type            type,
-                Type            elementType,
-                // Type         elementType,
-                IJsonCodec      codec,
-                int             rank,
-                Type            keyType,
-                ConstructorInfo constructor) :
-            base (type, codec) {
+            Type            type,
+            Type            elementType,
+            IJsonCodec      codec,
+            int             rank,
+            Type            keyType,
+            ConstructorInfo constructor) : base (type, codec)
+        {
             this.keyType        = keyType;
             elementTypeNative   = elementType;
             if (elementType == null)

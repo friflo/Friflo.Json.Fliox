@@ -77,6 +77,7 @@ namespace Friflo.Json.Managed
             if (stubType == null)
                 stubType = TypeNotSupportedCodec.Interface.CreateStubType(type);
 
+            
             typeMap.Put(type, stubType);
             newTypes.Add(stubType);
             return stubType;

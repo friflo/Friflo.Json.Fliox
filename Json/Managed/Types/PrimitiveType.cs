@@ -17,6 +17,5 @@ namespace Friflo.Json.Managed.Types
         public override void InitStubType(TypeStore typeStore) {
         }
 
-
     }
 }

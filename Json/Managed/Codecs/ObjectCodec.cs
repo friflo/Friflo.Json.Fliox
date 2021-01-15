@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed.Codecs
         } 
         
         public StubType CreateStubType(Type type) {
-            if (IsPrimitive(type))
+            if (IsPrimitive(type) || type.IsArray)
                 return null;
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
