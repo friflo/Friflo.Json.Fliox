@@ -5,18 +5,12 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public class DefaultTypeResolver : ITypeResolver
+    public class DefaultTypeResolver : TypeResolver
     {
-        public StubType CreateStubType(Type type) {
-            for (int n = 0; n < resolvers.Length; n++) {
-                StubType stubType = resolvers[n].CreateStubType(type);
-                if (stubType != null)
-                    return stubType;
-            }
-            return null;
+        public DefaultTypeResolver() : base (DefaultResolvers) {
         }
         
-        private readonly IJsonCodec[] resolvers = {
+        private static readonly IJsonCodec[] DefaultResolvers = {
             BigIntCodec.Interface,
             DateTimeCodec.Interface,
             //
@@ -66,7 +60,7 @@ namespace Friflo.Json.Managed.Codecs
             if ((stubType = BoolCodec.               Interface.CreateStubType(type)) != null) return stubType;
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
-            // from adding various codecs to a custom resolver.
+            // when adding various codecs to a custom resolver.
             if ((stubType = StringArrayCodec.        Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = LongArrayCodec.          Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = IntArrayCodec.           Interface.CreateStubType(type)) != null) return stubType;
