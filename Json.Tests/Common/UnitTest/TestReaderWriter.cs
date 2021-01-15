@@ -453,7 +453,14 @@ namespace Friflo.Json.Tests.Common.UnitTest
 
                     // ------------------------------------- Array -------------------------------------
                     AreEqual(null,                enc.Read<string[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    
+                    AreEqual(null,                enc.Read<double[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<float[]>     (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<long[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<int[]>       (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<short[]>     (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<byte[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                enc.Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
 
@@ -492,6 +499,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     }
                     
                     // ------------------------------------- List<T> -------------------------------------
+                    AreEqual(null, enc.Read<List<int>>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
                         List<int> expect = new List<int> {1, 2, 3};
                         AreEqual(expect, enc.Read<List<int>> (arrNum));
@@ -587,7 +595,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(80, enc.typeCache.LookupCount);
+                        AreEqual(88, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
