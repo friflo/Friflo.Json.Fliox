@@ -44,6 +44,17 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public object Read(JsonReader reader, object col, StubType stubType) {
+            ref var parser = ref reader.parser;
+            // Ensure preconditions are fulfilled
+            switch (parser.Event) {
+                case JsonEvent.ValueNull:
+                    return null;
+                case JsonEvent.ArrayStart:
+                    break;
+                default:
+                    return reader.ErrorNull("Expect ObjectStart but found", parser.Event);
+            }
+
             var collection = (CollectionType) stubType;
             int startLen;
             int len;
@@ -61,7 +72,7 @@ namespace Friflo.Json.Managed.Codecs
             StubType elementType = collection.ElementType;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
+                JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:

@@ -106,7 +106,19 @@ namespace Friflo.Json.Managed.Codecs
             
         public Object Read(JsonReader reader, object obj, StubType stubType) {
             ref var parser = ref reader.parser;
+            // Ensure preconditions are fulfilled
+            switch (parser.Event) {
+                case JsonEvent.ValueNull:
+                    return null;
+                case JsonEvent.ObjectStart:
+                    break;
+                default:
+                    return reader.ErrorNull("Expect ObjectStart but found", parser.Event);
+            }
+            
             ClassType classType = (ClassType) stubType;
+            if (parser.Event == JsonEvent.ValueNull)
+                return null;
             if (parser.Event == JsonEvent.ValueNull)
                 return null;
             JsonEvent ev = parser.NextEvent();
