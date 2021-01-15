@@ -3,7 +3,7 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
-    public class StubType : IDisposable {
+    public abstract class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonCodec  codec;
 
@@ -18,8 +18,7 @@ namespace Friflo.Json.Managed.Types
         /// This enables deferred initialization of StubType references by their related Type to support circular type dependencies.
         /// The goal is to support also type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
         /// </summary>
-        public virtual void InitStubType(TypeStore typeStore) {
-        }
+        public abstract void InitStubType(TypeStore typeStore);
         
         public virtual Object CreateInstance() {
             return null;
@@ -46,5 +45,4 @@ namespace Friflo.Json.Managed.Types
             return false;
         } 
     }
-
 }

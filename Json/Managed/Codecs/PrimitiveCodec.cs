@@ -31,7 +31,7 @@ namespace Friflo.Json.Managed.Codecs
         public StubType CreateStubType(Type type) {
             if (type != typeof(string))
                 return null;
-            return new StubType(type, Interface);
+            return new StringType(type, Interface);
         }
         
         public void Write (JsonWriter writer, object obj, StubType stubType) {

@@ -13,5 +13,19 @@ namespace Friflo.Json.Managed.Types
             : base(type, codec) {
             nullable = nullable = Nullable.GetUnderlyingType(type) != null;
         }
+
+        public override void InitStubType(TypeStore typeStore) {
+        }
     }
+    
+    public class StringType : StubType
+    {
+        public StringType(Type type, IJsonCodec codec)
+            : base(type, codec) {
+        }
+        
+        public override void InitStubType(TypeStore typeStore) {
+        }
+    }
+
 }

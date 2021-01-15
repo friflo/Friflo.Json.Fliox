@@ -13,5 +13,8 @@ namespace Friflo.Json.Managed.Types
         public override object CreateInstance() {
             throw new NotSupportedException("Type not supported" + type.FullName);
         }
+        
+        public override void InitStubType(TypeStore typeStore) {
+        }
     }
 }
