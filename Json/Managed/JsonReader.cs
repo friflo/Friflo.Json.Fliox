@@ -168,7 +168,9 @@ namespace Friflo.Json.Managed
                 case JsonEvent.ValueNull:
                     return reader.ErrorNull("Primitive array elements are not nullable. Element Type: ", stubType.type.FullName);
                 default:
-                    return reader.ErrorNull("Expect primitive elements in array, but got: ", reader.parser.Event);
+                    CollectionType collection = (CollectionType)stubType;
+                    string elementType = collection.ElementType.type.FullName;
+                    return reader.ErrorNull("Incompatible array element type. Expect:", $"{elementType} but got: '{reader.parser.Event}'");
             }
         }
     }

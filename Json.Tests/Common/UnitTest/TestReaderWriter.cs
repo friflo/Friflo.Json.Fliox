@@ -466,6 +466,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     StringAssert.Contains("Array element is not nullable. Element Type:", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrNull);
                     StringAssert.Contains("Primitive array elements are not nullable. Element Type:", enc.Error.msg.ToString());
+                    enc.Read<int[]>(arrStr);
+                    StringAssert.Contains("Incompatible array element type. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -603,7 +605,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(91, enc.typeCache.LookupCount);
+                        AreEqual(92, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
