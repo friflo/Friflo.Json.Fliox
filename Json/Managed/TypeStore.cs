@@ -23,13 +23,13 @@ namespace Friflo.Json.Managed
         private     readonly    List<StubType>                  newTypes =      new List<StubType>();
 
 
-        private   readonly  TypeResolver                    typeResolver;
+        private     readonly    ITypeResolver                   typeResolver;
 
-        public              int                             typeCreationCount;
-        public              int                             storeLookupCount;
+        public                  int                             typeCreationCount;
+        public                  int                             storeLookupCount;
 
         public TypeStore() {
-            typeResolver = new TypeResolver();
+            typeResolver = new DebugTypeResolver();
         }
             
         public void Dispose() {
@@ -51,7 +51,8 @@ namespace Friflo.Json.Managed
                     int lastPos = newTypes.Count - 1;
                     StubType last = newTypes[lastPos];
                     newTypes.RemoveAt(lastPos);
-                    // Deferred initialization of StubType references by their related Type
+                    // Deferred initialization of StubType references by their related Type to allow circular type dependencies.
+                    // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
                     last.InitStubType(this);
                 }
                 if (stubType != null)
@@ -68,7 +69,10 @@ namespace Friflo.Json.Managed
                 return stubType;
             
             typeCreationCount++;
-            stubType = typeResolver.CreateType(type);
+            stubType = typeResolver.CreateStubType(type);
+            if (stubType == null)
+                stubType = TypeNotSupportedCodec.Interface.CreateHandler(type);
+
             typeMap.Put(type, stubType);
             newTypes.Add(stubType);
             return stubType;

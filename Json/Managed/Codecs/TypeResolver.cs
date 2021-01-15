@@ -1,51 +1,54 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public class TypeResolver
+    public class TypeResolver : ITypeResolver
     {
-        private readonly IJsonCodec[] resolvers = {
-            BigIntCodec.            Interface,
-            DateTimeCodec.          Interface,
-            //
-            StringCodec.            Interface,
-            DoubleCodec.            Interface,
-            FloatCodec.             Interface,
-            LongCodec.              Interface,
-            IntCodec.               Interface,
-            ShortCodec.             Interface,
-            ByteCodec.              Interface,
-            BoolCodec.              Interface,
-            //  
-            StringArrayCodec.       Interface,
-            LongArrayCodec.         Interface,
-            IntArrayCodec.          Interface,
-            ShortArrayCodec.        Interface,
-            ByteArrayCodec.         Interface,
-            BoolArrayCodec.         Interface,
-            DoubleArrayCodec.       Interface,
-            FloatArrayCodec.        Interface,
-            ObjectArrayCodec.       Interface,
-            //  
-            ListCodec.              Interface,
-            MapCodec.               Interface,
-            ObjectCodec.            Interface,
-            //
-            TypeNotSupportedCodec.  Interface //  need to be the last entry
-        }; 
-        
-        public StubType CreateType (Type type) {
-             /* for (int n = 0; n < resolvers.Length; n++) {
-                NativeType typeHandler = resolvers[n].CreateHandler(this, type);
+        public StubType CreateStubType(Type type) {
+            for (int n = 0; n < resolvers.Length; n++) {
+                StubType typeHandler = resolvers[n].CreateHandler(type);
                 if (typeHandler != null)
                     return typeHandler;
-            } */
-            
-            // search manually to simplify debugging 
+            }
+            return null;
+        }
+        
+        private readonly IJsonCodec[] resolvers = {
+            BigIntCodec.Interface,
+            DateTimeCodec.Interface,
+            //
+            StringCodec.Interface,
+            DoubleCodec.Interface,
+            FloatCodec.Interface,
+            LongCodec.Interface,
+            IntCodec.Interface,
+            ShortCodec.Interface,
+            ByteCodec.Interface,
+            BoolCodec.Interface,
+            //  
+            StringArrayCodec.Interface,
+            LongArrayCodec.Interface,
+            IntArrayCodec.Interface,
+            ShortArrayCodec.Interface,
+            ByteArrayCodec.Interface,
+            BoolArrayCodec.Interface,
+            DoubleArrayCodec.Interface,
+            FloatArrayCodec.Interface,
+            ObjectArrayCodec.Interface,
+            //  
+            ListCodec.Interface,
+            MapCodec.Interface,
+            ObjectCodec.Interface,
+        };
+    }
+    
+    public class DebugTypeResolver : ITypeResolver {
+        
+        public StubType CreateStubType (Type type) {
+            // find a codec manually to simplify debugging 
             StubType handler;
             
             // Specific types on top
@@ -75,10 +78,8 @@ namespace Friflo.Json.Managed.Codecs
             if ((handler = ListCodec.               Interface.CreateHandler(type)) != null) return handler;
             if ((handler = MapCodec.                Interface.CreateHandler(type)) != null) return handler;
             if ((handler = ObjectCodec.             Interface.CreateHandler(type)) != null) return handler;
-            //
-            handler = TypeNotSupportedCodec.        Interface.CreateHandler(type); // need to be the last entry
 
-            return handler;
+            return null;
         }
 
     }
