@@ -59,17 +59,9 @@ namespace Friflo.Json.Managed.Codecs
 
 
         public Object Read(JsonReader reader, object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             ref var parser = ref reader.parser;
-            // Ensure preconditions are fulfilled
-            switch (parser.Event) {
-                case JsonEvent.ValueNull:
-                    return null;
-                case JsonEvent.ArrayStart:
-                    break;
-                default:
-                    return reader.ErrorNull("Expect ObjectStart but found", parser.Event);
-            }
-            
             CollectionType collectionType = (CollectionType) stubType;
             IList list = (IList) col;
             if (list == null)

@@ -8,7 +8,7 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public static class PrimitiveArrayCodec {
+    public static class ArrayUtils {
         public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonCodec jsonCodec) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
@@ -23,6 +23,22 @@ namespace Friflo.Json.Managed.Codecs
             }
             return null;
         }
+        
+        public static bool IsArrayStart(JsonReader reader, StubType stubType) {
+            var ev = reader.parser.Event;
+            switch (ev) {
+                case JsonEvent.ValueNull:
+                    if (stubType.isNullable)
+                        return false;
+                    reader.ErrorNull("Type is not nullable. Type: ", stubType.type.FullName);
+                    return false;
+                case JsonEvent.ArrayStart:
+                    return true;
+                default:
+                    reader.ErrorNull("Expect ArrayStart or null. Got Event: ", ev);
+                    return false;
+            }
+        }
     }
 
     public class StringArrayCodec : IJsonCodec
@@ -30,7 +46,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly StringArrayCodec Interface = new StringArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(string), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(string), this);
         }
         
         public void Write (JsonWriter writer, object obj, StubType stubType) {
@@ -48,6 +64,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             String[] array = (String[]) col;
             if (array == null)
                 array = new String[JsonReader.minLen];
@@ -79,7 +97,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly LongArrayCodec Interface = new LongArrayCodec();
 
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(long), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(long), this);
         }
 
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -93,6 +111,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             long[] array = (long[]) col;
             if (array == null)
                 array = new long[JsonReader.minLen];
@@ -126,7 +146,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly IntArrayCodec Interface = new IntArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(int), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(int), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -140,6 +160,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public  Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             int[] array = (int[]) col;
             if (array == null)
                 array = new int[JsonReader.minLen];
@@ -173,7 +195,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(short), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -187,6 +209,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             short[] array = (short[]) col;
             if (array == null)
                 array = new short[JsonReader.minLen];
@@ -220,7 +244,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(byte), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(byte), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -234,6 +258,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             byte[] array = (byte[]) col;
             if (array == null)
                 array = new byte[JsonReader.minLen];
@@ -267,7 +293,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(bool), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -281,6 +307,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             bool[] array = (bool[]) col;
             if (array == null)
                 array = new bool [JsonReader.minLen];
@@ -312,7 +340,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(double), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(double), this);
         }
         
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -326,6 +354,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             double[] array = (double[]) col;
             if (array == null)
                 array = new double[JsonReader.minLen];
@@ -359,7 +389,7 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
         
         public StubType CreateStubType(Type type) {
-            return PrimitiveArrayCodec.CreatePrimitiveHandler(type, typeof(float), this);
+            return ArrayUtils.CreatePrimitiveHandler(type, typeof(float), this);
         }
 
         public void Write(JsonWriter writer, object obj, StubType stubType) {
@@ -373,6 +403,8 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public Object Read(JsonReader reader, Object col, StubType stubType) {
+            if (!ArrayUtils.IsArrayStart(reader, stubType))
+                return null;
             float[] array = (float[])col;
             if (array == null)
                 array = new float[JsonReader.minLen];

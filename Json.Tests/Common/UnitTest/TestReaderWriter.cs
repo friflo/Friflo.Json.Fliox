@@ -452,6 +452,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     
 
                     // ------------------------------------- Array -------------------------------------
+                    AreEqual(null,                enc.Read<string[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -586,7 +587,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(79, enc.typeCache.LookupCount);
+                        AreEqual(80, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

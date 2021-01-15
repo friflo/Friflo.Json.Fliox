@@ -181,7 +181,7 @@ namespace Friflo.Json.Managed.Codecs
                             object sub = field.GetObject(obj);
                             StubType fieldObject = field.FieldType;
                             object subRet = fieldObject.codec.Read(reader, sub, fieldObject);
-                            
+                            //
                             if (!field.FieldType.isNullable && subRet == null)
                                 return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
                             if (sub != subRet)
@@ -199,6 +199,7 @@ namespace Friflo.Json.Managed.Codecs
                                 return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
                             object array = field.GetObject(obj);
                             object arrayRet = fieldArray.codec.Read(reader, array, fieldArray);
+                            //
                             if (!field.FieldType.isNullable && arrayRet == null)
                                 return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
                             if (array != arrayRet)
