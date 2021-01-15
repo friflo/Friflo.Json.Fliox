@@ -65,6 +65,8 @@ namespace Friflo.Json.Managed.Codecs
             if ((stubType = ByteCodec.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = BoolCodec.               Interface.CreateStubType(type)) != null) return stubType;
             //
+            // The order of codecs bellow need to be irrelevant to ensure same behavior independent
+            // from adding various codecs to a custom resolver.
             if ((stubType = StringArrayCodec.        Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = LongArrayCodec.          Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = IntArrayCodec.           Interface.CreateStubType(type)) != null) return stubType;
