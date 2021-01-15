@@ -10,9 +10,9 @@ namespace Friflo.Json.Managed.Codecs
 {
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Interface = new ObjectCodec();
-        
-        public static bool IsPrimitive(Type type) {
-            return type.IsPrimitive && type == typeof(string);
+
+        private static bool IsPrimitive(Type type) {
+            return type.IsPrimitive || type == typeof(string);
         } 
         
         public StubType CreateStubType(Type type) {
