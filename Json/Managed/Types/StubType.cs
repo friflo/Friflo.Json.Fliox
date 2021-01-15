@@ -3,10 +3,21 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
+    public enum TypeCat
+    {
+        None,
+        String,
+        Number,
+        Bool,
+        Object,
+        Array
+    }
+    
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonCodec  codec;
         public  readonly    bool        isNullable;
+        public  readonly    TypeCat     typeCat;
 
         /// <summary>
         /// Need to be overriden, in case the derived <see cref="StubType"/> uses <see cref="System.Type"/>'s
@@ -25,10 +36,11 @@ namespace Friflo.Json.Managed.Types
             return null;
         }
 
-        public StubType(Type type, IJsonCodec codec, bool isNullable) {
+        public StubType(Type type, IJsonCodec codec, bool isNullable, TypeCat typeCat) {
             this.type =         type;
             this.codec =        codec;
             this.isNullable =   isNullable;
+            this.typeCat =     typeCat;
         }
 
         public virtual void Dispose() {

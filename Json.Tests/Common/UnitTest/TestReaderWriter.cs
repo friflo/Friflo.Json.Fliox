@@ -523,6 +523,18 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
                         AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
                     }
+                    
+                    enc.Read<List<int>>(arrNull);
+                    StringAssert.Contains("List element is not nullable. Expect element Type:", enc.Error.msg.ToString());
+                    
+                    enc.Read<List<int>>(arrStr);
+                    StringAssert.Contains("Cannot assign string to List element. Expect:", enc.Error.msg.ToString());
+                    
+                    enc.Read<List<string>>(arrNum);
+                    StringAssert.Contains("Cannot assign number to List element. Expect:", enc.Error.msg.ToString());
+
+                    enc.Read<List<string>>(arrBln);
+                    StringAssert.Contains("Cannot assign bool to List element. Expect:", enc.Error.msg.ToString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
                     // --- maps - value type: integral 
@@ -605,7 +617,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(92, enc.typeCache.LookupCount);
+                        AreEqual(96, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

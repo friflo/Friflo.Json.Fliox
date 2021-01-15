@@ -122,6 +122,13 @@ namespace Friflo.Json.Managed
             }
         }
         
+        
+        public Object ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
+            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
+            parser.Error("JsonReader", msg + expectType.type.Name + ", got: '" + parser.value + "'");
+            return null;
+        }
+        
         public Object ErrorNull(string msg, string value) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             parser.Error("JsonReader", msg + value);
