@@ -117,10 +117,6 @@ namespace Friflo.Json.Managed.Codecs
             }
             
             ClassType classType = (ClassType) stubType;
-            if (parser.Event == JsonEvent.ValueNull)
-                return null;
-            if (parser.Event == JsonEvent.ValueNull)
-                return null;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?

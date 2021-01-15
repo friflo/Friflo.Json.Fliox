@@ -272,6 +272,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public TestClass    selfReference; // test cyclic references
             public int          key;
             public BigInteger   bigInt;
+            public int[]        intArray;
 
             public override bool Equals(object obj) {
                 if (ReferenceEquals(null, obj)) return false;
@@ -289,19 +290,23 @@ namespace Friflo.Json.Tests.Common.UnitTest
                 return key + bigInt.GetHashCode();
             }
         }
-        
+
+        const string BigInt = "1234567890123456789012345678901234567890";
+
         private void TestPrimitiveInternal() {
-            var unknownMembers = @"
-""unknownObject"": {
-    ""anotherUnknown"": 42
-},
-""unknownArray"": [42],
-""unknownStr"": ""str"", 
-""unknownNumber"":999,
-""unknownBool"":true,
-""unknownNull"":null
-";
-            
+            string testClassJson = $@"
+{{
+    ""key"":42,
+    ""bigInt"":""{BigInt}"",
+    ""unknownObject"": {{
+        ""anotherUnknown"": 42
+    }},
+    ""unknownArray"": [42],
+    ""unknownStr"": ""str"", 
+    ""unknownNumber"":999,
+    ""unknownBool"":true,
+    ""unknownNull"":null
+}}";
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
@@ -310,10 +315,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
-            using (var bigInt =     new Bytes ("1234567890123456789012345678901234567890"))
+            using (var bigInt =     new Bytes (BigInt))
             using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
-            using (var bigIntStr =  new Bytes ($"\"{bigInt.ToString()}\""))
-            using (var bigIntStrN = new Bytes ($"\"{bigInt.ToString()}n\""))
+            using (var bigIntStr =  new Bytes ($"\"{BigInt}\""))
+            using (var bigIntStrN = new Bytes ($"\"{BigInt}n\""))
             using (var dateTime =   new Bytes ("2021-01-14T09:59:40.101Z"))
             using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
                 // --- arrays
@@ -324,7 +329,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
                 // --- class/map
-            using (var testClass =  new Bytes ($"{{\"key\":42,\"bigInt\":{bigIntStr},{unknownMembers}}}")) 
+            using (var testClass =  new Bytes (testClassJson)) 
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
@@ -425,7 +430,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         if (JsonEvent.EOF != enc.parser.Event)
                             Fail(enc.Error.msg.ToString());
                         AreEqual(new SkipInfo { arrays=1, booleans= 1, floats= 0, integers= 3, nulls= 1, objects= 1, strings= 1 }, enc.parser.skipInfo);
-                            
                         AreEqual(expect, value);
                     }
 
@@ -438,6 +442,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     write.Write(root);
                     enc.Read<TestClass>(write.Output);
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    
+                    
 
                     // ------------------------------------- Array -------------------------------------
                     
