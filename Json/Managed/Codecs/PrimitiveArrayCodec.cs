@@ -41,14 +41,9 @@ namespace Friflo.Json.Managed.Codecs
         }
         
         public static Object ArrayUnexpected (JsonReader reader, StubType stubType) {
-            switch (reader.parser.Event) {
-                case JsonEvent.ValueNull:
-                    return reader.ErrorNull("Primitive array elements are not nullable. Element Type: ", stubType.type.FullName);
-                default:
-                    CollectionType collection = (CollectionType)stubType;
-                    string elementType = collection.ElementType.type.FullName;
-                    return reader.ErrorNull("Incompatible array element type. Expect:", $"{elementType} but got: '{reader.parser.Event}'");
-            }
+            ref JsonParser parser = ref reader.parser ;
+            CollectionType collection = (CollectionType)stubType; 
+            return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
         }
     }
 

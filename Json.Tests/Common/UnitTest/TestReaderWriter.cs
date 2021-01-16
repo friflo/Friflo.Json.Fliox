@@ -465,9 +465,9 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     enc.Read<TestStruct[]>(arrNull);
                     StringAssert.Contains("Array element is not nullable. Element Type:", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrNull);
-                    StringAssert.Contains("Primitive array elements are not nullable. Element Type:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to array element. Expect:", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrStr);
-                    StringAssert.Contains("Incompatible array element type. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to array element. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
