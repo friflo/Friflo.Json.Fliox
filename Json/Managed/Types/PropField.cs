@@ -86,31 +86,23 @@ namespace Friflo.Json.Managed.Types
             }
         }
 
-        private FrifloException Except()
-        {
-            return new FrifloException("member doesnt support Get/Set");
-        }
+        internal    abstract Object InternalGetObject   (Object obj);
+        internal    abstract long    InternalGetLong     (Object obj);
+        internal    abstract int     InternalGetInt      (Object obj);
+        internal    abstract short   InternalGetShort    (Object obj);
+        internal    abstract byte    InternalGetByte     (Object obj);
+        internal    abstract bool    InternalGetBool     (Object obj);
+        internal    abstract double  InternalGetDouble   (Object obj);
+        internal    abstract float   InternalGetFloat    (Object obj);
         
-
-        public abstract bool IsAssignable();
-        
-        internal    virtual Object  InternalGetObject   (Object obj)    { throw Except(); }
-        internal    virtual long    InternalGetLong     (Object obj)    { throw Except(); }
-        internal    virtual int     InternalGetInt      (Object obj)    { throw Except(); }
-        internal    virtual short   InternalGetShort    (Object obj)    { throw Except(); }
-        internal    virtual byte    InternalGetByte     (Object obj)    { throw Except(); }
-        internal    virtual bool    InternalGetBool     (Object obj)    { throw Except(); }
-        internal    virtual double  InternalGetDouble   (Object obj)    { throw Except(); }
-        internal    virtual float   InternalGetFloat    (Object obj)    { throw Except(); }
-        
-        internal    virtual void    InternalSetObject   (Object obj, Object val)    { throw Except(); }
-        internal    virtual void    InternalSetLong     (Object obj, long val)      { throw Except(); }
-        internal    virtual void    InternalSetInt      (Object obj, int val)       { throw Except(); }
-        internal    virtual void    InternalSetShort    (Object obj, short val)     { throw Except(); }
-        internal    virtual void    InternalSetByte     (Object obj, byte val)      { throw Except(); }
-        internal    virtual void    InternalSetBool     (Object obj, bool val)      { throw Except(); }
-        internal    virtual void    InternalSetDouble   (Object obj, double val)    { throw Except(); }
-        internal    virtual void    InternalSetFloat    (Object obj, float val)     { throw Except(); }
+        internal    abstract void    InternalSetObject   (Object obj, Object val);
+        internal    abstract void    InternalSetLong     (Object obj, long val);
+        internal    abstract void    InternalSetInt      (Object obj, int val);
+        internal    abstract void    InternalSetShort    (Object obj, short val);
+        internal    abstract void    InternalSetByte     (Object obj, byte val);
+        internal    abstract void    InternalSetBool     (Object obj, bool val);
+        internal    abstract void    InternalSetDouble   (Object obj, double val);
+        internal    abstract void    InternalSetFloat    (Object obj, float val);
 
         //
     }

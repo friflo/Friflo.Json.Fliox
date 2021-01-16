@@ -21,8 +21,6 @@ namespace Friflo.Json.Managed.Types
             this.setter = setter;
         }
 
-        public override bool IsAssignable()  { return setter != null; }
-
         // ---- getter
         internal override Object InternalGetObject (Object obj)
         {

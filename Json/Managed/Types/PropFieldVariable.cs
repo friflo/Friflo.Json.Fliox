@@ -18,9 +18,7 @@ namespace Friflo.Json.Managed.Types
             base (declType, name, Slot.GetSlotType(field.FieldType), field. FieldType) {
             this.field          = field;
         }
-    
-        public override bool IsAssignable()  { return true; }
-        
+
         // ---- getter
         internal override Object InternalGetObject (Object obj)
         {
