@@ -126,6 +126,23 @@ namespace Friflo.Json.Managed.Types
                 case SlotType.Bool:     InternalSetBool     (prop, val.Bool);   return;
             }
         }
+        
+        public void GetField (object prop, ref Slot val)
+        {
+            switch (slotType) {
+                case SlotType.Object:   val.Obj     = InternalGetObject   (prop);    return;
+                //
+                case SlotType.Double:   val.Dbl     = InternalGetDouble   (prop);    return;
+                case SlotType.Float:    val.Flt     = InternalGetFloat    (prop);    return;
+                //
+                case SlotType.Long:     val.Lng     = InternalGetLong     (prop);    return;
+                case SlotType.Int:      val.Int     = InternalGetInt      (prop);    return;
+                case SlotType.Short:    val.Short   = InternalGetShort    (prop);    return;
+                case SlotType.Byte:     val.Byte    = InternalGetByte     (prop);    return;
+                //
+                case SlotType.Bool:     val.Bool    = InternalGetBool     (prop);    return;
+            }
+        }
 
         public long GetLong (Object prop)
         {

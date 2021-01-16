@@ -44,17 +44,17 @@ namespace Friflo.Json.Managed.Codecs
 
             PropField[] fields = type.propFields.fieldsSerializable;
             Slot elemSlot = new Slot();
-
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
                     firstMember = false;
                 else
                     bytes.AppendChar(',');
                 PropField field = fields[n];
+                field.GetField(obj, ref elemSlot);
                 switch (field.type) {
                     case SimpleType.Id.String:
                         writer.WriteKey(field);
-                        String val = field.GetString(obj);
+                        string val = (string) elemSlot.Obj;
                         if (val != null)
                             writer.WriteString(val);
                         else
@@ -62,40 +62,38 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case SimpleType.Id.Long:
                         writer.WriteKey(field);
-                        format.AppendLong(ref bytes, field.GetLong(obj));
+                        format.AppendLong(ref bytes, elemSlot.Lng);
                         break;
                     case SimpleType.Id.Integer:
                         writer.WriteKey(field);
-                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        format.AppendInt(ref bytes, elemSlot.Int);
                         break;
                     case SimpleType.Id.Short:
                         writer.WriteKey(field);
-                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        format.AppendInt(ref bytes, elemSlot.Short);
                         break;
                     case SimpleType.Id.Byte:
                         writer.WriteKey(field);
-                        format.AppendInt(ref bytes, field.GetInt(obj));
+                        format.AppendInt(ref bytes, elemSlot.Byte);
                         break;
                     case SimpleType.Id.Bool:
                         writer.WriteKey(field);
-                        format.AppendBool(ref bytes, field.GetBool(obj));
+                        format.AppendBool(ref bytes, elemSlot.Bool);
                         break;
                     case SimpleType.Id.Double:
                         writer.WriteKey(field);
-                        format.AppendDbl(ref bytes, field.GetDouble(obj));
+                        format.AppendDbl(ref bytes, elemSlot.Dbl);
                         break;
                     case SimpleType.Id.Float:
                         writer.WriteKey(field);
-                        format.AppendFlt(ref bytes, field.GetFloat(obj));
+                        format.AppendFlt(ref bytes, elemSlot.Flt);
                         break;
                     case SimpleType.Id.Object:
                         writer.WriteKey(field);
-                        Object child = field.GetObject(obj);
-                        if (child == null) {
+                        if (elemSlot.Obj == null) {
                             bytes.AppendBytes(ref writer.@null);
                         } else {
                             StubType fieldObject = field.FieldType;
-                            elemSlot.Obj = child;
                             fieldObject.codec.Write(writer, ref elemSlot, fieldObject);
                         }
                         break;
