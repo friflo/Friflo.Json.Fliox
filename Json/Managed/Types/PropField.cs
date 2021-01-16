@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
@@ -42,18 +43,11 @@ namespace Friflo.Json.Managed.Types
             bb.AppendBytes(ref nameBytes);
         }
         
-        public Object GetObject (Object prop)
+        public object GetObject (Object prop)
         {
-            try
-            {
-                if (type == SimpleType. Id.Object)
-                    return InternalGetObject    (prop) ;
-                throw new FrifloException("unhandled case for field: " + name + " type: " + type);
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("Set field failed. field: " + name, e);
-            }
+            if (slotType == SlotType.Object)
+                return InternalGetObject    (prop) ;
+            throw new InvalidComObjectException("Expect method is only called for fields with type object. field: " + name);
         }
 
         public void SetObject (object prop, Object val)
@@ -92,29 +86,6 @@ namespace Friflo.Json.Managed.Types
                 case SlotType.Byte:     val.Byte    = InternalGetByte     (prop);    return;
                 //
                 case SlotType.Bool:     val.Bool    = InternalGetBool     (prop);    return;
-            }
-        }
-
-        public void SetBool (Object prop, bool val)
-        {
-            try
-            {
-                switch (type)
-                {
-                case SimpleType.Id. String:     InternalSetString   (prop, val ? "true" : "false");     break;
-                case SimpleType.Id. Long:       InternalSetLong     (prop,          (val ? 1 : 0));     break;
-                case SimpleType.Id. Integer:    InternalSetInt      (prop,          (val ? 1 : 0));     break;
-                case SimpleType.Id. Short:      InternalSetShort    (prop, (short)  (val ? 1 : 0));     break;
-                case SimpleType.Id. Byte:       InternalSetByte     (prop, (byte)   (val ? 1 : 0));     break;
-                case SimpleType.Id. Bool:       InternalSetBool     (prop,           val         );     break;
-                case SimpleType.Id. Double:     InternalSetDouble   (prop,          (val ? 1 : 0));     break;
-                case SimpleType.Id. Float:      InternalSetFloat    (prop,          (val ? 1 : 0));     break;
-                default:                        throw new FrifloException ("no conversion to bool. type: " + type);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("Set field failed. field: " + name, e);
             }
         }
 

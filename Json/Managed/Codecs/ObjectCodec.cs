@@ -159,7 +159,7 @@ namespace Friflo.Json.Managed.Codecs
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
-                        // todo room for improvement - in case of primitives codec.Read() should not be called.
+                        
                         elemSlot.Clear();
                         if (!valueType.codec.Read(reader, ref elemSlot, valueType))
                             return false;
@@ -174,7 +174,8 @@ namespace Friflo.Json.Managed.Codecs
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
-                        field.SetBool(obj, parser.boolValue);
+                        elemSlot.Bool = parser.boolValue;
+                        field.SetField(obj, ref elemSlot);
                         break;
                     case JsonEvent.ValueNull:
                         field = classType.GetField(parser.key);
