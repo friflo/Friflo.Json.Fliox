@@ -48,7 +48,7 @@ namespace Friflo.Json.Managed.Types
             Type type = field. FieldType;
             Id ? id = IdFromType (type);
             if (id == null)
-                throw new FrifloException("unsupported simple type: " + type. FullName + " of field " + field. Name);
+                throw new FrifloException("unsupported simple type: " + type + " of field " + field. Name);
             return id .Value;
         }
 
@@ -57,7 +57,7 @@ namespace Friflo.Json.Managed.Types
             Type type = method. PropertyType;
             Id ? id = IdFromType (type);
             if (id == null)
-                throw new FrifloException("unsupported simple type: " + type. FullName + " of method " + method. Name);
+                throw new FrifloException("unsupported simple type: " + type + " of method " + method. Name);
             return id .Value;
         }
     }

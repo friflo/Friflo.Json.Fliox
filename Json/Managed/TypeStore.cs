@@ -62,7 +62,7 @@ namespace Friflo.Json.Managed
                 if (stubType != null)
                     return stubType;
                 
-                throw new NotSupportedException($"Type not supported: " + type.FullName);
+                throw new NotSupportedException($"Type not supported: " + type);
             }
         }
         

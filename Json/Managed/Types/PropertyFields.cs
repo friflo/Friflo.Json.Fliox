@@ -30,7 +30,7 @@ namespace Friflo.Json.Managed.Types
             this.listFields     = listFields;
             this.listMethods    = listMethods;
             this.declType       = declType;
-            this.typeName       = type. FullName;
+            this.typeName       = type. ToString();
             try
             {
                 SetProperties(type);
@@ -83,7 +83,7 @@ namespace Friflo.Json.Managed.Types
                 fieldList. Add (pf);
                 return;
             }
-            throw new FrifloException ("Field '" + name + "' ('" + fieldName + "') not found in type " + type. FullName);
+            throw new FrifloException ("Field '" + name + "' ('" + fieldName + "') not found in type " + type);
         }
 
         public override void Set(String name)

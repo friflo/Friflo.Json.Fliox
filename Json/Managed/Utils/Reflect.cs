@@ -111,12 +111,12 @@ namespace Friflo.Json.Managed.Utils
                 // return (T) Activator.CreateInstance( type ); // can call only public constructor
                 ConstructorInfo ci = GetDefaultConstructor (type);
                 if (ci == null)
-                    throw new FrifloException("No default constructor accessible. type: " + type.FullName);
+                    throw new FrifloException("No default constructor accessible. type: " + type);
                 return (T)ci.Invoke (DefConstructorArgs);
             }
             catch (Exception e)
             {
-                throw new FrifloException("Failed to invoke default constructor of: " + type.FullName, e);
+                throw new FrifloException("Failed to invoke default constructor of: " + type, e);
             }
         }
 
@@ -295,7 +295,7 @@ namespace Friflo.Json.Managed.Utils
         public static String GetMethodName (MethodInfo method)
         {
             // ReSharper disable once PossibleNullReferenceException
-            return method. DeclaringType.FullName + "." + method. Name;
+            return method. DeclaringType + "." + method. Name;
         }
 
     }

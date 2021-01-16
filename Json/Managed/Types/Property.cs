@@ -42,7 +42,7 @@ namespace Friflo.Json.Managed.Types
             }
             catch (Exception e)
             {
-                throw new FrifloException("SetProperties() failed for type: " + type. FullName, e);
+                throw new FrifloException("SetProperties() failed for type: " + type, e);
             }
         }
     }

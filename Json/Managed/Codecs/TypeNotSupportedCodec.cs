@@ -12,15 +12,17 @@ namespace Friflo.Json.Managed.Codecs
         public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
 
         public StubType CreateStubType(Type type) {
-            return new NotSupportedType(type);
+            return new NotSupportedType(type, "Type not supported");
         }
-
+        
         public object Read(JsonReader reader, object obj, StubType stubType) {
-            throw new NotSupportedException("Type not supported. type: " + stubType.type.FullName);
+            NotSupportedType specific = (NotSupportedType) stubType;
+            throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }
 
         public void Write(JsonWriter writer, object obj, StubType stubType) {
-            throw new NotSupportedException("Type not supported. type: " + stubType.type.FullName);
+            NotSupportedType specific = (NotSupportedType) stubType;
+            throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }
     }
 }

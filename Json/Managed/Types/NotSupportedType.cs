@@ -5,13 +5,17 @@ using Friflo.Json.Managed.Codecs;
 
 namespace Friflo.Json.Managed.Types
 {
-    public class NotSupportedType : StubType {
-        public NotSupportedType(Type type) : 
+    public class NotSupportedType : StubType
+    {
+        public readonly string msg;
+        
+        public NotSupportedType(Type type, string msg) : 
             base(type, TypeNotSupportedCodec.Interface, false, TypeCat.None) {
+            this.msg = msg;
         }
 
         public override object CreateInstance() {
-            throw new NotSupportedException("Type not supported" + type.FullName);
+            throw new NotSupportedException(msg + " " + type);
         }
         
         public override void InitStubType(TypeStore typeStore) {

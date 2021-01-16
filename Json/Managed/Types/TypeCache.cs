@@ -68,7 +68,7 @@ namespace Friflo.Json.Managed.Types
                     }
                 }
                 if (!name.buffer.IsCreated())
-                    throw new InvalidOperationException("no discriminator registered for type: " + type.type.FullName);
+                    throw new InvalidOperationException("no discriminator registered for type: " + type.type);
                 dst.AppendBytes(ref name);
             }
         }

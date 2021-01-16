@@ -21,7 +21,7 @@ namespace Friflo.Json.Managed.Codecs
             if (args != null) {
                 Type keyType = args[0];
                 if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                    return null;
+                    return new NotSupportedType(type, "Dictionary only support string as key type");
                 Type elementType = args[1];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)

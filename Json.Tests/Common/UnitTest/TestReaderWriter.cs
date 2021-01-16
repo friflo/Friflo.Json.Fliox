@@ -517,7 +517,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     {
                         // int[,] expect = {{1, 2, 3}};
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<int[,]>(arrArrNum));
-                        AreEqual("Type not supported. type: System.Int32[,]", e.Message);              
+                        AreEqual("Type not supported. Type: System.Int32[,]", e.Message);              
                     }
                     
                     // ------------------------------------- List<T> -------------------------------------
@@ -562,6 +562,10 @@ namespace Friflo.Json.Tests.Common.UnitTest
                         
                     enc.Read<Dictionary<string, string>>(arrBln);
                     StringAssert.Contains("Cannot assign bool to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    {
+                        var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<int, string>>(mapStr));
+                        AreEqual("Dictionary only support string as key type. Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
+                    }
                     
                     // --- maps - value type: integral 
                     {
@@ -644,7 +648,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(104, enc.typeCache.LookupCount);
+                        AreEqual(105, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
