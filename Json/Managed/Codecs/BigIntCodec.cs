@@ -33,11 +33,11 @@ namespace Friflo.Json.Managed.Codecs
                         value.end--;
                     if (BigInteger.TryParse(value.ToString(), out BigInteger ret))
                         return ret;
-                    return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
+                    return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
                 case  JsonEvent.ValueNumber:
                     if (BigInteger.TryParse(value.ToString(), out BigInteger ret2))
                         return ret2;
-                    return reader.ErrorNull("Failed parsing BigInt. value: ", reader.parser.value.ToString());
+                    return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
                 default:
                     return PrimitiveCodec.CheckElse(reader, stubType);
             }

@@ -30,7 +30,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.ValueString:
                     if (DateTime.TryParse(value.ToString(), out DateTime ret))
                         return ret;
-                    return reader.ErrorNull("Failed parsing DateTime. value: ", reader.parser.value.ToString());
+                    return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
                 default:
                     return PrimitiveCodec.CheckElse(reader, stubType);
             }
