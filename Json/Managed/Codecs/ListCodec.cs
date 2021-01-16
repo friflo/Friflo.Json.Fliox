@@ -38,13 +38,11 @@ namespace Friflo.Json.Managed.Codecs
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
-                    switch (collectionType.id) {
-                        case SimpleType.Id.Object:
+                    // todo: implement missing element types
+                    switch (collectionType.elementTypeId) {
+                        case SlotType.Object:
                             elemSlot.Obj = item;
                             elementType.codec.Write(writer, ref elemSlot, elementType);
-                            break;
-                        case SimpleType.Id.String:
-                            writer.WriteString((string) item);
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +
@@ -54,11 +52,9 @@ namespace Friflo.Json.Managed.Codecs
                 else
                     writer.bytes.AppendBytes(ref writer.@null);
             }
-
             writer.bytes.AppendChar(']');
         }
-
-
+        
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
@@ -69,7 +65,8 @@ namespace Friflo.Json.Managed.Codecs
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
             StubType elementType = collectionType.ElementType;
-            if (collectionType.id != SimpleType.Id.Object)
+            // todo: document why != SlotType.Object
+            if (collectionType.elementTypeId != SlotType.Object)
                 list.Clear();
             int startLen = list.Count;
             int index = 0;
