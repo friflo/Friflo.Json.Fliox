@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Codecs
         public StubType CreateStubType(Type type) {
             if (type != typeof(BigInteger))
                 return null;
-            return new PrimitiveType (typeof(BigInteger), Interface);
+            return new BigIntType (typeof(BigInteger), Interface);
         }
         
         public void Write (JsonWriter writer, object obj, StubType stubType) {

@@ -275,6 +275,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             public TestClass    selfReference; // test cyclic references
             public TestChild    testChild;
             public int          key;
+            public string       str;
             public BigInteger   bigInt;
             public int[]        intArray;
 
@@ -337,10 +338,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
                 // --- class/map
             using (var testClass =  new Bytes (testClassJson)) 
+            using (var mapNull =    new Bytes ("{\"key\":null}"))
             using (var mapNum =     new Bytes ("{\"key\":42}"))
             using (var mapBool =    new Bytes ("{\"key\":true}"))
             using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
+            using (var mapNum2 =    new Bytes ("{\"str\":44}"))
             using (var invalid =    new Bytes ("invalid")) {
                 int iterations = 2; // dont use < 2
                 for (int n = 0; n < iterations; n++) {
@@ -450,6 +453,17 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     enc.Read<TestClass>(write.Output);
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
+                    enc.Read<TestClass>(mapNull);
+                    StringAssert.Contains("Cannot assign null to class field: key. Expect:", enc.Error.msg.ToString());
+                    
+                    enc.Read<TestClass>(mapStr);
+                    StringAssert.Contains("Cannot assign string to class field: key. Expect:", enc.Error.msg.ToString());
+                    
+                     enc.Read<TestClass>(mapNum2);
+                    StringAssert.Contains("Cannot assign number to class field: str. Expect:", enc.Error.msg.ToString());
+
+                    enc.Read<TestClass>(mapBool);
+                    StringAssert.Contains("Cannot assign bool to class field: key. Expect:", enc.Error.msg.ToString());
                     
 
                     // ------------------------------------- Array -------------------------------------
@@ -630,7 +644,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(100, enc.typeCache.LookupCount);
+                        AreEqual(104, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

@@ -141,6 +141,8 @@ namespace Friflo.Json.Managed.Codecs
                             break;
                         }
                         StubType valueType = field.FieldType;
+                        if (valueType.typeCat != TypeCat.String)
+                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         object value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
                         break;
@@ -151,6 +153,8 @@ namespace Friflo.Json.Managed.Codecs
                             break;
                         }
                         valueType = field.FieldType;
+                        if (valueType.typeCat != TypeCat.Number)
+                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         // todo room for improvement - in case of primitives codec.Read() should not be called.
                         value = valueType.codec.Read(reader, null, valueType);
                         field.SetObject(obj, value); // set also to null in error case
@@ -161,6 +165,9 @@ namespace Friflo.Json.Managed.Codecs
                             parser.SkipEvent();
                             break;
                         }
+                        valueType = field.FieldType;
+                        if (valueType.typeCat != TypeCat.Bool)
+                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         field.SetBool(obj, parser.boolValue);
                         break;
                     case JsonEvent.ValueNull:
@@ -169,10 +176,9 @@ namespace Friflo.Json.Managed.Codecs
                             parser.SkipEvent(); // count skipping
                             break;
                         }
-                        if (field.FieldType.isNullable)
-                            field.SetObject(obj, null);
-                        else
-                            return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
+                        if (!field.FieldType.isNullable)
+                            return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
+                        field.SetObject(obj, null);
                         break;
                     case JsonEvent.ObjectStart:
                         field = classType.GetField(parser.key);

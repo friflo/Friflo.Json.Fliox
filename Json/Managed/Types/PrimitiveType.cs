@@ -39,6 +39,17 @@ namespace Friflo.Json.Managed.Types
         }
     }
     
+    public class BigIntType : StubType
+    {
+        public BigIntType(Type type, IJsonCodec codec)
+            : base(type, codec, true, TypeCat.String)
+        {
+        }
+
+        public override void InitStubType(TypeStore typeStore) {
+        }
+    }
+    
     public class StringType : StubType
     {
         public StringType(Type type, IJsonCodec codec)
