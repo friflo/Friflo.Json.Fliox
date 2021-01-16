@@ -191,7 +191,7 @@ namespace Friflo.Json.Managed.Codecs
                             object subRet = fieldObject.codec.Read(reader, sub, fieldObject);
                             //
                             if (!field.FieldType.isNullable && subRet == null)
-                                return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
+                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                             if (sub != subRet)
                                 field.SetObject(obj, subRet);
                         }
@@ -204,12 +204,12 @@ namespace Friflo.Json.Managed.Codecs
                         } else {
                             StubType fieldArray = field.FieldType;
                             if (fieldArray == null)
-                                return reader.ErrorNull("expected field with array nature: ", ref field.nameBytes);
+                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                             object array = field.GetObject(obj);
                             object arrayRet = fieldArray.codec.Read(reader, array, fieldArray);
                             //
                             if (!field.FieldType.isNullable && arrayRet == null)
-                                return reader.ErrorNull("Field not nullable. Field name: ", ref field.nameBytes);
+                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                             if (array != arrayRet)
                                 field.SetObject(obj, arrayRet);
                         }
