@@ -20,6 +20,8 @@ namespace Friflo.Json.Managed.Codecs
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];
+                if (keyType != typeof(string)) // Support only Dictionary with key type: string
+                    return null;
                 Type elementType = args[1];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
