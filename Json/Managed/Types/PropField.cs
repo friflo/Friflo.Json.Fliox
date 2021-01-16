@@ -63,7 +63,7 @@ namespace Friflo.Json.Managed.Types
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
         }
-
+        /*
         public void SetString (Object prop, String val)
         {
             try
@@ -86,7 +86,7 @@ namespace Friflo.Json.Managed.Types
             {
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
-        }
+        } */
         
         public Object GetObject (Object prop)
         {
@@ -123,7 +123,7 @@ namespace Friflo.Json.Managed.Types
             else
                 return GetInt (prop);       
         }
-        
+        /*
         public void SetLong (Object prop, long val)
         {
             if (type == SimpleType.Id.Long)
@@ -139,7 +139,7 @@ namespace Friflo.Json.Managed.Types
             }
             else
                 SetInt (prop, (int)val);    
-        }
+        } */
 
         public int GetInt (Object prop)
         {
@@ -166,7 +166,7 @@ namespace Friflo.Json.Managed.Types
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
         }
-
+        /*
         public void SetInt (Object prop, int val)
         {
             try
@@ -188,7 +188,7 @@ namespace Friflo.Json.Managed.Types
             {
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
-        }
+        } */
 
         public double GetDouble (Object prop)
         {
@@ -213,7 +213,7 @@ namespace Friflo.Json.Managed.Types
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
         }
-
+        /*
         public bool SetNumber (ref JsonParser parser, Object prop) {
             try
             {
@@ -239,7 +239,7 @@ namespace Friflo.Json.Managed.Types
             {
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
-        }
+        } */
 
         public float GetFloat (Object prop)
         {
@@ -264,7 +264,7 @@ namespace Friflo.Json.Managed.Types
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
         }
-    
+        /*
         public void SetFloat (Object prop, float val)
         {
             try
@@ -286,7 +286,7 @@ namespace Friflo.Json.Managed.Types
             {
                 throw new FrifloException("Set field failed. field: " + name, e);
             }
-        }
+        }*/
 
         public bool GetBool (Object prop)
         {

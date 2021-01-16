@@ -22,12 +22,12 @@ namespace Friflo.Json.Managed.Types
             Object,
             Method,
         }
-
+        /*
         public static bool IsNumber(Id type)
         {
 
             return (Id.Long <= type && type <= Id.Float);
-        }
+        } */
 
         public static Id ? IdFromType (Type type)
         {
