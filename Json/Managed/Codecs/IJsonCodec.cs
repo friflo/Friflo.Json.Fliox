@@ -84,6 +84,9 @@ namespace Friflo.Json.Managed.Codecs
 
         public void  Clear() {
             cat = SlotType.None;
+            obj = null;
+            lng = 0;
+            dbl = 0;
         }
 
         public override string ToString() {

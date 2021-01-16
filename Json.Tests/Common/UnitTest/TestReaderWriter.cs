@@ -72,13 +72,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
             return ret;
         }
         
-        private Object EncodeJsonTo(Bytes json, Object obj, TypeStore typeStore) {
-            Object ret = null;
+        private bool EncodeJsonTo(Bytes json, Object obj, TypeStore typeStore) {
+            bool ret = false;
             using (JsonReader enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.ReadTo(json, obj);
-                    if (ret == null)
+                    if (!ret)
                         throw new FrifloException(enc.Error.msg.ToString());
                 }
                 AreEqual(2, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
             using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
                 JsonComplex obj = new JsonComplex();
-                obj = (JsonComplex) EncodeJsonTo(bytes, obj, typeStore);
+                IsTrue(EncodeJsonTo(bytes, obj, typeStore));
                 CheckJsonComplex(obj);
             }
         }
@@ -483,7 +483,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     StringAssert.Contains("Cannot assign string to array element. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(new [] {"hello"},    enc.ReadTo    (arrStr, new string[1]));   AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    {
+                        var inOut = new string[1];
+                        IsTrue(enc.ReadTo(arrStr, inOut));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                        AreEqual(new[] {"hello"}, inOut);
+                    }
 
                     AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);

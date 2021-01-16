@@ -79,21 +79,24 @@ namespace Friflo.Json.Managed.Codecs
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemSlot.Clear();
-                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            return false;
                         list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemSlot.Clear();
-                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            return false;
                         list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemSlot.Clear();
-                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            return false;
                         list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueNull:
@@ -125,13 +128,13 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemSlot.Obj = list[index];
-                            if (elementType.codec.Read(reader, ref elemSlot, elementType))
+                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
                                 return false;
                             list[index] = elemSlot.Obj;
                         }
                         else {
                             elemSlot.Clear();
-                            if (elementType.codec.Read(reader, ref elemSlot, elementType))
+                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
                                 return false;
                             list.Add(elemSlot.Obj);
                         }

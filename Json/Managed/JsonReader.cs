@@ -67,7 +67,8 @@ namespace Friflo.Json.Managed
             int start = bytes.Start;
             int len = bytes.Len;
             Slot slot = new Slot();
-            ReadStart(bytes.buffer, start, len, type, ref slot);
+            if (!ReadStart(bytes.buffer, start, len, type, ref slot))
+                return default;
             parser.NextEvent(); // EOF
             return slot.Get();
         }
@@ -101,15 +102,17 @@ namespace Friflo.Json.Managed
             }
         }
 
-        public Object ReadTo(Bytes bytes, Object obj) {
+        public bool ReadTo(Bytes bytes, Object obj) {
             int start = bytes.Start;
             int len = bytes.Len;
-            var ret = ReadTo(bytes.buffer, start, len, obj);
-            parser.NextEvent();
-            return ret;
+            Slot slot = new Slot();
+            slot.Obj = obj;
+            bool success = ReadTo(bytes.buffer, start, len, ref slot);
+            parser.NextEvent(); // EOF
+            return success;
         }
 
-        public Object ReadTo(ByteList bytes, int offset, int len, Object obj) {
+        public bool ReadTo(ByteList bytes, int offset, int len, ref Slot slot) {
             parser.InitParser(bytes, offset, len);
 
             while (true) {
@@ -117,12 +120,10 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        Slot value = new Slot();
-                        StubType valueType = typeCache.GetType(obj.GetType()); // lookup required
-                        valueType.codec.Read(this, ref value, valueType);
-                        return value.Get();
+                        StubType valueType = typeCache.GetType(slot.Obj.GetType()); // lookup required
+                        return valueType.codec.Read(this, ref slot, valueType);
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ErrorNull("ReadTo() can only used on an JSON object or array", ev);
                 }

@@ -194,7 +194,7 @@ namespace Friflo.Json.Managed.Codecs
                         } else {
                             object sub = field.GetObject(obj);
                             StubType fieldObject = field.FieldType;
-                            elemSlot.Clear();
+                            elemSlot.Obj = sub;
                             if (!fieldObject.codec.Read(reader, ref elemSlot, fieldObject))
                                 return false;
                             //
@@ -215,7 +215,7 @@ namespace Friflo.Json.Managed.Codecs
                             if (fieldArray == null)
                                 return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                             object array = field.GetObject(obj);
-                            elemSlot.Clear();
+                            elemSlot.Obj = array;
                             if (!fieldArray.codec.Read(reader, ref elemSlot, fieldArray))
                                 return false;
                             //
