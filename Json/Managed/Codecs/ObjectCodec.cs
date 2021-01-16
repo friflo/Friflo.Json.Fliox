@@ -90,7 +90,7 @@ namespace Friflo.Json.Managed.Codecs
                         format.AppendFlt(ref bytes, elemSlot.Flt);
                         break;
                     default:
-                        throw new FrifloException("invalid field type: " + field.type);
+                        throw new FrifloException("invalid field type: " + field.slotType);
                 }
             }
             bytes.AppendChar('}');

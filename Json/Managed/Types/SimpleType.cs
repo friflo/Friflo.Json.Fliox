@@ -42,23 +42,6 @@ namespace Friflo.Json.Managed.Types
             if (Reflect.IsAssignableFrom (typeof(Object), type))   return Id.Object;
             return null;
         }
-    
-        public static Id IdFromField (FieldInfo field)
-        {
-            Type type = field. FieldType;
-            Id ? id = IdFromType (type);
-            if (id == null)
-                throw new FrifloException("unsupported simple type: " + type + " of field " + field. Name);
-            return id .Value;
-        }
 
-        public static Id IdFromMethod (PropertyInfo method)
-        {
-            Type type = method. PropertyType;
-            Id ? id = IdFromType (type);
-            if (id == null)
-                throw new FrifloException("unsupported simple type: " + type + " of method " + method. Name);
-            return id .Value;
-        }
     }
 }

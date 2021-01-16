@@ -16,7 +16,7 @@ namespace Friflo.Json.Managed.Types
         
         internal PropFieldVariable(ClassType declType, String name, FieldInfo field)
         :
-            base (declType, name, SimpleType.IdFromField( field ), Slot.GetSlotType(field.FieldType), field. FieldType) {
+            base (declType, name, Slot.GetSlotType(field.FieldType), field. FieldType) {
             this.field          = field;
         }
     

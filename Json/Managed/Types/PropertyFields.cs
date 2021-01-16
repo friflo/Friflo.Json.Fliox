@@ -39,20 +39,11 @@ namespace Friflo.Json.Managed.Types
                 for (int n = 0; n < num; n++)
                     fields[n] = fieldList [n];
                 fieldList. Clear();
-                // Create fieldsSerializable
-                int count = 0;
-                for (int n = 0; n < num; n++)
-                {
-                    if (fields[n].type != SimpleType.Id.Method)
-                        count++;
-                }
-                fieldsSerializable = new PropField [count];
+                // to array
+                fieldsSerializable = new PropField [num];
                 int pos = 0;
                 for (int n = 0; n < num; n++)
-                {
-                    if (fields[n].type != SimpleType.Id.Method)
-                        fieldsSerializable[pos++] = fields[n];
-                }
+                    fieldsSerializable[pos++] = fields[n];
             }
             catch (Exception e)
             {
