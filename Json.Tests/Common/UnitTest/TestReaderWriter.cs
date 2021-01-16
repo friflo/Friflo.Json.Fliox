@@ -537,6 +537,18 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     StringAssert.Contains("Cannot assign bool to List element. Expect:", enc.Error.msg.ToString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
+                    enc.Read<Dictionary<string, long>>(arrNull);
+                    StringAssert.Contains("Cannot assign null to Dictionary value. Expect:", enc.Error.msg.ToString());
+                        
+                    enc.Read<Dictionary<string, long>>(arrStr);
+                    StringAssert.Contains("Cannot assign string to Dictionary value. Expect:", enc.Error.msg.ToString());
+                        
+                    enc.Read<Dictionary<string, string>>(arrNum);
+                    StringAssert.Contains("Cannot assign number to Dictionary value. Expect:", enc.Error.msg.ToString());
+                        
+                    enc.Read<Dictionary<string, string>>(arrBln);
+                    StringAssert.Contains("Cannot assign bool to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    
                     // --- maps - value type: integral 
                     {
                         var expect = new Dictionary<string, long> {{"key", 42}};
@@ -558,7 +570,8 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     } {
                         var expect = new Dictionary<string, float> {{"key", 42}};
                         AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
-                    } 
+                    }
+                    
                     // --- map - value type: string
                     {
                         var expect = new Dictionary<string, string> {{"key", "value" }};
@@ -617,7 +630,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(96, enc.typeCache.LookupCount);
+                        AreEqual(100, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
