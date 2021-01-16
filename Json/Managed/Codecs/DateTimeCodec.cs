@@ -24,14 +24,16 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
-                    if (DateTime.TryParse(value.ToString(), out DateTime ret))
-                        return ret;
+                    if (DateTime.TryParse(value.ToString(), out DateTime ret)) {
+                        slot.Obj = ret;
+                        return true;
+                    }
                     return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
-                default:
+                    default:
                     return PrimitiveCodec.CheckElse(reader, stubType);
             }
         }

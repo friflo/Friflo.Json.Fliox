@@ -43,27 +43,28 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public object Read(JsonReader reader, object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
+                return false;
             
             ref var parser = ref reader.parser;
             var collection = (CollectionType) stubType;
             int startLen;
             int len;
             Array array;
-            if (col == null) {
+            if (slot.Obj == null) {
                 startLen = 0;
                 len = JsonReader.minLen;
                 array = Arrays.CreateInstance(collection.ElementType.type, len);
             }
             else {
-                array = (Array) col;
+                array = (Array) slot.Obj;
                 startLen = len = array.Length;
             }
 
             StubType elementType = collection.ElementType;
             int index = 0;
+            Slot elemSlot = new Slot();
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -82,38 +83,36 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayStart:
                         StubType subElementArray = collection.ElementType;
                         if (index < startLen) {
-                            Object oldElement = array.GetValue(index);
-                            Object element = subElementArray.codec.Read(reader, oldElement, subElementArray);
-                            if (element == null)
-                                return null;
-                            array.SetValue(element, index);
+                            elemSlot.Obj = array.GetValue(index);
+                            if(!subElementArray.codec.Read(reader, ref elemSlot, subElementArray))
+                                return false;
+                            array.SetValue(elemSlot.Obj, index);
                         }
                         else {
-                            Object element = subElementArray.codec.Read(reader, null, subElementArray);
-                            if (element == null)
-                                return null;
+                            elemSlot.Clear();
+                            if (!subElementArray.codec.Read(reader, ref elemSlot, subElementArray))
+                                return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
-                            array.SetValue(element, index);
+                            array.SetValue(elemSlot.Obj, index);
                         }
 
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            Object oldElement = array.GetValue(index);
-                            Object element = elementType.codec.Read(reader, oldElement, elementType);
-                            if (element == null)
-                                return null;
-                            array.SetValue(element, index);
+                            elemSlot.Obj = array.GetValue(index);
+                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                                return false;
+                            array.SetValue(elemSlot.Obj, index);
                         }
                         else {
-                            Object element = elementType.codec.Read(reader, null, elementType);
-                            if (element == null)
-                                return null;
+                            elemSlot.Clear();
+                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                                return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
-                            array.SetValue(element, index);
+                            array.SetValue(elemSlot.Obj, index);
                         }
 
                         index++;
@@ -121,9 +120,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOfType(collection.ElementType.type, array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return reader.ErrorNull("unexpected state: ", ev);
                 }

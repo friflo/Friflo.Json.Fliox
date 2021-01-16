@@ -25,19 +25,21 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
                     if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
                         value.end--;
-                    if (BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return ret;
-                    return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
+                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
+                        return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
+                    slot.Obj = ret;
+                    return true;
                 case  JsonEvent.ValueNumber:
-                    if (BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return ret2;
-                    return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
+                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
+                        return reader.ErrorNull("Failed parsing BigInt. value: ", value.ToString());
+                    slot.Obj = ret2;
+                    return true;
                 default:
                     return PrimitiveCodec.CheckElse(reader, stubType);
             }

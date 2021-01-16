@@ -40,7 +40,7 @@ namespace Friflo.Json.Managed.Codecs
             }
         }
         
-        public static Object ArrayUnexpected (JsonReader reader, StubType stubType) {
+        public static bool ArrayUnexpected (JsonReader reader, StubType stubType) {
             ref JsonParser parser = ref reader.parser ;
             CollectionType collection = (CollectionType)stubType; 
             return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
@@ -69,10 +69,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            String[] array = (String[]) col;
+                return false;
+            String[] array = (String[]) slot.Obj;
             if (array == null)
                 array = new String[JsonReader.minLen];
             int len = array.Length;
@@ -88,9 +88,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -116,10 +117,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            long[] array = (long[]) col;
+                return false;
+            long[] array = (long[]) slot.Obj;
             if (array == null)
                 array = new long[JsonReader.minLen];
             int len = array.Length;
@@ -137,9 +138,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -165,10 +167,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public  Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            int[] array = (int[]) col;
+                return false;
+            int[] array = (int[]) slot.Obj;
             if (array == null)
                 array = new int[JsonReader.minLen];
             int len = array.Length;
@@ -186,9 +188,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -214,10 +217,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            short[] array = (short[]) col;
+                return false;
+            short[] array = (short[]) slot.Obj;
             if (array == null)
                 array = new short[JsonReader.minLen];
             int len = array.Length;
@@ -235,9 +238,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -263,10 +267,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            byte[] array = (byte[]) col;
+                return false;
+            byte[] array = (byte[]) slot.Obj;
             if (array == null)
                 array = new byte[JsonReader.minLen];
             int len = array.Length;
@@ -284,9 +288,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -312,10 +317,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            bool[] array = (bool[]) col;
+                return false;
+            bool[] array = (bool[]) slot.Obj;
             if (array == null)
                 array = new bool [JsonReader.minLen];
             int len = array.Length;
@@ -331,9 +336,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -359,10 +365,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            double[] array = (double[]) col;
+                return false;
+            double[] array = (double[]) slot.Obj;
             if (array == null)
                 array = new double[JsonReader.minLen];
             int len = array.Length;
@@ -380,9 +386,10 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayEnd:
                         if (index != len)
                             array = Arrays.CopyOf(array, index);
-                        return array;
+                        slot.Obj = array;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }
@@ -408,10 +415,10 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public Object Read(JsonReader reader, Object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
-            float[] array = (float[])col;
+                return false;
+            float[] array = (float[])slot.Obj;
             if (array == null)
                 array = new float[JsonReader.minLen];
             int len = array. Length;
@@ -430,9 +437,10 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent. ArrayEnd:
                     if (index != len)
                         array = Arrays.CopyOf (array, index);
-                    return array;
+                    slot.Obj = array;
+                    return true;
                 case JsonEvent. Error:
-                    return null;
+                    return false;
                 default:
                     return ArrayUtils.ArrayUnexpected(reader, stubType);
                 }

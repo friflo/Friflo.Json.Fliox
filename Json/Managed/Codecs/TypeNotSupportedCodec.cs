@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Codecs
             return new NotSupportedType(type, "Type not supported");
         }
         
-        public object Read(JsonReader reader, object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             NotSupportedType specific = (NotSupportedType) stubType;
             throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }

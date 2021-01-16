@@ -9,15 +9,15 @@ namespace Friflo.Json.Managed.Codecs
 
     public static class PrimitiveCodec
     {
-        public static object CheckElse(JsonReader reader, StubType stubType) {
+        public static bool CheckElse(JsonReader reader, StubType stubType) {
             ref JsonParser parser = ref reader.parser;
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
-                        return null;
+                        return false;
                     return reader.ErrorIncompatible("primitive", stubType, ref parser);
                 case JsonEvent.Error:
-                    return null;
+                    return false;
                 default:
                     return reader.ErrorIncompatible("primitive", stubType, ref parser);
             }
@@ -41,11 +41,12 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar('\"');
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event == JsonEvent.ValueString) {
-                return reader.parser.value.ToString();
+                slot.Obj = reader.parser.value.ToString();
+                return true;
             }
-            return null;
+            return false;
         }
     }
     
@@ -63,13 +64,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendDbl(ref writer.bytes, (double) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsDoubleStd(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
+            return success;
         }
     }
     
@@ -87,13 +86,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendFlt(ref writer.bytes, (float) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsFloatStd(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
+            return success;
         }
     }
     
@@ -111,13 +108,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendLong(ref writer.bytes, (long) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsLong(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Lng = reader.parser.ValueAsLong(out bool success);
+            return success;
         }
     }
     
@@ -135,13 +130,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendInt(ref writer.bytes, (int) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsInt(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Int = reader.parser.ValueAsInt(out bool success);
+            return success;
         }
     }
     
@@ -159,13 +152,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendInt(ref writer.bytes, (short) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsShort(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Short = reader.parser.ValueAsShort(out bool success);
+            return success;
         }
     }
     
@@ -183,13 +174,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendInt(ref writer.bytes, (byte) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsByte(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Byte = reader.parser.ValueAsByte(out bool success);
+            return success;
         }
     }
     
@@ -207,13 +196,11 @@ namespace Friflo.Json.Managed.Codecs
             writer.format.AppendBool(ref writer.bytes, (bool) obj);
         }
 
-        public Object Read(JsonReader reader, Object obj, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
                 return PrimitiveCodec.CheckElse(reader, stubType);
-            object num = reader.parser.ValueAsBool(out bool success);
-            if (success)
-                return num;
-            return null;
+            slot.Bool = reader.parser.ValueAsBool(out bool success);
+            return success;
         }
     }
 }

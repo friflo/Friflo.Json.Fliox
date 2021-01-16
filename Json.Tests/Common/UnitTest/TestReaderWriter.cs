@@ -429,7 +429,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     AreEqual(null,      enc.Read<object>(invalid));
-                    AreEqual(true,      enc.Error.ErrSet);
                     AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
                     
                     // ------------------------------------- class -------------------------------------

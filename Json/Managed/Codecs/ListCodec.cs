@@ -58,12 +58,12 @@ namespace Friflo.Json.Managed.Codecs
 
 
 
-        public Object Read(JsonReader reader, object col, StubType stubType) {
+        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
-                return null;
+                return false;
             ref var parser = ref reader.parser;
             CollectionType collectionType = (CollectionType) stubType;
-            IList list = (IList) col;
+            IList list = (IList) slot.Obj;
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
             StubType elementType = collectionType.ElementType;
@@ -71,23 +71,30 @@ namespace Friflo.Json.Managed.Codecs
                 list.Clear();
             int startLen = list.Count;
             int index = 0;
+            Slot elemSlot = new Slot();
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        list.Add(elementType.codec.Read(reader, null, elementType));
+                        elemSlot.Clear();
+                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        list.Add(elementType.codec.Read(reader, null, elementType));
+                        elemSlot.Clear();
+                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        list.Add(elementType.codec.Read(reader, null, elementType));
+                        elemSlot.Clear();
+                        elementType.codec.Read(reader, ref elemSlot, elementType);
+                        list.Add(elemSlot.Get());
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
@@ -101,34 +108,32 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayStart:
                         StubType subElementType = collectionType.ElementType;
                         if (index < startLen) {
-                            Object oldElement = list[index];
-                            Object element = subElementType.codec.Read(reader, oldElement, subElementType);
-                            if (element == null)
-                                return null;
-                            list[index] = element;
+                            elemSlot.Obj = list[index];
+                            if (!subElementType.codec.Read(reader, ref elemSlot, subElementType))
+                                return false;
+                            list[index] = elemSlot.Obj;
                         }
                         else {
-                            Object element = subElementType.codec.Read(reader, null, subElementType);
-                            if (element == null)
-                                return null;
-                            list.Add(element);
+                            elemSlot.Clear();
+                            if (!subElementType.codec.Read(reader, ref elemSlot, subElementType))
+                                return false;
+                            list.Add(elemSlot.Obj);
                         }
 
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            Object oldElement = list[index];
-                            Object element = elementType.codec.Read(reader, oldElement, elementType);
-                            if (element == null)
-                                return null;
-                            list[index] = element;
+                            elemSlot.Obj = list[index];
+                            if (elementType.codec.Read(reader, ref elemSlot, elementType))
+                                return false;
+                            list[index] = elemSlot.Obj;
                         }
                         else {
-                            Object element = elementType.codec.Read(reader, null, elementType);
-                            if (element == null)
-                                return null;
-                            list.Add(element);
+                            elemSlot.Clear();
+                            if (elementType.codec.Read(reader, ref elemSlot, elementType))
+                                return false;
+                            list.Add(elemSlot.Obj);
                         }
                         index++;
                         break;
@@ -136,9 +141,10 @@ namespace Friflo.Json.Managed.Codecs
                         // Remove from tail to head to avoid copying items after remove index
                        for (int n = startLen - 1; n >= index; n--)
                             list.Remove(n);
-                        return list;
+                        slot.Obj = list;
+                        return true;
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return reader.ErrorNull("unexpected state: ", ev);
                 }

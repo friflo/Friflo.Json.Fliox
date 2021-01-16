@@ -3,6 +3,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed
@@ -40,41 +41,45 @@ namespace Friflo.Json.Managed
         public T ReadValue <T>(Bytes bytes) where T : struct {
             int start = bytes.Start;
             int len = bytes.Len;
-            var ret = ReadStart(bytes.buffer, start, len, typeof(T));
+            Slot slot = new Slot();
+            bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref slot);
             parser.NextEvent(); // EOF
-            if (ret == null) {
+            if (!success) {
                 if (!Error.ErrSet)
                     throw new InvalidOperationException("expect error is set");
                 return default;
             }
-            return (T) ret;
+            return (T) slot.Get();
         }
         
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
-            var ret = ReadStart(bytes.buffer, start, len, typeof(T));
+            Slot slot = new Slot();
+            bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref slot);
             parser.NextEvent(); // EOF
-            if (typeof(T).IsValueType && ret == null && parser.error.ErrSet)
+            if (typeof(T).IsValueType && !success && parser.error.ErrSet)
                 throw new InvalidOperationException(parser.error.msg.ToString());
-            return (T) ret;
+            return (T) slot.Get();
         }
         
         public Object Read(Bytes bytes, Type type) {
             int start = bytes.Start;
             int len = bytes.Len;
-            var ret = ReadStart(bytes.buffer, start, len, type);
+            Slot slot = new Slot();
+            ReadStart(bytes.buffer, start, len, type, ref slot);
             parser.NextEvent(); // EOF
-            return ret;
+            return slot.Get();
         }
 
         public Object Read(ByteList buffer, int offset, int len, Type type) {
-            var ret = ReadStart(buffer, offset, len, type);
+            Slot slot = new Slot();
+            ReadStart(buffer, offset, len, type, ref slot);
             parser.NextEvent(); // EOF
-            return ret;
+            return slot.Get();
         }
 
-        private Object ReadStart(ByteList bytes, int offset, int len, Type type) {
+        private bool ReadStart(ByteList bytes, int offset, int len, Type type, ref Slot slot) {
             parser.InitParser(bytes, offset, len);
             
             while (true) {
@@ -87,9 +92,9 @@ namespace Friflo.Json.Managed
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNull:
                         StubType valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, null, valueType); // lookup required
+                        return valueType.codec.Read(this, ref slot, valueType);
                     case JsonEvent.Error:
-                        return null;
+                        return false;
                     default:
                         return ErrorNull("unexpected state in Read() : ", ev);
                 }
@@ -112,8 +117,10 @@ namespace Friflo.Json.Managed
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
+                        Slot value = new Slot();
                         StubType valueType = typeCache.GetType(obj.GetType()); // lookup required
-                        return valueType.codec.Read(this, obj, valueType);
+                        valueType.codec.Read(this, ref value, valueType);
+                        return value.Get();
                     case JsonEvent.Error:
                         return null;
                     default:
@@ -123,7 +130,7 @@ namespace Friflo.Json.Managed
         }
         
         
-        public Object ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
+        public bool ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             // Cannot assign null to Dictionary value.
             string evType = null;
@@ -137,30 +144,30 @@ namespace Friflo.Json.Managed
                 case JsonEvent.ObjectStart: evType = "object"; value = "{...}";                             break;
             }
             parser.Error("JsonReader", "Cannot assign " + evType + " to " + msg + ". Expect: " + expectType.type.Name + ", got: " + value);
-            return null;
+            return false;
         }
         
-        public Object ErrorNull(string msg, string value) {
+        public bool ErrorNull(string msg, string value) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             parser.Error("JsonReader", msg + value);
-            return null;
+            return false;
         }
 
-        public Object ErrorNull(string msg, JsonEvent ev) {
+        public bool ErrorNull(string msg, JsonEvent ev) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             parser.Error("JsonReader", msg + ev.ToString());
-            return null;
+            return false;
         }
 
-        public Object ErrorNull(string msg, ref Bytes value) {
+        public bool ErrorNull(string msg, ref Bytes value) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
             parser.Error("JsonReader", msg + value.ToStr32());
-            return null;
+            return false;
         }
         
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
-        public Object ValueParseError() {
-            return null; // ErrorNull(parser.parseCx.GetError().ToString());
+        public bool ValueParseError() {
+            return false; // ErrorNull(parser.parseCx.GetError().ToString());
         }
 
         public static readonly int minLen = 8;
