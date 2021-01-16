@@ -148,7 +148,7 @@ namespace Friflo.Json.Managed.Codecs
                         elemSlot.Clear();
                         if (!valueType.codec.Read(reader, ref elemSlot, valueType))
                             return false;
-                        field.SetObject(obj, elemSlot.Get()); // set also to null in error case
+                        field.SetObject(obj, elemSlot.Obj); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
                         field = classType.GetField(parser.key);
@@ -163,7 +163,7 @@ namespace Friflo.Json.Managed.Codecs
                         elemSlot.Clear();
                         if (!valueType.codec.Read(reader, ref elemSlot, valueType))
                             return false;
-                        field.SetObject(obj, elemSlot.Get()); // set also to null in error case
+                        field.SetField(obj, ref elemSlot); // set also to null in error case
                         break;
                     case JsonEvent.ValueBool:
                         field = classType.GetField(parser.key);

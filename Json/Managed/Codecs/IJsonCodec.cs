@@ -26,46 +26,47 @@ namespace Friflo.Json.Managed.Codecs
     }
 
     public ref struct Slot {
-        private object   obj;
-        private long     lng;
-        private double   dbl;
-        public  SlotType cat;
+        private object      obj;
+        private long        lng;
+        private double      dbl;
         
+        public SlotType     Cat { get;  private set; }
+
         public object Obj {
             get => obj;
-            set { obj = value; cat = SlotType.Object; }
+            set { obj = value; Cat = SlotType.Object; }
         }
         public double Dbl {
             get => dbl;
-            set { dbl = value; cat = SlotType.Double; }
+            set { dbl = value; Cat = SlotType.Double; }
         }
         public float Flt {
             get => (float)dbl;
-            set { dbl = value; cat = SlotType.Float; }
+            set { dbl = value; Cat = SlotType.Float; }
         }
         public long Lng {
             get => lng;
-            set { lng = value; cat = SlotType.Long; }
+            set { lng = value; Cat = SlotType.Long; }
         }
         public int Int {
             get => (int)lng;
-            set { lng = value; cat = SlotType.Int; }
+            set { lng = value; Cat = SlotType.Int; }
         }
         public short Short {
             get => (short)lng;
-            set { lng = value; cat = SlotType.Short; }
+            set { lng = value; Cat = SlotType.Short; }
         }
         public byte Byte {
             get => (byte)lng;
-            set { lng = value; cat = SlotType.Byte; }
+            set { lng = value; Cat = SlotType.Byte; }
         }
         public bool Bool {
             get => lng != 0;
-            set { lng = value ? 1 : 0; cat = SlotType.Bool; }
+            set { lng = value ? 1 : 0; Cat = SlotType.Bool; }
         }
         
         public object Get () {
-            switch (cat) {
+            switch (Cat) {
                 case SlotType.None:     return null;
                 case SlotType.Object:   return obj;
                 //
@@ -83,28 +84,30 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public void  Clear() {
-            cat = SlotType.None;
+            Cat = SlotType.None;
             obj = null;
             lng = 0;
             dbl = 0;
         }
 
         public override string ToString() {
-            switch (cat) {
-                case SlotType.None:     return "None";
-                case SlotType.Object:   return $"\"{obj}\"";
+            string val = null;
+            switch (Cat) {
+                case SlotType.None:     val = "None";       break;
+                case SlotType.Object:   val = $"\"{obj}\""; break;
                 //
-                case SlotType.Double:   return dbl.ToString(CultureInfo.InvariantCulture);
-                case SlotType.Float:    return dbl.ToString(CultureInfo.InvariantCulture);
+                case SlotType.Double:   val = dbl.ToString(CultureInfo.InvariantCulture); break;
+                case SlotType.Float:    val = dbl.ToString(CultureInfo.InvariantCulture); break;
                 //
-                case SlotType.Long:     return lng.ToString(CultureInfo.InvariantCulture);
-                case SlotType.Int:      return lng.ToString(CultureInfo.InvariantCulture);
-                case SlotType.Short:    return lng.ToString(CultureInfo.InvariantCulture);
-                case SlotType.Byte:     return lng.ToString(CultureInfo.InvariantCulture);
+                case SlotType.Long:     val = lng.ToString(CultureInfo.InvariantCulture); break;
+                case SlotType.Int:      val = lng.ToString(CultureInfo.InvariantCulture); break;
+                case SlotType.Short:    val = lng.ToString(CultureInfo.InvariantCulture); break;
+                case SlotType.Byte:     val = lng.ToString(CultureInfo.InvariantCulture); break;
                 //
-                case SlotType.Bool:     return lng != 0 ? "true" : "false";
+                case SlotType.Bool:     val = lng != 0 ? "true" : "false";              break;
             }
-            return "unreachable";
+            
+            return $"{val} ({Cat})";
         }
     }
 }

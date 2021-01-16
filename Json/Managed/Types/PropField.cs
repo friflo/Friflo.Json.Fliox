@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Types
@@ -102,9 +103,26 @@ namespace Friflo.Json.Managed.Types
             }
         }
 
-        public void SetObject (Object prop, Object val)
+        public void SetObject (object prop, Object val)
         {
             InternalSetObject(prop, val);
+        }
+        
+        public void SetField (object prop, ref Slot val)
+        {
+            switch (val.Cat) {
+                case SlotType.Object:   InternalSetObject   (prop, val.Obj);    return;
+                //
+                case SlotType.Double:   InternalSetDouble   (prop, val.Dbl);    return;
+                case SlotType.Float:    InternalSetFloat    (prop, val.Flt);    return;
+                //
+                case SlotType.Long:     InternalSetLong     (prop, val.Lng);    return;
+                case SlotType.Int:      InternalSetInt      (prop, val.Int);    return;
+                case SlotType.Short:    InternalSetShort    (prop, val.Short);  return;
+                case SlotType.Byte:     InternalSetByte     (prop, val.Byte);   return;
+                //
+                case SlotType.Bool:     InternalSetBool     (prop, val.Bool);   return;
+            }
         }
 
         public long GetLong (Object prop)
