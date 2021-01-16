@@ -15,19 +15,21 @@ namespace Friflo.Json.Managed.Types
     {
         internal readonly   String          name;
         internal readonly   SimpleType.Id   type;
+        public   readonly   SlotType        slotType;
         public              StubType        FieldType { get; internal set; }    // never null 
         internal readonly   Type            fieldTypeNative;                    // never null 
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         internal            ConstructorInfo collectionConstructor;
 
-        internal PropField (ClassType declType, String name, SimpleType.Id type, Type fieldType)
+        internal PropField (ClassType declType, String name, SimpleType.Id type,  SlotType slotType, Type fieldType)
         {
             this.declType               = declType;
             this.name                   = name;
             this.nameBytes              = new Bytes(name);
             this.type                   = type;
             this.fieldTypeNative        = fieldType;
+            this.slotType               = slotType;
             if (fieldType == null)
                 throw new InvalidOperationException("Expect fieldType non null");
         }

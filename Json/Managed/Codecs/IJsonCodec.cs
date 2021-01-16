@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using Friflo.Json.Managed.Types;
+using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
@@ -108,6 +109,23 @@ namespace Friflo.Json.Managed.Codecs
             }
             
             return $"{val} ({Cat})";
+        }
+        
+        public static SlotType GetSlotType (Type type)
+        {
+            if (type == typeof( double     ) || type == typeof( double?     ))  return SlotType.Double;
+            if (type == typeof( float      ) || type == typeof( float?      ))  return SlotType.Float;
+            //
+            if (type == typeof( long       ) || type == typeof( long?       ))  return SlotType.Long;
+            if (type == typeof( int        ) || type == typeof( int?        ))  return SlotType.Int;
+            if (type == typeof( short      ) || type == typeof( short?      ))  return SlotType.Short;
+            if (type == typeof( byte       ) || type == typeof( byte?       ))  return SlotType.Byte;
+            //
+            if (type == typeof( bool       ) || type == typeof( bool?       ))  return SlotType.Bool;
+            //
+            if (Reflect.IsAssignableFrom(typeof(Object), type))                 return SlotType.Object;
+
+            throw new InvalidOperationException("Type not supported. Type: " + type);
         }
     }
 }

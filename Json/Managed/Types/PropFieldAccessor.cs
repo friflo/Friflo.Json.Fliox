@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using Friflo.Json.Managed.Codecs;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -17,7 +18,7 @@ namespace Friflo.Json.Managed.Types
         //
         internal PropFieldAccessor(ClassType declType, String name, Type type, PropertyInfo getter, PropertyInfo setter)
         :
-            base (declType, name, SimpleType.IdFromMethod( getter  ), getter. PropertyType) {
+            base (declType, name, SimpleType.IdFromMethod( getter  ), Slot.GetSlotType(getter.PropertyType), getter. PropertyType) {
             this.getter = getter;
             this.setter = setter;
         }
