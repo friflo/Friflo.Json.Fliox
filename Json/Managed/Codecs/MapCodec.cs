@@ -81,7 +81,7 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNull:
                         String key = parser.key.ToString();
                         if (!elementType.isNullable)
-                            return reader.ErrorIncompatible("Cannot assign null to Dictionary value. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         map[key] = null;
                         break;
                     case JsonEvent.ObjectStart:
@@ -94,19 +94,19 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.String)
-                            return reader.ErrorIncompatible("Cannot assign string to Dictionary value. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         map[key] = elementType.codec.Read(reader, null, elementType);
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.Number)
-                            return reader.ErrorIncompatible("Cannot assign number to Dictionary value. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         map[key] = elementType.codec.Read(reader, null, elementType);
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.Bool)
-                            return reader.ErrorIncompatible("Cannot assign bool to Dictionary value. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         map[key] = elementType.codec.Read(reader, null, elementType);
                         break;
                     case JsonEvent.ObjectEnd:

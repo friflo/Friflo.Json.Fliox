@@ -76,22 +76,22 @@ namespace Friflo.Json.Managed.Codecs
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (elementType.typeCat != TypeCat.String)
-                            return reader.ErrorIncompatible("Cannot assign string to List element. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("List element", elementType, ref parser);
                         list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
-                            return reader.ErrorIncompatible("Cannot assign number to List element. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("List element", elementType, ref parser);
                         list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
-                            return reader.ErrorIncompatible("Cannot assign bool to List element. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("List element", elementType, ref parser);
                         list.Add(elementType.codec.Read(reader, null, elementType));
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
-                            return reader.ErrorIncompatible("Cannot assign null to List element. Expect: ", elementType, ref parser);
+                            return reader.ErrorIncompatible("List element", elementType, ref parser);
                         if (index < startLen)
                             list[index] = null;
                         else

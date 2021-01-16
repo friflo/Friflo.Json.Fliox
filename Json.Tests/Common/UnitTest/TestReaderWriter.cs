@@ -352,12 +352,12 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(null,                      enc.Read<double?>       (@null));
 
                     enc.ReadValue<double>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 #if !UNITY_EDITOR
                     {
                         enc.ThrowException = true;
                         var e = Throws<FrifloException>(() => enc.ReadValue<double>(@null));
-                        StringAssert.Contains("primitive is not nullable.", e.Message);
+                        StringAssert.Contains("Cannot assign null to primitive. Expect:", e.Message);
                         enc.ThrowException = false;
                     }
 #endif
@@ -384,42 +384,42 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(12.5,                      enc.Read<float?>        (@double));
                     AreEqual(null,                      enc.Read<float?>        (@null));
                     enc.ReadValue<float>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(42,        enc.ReadValue<long>     (@long));
                     AreEqual(42,        enc.Read<long>          (@long));
                     AreEqual(42,        enc.Read<long?>         (@long));
                     AreEqual(null,      enc.Read<long?>         (@null));
                     enc.ReadValue<long>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(42,        enc.ReadValue<int>      (@long));
                     AreEqual(42,        enc.Read<int>           (@long));
                     AreEqual(42,        enc.Read<int?>          (@long));
                     AreEqual(null,      enc.Read<int?>          (@null));
                     enc.ReadValue<int>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(42,        enc.ReadValue<short>    (@long));
                     AreEqual(42,        enc.Read<short>         (@long));
                     AreEqual(42,        enc.Read<short?>        (@long));
                     AreEqual(null,      enc.Read<short?>        (@null));
                     enc.ReadValue<short>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(42,        enc.ReadValue<byte>     (@long));
                     AreEqual(42,        enc.Read<byte>          (@long));
                     AreEqual(42,        enc.Read<byte?>         (@long));
                     AreEqual(null,      enc.Read<byte?>         (@null));
                     enc.ReadValue<byte>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     AreEqual(true,      enc.ReadValue<bool>     (@true));
                     AreEqual(true,      enc.Read<bool>          (@true));
                     AreEqual(true,      enc.Read<bool?>         (@true));
                     AreEqual(null,      enc.Read<bool?>         (@null));
                     enc.ReadValue<bool>(@null);
-                    StringAssert.Contains("primitive is not nullable.", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     
                     AreEqual(null,      enc.Read<object>(@null));

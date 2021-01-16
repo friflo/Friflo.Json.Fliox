@@ -125,7 +125,15 @@ namespace Friflo.Json.Managed
         
         public Object ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
             // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + expectType.type.Name + ", got: '" + parser.value + "'");
+            // Cannot assign null to Dictionary value.
+            string evType = null;
+            switch (parser.Event) {
+                case JsonEvent.ValueBool:   evType = "bool";    break;
+                case JsonEvent.ValueString: evType = "string";  break;
+                case JsonEvent.ValueNumber: evType = "number";  break;
+                case JsonEvent.ValueNull:   evType = "null";    break;
+            }
+            parser.Error("JsonReader", "Cannot assign " + evType + " to " + msg + ". Expect: " + expectType.type.Name + ", got: '" + parser.value + "'");
             return null;
         }
         

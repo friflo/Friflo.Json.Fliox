@@ -10,15 +10,16 @@ namespace Friflo.Json.Managed.Codecs
     public static class PrimitiveCodec
     {
         public static object CheckElse(JsonReader reader, StubType stubType) {
-            switch (reader.parser.Event) {
+            ref JsonParser parser = ref reader.parser;
+            switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
                         return null;
-                    return reader.ErrorNull("primitive is not nullable. type: ", stubType.type.FullName);
+                    return reader.ErrorIncompatible("primitive", stubType, ref parser);
                 case JsonEvent.Error:
                     return null;
                 default:
-                    return reader.ErrorNull("primitive cannot be used within: ", reader.parser.Event);
+                    return reader.ErrorNull("primitive cannot be used within: ", parser.Event);
             }
         }
     }
