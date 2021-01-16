@@ -95,7 +95,6 @@ namespace Friflo.Json.Managed.Types
         public abstract bool IsAssignable();
         
         internal    virtual Object  InternalGetObject   (Object obj)    { throw Except(); }
-        internal    virtual String  InternalGetString   (Object obj)    { throw Except(); }
         internal    virtual long    InternalGetLong     (Object obj)    { throw Except(); }
         internal    virtual int     InternalGetInt      (Object obj)    { throw Except(); }
         internal    virtual short   InternalGetShort    (Object obj)    { throw Except(); }
@@ -105,7 +104,6 @@ namespace Friflo.Json.Managed.Types
         internal    virtual float   InternalGetFloat    (Object obj)    { throw Except(); }
         
         internal    virtual void    InternalSetObject   (Object obj, Object val)    { throw Except(); }
-        internal    virtual void    InternalSetString   (Object obj, String val)    { throw Except(); }
         internal    virtual void    InternalSetLong     (Object obj, long val)      { throw Except(); }
         internal    virtual void    InternalSetInt      (Object obj, int val)       { throw Except(); }
         internal    virtual void    InternalSetShort    (Object obj, short val)     { throw Except(); }

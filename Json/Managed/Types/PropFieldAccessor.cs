@@ -28,10 +28,7 @@ namespace Friflo.Json.Managed.Types
         {
             return getter.GetValue(obj, null);
         }
-        internal override String InternalGetString (Object obj)
-        {
-            return (String) getter.GetValue(obj, null);
-        }   
+
         internal override   long InternalGetLong (Object obj)
         {
             return (long) getter.GetValue(obj, null);
@@ -65,11 +62,8 @@ namespace Friflo.Json.Managed.Types
         internal override   void InternalSetObject (Object obj, Object val)
         {
             setter.SetValue(obj, val, null);
-        }   
-        internal override   void InternalSetString (Object obj, String val)
-        {
-            setter.SetValue(obj, val, null);
         }
+
         internal override   void InternalSetLong (Object obj, long val)
         {
             setter.SetValue(obj, val, null);
