@@ -17,18 +17,14 @@ namespace Friflo.Json.Managed.Types
         public      readonly    PropField []        fieldsSerializable;
         public      readonly    int                 num;
         private     readonly    Type                type;
-        private     readonly    bool                listFields;
-        private     readonly    bool                listMethods;
         internal                ClassType           declType;
 
 
         private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
 
-        public PropertyFields (Type type, ClassType declType, bool listFields, bool listMethods)
+        public PropertyFields (Type type, ClassType declType)
         {
             this.type           = type;
-            this.listFields     = listFields;
-            this.listMethods    = listMethods;
             this.declType       = declType;
             this.typeName       = type. ToString();
             try
@@ -63,14 +59,14 @@ namespace Friflo.Json.Managed.Types
             if (getter != null)
             {
                 PropertyInfo setter = Reflect.GetPropertySet(type, fieldName );
-                PropField pf =  new PropFieldAccessor(declType, name, getter. PropertyType, getter, setter);
+                PropField pf = new PropField(declType, name, getter.PropertyType, null, getter, setter);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
             FieldInfo field = Reflect.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = new PropFieldVariable(declType, name, field);
+                PropField pf = new PropField(declType, name, field.FieldType,     field, null, null);
                 fieldList. Add (pf);
                 return;
             }
@@ -79,14 +75,12 @@ namespace Friflo.Json.Managed.Types
 
         public override void Set(String name)
         {
-            if (listFields)
-                CreatePropField (name, name);
+            CreatePropField (name, name);
         }
 
         public override void Set(String name, String field)
         {
-            if (listFields)
-                CreatePropField (name, field);
+            CreatePropField (name, field);
         }
     }
 }

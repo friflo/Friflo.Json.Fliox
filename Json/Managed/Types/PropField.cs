@@ -5,12 +5,11 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Types
 {
 
-    public abstract class PropField : IDisposable
+    public class PropField : IDisposable
     {
         internal readonly   String          name;
         public   readonly   SlotType        slotType;
@@ -19,14 +18,22 @@ namespace Friflo.Json.Managed.Types
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes;
         internal            ConstructorInfo collectionConstructor;
+        //
+        private readonly    FieldInfo       field;
+        private readonly    PropertyInfo    getter;
+        private readonly    PropertyInfo    setter;
 
-        internal PropField (ClassType declType, String name, SlotType slotType, Type fieldType)
+        internal PropField (ClassType declType, String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter)
         {
             this.declType               = declType;
             this.name                   = name;
             this.nameBytes              = new Bytes(name);
             this.fieldTypeNative        = fieldType;
-            this.slotType               = slotType;
+            this.slotType               = Slot.GetSlotType(fieldType);
+            //
+            this.field  = field;
+            this.getter = getter;
+            this.setter = setter;
             if (fieldType == null)
                 throw new InvalidOperationException("Expect fieldType non null");
         }
@@ -40,70 +47,83 @@ namespace Friflo.Json.Managed.Types
             bb.AppendBytes(ref nameBytes);
         }
         
-        public object GetObject (Object prop)
+        public object GetObject (Object obj)
         {
             if (slotType == SlotType.Object)
-                return InternalGetObject    (prop) ;
+                return field.GetValue(obj) ;
             throw new InvalidComObjectException("Expect method is only called for fields with type object. field: " + name);
         }
 
         public void SetObject (object prop, Object val)
         {
-            InternalSetObject(prop, val);
+            field.SetValue (prop, val);
         }
         
-        public void SetField (object prop, ref Slot val)
+        public void SetField (object obj, ref Slot val)
         {
-            switch (val.Cat) {
-                case SlotType.Object:   InternalSetObject   (prop, val.Obj);    return;
-                //
-                case SlotType.Double:   InternalSetDouble   (prop, val.Dbl);    return;
-                case SlotType.Float:    InternalSetFloat    (prop, val.Flt);    return;
-                //
-                case SlotType.Long:     InternalSetLong     (prop, val.Lng);    return;
-                case SlotType.Int:      InternalSetInt      (prop, val.Int);    return;
-                case SlotType.Short:    InternalSetShort    (prop, val.Short);  return;
-                case SlotType.Byte:     InternalSetByte     (prop, val.Byte);   return;
-                //
-                case SlotType.Bool:     InternalSetBool     (prop, val.Bool);   return;
+            if (field != null) {
+                switch (val.Cat) {
+                    case SlotType.Object:   field.SetValue (obj, val.Obj);    return;
+                    //
+                    case SlotType.Double:   field.SetValue (obj, val.Dbl);    return;
+                    case SlotType.Float:    field.SetValue (obj, val.Flt);    return;
+                    //
+                    case SlotType.Long:     field.SetValue (obj, val.Lng);    return;
+                    case SlotType.Int:      field.SetValue (obj, val.Int);    return;
+                    case SlotType.Short:    field.SetValue (obj, val.Short);  return;
+                    case SlotType.Byte:     field.SetValue (obj, val.Byte);   return;
+                    //
+                    case SlotType.Bool:     field.SetValue (obj, val.Bool);   return;
+                }
+            } else {
+                switch (val.Cat) {
+                    case SlotType.Object:   getter.SetValue (obj, val.Obj);    return;
+                    //
+                    case SlotType.Double:   getter.SetValue (obj, val.Dbl);    return;
+                    case SlotType.Float:    getter.SetValue (obj, val.Flt);    return;
+                    //
+                    case SlotType.Long:     getter.SetValue (obj, val.Lng);    return;
+                    case SlotType.Int:      getter.SetValue (obj, val.Int);    return;
+                    case SlotType.Short:    getter.SetValue (obj, val.Short);  return;
+                    case SlotType.Byte:     getter.SetValue (obj, val.Byte);   return;
+                    //
+                    case SlotType.Bool:     getter.SetValue (obj, val.Bool);   return;
+                }
             }
         }
         
+        // ReSharper disable PossibleNullReferenceException
         public void GetField (object prop, ref Slot val)
         {
-            switch (slotType) {
-                case SlotType.Object:   val.Obj     = InternalGetObject   (prop);    return;
-                //
-                case SlotType.Double:   val.Dbl     = InternalGetDouble   (prop);    return;
-                case SlotType.Float:    val.Flt     = InternalGetFloat    (prop);    return;
-                //
-                case SlotType.Long:     val.Lng     = InternalGetLong     (prop);    return;
-                case SlotType.Int:      val.Int     = InternalGetInt      (prop);    return;
-                case SlotType.Short:    val.Short   = InternalGetShort    (prop);    return;
-                case SlotType.Byte:     val.Byte    = InternalGetByte     (prop);    return;
-                //
-                case SlotType.Bool:     val.Bool    = InternalGetBool     (prop);    return;
+            if (field != null) {
+                switch (slotType) {
+                    case SlotType.Object:   val.Obj     =           field.GetValue   (prop);    return;
+                    //
+                    case SlotType.Double:   val.Dbl     = (double)  field.GetValue   (prop);    return;
+                    case SlotType.Float:    val.Flt     = (float)   field.GetValue   (prop);    return;
+                    //
+                    case SlotType.Long:     val.Lng     = (long)    field.GetValue   (prop);    return;
+                    case SlotType.Int:      val.Int     = (int)     field.GetValue   (prop);    return;
+                    case SlotType.Short:    val.Short   = (short)   field.GetValue   (prop);    return;
+                    case SlotType.Byte:     val.Byte    = (byte)    field.GetValue   (prop);    return;
+                    //
+                    case SlotType.Bool:     val.Bool    = (bool)    field.GetValue   (prop);    return;
+                }
+            } else {
+                switch (slotType) {
+                    case SlotType.Object:   val.Obj     =           setter.GetValue   (prop);    return;
+                    //
+                    case SlotType.Double:   val.Dbl     = (double)  setter.GetValue   (prop);    return;
+                    case SlotType.Float:    val.Flt     = (float)   setter.GetValue   (prop);    return;
+                    //
+                    case SlotType.Long:     val.Lng     = (long)    setter.GetValue   (prop);    return;
+                    case SlotType.Int:      val.Int     = (int)     setter.GetValue   (prop);    return;
+                    case SlotType.Short:    val.Short   = (short)   setter.GetValue   (prop);    return;
+                    case SlotType.Byte:     val.Byte    = (byte)    setter.GetValue   (prop);    return;
+                    //
+                    case SlotType.Bool:     val.Bool    = (bool)    setter.GetValue   (prop);    return;
+                }
             }
         }
-
-        internal    abstract Object InternalGetObject   (Object obj);
-        internal    abstract long    InternalGetLong     (Object obj);
-        internal    abstract int     InternalGetInt      (Object obj);
-        internal    abstract short   InternalGetShort    (Object obj);
-        internal    abstract byte    InternalGetByte     (Object obj);
-        internal    abstract bool    InternalGetBool     (Object obj);
-        internal    abstract double  InternalGetDouble   (Object obj);
-        internal    abstract float   InternalGetFloat    (Object obj);
-        
-        internal    abstract void    InternalSetObject   (Object obj, Object val);
-        internal    abstract void    InternalSetLong     (Object obj, long val);
-        internal    abstract void    InternalSetInt      (Object obj, int val);
-        internal    abstract void    InternalSetShort    (Object obj, short val);
-        internal    abstract void    InternalSetByte     (Object obj, byte val);
-        internal    abstract void    InternalSetBool     (Object obj, bool val);
-        internal    abstract void    InternalSetDouble   (Object obj, double val);
-        internal    abstract void    InternalSetFloat    (Object obj, float val);
-
-        //
     }
 }
