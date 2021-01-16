@@ -38,38 +38,22 @@ namespace Friflo.Json.Managed.Codecs
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             int n = 0;
-            if (collectionType.ElementType.type == typeof(String)) {
-                // Map<String, String>
-                IDictionary<String, String> strMap = (IDictionary<String, String>) map;
-                foreach (KeyValuePair<String, String> entry in strMap) {
-                    if (n++ > 0) bytes.AppendChar(',');
-                    writer.WriteString(entry.Key);
-                    bytes.AppendChar(':');
-                    String value = entry.Value;
-                    if (value != null)
-                        writer.WriteString(value);
-                    else
-                        bytes.AppendBytes(ref writer.@null);
-                }
-            }
-            else {
-                // Map<String, object>
-                StubType elementType = collectionType.ElementType;
-                Slot elemSlot = new Slot();
-                foreach (DictionaryEntry entry in map) {
-                    if (n++ > 0) bytes.AppendChar(',');
-                    writer.WriteString((String) entry.Key);
-                    bytes.AppendChar(':');
-                    object value = entry.Value;
-                    if (value != null) {
-                        elemSlot.Obj = value;
-                        elementType.codec.Write(writer, ref elemSlot, elementType);
-                    } else
-                        bytes.AppendBytes(ref writer.@null);
-                }
+
+            StubType elementType = collectionType.ElementType;
+            Slot elemSlot = new Slot();
+            foreach (DictionaryEntry entry in map) {
+                if (n++ > 0)
+                    bytes.AppendChar(',');
+                writer.WriteString((String) entry.Key);
+                bytes.AppendChar(':');
+                object value = entry.Value;
+                if (value != null) {
+                    elemSlot.Obj = value;
+                    elementType.codec.Write(writer, ref elemSlot, elementType);
+                } else
+                    bytes.AppendBytes(ref writer.@null);
             }
             bytes.AppendChar('}');
-
         }
         
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
