@@ -3,6 +3,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed
@@ -37,7 +38,9 @@ namespace Friflo.Json.Managed
             format.InitTokenFormat();
             StubType objType = typeCache.GetType(obj.GetType());
             bytes.Clear();
-            objType.codec.Write(this, obj, objType);
+            Slot slot = new Slot();
+            slot.Obj = obj;
+            objType.codec.Write(this, ref slot, objType);
         }
 
         public void WriteKey(PropField field) {

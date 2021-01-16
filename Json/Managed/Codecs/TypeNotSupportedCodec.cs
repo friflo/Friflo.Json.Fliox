@@ -20,7 +20,7 @@ namespace Friflo.Json.Managed.Codecs
             throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }
 
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
             NotSupportedType specific = (NotSupportedType) stubType;
             throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }

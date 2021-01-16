@@ -17,8 +17,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (typeof(DateTime), Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            DateTime value = (DateTime) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            DateTime value = (DateTime) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             writer.bytes.AppendChar('\"');

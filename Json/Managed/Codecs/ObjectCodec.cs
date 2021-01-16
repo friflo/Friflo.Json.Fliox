@@ -25,11 +25,11 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
 
             ref var bytes = ref writer.bytes;
             ref var format = ref writer.format;
-            
+            object obj = slot.Obj;
             ClassType type = (ClassType)stubType;
             bool firstMember = true;
             bytes.AppendChar('{');
@@ -43,6 +43,7 @@ namespace Friflo.Json.Managed.Codecs
             }
 
             PropField[] fields = type.propFields.fieldsSerializable;
+            Slot elemSlot = new Slot();
 
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -94,7 +95,8 @@ namespace Friflo.Json.Managed.Codecs
                             bytes.AppendBytes(ref writer.@null);
                         } else {
                             StubType fieldObject = field.FieldType;
-                            fieldObject.codec.Write(writer, child, fieldObject);
+                            elemSlot.Obj = child;
+                            fieldObject.codec.Write(writer, ref elemSlot, fieldObject);
                         }
                         break;
                     default:

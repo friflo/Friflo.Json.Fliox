@@ -27,18 +27,21 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
             CollectionType collectionType = (CollectionType) stubType;
-            Array arr = (Array) obj;
+            Array arr = (Array) slot.Obj;
             writer.bytes.AppendChar('[');
             StubType elementType = collectionType.ElementType;
+            Slot elemSlot = new Slot();
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
                 if (item == null)
                     writer.bytes.AppendBytes(ref writer.@null);
-                else
-                    elementType.codec.Write(writer, item, elementType);
+                else {
+                    elemSlot.Obj = item;
+                    elementType.codec.Write(writer, ref elemSlot, elementType);
+                }
             }
             writer.bytes.AppendChar(']');
         }

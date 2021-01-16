@@ -31,9 +31,9 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
 
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
             CollectionType collectionType = (CollectionType)stubType;
-            IDictionary map = (IDictionary) obj;
+            IDictionary map = (IDictionary) slot.Obj;
 
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
@@ -55,14 +55,16 @@ namespace Friflo.Json.Managed.Codecs
             else {
                 // Map<String, object>
                 StubType elementType = collectionType.ElementType;
+                Slot elemSlot = new Slot();
                 foreach (DictionaryEntry entry in map) {
                     if (n++ > 0) bytes.AppendChar(',');
                     writer.WriteString((String) entry.Key);
                     bytes.AppendChar(':');
                     object value = entry.Value;
-                    if (value != null)
-                        elementType.codec.Write(writer, value, elementType);
-                    else
+                    if (value != null) {
+                        elemSlot.Obj = value;
+                        elementType.codec.Write(writer, ref elemSlot, elementType);
+                    } else
                         bytes.AppendBytes(ref writer.@null);
                 }
             }

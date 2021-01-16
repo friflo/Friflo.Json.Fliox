@@ -28,21 +28,23 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
 
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            IList list = (IList) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            IList list = (IList) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
             StubType elementType = collectionType.ElementType;
+            Slot elemSlot = new Slot();
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
                     switch (collectionType.id) {
                         case SimpleType.Id.Object:
-                            elementType.codec.Write(writer, item, elementType);
+                            elemSlot.Obj = item;
+                            elementType.codec.Write(writer, ref elemSlot, elementType);
                             break;
                         case SimpleType.Id.String:
-                            writer.WriteString((String) item);
+                            writer.WriteString((string) item);
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +

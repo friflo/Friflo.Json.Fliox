@@ -18,8 +18,8 @@ namespace Friflo.Json.Managed.Codecs
             return new BigIntType (typeof(BigInteger), Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            BigInteger value = (BigInteger) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            BigInteger value = (BigInteger) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());
             writer.bytes.AppendChar('\"');

@@ -55,8 +55,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(string), this);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            string[] arr = (string[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            string[] arr = (string[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -107,8 +107,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(long), this);
         }
 
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            long[] arr = (long[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            long[] arr = (long[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -157,8 +157,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(int), this);
         }
         
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            int[] arr = (int[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            int[] arr = (int[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -207,8 +207,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            short[] arr = (short[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            short[] arr = (short[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -257,8 +257,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(byte), this);
         }
         
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            byte[] arr = (byte[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            byte[] arr = (byte[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -307,8 +307,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            bool[] arr =(bool[])obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            bool[] arr =(bool[])slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -355,8 +355,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(double), this);
         }
         
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            double[] arr = (double[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            double[] arr = (double[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -405,8 +405,8 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(float), this);
         }
 
-        public void Write(JsonWriter writer, object obj, StubType stubType) {
-            float[] arr = (float[]) obj;
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            float[] arr = (float[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');

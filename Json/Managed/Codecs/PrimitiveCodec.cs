@@ -35,9 +35,9 @@ namespace Friflo.Json.Managed.Codecs
             return new StringType(type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
             writer.bytes.AppendChar('\"');
-            writer.bytes.AppendString((string) obj);
+            writer.bytes.AppendString((string) slot.Obj);
             writer.bytes.AppendChar('\"');
         }
 
@@ -60,8 +60,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendDbl(ref writer.bytes, (double) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -82,8 +82,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendFlt(ref writer.bytes, (float) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -104,8 +104,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendLong(ref writer.bytes, (long) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -126,8 +126,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, (int) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -148,8 +148,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, (short) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -170,8 +170,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, (byte) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
@@ -192,8 +192,8 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write (JsonWriter writer, object obj, StubType stubType) {
-            writer.format.AppendBool(ref writer.bytes, (bool) obj);
+        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+            writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {

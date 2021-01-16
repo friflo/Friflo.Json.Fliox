@@ -9,8 +9,8 @@ namespace Friflo.Json.Managed.Codecs
     public interface IJsonCodec
     {
         StubType    CreateStubType  (Type type);
+        void        Write(JsonWriter writer, ref Slot slot, StubType stubType);
         bool        Read    (JsonReader reader, ref Slot slot, StubType stubType);
-        void        Write   (JsonWriter writer, object obj, StubType stubType);
     }
 
     public enum SlotType {
