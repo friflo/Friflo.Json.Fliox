@@ -133,6 +133,8 @@ namespace Friflo.Json.Managed
                 case JsonEvent.ValueString: evType = "string"; value = "'" + parser.value + "'";            break;
                 case JsonEvent.ValueNumber: evType = "number"; value = parser.value.ToString();             break;
                 case JsonEvent.ValueNull:   evType = "null";   value = "null";                              break;
+                case JsonEvent.ArrayStart:  evType = "array";  value = "[...]";                             break;
+                case JsonEvent.ObjectStart: evType = "object"; value = "{...}";                             break;
             }
             parser.Error("JsonReader", "Cannot assign " + evType + " to " + msg + ". Expect: " + expectType.type.Name + ", got: " + value);
             return null;

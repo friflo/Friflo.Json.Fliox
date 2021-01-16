@@ -30,7 +30,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
                         return false;
-                    reader.ErrorNull("Type is not nullable. Type: ", stubType.type.FullName);
+                    reader.ErrorIncompatible("array", stubType, ref reader.parser);
                     return false;
                 case JsonEvent.ArrayStart:
                     return true;

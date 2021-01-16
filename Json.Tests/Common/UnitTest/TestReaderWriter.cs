@@ -366,13 +366,13 @@ namespace Friflo.Json.Tests.Common.UnitTest
 #endif
                     // error cases
                     enc.ReadValue<double>(@true);
-                    StringAssert.Contains("primitive cannot be used within: ValueBool", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to primitive. Expect:", enc.Error.msg.ToString());
                     enc.ReadValue<double>(hello);
-                    StringAssert.Contains("primitive cannot be used within: ValueString", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to primitive. Expect:", enc.Error.msg.ToString());
                     enc.ReadValue<double>(arrNum);
-                    StringAssert.Contains("primitive cannot be used within: ArrayStart", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to primitive. Expect:", enc.Error.msg.ToString());
                     enc.ReadValue<double>(mapNum);
-                    StringAssert.Contains("primitive cannot be used within: ObjectStart", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to primitive. Expect:", enc.Error.msg.ToString());
                     enc.ReadValue<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
                     enc.ReadValue<float>(bigInt);
@@ -477,7 +477,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     AreEqual(null,                enc.Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     enc.Read<TestStruct[]>(arrNull);
-                    StringAssert.Contains("Array element is not nullable. Element Type:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to array element. Expect:", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrNull);
                     StringAssert.Contains("Cannot assign null to array element. Expect:", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrStr);
@@ -611,7 +611,7 @@ namespace Friflo.Json.Tests.Common.UnitTest
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct), enc.ReadValue<TestStruct>(@null));
-                    StringAssert.Contains("Type is not nullable. Type:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to Type. Expect:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));

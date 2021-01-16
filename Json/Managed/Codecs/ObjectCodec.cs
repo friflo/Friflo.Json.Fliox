@@ -111,7 +111,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
                         return null;
-                    return reader.ErrorNull("Type is not nullable. Type: ", stubType.type.FullName);
+                    return reader.ErrorIncompatible("Type", stubType, ref parser);
                 case JsonEvent.ObjectStart:
                     break;
                 default:

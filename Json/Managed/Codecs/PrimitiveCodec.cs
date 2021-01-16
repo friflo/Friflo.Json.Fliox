@@ -19,7 +19,7 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.Error:
                     return null;
                 default:
-                    return reader.ErrorNull("primitive cannot be used within: ", parser.Event);
+                    return reader.ErrorIncompatible("primitive", stubType, ref parser);
             }
         }
     }

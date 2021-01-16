@@ -71,12 +71,12 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return reader.ErrorNull("expect array item of type: ", collection.ElementType.type.Name);
+                        return reader.ErrorIncompatible("array element", elementType, ref parser);
                     case JsonEvent.ValueNull:
                         if (index >= len)
                             array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                         if (!elementType.isNullable)
-                            return reader.ErrorNull("Array element is not nullable. Element Type: ", elementType.type.FullName);
+                            return reader.ErrorIncompatible("array element", elementType, ref parser);
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
