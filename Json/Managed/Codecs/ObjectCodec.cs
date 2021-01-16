@@ -51,51 +51,43 @@ namespace Friflo.Json.Managed.Codecs
                     bytes.AppendChar(',');
                 PropField field = fields[n];
                 field.GetField(obj, ref elemSlot);
-                switch (field.type) {
-                    case SimpleType.Id.String:
-                        writer.WriteKey(field);
-                        string val = (string) elemSlot.Obj;
-                        if (val != null)
-                            writer.WriteString(val);
-                        else
-                            bytes.AppendBytes(ref writer.@null);
-                        break;
-                    case SimpleType.Id.Long:
-                        writer.WriteKey(field);
-                        format.AppendLong(ref bytes, elemSlot.Lng);
-                        break;
-                    case SimpleType.Id.Integer:
-                        writer.WriteKey(field);
-                        format.AppendInt(ref bytes, elemSlot.Int);
-                        break;
-                    case SimpleType.Id.Short:
-                        writer.WriteKey(field);
-                        format.AppendInt(ref bytes, elemSlot.Short);
-                        break;
-                    case SimpleType.Id.Byte:
-                        writer.WriteKey(field);
-                        format.AppendInt(ref bytes, elemSlot.Byte);
-                        break;
-                    case SimpleType.Id.Bool:
-                        writer.WriteKey(field);
-                        format.AppendBool(ref bytes, elemSlot.Bool);
-                        break;
-                    case SimpleType.Id.Double:
-                        writer.WriteKey(field);
-                        format.AppendDbl(ref bytes, elemSlot.Dbl);
-                        break;
-                    case SimpleType.Id.Float:
-                        writer.WriteKey(field);
-                        format.AppendFlt(ref bytes, elemSlot.Flt);
-                        break;
-                    case SimpleType.Id.Object:
+                switch (field.slotType) {
+                    case SlotType.Object:
                         writer.WriteKey(field);
                         if (elemSlot.Obj == null) {
                             bytes.AppendBytes(ref writer.@null);
-                        } else {
-                            StubType fieldObject = field.FieldType;
-                            fieldObject.codec.Write(writer, ref elemSlot, fieldObject);
+                            break;
                         }
+                        StubType fieldObject = field.FieldType;
+                        fieldObject.codec.Write(writer, ref elemSlot, fieldObject);
+                        break;
+                    case SlotType.Long:
+                        writer.WriteKey(field);
+                        format.AppendLong(ref bytes, elemSlot.Lng);
+                        break;
+                    case SlotType.Int:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, elemSlot.Int);
+                        break;
+                    case SlotType.Short:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, elemSlot.Short);
+                        break;
+                    case SlotType.Byte:
+                        writer.WriteKey(field);
+                        format.AppendInt(ref bytes, elemSlot.Byte);
+                        break;
+                    case SlotType.Bool:
+                        writer.WriteKey(field);
+                        format.AppendBool(ref bytes, elemSlot.Bool);
+                        break;
+                    case SlotType.Double:
+                        writer.WriteKey(field);
+                        format.AppendDbl(ref bytes, elemSlot.Dbl);
+                        break;
+                    case SlotType.Float:
+                        writer.WriteKey(field);
+                        format.AppendFlt(ref bytes, elemSlot.Flt);
                         break;
                     default:
                         throw new FrifloException("invalid field type: " + field.type);

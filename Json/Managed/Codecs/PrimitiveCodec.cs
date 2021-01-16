@@ -36,9 +36,7 @@ namespace Friflo.Json.Managed.Codecs
         }
         
         public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
-            writer.bytes.AppendChar('\"');
-            writer.bytes.AppendString((string) slot.Obj);
-            writer.bytes.AppendChar('\"');
+            writer.WriteString((string) slot.Obj);
         }
 
         public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
