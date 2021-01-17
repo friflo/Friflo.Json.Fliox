@@ -118,26 +118,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
             memLog.AssertNoAllocations();
         }
 
+        private object obj;
+
         [Test]
         public void TestHashMapOpen() {
             var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var hashMap = new HashMapOpen<Bytes, string>(7, new Bytes("__REMOVED"));
-            var key1 = new Bytes("key1");
-            var key2 = new Bytes("key2");
-            var key3 = new Bytes("key3");
-            var key4 = new Bytes("key4");
-            var key5 = new Bytes("key5");
+
+            var key1 = new BytesStr("key1");
+            var key2 = new BytesStr("key2");
+            var key3 = new BytesStr("key3");
+            var key4 = new BytesStr("key4");
+            var key5 = new BytesStr("key5");
             int iterations = 1000;
-            var dict = new Dictionary<Bytes, String>();
+            var dict = new Dictionary<BytesStr, String>();
             
             for (int n = 0; n < iterations; n++) {
                 memLog.Snapshot();
                 if (n == 0) {
-                    hashMap.Put(ref key1, "key 1");
-                    hashMap.Put(ref key2, "key 2");
-                    hashMap.Put(ref key3, "key 3");
-                    hashMap.Put(ref key4, "key 4");
-                    hashMap.Put(ref key5, "key 5");
+                    hashMap.Put(ref key1.value, "key 1");
+                    hashMap.Put(ref key2.value, "key 2");
+                    hashMap.Put(ref key3.value, "key 3");
+                    hashMap.Put(ref key4.value, "key 4");
+                    hashMap.Put(ref key5.value, "key 5");
                     dict.TryAdd(key1, "key 1");
                     dict.TryAdd(key2, "key 2");
                     dict.TryAdd(key3, "key 3");
@@ -145,16 +148,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     dict.TryAdd(key5, "key 5");
                 }
 
-
-
                 bool useHashMap = true;
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (useHashMap) {
-                    hashMap.Get(ref key1);
-                    hashMap.Get(ref key2);
-                    hashMap.Get(ref key3);
-                    hashMap.Get(ref key4);
-                    hashMap.Get(ref key5);
+                    hashMap.Get(ref key1.value);
+                    hashMap.Get(ref key2.value);
+                    hashMap.Get(ref key3.value);
+                    hashMap.Get(ref key4.value);
+                    hashMap.Get(ref key5.value);
                 } else {
                     dict.TryGetValue(key1, out string val1);
                     dict.TryGetValue(key2, out string val2);
@@ -164,6 +165,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                 }
             }
             memLog.AssertNoAllocations();
+        }
+    }
+
+    /// <summary>
+    /// Using Bytes directly leads to boxing/unboxing. See comment in <see cref="Bytes.Equals(object)"/>
+    /// </summary>
+    public class BytesStr
+    {
+        public Bytes value = new Bytes("");
+
+        public BytesStr(string str) {
+            value.Set(str);
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null)
+                return false;
+            if (obj is BytesStr other)
+                return value.IsEqualBytes(ref other.value);
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return value.GetHashCode();
         }
     }
     
