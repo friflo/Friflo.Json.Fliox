@@ -17,14 +17,14 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (typeof(DateTime), Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             DateTime value = (DateTime) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             writer.bytes.AppendChar('\"');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:

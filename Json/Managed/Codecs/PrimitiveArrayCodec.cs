@@ -55,7 +55,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(string), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             string[] arr = (string[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -69,7 +69,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             String[] array = (String[]) slot.Obj;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(long), this);
         }
 
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             long[] arr = (long[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -117,7 +117,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             long[] array = (long[]) slot.Obj;
@@ -157,7 +157,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(int), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int[] arr = (int[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -167,7 +167,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             int[] array = (int[]) slot.Obj;
@@ -207,7 +207,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(short), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             short[] arr = (short[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -217,7 +217,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             short[] array = (short[]) slot.Obj;
@@ -257,7 +257,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(byte), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             byte[] arr = (byte[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -267,7 +267,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             byte[] array = (byte[]) slot.Obj;
@@ -307,7 +307,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(bool), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             bool[] arr =(bool[])slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -317,7 +317,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             bool[] array = (bool[]) slot.Obj;
@@ -355,7 +355,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(double), this);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             double[] arr = (double[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -365,7 +365,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             double[] array = (double[]) slot.Obj;
@@ -405,7 +405,7 @@ namespace Friflo.Json.Managed.Codecs
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(float), this);
         }
 
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             float[] arr = (float[]) slot.Obj;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < arr.Length; n++) {
@@ -415,7 +415,7 @@ namespace Friflo.Json.Managed.Codecs
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             float[] array = (float[])slot.Obj;

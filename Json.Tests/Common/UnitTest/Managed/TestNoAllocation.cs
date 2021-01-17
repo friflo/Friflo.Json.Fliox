@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    Slot result = new Slot();
+                    Var result = new Var();
                     IsTrue(enc.Read<int>(@long, ref result));
                     AreEqual(42, result.Int);
 

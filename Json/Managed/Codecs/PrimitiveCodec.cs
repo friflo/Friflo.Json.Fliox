@@ -35,11 +35,11 @@ namespace Friflo.Json.Managed.Codecs
             return new StringType(type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.WriteString((string) slot.Obj);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event == JsonEvent.ValueString) {
                 slot.Obj = reader.parser.value.ToString();
                 return true;
@@ -58,11 +58,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
@@ -80,11 +80,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
@@ -102,11 +102,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Lng = reader.parser.ValueAsLong(out bool success);
@@ -124,11 +124,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Int = reader.parser.ValueAsInt(out bool success);
@@ -146,11 +146,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Short = reader.parser.ValueAsShort(out bool success);
@@ -168,11 +168,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Byte = reader.parser.ValueAsByte(out bool success);
@@ -190,11 +190,11 @@ namespace Friflo.Json.Managed.Codecs
             return new PrimitiveType (type, Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
                 return PrimitiveCodec.CheckElse(reader, stubType);
             slot.Bool = reader.parser.ValueAsBool(out bool success);

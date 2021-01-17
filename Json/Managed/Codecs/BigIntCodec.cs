@@ -18,14 +18,14 @@ namespace Friflo.Json.Managed.Codecs
             return new BigIntType (typeof(BigInteger), Interface);
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             BigInteger value = (BigInteger) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());
             writer.bytes.AppendChar('\"');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:

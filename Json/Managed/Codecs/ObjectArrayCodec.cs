@@ -27,26 +27,26 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) slot.Obj;
             writer.bytes.AppendChar('[');
             StubType elementType = collectionType.ElementType;
-            Slot elemSlot = new Slot();
+            Var elemVar = new Var();
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 object item = arr.GetValue(n);
                 if (item == null)
                     writer.bytes.AppendBytes(ref writer.@null);
                 else {
-                    elemSlot.Obj = item;
-                    elementType.codec.Write(writer, ref elemSlot, elementType);
+                    elemVar.Obj = item;
+                    elementType.codec.Write(writer, ref elemVar, elementType);
                 }
             }
             writer.bytes.AppendChar(']');
         }
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             
@@ -67,7 +67,7 @@ namespace Friflo.Json.Managed.Codecs
 
             StubType elementType = collection.ElementType;
             int index = 0;
-            Slot elemSlot = new Slot();
+            Var elemVar = new Var();
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -86,36 +86,36 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayStart:
                         StubType subElementArray = collection.ElementType;
                         if (index < startLen) {
-                            elemSlot.Obj = array.GetValue(index);
-                            if(!subElementArray.codec.Read(reader, ref elemSlot, subElementArray))
+                            elemVar.Obj = array.GetValue(index);
+                            if(!subElementArray.codec.Read(reader, ref elemVar, subElementArray))
                                 return false;
-                            array.SetValue(elemSlot.Obj, index);
+                            array.SetValue(elemVar.Obj, index);
                         }
                         else {
-                            elemSlot.Clear();
-                            if (!subElementArray.codec.Read(reader, ref elemSlot, subElementArray))
+                            elemVar.Clear();
+                            if (!subElementArray.codec.Read(reader, ref elemVar, subElementArray))
                                 return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
-                            array.SetValue(elemSlot.Obj, index);
+                            array.SetValue(elemVar.Obj, index);
                         }
 
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            elemSlot.Obj = array.GetValue(index);
-                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            elemVar.Obj = array.GetValue(index);
+                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
                                 return false;
-                            array.SetValue(elemSlot.Obj, index);
+                            array.SetValue(elemVar.Obj, index);
                         }
                         else {
-                            elemSlot.Clear();
-                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            elemVar.Clear();
+                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
                                 return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
-                            array.SetValue(elemSlot.Obj, index);
+                            array.SetValue(elemVar.Obj, index);
                         }
 
                         index++;

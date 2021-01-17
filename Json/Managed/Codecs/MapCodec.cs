@@ -31,7 +31,7 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
 
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             CollectionType collectionType = (CollectionType)stubType;
             IDictionary map = (IDictionary) slot.Obj;
 
@@ -40,7 +40,7 @@ namespace Friflo.Json.Managed.Codecs
             int n = 0;
 
             StubType elementType = collectionType.ElementType;
-            Slot elemSlot = new Slot();
+            Var elemVar = new Var();
             foreach (DictionaryEntry entry in map) {
                 if (n++ > 0)
                     bytes.AppendChar(',');
@@ -48,22 +48,22 @@ namespace Friflo.Json.Managed.Codecs
                 bytes.AppendChar(':');
                 object value = entry.Value;
                 if (value != null) {
-                    elemSlot.Obj = value;
-                    elementType.codec.Write(writer, ref elemSlot, elementType);
+                    elemVar.Obj = value;
+                    elementType.codec.Write(writer, ref elemVar, elementType);
                 } else
                     bytes.AppendBytes(ref writer.@null);
             }
             bytes.AppendChar('}');
         }
         
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             CollectionType collectionType = (CollectionType) stubType;
             if (slot.Obj == null)
                 slot.Obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) slot.Obj;
             ref var parser = ref reader.parser;
             StubType elementType = collectionType.ElementType;
-            Slot elemSlot = new Slot(); 
+            Var elemVar = new Var(); 
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -75,37 +75,37 @@ namespace Friflo.Json.Managed.Codecs
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        map[key] = elemSlot.Get();
+                        map[key] = elemVar.Get();
                         break;
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        map[key] = elemSlot.Get();
+                        map[key] = elemVar.Get();
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        map[key] = elemSlot.Get();
+                        map[key] = elemVar.Get();
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        map[key] = elemSlot.Get();
+                        map[key] = elemVar.Get();
                         break;
                     case JsonEvent.ObjectEnd:
                         slot.Obj = map;

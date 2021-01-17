@@ -37,7 +37,7 @@ namespace Friflo.Json.Managed
             format.InitTokenFormat();
             StubType objType = typeCache.GetType(obj.GetType());
             bytes.Clear();
-            Slot slot = new Slot();
+            Var slot = new Var();
             slot.Obj = obj;
             objType.codec.Write(this, ref slot, objType);
         }

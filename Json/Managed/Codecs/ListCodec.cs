@@ -28,21 +28,21 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
 
-        public void Write(JsonWriter writer, ref Slot slot, StubType stubType) {
+        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             IList list = (IList) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
             StubType elementType = collectionType.ElementType;
-            Slot elemSlot = new Slot();
+            Var elemVar = new Var();
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
                     // todo: implement missing element types
                     switch (collectionType.elementTypeId) {
-                        case SlotType.Object:
-                            elemSlot.Obj = item;
-                            elementType.codec.Write(writer, ref elemSlot, elementType);
+                        case VarType.Object:
+                            elemVar.Obj = item;
+                            elementType.codec.Write(writer, ref elemVar, elementType);
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +
@@ -56,7 +56,7 @@ namespace Friflo.Json.Managed.Codecs
         }
         
 
-        public bool Read(JsonReader reader, ref Slot slot, StubType stubType) {
+        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
             ref var parser = ref reader.parser;
@@ -66,37 +66,37 @@ namespace Friflo.Json.Managed.Codecs
                 list = (IList) collectionType.CreateInstance();
             StubType elementType = collectionType.ElementType;
             // todo: document why != SlotType.Object
-            if (collectionType.elementTypeId != SlotType.Object)
+            if (collectionType.elementTypeId != VarType.Object)
                 list.Clear();
             int startLen = list.Count;
             int index = 0;
-            Slot elemSlot = new Slot();
+            Var elemVar = new Var();
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemSlot.Get());
+                        list.Add(elemVar.Get());
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemSlot.Get());
+                        list.Add(elemVar.Get());
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        elemSlot.Clear();
-                        if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                        elemVar.Clear();
+                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemSlot.Get());
+                        list.Add(elemVar.Get());
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
@@ -110,32 +110,32 @@ namespace Friflo.Json.Managed.Codecs
                     case JsonEvent.ArrayStart:
                         StubType subElementType = collectionType.ElementType;
                         if (index < startLen) {
-                            elemSlot.Obj = list[index];
-                            if (!subElementType.codec.Read(reader, ref elemSlot, subElementType))
+                            elemVar.Obj = list[index];
+                            if (!subElementType.codec.Read(reader, ref elemVar, subElementType))
                                 return false;
-                            list[index] = elemSlot.Obj;
+                            list[index] = elemVar.Obj;
                         }
                         else {
-                            elemSlot.Clear();
-                            if (!subElementType.codec.Read(reader, ref elemSlot, subElementType))
+                            elemVar.Clear();
+                            if (!subElementType.codec.Read(reader, ref elemVar, subElementType))
                                 return false;
-                            list.Add(elemSlot.Obj);
+                            list.Add(elemVar.Obj);
                         }
 
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            elemSlot.Obj = list[index];
-                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            elemVar.Obj = list[index];
+                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
                                 return false;
-                            list[index] = elemSlot.Obj;
+                            list[index] = elemVar.Obj;
                         }
                         else {
-                            elemSlot.Clear();
-                            if (!elementType.codec.Read(reader, ref elemSlot, elementType))
+                            elemVar.Clear();
+                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
                                 return false;
-                            list.Add(elemSlot.Obj);
+                            list.Add(elemVar.Obj);
                         }
                         index++;
                         break;

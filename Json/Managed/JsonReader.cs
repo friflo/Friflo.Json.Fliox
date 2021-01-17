@@ -40,7 +40,7 @@ namespace Friflo.Json.Managed
         public T ReadValue <T>(Bytes bytes) where T : struct {
             int start = bytes.Start;
             int len = bytes.Len;
-            Slot slot = new Slot();
+            Var slot = new Var();
             bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref slot);
             parser.NextEvent(); // EOF
             if (!success) {
@@ -54,7 +54,7 @@ namespace Friflo.Json.Managed
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
-            Slot slot = new Slot();
+            Var slot = new Var();
             bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref slot);
             parser.NextEvent(); // EOF
             if (typeof(T).IsValueType && !success && parser.error.ErrSet)
@@ -62,7 +62,7 @@ namespace Friflo.Json.Managed
             return (T) slot.Get();
         }
         
-        public bool Read<T>(Bytes bytes, ref Slot result) {
+        public bool Read<T>(Bytes bytes, ref Var result) {
             int start = bytes.Start;
             int len = bytes.Len;
             bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref result);
@@ -73,7 +73,7 @@ namespace Friflo.Json.Managed
         public Object Read(Bytes bytes, Type type) {
             int start = bytes.Start;
             int len = bytes.Len;
-            Slot slot = new Slot();
+            Var slot = new Var();
             if (!ReadStart(bytes.buffer, start, len, type, ref slot))
                 return default;
             parser.NextEvent(); // EOF
@@ -81,13 +81,13 @@ namespace Friflo.Json.Managed
         }
 
         public Object Read(ByteList buffer, int offset, int len, Type type) {
-            Slot slot = new Slot();
+            Var slot = new Var();
             ReadStart(buffer, offset, len, type, ref slot);
             parser.NextEvent(); // EOF
             return slot.Get();
         }
 
-        private bool ReadStart(ByteList bytes, int offset, int len, Type type, ref Slot slot) {
+        private bool ReadStart(ByteList bytes, int offset, int len, Type type, ref Var slot) {
             parser.InitParser(bytes, offset, len);
             
             while (true) {
@@ -112,14 +112,14 @@ namespace Friflo.Json.Managed
         public bool ReadTo(Bytes bytes, Object obj) {
             int start = bytes.Start;
             int len = bytes.Len;
-            Slot slot = new Slot();
+            Var slot = new Var();
             slot.Obj = obj;
             bool success = ReadTo(bytes.buffer, start, len, ref slot);
             parser.NextEvent(); // EOF
             return success;
         }
 
-        public bool ReadTo(ByteList bytes, int offset, int len, ref Slot slot) {
+        public bool ReadTo(ByteList bytes, int offset, int len, ref Var slot) {
             parser.InitParser(bytes, offset, len);
 
             while (true) {
