@@ -142,7 +142,6 @@ namespace Friflo.Json.Managed.Codecs
                             return reader.ErrorNull("Expect field of type object. Type: ", field.FieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;
-                        elemVar.Obj = sub;
                         if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
                             return false;
                         //
