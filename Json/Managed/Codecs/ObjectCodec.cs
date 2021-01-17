@@ -26,9 +26,7 @@ namespace Friflo.Json.Managed.Codecs
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-
             ref var bytes = ref writer.bytes;
-            ref var format = ref writer.format;
             object obj = slot.Obj;
             ClassType type = (ClassType)stubType;
             bool firstMember = true;
@@ -102,11 +100,9 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
-                        field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            parser.SkipEvent(); // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
+                        // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
+                        if ((field = GetField(reader, classType)) == null)
                             break;
-                        }
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
@@ -117,11 +113,8 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueBool:
-                        field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            parser.SkipEvent();
+                        if ((field = GetField(reader, classType)) == null)
                             break;
-                        }
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
@@ -129,34 +122,27 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetField(obj, ref elemVar);
                         break;
                     case JsonEvent.ValueNull:
-                        field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            parser.SkipEvent(); // count skipping
+                        if ((field = GetField(reader, classType)) == null)
                             break;
-                        }
                         if (!field.FieldType.isNullable)
                             return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                         field.SetObject(obj, null);
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            if (!parser.SkipTree())
-                                return false;
-                        } else {
-                            object sub = field.GetObject(obj);
-                            StubType fieldType = field.FieldType;
-                            elemVar.Obj = sub;
-                            if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
-                                return false;
-                            //
-                            object subRet = elemVar.Obj;
-                            if (!field.FieldType.isNullable && subRet == null)
-                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
-                            if (sub != subRet)
-                                field.SetObject(obj, subRet);
-                        }
+                        if ((field = GetField(reader, classType)) == null)
+                            break;
+                        object sub = field.GetObject(obj);
+                        StubType fieldType = field.FieldType;
+                        elemVar.Obj = sub;
+                        if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
+                            return false;
+                        //
+                        object subRet = elemVar.Obj;
+                        if (!field.FieldType.isNullable && subRet == null)
+                            return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
+                        if (sub != subRet)
+                            field.SetObject(obj, subRet);
                         break;
                     case JsonEvent.ObjectEnd:
                         slot.Obj = obj;
@@ -168,6 +154,14 @@ namespace Friflo.Json.Managed.Codecs
                 }
                 ev = parser.NextEvent();
             }
+        }
+
+        private static PropField GetField(JsonReader reader, ClassType classType) {
+            PropField field = classType.GetField(ref reader.parser.key);
+            if (field != null)
+                return field;
+            reader.parser.SkipEvent();
+            return null;
         }
     }
 }
