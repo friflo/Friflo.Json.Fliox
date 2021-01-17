@@ -535,19 +535,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
 
                     enc.Read<List<string>>(arrBln);
                     StringAssert.Contains("Cannot assign bool to List element. Expect:", enc.Error.msg.ToString());
+                    
+                    enc.Read<List<string>>(mapStr);
+                    StringAssert.Contains("Cannot assign object to array. Expect:", enc.Error.msg.ToString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
                     enc.Read<Dictionary<string, long>>(arrNull);
-                    StringAssert.Contains("Cannot assign null to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to object. Expect:", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, long>>(arrStr);
-                    StringAssert.Contains("Cannot assign string to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to object. Expect:", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, string>>(arrNum);
-                    StringAssert.Contains("Cannot assign number to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to object. Expect:", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, string>>(arrBln);
-                    StringAssert.Contains("Cannot assign bool to Dictionary value. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to object. Expect:", enc.Error.msg.ToString());
                     {
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<int, string>>(mapStr));
                         AreEqual("Dictionary only support string as key type. Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
@@ -601,7 +604,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct), enc.ReadValue<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to Type. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to object. Expect:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));
@@ -634,7 +637,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(105, enc.typeCache.LookupCount);
+                        AreEqual(106, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

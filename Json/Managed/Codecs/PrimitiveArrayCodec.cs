@@ -24,7 +24,7 @@ namespace Friflo.Json.Managed.Codecs
             return null;
         }
         
-        public static bool StartIteration(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
+        public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
@@ -41,7 +41,7 @@ namespace Friflo.Json.Managed.Codecs
                     return true;
                 default:
                     success = false;
-                    reader.ErrorNull("Expect ArrayStart or null. Got Event: ", ev);
+                    reader.ErrorIncompatible("array", stubType, ref reader.parser);
                     return false;
             }
         }
@@ -76,7 +76,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             String[] array = (String[]) slot.Obj;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             long[] array = (long[]) slot.Obj;
@@ -176,7 +176,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             int[] array = (int[]) slot.Obj;
@@ -227,7 +227,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             short[] array = (short[]) slot.Obj;
@@ -278,7 +278,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             byte[] array = (byte[]) slot.Obj;
@@ -329,7 +329,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             bool[] array = (bool[]) slot.Obj;
@@ -378,7 +378,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             double[] array = (double[]) slot.Obj;
@@ -429,7 +429,7 @@ namespace Friflo.Json.Managed.Codecs
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartIteration(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             float[] array = (float[])slot.Obj;

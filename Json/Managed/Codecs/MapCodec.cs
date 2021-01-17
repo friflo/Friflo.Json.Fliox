@@ -57,6 +57,9 @@ namespace Friflo.Json.Managed.Codecs
         }
         
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
+                return success;
+            
             CollectionType collectionType = (CollectionType) stubType;
             if (slot.Obj == null)
                 slot.Obj = collectionType.CreateInstance();
