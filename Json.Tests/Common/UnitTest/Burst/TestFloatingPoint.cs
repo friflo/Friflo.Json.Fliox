@@ -6,7 +6,7 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Misc
+namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
     public class TestFloatingPoint : LeakTestsFixture
     {
