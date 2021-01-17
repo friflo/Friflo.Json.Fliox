@@ -130,13 +130,17 @@ namespace Friflo.Json.Managed.Codecs
                             break;
                         if (!field.FieldType.isNullable)
                             return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
-                        field.SetObject(obj, null);
+                        elemVar.Obj = null;
+                        field.SetField(obj, ref elemVar);
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        object sub = field.GetObject(obj);
+                        field.GetField(obj, ref elemVar);
+                        if (elemVar.Cat != VarType.Object)
+                            return reader.ErrorNull("Expect field of type object. Type: ", field.FieldType.type.ToString());
+                        object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;
                         elemVar.Obj = sub;
                         if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
@@ -146,7 +150,7 @@ namespace Friflo.Json.Managed.Codecs
                         if (!field.FieldType.isNullable && subRet == null)
                             return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                         if (sub != subRet)
-                            field.SetObject(obj, subRet);
+                            field.SetField(obj, ref elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
                         slot.Obj = obj;

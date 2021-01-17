@@ -45,18 +45,6 @@ namespace Friflo.Json.Managed.Types
             bb.AppendBytes(ref nameBytes);
         }
         
-        public object GetObject (Object obj)
-        {
-            if (varType == VarType.Object)
-                return field.GetValue(obj) ;
-            throw new InvalidComObjectException("Expect method is only called for fields with type object. field: " + name);
-        }
-
-        public void SetObject (object prop, Object val)
-        {
-            field.SetValue (prop, val);
-        }
-
         private static readonly bool useDirect = true;
         
         public void SetField (object obj, ref Var val)
