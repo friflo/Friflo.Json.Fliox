@@ -120,15 +120,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
 
         [Test]
         public void TestHashMapOpen() {
-            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var memLog = new MemoryLogger(100, 100, MemoryLog.Disabled);
             var hashMap = new HashMapOpen<Bytes, string>(7, new Bytes("__REMOVED"));
             var key1 = new Bytes("key1");
             var key2 = new Bytes("key2");
             var key3 = new Bytes("key3");
             var key4 = new Bytes("key4");
             var key5 = new Bytes("key5");
-            int iterations = 1000;
-            var dict = new Dictionary<String, String>();
+            int iterations = 10000000;
+            var dict = new Dictionary<Bytes, String>();
             
             for (int n = 0; n < iterations; n++) {
                 memLog.Snapshot();
@@ -138,14 +138,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     hashMap.Put(ref key3, "key 3");
                     hashMap.Put(ref key4, "key 4");
                     hashMap.Put(ref key5, "key 5");
-                    dict.TryAdd("key1", "key 1");
-                    dict.TryAdd("key2", "key 2");
-                    dict.TryAdd("key3", "key 3");
-                    dict.TryAdd("key4", "key 4");
-                    dict.TryAdd("key5", "key 5");
+                    dict.TryAdd(key1, "key 1");
+                    dict.TryAdd(key2, "key 2");
+                    dict.TryAdd(key3, "key 3");
+                    dict.TryAdd(key4, "key 4");
+                    dict.TryAdd(key5, "key 5");
                 }
 
-                bool useHashMap = true;
+                bool useHashMap = false;
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (useHashMap) {
                     hashMap.Get(ref key1);
@@ -154,11 +154,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     hashMap.Get(ref key4);
                     hashMap.Get(ref key5);
                 } else {
-                    dict.TryGetValue("key1", out string val1);
-                    dict.TryGetValue("key2", out string val2);
-                    dict.TryGetValue("key3", out string val3);
-                    dict.TryGetValue("key4", out string val4);
-                    dict.TryGetValue("key5", out string val5);
+                    dict.TryGetValue(key1, out string val1);
+                    dict.TryGetValue(key2, out string val2);
+                    dict.TryGetValue(key3, out string val3);
+                    dict.TryGetValue(key4, out string val4);
+                    dict.TryGetValue(key5, out string val5);
                 }
             }
             memLog.AssertNoAllocations();
