@@ -81,6 +81,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     
                     IsTrue(enc.Read<object>     (@null, ref result));     AreEqual(null, result.Obj);
                     
+                    IsTrue(enc.Read<string[]>   (@null, ref result));     AreEqual(null, result.Obj); // no alloc only, if not containing string
+                    
                     IsTrue(enc.Read<double[]>   (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<float[]>    (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<long[]>     (@null, ref result));     AreEqual(null, result.Obj);
@@ -94,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
    
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 13, enc.typeCache.LookupCount);
+                        AreEqual(14, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
