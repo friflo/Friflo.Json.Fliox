@@ -5,7 +5,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 #pragma warning disable 618
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
     public class TestSerializer
     {

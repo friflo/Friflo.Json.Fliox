@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
     public class JsonComplex
     {

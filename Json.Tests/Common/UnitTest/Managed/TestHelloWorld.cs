@@ -4,7 +4,7 @@ using Friflo.Json.Managed;
 using Friflo.Json.Managed.Codecs;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
 #if !UNITY_5_3_OR_NEWER  // no clean up of native containers for Unity/JSON_BURST
     

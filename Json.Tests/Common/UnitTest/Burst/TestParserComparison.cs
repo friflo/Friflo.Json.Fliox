@@ -12,7 +12,7 @@ using static NUnit.Framework.Assert;
 #endif
 
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
     public struct Int3
     {

@@ -13,7 +13,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
     public static class NoCheck
     {

@@ -13,7 +13,7 @@ using static NUnit.Framework.Assert;
 
 #pragma warning disable 618 // Performance degradation by string copy
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
     public class TestMisc
     {
