@@ -110,11 +110,10 @@ namespace Friflo.Json.Managed
             }
         }
 
-        public bool ReadTo(Bytes bytes, Object obj) {
+        public bool ReadTo<T>(Bytes bytes, T obj) where T : class {
             int start = bytes.Start;
             int len = bytes.Len;
-            Var slot = new Var();
-            slot.Obj = obj;
+            Var slot = new Var { Obj = obj };
             bool success = ReadTo(bytes.buffer, start, len, ref slot);
             parser.NextEvent(); // EOF
             return success;

@@ -9,10 +9,14 @@ using static Friflo.Json.Tests.Common.Utils.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
-    public class NoAllocClass {
-        public NoAllocClass    selfReference; // test cyclic references
-        public NoAllocClass    testChild;
+    public struct TestStruct {
         public int              key;
+    }
+    
+    public class TestClass {
+        public TestClass    selfReference; // test cyclic references
+        public TestClass    testChild;
+        // public int              key;
         public int[]            intArray;
 
     }
@@ -37,6 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
         [Test]
         public void TestNoAlloc() {
             var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            
+            var reusedClass = new TestClass();
             
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
@@ -91,12 +97,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
 
-                    
-                    
-   
+                    IsTrue(enc.ReadTo(mapNum, reusedClass));
+                    // AreEqual(42, reusedClass.key);
+
+
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual(14, enc.typeCache.LookupCount);
+                        AreEqual(15, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
