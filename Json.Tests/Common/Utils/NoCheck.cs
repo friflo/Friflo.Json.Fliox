@@ -11,8 +11,14 @@ namespace Friflo.Json.Tests.Common.Utils
         public static bool checkStaticMemoryUsage = false;
         
         public static void AreEqual(object expect, object value) {
-            if (!expect.Equals(value))
-                throw new TestException("Expect: " + expect + "\nBut was: " + value);
+            if (expect == null) {
+                if (value == null)
+                    return;
+            } else {
+                if (expect.Equals(value))
+                    return;
+            }
+            throw new TestException("Expect: " + expect + "\nBut was: " + value);
         }
         
         public static void AreEqual(long expect, long value) {

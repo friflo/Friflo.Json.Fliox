@@ -49,6 +49,8 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
             
             ref var parser = ref reader.parser;
             var collection = (CollectionType) stubType;

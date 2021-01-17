@@ -27,6 +27,10 @@ namespace Friflo.Json.Managed
         
         public VarType     Cat { get;  private set; }
 
+        public bool IsNull() {
+            return Cat == VarType.Object && obj == null;
+        }
+
         public object Obj {
             get => obj;
             set { obj = value; Cat = VarType.Object; }

@@ -65,6 +65,7 @@ namespace Friflo.Json.Managed
         public bool Read<T>(Bytes bytes, ref Var result) {
             int start = bytes.Start;
             int len = bytes.Len;
+            result.Clear();
             bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref result);
             parser.NextEvent(); // EOF
             return success;

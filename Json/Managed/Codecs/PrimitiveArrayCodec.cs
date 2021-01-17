@@ -29,7 +29,7 @@ namespace Friflo.Json.Managed.Codecs
             switch (ev) {
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
-                        return false;
+                        return true;
                     reader.ErrorIncompatible("array", stubType, ref reader.parser);
                     return false;
                 case JsonEvent.ArrayStart:
@@ -38,6 +38,14 @@ namespace Friflo.Json.Managed.Codecs
                     reader.ErrorNull("Expect ArrayStart or null. Got Event: ", ev);
                     return false;
             }
+        }
+
+        public static bool IsNull(JsonReader reader, ref Var arrVar) {
+            if (reader.parser.Event == JsonEvent.ValueNull) {
+                arrVar.Obj = null;
+                return true;
+            }
+            return false;
         }
         
         public static bool ArrayUnexpected (JsonReader reader, StubType stubType) {
@@ -72,6 +80,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             String[] array = (String[]) slot.Obj;
             if (array == null)
                 array = new String[JsonReader.minLen];
@@ -120,6 +131,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             long[] array = (long[]) slot.Obj;
             if (array == null)
                 array = new long[JsonReader.minLen];
@@ -170,6 +184,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             int[] array = (int[]) slot.Obj;
             if (array == null)
                 array = new int[JsonReader.minLen];
@@ -220,6 +237,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             short[] array = (short[]) slot.Obj;
             if (array == null)
                 array = new short[JsonReader.minLen];
@@ -270,6 +290,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             byte[] array = (byte[]) slot.Obj;
             if (array == null)
                 array = new byte[JsonReader.minLen];
@@ -320,6 +343,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             bool[] array = (bool[]) slot.Obj;
             if (array == null)
                 array = new bool [JsonReader.minLen];
@@ -368,6 +394,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             double[] array = (double[]) slot.Obj;
             if (array == null)
                 array = new double[JsonReader.minLen];
@@ -418,6 +447,9 @@ namespace Friflo.Json.Managed.Codecs
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.IsArrayStart(reader, stubType))
                 return false;
+            if (ArrayUtils.IsNull(reader, ref slot))
+                return true;
+            
             float[] array = (float[])slot.Obj;
             if (array == null)
                 array = new float[JsonReader.minLen];

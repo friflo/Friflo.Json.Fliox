@@ -69,7 +69,7 @@ namespace Friflo.Json.Managed.Codecs
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
-                        return false;
+                        return true;
                     return reader.ErrorIncompatible("Type", stubType, ref parser);
                 case JsonEvent.ObjectStart:
                     break;

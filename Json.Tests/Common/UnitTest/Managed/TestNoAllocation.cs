@@ -47,8 +47,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
             using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
-            using (var dateTime =   new Bytes ("2021-01-14T09:59:40.101Z"))
-            using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
                 // --- arrays
             using (var arrNum =     new Bytes ("[1,2,3]"))
             using (var arrStr =     new Bytes ("[\"hello\"]"))
@@ -74,16 +72,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     //IsTrue(enc.Read<double> (@double, ref result));     AreEqual(12.5d, result.Dbl);
                     //IsTrue(enc.Read<float>  (@double, ref result));     AreEqual(12.5,  result.Flt);
                     //
-                    IsTrue(enc.Read<long>   (@long, ref result));       AreEqual(42, result.Lng);
-                    IsTrue(enc.Read<int>    (@long, ref result));       AreEqual(42, result.Int);
-                    IsTrue(enc.Read<short>  (@long, ref result));       AreEqual(42, result.Short);
-                    IsTrue(enc.Read<byte>   (@long, ref result));       AreEqual(42, result.Byte);
+                    IsTrue(enc.Read<long>       (@long, ref result));     AreEqual(42, result.Lng);
+                    IsTrue(enc.Read<int>        (@long, ref result));     AreEqual(42, result.Int);
+                    IsTrue(enc.Read<short>      (@long, ref result));     AreEqual(42, result.Short);
+                    IsTrue(enc.Read<byte>       (@long, ref result));     AreEqual(42, result.Byte);
                     
-                    IsTrue(enc.Read<bool>   (@true, ref result));       AreEqual(true, result.Bool);
+                    IsTrue(enc.Read<bool>       (@true, ref result));     AreEqual(true, result.Bool);
+                    
+                    IsTrue(enc.Read<object>     (@null, ref result));     AreEqual(null, result.Obj);
+                    
+                    IsTrue(enc.Read<double[]>   (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<float[]>    (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<long[]>     (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<int[]>      (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<short[]>    (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
+                    IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
 
+                    
+                    
+   
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 5, enc.typeCache.LookupCount);
+                        AreEqual( 13, enc.typeCache.LookupCount);
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
