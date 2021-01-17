@@ -8,32 +8,6 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Codecs
 {
-    public static class ObjectUtils {
-        
-        public static bool StartObject(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
-            var ev = reader.parser.Event;
-            switch (ev) {
-                case JsonEvent.ValueNull:
-                    if (stubType.isNullable) {
-                        slot.Obj = null;
-                        success = true;
-                        return false;
-                    }
-                    reader.ErrorIncompatible("object", stubType, ref reader.parser);
-                    success = false;
-                    return false;
-                case JsonEvent.ObjectStart:
-                    success = true;
-                    return true;
-                default:
-                    success = false;
-                    reader.ErrorIncompatible("object", stubType, ref reader.parser);
-                    // reader.ErrorNull("Expect { or null. Got Event: ", ev);
-                    return false;
-            }
-        }
-    }
-    
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Interface = new ObjectCodec();
 
@@ -91,7 +65,7 @@ namespace Friflo.Json.Managed.Codecs
             
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
+            if (!JsonUtils.StartObject(reader, ref slot, stubType, out bool success))
                 return success;
                 
             ref var parser = ref reader.parser;
