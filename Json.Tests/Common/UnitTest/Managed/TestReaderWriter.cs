@@ -15,25 +15,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
-    public static class NoCheck
-    {
-        public static bool checkStaticMemoryUsage = false;
-        public static void AreEqual(object expect, object value) {
-            if (checkStaticMemoryUsage)
-                return;
-            Assert.AreEqual(expect, value);
-        }
-        public static void Fail(string msg) { }
 
-        public static TActual Throws<TActual>(TestDelegate code) where TActual : Exception {
-            try {
-                code();
-            } catch (Exception e) {
-                return (TActual)e;
-            }
-            return null;
-        }
-    }
     
     public class TestReaderWriter : LeakTestsFixture
     {

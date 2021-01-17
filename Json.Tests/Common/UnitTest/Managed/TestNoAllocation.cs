@@ -1,9 +1,12 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Codecs;
+using Friflo.Json.Managed.Types;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
+
+// using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.Utils.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Managed
 {
@@ -34,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
         
         [Test]
         public void TestNoAlloc() {
-            var memLog = new MemoryLogger(100, 1000, MemoryLog.Disabled);
+            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
             
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
@@ -64,23 +67,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var mapNum2 =    new Bytes ("{\"str\":44}"))
             using (var invalid =    new Bytes ("invalid")) {
-                int iterations = 2; // dont use < 2
+                int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    AreEqual(12.5,                      enc.ReadValue<double>   (@double));
+                    Slot result = new Slot();
+                    IsTrue(enc.Read<int>(@long, ref result));
+                    AreEqual(42, result.Int);
 
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual( 1, enc.typeCache.LookupCount);
-                        AreEqual( 0, enc.typeCache.StoreLookupCount);
-                        AreEqual( 0, enc.typeCache.TypeCreationCount);
+                        // AreEqual( 1, enc.typeCache.LookupCount);
+                        // AreEqual( 0, enc.typeCache.StoreLookupCount);
+                        // AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
             }
             memLog.AssertNoAllocations();
         }
-
     }
+    
 }

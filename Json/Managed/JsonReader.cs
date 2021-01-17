@@ -62,6 +62,14 @@ namespace Friflo.Json.Managed
             return (T) slot.Get();
         }
         
+        public bool Read<T>(Bytes bytes, ref Slot result) {
+            int start = bytes.Start;
+            int len = bytes.Len;
+            bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref result);
+            parser.NextEvent(); // EOF
+            return success;
+        }
+        
         public Object Read(Bytes bytes, Type type) {
             int start = bytes.Start;
             int len = bytes.Len;
