@@ -31,6 +31,20 @@ namespace Friflo.Json.Managed.Codecs
             CollectionType collection = (CollectionType)stubType; 
             return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
         }
+
+        public static bool ArraysElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
+            switch (reader.parser.Event) {
+                case JsonEvent.ArrayEnd:
+                    if (index != len)
+                        array = Arrays.CopyOf(array, index);
+                    slot.Obj = array;
+                    return true;
+                case JsonEvent.Error:
+                    return false;
+                default:
+                    return ArrayUnexpected(reader, stubType);
+            }
+        }
     }
 
     public class StringArrayCodec : IJsonCodec
@@ -65,23 +79,12 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueString:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.value.ToString();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueString) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.value.ToString();
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -114,25 +117,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueNumber:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.ValueAsLong(out bool success);
-                        if (!success)
-                            return reader.ValueParseError();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.ValueAsLong(out bool success);
+                    if (!success)
+                        return reader.ValueParseError();
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -165,25 +157,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueNumber:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.ValueAsInt(out bool success);
-                        if (!success)
-                            return reader.ValueParseError();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.ValueAsInt(out bool success);
+                    if (!success)
+                        return reader.ValueParseError();
+                } else
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -216,25 +197,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueNumber:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.ValueAsShort(out bool success);
-                        if (!success)
-                            return reader.ValueParseError();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.ValueAsShort(out bool success);
+                    if (!success)
+                        return reader.ValueParseError();
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -267,25 +237,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueNumber:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.ValueAsByte(out bool success);
-                        if (!success)
-                            return reader.ValueParseError();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.ValueAsByte(out bool success);
+                    if (!success)
+                        return reader.ValueParseError();
+                } else
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -318,23 +277,12 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueBool:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.boolValue;
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueBool) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.boolValue;
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -367,25 +315,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array.Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueNumber:
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        array[index++] = reader.parser.ValueAsDouble(out bool success);
-                        if (!success)
-                            return reader.ValueParseError();
-                        break;
-                    case JsonEvent.ArrayEnd:
-                        if (index != len)
-                            array = Arrays.CopyOf(array, index);
-                        slot.Obj = array;
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
+                    if (index >= len)
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
+                    array[index++] = reader.parser.ValueAsDouble(out bool success);
+                    if (!success)
+                        return reader.ValueParseError();
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -418,26 +355,14 @@ namespace Friflo.Json.Managed.Codecs
             int len = array. Length;
             int index = 0;
             while (true) {
-                JsonEvent ev = reader.parser.NextEvent();
-                switch (ev)
-                {
-                case JsonEvent. ValueNumber:
+                if (reader.parser.NextEvent() == JsonEvent.ValueNumber) {
                     if (index >= len)
-                        array = Arrays.CopyOf (array, len = JsonReader.Inc(len));
+                        array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
                     array[index++] = reader.parser.ValueAsFloat(out bool success);
                     if (!success)
                         return reader.ValueParseError();
-                    break;
-                case JsonEvent. ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf (array, index);
-                    slot.Obj = array;
-                    return true;
-                case JsonEvent. Error:
-                    return false;
-                default:
-                    return ArrayUtils.ArrayUnexpected(reader, stubType);
-                }
+                } else 
+                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
