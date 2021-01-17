@@ -1,4 +1,6 @@
-﻿using Friflo.Json.Burst;
+﻿using System;
+using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Codecs;
 using Friflo.Json.Managed.Utils;
@@ -125,39 +127,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
             var key3 = new Bytes("key3");
             var key4 = new Bytes("key4");
             var key5 = new Bytes("key5");
-            var key6 = new Bytes("key6");
-            var key7 = new Bytes("key7");
-            var key8 = new Bytes("key8");
-            var key9 = new Bytes("key9");
             int iterations = 1000;
+            var dict = new Dictionary<String, String>();
             
             for (int n = 0; n < iterations; n++) {
                 memLog.Snapshot();
-                hashMap.Put(ref key1,           "key 1 first");
-                AreEqual(hashMap.Get(ref key1), "key 1 first");
-                
-                hashMap.Put(ref key1,           "key 1");
-                AreEqual(hashMap.Get(ref key1), "key 1");
-                
-                
-                hashMap.Put(ref key2, "key 2");
-                hashMap.Put(ref key3, "key 3");
-                hashMap.Put(ref key4, "key 4");
-                hashMap.Put(ref key5, "key 5");
-                hashMap.Put(ref key6, "key 6");
-                hashMap.Put(ref key7, "key 7");
-                hashMap.Put(ref key8, "key 8");
-                hashMap.Put(ref key9, "key 9");
+                if (n == 0) {
+                    hashMap.Put(ref key1, "key 1");
+                    hashMap.Put(ref key2, "key 2");
+                    hashMap.Put(ref key3, "key 3");
+                    hashMap.Put(ref key4, "key 4");
+                    hashMap.Put(ref key5, "key 5");
+                    dict.TryAdd("key1", "key 1");
+                    dict.TryAdd("key2", "key 2");
+                    dict.TryAdd("key3", "key 3");
+                    dict.TryAdd("key4", "key 4");
+                    dict.TryAdd("key5", "key 5");
+                }
 
-                AreEqual(hashMap.Get(ref key1), "key 1");
-                AreEqual(hashMap.Get(ref key2), "key 2");
-                AreEqual(hashMap.Get(ref key3), "key 3");
-                AreEqual(hashMap.Get(ref key4), "key 4");
-                AreEqual(hashMap.Get(ref key5), "key 5");
-                AreEqual(hashMap.Get(ref key6), "key 6");
-                AreEqual(hashMap.Get(ref key7), "key 7");
-                AreEqual(hashMap.Get(ref key8), "key 8");
-                AreEqual(hashMap.Get(ref key9), "key 9");
+                bool useHashMap = true;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (useHashMap) {
+                    hashMap.Get(ref key1);
+                    hashMap.Get(ref key2);
+                    hashMap.Get(ref key3);
+                    hashMap.Get(ref key4);
+                    hashMap.Get(ref key5);
+                } else {
+                    dict.TryGetValue("key1", out string val1);
+                    dict.TryGetValue("key2", out string val2);
+                    dict.TryGetValue("key3", out string val3);
+                    dict.TryGetValue("key4", out string val4);
+                    dict.TryGetValue("key5", out string val5);
+                }
             }
             memLog.AssertNoAllocations();
         }
