@@ -125,7 +125,7 @@ namespace Friflo.Json.Managed.Codecs
                         elemVar.Clear();
                         if (!valueType.codec.Read(reader, ref elemVar, valueType))
                             return false;
-                        field.SetObject(obj, elemVar.Obj); // set also to null in error case
+                        field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
                         field = classType.GetField(ref parser.key);
@@ -164,6 +164,7 @@ namespace Friflo.Json.Managed.Codecs
                             return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                         field.SetObject(obj, null);
                         break;
+                    case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         field = classType.GetField(ref parser.key);
                         if (field == null) {
@@ -171,9 +172,9 @@ namespace Friflo.Json.Managed.Codecs
                                 return false;
                         } else {
                             object sub = field.GetObject(obj);
-                            StubType fieldObject = field.FieldType;
+                            StubType fieldType = field.FieldType;
                             elemVar.Obj = sub;
-                            if (!fieldObject.codec.Read(reader, ref elemVar, fieldObject))
+                            if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
                                 return false;
                             //
                             object subRet = elemVar.Obj;
@@ -181,27 +182,6 @@ namespace Friflo.Json.Managed.Codecs
                                 return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
                             if (sub != subRet)
                                 field.SetObject(obj, subRet);
-                        }
-                        break;
-                    case JsonEvent.ArrayStart:
-                        field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            if (!parser.SkipTree())
-                                return false;
-                        } else {
-                            StubType fieldArray = field.FieldType;
-                            if (fieldArray == null)
-                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
-                            object array = field.GetObject(obj);
-                            elemVar.Obj = array;
-                            if (!fieldArray.codec.Read(reader, ref elemVar, fieldArray))
-                                return false;
-                            //
-                            object arrayRet = elemVar.Obj;
-                            if (!field.FieldType.isNullable && arrayRet == null)
-                                return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
-                            if (array != arrayRet)
-                                field.SetObject(obj, arrayRet);
                         }
                         break;
                     case JsonEvent.ObjectEnd:
