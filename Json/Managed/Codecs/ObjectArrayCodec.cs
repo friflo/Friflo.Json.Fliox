@@ -84,28 +84,10 @@ namespace Friflo.Json.Managed.Codecs
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
-                        StubType subElementArray = collection.ElementType;
-                        if (index < startLen) {
-                            elemVar.Obj = array.GetValue(index);
-                            if(!subElementArray.codec.Read(reader, ref elemVar, subElementArray))
-                                return false;
-                            array.SetValue(elemVar.Obj, index);
-                        }
-                        else {
-                            elemVar.Clear();
-                            if (!subElementArray.codec.Read(reader, ref elemVar, subElementArray))
-                                return false;
-                            if (index >= len)
-                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
-                            array.SetValue(elemVar.Obj, index);
-                        }
-
-                        index++;
-                        break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar.Obj = array.GetValue(index);
-                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                            if(!elementType.codec.Read(reader, ref elemVar, elementType))
                                 return false;
                             array.SetValue(elemVar.Obj, index);
                         }
@@ -117,7 +99,6 @@ namespace Friflo.Json.Managed.Codecs
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                             array.SetValue(elemVar.Obj, index);
                         }
-
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
