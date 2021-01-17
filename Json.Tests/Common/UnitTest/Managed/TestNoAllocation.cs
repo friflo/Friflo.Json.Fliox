@@ -1,7 +1,6 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Codecs;
-using Friflo.Json.Managed.Types;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -71,15 +70,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     Var result = new Var();
-                    IsTrue(enc.Read<int>(@long, ref result));
-                    AreEqual(42, result.Int);
-
+                    
+                    //IsTrue(enc.Read<double> (@double, ref result));     AreEqual(12.5d, result.Dbl);
+                    //IsTrue(enc.Read<float>  (@double, ref result));     AreEqual(12.5,  result.Flt);
+                    //
+                    IsTrue(enc.Read<long>   (@long, ref result));       AreEqual(42, result.Lng);
+                    IsTrue(enc.Read<int>    (@long, ref result));       AreEqual(42, result.Int);
+                    IsTrue(enc.Read<short>  (@long, ref result));       AreEqual(42, result.Short);
+                    IsTrue(enc.Read<byte>   (@long, ref result));       AreEqual(42, result.Byte);
+                    
+                    IsTrue(enc.Read<bool>   (@true, ref result));       AreEqual(true, result.Bool);
 
                     // Ensure minimum required type lookups
-                    if (n > 0) {
-                        // AreEqual( 1, enc.typeCache.LookupCount);
-                        // AreEqual( 0, enc.typeCache.StoreLookupCount);
-                        // AreEqual( 0, enc.typeCache.TypeCreationCount);
+                    if (n > 1) {
+                        AreEqual( 5, enc.typeCache.LookupCount);
+                        AreEqual( 0, enc.typeCache.StoreLookupCount);
+                        AreEqual( 0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
