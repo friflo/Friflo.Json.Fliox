@@ -53,7 +53,7 @@ namespace Friflo.Json.Managed.Codecs
                 PropField field = fields[n];
                 field.GetField(obj, ref elemVar);
                 writer.WriteKey(field);
-                if (field.slotType == VarType.Object && elemVar.Obj == null) {
+                if (field.varType == VarType.Object && elemVar.Obj == null) {
                     bytes.AppendBytes(ref writer.@null);
                 } else {
                     StubType fieldType = field.FieldType;

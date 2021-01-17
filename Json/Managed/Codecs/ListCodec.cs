@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed.Codecs
                 Object item = list[n];
                 if (item != null) {
                     // todo: implement missing element types
-                    switch (collectionType.elementTypeId) {
+                    switch (collectionType.elementVarType) {
                         case VarType.Object:
                             elemVar.Obj = item;
                             elementType.codec.Write(writer, ref elemVar, elementType);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Managed.Codecs
                 list = (IList) collectionType.CreateInstance();
             StubType elementType = collectionType.ElementType;
             // todo: document why != SlotType.Object
-            if (collectionType.elementTypeId != VarType.Object)
+            if (collectionType.elementVarType != VarType.Object)
                 list.Clear();
             int startLen = list.Count;
             int index = 0;

@@ -17,7 +17,7 @@ namespace Friflo.Json.Managed.Types
         public   readonly   int             rank;
         public              StubType        ElementType { get; private set; }
         private  readonly   Type            elementTypeNative;
-        public   readonly   VarType        elementTypeId;
+        public   readonly   VarType         elementVarType;
         internal readonly   ConstructorInfo constructor;
 
         internal CollectionType (
@@ -33,7 +33,7 @@ namespace Friflo.Json.Managed.Types
             if (elementType == null)
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
-            elementTypeId       = Var.GetSlotType(elementType);
+            elementVarType       = Var.GetVarType(elementType);
             // constructor can be null. E.g. All array types have none.
             this.constructor    = constructor;
         }

@@ -109,7 +109,7 @@ namespace Friflo.Json.Managed
             return $"{val} ({Cat})";
         }
         
-        public static VarType GetSlotType (Type type)
+        public static VarType GetVarType (Type type)
         {
             if (type == typeof( double     ) || type == typeof( double?     ))  return VarType.Double;
             if (type == typeof( float      ) || type == typeof( float?      ))  return VarType.Float;

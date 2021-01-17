@@ -10,7 +10,7 @@ namespace Friflo.Json.Managed.Types
     public class PropField : IDisposable
     {
         internal readonly   String          name;
-        public   readonly   VarType        slotType;
+        public   readonly   VarType         varType;
         public              StubType        FieldType { get; internal set; }    // never null 
         internal readonly   Type            fieldTypeNative;                    // never null 
         private  readonly   ClassType       declType;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Managed.Types
             this.name                   = name;
             this.nameBytes              = new Bytes(name);
             this.fieldTypeNative        = fieldType;
-            this.slotType               = Var.GetSlotType(fieldType);
+            this.varType               = Var.GetVarType(fieldType);
             //
             this.field  = field;
             this.getter = getter;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Managed.Types
         
         public object GetObject (Object obj)
         {
-            if (slotType == VarType.Object)
+            if (varType == VarType.Object)
                 return field.GetValue(obj) ;
             throw new InvalidComObjectException("Expect method is only called for fields with type object. field: " + name);
         }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Managed.Types
         {
             if (field != null) {
                 if (useDirect) {
-                    switch (slotType) {
+                    switch (varType) {
                         case VarType.Object:   val.Obj     =           field.GetValueDirect (__makeref(obj)); return;
                      
                         case VarType.Double:   val.Dbl     = (double)  field.GetValueDirect (__makeref(obj)); return;
@@ -127,7 +127,7 @@ namespace Friflo.Json.Managed.Types
                         case VarType.Bool:     val.Bool    = (bool)    field.GetValueDirect (__makeref(obj)); return;
                     }
                 } else {
-                    switch (slotType) {
+                    switch (varType) {
                         case VarType.Object:   val.Obj     =           field.GetValue   (obj); return;
                        
                         case VarType.Double:   val.Dbl     = (double)  field.GetValue   (obj); return;
@@ -142,7 +142,7 @@ namespace Friflo.Json.Managed.Types
                     }
                 }
             } else {
-                switch (slotType) {
+                switch (varType) {
                     case VarType.Object:   val.Obj     =           setter.GetValue   (obj);    return;
                     //
                     case VarType.Double:   val.Dbl     = (double)  setter.GetValue   (obj);    return;
