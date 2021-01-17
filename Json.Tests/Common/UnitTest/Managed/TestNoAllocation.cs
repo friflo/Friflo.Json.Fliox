@@ -120,14 +120,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
 
         [Test]
         public void TestHashMapOpen() {
-            var memLog = new MemoryLogger(100, 100, MemoryLog.Disabled);
+            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var hashMap = new HashMapOpen<Bytes, string>(7, new Bytes("__REMOVED"));
             var key1 = new Bytes("key1");
             var key2 = new Bytes("key2");
             var key3 = new Bytes("key3");
             var key4 = new Bytes("key4");
             var key5 = new Bytes("key5");
-            int iterations = 10000000;
+            int iterations = 1000;
             var dict = new Dictionary<Bytes, String>();
             
             for (int n = 0; n < iterations; n++) {
@@ -145,7 +145,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     dict.TryAdd(key5, "key 5");
                 }
 
-                bool useHashMap = false;
+
+
+                bool useHashMap = true;
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (useHashMap) {
                     hashMap.Get(ref key1);
