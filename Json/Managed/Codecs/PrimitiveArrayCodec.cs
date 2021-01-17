@@ -23,14 +23,6 @@ namespace Friflo.Json.Managed.Codecs
             }
             return null;
         }
-        
-
-        
-        public static bool ArrayUnexpected (JsonReader reader, StubType stubType) {
-            ref JsonParser parser = ref reader.parser ;
-            CollectionType collection = (CollectionType)stubType; 
-            return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
-        }
 
         public static bool ArraysElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
             switch (reader.parser.Event) {
@@ -42,7 +34,9 @@ namespace Friflo.Json.Managed.Codecs
                 case JsonEvent.Error:
                     return false;
                 default:
-                    return ArrayUnexpected(reader, stubType);
+                    ref JsonParser parser = ref reader.parser ;
+                    CollectionType collection = (CollectionType)stubType; 
+                    return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
             }
         }
     }
