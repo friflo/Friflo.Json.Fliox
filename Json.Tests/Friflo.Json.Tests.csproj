@@ -10,12 +10,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath>.bin\Debug\</OutputPath>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>.bin\Release\</OutputPath>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

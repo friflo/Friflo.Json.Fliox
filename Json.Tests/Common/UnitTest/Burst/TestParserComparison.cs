@@ -17,11 +17,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public struct Int3
     {
         public int x, y, z;
-        
+        /*
         unsafe public int this[int index] {
             get { fixed (Int3* array = &this)   { return ((int*)array)[index]; } }
             set { fixed (int* array = &x)       { array[index] = value; } }
+        } */
+        
+        public int this[int index] {
+            get  {
+                switch (index) {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                }
+                throw new IndexOutOfRangeException("");
+            }
+            set {
+                switch (index) {
+                    case 0: x = value; return;
+                    case 1: y = value; return;
+                    case 2: z = value; return;
+                }
+                throw new IndexOutOfRangeException("");
+            }
         }
+        
         
         public void ReadManual (ref JsonParser p) {
             int index = 0;
