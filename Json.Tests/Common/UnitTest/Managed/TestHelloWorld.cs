@@ -1,7 +1,6 @@
 ﻿using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
-using Friflo.Json.Managed.Codecs;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Managed
@@ -10,33 +9,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
     
     public class TestHelloWorld
     {
-        [Test]
-        public void HelloWorldParser() {
-            string say = "", to = "";
-            var p = new JsonParser();
-            p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
-            p.NextEvent();
-            var i = p.GetObjectIterator();
-            while (p.NextObjectMember(ref i)) {
-                if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
-                if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
-            }
-            Console.WriteLine($"Output: {say}, {to}");
-            // Output: Hello, World 🌎
-        }
-        
-        [Test]
-        public void HelloWorldSerializer() {
-            var s = new JsonSerializer();
-            s.InitSerializer();
-            s.ObjectStart();
-                s.MemberStr("say", "Hello");
-                s.MemberStr("to",  "World 🌎");
-            s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}");
-            // Output: {"say":"Hello","to":"World 🌎"}
-        }
-
         class Message {
             public string say;
             public string to;
@@ -52,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
         
         [Test]
         public void HelloWorldWriter() {
-            var w = new JsonWriter(new TypeStore(new DebugTypeResolver()));
+            var w = new JsonWriter(new TypeStore());
             w.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {w.Output}");
             // Output: {"say":"Hello 👋","to":"World"}
