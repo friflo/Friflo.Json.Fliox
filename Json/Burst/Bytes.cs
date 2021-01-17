@@ -439,7 +439,7 @@ namespace Friflo.Json.Burst
         public override bool Equals (Object obj) {
             if (obj == null)
                 return false;
-            Bytes value = (Bytes)obj;
+            Bytes value = (Bytes)obj; // Bytes is a struct -> so unboxing -> boxing before allocates memory on the heap!
             return IsEqualBytes(ref value);
         }
 
