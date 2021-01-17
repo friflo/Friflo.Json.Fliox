@@ -1,6 +1,7 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Managed;
 using Friflo.Json.Managed.Codecs;
+using Friflo.Json.Managed.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -43,6 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
             var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
             
             var reusedClass = new TestClass();
+
+            var hashMap = new HashMapOpen<Bytes, string>(11, new Bytes("__REMOVED"));
             
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
@@ -109,6 +112,52 @@ namespace Friflo.Json.Tests.Common.UnitTest.Managed
                     }
                     enc.typeCache.ClearCounts();
                 }
+            }
+            memLog.AssertNoAllocations();
+        }
+
+        [Test]
+        public void TestHashMapOpen() {
+            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var hashMap = new HashMapOpen<Bytes, string>(7, new Bytes("__REMOVED"));
+            var key1 = new Bytes("key1");
+            var key2 = new Bytes("key2");
+            var key3 = new Bytes("key3");
+            var key4 = new Bytes("key4");
+            var key5 = new Bytes("key5");
+            var key6 = new Bytes("key6");
+            var key7 = new Bytes("key7");
+            var key8 = new Bytes("key8");
+            var key9 = new Bytes("key9");
+            int iterations = 1000;
+            
+            for (int n = 0; n < iterations; n++) {
+                memLog.Snapshot();
+                hashMap.Put(ref key1,           "key 1 first");
+                AreEqual(hashMap.Get(ref key1), "key 1 first");
+                
+                hashMap.Put(ref key1,           "key 1");
+                AreEqual(hashMap.Get(ref key1), "key 1");
+                
+                
+                hashMap.Put(ref key2, "key 2");
+                hashMap.Put(ref key3, "key 3");
+                hashMap.Put(ref key4, "key 4");
+                hashMap.Put(ref key5, "key 5");
+                hashMap.Put(ref key6, "key 6");
+                hashMap.Put(ref key7, "key 7");
+                hashMap.Put(ref key8, "key 8");
+                hashMap.Put(ref key9, "key 9");
+
+                AreEqual(hashMap.Get(ref key1), "key 1");
+                AreEqual(hashMap.Get(ref key2), "key 2");
+                AreEqual(hashMap.Get(ref key3), "key 3");
+                AreEqual(hashMap.Get(ref key4), "key 4");
+                AreEqual(hashMap.Get(ref key5), "key 5");
+                AreEqual(hashMap.Get(ref key6), "key 6");
+                AreEqual(hashMap.Get(ref key7), "key 7");
+                AreEqual(hashMap.Get(ref key8), "key 8");
+                AreEqual(hashMap.Get(ref key9), "key 9");
             }
             memLog.AssertNoAllocations();
         }

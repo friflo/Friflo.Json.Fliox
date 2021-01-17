@@ -20,8 +20,14 @@ namespace Friflo.Json.Burst
     public struct BytesConst {
         public static readonly int  notHashed = 0;
     }
+
+    public interface IMapKey<K> where K : struct
+    {
+        bool    IsEqual([AllowNull] ref K other);
+        bool    IsSet();
+    }
     
-    public struct Bytes : IDisposable
+    public struct Bytes : IDisposable, IMapKey<Bytes>
     {
 
         public  int             hc; //      = notHashed;
@@ -322,6 +328,14 @@ namespace Friflo.Json.Burst
         }
 #endif
 
+        public bool IsSet() {
+            return buffer.IsCreated();
+        }
+
+        public bool IsEqual(ref Bytes value) {
+            return IsEqualBytes(ref value);
+        }
+
         public bool IsEqualBytes(ref Bytes value)
         {
             int len = Len;
@@ -433,18 +447,22 @@ namespace Friflo.Json.Burst
         {
             return hc;
         }
-
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public override int GetHashCode()
-        {
-            if (hc != BytesConst.notHashed)
-                return hc;
+        
+        public int UpdateHashCode() {
             ref var str = ref buffer.array;
             int     h = Len;
             // Rotate by 3 bits and XOR the new value.
             for (int i = start; i < end; i++)
                 h = (h << 3) | (h >> (29)) ^ str[i];
             return hc = Math.Abs(h);
+        }
+
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+        public override int GetHashCode()
+        {
+            if (hc != BytesConst.notHashed)
+                return hc;
+            return hc = UpdateHashCode();
         }
 
         public int Split (char separator, params Bytes [] param)

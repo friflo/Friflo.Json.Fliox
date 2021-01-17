@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Codecs;
@@ -12,10 +13,10 @@ namespace Friflo.Json.Managed.Types
     // PropType
     public class ClassType : StubType
     {
-        private readonly FFMap<String, PropField>   strMap      = new HashMapOpen<String, PropField>(13);
-        private readonly FFMap<Bytes, PropField>    fieldMap    = new HashMapOpen<Bytes,  PropField>(11);
-        public  readonly PropertyFields             propFields;
-        private readonly ConstructorInfo            constructor;
+        private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
+        private readonly HashMapOpen<Bytes,  PropField> fieldMap;
+        public  readonly PropertyFields                 propFields;
+        private readonly ConstructorInfo                constructor;
         
         
         public override void Dispose() {
@@ -27,14 +28,18 @@ namespace Friflo.Json.Managed.Types
         internal ClassType (Type type, IJsonCodec codec, ConstructorInfo constructor) :
             base (type, codec, IsNullable(type), TypeCat.Object)
         {
+            using (var removedKey = new Bytes("__REMOVED")) {
+                fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
+            }
+
             propFields = new  PropertyFields (type, this);
             for (int n = 0; n < propFields.num; n++)
             {
                 PropField   field = propFields.fields[n];
-                if (strMap.Get(field.name) != null)
+                if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
-                strMap.Put(field.name, field);
-                fieldMap.Put(field.nameBytes, field);
+                strMap.Add(field.name, field);
+                fieldMap.Put(ref field.nameBytes, field);
             }
             this.constructor = constructor;
         }
@@ -63,14 +68,13 @@ namespace Friflo.Json.Managed.Types
             return Reflect.CreateInstance(constructor);
         }
 
-        public PropField GetField (String name)
-        {
-            return strMap.Get(name);
-        }
-
-        public PropField GetField (Bytes fieldName)
-        {
-            return fieldMap.Get(fieldName);
+        public PropField GetField (ref Bytes fieldName) {
+            // Note: its likely that hashcode ist not set properly. So calculate anyway
+            fieldName.UpdateHashCode();
+            PropField pf = fieldMap.Get(ref fieldName);
+            if (pf == null)
+                Console.Write("");
+            return pf;
         }
         
 

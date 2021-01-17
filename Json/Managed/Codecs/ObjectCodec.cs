@@ -95,7 +95,7 @@ namespace Friflo.Json.Managed.Codecs
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        PropField field = classType.GetField(parser.key);
+                        PropField field = classType.GetField(ref parser.key);
                         if (field == null) {
                             if (!reader.discriminator.IsEqualBytes(ref parser.key)) // dont count discriminators
                                 parser.SkipEvent();
@@ -110,7 +110,7 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetObject(obj, elemVar.Obj); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
-                        field = classType.GetField(parser.key);
+                        field = classType.GetField(ref parser.key);
                         if (field == null) {
                             parser.SkipEvent(); // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                             break;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueBool:
-                        field = classType.GetField(parser.key);
+                        field = classType.GetField(ref parser.key);
                         if (field == null) {
                             parser.SkipEvent();
                             break;
@@ -137,7 +137,7 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetField(obj, ref elemVar);
                         break;
                     case JsonEvent.ValueNull:
-                        field = classType.GetField(parser.key);
+                        field = classType.GetField(ref parser.key);
                         if (field == null) {
                             parser.SkipEvent(); // count skipping
                             break;
@@ -147,7 +147,7 @@ namespace Friflo.Json.Managed.Codecs
                         field.SetObject(obj, null);
                         break;
                     case JsonEvent.ObjectStart:
-                        field = classType.GetField(parser.key);
+                        field = classType.GetField(ref parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return false;
@@ -166,7 +166,7 @@ namespace Friflo.Json.Managed.Codecs
                         }
                         break;
                     case JsonEvent.ArrayStart:
-                        field = classType.GetField(parser.key);
+                        field = classType.GetField(ref parser.key);
                         if (field == null) {
                             if (!parser.SkipTree())
                                 return false;

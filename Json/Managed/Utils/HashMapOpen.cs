@@ -1,40 +1,34 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-using System;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Managed.Utils
 {
-    // HashMapOpen
-    public class HashMapOpen <K,V> : FFMap<K,V>
+    /// <summary>
+    /// Requirement/feature: Allocation free hash map when using Get()
+    /// </summary>
+    public class HashMapOpen <K,V>  /* FFMap<K,V> */ where K : struct, IMapKey<K>
     {
-        private                 Object[]    key;
-        private                 V[]         val;
-        private                 int[]       used;
-        private                 int         capacity;
-        private                 int         size;
-        private                 int         threshold;
-        private static readonly Removed     RemovedKey = new Removed();
-        private                 int         removes;
-        private                 int         thresholdRemoves;
-        private                 Object[]    rehashKey;
-        private                 V[]         rehashVal;
-        private                 int[]       rehashUsed;
+        private     K[]     key;
+        private     V[]     val;
+        private     int[]   used;
+        private     int     capacity;
+        private     int     size;
+        private     int     threshold;
+        private     K       removedKey;
+        private     int     removes;
+        private     int     thresholdRemoves;
 
-        public HashMapOpen()
-        :
-            this (11) {
-        }
-
-
-        public HashMapOpen(int capacity)
+        public HashMapOpen(int capacity, K removedKey)
         {
-            key =   new Object  [ capacity ];
+            key =   new K       [ capacity ];
             val =   new V       [ capacity ];
             used =  new int     [capacity];
             //
             this.capacity = capacity;
             threshold = (int)(0.7 * capacity);
             thresholdRemoves    = (int)(0.15 * capacity);
+            this.removedKey     = removedKey;
         }
 
         public int Size()
@@ -42,29 +36,29 @@ namespace Friflo.Json.Managed.Utils
             return size;
         }
 
-        public bool Remove (K k)
+        public bool Remove (ref K k)
         {
             // does not support null key (same as Dictionary)
             int hash = k. GetHashCode() & 0x7FFFFFFF;
             int idx = hash % capacity;
-            Object e = key[idx];
-            while (e != null)
+            ref K e = ref key[idx];
+            while (e.IsSet())
             {
-                if (e. Equals( k ))
+                if (e. IsEqual( ref k ))
                 {
-                    key[idx] = RemovedKey;
+                    key[idx] = removedKey;
                     val[idx] = default(V);
                     if (removes++ >= thresholdRemoves )
                         Rehash(capacity);
                     return true;
                 }
                 idx = (idx + 1) % capacity;
-                e = key[idx];
+                e = ref key[idx];
             }
             return false;
         }
 
-        public void Put(K k, V v)
+        public void Put(ref K k, V v)
         {
             // does not support null key (same as Dictionary)
             int hash = k. GetHashCode() & 0x7FFFFFFF;
@@ -72,50 +66,51 @@ namespace Friflo.Json.Managed.Utils
             if (size >= threshold)
                 Rehash ( 2 * capacity + 1);
             int idx = hash % capacity;
-            Object e = key[idx];
-            while (e != null)
+            ref K e = ref key[idx];
+            while (e.IsSet())
             {
-                if (e. Equals( k ))
+                if (e. IsEqual( ref k ))
                 {
                     val[idx] = v;
                     return;
                 }
                 idx = (idx + 1) % capacity;
-                e = key[idx];
+                e = ref key[idx];
             }
+
             key[idx] = k;
             val[idx] = v;
             used[size++] = idx;     
         }
     
-        public V Get (K k)
+        public V Get (ref K k)
         {
             // does not support null key (same as Dictionary)
             int hash = k. GetHashCode() & 0x7FFFFFFF;
             int idx = hash % capacity;
-            Object e = key[idx];
-            while (e != null)
+            ref K e = ref key[idx];
+            while (e.IsSet())
             {
-                if (e. Equals( k ))
+                if (e. IsEqual(ref k ))
                     return val[idx];
                 idx = (idx + 1) % capacity;
-                e = key[idx];           
+                e = ref key[idx];           
             }
             return default(V);
         }
     
-        public bool ContainsKey (K k)
+        public bool ContainsKey (ref K k)
         {
             // does not support null key (same as Dictionary)
             int hash = k. GetHashCode() & 0x7FFFFFFF;
             int idx = hash % capacity;
-            Object e = key[idx];
-            while (e != null)
+            ref K e = ref key[idx];
+            while (e.IsSet())
             {
-                if (e. Equals( k ))
+                if (e. IsEqual( ref k ))
                     return true;
                 idx = (idx + 1) % capacity;
-                e = key[idx];           
+                e = ref key[idx];           
             }
             return false;
         }
@@ -123,42 +118,37 @@ namespace Friflo.Json.Managed.Utils
         public void Rehash (int newCap)
         {
             capacity = newCap;
-            threshold           = (int)(0.7 * capacity);
+            threshold           = (int)(0.7  * capacity);
             thresholdRemoves    = (int)(0.15 * capacity);
-            bool reuse = rehashKey != null && rehashKey. Length >= capacity;
-            Object[]    newKey  = reuse ? rehashKey     : new Object    [ capacity ];
-            // @SuppressWarnings("unchecked")
-            V[]         newVal  = reuse ? rehashVal     : new V         [ capacity ];
-            int[]       newUsed = reuse ? rehashUsed    :new int        [ capacity ];
+            
+            K[]         newKey  = new K    [capacity];
+            V[]         newVal  = new V    [capacity];
+            int[]       newUsed = new int  [capacity];
             int         newSize = 0;
         
             for (int n = 0; n < size; n++)
             {
                 int pos = used[n];
-                Object k = key[pos];
+                ref K k = ref key[pos];
                 // ReSharper disable once PossibleUnintendedReferenceComparison
-                if (k != RemovedKey)
+                if (!k.IsEqual(ref removedKey))
                 {
                     int hash = k. GetHashCode() & 0x7FFFFFFF;
                     int idx = hash % capacity;
-                    Object e = newKey[idx];
-                    while (e != null)
+                    ref K e = ref newKey[idx];
+                    while (e.IsSet())
                     {
                         idx = (idx + 1) % capacity;
-                        e = newKey[idx];
+                        e = ref newKey[idx];
                     }
                     newKey[idx] = k;
                     newVal[idx] = val[pos];
                     newUsed[newSize++] = idx;
                 }
-                key[pos]= null;
+                key[pos]= default;
                 val[pos]= default(V);
             }
-            // Array.Clear( key, 0, _key.Length);
-            // Array.Clear( val, 0, _val.Length);
-            rehashKey = key;
-            rehashVal = val;
-            rehashUsed = used;
+
             key = newKey;
             val = newVal;
             used = newUsed;
@@ -173,17 +163,6 @@ namespace Friflo.Json.Managed.Utils
             size = 0;
         }
 
-        private class Removed
-        {
-            public override int GetHashCode()
-            {
-                return -1;
-            }
-            
-            public override bool Equals (Object o)
-            {
-                return false;
-            }
-        }
+
     }
 }
