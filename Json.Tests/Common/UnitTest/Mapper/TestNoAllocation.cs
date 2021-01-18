@@ -141,12 +141,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        // AreEqual(22, enc.typeCache.LookupCount);
-                        AreEqual( 0, enc.typeCache.StoreLookupCount);
-                        AreEqual( 0, enc.typeCache.TypeCreationCount);
+                        AreEqual( 27, enc.typeCache.LookupCount);
+                        AreEqual(  0, enc.typeCache.StoreLookupCount);
+                        AreEqual(  0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
+                AreEqual(154000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }

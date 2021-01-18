@@ -115,6 +115,9 @@ namespace Friflo.Json.Burst
         /// <summary>Contains number of skipped JSON nodes when using one of the Skip...() methods like <see cref="SkipTree()"/> while parsing</summary>
         public      SkipInfo            skipInfo;
 
+        private     int                 previousBytes;
+        public      int                 ProcessedBytes => previousBytes + pos;
+
 
         enum State {
             ExpectMember        = 0,
@@ -347,6 +350,7 @@ namespace Friflo.Json.Burst
             stateLevel = 0;
             state.array[0] = State.ExpectRoot;
 
+            this.previousBytes += pos - startPos; // for statistics
             this.pos = start;
             this.startPos = start;
             this.buf = bytes;
