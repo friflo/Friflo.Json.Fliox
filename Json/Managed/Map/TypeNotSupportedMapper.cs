@@ -8,9 +8,9 @@ namespace Friflo.Json.Managed.Map
 {
 
     
-    public class TypeNotSupportedCodec : IJsonMapper
+    public class TypeNotSupportedMapper : IJsonMapper
     {
-        public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
+        public static readonly TypeNotSupportedMapper Interface = new TypeNotSupportedMapper();
 
         public StubType CreateStubType(Type type) {
             return new NotSupportedType(type, "Type not supported");

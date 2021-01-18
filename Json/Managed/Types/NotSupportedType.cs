@@ -10,7 +10,7 @@ namespace Friflo.Json.Managed.Types
         public readonly string msg;
         
         public NotSupportedType(Type type, string msg) : 
-            base(type, TypeNotSupportedCodec.Interface, false, TypeCat.None) {
+            base(type, TypeNotSupportedMapper.Interface, false, TypeCat.None) {
             this.msg = msg;
         }
 
