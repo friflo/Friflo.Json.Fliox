@@ -9,9 +9,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
-    public class ObjectArrayMapper : IJsonMapper
+    public class ArrayMapper : IJsonMapper
     {
-        public static readonly ObjectArrayMapper Interface = new ObjectArrayMapper();
+        public static readonly ArrayMapper Interface = new ArrayMapper();
         
         public StubType CreateStubType(Type type) {
             if (type. IsArray) {

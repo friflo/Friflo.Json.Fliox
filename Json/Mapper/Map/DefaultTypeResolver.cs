@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Map
             ByteMapper.Interface,
             BoolMapper.Interface,
             //  
-            ObjectArrayMapper.Interface,
+            ArrayMapper.Interface,
             //  
             ListMapper.Interface,
             DictionaryMapper.Interface,
@@ -92,7 +92,7 @@ namespace Friflo.Json.Mapper.Map
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if ((stubType = ObjectArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ArrayMapper.              Interface.CreateStubType(type)) != null) return stubType;
             //
             if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = DictionaryMapper.         Interface.CreateStubType(type)) != null) return stubType;
