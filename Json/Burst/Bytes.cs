@@ -4,8 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Managed.Utils;
-
+using Friflo.Json.Mapper.Utils;
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
     using Str128 = Unity.Collections.FixedString128;

@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-
+using Friflo.Json.Mapper.Utils;
 #if JSON_BURST
     using Str128 = Unity.Collections.FixedString128;
 #else
@@ -33,7 +33,7 @@ namespace Friflo.Json.Burst
             Pos = pos;
 #if !JSON_BURST
             if (throwException)
-                throw new Friflo.Json.Managed.Utils.FrifloException (msg.ToString());
+                throw new FrifloException (msg.ToString());
 #endif
             return false;
         }

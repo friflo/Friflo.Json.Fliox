@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Managed.Utils;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Tests.Common.Utils
 {
