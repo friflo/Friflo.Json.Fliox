@@ -27,19 +27,34 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly PrimitiveArrayMapper<string>   StringInterface =     new PrimitiveArrayMapper<string>   ();
 
         
-        public static void SetArrayItem (Array array, ref Var item, VarType varType, int index, bool nullable) {
+        public static void SetArrayItem (Array array, ref Var item, VarType varType, int index, bool nullable, bool isNull) {
             if (nullable) {
-                switch (varType) {
-                    case VarType.Object:    ((object[])  array)[index]= item.Obj;    return;
-                    case VarType.Double:    ((double?[]) array)[index]= item.Dbl;    return;
-                    case VarType.Float:     ((float?[])  array)[index]= item.Flt;    return;
-                    case VarType.Long:      ((long?[])   array)[index]= item.Lng;    return;
-                    case VarType.Int:       ((int?[])    array)[index]= item.Int;    return;
-                    case VarType.Short:     ((short?[])  array)[index]= item.Short;  return;
-                    case VarType.Byte:      ((byte?[])   array)[index]= item.Byte;   return;
-                    case VarType.Bool:      ((bool?[])   array)[index]= item.Bool;   return;
-                    default:
-                        throw new InvalidOperationException("varType not supported: " + varType);
+                if (isNull) {
+                    switch (varType) {
+                        case VarType.Object:    ((object[])  array)[index]= null;   return;
+                        case VarType.Double:    ((double?[]) array)[index]= null;   return;
+                        case VarType.Float:     ((float?[])  array)[index]= null;   return;
+                        case VarType.Long:      ((long?[])   array)[index]= null;   return;
+                        case VarType.Int:       ((int?[])    array)[index]= null;   return;
+                        case VarType.Short:     ((short?[])  array)[index]= null;   return;
+                        case VarType.Byte:      ((byte?[])   array)[index]= null;   return;
+                        case VarType.Bool:      ((bool?[])   array)[index]= null;   return;
+                        default:
+                            throw new InvalidOperationException("varType not supported: " + varType);
+                        }
+                } else {
+                    switch (varType) {
+                        case VarType.Object:    ((object[])  array)[index]= item.Obj;    return;
+                        case VarType.Double:    ((double?[]) array)[index]= item.Dbl;    return;
+                        case VarType.Float:     ((float?[])  array)[index]= item.Flt;    return;
+                        case VarType.Long:      ((long?[])   array)[index]= item.Lng;    return;
+                        case VarType.Int:       ((int?[])    array)[index]= item.Int;    return;
+                        case VarType.Short:     ((short?[])  array)[index]= item.Short;  return;
+                        case VarType.Byte:      ((byte?[])   array)[index]= item.Byte;   return;
+                        case VarType.Bool:      ((bool?[])   array)[index]= item.Bool;   return;
+                        default:
+                            throw new InvalidOperationException("varType not supported: " + varType);
+                    }
                 }
             } else {
                 switch (varType) {
@@ -190,7 +205,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++, nullable);
+                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++, nullable, false);
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
@@ -200,7 +215,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
+                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable, false);
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
@@ -210,11 +225,14 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
+                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable, false);
                         break;
                     case JsonEvent.ValueNull:
-                        // primitives in PrimitiveListMapper an never nullable
-                        return reader.ErrorIncompatible("array element", elementType, ref parser);
+                        if (!nullable)
+                            return reader.ErrorIncompatible("array element", elementType, ref parser);
+                        elemVar.Obj = null;
+                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  true, true);
+                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         elemVar.Clear();
@@ -222,7 +240,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
+                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable, false);
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
