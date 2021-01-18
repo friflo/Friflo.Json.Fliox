@@ -27,14 +27,6 @@ namespace Friflo.Json.Mapper.Map
             ByteMapper.Interface,
             BoolMapper.Interface,
             //  
-            StringArrayMapper.Interface,
-            LongArrayMapper.Interface,
-            IntArrayMapper.Interface,
-            ShortArrayMapper.Interface,
-            ByteArrayMapper.Interface,
-            BoolArrayMapper.Interface,
-            DoubleArrayMapper.Interface,
-            FloatArrayMapper.Interface,
             ObjectArrayMapper.Interface,
             //  
             ListMapper.Interface,
@@ -100,14 +92,6 @@ namespace Friflo.Json.Mapper.Map
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            // if ((stubType = StringArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
-            /* if ((stubType = LongArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = IntArrayMapper.           Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ShortArrayMapper.         Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ByteArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = BoolArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DoubleArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = FloatArrayMapper.         Interface.CreateStubType(type)) != null) return stubType; */
             if ((stubType = ObjectArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
             //
             if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;

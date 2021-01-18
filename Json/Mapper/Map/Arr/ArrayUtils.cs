@@ -12,36 +12,6 @@ using Friflo.Json.Mapper.Utils;
 namespace Friflo.Json.Mapper.Map.Arr
 {
     public static class ArrayUtils {
-        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonMapper map) {
-            if (type. IsArray) {
-                Type elementType = type.GetElementType();
-                int rank = type.GetArrayRank();
-                if (rank > 1)
-                    return null; // todo implement multi dimensional array support
-                if (elementType == itemType) {
-                    ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, map, type.GetArrayRank(), null, constructor);
-                }
-            }
-            return null;
-        }
-        
-        public static bool ArrayElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
-            switch (reader.parser.Event) {
-                case JsonEvent.ArrayEnd:
-                    if (index != len)
-                        array = Arrays.CopyOf(array, index);
-                    slot.Obj = array;
-                    return true;
-                case JsonEvent.Error:
-                    return false;
-                default:
-                    ref JsonParser parser = ref reader.parser ;
-                    CollectionType collection = (CollectionType)stubType; 
-                    return reader.ErrorIncompatible("array element", collection.ElementType , ref parser);
-            }
-        }
         
         public static void AddListItem (IList list, ref Var item, VarType varType, int index, int startLen, bool nullable) {
             if (index < startLen) {
