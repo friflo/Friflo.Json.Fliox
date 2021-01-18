@@ -596,6 +596,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         var expect = new Dictionary<string, float> {{"key", 42}};
                         AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, float?> {{"key", 42}};
+                        AreEqual(expect, enc.Read<Dictionary<string, float?>>(mapNum));
+                    } {
+                        var expect = new Dictionary<string, float?> {{"key", null}};
+                        AreEqual(expect, enc.Read<Dictionary<string, float?>>(mapNull));
                     }
                     
                     // --- map - value type: string
@@ -656,7 +662,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(120, enc.typeCache.LookupCount);
+                        AreEqual(122, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
