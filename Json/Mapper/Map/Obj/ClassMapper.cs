@@ -4,10 +4,10 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Types;
-using Friflo.Json.Managed.Utils;
+using Friflo.Json.Mapper.Types;
+using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Managed.Map.Obj
+namespace Friflo.Json.Mapper.Map.Obj
 {
     public class ClassMapper : IJsonMapper {
         public static readonly ClassMapper Interface = new ClassMapper();

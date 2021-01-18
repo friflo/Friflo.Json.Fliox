@@ -6,10 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Types;
-using Friflo.Json.Managed.Utils;
+using Friflo.Json.Mapper.Types;
+using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Managed.Map.Arr
+namespace Friflo.Json.Mapper.Map.Arr
 {
     public class ListMapper : IJsonMapper
     {

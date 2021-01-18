@@ -4,9 +4,9 @@
 using System;
 using System.Numerics;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed.Types;
+using Friflo.Json.Mapper.Types;
 
-namespace Friflo.Json.Managed.Map.Val
+namespace Friflo.Json.Mapper.Map.Val
 {
     public class BigIntMapper : IJsonMapper
     {
