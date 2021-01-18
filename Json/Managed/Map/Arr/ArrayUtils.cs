@@ -9,7 +9,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Map.Arr
 {
     public static class ArrayUtils {
-        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonMapper jsonCodec) {
+        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonMapper map) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -18,7 +18,7 @@ namespace Friflo.Json.Managed.Map.Arr
                 if (elementType == itemType) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, jsonCodec, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, map, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;

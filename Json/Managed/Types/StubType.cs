@@ -38,9 +38,9 @@ namespace Friflo.Json.Managed.Types
 
         public StubType(Type type, IJsonMapper map, bool isNullable, TypeCat typeCat) {
             this.type =         type;
-            this.map =        map;
+            this.map =          map;
             this.isNullable =   isNullable;
-            this.typeCat =     typeCat;
+            this.typeCat =      typeCat;
         }
 
         public virtual void Dispose() {
