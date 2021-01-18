@@ -4,10 +4,13 @@ namespace Friflo.Json.Mapper.Utils
 {
     public class BytesString
     {
-        public Bytes value = new Bytes("");
+        public Bytes value;
+        
+        public BytesString() {
+        }
 
         public BytesString(string str) {
-            value.Set(str);
+            value = new Bytes(str);
         }
 
         public override bool Equals(object obj) {

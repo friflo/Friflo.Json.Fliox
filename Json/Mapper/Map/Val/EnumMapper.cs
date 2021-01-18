@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
@@ -19,16 +20,23 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
-            writer.bytes.AppendChar('\"');
-            writer.bytes.AppendString("\"item1\"");
-            writer.bytes.AppendChar('\"');
+            if (enumType.enumToString.TryGetValue((Enum)slot.Obj, out BytesString enumName)) {
+                writer.bytes.AppendChar('\"');
+                writer.bytes.AppendBytes(ref enumName.value);
+                writer.bytes.AppendChar('\"');
+            }
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
             if (reader.parser.Event == JsonEvent.ValueString) {
+                reader.keyBuf.value = reader.parser.value;
+                if (enumType.stringToEnum.TryGetValue(reader.keyBuf, out Enum enumValue)) {
+                    slot.Obj = enumValue;
+                    return true;
+                }
                 slot.Obj = null;
-                return true;
+                return false;
                 // return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
             }
             return ValueUtils.CheckElse(reader, stubType);

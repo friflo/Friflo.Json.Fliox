@@ -280,16 +280,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public enum TestEnum
         {
             item1 = 11,
-            ttem2 = 22
+            item2 = 22
         }
 
         [Test]
         public void TestEnumMapper() {
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
-            using (var item1 = new Bytes("\"item1\"")) {
-                var result = enc.Read(item1, typeof(TestEnum));
-
+            using (JsonWriter write = new JsonWriter(typeStore))
+            using (var item1 = new Bytes("\"item1\""))
+            using (var item2 = new Bytes("\"item2\""))
+            {
+                AreEqual(TestEnum.item1, enc.Read(item1, typeof(TestEnum)));
+                AreEqual(TestEnum.item2, enc.Read(item2, typeof(TestEnum)));
+                
+                write.Write(TestEnum.item1);
             }
         }
 

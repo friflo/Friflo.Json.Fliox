@@ -5,6 +5,7 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Types;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
@@ -14,7 +15,8 @@ namespace Friflo.Json.Mapper
         public          JsonParser      parser;
         public readonly TypeCache       typeCache;
 
-        public readonly Bytes           discriminator = new Bytes("$type");
+        public readonly Bytes           discriminator   = new Bytes("$type");
+        public          BytesString     keyBuf          = new BytesString();
 
         public          JsonError       Error => parser.error;
         public          SkipInfo        SkipInfo => parser.skipInfo;
