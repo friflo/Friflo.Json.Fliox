@@ -25,11 +25,14 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly PrimitiveArrayMapper<short?>   ShortNulInterface =   new PrimitiveArrayMapper<short?>   ();
         public static readonly PrimitiveArrayMapper<byte?>    ByteNulInterface =    new PrimitiveArrayMapper<byte?>    ();
         public static readonly PrimitiveArrayMapper<bool?>    BoolNulInterface =    new PrimitiveArrayMapper<bool?>    ();
-        
+
+        public static readonly PrimitiveArrayMapper<string>   StringInterface =     new PrimitiveArrayMapper<string>   ();
+
         
         public static void SetArrayItem (Array array, ref Var item, VarType varType, int index, bool nullable) {
             if (nullable) {
                 switch (varType) {
+                    case VarType.Object:    ((object[])  array)[index]= item.Obj;    return;
                     case VarType.Double:    ((double?[]) array)[index]= item.Dbl;    return;
                     case VarType.Float:     ((float?[])  array)[index]= item.Flt;    return;
                     case VarType.Long:      ((long?[])   array)[index]= item.Lng;    return;
@@ -42,6 +45,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             } else {
                 switch (varType) {
+                    case VarType.Object:    ((object[]) array)[index]= item.Obj;    return; // remove - object is always nullable
                     case VarType.Double:    ((double[]) array)[index]= item.Dbl;    return;
                     case VarType.Float:     ((float[])  array)[index]= item.Flt;    return;
                     case VarType.Long:      ((long[])   array)[index]= item.Lng;    return;
@@ -59,6 +63,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             isNull = false;
             if (!nullable) {
                 switch (varType) {
+                    case VarType.Object:    item.Obj =  ((object[])array)[index];    return; // remove - object is always nullable
                     case VarType.Double:    item.Dbl =  ((double[])array)[index];    return;
                     case VarType.Float:     item.Flt =  ((float[]) array)[index];    return;
                     case VarType.Long:      item.Lng =  ((long[])  array)[index];    return;
@@ -71,6 +76,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             } else {
                 switch (varType) {
+                    case VarType.Object:
+                        item.Obj = ((object[]) array)[index];
+                        return;
                     case VarType.Double:
                         var dbl = ((double?[]) array)[index];
                         if (dbl == null)    isNull = true;

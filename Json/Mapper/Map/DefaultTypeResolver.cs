@@ -94,11 +94,13 @@ namespace Friflo.Json.Mapper.Map
             if ((stubType = PrimitiveArray.           ShortNulInterface.CreateStubType(type))  != null) return stubType;
             if ((stubType = PrimitiveArray.           ByteNulInterface.CreateStubType(type))   != null) return stubType;
             if ((stubType = PrimitiveArray.           BoolNulInterface.CreateStubType(type))   != null) return stubType;
+            
+            if ((stubType = PrimitiveArray.           StringInterface.CreateStubType(type))    != null) return stubType;
 
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if ((stubType = StringArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
+            // if ((stubType = StringArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
             /* if ((stubType = LongArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = IntArrayMapper.           Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = ShortArrayMapper.         Interface.CreateStubType(type)) != null) return stubType;
