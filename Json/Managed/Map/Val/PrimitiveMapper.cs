@@ -7,9 +7,6 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Map.Val
 {
-
-
-
     public class StringMapper : IJsonMapper
     {
         public static readonly StringMapper Interface = new StringMapper();
