@@ -8,22 +8,7 @@ using Friflo.Json.Managed.Types;
 namespace Friflo.Json.Managed.Map.Val
 {
 
-    public static class ValueUtils
-    {
-        public static bool CheckElse(JsonReader reader, StubType stubType) {
-            ref JsonParser parser = ref reader.parser;
-            switch (parser.Event) {
-                case JsonEvent.ValueNull:
-                    if (stubType.isNullable)
-                        return false;
-                    return reader.ErrorIncompatible("primitive", stubType, ref parser);
-                case JsonEvent.Error:
-                    return false;
-                default:
-                    return reader.ErrorIncompatible("primitive", stubType, ref parser);
-            }
-        }
-    }
+
 
     public class StringMapper : IJsonMapper
     {
