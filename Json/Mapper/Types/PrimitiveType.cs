@@ -25,10 +25,10 @@ namespace Friflo.Json.Mapper.Types
             if (type == typeof(string))
                 return TypeCat.String;
             
-            if (type == typeof(bool))
+            if (type == typeof(bool)  || type == typeof(bool?))
                 return TypeCat.Bool;
-            if (
-                type == typeof(long)  || type == typeof(long?)  ||
+            
+            if (type == typeof(long)  || type == typeof(long?)  ||
                 type == typeof(int)   || type == typeof(int?)   ||
                 type == typeof(short) || type == typeof(short?) ||
                 type == typeof(byte)  || type == typeof(byte?)  ||
@@ -36,6 +36,7 @@ namespace Friflo.Json.Mapper.Types
                 type == typeof(double)|| type == typeof(double?)||
                 type == typeof(float) || type == typeof(float))
                 return TypeCat.Number;
+            
             return TypeCat.None;
         }
     }

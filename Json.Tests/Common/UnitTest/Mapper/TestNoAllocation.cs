@@ -64,6 +64,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedListByte =    new List<byte>();
             var reusedListBool =    new List<bool>();
             
+            var reusedListNullableLng =     new List<long?>();
+            var reusedListNullableInt =     new List<int?>();
+            var reusedListNullableShort =   new List<short?>();
+            var reusedListNullableByte =    new List<byte?>();
+            var reusedListNullableBool =    new List<bool?>();
+            
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
@@ -133,6 +139,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrNum, reusedListShort));
                     IsTrue(enc.ReadTo(arrNum, reusedListByte));
                     IsTrue(enc.ReadTo(arrBln, reusedListBool));
+                    
+                    // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableLng));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableInt));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableShort));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableByte));
+                    // IsTrue(enc.ReadTo(arrBln, reusedListNullableBool));
 
                     // --------------------------------- class ---------------------------------
                     IsTrue(enc.ReadTo(mapNum, reusedClass));

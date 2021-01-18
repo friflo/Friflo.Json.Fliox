@@ -70,8 +70,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case VarType.Short:     ((List<short>)  list)[index]= item.Short;  return;
                     case VarType.Byte:      ((List<byte>)   list)[index]= item.Byte;   return;
                     case VarType.Bool:      ((List<bool>)   list)[index]= item.Bool;   return;
+                    default:
+                        throw new InvalidOperationException("varType not supported: " + varType);
                 }
-                throw new InvalidOperationException("-------------");
             }
             switch (varType) {
                 case VarType.Object:    ((List<object>) list).Add(item.Obj);    return;
@@ -82,8 +83,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                 case VarType.Short:     ((List<short>)  list).Add(item.Short);  return;
                 case VarType.Byte:      ((List<byte>)   list).Add(item.Byte);   return;
                 case VarType.Bool:      ((List<bool>)   list).Add(item.Bool);   return;
+                default:
+                    throw new InvalidOperationException("varType not supported: " + varType);
             }
-            throw new InvalidOperationException("********************");
         }
         
         public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
