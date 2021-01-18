@@ -59,17 +59,31 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
         }
         
-        public static bool ListElse(JsonReader reader, ref Var slot, StubType stubType, IList list) {
-            switch (reader.parser.Event) {
-                case JsonEvent.ArrayEnd:
-                    slot.Obj = list;
-                    return true;
-                case JsonEvent.Error:
-                    return false;
-                default:
-                    CollectionType collection = (CollectionType)stubType; 
-                    return reader.ErrorIncompatible("array element", collection.ElementType , ref reader.parser);
+        public static void AddListItem (IList list, ref Var item, VarType varType, int index, int startLen) {
+            if (index < startLen) {
+                switch (varType) {
+                    case VarType.Object:    ((List<object>) list)[index]= item.Obj;    return;
+                    case VarType.Double:    ((List<double>) list)[index]= item.Dbl;    return;
+                    case VarType.Float:     ((List<float>)  list)[index]= item.Flt;    return;
+                    case VarType.Long:      ((List<long>)   list)[index]= item.Lng;    return;
+                    case VarType.Int:       ((List<int>)    list)[index]= item.Int;    return;
+                    case VarType.Short:     ((List<short>)  list)[index]= item.Short;  return;
+                    case VarType.Byte:      ((List<byte>)   list)[index]= item.Byte;   return;
+                    case VarType.Bool:      ((List<bool>)   list)[index]= item.Bool;   return;
+                }
+                throw new InvalidOperationException("-------------");
             }
+            switch (varType) {
+                case VarType.Object:    ((List<object>) list).Add(item.Obj);    return;
+                case VarType.Double:    ((List<double>) list).Add(item.Dbl);    return;
+                case VarType.Float:     ((List<float>)  list).Add(item.Flt);    return;
+                case VarType.Long:      ((List<long>)   list).Add(item.Lng);    return;
+                case VarType.Int:       ((List<int>)    list).Add(item.Int);    return;
+                case VarType.Short:     ((List<short>)  list).Add(item.Short);  return;
+                case VarType.Byte:      ((List<byte>)   list).Add(item.Byte);   return;
+                case VarType.Bool:      ((List<bool>)   list).Add(item.Bool);   return;
+            }
+            throw new InvalidOperationException("********************");
         }
         
         public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {

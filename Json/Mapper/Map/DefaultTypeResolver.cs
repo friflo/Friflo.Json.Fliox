@@ -63,7 +63,14 @@ namespace Friflo.Json.Mapper.Map
             if ((stubType = ByteMapper.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = BoolMapper.               Interface.CreateStubType(type)) != null) return stubType;
             
-            if ((stubType = DoubleListMapper.         Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<double>.       DoubleInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<float>.        FloatInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<long>.         LongInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<int>.          IntInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<short>.        ShortInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<byte>.         ByteInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveListMapper<bool>.         BoolInterface.CreateStubType(type)) != null) return stubType;
+            
             
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent

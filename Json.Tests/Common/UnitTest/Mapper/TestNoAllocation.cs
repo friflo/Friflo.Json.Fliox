@@ -117,6 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
+                    // --------------------------------- List<> ---------------------------------
                     IsTrue(enc.ReadTo(arrNum, reusedArrDbl));
                     IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedArrLng));
@@ -125,14 +126,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrNum, reusedArrByte));
                     IsTrue(enc.ReadTo(arrBln, reusedArrBool));
                     
-                    IsTrue(enc.ReadTo(arrNum, reusedListDbl));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
+                    // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
+                    IsTrue(enc.ReadTo(arrNum, reusedListLng));
+                    IsTrue(enc.ReadTo(arrNum, reusedListInt));
+                    IsTrue(enc.ReadTo(arrNum, reusedListShort));
+                    IsTrue(enc.ReadTo(arrNum, reusedListByte));
+                    IsTrue(enc.ReadTo(arrBln, reusedListBool));
 
-
+                    // --------------------------------- class ---------------------------------
                     IsTrue(enc.ReadTo(mapNum, reusedClass));
-                    
-                    
-                    
-                    
                     // AreEqual(42, reusedClass.key);
 
 
