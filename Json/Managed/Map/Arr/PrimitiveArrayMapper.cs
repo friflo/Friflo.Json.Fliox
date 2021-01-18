@@ -45,7 +45,7 @@ namespace Friflo.Json.Managed.Map.Arr
                         array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
                     array[index++] = reader.parser.value.ToString();
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -85,7 +85,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -125,7 +125,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -165,7 +165,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -205,7 +205,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -243,7 +243,7 @@ namespace Friflo.Json.Managed.Map.Arr
                         array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
                     array[index++] = reader.parser.boolValue;
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -283,7 +283,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }
@@ -323,7 +323,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     if (!success)
                         return reader.ValueParseError();
                 } else 
-                    return ArrayUtils.ArraysElse(reader, ref slot, stubType, array, index, len);
+                    return ArrayUtils.ArrayElse(reader, ref slot, stubType, array, index, len);
             }
         }
     }

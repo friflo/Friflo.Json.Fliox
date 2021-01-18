@@ -24,7 +24,7 @@ namespace Friflo.Json.Managed.Map.Arr
             return null;
         }
 
-        public static bool ArraysElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
+        public static bool ArrayElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
             switch (reader.parser.Event) {
                 case JsonEvent.ArrayEnd:
                     if (index != len)
