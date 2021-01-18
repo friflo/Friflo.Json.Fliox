@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Utils;
 
@@ -14,10 +15,10 @@ namespace Friflo.Json.Managed.Types
         /// </summary>
         public class TypeCache
         {
-            private readonly    HashMapLang <Type,  StubType>   typeMap =      new HashMapLang <Type,  StubType >();
+            private readonly    Dictionary <Type,  StubType>   typeMap =      new Dictionary <Type,  StubType >();
             //
-            private readonly    HashMapLang <Bytes, StubType>   nameToType =   new HashMapLang <Bytes, StubType >();
-            private readonly    HashMapLang <Type, Bytes>       typeToName =   new HashMapLang <Type,  Bytes >();
+            private readonly    Dictionary <Bytes, StubType>   nameToType =   new Dictionary <Bytes, StubType >();
+            private readonly    Dictionary <Type, Bytes>       typeToName =   new Dictionary <Type,  Bytes >();
             
             private readonly    TypeStore                       typeStore;
             private             int                            lookupCount;
@@ -34,10 +35,9 @@ namespace Friflo.Json.Managed.Types
             
             public StubType GetType (Type type) {
                 lookupCount++;
-                StubType propType = typeMap.Get(type);
-                if (propType == null) {
+                if (!typeMap.TryGetValue(type, out StubType propType)) {
                     propType = typeStore.GetType(type);
-                    typeMap.Put(type, propType);
+                    typeMap.Add(type, propType);
                 }
                 return propType;
             }
@@ -49,10 +49,10 @@ namespace Friflo.Json.Managed.Types
             }
 
             public StubType GetTypeByName(ref Bytes name) {
-                StubType propType = nameToType.Get(name);
-                if (propType == null) {
+                if (!nameToType.TryGetValue(name, out StubType propType)) {
                     lock (typeStore) {
-                        propType = typeStore.nameToType.Get(name);
+                        typeStore.nameToType.TryGetValue(name, out StubType storeType);
+                        propType = storeType;
                     }
                 }
                 if (propType == null)
@@ -61,10 +61,11 @@ namespace Friflo.Json.Managed.Types
             }
 
             public void AppendDiscriminator(ref Bytes dst, StubType type) {
-                Bytes name = typeToName.Get(type.type);
+                typeToName.TryGetValue(type.type, out Bytes name);
                 if (!name.buffer.IsCreated()) {
                     lock (typeStore) {
-                        name = typeStore.typeToName.Get(type.type);
+                        typeStore.typeToName.TryGetValue(type.type, out Bytes storeName);
+                        name = storeName;
                     }
                 }
                 if (!name.buffer.IsCreated())

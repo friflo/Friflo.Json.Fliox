@@ -15,10 +15,10 @@ namespace Friflo.Json.Managed
     /// </summary>
     public class TypeStore : IDisposable
     {
-        private     readonly    HashMapLang <Type,  StubType>   typeMap=        new HashMapLang <Type,  StubType >();
+        private     readonly    Dictionary <Type,  StubType>   typeMap=        new Dictionary <Type,  StubType >();
         //
-        internal    readonly    HashMapLang <Bytes, StubType>   nameToType=     new HashMapLang <Bytes, StubType >();
-        internal    readonly    HashMapLang <Type,  Bytes>      typeToName =    new HashMapLang <Type,  Bytes >();
+        internal    readonly    Dictionary <Bytes, StubType>   nameToType=     new Dictionary <Bytes, StubType >();
+        internal    readonly    Dictionary <Type,  Bytes>      typeToName =    new Dictionary <Type,  Bytes >();
         
         private     readonly    List<StubType>                  newTypes =      new List<StubType>();
 
@@ -68,8 +68,7 @@ namespace Friflo.Json.Managed
         
         private StubType GetStubType(Type type) {
             storeLookupCount++;
-            StubType stubType = typeMap.Get(type);
-            if (stubType != null)
+            if (typeMap.TryGetValue(type, out StubType stubType))
                 return stubType;
             
             typeCreationCount++;
@@ -78,7 +77,7 @@ namespace Friflo.Json.Managed
                 stubType = TypeNotSupportedMapper.Interface.CreateStubType(type);
 
             
-            typeMap.Put(type, stubType);
+            typeMap.Add(type, stubType);
             newTypes.Add(stubType);
             return stubType;
         }
@@ -87,16 +86,15 @@ namespace Friflo.Json.Managed
         {
             using (var bytesName = new Bytes(name)) {
                 lock (this) {
-                    StubType stubType = nameToType.Get(bytesName);
-                    if (stubType != null) {
+                    if (nameToType.TryGetValue(bytesName, out StubType stubType)) {
                         if (type != stubType.type)
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
                     stubType = GetType(type);
                     Bytes discriminator = new Bytes(name);
-                    typeToName.Put(stubType.type, discriminator);
-                    nameToType.Put(discriminator, stubType);
+                    typeToName.Add(stubType.type, discriminator);
+                    nameToType.Add(discriminator, stubType);
                 }
             }
         }
