@@ -26,16 +26,14 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             ref var value = ref reader.parser.value;
-            switch (reader.parser.Event) {
-                case JsonEvent.ValueString:
-                    if (DateTime.TryParse(value.ToString(), out DateTime ret)) {
-                        slot.Obj = ret;
-                        return true;
-                    }
-                    return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
-                default:
-                    return ValueUtils.CheckElse(reader, stubType);
+            if (reader.parser.Event == JsonEvent.ValueString) {
+                if (DateTime.TryParse(value.ToString(), out DateTime ret)) {
+                    slot.Obj = ret;
+                    return true;
+                }
+                return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
             }
+            return ValueUtils.CheckElse(reader, stubType);
         }
     }
 }
