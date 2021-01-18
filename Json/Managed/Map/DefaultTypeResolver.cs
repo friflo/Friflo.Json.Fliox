@@ -1,9 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
+using Friflo.Json.Managed.Map.Arr;
+using Friflo.Json.Managed.Map.Obj;
+using Friflo.Json.Managed.Map.Val;
 using Friflo.Json.Managed.Types;
 
-namespace Friflo.Json.Managed.Codecs
+namespace Friflo.Json.Managed.Map
 {
     public class DefaultTypeResolver : TypeResolver
     {

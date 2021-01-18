@@ -3,7 +3,7 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Managed.Codecs;
+using Friflo.Json.Managed.Map;
 using Friflo.Json.Managed.Utils;
 
 // using ReadResolver = System.Func<Friflo.Json.Managed.JsonReader, object, Friflo.Json.Managed.Prop.NativeType, object>;

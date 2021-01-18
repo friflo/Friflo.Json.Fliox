@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Managed.Codecs;
+using Friflo.Json.Managed.Map;
 
 namespace Friflo.Json.Managed.Types
 {

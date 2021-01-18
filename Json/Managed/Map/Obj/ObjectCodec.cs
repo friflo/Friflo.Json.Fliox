@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed.Types;
 using Friflo.Json.Managed.Utils;
 
-namespace Friflo.Json.Managed.Codecs
+namespace Friflo.Json.Managed.Map.Obj
 {
     public class ObjectCodec : IJsonCodec {
         public static readonly ObjectCodec Interface = new ObjectCodec();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Managed;
-using Friflo.Json.Managed.Codecs;
+using Friflo.Json.Managed.Map;
 using Friflo.Json.Managed.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

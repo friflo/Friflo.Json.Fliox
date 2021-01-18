@@ -1,14 +1,16 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Managed.Map.Obj;
 using Friflo.Json.Managed.Types;
 using Friflo.Json.Managed.Utils;
 
-namespace Friflo.Json.Managed.Codecs
+namespace Friflo.Json.Managed.Map.Arr
 {
     public class ListCodec : IJsonCodec
     {

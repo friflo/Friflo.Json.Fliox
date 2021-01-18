@@ -1,7 +1,7 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Managed.Types;
 
-namespace Friflo.Json.Managed.Codecs
+namespace Friflo.Json.Managed.Map.Obj
 {
     public static class JsonUtils
     {
