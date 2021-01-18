@@ -1,16 +1,15 @@
-﻿using System;
+﻿// using static NUnit.Framework.Assert;
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Managed;
-using Friflo.Json.Managed.Map;
-using Friflo.Json.Managed.Utils;
+using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-
-// using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.NoCheck;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Managed
+namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public struct TestStruct {
         public int              key;
