@@ -27,22 +27,6 @@ namespace Friflo.Json.Mapper.Map.Arr
             return null;
         }
         
-        public static StubType CreatePrimitiveList(Type type, Type itemType, IJsonMapper map) {
-            if (StubType.IsStandardType(type)) // dont handle standard types
-                return null;
-            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
-            if (args != null) {
-                Type elementType = args[0];
-                if (itemType != elementType)
-                    return null;
-                ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
-                if (constructor == null)
-                    constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new CollectionType  (type, elementType, map, 1, null, constructor);
-            }
-            return null;
-        }
-
         public static bool ArrayElse<T>(JsonReader reader, ref Var slot, StubType stubType, T[] array, int index, int len) {
             switch (reader.parser.Event) {
                 case JsonEvent.ArrayEnd:
