@@ -54,19 +54,18 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             }
         }
-
-        public static void AppendArrayItem(ref JsonWriter writer, Array array, VarType varType, int index, bool nullable) {
-            ref var format = ref writer.format;
-            ref var bytes = ref writer.bytes;
+        
+        public static void GetArrayItem(Array array, ref Var item, VarType varType, int index, bool nullable, ref bool isNull) {
+            isNull = false;
             if (nullable) {
                 switch (varType) {
-                    case VarType.Double:    format.AppendDbl (ref bytes, ((double[])array)[index]);    return;
-                    case VarType.Float:     format.AppendFlt (ref bytes, ((float[]) array)[index]);    return;
-                    case VarType.Long:      format.AppendLong(ref bytes, ((long[])  array)[index]);    return;
-                    case VarType.Int:       format.AppendInt (ref bytes, ((int[])   array)[index]);    return;
-                    case VarType.Short:     format.AppendInt (ref bytes, ((short[]) array)[index]);    return;
-                    case VarType.Byte:      format.AppendInt (ref bytes, ((byte[])  array)[index]);    return;
-                    case VarType.Bool:      format.AppendBool(ref bytes, ((bool[])  array)[index]);    return;
+                    case VarType.Double:    item.Dbl =  ((double[])array)[index];    return;
+                    case VarType.Float:     item.Flt =  ((float[]) array)[index];    return;
+                    case VarType.Long:      item.Lng =  ((long[])  array)[index];    return;
+                    case VarType.Int:       item.Int =  ((int[])   array)[index];    return;
+                    case VarType.Short:     item.Short =((short[]) array)[index];    return;
+                    case VarType.Byte:      item.Byte = ((byte[])  array)[index];    return;
+                    case VarType.Bool:      item.Bool=  ((bool[])  array)[index];    return;
                     default:
                         throw new InvalidOperationException("varType not supported: " + varType);
                 }
@@ -74,38 +73,38 @@ namespace Friflo.Json.Mapper.Map.Arr
                 switch (varType) {
                     case VarType.Double:
                         var dbl = ((double?[]) array)[index];
-                        if (dbl == null)    bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendDbl (ref bytes, (double)dbl);
+                        if (dbl == null)    isNull = true;
+                        else                item.Dbl = (double)dbl;
                         return;
                     case VarType.Float:
                         var flt = ((float?[]) array)[index];
-                        if (flt == null)    bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendFlt (ref bytes, (float)flt);
+                        if (flt == null)    isNull = true;
+                        else                item.Flt = (float)flt;
                         return;
                     case VarType.Long:
                         var lng = ((long?[]) array)[index];
-                        if (lng == null)    bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendLong(ref bytes, (long)lng);
+                        if (lng == null)    isNull = true;
+                        else                item.Lng = (long)lng;
                         return;
                     case VarType.Int:
                         var integer = ((int?[]) array)[index];
-                        if (integer == null)bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendInt (ref bytes, (int)integer);
+                        if (integer == null)isNull = true;
+                        else                item.Int = (int)integer;
                         return;
                     case VarType.Short:
                         var shrt = ((short?[]) array)[index];
-                        if (shrt == null)   bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendInt (ref bytes, (short)shrt);
+                        if (shrt == null)   isNull = true;
+                        else                item.Short = (short)shrt;
                         return;
                     case VarType.Byte:
                         var byt = ((byte?[]) array)[index];
-                        if (byt == null)    bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendInt (ref bytes, (byte)byt);
+                        if (byt == null)    isNull = true;
+                        else                item.Byte = (byte)byt;
                         return;
                     case VarType.Bool:
                         var bln = ((bool?[]) array)[index];
-                        if (bln == null)    bytes.AppendBytes(ref writer.@null);
-                        else                format.AppendBool(ref bytes, (bool)bln);
+                        if (bln == null)    isNull = true;
+                        else                item.Bool = (bool)bln;
                         return;
                     default:
                         throw new InvalidOperationException("varType not supported: " + varType);
@@ -143,11 +142,18 @@ namespace Friflo.Json.Mapper.Map.Arr
             T[] array = (T[]) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
+            var elementType = collectionType.ElementType;
+            Var elemVar = new Var();
             bool nullable = collectionType.ElementType.isNullable;
             for (int n = 0; n < array.Length; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
-                PrimitiveArray.AppendArrayItem(ref writer, array, elemVarType, n, nullable);
+                bool isNull = false;
+                PrimitiveArray.GetArrayItem(array, ref elemVar, elemVarType, n, nullable, ref isNull);
+                if (isNull)
+                    writer.bytes.AppendBytes(ref writer.@null);
+                else
+                    elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
         }
