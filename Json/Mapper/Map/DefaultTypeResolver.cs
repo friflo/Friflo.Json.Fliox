@@ -62,6 +62,9 @@ namespace Friflo.Json.Mapper.Map
             if ((stubType = ShortMapper.              Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = ByteMapper.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = BoolMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            
+            if ((stubType = DoubleListMapper.         Interface.CreateStubType(type)) != null) return stubType;
+            
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.

@@ -56,6 +56,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedArrByte =     new byte[3];
             var reusedArrBool =     new bool[2];
             
+            var reusedListDbl =     new List<double>();
+            var reusedListFlt =     new List<float>();
+            var reusedListLng =     new List<long>();
+            var reusedListInt =     new List<int>();
+            var reusedListShort =   new List<short>();
+            var reusedListByte =    new List<byte>();
+            var reusedListBool =    new List<bool>();
+            
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
@@ -116,6 +124,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrNum, reusedArrShort));
                     IsTrue(enc.ReadTo(arrNum, reusedArrByte));
                     IsTrue(enc.ReadTo(arrBln, reusedArrBool));
+                    
+                    IsTrue(enc.ReadTo(arrNum, reusedListDbl));
+
 
                     IsTrue(enc.ReadTo(mapNum, reusedClass));
                     
