@@ -63,15 +63,22 @@ namespace Friflo.Json.Mapper.Map
             if ((stubType = ByteMapper.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = BoolMapper.               Interface.CreateStubType(type)) != null) return stubType;
             
-            if ((stubType = PrimitiveListMapper<double>.       DoubleInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<float>.        FloatInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<long>.         LongInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<int>.          IntInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<short>.        ShortInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<byte>.         ByteInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveListMapper<bool>.         BoolInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveList.            DoubleInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveList.            FloatInterface.CreateStubType(type))  != null) return stubType;
+            if ((stubType = PrimitiveList.            LongInterface.CreateStubType(type))   != null) return stubType;
+            if ((stubType = PrimitiveList.            IntInterface.CreateStubType(type))    != null) return stubType;
+            if ((stubType = PrimitiveList.            ShortInterface.CreateStubType(type))  != null) return stubType;
+            if ((stubType = PrimitiveList.            ByteInterface.CreateStubType(type))   != null) return stubType;
+            if ((stubType = PrimitiveList.            BoolInterface.CreateStubType(type))   != null) return stubType;
             
-            
+            if ((stubType = PrimitiveList.            DoubleNulInterface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = PrimitiveList.            FloatNulInterface.CreateStubType(type))  != null) return stubType;
+            if ((stubType = PrimitiveList.            LongNulInterface.CreateStubType(type))   != null) return stubType;
+            if ((stubType = PrimitiveList.            IntNulInterface.CreateStubType(type))    != null) return stubType;
+            if ((stubType = PrimitiveList.            ShortNulInterface.CreateStubType(type))  != null) return stubType;
+            if ((stubType = PrimitiveList.            ByteNulInterface.CreateStubType(type))   != null) return stubType;
+            if ((stubType = PrimitiveList.            BoolNulInterface.CreateStubType(type))   != null) return stubType;
+
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.

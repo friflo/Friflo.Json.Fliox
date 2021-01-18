@@ -10,24 +10,33 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
+    public static class PrimitiveList
+    {
+        public static readonly PrimitiveListMapper<double>   DoubleInterface =   new PrimitiveListMapper<double>  ();
+        public static readonly PrimitiveListMapper<float>    FloatInterface =    new PrimitiveListMapper<float>   ();
+        public static readonly PrimitiveListMapper<long>     LongInterface =     new PrimitiveListMapper<long>    ();
+        public static readonly PrimitiveListMapper<int>      IntInterface =      new PrimitiveListMapper<int>     ();
+        public static readonly PrimitiveListMapper<short>    ShortInterface =    new PrimitiveListMapper<short>   ();
+        public static readonly PrimitiveListMapper<byte>     ByteInterface =     new PrimitiveListMapper<byte>    ();
+        public static readonly PrimitiveListMapper<bool>     BoolInterface =     new PrimitiveListMapper<bool>    ();
+        //
+        public static readonly PrimitiveListMapper<double?>   DoubleNulInterface =   new PrimitiveListMapper<double?>  ();
+        public static readonly PrimitiveListMapper<float?>    FloatNulInterface =    new PrimitiveListMapper<float?>   ();
+        public static readonly PrimitiveListMapper<long?>     LongNulInterface =     new PrimitiveListMapper<long?>    ();
+        public static readonly PrimitiveListMapper<int?>      IntNulInterface =      new PrimitiveListMapper<int?>     ();
+        public static readonly PrimitiveListMapper<short?>    ShortNulInterface =    new PrimitiveListMapper<short?>   ();
+        public static readonly PrimitiveListMapper<byte?>     ByteNulInterface =     new PrimitiveListMapper<byte?>    ();
+        public static readonly PrimitiveListMapper<bool?>     BoolNulInterface =     new PrimitiveListMapper<bool?>    ();
+    }
     
     public class PrimitiveListMapper<T> : IJsonMapper
     {
-        public static readonly PrimitiveListMapper<object>   ObjectInterface =   new PrimitiveListMapper<object>  (typeof(object));
-        public static readonly PrimitiveListMapper<double>   DoubleInterface =   new PrimitiveListMapper<double>  (typeof(double));
-        public static readonly PrimitiveListMapper<float>    FloatInterface =    new PrimitiveListMapper<float>   (typeof(float));
-        public static readonly PrimitiveListMapper<long>     LongInterface =     new PrimitiveListMapper<long>    (typeof(long));
-        public static readonly PrimitiveListMapper<int>      IntInterface =      new PrimitiveListMapper<int>     (typeof(int));
-        public static readonly PrimitiveListMapper<short>    ShortInterface =    new PrimitiveListMapper<short>   (typeof(short));
-        public static readonly PrimitiveListMapper<byte>     ByteInterface =     new PrimitiveListMapper<byte>    (typeof(byte));
-        public static readonly PrimitiveListMapper<bool>     BoolInterface =     new PrimitiveListMapper<bool>    (typeof(bool));
-
         private readonly Type       elemType;
         private readonly VarType    elemVarType;
         
-        public PrimitiveListMapper (Type type) {
-            elemType = type;
-            elemVarType = Var.GetVarType(elemType);
+        public PrimitiveListMapper () {
+            elemType            = typeof(T);
+            elemVarType         = Var.GetVarType(elemType);
         }
         
         public StubType CreateStubType(Type type) {
@@ -87,6 +96,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (list == null)
                 list = (List<T>) collectionType.CreateInstance();
             StubType elementType = collectionType.ElementType;
+            bool nullable = elementType.isNullable;
 
             int startLen = list.Count;
             int index = 0;
@@ -100,7 +110,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
+                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen, nullable);
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
@@ -108,7 +118,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
+                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen, nullable);
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
@@ -116,7 +126,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
+                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen, nullable);
                         break;
                     case JsonEvent.ValueNull:
                         // primitives in PrimitiveListMapper an never nullable
@@ -126,7 +136,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
+                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen, nullable);
                         break;
                     case JsonEvent.ArrayEnd:
                         if (startLen - index > 0)

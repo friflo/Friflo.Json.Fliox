@@ -64,11 +64,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedListByte =    new List<byte>();
             var reusedListBool =    new List<bool>();
             
-            var reusedListNullableLng =     new List<long?>();
-            var reusedListNullableInt =     new List<int?>();
-            var reusedListNullableShort =   new List<short?>();
-            var reusedListNullableByte =    new List<byte?>();
-            var reusedListNullableBool =    new List<bool?>();
+            var reusedListNulLng =     new List<long?>();
+            var reusedListNulInt =     new List<int?>();
+            var reusedListNulShort =   new List<short?>();
+            var reusedListNulByte =    new List<byte?>();
+            var reusedListNulBool =    new List<bool?>();
             
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
@@ -142,11 +142,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     
                     // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
                     // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableLng));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableInt));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableShort));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListNullableByte));
-                    // IsTrue(enc.ReadTo(arrBln, reusedListNullableBool));
+                    IsTrue(enc.ReadTo(arrNum, reusedListNulLng));
+                    IsTrue(enc.ReadTo(arrNum, reusedListNulInt));
+                    IsTrue(enc.ReadTo(arrNum, reusedListNulShort));
+                    IsTrue(enc.ReadTo(arrNum, reusedListNulByte));
+                    IsTrue(enc.ReadTo(arrBln, reusedListNulBool));
 
                     // --------------------------------- class ---------------------------------
                     IsTrue(enc.ReadTo(mapNum, reusedClass));
@@ -155,13 +155,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 27, enc.typeCache.LookupCount);
+                        AreEqual( 32, enc.typeCache.LookupCount);
                         AreEqual(  0, enc.typeCache.StoreLookupCount);
                         AreEqual(  0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(154000,   enc.parser.ProcessedBytes);
+                AreEqual(195000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
