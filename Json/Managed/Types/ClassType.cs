@@ -25,8 +25,8 @@ namespace Friflo.Json.Managed.Types
         }
 
         // PropType
-        internal ClassType (Type type, IJsonMapper codec, ConstructorInfo constructor) :
-            base (type, codec, IsNullable(type), TypeCat.Object)
+        internal ClassType (Type type, IJsonMapper map, ConstructorInfo constructor) :
+            base (type, map, IsNullable(type), TypeCat.Object)
         {
             using (var removedKey = new Bytes("__REMOVED")) {
                 fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);

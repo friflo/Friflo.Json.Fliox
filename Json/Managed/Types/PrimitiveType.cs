@@ -8,8 +8,8 @@ namespace Friflo.Json.Managed.Types
     public class PrimitiveType : StubType
     {
         
-        public PrimitiveType(Type type, IJsonMapper codec)
-            : base(type, codec, IsPrimitiveNullable(type), GetTypeCat(type))
+        public PrimitiveType(Type type, IJsonMapper map)
+            : base(type, map, IsPrimitiveNullable(type), GetTypeCat(type))
         {
         }
 
@@ -41,8 +41,8 @@ namespace Friflo.Json.Managed.Types
     
     public class BigIntType : StubType
     {
-        public BigIntType(Type type, IJsonMapper codec)
-            : base(type, codec, true, TypeCat.String)
+        public BigIntType(Type type, IJsonMapper map)
+            : base(type, map, true, TypeCat.String)
         {
         }
 
@@ -52,8 +52,8 @@ namespace Friflo.Json.Managed.Types
     
     public class StringType : StubType
     {
-        public StringType(Type type, IJsonMapper codec)
-            : base(type, codec, true, TypeCat.String) {
+        public StringType(Type type, IJsonMapper map)
+            : base(type, map, true, TypeCat.String) {
         }
         
         public override void InitStubType(TypeStore typeStore) {

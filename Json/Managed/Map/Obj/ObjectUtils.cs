@@ -28,26 +28,5 @@ namespace Friflo.Json.Managed.Map.Obj
             }
         }
         
-        public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
-            var ev = reader.parser.Event;
-            switch (ev) {
-                case JsonEvent.ValueNull:
-                    if (stubType.isNullable) {
-                        slot.Obj = null;
-                        success = true;
-                        return false;
-                    }
-                    reader.ErrorIncompatible("array", stubType, ref reader.parser);
-                    success = false;
-                    return false;
-                case JsonEvent.ArrayStart:
-                    success = true;
-                    return true;
-                default:
-                    success = false;
-                    reader.ErrorIncompatible("array", stubType, ref reader.parser);
-                    return false;
-            }
-        }
     }
 }

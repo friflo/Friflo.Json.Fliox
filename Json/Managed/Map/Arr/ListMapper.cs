@@ -44,7 +44,7 @@ namespace Friflo.Json.Managed.Map.Arr
                     switch (collectionType.elementVarType) {
                         case VarType.Object:
                             elemVar.Obj = item;
-                            elementType.codec.Write(writer, ref elemVar, elementType);
+                            elementType.map.Write(writer, ref elemVar, elementType);
                             break;
                         default:
                             throw new FrifloException("List element type not supported: " +
@@ -59,7 +59,7 @@ namespace Friflo.Json.Managed.Map.Arr
         
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             ref var parser = ref reader.parser;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Managed.Map.Arr
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         list.Add(elemVar.Get());
                         break;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Managed.Map.Arr
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         list.Add(elemVar.Get());
                         break;
@@ -97,7 +97,7 @@ namespace Friflo.Json.Managed.Map.Arr
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("List element", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         list.Add(elemVar.Get());
                         break;
@@ -114,13 +114,13 @@ namespace Friflo.Json.Managed.Map.Arr
                         StubType subElementType = collectionType.ElementType;
                         if (index < startLen) {
                             elemVar.Obj = list[index];
-                            if (!subElementType.codec.Read(reader, ref elemVar, subElementType))
+                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
                                 return false;
                             list[index] = elemVar.Obj;
                         }
                         else {
                             elemVar.Clear();
-                            if (!subElementType.codec.Read(reader, ref elemVar, subElementType))
+                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
                                 return false;
                             list.Add(elemVar.Obj);
                         }
@@ -130,13 +130,13 @@ namespace Friflo.Json.Managed.Map.Arr
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar.Obj = list[index];
-                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             list[index] = elemVar.Obj;
                         }
                         else {
                             elemVar.Clear();
-                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             list.Add(elemVar.Obj);
                         }

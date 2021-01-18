@@ -101,7 +101,7 @@ namespace Friflo.Json.Managed
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNull:
                         StubType valueType = typeCache.GetType(type);
-                        return valueType.codec.Read(this, ref slot, valueType);
+                        return valueType.map.Read(this, ref slot, valueType);
                     case JsonEvent.Error:
                         return false;
                     default:
@@ -128,7 +128,7 @@ namespace Friflo.Json.Managed
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         StubType valueType = typeCache.GetType(slot.Obj.GetType()); // lookup required
-                        return valueType.codec.Read(this, ref slot, valueType);
+                        return valueType.map.Read(this, ref slot, valueType);
                     case JsonEvent.Error:
                         return false;
                     default:

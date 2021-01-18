@@ -56,7 +56,7 @@ namespace Friflo.Json.Managed.Map.Obj
                     bytes.AppendBytes(ref writer.@null);
                 } else {
                     StubType fieldType = field.FieldType;
-                    fieldType.codec.Write(writer, ref elemVar, fieldType);
+                    fieldType.map.Write(writer, ref elemVar, fieldType);
                 }
             }
             bytes.AppendChar('}');
@@ -97,7 +97,7 @@ namespace Friflo.Json.Managed.Map.Obj
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         
                         elemVar.Clear();
-                        if (!valueType.codec.Read(reader, ref elemVar, valueType))
+                        if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Managed.Map.Obj
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         
                         elemVar.Clear();
-                        if (!valueType.codec.Read(reader, ref elemVar, valueType))
+                        if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
@@ -122,7 +122,7 @@ namespace Friflo.Json.Managed.Map.Obj
                             return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
                         
                         elemVar.Clear();
-                        if (!valueType.codec.Read(reader, ref elemVar, valueType))
+                        if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar);
                         break;
@@ -143,7 +143,7 @@ namespace Friflo.Json.Managed.Map.Obj
                             return reader.ErrorNull("Expect field of type object. Type: ", field.FieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;
-                        if (!fieldType.codec.Read(reader, ref elemVar, fieldType))
+                        if (!fieldType.map.Read(reader, ref elemVar, fieldType))
                             return false;
                         //
                         object subRet = elemVar.Obj;

@@ -76,8 +76,8 @@ namespace Friflo.Json.Managed.Map
             if ((stubType = ObjectArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
             //
             if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DictionaryMapper.                Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ClassMapper.             Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = DictionaryMapper.         Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ClassMapper.              Interface.CreateStubType(type)) != null) return stubType;
 
             return null;
         }

@@ -42,14 +42,14 @@ namespace Friflo.Json.Managed.Map.Arr
                     writer.bytes.AppendBytes(ref writer.@null);
                 else {
                     elemVar.Obj = item;
-                    elementType.codec.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, ref elemVar, elementType);
                 }
             }
             writer.bytes.AppendChar(']');
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool success))
+            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool success))
                 return success;
             
             ref var parser = ref reader.parser;
@@ -89,13 +89,13 @@ namespace Friflo.Json.Managed.Map.Arr
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar.Obj = array.GetValue(index);
-                            if(!elementType.codec.Read(reader, ref elemVar, elementType))
+                            if(!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             array.SetValue(elemVar.Obj, index);
                         }
                         else {
                             elemVar.Clear();
-                            if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));

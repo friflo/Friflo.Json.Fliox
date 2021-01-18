@@ -39,7 +39,7 @@ namespace Friflo.Json.Managed
             bytes.Clear();
             Var slot = new Var();
             slot.Obj = obj;
-            objType.codec.Write(this, ref slot, objType);
+            objType.map.Write(this, ref slot, objType);
         }
 
         public void WriteKey(PropField field) {

@@ -15,7 +15,7 @@ namespace Friflo.Json.Managed.Types
     
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonMapper  codec;
+        public  readonly    IJsonMapper map;
         public  readonly    bool        isNullable;
         public  readonly    TypeCat     typeCat;
 
@@ -36,9 +36,9 @@ namespace Friflo.Json.Managed.Types
             return null;
         }
 
-        public StubType(Type type, IJsonMapper codec, bool isNullable, TypeCat typeCat) {
+        public StubType(Type type, IJsonMapper map, bool isNullable, TypeCat typeCat) {
             this.type =         type;
-            this.codec =        codec;
+            this.map =        map;
             this.isNullable =   isNullable;
             this.typeCat =     typeCat;
         }

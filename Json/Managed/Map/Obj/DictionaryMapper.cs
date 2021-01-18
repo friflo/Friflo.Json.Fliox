@@ -50,7 +50,7 @@ namespace Friflo.Json.Managed.Map.Obj
                 object value = entry.Value;
                 if (value != null) {
                     elemVar.Obj = value;
-                    elementType.codec.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, ref elemVar, elementType);
                 } else
                     bytes.AppendBytes(ref writer.@null);
             }
@@ -80,7 +80,7 @@ namespace Friflo.Json.Managed.Map.Obj
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Managed.Map.Obj
                         if (elementType.typeCat != TypeCat.String)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
@@ -98,7 +98,7 @@ namespace Friflo.Json.Managed.Map.Obj
                         if (elementType.typeCat != TypeCat.Number)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Managed.Map.Obj
                         if (elementType.typeCat != TypeCat.Bool)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
-                        if (!elementType.codec.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
