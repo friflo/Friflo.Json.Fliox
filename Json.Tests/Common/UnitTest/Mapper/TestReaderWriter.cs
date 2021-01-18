@@ -277,6 +277,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
+        public enum TestEnum
+        {
+            item1 = 11,
+            ttem2 = 22
+        }
+
+        [Test]
+        public void TestEnumMapper() {
+            using (TypeStore typeStore = createStore())
+            using (JsonReader enc = new JsonReader(typeStore))
+            using (var item1 = new Bytes("\"item1\"")) {
+                var result = enc.Read(item1, typeof(TestEnum));
+
+            }
+        }
+
         const string BigInt = "1234567890123456789012345678901234567890";
 
         private void TestPrimitiveInternal() {

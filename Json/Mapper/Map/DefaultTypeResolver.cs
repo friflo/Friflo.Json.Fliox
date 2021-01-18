@@ -94,6 +94,8 @@ namespace Friflo.Json.Mapper.Map
             // when adding various codecs to a custom resolver.
             if ((stubType = ArrayMapper.              Interface.CreateStubType(type)) != null) return stubType;
             //
+            if ((stubType = EnumMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            //
             if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = DictionaryMapper.         Interface.CreateStubType(type)) != null) return stubType;
             if ((stubType = ClassMapper.              Interface.CreateStubType(type)) != null) return stubType;
