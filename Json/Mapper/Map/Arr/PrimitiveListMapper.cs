@@ -119,39 +119,14 @@ namespace Friflo.Json.Mapper.Map.Arr
                         ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
                         break;
                     case JsonEvent.ValueNull:
-                        if (!elementType.isNullable)
-                            return reader.ErrorIncompatible("List element", elementType, ref parser);
-                        elemVar.Obj = null;
-                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
-                        break;
+                        // primitives in PrimitiveListMapper an never nullable
+                        return reader.ErrorIncompatible("List element", elementType, ref parser);
                     case JsonEvent.ArrayStart:
-                        StubType subElementType = collectionType.ElementType;
-                        if (index < startLen) {
-                            elemVar.Obj = list[index];
-                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
-                                return false;
-                            ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
-                        }
-                        else {
-                            elemVar.Clear();
-                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
-                                return false;
-                            ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
-                        }
-                        break;
                     case JsonEvent.ObjectStart:
-                        if (index < startLen) {
-                            elemVar.Obj = list[index];
-                            if (!elementType.map.Read(reader, ref elemVar, elementType))
-                                return false;
-                            ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
-                        }
-                        else {
-                            elemVar.Clear();
-                            if (!elementType.map.Read(reader, ref elemVar, elementType))
-                                return false;
-                            ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
-                        }
+                        elemVar.Clear();
+                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                            return false;
+                        ArrayUtils.AddListItem(list, ref elemVar, elemVarType, index++, startLen);
                         break;
                     case JsonEvent.ArrayEnd:
                         if (startLen - index > 0)
