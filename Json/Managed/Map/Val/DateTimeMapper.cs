@@ -7,9 +7,9 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Map.Val
 {
-    public class DateTimeCodec : IJsonCodec
+    public class DateTimeMapper : IJsonMapper
     {
-        public static readonly DateTimeCodec Interface = new DateTimeCodec();
+        public static readonly DateTimeMapper Interface = new DateTimeMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(DateTime))
@@ -34,7 +34,7 @@ namespace Friflo.Json.Managed.Map.Val
                     }
                     return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
                     default:
-                    return PrimitiveCodec.CheckElse(reader, stubType);
+                    return ValueUtils.CheckElse(reader, stubType);
             }
         }
     }

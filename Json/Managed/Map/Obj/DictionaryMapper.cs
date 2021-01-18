@@ -11,9 +11,9 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Map.Obj
 {
-    public class MapCodec : IJsonCodec
+    public class DictionaryMapper : IJsonMapper
     {
-        public static readonly MapCodec Interface = new MapCodec();
+        public static readonly DictionaryMapper Interface = new DictionaryMapper();
         
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
@@ -58,7 +58,7 @@ namespace Friflo.Json.Managed.Map.Obj
         }
         
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartObject(reader, ref slot, stubType, out bool success))
+            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
                 return success;
             
             CollectionType collectionType = (CollectionType) stubType;

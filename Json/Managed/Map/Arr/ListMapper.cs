@@ -12,9 +12,9 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Map.Arr
 {
-    public class ListCodec : IJsonCodec
+    public class ListMapper : IJsonMapper
     {
-        public static readonly ListCodec Interface = new ListCodec();
+        public static readonly ListMapper Interface = new ListMapper();
         
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
@@ -59,7 +59,7 @@ namespace Friflo.Json.Managed.Map.Arr
         
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             ref var parser = ref reader.parser;

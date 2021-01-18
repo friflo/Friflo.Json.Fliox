@@ -6,7 +6,7 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Map
 {
-    public interface IJsonCodec
+    public interface IJsonMapper
     {
         StubType    CreateStubType  (Type type);
         void        Write (JsonWriter writer, ref Var slot, StubType stubType);

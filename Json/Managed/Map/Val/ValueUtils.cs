@@ -8,7 +8,7 @@ using Friflo.Json.Managed.Types;
 namespace Friflo.Json.Managed.Map.Val
 {
 
-    public static class PrimitiveCodec
+    public static class ValueUtils
     {
         public static bool CheckElse(JsonReader reader, StubType stubType) {
             ref JsonParser parser = ref reader.parser;
@@ -25,9 +25,9 @@ namespace Friflo.Json.Managed.Map.Val
         }
     }
 
-    public class StringCodec : IJsonCodec
+    public class StringMapper : IJsonMapper
     {
-        public static readonly StringCodec Interface = new StringCodec();
+        public static readonly StringMapper Interface = new StringMapper();
         
         
         public StubType CreateStubType(Type type) {
@@ -49,9 +49,9 @@ namespace Friflo.Json.Managed.Map.Val
         }
     }
     
-    public class DoubleCodec : IJsonCodec
+    public class DoubleMapper : IJsonMapper
     {
-        public static readonly DoubleCodec Interface = new DoubleCodec();
+        public static readonly DoubleMapper Interface = new DoubleMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(double) && type != typeof(double?))
@@ -65,15 +65,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
             return success;
         }
     }
     
-    public class FloatCodec : IJsonCodec
+    public class FloatMapper : IJsonMapper
     {
-        public static readonly FloatCodec Interface = new FloatCodec();
+        public static readonly FloatMapper Interface = new FloatMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(float) && type != typeof(float?))
@@ -87,15 +87,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
             return success;
         }
     }
     
-    public class LongCodec : IJsonCodec
+    public class LongMapper : IJsonMapper
     {
-        public static readonly LongCodec Interface = new LongCodec();
+        public static readonly LongMapper Interface = new LongMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(long) && type != typeof(long?))
@@ -109,15 +109,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Lng = reader.parser.ValueAsLong(out bool success);
             return success;
         }
     }
     
-    public class IntCodec : IJsonCodec
+    public class IntMapper : IJsonMapper
     {
-        public static readonly IntCodec Interface = new IntCodec();
+        public static readonly IntMapper Interface = new IntMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(int) && type != typeof(int?))
@@ -131,15 +131,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Int = reader.parser.ValueAsInt(out bool success);
             return success;
         }
     }
     
-    public class ShortCodec : IJsonCodec
+    public class ShortMapper : IJsonMapper
     {
-        public static readonly ShortCodec Interface = new ShortCodec();
+        public static readonly ShortMapper Interface = new ShortMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(short) && type != typeof(short?))
@@ -153,15 +153,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Short = reader.parser.ValueAsShort(out bool success);
             return success;
         }
     }
     
-    public class ByteCodec : IJsonCodec
+    public class ByteMapper : IJsonMapper
     {
-        public static readonly ByteCodec Interface = new ByteCodec();
+        public static readonly ByteMapper Interface = new ByteMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
@@ -175,15 +175,15 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Byte = reader.parser.ValueAsByte(out bool success);
             return success;
         }
     }
     
-    public class BoolCodec : IJsonCodec
+    public class BoolMapper : IJsonMapper
     {
-        public static readonly BoolCodec Interface = new BoolCodec();
+        public static readonly BoolMapper Interface = new BoolMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(bool) && type != typeof(bool?))
@@ -197,7 +197,7 @@ namespace Friflo.Json.Managed.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return PrimitiveCodec.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, stubType);
             slot.Bool = reader.parser.ValueAsBool(out bool success);
             return success;
         }

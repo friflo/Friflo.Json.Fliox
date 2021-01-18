@@ -23,7 +23,7 @@ namespace Friflo.Json.Managed.Types
         internal CollectionType (
             Type            type,
             Type            elementType,
-            IJsonCodec      codec,
+            IJsonMapper      codec,
             int             rank,
             Type            keyType,
             ConstructorInfo constructor) : base (type, codec, true, TypeCat.Array)

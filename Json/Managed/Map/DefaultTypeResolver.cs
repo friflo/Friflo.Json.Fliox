@@ -14,32 +14,32 @@ namespace Friflo.Json.Managed.Map
         public DefaultTypeResolver() : base (DefaultResolvers) {
         }
         
-        private static readonly IJsonCodec[] DefaultResolvers = {
-            BigIntCodec.Interface,
-            DateTimeCodec.Interface,
+        private static readonly IJsonMapper[] DefaultResolvers = {
+            BigIntMapper.Interface,
+            DateTimeMapper.Interface,
             //
-            StringCodec.Interface,
-            DoubleCodec.Interface,
-            FloatCodec.Interface,
-            LongCodec.Interface,
-            IntCodec.Interface,
-            ShortCodec.Interface,
-            ByteCodec.Interface,
-            BoolCodec.Interface,
+            StringMapper.Interface,
+            DoubleMapper.Interface,
+            FloatMapper.Interface,
+            LongMapper.Interface,
+            IntMapper.Interface,
+            ShortMapper.Interface,
+            ByteMapper.Interface,
+            BoolMapper.Interface,
             //  
-            StringArrayCodec.Interface,
-            LongArrayCodec.Interface,
-            IntArrayCodec.Interface,
-            ShortArrayCodec.Interface,
-            ByteArrayCodec.Interface,
-            BoolArrayCodec.Interface,
-            DoubleArrayCodec.Interface,
-            FloatArrayCodec.Interface,
-            ObjectArrayCodec.Interface,
+            StringArrayMapper.Interface,
+            LongArrayMapper.Interface,
+            IntArrayMapper.Interface,
+            ShortArrayMapper.Interface,
+            ByteArrayMapper.Interface,
+            BoolArrayMapper.Interface,
+            DoubleArrayMapper.Interface,
+            FloatArrayMapper.Interface,
+            ObjectArrayMapper.Interface,
             //  
-            ListCodec.Interface,
-            MapCodec.Interface,
-            ObjectCodec.Interface,
+            ListMapper.Interface,
+            DictionaryMapper.Interface,
+            ClassMapper.Interface,
         };
     }
     
@@ -50,34 +50,34 @@ namespace Friflo.Json.Managed.Map
             StubType stubType;
             
             // Specific types on top
-            if ((stubType = BigIntCodec.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DateTimeCodec.           Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = BigIntMapper.             Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = DateTimeMapper.           Interface.CreateStubType(type)) != null) return stubType;
             
             //
-            if ((stubType = StringCodec.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DoubleCodec.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = FloatCodec.              Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = LongCodec.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = IntCodec.                Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ShortCodec.              Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ByteCodec.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = BoolCodec.               Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = StringMapper.             Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = DoubleMapper.             Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = FloatMapper.              Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = LongMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = IntMapper.                Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ShortMapper.              Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ByteMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = BoolMapper.               Interface.CreateStubType(type)) != null) return stubType;
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if ((stubType = StringArrayCodec.        Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = LongArrayCodec.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = IntArrayCodec.           Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ShortArrayCodec.         Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ByteArrayCodec.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = BoolArrayCodec.          Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DoubleArrayCodec.        Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = FloatArrayCodec.         Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ObjectArrayCodec.        Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = StringArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = LongArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = IntArrayMapper.           Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ShortArrayMapper.         Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ByteArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = BoolArrayMapper.          Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = DoubleArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = FloatArrayMapper.         Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ObjectArrayMapper.        Interface.CreateStubType(type)) != null) return stubType;
             //
-            if ((stubType = ListCodec.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = MapCodec.                Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ObjectCodec.             Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = DictionaryMapper.                Interface.CreateStubType(type)) != null) return stubType;
+            if ((stubType = ClassMapper.             Interface.CreateStubType(type)) != null) return stubType;
 
             return null;
         }

@@ -8,9 +8,9 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Map.Val
 {
-    public class BigIntCodec : IJsonCodec
+    public class BigIntMapper : IJsonMapper
     {
-        public static readonly BigIntCodec Interface = new BigIntCodec();
+        public static readonly BigIntMapper Interface = new BigIntMapper();
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(BigInteger))
@@ -41,7 +41,7 @@ namespace Friflo.Json.Managed.Map.Val
                     slot.Obj = ret2;
                     return true;
                 default:
-                    return PrimitiveCodec.CheckElse(reader, stubType);
+                    return ValueUtils.CheckElse(reader, stubType);
             }
         }
     }

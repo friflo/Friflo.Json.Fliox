@@ -15,13 +15,13 @@ namespace Friflo.Json.Managed.Types
     
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonCodec  codec;
+        public  readonly    IJsonMapper  codec;
         public  readonly    bool        isNullable;
         public  readonly    TypeCat     typeCat;
 
         /// <summary>
         /// Need to be overriden, in case the derived <see cref="StubType"/> uses <see cref="System.Type"/>'s
-        /// which are required in a <see cref="IJsonCodec"/> implementation returning a <see cref="StubType"/>.<br/>
+        /// which are required in a <see cref="IJsonMapper"/> implementation returning a <see cref="StubType"/>.<br/>
         /// 
         /// In this case <see cref="InitStubType"/> is used to map a <see cref="System.Type"/> to a required
         /// <see cref="StubType"/> by calling <see cref="TypeStore.GetType(System.Type)"/> and storing the returned
@@ -36,7 +36,7 @@ namespace Friflo.Json.Managed.Types
             return null;
         }
 
-        public StubType(Type type, IJsonCodec codec, bool isNullable, TypeCat typeCat) {
+        public StubType(Type type, IJsonMapper codec, bool isNullable, TypeCat typeCat) {
             this.type =         type;
             this.codec =        codec;
             this.isNullable =   isNullable;

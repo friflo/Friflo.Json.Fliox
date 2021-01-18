@@ -12,9 +12,9 @@ namespace Friflo.Json.Managed.Types
     
     public class TypeResolver : ITypeResolver
     {
-        public readonly IJsonCodec[] resolvers;
+        public readonly IJsonMapper[] resolvers;
 
-        public TypeResolver(IJsonCodec[] resolvers) {
+        public TypeResolver(IJsonMapper[] resolvers) {
             this.resolvers = resolvers;
         }
 

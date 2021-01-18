@@ -25,7 +25,7 @@ namespace Friflo.Json.Managed.Types
         }
 
         // PropType
-        internal ClassType (Type type, IJsonCodec codec, ConstructorInfo constructor) :
+        internal ClassType (Type type, IJsonMapper codec, ConstructorInfo constructor) :
             base (type, codec, IsNullable(type), TypeCat.Object)
         {
             using (var removedKey = new Bytes("__REMOVED")) {

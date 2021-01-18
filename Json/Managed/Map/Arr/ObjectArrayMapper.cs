@@ -10,9 +10,9 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Map.Arr
 {
-    public class ObjectArrayCodec : IJsonCodec
+    public class ObjectArrayMapper : IJsonMapper
     {
-        public static readonly ObjectArrayCodec Interface = new ObjectArrayCodec();
+        public static readonly ObjectArrayMapper Interface = new ObjectArrayMapper();
         
         public StubType CreateStubType(Type type) {
             if (type. IsArray) {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool success))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool success))
                 return success;
             
             ref var parser = ref reader.parser;

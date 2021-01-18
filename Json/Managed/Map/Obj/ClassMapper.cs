@@ -9,8 +9,8 @@ using Friflo.Json.Managed.Utils;
 
 namespace Friflo.Json.Managed.Map.Obj
 {
-    public class ObjectCodec : IJsonCodec {
-        public static readonly ObjectCodec Interface = new ObjectCodec();
+    public class ClassMapper : IJsonMapper {
+        public static readonly ClassMapper Interface = new ClassMapper();
 
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
@@ -64,7 +64,7 @@ namespace Friflo.Json.Managed.Map.Obj
             
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             // Ensure preconditions are fulfilled
-            if (!JsonUtils.StartObject(reader, ref slot, stubType, out bool success))
+            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
                 return success;
                 
             ref var parser = ref reader.parser;

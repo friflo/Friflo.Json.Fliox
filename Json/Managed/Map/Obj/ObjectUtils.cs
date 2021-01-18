@@ -3,7 +3,7 @@ using Friflo.Json.Managed.Types;
 
 namespace Friflo.Json.Managed.Map.Obj
 {
-    public static class JsonUtils
+    public static class ObjectUtils
     {
         public static bool StartObject(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
             var ev = reader.parser.Event;

@@ -11,7 +11,7 @@ using Friflo.Json.Managed.Utils;
 namespace Friflo.Json.Managed.Map.Arr
 {
     public static class ArrayUtils {
-        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonCodec jsonCodec) {
+        public static StubType CreatePrimitiveHandler(Type type, Type itemType, IJsonMapper jsonCodec) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -43,9 +43,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class StringArrayCodec : IJsonCodec
+    public class StringArrayMapper : IJsonMapper
     {
-        public static readonly StringArrayCodec Interface = new StringArrayCodec();
+        public static readonly StringArrayMapper Interface = new StringArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(string), this);
@@ -66,7 +66,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             String[] array = (String[]) slot.Obj;
@@ -85,9 +85,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class LongArrayCodec : IJsonCodec
+    public class LongArrayMapper : IJsonMapper
     {
-        public static readonly LongArrayCodec Interface = new LongArrayCodec();
+        public static readonly LongArrayMapper Interface = new LongArrayMapper();
 
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(long), this);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             long[] array = (long[]) slot.Obj;
@@ -125,9 +125,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class IntArrayCodec : IJsonCodec
+    public class IntArrayMapper : IJsonMapper
     {
-        public static readonly IntArrayCodec Interface = new IntArrayCodec();
+        public static readonly IntArrayMapper Interface = new IntArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(int), this);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             int[] array = (int[]) slot.Obj;
@@ -165,9 +165,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class ShortArrayCodec : IJsonCodec
+    public class ShortArrayMapper : IJsonMapper
     {
-        public static readonly ShortArrayCodec Interface = new ShortArrayCodec();
+        public static readonly ShortArrayMapper Interface = new ShortArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(short), this);
@@ -184,7 +184,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             short[] array = (short[]) slot.Obj;
@@ -205,9 +205,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class ByteArrayCodec : IJsonCodec
+    public class ByteArrayMapper : IJsonMapper
     {
-        public static readonly ByteArrayCodec Interface = new ByteArrayCodec();
+        public static readonly ByteArrayMapper Interface = new ByteArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(byte), this);
@@ -224,7 +224,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             byte[] array = (byte[]) slot.Obj;
@@ -245,9 +245,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class BoolArrayCodec : IJsonCodec
+    public class BoolArrayMapper : IJsonMapper
     {
-        public static readonly BoolArrayCodec Interface = new BoolArrayCodec();
+        public static readonly BoolArrayMapper Interface = new BoolArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(bool), this);
@@ -264,7 +264,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             bool[] array = (bool[]) slot.Obj;
@@ -283,9 +283,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class DoubleArrayCodec : IJsonCodec
+    public class DoubleArrayMapper : IJsonMapper
     {
-        public static readonly DoubleArrayCodec Interface = new DoubleArrayCodec();
+        public static readonly DoubleArrayMapper Interface = new DoubleArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(double), this);
@@ -302,7 +302,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             double[] array = (double[]) slot.Obj;
@@ -323,9 +323,9 @@ namespace Friflo.Json.Managed.Map.Arr
         }
     }
 
-    public class FloatArrayCodec : IJsonCodec
+    public class FloatArrayMapper : IJsonMapper
     {
-        public static readonly FloatArrayCodec Interface = new FloatArrayCodec();
+        public static readonly FloatArrayMapper Interface = new FloatArrayMapper();
         
         public StubType CreateStubType(Type type) {
             return ArrayUtils.CreatePrimitiveHandler(type, typeof(float), this);
@@ -342,7 +342,7 @@ namespace Friflo.Json.Managed.Map.Arr
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!JsonUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+            if (!ObjectUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             
             float[] array = (float[])slot.Obj;

@@ -8,7 +8,7 @@ namespace Friflo.Json.Managed.Map
 {
 
     
-    public class TypeNotSupportedCodec : IJsonCodec
+    public class TypeNotSupportedCodec : IJsonMapper
     {
         public static readonly TypeNotSupportedCodec Interface = new TypeNotSupportedCodec();
 
