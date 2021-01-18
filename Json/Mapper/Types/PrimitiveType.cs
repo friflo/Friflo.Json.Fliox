@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper.Types
                 type == typeof(byte)  || type == typeof(byte?)  ||
                 type == typeof(bool)  || type == typeof(bool?)  ||
                 type == typeof(double)|| type == typeof(double?)||
-                type == typeof(float) || type == typeof(float))
+                type == typeof(float) || type == typeof(float?))
                 return TypeCat.Number;
             
             return TypeCat.None;

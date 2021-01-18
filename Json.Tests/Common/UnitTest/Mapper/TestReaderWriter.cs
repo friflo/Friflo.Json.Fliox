@@ -471,15 +471,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         AreEqual(new[] {"hello"}, inOut);
                     }
 
-                    AreEqual(new [] {1,2,3},      enc.Read<long[]>      (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(new [] {1,2,3},      enc.Read<int[]>       (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(new [] {1,2,3},      enc.Read<short[]>     (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(new [] {1,2,3},      enc.Read<byte[]>      (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read   <long[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read    <int[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read  <short[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read   <byte[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                             
-                    AreEqual(new [] {1,2,3},      enc.Read<double[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    AreEqual(new [] {1,2,3},      enc.Read<float[]>     (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read <double[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read  <float[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                             
-                    AreEqual(new [] {true, false},enc.Read<bool[]>      (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {true, false},enc.Read   <bool[]>    (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+
+                    AreEqual(new [] {1,2,3},      enc.Read  <long?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read   <int?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read <short?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read  <byte?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                            
+                    AreEqual(new [] {1,2,3},      enc.Read<double?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {1,2,3},      enc.Read <float?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                            
+                    AreEqual(new [] {true, false},enc.Read <bool?[]>     (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
 
                     {
                         Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
@@ -636,7 +646,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(106, enc.typeCache.LookupCount);
+                        AreEqual(113, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
