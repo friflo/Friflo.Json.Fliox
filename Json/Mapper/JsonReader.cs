@@ -42,30 +42,15 @@ namespace Friflo.Json.Mapper
         /// Dont throw exceptions in error case, if not enabled by <see cref="ThrowException"/>
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
-        public T ReadValue <T>(Bytes bytes) where T : struct {
-            int start = bytes.Start;
-            int len = bytes.Len;
-            Var slot = new Var();
-            StubType stubType = typeCache.GetType(typeof(T));
-            bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
-            parser.NextEvent(); // EOF
-            if (!success) {
-                if (!Error.ErrSet)
-                    throw new InvalidOperationException("expect error is set");
-                return default;
-            }
-            return (T) slot.Get();
-        }
-        
         public T Read<T>(Bytes bytes) {
             int start = bytes.Start;
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(typeof(T));
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
+            if (!success)
+                return default;
             parser.NextEvent(); // EOF
-            if (typeof(T).IsValueType && !success)
-                throw new InvalidOperationException(parser.error.msg.ToString() + "\nNote: Use non generic Read() method");
             return (T) slot.Get();
         }
         

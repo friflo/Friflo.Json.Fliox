@@ -376,78 +376,78 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual("hello",   enc.Read<string>(hello));
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(12.5,                      enc.ReadValue<double>   (@double));
+                    AreEqual(12.5,                      enc.Read<double>        (@double));
                     AreEqual(12.5,                      enc.Read<double?>       (@double));
                     AreEqual(null,                      enc.Read<double?>       (@null));
 
-                    enc.ReadValue<double>(@null);
+                    enc.Read<double>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 #if !UNITY_EDITOR
                     {
                         enc.ThrowException = true;
-                        var e = Throws<FrifloException>(() => enc.ReadValue<double>(@null));
+                        var e = Throws<FrifloException>(() => enc.Read<double>(@null));
                         StringAssert.Contains("Cannot assign null to primitive. Expect:", e.Message);
                         enc.ThrowException = false;
                     }
 #endif
                     // error cases
-                    enc.ReadValue<double>(@true);
+                    enc.Read<double>(@true);
                     StringAssert.Contains("Cannot assign bool to primitive. Expect:", enc.Error.msg.ToString());
-                    enc.ReadValue<double>(hello);
+                    enc.Read<double>(hello);
                     StringAssert.Contains("Cannot assign string to primitive. Expect:", enc.Error.msg.ToString());
-                    enc.ReadValue<double>(arrNum);
+                    enc.Read<double>(arrNum);
                     StringAssert.Contains("Cannot assign array to primitive. Expect:", enc.Error.msg.ToString());
-                    enc.ReadValue<double>(mapNum);
+                    enc.Read<double>(mapNum);
                     StringAssert.Contains("Cannot assign object to primitive. Expect:", enc.Error.msg.ToString());
-                    enc.ReadValue<long>(bigInt);
+                    enc.Read<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
-                    enc.ReadValue<float>(bigInt);
+                    enc.Read<float>(bigInt);
                     AreEqual(true, enc.Error.ErrSet);
                     // StringAssert.Contains("float value out of range. val:", enc.Error.msg.ToString()); // Unity has different error message
-                    enc.ReadValue<double>   (dblOverflow);
+                    enc.Read<double>   (dblOverflow);
                     AreEqual(true, enc.Error.ErrSet);
                     // StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());// Unity has different error message
 
 
-                    AreEqual(12.5,                      enc.ReadValue<float>    (@double));
-                    AreEqual(12.5,                      enc.Read<float?>        (@double));
-                    AreEqual(null,                      enc.Read<float?>        (@null));
-                    enc.ReadValue<float>(@null);
+                    AreEqual(12.5,                      enc.Read<float>    (@double));
+                    AreEqual(12.5,                      enc.Read<float?>   (@double));
+                    AreEqual(null,                      enc.Read<float?>   (@null));
+                    enc.Read<float>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.ReadValue<long>     (@long));
-                    AreEqual(42,        enc.Read<long>          (@long));
-                    AreEqual(42,        enc.Read<long?>         (@long));
-                    AreEqual(null,      enc.Read<long?>         (@null));
-                    enc.ReadValue<long>(@null);
+                    AreEqual(42,        enc.Read<long>     (@long));
+                    AreEqual(42,        enc.Read<long>     (@long));
+                    AreEqual(42,        enc.Read<long?>    (@long));
+                    AreEqual(null,      enc.Read<long?>    (@null));
+                    enc.Read<long>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.ReadValue<int>      (@long));
-                    AreEqual(42,        enc.Read<int>           (@long));
-                    AreEqual(42,        enc.Read<int?>          (@long));
-                    AreEqual(null,      enc.Read<int?>          (@null));
-                    enc.ReadValue<int>(@null);
+                    AreEqual(42,        enc.Read<int>      (@long));
+                    AreEqual(42,        enc.Read<int>      (@long));
+                    AreEqual(42,        enc.Read<int?>     (@long));
+                    AreEqual(null,      enc.Read<int?>     (@null));
+                    enc.Read<int>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.ReadValue<short>    (@long));
-                    AreEqual(42,        enc.Read<short>         (@long));
-                    AreEqual(42,        enc.Read<short?>        (@long));
-                    AreEqual(null,      enc.Read<short?>        (@null));
-                    enc.ReadValue<short>(@null);
+                    AreEqual(42,        enc.Read<short>    (@long));
+                    AreEqual(42,        enc.Read<short>    (@long));
+                    AreEqual(42,        enc.Read<short?>   (@long));
+                    AreEqual(null,      enc.Read<short?>   (@null));
+                    enc.Read<short>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.ReadValue<byte>     (@long));
-                    AreEqual(42,        enc.Read<byte>          (@long));
-                    AreEqual(42,        enc.Read<byte?>         (@long));
-                    AreEqual(null,      enc.Read<byte?>         (@null));
-                    enc.ReadValue<byte>(@null);
+                    AreEqual(42,        enc.Read<byte>     (@long));
+                    AreEqual(42,        enc.Read<byte>     (@long));
+                    AreEqual(42,        enc.Read<byte?>    (@long));
+                    AreEqual(null,      enc.Read<byte?>    (@null));
+                    enc.Read<byte>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
-                    AreEqual(true,      enc.ReadValue<bool>     (@true));
-                    AreEqual(true,      enc.Read<bool>          (@true));
-                    AreEqual(true,      enc.Read<bool?>         (@true));
-                    AreEqual(null,      enc.Read<bool?>         (@null));
-                    enc.ReadValue<bool>(@null);
+                    AreEqual(true,      enc.Read<bool>     (@true));
+                    AreEqual(true,      enc.Read<bool>     (@true));
+                    AreEqual(true,      enc.Read<bool?>    (@true));
+                    AreEqual(null,      enc.Read<bool?>    (@null));
+                    enc.Read<bool>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
 
                     
@@ -675,36 +675,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     
                     // ---- BigInteger ---
-                    AreEqual(new TestStruct{ key = 42 },      enc.ReadValue<TestStruct>    (mapNum));
-                    AreEqual(default(TestStruct), enc.ReadValue<TestStruct>(@null));
+                    AreEqual(new TestStruct{ key = 42 },        enc.Read<TestStruct>    (mapNum));
+                    AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
                     StringAssert.Contains("Cannot assign null to object. Expect:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
-                        AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStr));
+                        AreEqual(expect, enc.Read<BigInteger>(bigIntStr));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
-                        AreEqual(expect, enc.ReadValue<BigInteger>(bigIntStrN));
+                        AreEqual(expect, enc.Read<BigInteger>(bigIntStrN));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
-                        AreEqual(expect, enc.ReadValue<BigInteger>(bigInt));
+                        AreEqual(expect, enc.Read<BigInteger>(bigInt));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
                         write.Write(expect);
                         AreEqual(bigIntStr.ToString(), write.Output.ToString());
                     }
-                    enc.ReadValue<BigInteger>(hello);
+                    enc.Read<BigInteger>(hello);
                     StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
                     
                     // --- DateTime ---
                     {
                         DateTime expect = DateTime.Parse(dateTime.ToString());
-                        DateTime value = enc.ReadValue<DateTime>(dateTimeStr);
+                        DateTime value = enc.Read<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         
                         write.Write(expect);
                         AreEqual(dateTimeStr.ToString(), write.Output.ToString());   
                     }
-                    enc.ReadValue<DateTime>(hello);
+                    enc.Read<DateTime>(hello);
                     StringAssert.Contains("Failed parsing DateTime. value:", enc.Error.msg.ToString());
 
                     // Ensure minimum required type lookups
