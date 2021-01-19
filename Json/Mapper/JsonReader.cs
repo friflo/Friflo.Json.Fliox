@@ -16,7 +16,8 @@ namespace Friflo.Json.Mapper
         public readonly TypeCache       typeCache;
 
         public readonly Bytes           discriminator   = new Bytes("$type");
-        public          BytesString     bytesRef        = new BytesString();
+        public          Bytes           strBuf          = new Bytes(0);
+        public readonly BytesString     bytesRef        = new BytesString();
 
         public          JsonError       Error => parser.error;
         public          SkipInfo        SkipInfo => parser.skipInfo;
@@ -34,6 +35,7 @@ namespace Friflo.Json.Mapper
         public void Dispose() {
             discriminator.Dispose();
             parser.Dispose();
+            strBuf.Dispose();
         }
         
         /// <summary>
@@ -142,8 +144,7 @@ namespace Friflo.Json.Mapper
         
         
         public bool ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            // Cannot assign null to Dictionary value.
+            /*
             string evType = null;
             string value = null;
             switch (parser.Event) {
@@ -154,7 +155,32 @@ namespace Friflo.Json.Mapper
                 case JsonEvent.ArrayStart:  evType = "array";  value = "[...]";                             break;
                 case JsonEvent.ObjectStart: evType = "object"; value = "{...}";                             break;
             }
-            parser.Error("JsonReader", "Cannot assign " + evType + " to " + msg + ". Expect: " + expectType.type.Name + ", got: " + value);
+            string errMsg = $"Cannot assign {evType} to {msg}. Expect: {expectType.type.Name}, got: {value}"; */
+            strBuf.Clear();
+            strBuf.AppendString("Cannot assign ");
+            switch (parser.Event) {
+                case JsonEvent.ValueBool:   strBuf.AppendString("bool");    break;
+                case JsonEvent.ValueString: strBuf.AppendString("string");  break;
+                case JsonEvent.ValueNumber: strBuf.AppendString("number");  break;
+                case JsonEvent.ValueNull:   strBuf.AppendString("null");    break;
+                case JsonEvent.ArrayStart:  strBuf.AppendString("array");   break;
+                case JsonEvent.ObjectStart: strBuf.AppendString("object");  break;
+            }
+            strBuf.AppendString(" to ");
+            strBuf.AppendString(msg);
+            strBuf.AppendString(". Expect: ");
+            strBuf.AppendString(expectType.type.Name);
+            strBuf.AppendString(", got: ");
+            switch (parser.Event) {
+                case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;
+                case JsonEvent.ValueString:
+                    strBuf.AppendChar('\'');strBuf.AppendBytes(ref parser.value); strBuf.AppendChar('\'');  break;
+                case JsonEvent.ValueNumber: strBuf.AppendBytes(ref parser.value);                           break;
+                case JsonEvent.ValueNull:   strBuf.AppendString("null");                                    break;
+                case JsonEvent.ArrayStart:  strBuf.AppendString("[...]");                                   break;
+                case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;
+            }
+            parser.Error("JsonReader", ref strBuf);
             return false;
         }
         
