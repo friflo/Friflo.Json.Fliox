@@ -17,6 +17,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return null;
             if (StubType.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
                 return null;
+            if (EnumType.IsEnum(type, out bool _))
+                return null;
             
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)

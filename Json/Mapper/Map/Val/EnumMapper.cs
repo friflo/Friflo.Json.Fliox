@@ -11,18 +11,10 @@ namespace Friflo.Json.Mapper.Map.Val
     public class EnumMapper : IJsonMapper
     {
         public static readonly EnumMapper Interface = new EnumMapper();
-        
+
         public StubType CreateStubType(Type type) {
-            bool isNullable = false;
-            if (!type.IsEnum) {
-                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
-                if (args == null)
-                    return null;
-                Type nullableType = args[0];
-                if (!nullableType.IsEnum)
-                    return null;
-                isNullable = true;
-            }
+            if (!EnumType.IsEnum(type, out bool isNullable))
+                return null;
             return new EnumType (type, Interface, isNullable);
         }
         

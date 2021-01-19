@@ -74,6 +74,20 @@ namespace Friflo.Json.Mapper.Types
 
             throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
         }
+        
+        public static bool IsEnum(Type type, out bool isNullable) {
+            isNullable = false;
+            if (!type.IsEnum) {
+                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
+                if (args == null)
+                    return false;
+                Type nullableType = args[0];
+                if (!nullableType.IsEnum)
+                    return false;
+                isNullable = true;
+            }
+            return true;
+        }
     }
 
 
