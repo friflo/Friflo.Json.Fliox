@@ -94,7 +94,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         StubType valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.String)
-                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
+                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -107,7 +107,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Number)
-                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
+                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -119,7 +119,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.FieldType;
                         if (valueType.typeCat != TypeCat.Bool)
-                            return reader.ErrorIncompatible("class field: " + field.name, valueType, ref parser);
+                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -130,7 +130,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         if (!field.FieldType.isNullable)
-                            return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
+                            return reader.ErrorIncompatible("class field: ", field.name, field.FieldType, ref parser);
                         elemVar.Obj = null;
                         field.SetField(obj, ref elemVar);
                         break;
@@ -148,7 +148,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         //
                         object subRet = elemVar.Obj;
                         if (!field.FieldType.isNullable && subRet == null)
-                            return reader.ErrorIncompatible("class field: " + field.name, field.FieldType, ref parser);
+                            return reader.ErrorIncompatible("class field: ", field.name, field.FieldType, ref parser);
                         if (sub != subRet)
                             field.SetField(obj, ref elemVar);
                         break;

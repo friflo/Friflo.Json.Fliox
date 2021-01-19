@@ -141,9 +141,13 @@ namespace Friflo.Json.Mapper
                 }
             }
         }
-        
-        
+
         public bool ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
+            ErrorIncompatible(msg, "", expectType, ref parser);
+            return false;
+        }
+
+        public bool ErrorIncompatible(string msg, string msgParam, StubType expectType, ref JsonParser parser) {
             /*
             string evType = null;
             string value = null;
@@ -168,6 +172,7 @@ namespace Friflo.Json.Mapper
             }
             strBuf.AppendString(" to ");
             strBuf.AppendString(msg);
+            strBuf.AppendString(msgParam);
             strBuf.AppendString(". Expect: ");
             strBuf.AppendString(expectType.type.Name);
             strBuf.AppendString(", got: ");
