@@ -1,5 +1,4 @@
-﻿// using static NUnit.Framework.Assert;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
@@ -7,7 +6,12 @@ using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
+
+// using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.NoCheck;
+
+// ReSharper disable UnassignedField.Global
+// ReSharper disable UnusedVariable
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
