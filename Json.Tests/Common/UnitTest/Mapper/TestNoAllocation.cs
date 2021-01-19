@@ -132,13 +132,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
                     // --------------------------------- enum -----------------------------------
-                    enc.Read<SomeEnum>(value1, ref result);
-                    IsTrue(SomeEnum.Value1 == (SomeEnum)result.Obj);  // avoid boxing. AreEqual() boxes
-                    
-                    enc.Read<SomeEnum>(hello, ref result);
-                    IsTrue(null == result.Obj);
+                    {
+                        SomeEnum res = enc.Read<SomeEnum>(value1);
+                        IsTrue(SomeEnum.Value1 == (SomeEnum)res);  // avoid boxing. AreEqual() boxes
+                    } {
+                        enc.Read<SomeEnum>(hello, ref result);
+                        AreEqual(null, result.Obj);
+                    }
 
-                    
+
                     // AreEqual(null,              enc.Read(hello, typeof(SomeEnum)));
 
                     // --------------------------------- List<> ---------------------------------
