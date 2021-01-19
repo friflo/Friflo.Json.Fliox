@@ -125,22 +125,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             StubType elementType = collectionType.ElementType;
             Var elemVar = new Var();
             for (int n = 0; n < list.Count; n++) {
-                if (n > 0) writer.bytes.AppendChar(',');
-                Object item = list[n];
-                if (item != null) {
-                    // todo: implement missing element types
-                    switch (collectionType.elementVarType) {
-                        case VarType.Object:
-                            elemVar.Obj = item;
-                            elementType.map.Write(writer, ref elemVar, elementType);
-                            break;
-                        default:
-                            throw new FrifloException("List element type not supported: " +
-                                                      collectionType.ElementType.type.Name);
-                    }
-                }
-                else
-                    writer.bytes.AppendBytes(ref writer.@null);
+                if (n > 0)
+                    writer.bytes.AppendChar(',');
+                elemVar.Set(list[n], elementType.varType, elementType.isNullable); // todo implement non boxing/unboxing method
+                elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
         }

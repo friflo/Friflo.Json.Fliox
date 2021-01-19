@@ -283,19 +283,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     {
                         Dictionary<string, int>[] expect = {new Dictionary<string, int> {{"key", 42}}};
-                        AreEqual(expect, enc.Read<Dictionary<string, int>[]>(arrObj));
+                        AreEqual(expect, Read<Dictionary<string, int>[]>(arrObj));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
 
                     // --- array of array
                     {
                         int[][] expect = {new []{1, 2, 3}};
-                        AreEqual(expect, enc.Read<int[][]>(arrArrNum));
+                        AreEqual(expect, Read<int[][]>(arrArrNum));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     {
                         Dictionary<string, int>[][] expect = {new []{ new Dictionary<string, int> {{"key", 42}}}};
-                        AreEqual(expect, enc.Read<Dictionary<string, int>[][]>(arrArrObj));
+                        AreEqual(expect, Read<Dictionary<string, int>[][]>(arrArrObj));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- multi dimensional arrays
@@ -309,8 +309,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(null, enc.Read<List<int>>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
                         List<int> expect = new List<int> {1, 2, 3};
-                        AreEqual(expect, enc.Read<List<int>> (arrNum));
-                        AreEqual(expect, enc.Read<List<int?>>(arrNum));
+                        AreEqual(expect, Read<List<int>> (arrNum));
+                        AreEqual(expect, Read<List<int?>>(arrNum));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<bool> expect = new List<bool> {true, false};

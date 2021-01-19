@@ -37,14 +37,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             StubType elementType = collectionType.ElementType;
             Var elemVar = new Var();
             for (int n = 0; n < arr.Length; n++) {
-                if (n > 0) writer.bytes.AppendChar(',');
-                object item = arr.GetValue(n);
-                if (item == null)
-                    writer.bytes.AppendBytes(ref writer.@null);
-                else {
-                    elemVar.Obj = item;
-                    elementType.map.Write(writer, ref elemVar, elementType);
-                }
+                if (n > 0)
+                    writer.bytes.AppendChar(',');
+                elemVar.Set(arr.GetValue(n), elementType.varType, elementType.isNullable);
+                elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
         }
