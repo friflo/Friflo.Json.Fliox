@@ -15,7 +15,7 @@ using static Friflo.Json.Tests.Common.Utils.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public struct TestStruct {
+    public struct NoAllocStruct {
         public int              key;
     }
 
