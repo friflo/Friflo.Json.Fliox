@@ -314,13 +314,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<bool> expect = new List<bool> {true, false};
-                        AreEqual(expect, enc.Read<List<bool>>(arrBln));
+                        AreEqual(expect, Read<List<bool>>(arrBln));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- list of list
                     {
                         List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
-                        AreEqual(expect, enc.Read<List<List<int>>>(arrArrNum));
+                        AreEqual(expect, Read<List<List<int>>>(arrArrNum));
                     }
                     
                     enc.Read<List<int>>(arrNull);
@@ -358,70 +358,70 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // --- maps - value type: integral 
                     {
                         var expect = new Dictionary<string, long> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, long>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, long>>(mapNum));
                     } {
                         var expect = new Dictionary<string, int> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, int>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, int>>(mapNum));
                     } {
                         var expect = new Dictionary<string, short> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, short>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, short>>(mapNum));
                     } {
                         var expect = new Dictionary<string, byte> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, byte>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, byte>>(mapNum));
                     }
                     // --- maps - value type: floating point
                     {
                         var expect = new Dictionary<string, double> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, double>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, double>>(mapNum));
                     } {
                         var expect = new Dictionary<string, float> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, float>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, float>>(mapNum));
                     } {
                         var expect = new Dictionary<string, float?> {{"key", 42}};
-                        AreEqual(expect, enc.Read<Dictionary<string, float?>>(mapNum));
+                        AreEqual(expect, Read<Dictionary<string, float?>>(mapNum));
                     } {
                         var expect = new Dictionary<string, float?> {{"key", null}};
-                        AreEqual(expect, enc.Read<Dictionary<string, float?>>(mapNull));
+                        AreEqual(expect, Read<Dictionary<string, float?>>(mapNull));
                     }
                     
                     // --- map - value type: string
                     {
                         var expect = new Dictionary<string, string> {{"key", "value" }};
-                        AreEqual(expect, enc.Read<Dictionary<string, string>>(mapStr));
+                        AreEqual(expect, Read<Dictionary<string, string>>(mapStr));
                     } {
                         var expect = new Dictionary<string, string> {{"key", null }};
-                        AreEqual(expect, enc.Read<Dictionary<string, string>>(mapNull));
+                        AreEqual(expect, Read<Dictionary<string, string>>(mapNull));
                     }
                     // --- map - value type: bool
                     {
                         var expect = new Dictionary<string, bool> {{"key", true }};
-                        AreEqual(expect, enc.Read<Dictionary<string, bool>>(mapBool));
+                        AreEqual(expect, Read<Dictionary<string, bool>>(mapBool));
                     }
                     // --- map - value type: map
                     {
                         var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
-                        AreEqual(expect, enc.Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
+                        AreEqual(expect, Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
                     }
                     // --- map derivations                
                     {
                         var expect = new Dictionary<string, long> {{"key", 42}};
-                        AreEqual(expect, enc.Read<ConcurrentDictionary<string, long>>(mapNum));
+                        AreEqual(expect, Read<ConcurrentDictionary<string, long>>(mapNum));
                         // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
                     }
                     
                     // ---- BigInteger ---
-                    AreEqual(new TestStruct{ key = 42 },        enc.Read<TestStruct>    (mapNum));
+                    AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
                     StringAssert.Contains("Cannot assign null to object. Expect:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
-                        AreEqual(expect, enc.Read<BigInteger>(bigIntStr));
+                        AreEqual(expect, Read<BigInteger>(bigIntStr));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
-                        AreEqual(expect, enc.Read<BigInteger>(bigIntStrN));
+                        AreEqual(expect, Read<BigInteger>(bigIntStrN));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
-                        AreEqual(expect, enc.Read<BigInteger>(bigInt));
+                        AreEqual(expect, Read<BigInteger>(bigInt));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         
                         write.Write(expect);
@@ -433,7 +433,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // --- DateTime ---
                     {
                         DateTime expect = DateTime.Parse(dateTime.ToString());
-                        DateTime value = enc.Read<DateTime>(dateTimeStr);
+                        DateTime value = Read<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         
                         write.Write(expect);
