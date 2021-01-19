@@ -277,24 +277,48 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        public enum TestEnum
-        {
-            item1 = 11,
-            item2 = 22
+        public enum TestEnum {
+            Value1 = 11,
+            Value2 = 22,
+            Value3 = 11, // duplicate constant value - C#/.NET maps these enum values to the first value using same constant   
         }
 
         [Test]
         public void TestEnumMapper() {
+            // C#/.NET behavior in case of duplicate enum v
+            AreEqual(TestEnum.Value1, TestEnum.Value3);
+
             using (TypeStore typeStore = createStore())
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
-            using (var item1 = new Bytes("\"item1\""))
-            using (var item2 = new Bytes("\"item2\""))
+            using (var value1 = new Bytes("\"Value1\""))
+            using (var value2 = new Bytes("\"Value2\""))
+            using (var value3 = new Bytes("\"Value3\""))
+            using (var hello =  new Bytes("\"hello\""))
+            using (var num11 =  new Bytes("11"))
+            using (var num999 = new Bytes("999"))
             {
-                AreEqual(TestEnum.item1, enc.Read(item1, typeof(TestEnum)));
-                AreEqual(TestEnum.item2, enc.Read(item2, typeof(TestEnum)));
+                AreEqual(TestEnum.Value1, enc.Read(value1, typeof(TestEnum)));
+                AreEqual(TestEnum.Value2, enc.Read(value2, typeof(TestEnum)));
+                AreEqual(TestEnum.Value3, enc.Read(value3, typeof(TestEnum)));
+                AreEqual(TestEnum.Value1, enc.Read(value3, typeof(TestEnum)));
                 
-                write.Write(TestEnum.item1);
+                enc.Read(hello, typeof(TestEnum));
+                StringAssert.Contains("Cannot assign string to enum value. Expect: TestEnum, got: 'hello'", enc.Error.msg.ToString());
+
+                AreEqual(TestEnum.Value1, enc.Read(num11, typeof(TestEnum)));
+                
+                enc.Read(num999, typeof(TestEnum));
+                StringAssert.Contains("Cannot assign number to enum value. Expect: TestEnum, got: 999", enc.Error.msg.ToString());
+
+                write.Write(TestEnum.Value1);
+                AreEqual("\"Value1\"", write.bytes.ToString());
+                
+                write.Write(TestEnum.Value2);
+                AreEqual("\"Value2\"", write.bytes.ToString());
+                
+                write.Write(TestEnum.Value3);
+                AreEqual("\"Value1\"", write.bytes.ToString());
             }
         }
 

@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper
         public readonly TypeCache       typeCache;
 
         public readonly Bytes           discriminator   = new Bytes("$type");
-        public          BytesString     keyBuf          = new BytesString();
+        public          BytesString     bytesRef        = new BytesString();
 
         public          JsonError       Error => parser.error;
         public          SkipInfo        SkipInfo => parser.skipInfo;

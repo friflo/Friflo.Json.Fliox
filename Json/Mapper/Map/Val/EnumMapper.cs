@@ -29,15 +29,24 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
-            if (reader.parser.Event == JsonEvent.ValueString) {
-                reader.keyBuf.value = reader.parser.value;
-                if (enumType.stringToEnum.TryGetValue(reader.keyBuf, out Enum enumValue)) {
+            ref var parser = ref reader.parser;
+            if (parser.Event == JsonEvent.ValueString) {
+                reader.bytesRef.value = parser.value;
+                if (enumType.stringToEnum.TryGetValue(reader.bytesRef, out Enum enumValue)) {
                     slot.Obj = enumValue;
                     return true;
                 }
-                slot.Obj = null;
-                return false;
-                // return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
+                return reader.ErrorIncompatible("enum value", stubType, ref parser);
+            }
+            if (parser.Event == JsonEvent.ValueNumber) {
+                long integralValue = parser.ValueAsLong(out bool success);
+                if (!success)
+                    return false;
+                if (enumType.integralToEnum.TryGetValue(integralValue, out Enum enumValue)) {
+                    slot.Obj = enumValue;
+                    return true;
+                }
+                return reader.ErrorIncompatible("enum value", stubType, ref parser);
             }
             return ValueUtils.CheckElse(reader, stubType);
         }

@@ -24,5 +24,9 @@ namespace Friflo.Json.Mapper.Utils
         public override int GetHashCode() {
             return value.GetHashCode();
         }
+
+        public override string ToString() {
+            return value.ToString();
+        }
     }
 }
