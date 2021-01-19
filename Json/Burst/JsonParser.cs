@@ -107,7 +107,7 @@ namespace Friflo.Json.Burst
         private     Str32               @false;
         private     Str32               @null;
         private     Str32               emptyArray;
-        private     Str32               emptyString;
+        private     Str128              emptyString;  // todo: remove this. It is currently only required of API: Error()
         /// <summary>In case the event returned by <see cref="NextEvent()"/> was <see cref="JsonEvent.ValueNumber"/> the flag
         /// indicates that the value of an object member or array element is a floating point number (e.g. 2.34).<br/>
         /// Otherwise false indicates that the value is of an integral type (e.g. 11) 

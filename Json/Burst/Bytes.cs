@@ -22,7 +22,7 @@ namespace Friflo.Json.Burst
 
     public interface IMapKey<K> where K : struct
     {
-        bool    IsEqual([AllowNull] ref K other);
+        bool    IsEqual(ref K other);
         bool    IsSet();
     }
     
