@@ -64,7 +64,7 @@ namespace Friflo.Json.Mapper
             StubType stubType = typeCache.GetType(typeof(T));
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
             parser.NextEvent(); // EOF
-            if (typeof(T).IsValueType && !success && parser.error.ErrSet)
+            if (typeof(T).IsValueType && !success)
                 throw new InvalidOperationException(parser.error.msg.ToString() + "\nNote: Use non generic Read() method");
             return (T) slot.Get();
         }
