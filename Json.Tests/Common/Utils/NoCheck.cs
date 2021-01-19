@@ -47,6 +47,11 @@ namespace Friflo.Json.Tests.Common.Utils
                 throw new TestException("Expect: true\nBut was: false");
         }
         
+        public static void IsFalse(bool value) {
+            if (value)
+                throw new TestException("Expect: false\nBut was: true");
+        }
+        
 
         public static TActual Throws<TActual>(TestDelegate code) where TActual : Exception {
             try {

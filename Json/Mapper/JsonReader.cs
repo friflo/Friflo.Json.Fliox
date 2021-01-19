@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper
             bool success = ReadStart(bytes.buffer, start, len, typeof(T), ref slot);
             parser.NextEvent(); // EOF
             if (typeof(T).IsValueType && !success && parser.error.ErrSet)
-                throw new InvalidOperationException(parser.error.msg.ToString());
+                throw new InvalidOperationException(parser.error.msg.ToString() + "\nNote: Use non generic Read() method");
             return (T) slot.Get();
         }
         

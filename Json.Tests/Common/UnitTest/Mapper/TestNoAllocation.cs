@@ -14,12 +14,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public struct TestStruct {
         public int              key;
     }
+
+    public enum SomeEnum {
+        Value1,
+        Value2,
+    }
     
     public class TestClass {
         public TestClass    selfReference; // test cyclic references
         public TestClass    testChild;
         // public int              key;
-        public int[]            intArray;
+        public int[]        intArray;
+        public SomeEnum     someEnum;
 
     }
 
@@ -30,6 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""intArray"":null,
     ""testChild"":null,
     ""key"":42,
+    ""someEnum"":""Value1"",
     ""unknownObject"": {{
         ""anotherUnknown"": 42
     }},
@@ -78,6 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var @long =      new Bytes ("42"))
             using (var @true =      new Bytes ("true"))
             using (var @null =      new Bytes ("null"))
+            using (var value1 =     new Bytes ("\"Value1\""))
             using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
                 // --- arrays
             using (var arrNum =     new Bytes ("[1,2,3]"))
@@ -123,6 +131,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
+                    // --------------------------------- enum -----------------------------------
+                    enc.Read<SomeEnum>(value1, ref result);
+                    IsTrue(SomeEnum.Value1 == (SomeEnum)result.Obj);  // avoid boxing. AreEqual() boxes
+                    
+                    // enc.Read<SomeEnum>(hello, ref result);
+                    // IsTrue(null == result.Obj);
+
+                    
+                    // AreEqual(null,              enc.Read(hello, typeof(SomeEnum)));
+
                     // --------------------------------- List<> ---------------------------------
                     // IsTrue(enc.ReadTo(arrNum, reusedArrDbl));
                     // IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
@@ -155,13 +173,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 30, enc.typeCache.LookupCount);
+                        AreEqual( 31, enc.typeCache.LookupCount);
                         AreEqual(  0, enc.typeCache.StoreLookupCount);
                         AreEqual(  0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(181000,   enc.parser.ProcessedBytes);
+                AreEqual(189000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
