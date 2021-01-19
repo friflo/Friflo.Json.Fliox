@@ -59,8 +59,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             var reusedClass = new TestClass();
 
-            var hashMap = new HashMapOpen<Bytes, string>(11, new Bytes("__REMOVED"));
-
             var reusedArrDbl =      new double[3];
             var reusedArrFlt =      new float[3];
             var reusedArrLng =      new long[3];
@@ -86,6 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
+                
             using (var hello =      new Bytes ("\"hello\""))
             using (var @double =    new Bytes ("12.5"))
             using (var @long =      new Bytes ("42"))
@@ -110,6 +109,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var mapNum2 =    new Bytes ("{\"str\":44}"))
             using (var invalid =    new Bytes ("invalid")) {
+
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
@@ -198,14 +198,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void TestHashMapOpen() {
             var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var hashMap = new HashMapOpen<Bytes, string>(7, new Bytes("__REMOVED"));
-
+            using (var removed =    new Bytes("__REMOVED"))
+                
             using (var key1 = new BytesStr("key1"))
             using (var key2 = new BytesStr("key2"))
             using (var key3 = new BytesStr("key3"))
             using (var key4 = new BytesStr("key4"))
             using (var key5 = new BytesStr("key5"))
             {
+                var hashMap = new HashMapOpen<Bytes, string>(7, removed);
                 int iterations = 1000;
                 var dict = new Dictionary<BytesStr, String>();
 
