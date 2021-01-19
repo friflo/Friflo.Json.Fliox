@@ -16,8 +16,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
 
     public enum SomeEnum {
-        Value1,
-        Value2,
+        Value1 = 11,
+        Value2 = 12,
     }
     
     public class TestClass {
@@ -168,7 +168,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrBln, reusedListNulBool));
 
                     // --------------------------------- class ---------------------------------
-                    IsTrue(enc.ReadTo(mapNum, reusedClass));
+                    IsTrue(enc.ReadTo(testClass, reusedClass));
+                    AreEqual(3,               reusedClass.intArray.Length);
+                    IsTrue(SomeEnum.Value1 == reusedClass.someEnum); // avoid boxing. AreEqual() boxes
+                    // IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum); // avoid boxing. AreEqual() boxes
+                    
                     // AreEqual(42, reusedClass.key);
 
 
@@ -180,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(200000,   enc.parser.ProcessedBytes);
+                AreEqual(476000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
