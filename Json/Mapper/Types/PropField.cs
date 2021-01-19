@@ -45,7 +45,7 @@ namespace Friflo.Json.Mapper.Types
             bb.AppendBytes(ref nameBytes);
         }
         
-        private static readonly bool useDirect = true;
+        private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
         public void SetField (object obj, ref Var val)
         {

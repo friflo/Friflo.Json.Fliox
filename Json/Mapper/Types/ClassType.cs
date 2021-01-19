@@ -17,20 +17,20 @@ namespace Friflo.Json.Mapper.Types
         private readonly HashMapOpen<Bytes,  PropField> fieldMap;
         public  readonly PropertyFields                 propFields;
         private readonly ConstructorInfo                constructor;
+        private readonly Bytes                          removedKey;
         
         
         public override void Dispose() {
             base.Dispose();
             propFields.Dispose();
+            removedKey.Dispose();
         }
 
         // PropType
         internal ClassType (Type type, IJsonMapper map, ConstructorInfo constructor) :
-            base (type, map, IsNullable(type), TypeCat.Object)
-        {
-            using (var removedKey = new Bytes("__REMOVED")) {
-                fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
-            }
+            base (type, map, IsNullable(type), TypeCat.Object) {
+            removedKey = new Bytes("__REMOVED");
+            fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
             propFields = new  PropertyFields (type, this);
             for (int n = 0; n < propFields.num; n++)
