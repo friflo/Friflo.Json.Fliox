@@ -6,9 +6,9 @@ namespace Friflo.Json.Tests.Common.Utils
     public class TestException : Exception {
         public TestException(string msg) : base (msg) { }
     }
-    public static class NoCheck
+    
+    public static class SimpleAssert
     {
-        public static bool checkStaticMemoryUsage = false;
         
         public static void AreEqual(object expect, object value) {
             if (expect == null) {

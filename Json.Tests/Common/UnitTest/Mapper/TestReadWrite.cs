@@ -6,11 +6,10 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
-using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
-// using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
+// using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
@@ -51,7 +50,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         const string BigInt = "1234567890123456789012345678901234567890";
 
-        private void ReadWriteRun() {
+        [Test]
+        public void Run() {
             string testClassJson = $@"
 {{
     ""intArray"":null,
@@ -445,25 +445,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     enc.typeCache.ClearCounts();
                 }
             }
-        }
-        
-        [Test]
-        public void ReadWrite() {
-#if !UNITY_EDITOR
-            GC.Collect();
-            long startBytes = GC.GetAllocatedBytesForCurrentThread();
-            
-            ReadWriteRun();
-            
-            if (NoCheck.checkStaticMemoryUsage) {
-                GC.Collect();
-                long endBytes = GC.GetAllocatedBytesForCurrentThread();
-                Console.WriteLine($"startBytes: {startBytes} endBytes: {endBytes}");
-                Assert.AreEqual(startBytes, endBytes);
-            }
-#else
-            ReadWriteRun();
-#endif
         }
     }
 }

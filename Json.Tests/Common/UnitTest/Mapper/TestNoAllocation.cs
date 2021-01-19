@@ -8,7 +8,7 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 // using static NUnit.Framework.Assert;
-using static Friflo.Json.Tests.Common.Utils.NoCheck;
+using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
 // ReSharper disable UnassignedField.Global
 // ReSharper disable UnusedVariable
