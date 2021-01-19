@@ -19,6 +19,8 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
             writer.WriteString((string) slot.Obj);
         }
 
@@ -42,10 +44,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -67,10 +68,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendFlt(ref writer.bytes, slot.Flt);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -92,10 +92,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendLong(ref writer.bytes, slot.Lng);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -117,10 +116,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendInt(ref writer.bytes, slot.Int);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -142,10 +140,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendInt(ref writer.bytes, slot.Short);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -167,10 +164,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendInt(ref writer.bytes, slot.Byte);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -192,10 +188,9 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (slot.IsNull)
-                writer.bytes.AppendBytes(ref writer.@null);
-            else
-                writer.format.AppendBool(ref writer.bytes, slot.Bool);
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
+            writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {

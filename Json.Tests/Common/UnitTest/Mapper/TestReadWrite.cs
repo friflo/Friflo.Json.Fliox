@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     
 
                     // ------------------------------------- Array -------------------------------------
-                    AreEqual(null,                enc.Read<string[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null,                Read<string[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(null,                enc.Read<double[]>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(null,                enc.Read<float[]>     (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(null,                enc.Read<long[]>      (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);

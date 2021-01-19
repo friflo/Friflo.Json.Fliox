@@ -29,6 +29,8 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+            if (JsonWriter.WriteNull(writer, ref slot))
+                return;
             ref var bytes = ref writer.bytes;
             object obj = slot.Obj;
             ClassType type = (ClassType)stubType;
