@@ -304,12 +304,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(TestEnum.Value1, enc.Read(value3, typeof(TestEnum)));
                 
                 enc.Read(hello, typeof(TestEnum));
-                StringAssert.Contains(" Cannot assign string to enum value. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestReaderWriter+TestEnum, got: 'hello'", enc.Error.msg.ToString());
+                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestReaderWriter+TestEnum, got: 'hello'", enc.Error.msg.ToString());
 
                 AreEqual(TestEnum.Value1, enc.Read(num11, typeof(TestEnum)));
                 
                 enc.Read(num999, typeof(TestEnum));
-                StringAssert.Contains("Cannot assign number to enum value. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestReaderWriter+TestEnum, got: 999", enc.Error.msg.ToString());
+                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestReaderWriter+TestEnum, got: 999", enc.Error.msg.ToString());
 
                 write.Write(TestEnum.Value1);
                 AreEqual("\"Value1\"", write.bytes.ToString());

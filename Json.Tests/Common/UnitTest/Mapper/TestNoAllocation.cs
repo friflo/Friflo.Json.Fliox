@@ -138,6 +138,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         SomeEnum? res = enc.Read<SomeEnum?>(@null);
                         AreEqual(null, res);
+                    } {
+                        //SomeEnum? res = enc.Read<SomeEnum?>(hello);
+                        //AreEqual(null, res);
                     }
 
 
