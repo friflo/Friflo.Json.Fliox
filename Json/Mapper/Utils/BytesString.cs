@@ -1,4 +1,6 @@
-﻿using Friflo.Json.Burst;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper.Utils
 {
