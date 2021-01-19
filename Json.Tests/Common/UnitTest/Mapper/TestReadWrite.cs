@@ -70,6 +70,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
+            //
+            using (JsonReader read2 = new JsonReader(typeStore))
+            using (JsonWriter write2 = new JsonWriter(typeStore))
+                
             using (var hello =      new Bytes ("\"hello\""))
             using (var @double =    new Bytes ("12.5"))
             using (var @long =      new Bytes ("42"))
@@ -98,14 +102,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var mapNum2 =    new Bytes ("{\"str\":44}"))
             using (var invalid =    new Bytes ("invalid")) {
+                this.reader = enc;
+                this.read2 = read2; 
+                this.write2 = write2; 
+                
                 int iterations = 2; // dont use < 2
                 for (int n = 0; n < iterations; n++) {
-                    AreEqual("hello",   enc.Read<string>(hello));
+                    AreEqual("hello",   Read<string>(hello));
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
-                    AreEqual(12.5,                      enc.Read<double>        (@double));
-                    AreEqual(12.5,                      enc.Read<double?>       (@double));
-                    AreEqual(null,                      enc.Read<double?>       (@null));
+                    AreEqual(12.5,                      Read<double>        (@double));
+                    AreEqual(12.5,                      Read<double?>       (@double));
+                    AreEqual(null,                      Read<double?>       (@null));
 
                     enc.Read<double>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
@@ -446,5 +454,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 }
             }
         }
+
+        private JsonReader reader;
+        
+        private JsonReader read2;
+        private JsonWriter write2;
+
+        private T Read<T>(Bytes bytes) {
+            return reader.Read<T>(bytes);
+/*          Var value = new Var();
+            return reader.Read<T>(bytes, ref value);
+ 
+            write2.Write<T>(ref value);
+            
+            T writeResult = read2.Read<T>(write2.bytes);
+
+            var result = value.Get();
+            AreEqual(result, writeResult);
+            return (T)result; */
+        }
+
+
     }
 }

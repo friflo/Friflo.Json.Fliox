@@ -24,6 +24,8 @@ namespace Friflo.Json.Mapper
         private object      obj;
         private long        lng;
         private double      dbl;
+        private bool        isNull;
+        
         
         public VarType     Cat { get;  private set; }
 
@@ -33,51 +35,71 @@ namespace Friflo.Json.Mapper
 
         public object Obj {
             get => obj;
-            set { obj = value; Cat = VarType.Object; }
+            set { obj = value;         Cat = VarType.Object; }
         }
-        public double Dbl {
-            get => dbl;
-            set { dbl = value; Cat = VarType.Double; }
+        
+        // --------------- non nullable primitives
+        public double Dbl {        
+            get => dbl;            
+            set { dbl = value;         Cat = VarType.Double; isNull = false; }
         }
-        public float Flt {
-            get => (float)dbl;
-            set { dbl = value; Cat = VarType.Float; }
-        }
-        public long Lng {
-            get => lng;
-            set { lng = value; Cat = VarType.Long; }
-        }
-        public int Int {
-            get => (int)lng;
-            set { lng = value; Cat = VarType.Int; }
-        }
-        public short Short {
-            get => (short)lng;
-            set { lng = value; Cat = VarType.Short; }
-        }
-        public byte Byte {
-            get => (byte)lng;
-            set { lng = value; Cat = VarType.Byte; }
+        public float Flt {         
+            get => (float)dbl;         
+            set { dbl = value;         Cat = VarType.Float; isNull = false; }
+        }          
+        public long Lng {          
+            get => lng;        
+            set { lng = value;         Cat = VarType.Long;  isNull = false; }
+        }          
+        public int Int {           
+            get => (int)lng;           
+            set { lng = value;         Cat = VarType.Int;   isNull = false; }
+        }          
+        public short Short {           
+            get => (short)lng;         
+            set { lng = value;         Cat = VarType.Short; isNull = false; }
+        }          
+        public byte Byte {         
+            get => (byte)lng;          
+            set { lng = value;         Cat = VarType.Byte;  isNull = false; }
         }
         public bool Bool {
             get => lng != 0;
-            set { lng = value ? 1 : 0; Cat = VarType.Bool; }
+            set { lng = value ? 1 : 0; Cat = VarType.Bool;  isNull = false; }
+        }
+        
+        // --------------- nullable primitives
+        public double?  NullableDbl   {  get => isNull ? null : (double?)   dbl; }
+        public float?   NullableFlt   {  get => isNull ? null : (float?)    dbl; }
+        public long?    NullableLng   {  get => isNull ? null : (long?)     lng; }
+        public int?     NullableInt   {  get => isNull ? null : (int?)      lng; }
+        public short?   NullableShort {  get => isNull ? null : (short?)    lng; }
+        public byte?    NullableByte  {  get => isNull ? null : (byte?)     lng; }
+        public bool?    NullableBool  {  get => isNull ? null : (bool?)    (lng != 0); }
+        
+        
+        public void SetNull(VarType varType) {
+            isNull = true;
+            Cat = varType;
         }
         
         public object Get () {
+            if (isNull)
+                return null;
+
             switch (Cat) {
-                case VarType.None:     return null;
-                case VarType.Object:   return obj;
+                case VarType.None:      return null;
+                case VarType.Object:    return obj;
                 //
-                case VarType.Double:   return dbl;
-                case VarType.Float:    return (float)dbl;
+                case VarType.Double:    return          dbl;
+                case VarType.Float:     return (float)  dbl;
                 //
-                case VarType.Long:     return lng;
-                case VarType.Int:      return (int)lng;
-                case VarType.Short:    return (short)lng;
-                case VarType.Byte:     return (byte)lng;
+                case VarType.Long:      return          lng;
+                case VarType.Int:       return (int)    lng;
+                case VarType.Short:     return (short)  lng;
+                case VarType.Byte:      return (byte)   lng;
                 //
-                case VarType.Bool:     return lng != 0;
+                case VarType.Bool:      return lng != 0;
             }
             return null; // unreachable
         }
