@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         string testClassJson = $@"
 {{
-    ""intArray"":null,
+    ""intArray"":[1,2,3],
     ""testChild"":null,
     ""key"":42,
     ""someEnum"":""Value1"",

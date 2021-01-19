@@ -108,12 +108,19 @@ namespace Friflo.Json.Mapper
             int start = bytes.Start;
             int len = bytes.Len;
             Var slot = new Var { Obj = obj };
-            bool success = ReadTo(bytes.buffer, start, len, ref slot);
+            StubType stubType = typeCache.GetType(slot.Obj.GetType());
+            bool success = ReadToStart(bytes.buffer, start, len, stubType, ref slot);
             parser.NextEvent(); // EOF
             return success;
         }
 
-        public bool ReadTo(ByteList bytes, int offset, int len, ref Var slot) {
+        public bool ReadTo<T>(ByteList bytes, int offset, int len, T obj) {
+            Var slot = new Var { Obj = obj };
+            StubType stubType = typeCache.GetType(slot.Obj.GetType());
+            return ReadToStart(bytes, offset, len, stubType, ref slot);
+        }
+
+        private bool ReadToStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {
             parser.InitParser(bytes, offset, len);
 
             while (true) {
@@ -121,8 +128,7 @@ namespace Friflo.Json.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        StubType valueType = typeCache.GetType(slot.Obj.GetType()); // lookup required
-                        return valueType.map.Read(this, ref slot, valueType);
+                        return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.Error:
                         return false;
                     default:
