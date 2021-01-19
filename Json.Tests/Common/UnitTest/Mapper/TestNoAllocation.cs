@@ -134,10 +134,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // --------------------------------- enum -----------------------------------
                     {
                         SomeEnum res = enc.Read<SomeEnum>(value1);
-                        IsTrue(SomeEnum.Value1 == (SomeEnum)res);  // avoid boxing. AreEqual() boxes
+                        IsTrue(SomeEnum.Value1 == res);  // avoid boxing. AreEqual() boxes
                     } {
-                        enc.Read<SomeEnum>(hello, ref result);
-                        AreEqual(null, result.Obj);
+                        SomeEnum? res = enc.Read<SomeEnum?>(@null);
+                        AreEqual(null, res);
                     }
 
 
@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(196000,   enc.parser.ProcessedBytes);
+                AreEqual(193000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }

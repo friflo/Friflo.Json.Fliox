@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Val
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     if (stubType.isNullable)
-                        return false;
+                        return true;
                     return reader.ErrorIncompatible("primitive", stubType, ref parser);
                 case JsonEvent.Error:
                     return false;

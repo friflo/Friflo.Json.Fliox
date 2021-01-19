@@ -13,9 +13,17 @@ namespace Friflo.Json.Mapper.Map.Val
         public static readonly EnumMapper Interface = new EnumMapper();
         
         public StubType CreateStubType(Type type) {
-            if (!type.IsEnum)
-                return null;
-            return new EnumType (type, Interface);
+            bool isNullable = false;
+            if (!type.IsEnum) {
+                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
+                if (args == null)
+                    return null;
+                Type nullableType = args[0];
+                if (!nullableType.IsEnum)
+                    return null;
+                isNullable = true;
+            }
+            return new EnumType (type, Interface, isNullable);
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
