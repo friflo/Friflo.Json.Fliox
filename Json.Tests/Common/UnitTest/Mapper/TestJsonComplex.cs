@@ -14,7 +14,7 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     
-    public class TestReaderWriter : LeakTestsFixture
+    public class TestJsonComplex : LeakTestsFixture
     {
         private TypeStore createStore() {
             TypeStore      typeStore = new TypeStore(new DebugTypeResolver());
