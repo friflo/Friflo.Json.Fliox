@@ -710,7 +710,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(123, enc.typeCache.LookupCount);
+                        AreEqual(124, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
