@@ -113,19 +113,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     {
                         enc.ThrowException = true;
                         var e = Throws<FrifloException>(() => enc.Read<double>(@null));
-                        StringAssert.Contains("Cannot assign null to primitive. Expect:", e.Message);
+                        StringAssert.Contains("Cannot assign null to primitive. Expect: System.Double, got: null path: '(root)'", e.Message);
                         enc.ThrowException = false;
                     }
 #endif
                     // error cases
                     enc.Read<double>(@true);
-                    StringAssert.Contains("Cannot assign bool to primitive. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to primitive. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<double>(hello);
-                    StringAssert.Contains("Cannot assign string to primitive. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to primitive. Expect: System.Double, got: 'hello' path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<double>(arrNum);
-                    StringAssert.Contains("Cannot assign array to primitive. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to primitive. Expect: System.Double, got: [...] path: '[]'", enc.Error.msg.ToString());
                     enc.Read<double>(mapNum);
-                    StringAssert.Contains("Cannot assign object to primitive. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to primitive. Expect: System.Double, got: {...} path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
                     enc.Read<float>(bigInt);
