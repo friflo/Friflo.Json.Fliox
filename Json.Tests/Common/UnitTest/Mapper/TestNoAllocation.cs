@@ -33,8 +33,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         string testClassJson = $@"
 {{
+    ""testChild"": {{
+        ""someEnum"":""Value2""
+    }},
     ""intArray"":[1,2,3],
-    ""testChild"":null,
     ""key"":42,
     ""someEnum"":""Value1"",
     ""unknownObject"": {{
@@ -171,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(testClass, reusedClass));
                     AreEqual(3,               reusedClass.intArray.Length);
                     IsTrue(SomeEnum.Value1 == reusedClass.someEnum); // avoid boxing. AreEqual() boxes
-                    // IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum); // avoid boxing. AreEqual() boxes
+                    IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum); // avoid boxing. AreEqual() boxes
                     
                     // AreEqual(42, reusedClass.key);
 
@@ -184,7 +186,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(476000,   enc.parser.ProcessedBytes);
+                AreEqual(510000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
