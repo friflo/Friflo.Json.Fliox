@@ -20,6 +20,7 @@ namespace Friflo.Json.Mapper.Types
         public  readonly    IJsonMapper map;
         public  readonly    bool        isNullable;
         public  readonly    TypeCat     typeCat;
+        public  readonly    VarType     varType;
 
         /// <summary>
         /// Need to be overriden, in case the derived <see cref="StubType"/> uses <see cref="System.Type"/>'s
@@ -43,6 +44,7 @@ namespace Friflo.Json.Mapper.Types
             this.map =          map;
             this.isNullable =   isNullable;
             this.typeCat =      typeCat;
+            this.varType =      Var.GetVarType(type);
         }
 
         public virtual void Dispose() {

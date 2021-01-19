@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 field.GetField(obj, ref elemVar);
                 writer.WriteKey(field);
-                if (field.varType == VarType.Object && elemVar.Obj == null) {
+                if (field.FieldType.varType == VarType.Object && elemVar.Obj == null) {
                     bytes.AppendBytes(ref writer.@null);
                 } else {
                     StubType fieldType = field.FieldType;

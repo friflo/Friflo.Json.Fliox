@@ -29,13 +29,12 @@ namespace Friflo.Json.Mapper
         
         public VarType     Cat { get;  private set; }
 
-        public bool IsNull() {
-            return Cat == VarType.Object && obj == null;
-        }
+        
+        public bool IsNull => isNull;
 
         public object Obj {
             get => obj;
-            set { obj = value;         Cat = VarType.Object; }
+            set { obj = value;         Cat = VarType.Object; isNull = value == null; }
         }
         
         // --------------- non nullable primitives
@@ -114,20 +113,19 @@ namespace Friflo.Json.Mapper
         public override string ToString() {
             string val = null;
             switch (Cat) {
-                case VarType.None:     val = "None";       break;
-                case VarType.Object:   val = $"\"{obj}\""; break;
+                case VarType.None:     return "None";
+                case VarType.Object:   return $"{obj} ({obj.GetType()})";
                 //
-                case VarType.Double:   val = dbl.ToString(CultureInfo.InvariantCulture); break;
-                case VarType.Float:    val = dbl.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Double:   val = isNull ? "null" : dbl.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Float:    val = isNull ? "null" : dbl.ToString(CultureInfo.InvariantCulture); break;
                 //
-                case VarType.Long:     val = lng.ToString(CultureInfo.InvariantCulture); break;
-                case VarType.Int:      val = lng.ToString(CultureInfo.InvariantCulture); break;
-                case VarType.Short:    val = lng.ToString(CultureInfo.InvariantCulture); break;
-                case VarType.Byte:     val = lng.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Long:     val = isNull ? "null" : lng.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Int:      val = isNull ? "null" : lng.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Short:    val = isNull ? "null" : lng.ToString(CultureInfo.InvariantCulture); break;
+                case VarType.Byte:     val = isNull ? "null" : lng.ToString(CultureInfo.InvariantCulture); break;
                 //
-                case VarType.Bool:     val = lng != 0 ? "true" : "false";              break;
+                case VarType.Bool:     val = isNull ? "null" : lng != 0 ? "true" : "false";              break;
             }
-            
             return $"{val} ({Cat})";
         }
         

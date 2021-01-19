@@ -144,37 +144,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());// Unity has different error message
 
 
-                    AreEqual(12.5,                      enc.Read<float>    (@double));
-                    AreEqual(12.5,                      enc.Read<float?>   (@double));
-                    AreEqual(null,                      enc.Read<float?>   (@null));
+                    AreEqual(12.5,                      Read<float>    (@double));
+                    AreEqual(12.5,                      Read<float?>   (@double));
+                    AreEqual(null,                      Read<float?>   (@null));
                     enc.Read<float>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect: System.Single, got: null path: '(root)'", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.Read<long>     (@long));
-                    AreEqual(42,        enc.Read<long>     (@long));
-                    AreEqual(42,        enc.Read<long?>    (@long));
+                    AreEqual(42,        Read<long>     (@long));
+                    AreEqual(42,        Read<long>     (@long));
+                    AreEqual(42,        Read<long?>    (@long));
                     AreEqual(null,      enc.Read<long?>    (@null));
                     enc.Read<long>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.Read<int>      (@long));
-                    AreEqual(42,        enc.Read<int>      (@long));
-                    AreEqual(42,        enc.Read<int?>     (@long));
+                    AreEqual(42,        Read<int>      (@long));
+                    AreEqual(42,        Read<int>      (@long));
+                    AreEqual(42,        Read<int?>     (@long));
                     AreEqual(null,      enc.Read<int?>     (@null));
                     enc.Read<int>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.Read<short>    (@long));
-                    AreEqual(42,        enc.Read<short>    (@long));
-                    AreEqual(42,        enc.Read<short?>   (@long));
+                    AreEqual(42,        Read<short>    (@long));
+                    AreEqual(42,        Read<short>    (@long));
+                    AreEqual(42,        Read<short?>   (@long));
                     AreEqual(null,      enc.Read<short?>   (@null));
                     enc.Read<short>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.ToString());
 
-                    AreEqual(42,        enc.Read<byte>     (@long));
-                    AreEqual(42,        enc.Read<byte>     (@long));
-                    AreEqual(42,        enc.Read<byte?>    (@long));
-                    AreEqual(null,      enc.Read<byte?>    (@null));
+                    AreEqual(42,        Read<byte>     (@long));
+                    AreEqual(42,        Read<byte>     (@long));
+                    AreEqual(42,        Read<byte?>    (@long));
+                    AreEqual(null,      Read<byte?>    (@null));
                     enc.Read<byte>(@null);
                     StringAssert.Contains("Cannot assign null to primitive. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.ToString());
 
@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     {
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
                         var expect = new TestMapperClass { key = 42, bigInt = bigIntVal };
-                        var value = enc.Read<TestMapperClass>(testClass);
+                        var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.parser.Event)
                             Fail(enc.Error.msg.ToString());
                         AreEqual(new SkipInfo { arrays=1, booleans= 1, floats= 0, integers= 3, nulls= 1, objects= 1, strings= 1 }, enc.parser.skipInfo);
@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         curTestClass = curTestClass.selfReference;
                     }
                     write.Write(root);
-                    enc.Read<TestMapperClass>(write.Output);
+                    Read<TestMapperClass>(write.Output);
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     enc.Read<TestMapperClass>(mapNull);
@@ -461,9 +461,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private JsonWriter write2;
 
         private T Read<T>(Bytes bytes) {
-            return reader.Read<T>(bytes);
-/*          Var value = new Var();
-            return reader.Read<T>(bytes, ref value);
+            // return reader.Read<T>(bytes);
+            
+            Var value = new Var();
+            if (!reader.Read<T>(bytes, ref value))
+                return default;
  
             write2.Write<T>(ref value);
             
@@ -471,7 +473,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             var result = value.Get();
             AreEqual(result, writeResult);
-            return (T)result; */
+            return (T)result;
         }
 
 

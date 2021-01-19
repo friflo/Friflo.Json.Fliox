@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 }
                 return reader.ErrorIncompatible("enum value. Value unknown", stubType, ref parser);
             }
-            return ValueUtils.CheckElse(reader, stubType);
+            return ValueUtils.CheckElse(reader, ref slot, stubType);
         }
     }
 }

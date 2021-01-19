@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 }
                 return reader.ErrorNull("Failed parsing DateTime. value: ", value.ToString());
             }
-            return ValueUtils.CheckElse(reader, stubType);
+            return ValueUtils.CheckElse(reader, ref slot, stubType);
         }
     }
 }

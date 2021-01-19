@@ -42,6 +42,15 @@ namespace Friflo.Json.Mapper
             slot.Obj = obj;
             objType.map.Write(this, ref slot, objType);
         }
+        
+        public void Write<T>(ref Var value) { 
+            bytes.InitBytes(128);
+            strBuf.InitBytes(128);
+            format.InitTokenFormat();
+            StubType objType = typeCache.GetType(typeof(T));
+            bytes.Clear();
+            objType.map.Write(this, ref value, objType);
+        }
 
         public void WriteKey(PropField field) {
             bytes.AppendChar('\"');

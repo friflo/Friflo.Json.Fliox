@@ -42,12 +42,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
             return success;
         }
@@ -64,12 +67,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendFlt(ref writer.bytes, slot.Flt);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
             return success;
         }
@@ -86,12 +92,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendLong(ref writer.bytes, slot.Lng);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Lng = reader.parser.ValueAsLong(out bool success);
             return success;
         }
@@ -108,12 +117,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Int);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Int = reader.parser.ValueAsInt(out bool success);
             return success;
         }
@@ -130,12 +142,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Short);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Short = reader.parser.ValueAsShort(out bool success);
             return success;
         }
@@ -152,12 +167,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Byte);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Byte = reader.parser.ValueAsByte(out bool success);
             return success;
         }
@@ -174,12 +192,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendBool(ref writer.bytes, slot.Bool);
+            if (slot.IsNull)
+                writer.bytes.AppendBytes(ref writer.@null);
+            else
+                writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(reader, stubType);
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Bool = reader.parser.ValueAsBool(out bool success);
             return success;
         }

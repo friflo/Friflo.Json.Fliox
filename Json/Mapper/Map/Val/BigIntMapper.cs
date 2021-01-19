@@ -41,7 +41,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     slot.Obj = ret2;
                     return true;
                 default:
-                    return ValueUtils.CheckElse(reader, stubType);
+                    return ValueUtils.CheckElse(reader, ref slot, stubType);
             }
         }
     }
