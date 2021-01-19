@@ -109,6 +109,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     memLog.Snapshot();
                     Var result = new Var();
                     
+                    // --------------------------------- primitives -------------------------------
                     //IsTrue(enc.Read<double> (@double, ref result));     AreEqual(12.5d, result.Dbl);
                     //IsTrue(enc.Read<float>  (@double, ref result));     AreEqual(12.5,  result.Flt);
                     //
@@ -120,7 +121,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<bool>       (@true, ref result));     AreEqual(true, result.Bool);
                     
                     IsTrue(enc.Read<object>     (@null, ref result));     AreEqual(null, result.Obj);
-                    
+
+                    // --------------------------------- array -----------------------------------
                     IsTrue(enc.Read<string[]>   (@null, ref result));     AreEqual(null, result.Obj); // no alloc only, if not containing string
                     
                     IsTrue(enc.Read<double[]>   (@null, ref result));     AreEqual(null, result.Obj);
@@ -131,6 +133,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
+                    // IsTrue(enc.ReadTo(arrNum, reusedArrDbl));
+                    // IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
+                    IsTrue(enc.ReadTo(arrNum, reusedArrLng));
+                    IsTrue(enc.ReadTo(arrNum, reusedArrInt));
+                    IsTrue(enc.ReadTo(arrNum, reusedArrShort));
+                    IsTrue(enc.ReadTo(arrNum, reusedArrByte));
+                    IsTrue(enc.ReadTo(arrBln, reusedArrBool));
+
                     // --------------------------------- enum -----------------------------------
                     {
                         SomeEnum res = enc.Read<SomeEnum>(value1);          IsTrue(SomeEnum.Value1 == res);  // avoid boxing. AreEqual() boxes
@@ -140,17 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         enc.Read<SomeEnum?>(hello, ref result);             IsTrue(enc.Error.ErrSet);
                     }
 
-                    // AreEqual(null,              enc.Read(hello, typeof(SomeEnum)));
-
                     // --------------------------------- List<> ---------------------------------
-                    // IsTrue(enc.ReadTo(arrNum, reusedArrDbl));
-                    // IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrLng));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrInt));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrShort));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrByte));
-                    IsTrue(enc.ReadTo(arrBln, reusedArrBool));
-                    
                     // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
                     // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedListLng));
