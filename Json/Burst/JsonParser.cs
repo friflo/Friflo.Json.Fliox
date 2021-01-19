@@ -192,6 +192,10 @@ namespace Friflo.Json.Burst
             Error(module, ErrorType.ExternalError, ref emptyString, ref msg);
         }
         
+        public void Error(Str32 module, Str128 msg, ref Bytes value) {
+            Error(module, ErrorType.ExternalError, ref msg, ref value);
+        }
+        
         private JsonEvent SetError (Str128 msg) {
             errVal.Clear();
             Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);

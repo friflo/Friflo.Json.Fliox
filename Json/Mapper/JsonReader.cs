@@ -158,8 +158,8 @@ namespace Friflo.Json.Mapper
                 case JsonEvent.ValueNull:   evType = "null";   value = "null";                              break;
                 case JsonEvent.ArrayStart:  evType = "array";  value = "[...]";                             break;
                 case JsonEvent.ObjectStart: evType = "object"; value = "{...}";                             break;
-            }
-            string errMsg = $"Cannot assign {evType} to {msg}. Expect: {expectType.type.Name}, got: {value}"; */
+            } */
+            // Error format: $"Cannot assign {evType} to {msg}. Expect: {expectType.type.Name}, got: {value}";
             strBuf.Clear();
             strBuf.AppendString("Cannot assign ");
             switch (parser.Event) {
@@ -190,20 +190,23 @@ namespace Friflo.Json.Mapper
         }
         
         public bool ErrorNull(string msg, string value) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + value);
+            strBuf.Clear();
+            strBuf.AppendString(msg);
+            strBuf.AppendString(value);
+            parser.Error("JsonReader", ref strBuf);
             return false;
         }
 
         public bool ErrorNull(string msg, JsonEvent ev) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + ev.ToString());
+            strBuf.Clear();
+            strBuf.AppendString(msg);
+            JsonEventUtils.AppendEvent(ev, ref strBuf);
+            parser.Error("JsonReader", ref strBuf);
             return false;
         }
 
         public bool ErrorNull(string msg, ref Bytes value) {
-            // TODO use message / value pattern as in JsonParser to avoid allocations by string interpolation
-            parser.Error("JsonReader", msg + value.ToStr32());
+            parser.Error("JsonReader", msg, ref value);
             return false;
         }
         
