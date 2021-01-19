@@ -102,6 +102,24 @@ namespace Friflo.Json.Mapper
             }
             return null; // unreachable
         }
+        
+        public void Set(object value, VarType varType, bool isNullable) {
+
+            switch (varType) {
+                case VarType.None:                      Cat = VarType.None; return; // throw new InvalidOperationException("Must not set Var to None);
+                case VarType.Object:                    Obj = value;        return;
+                //
+                case VarType.Double: if (!isNullable) { Dbl =   (double)value; } else { if (value == null) SetNull(VarType.Double); else Dbl   = (double) value; } return;
+                case VarType.Float:  if (!isNullable) { Flt =   (float) value; } else { if (value == null) SetNull(VarType.Float);  else Flt   = (float)  value; } return;
+                //
+                case VarType.Long:   if (!isNullable) { Lng =   (long)  value; } else { if (value == null) SetNull(VarType.Long);   else Lng   = (long)   value; } return;
+                case VarType.Int:    if (!isNullable) { Int =   (int)   value; } else { if (value == null) SetNull(VarType.Int);    else Int   = (int)    value; } return;
+                case VarType.Short:  if (!isNullable) { Short = (short) value; } else { if (value == null) SetNull(VarType.Short);  else Short = (short)  value; } return;
+                case VarType.Byte:   if (!isNullable) { Byte =  (byte)  value; } else { if (value == null) SetNull(VarType.Byte);   else Byte  = (byte)   value; } return;
+                //
+                case VarType.Bool:   if (!isNullable) { Bool =  (bool)  value; } else { if (value == null) SetNull(VarType.Bool);   else Bool  = (bool)   value; } return;
+            }
+        }
 
         public void  Clear() {
             Cat = VarType.None;
@@ -114,7 +132,7 @@ namespace Friflo.Json.Mapper
             string val = null;
             switch (Cat) {
                 case VarType.None:     return "None";
-                case VarType.Object:   return $"{obj} ({obj.GetType()})";
+                case VarType.Object:   return isNull ? "null" : $"{obj} ({obj.GetType().Name})";
                 //
                 case VarType.Double:   val = isNull ? "null" : dbl.ToString(CultureInfo.InvariantCulture); break;
                 case VarType.Float:    val = isNull ? "null" : dbl.ToString(CultureInfo.InvariantCulture); break;
@@ -145,5 +163,7 @@ namespace Friflo.Json.Mapper
 
             throw new InvalidOperationException("Type not supported. Type: " + type);
         }
+
+
     }
 }
