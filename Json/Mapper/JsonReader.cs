@@ -178,7 +178,7 @@ namespace Friflo.Json.Mapper
             strBuf.AppendString(msg);
             strBuf.AppendString(msgParam);
             strBuf.AppendString(". Expect: ");
-            strBuf.AppendString(expectType.type.Name);
+            strBuf.AppendString(expectType.type.ToString());
             strBuf.AppendString(", got: ");
             switch (parser.Event) {
                 case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;
