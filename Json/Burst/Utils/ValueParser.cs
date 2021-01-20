@@ -299,12 +299,30 @@ namespace Friflo.Json.Burst.Utils
             SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes, ref valueError);
             return false;
         }
+        
+        private bool ParseDoubleInternal(ref Bytes bytes, out double result) {
+#if UNITY_5_3_OR_NEWER
+            String val = bytes.ToString();
+            return double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+#else
+            if (bytes.Len > charBuf.Length) {
+                result = default;
+                return false;
+            }
+            byte[] arr = bytes.buffer.array;
+            int pos = bytes.start;
+            int len = bytes.Len;
+            for (int n = 0; n < len; n++)
+                charBuf[n] = (char)arr[pos + n];
+            ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);
+            return double.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+#endif
+        }
 
         public double ParseDoubleStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
-            String val = bytes.ToString();
             success = true;
-            if (double.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result)) {
+            if (ParseDoubleInternal(ref bytes, out double result)) {
                 if (double.IsInfinity(result) || double.IsNegativeInfinity(result)) {
                     SetErrorFalse("double value out of range. val: ", ref bytes, ref valueError);
                     success = false;
