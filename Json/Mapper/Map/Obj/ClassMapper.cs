@@ -106,29 +106,18 @@ namespace Friflo.Json.Mapper.Map.Obj
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
                         // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         valueType = field.FieldType;
-                        if (valueType.expectedEvent != JsonEvent.ValueNumber)
+                        if (valueType.expectedEvent != ev)
                             return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
-                        break;
-                    case JsonEvent.ValueBool:
-                        if ((field = GetField(reader, classType)) == null)
-                            break;
-                        valueType = field.FieldType;
-                        if (valueType.expectedEvent != JsonEvent.ValueBool)
-                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
-                        
-                        elemVar.Clear();
-                        if (!valueType.map.Read(reader, ref elemVar, valueType))
-                            return false;
-                        field.SetField(obj, ref elemVar);
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = GetField(reader, classType)) == null)

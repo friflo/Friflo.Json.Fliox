@@ -171,7 +171,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (elementType.expectedEvent != JsonEvent.ValueString)
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                        if (elementType.expectedEvent != ev)
                             return reader.ErrorIncompatible("array element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
@@ -179,26 +181,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
                         PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++, nullable);
-                        break;
-                    case JsonEvent.ValueNumber:
-                        if (elementType.expectedEvent != JsonEvent.ValueNumber)
-                            return reader.ErrorIncompatible("array element", elementType, ref parser);
-                        elemVar.Clear();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
-                            return false;
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
-                        break;
-                    case JsonEvent.ValueBool:
-                        if (elementType.expectedEvent != JsonEvent.ValueBool)
-                            return reader.ErrorIncompatible("array element", elementType, ref parser);
-                        elemVar.Clear();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
-                            return false;
-                        if (index >= len)
-                            array = Arrays.CopyOf(array, len = JsonReader.Inc(len));
-                        PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
                         break;
                     case JsonEvent.ValueNull:
                         if (!nullable)
