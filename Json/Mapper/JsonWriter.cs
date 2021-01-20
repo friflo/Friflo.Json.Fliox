@@ -32,14 +32,6 @@ namespace Friflo.Json.Mapper
             bytes.Dispose();
         }
 
-        public static bool WriteNull(JsonWriter writer, ref Var slot) {
-            if (slot.IsNull) {
-                writer.bytes.AppendBytes(ref writer.@null);
-                return true;
-            }
-            return false;
-        } 
-
         public void Write(Object obj) { 
             StubType stubType = typeCache.GetType(obj.GetType());
             Var valueVar = new Var();

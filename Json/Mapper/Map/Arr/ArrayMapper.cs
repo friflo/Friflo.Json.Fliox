@@ -29,8 +29,6 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) slot.Obj;
             writer.bytes.AppendChar('[');

@@ -33,8 +33,6 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             CollectionType collectionType = (CollectionType)stubType;
             IDictionary map = (IDictionary) slot.Obj;
 
