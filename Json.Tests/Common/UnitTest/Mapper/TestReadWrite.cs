@@ -316,6 +316,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         List<bool> expect = new List<bool> {true, false};
                         AreEqual(expect, Read<List<bool>>(arrBln));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    } {
+                        var expect = new List<int?> { null };
+                        AreEqual(expect, Read<List<int?>>(arrNull));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- list of list
                     {
@@ -445,7 +449,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(124, enc.typeCache.LookupCount);
+                        AreEqual(125, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);

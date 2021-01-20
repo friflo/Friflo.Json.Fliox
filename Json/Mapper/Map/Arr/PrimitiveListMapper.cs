@@ -29,6 +29,13 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly PrimitiveListMapper<byte?>     ByteNulInterface =     new PrimitiveListMapper<byte?>    ();
         public static readonly PrimitiveListMapper<bool?>     BoolNulInterface =     new PrimitiveListMapper<bool?>    ();
         
+        public static void AddListItemNull (IList list, int index, int startLen) {
+            if (index < startLen)
+                list[index] = null;
+            else
+                list.Add(null);
+        }
+        
         public static void AddListItem (IList list, ref Var item, VarType varType, int index, int startLen, bool nullable) {
             if (index < startLen) {
                 if (nullable) {
@@ -204,8 +211,10 @@ namespace Friflo.Json.Mapper.Map.Arr
                         PrimitiveList.AddListItem(list, ref elemVar, elemVarType, index++, startLen, nullable);
                         break;
                     case JsonEvent.ValueNull:
-                        // primitives in PrimitiveListMapper an never nullable
-                        return reader.ErrorIncompatible("List element", elementType, ref parser);
+                        if (!elementType.isNullable)
+                            return reader.ErrorIncompatible("List element", elementType, ref parser);
+                        PrimitiveList.AddListItemNull(list, index++, startLen);
+                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         elemVar.Clear();
