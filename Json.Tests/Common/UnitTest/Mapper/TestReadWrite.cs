@@ -28,7 +28,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public string       str;
         public BigInteger   bigInt;
         public int[]        intArray;
+        //
+        public double       dblProp { get; set; }
+        public float        fltProp { get; set; }
+        public long         lngProp { get; set; }
         public int          intProp { get; set; }
+        public short        srtProp { get; set; }
+        public byte         bytProp { get; set; }
+        public bool         blnProp{ get; set; }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -59,7 +66,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""testChild"":null,
     ""key"":42,
     ""bigInt"":""{BigInt}"",
-    ""intProp"":55,
+
+    ""dblProp"": 100,
+    ""fltProp"": 101,
+    ""lngProp"": 102,
+    ""intProp"": 103,
+    ""srtProp"": 104,
+    ""bytProp"": 105,
+    ""blnProp"": true,
+
     ""unknownObject"": {{
         ""anotherUnknown"": 42
     }},
@@ -197,7 +212,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // ------------------------------------- class -------------------------------------
                     {
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
-                        var expect = new TestMapperClass { key = 42, bigInt = bigIntVal, intProp = 55 };
+                        var expect = new TestMapperClass {
+                            key = 42, bigInt = bigIntVal, dblProp = 100, fltProp = 101,
+                            lngProp = 102, intProp = 103, srtProp = 104, bytProp = 105, blnProp = true
+                        };
                         var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.parser.Event)
                             Fail(enc.Error.msg.ToString());
