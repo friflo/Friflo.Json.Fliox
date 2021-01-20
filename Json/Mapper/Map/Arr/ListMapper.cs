@@ -39,18 +39,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (n > 0) writer.bytes.AppendChar(',');
                 Object item = list[n];
                 if (item != null) {
-                    // todo: implement missing element types
-                    switch (collectionType.elementVarType) {
-                        case VarType.Object:
-                            elemVar.Obj = item;
-                            elementType.map.Write(writer, ref elemVar, elementType);
-                            break;
-                        default:
-                            throw new FrifloException("List element type not supported: " +
-                                                      collectionType.ElementType.type.Name);
-                    }
-                }
-                else
+                    elemVar.Obj = item;
+                    elementType.map.Write(writer, ref elemVar, elementType);
+                } else
                     writer.bytes.AppendBytes(ref writer.@null);
             }
             writer.bytes.AppendChar(']');
