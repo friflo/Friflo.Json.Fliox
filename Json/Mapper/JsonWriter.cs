@@ -41,34 +41,30 @@ namespace Friflo.Json.Mapper
         } 
 
         public void Write(Object obj) { 
-            bytes.InitBytes(128);
-            strBuf.InitBytes(128);
-            format.InitTokenFormat();
-            StubType objType = typeCache.GetType(obj.GetType());
-            bytes.Clear();
-            Var slot = new Var();
-            slot.Obj = obj;
-            objType.map.Write(this, ref slot, objType);
+            StubType stubType = typeCache.GetType(obj.GetType());
+            Var valueVar = new Var();
+            valueVar.Obj = obj;
+            WriteStart(stubType, ref valueVar);
         }
         
         public void Write<T>(T value) {
-            bytes.InitBytes(128);
-            strBuf.InitBytes(128);
-            format.InitTokenFormat();
-            StubType objType = typeCache.GetType(typeof(T));
-            bytes.Clear();
+            StubType stubType = typeCache.GetType(typeof(T));
             Var valueVar = new Var();
-            valueVar.Set (value, objType.varType, objType.isNullable);
-            objType.map.Write(this, ref valueVar, objType);
+            valueVar.Set (value, stubType.varType, stubType.isNullable);
+            WriteStart(stubType, ref valueVar);
         }
         
-        public void Write<T>(ref Var value) { 
+        public void Write<T>(ref Var valueVar) { 
+            StubType stubType = typeCache.GetType(typeof(T));
+            WriteStart(stubType, ref valueVar);
+        }
+        
+        private void WriteStart(StubType stubType, ref Var valueVar) {
             bytes.InitBytes(128);
             strBuf.InitBytes(128);
             format.InitTokenFormat();
-            StubType objType = typeCache.GetType(typeof(T));
             bytes.Clear();
-            objType.map.Write(this, ref value, objType);
+            stubType.map.Write(this, ref valueVar, stubType);
         }
 
         public void WriteKey(PropField field) {
