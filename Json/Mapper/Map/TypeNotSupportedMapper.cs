@@ -11,6 +11,8 @@ namespace Friflo.Json.Mapper.Map
     public class TypeNotSupportedMapper : IJsonMapper
     {
         public static readonly TypeNotSupportedMapper Interface = new TypeNotSupportedMapper();
+        
+        public string DataTypeName() { return "unsupported type"; }
 
         public StubType CreateStubType(Type type) {
             return new NotSupportedType(type, "Type not supported");

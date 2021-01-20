@@ -12,6 +12,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly BigIntMapper Interface = new BigIntMapper();
         
+        public string DataTypeName() { return "BigInteger"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(BigInteger))
                 return null;

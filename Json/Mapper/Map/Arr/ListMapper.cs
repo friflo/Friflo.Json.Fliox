@@ -15,6 +15,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     {
         public static readonly ListMapper Interface = new ListMapper();
         
+        public string DataTypeName() { return "List"; }
+        
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;

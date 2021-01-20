@@ -11,6 +11,8 @@ namespace Friflo.Json.Mapper.Map.Val
     public class EnumMapper : IJsonMapper
     {
         public static readonly EnumMapper Interface = new EnumMapper();
+        
+        public string DataTypeName() { return "enum"; }
 
         public StubType CreateStubType(Type type) {
             if (!EnumType.IsEnum(type, out bool isNullable))

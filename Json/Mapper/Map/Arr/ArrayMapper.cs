@@ -12,6 +12,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ArrayMapper : IJsonMapper
     {
         public static readonly ArrayMapper Interface = new ArrayMapper();
+
+        public string DataTypeName() { return "array"; }
         
         public StubType CreateStubType(Type type) {
             if (type. IsArray) {

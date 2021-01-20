@@ -111,7 +111,7 @@ namespace Friflo.Json.Mapper
                         return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.ValueNull:
                         if (!stubType.isNullable)
-                            return ErrorIncompatible("getNameFromStubType", stubType, ref parser);
+                            return ErrorIncompatible(stubType.map.DataTypeName(), stubType, ref parser);
                         slot.SetNull(stubType.varType);
                         return true;
                     case JsonEvent.Error:

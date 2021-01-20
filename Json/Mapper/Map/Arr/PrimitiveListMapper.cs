@@ -126,6 +126,8 @@ namespace Friflo.Json.Mapper.Map.Arr
         private readonly Type       elemType;
         private readonly VarType    elemVarType;
         
+        public string DataTypeName() { return "List"; }
+        
         public PrimitiveListMapper () {
             elemType            = typeof(T);
             elemVarType         = Var.GetVarType(elemType);

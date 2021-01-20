@@ -11,6 +11,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly DateTimeMapper Interface = new DateTimeMapper();
         
+        public string DataTypeName() { return "DateTime"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(DateTime))
                 return null;

@@ -11,6 +11,8 @@ namespace Friflo.Json.Mapper.Map.Obj
 {
     public class ClassMapper : IJsonMapper {
         public static readonly ClassMapper Interface = new ClassMapper();
+        
+        public string DataTypeName() { return "class"; }
 
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types

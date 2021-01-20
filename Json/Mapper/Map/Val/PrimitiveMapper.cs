@@ -11,6 +11,7 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly StringMapper Interface = new StringMapper();
         
+        public string DataTypeName() { return "string"; }
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(string))
@@ -35,6 +36,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly DoubleMapper Interface = new DoubleMapper();
         
+        public string DataTypeName() { return "double"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(double) && type != typeof(double?))
                 return null;
@@ -56,6 +59,8 @@ namespace Friflo.Json.Mapper.Map.Val
     public class FloatMapper : IJsonMapper
     {
         public static readonly FloatMapper Interface = new FloatMapper();
+        
+        public string DataTypeName() { return "float"; }
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(float) && type != typeof(float?))
@@ -79,6 +84,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly LongMapper Interface = new LongMapper();
         
+        public string DataTypeName() { return "long"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(long) && type != typeof(long?))
                 return null;
@@ -100,6 +107,8 @@ namespace Friflo.Json.Mapper.Map.Val
     public class IntMapper : IJsonMapper
     {
         public static readonly IntMapper Interface = new IntMapper();
+        
+        public string DataTypeName() { return "int"; }
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(int) && type != typeof(int?))
@@ -123,6 +132,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly ShortMapper Interface = new ShortMapper();
         
+        public string DataTypeName() { return "short"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(short) && type != typeof(short?))
                 return null;
@@ -145,6 +156,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public static readonly ByteMapper Interface = new ByteMapper();
         
+        public string DataTypeName() { return "byte"; }
+        
         public StubType CreateStubType(Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
                 return null;
@@ -166,6 +179,8 @@ namespace Friflo.Json.Mapper.Map.Val
     public class BoolMapper : IJsonMapper
     {
         public static readonly BoolMapper Interface = new BoolMapper();
+        
+        public string DataTypeName() { return "bool"; }
         
         public StubType CreateStubType(Type type) {
             if (type != typeof(bool) && type != typeof(bool?))

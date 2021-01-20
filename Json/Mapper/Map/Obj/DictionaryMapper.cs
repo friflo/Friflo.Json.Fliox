@@ -15,6 +15,8 @@ namespace Friflo.Json.Mapper.Map.Obj
     {
         public static readonly DictionaryMapper Interface = new DictionaryMapper();
         
+        public string DataTypeName() { return "Dictionary"; }
+        
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;

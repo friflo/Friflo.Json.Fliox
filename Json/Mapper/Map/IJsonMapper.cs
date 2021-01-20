@@ -8,6 +8,7 @@ namespace Friflo.Json.Mapper.Map
 {
     public interface IJsonMapper
     {
+        string      DataTypeName();
         StubType    CreateStubType  (Type type);
         void        Write (JsonWriter writer, ref Var slot, StubType stubType);
         bool        Read  (JsonReader reader, ref Var slot, StubType stubType);
