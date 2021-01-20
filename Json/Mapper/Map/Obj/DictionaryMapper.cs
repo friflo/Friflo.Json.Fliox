@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ValueString:
                         key = parser.key.ToString();
-                        if (elementType.typeCat != TypeCat.String)
+                        if (elementType.expectedEvent != JsonEvent.ValueString)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
@@ -97,7 +97,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ValueNumber:
                         key = parser.key.ToString();
-                        if (elementType.typeCat != TypeCat.Number)
+                        if (elementType.expectedEvent != JsonEvent.ValueNumber)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
@@ -106,7 +106,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        if (elementType.typeCat != TypeCat.Bool)
+                        if (elementType.expectedEvent != JsonEvent.ValueBool)
                             return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))

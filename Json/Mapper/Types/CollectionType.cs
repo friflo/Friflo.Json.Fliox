@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Types
             IJsonMapper     map,
             int             rank,
             Type            keyType,
-            ConstructorInfo constructor) : base (type, map, true, TypeCat.Array)
+            ConstructorInfo constructor) : base (type, map, true, null)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Types
@@ -10,7 +11,7 @@ namespace Friflo.Json.Mapper.Types
     {
         
         public PrimitiveType(Type type, IJsonMapper map)
-            : base(type, map, IsPrimitiveNullable(type), GetTypeCat(type))
+            : base(type, map, IsPrimitiveNullable(type), GetExpectedEvent(type))
         {
         }
 
@@ -21,30 +22,30 @@ namespace Friflo.Json.Mapper.Types
             return Nullable.GetUnderlyingType(type) != null;
         }
         
-        private static TypeCat GetTypeCat(Type type) {
+        private static JsonEvent? GetExpectedEvent(Type type) {
             if (type == typeof(string))
-                return TypeCat.String;
+                return JsonEvent.ValueString;
             
             if (type == typeof(bool)  || type == typeof(bool?))
-                return TypeCat.Bool;
+                return JsonEvent.ValueBool;
+
+            if (type == typeof(long)    || type == typeof(long?) ||
+                type == typeof(int)     || type == typeof(int?) ||
+                type == typeof(short)   || type == typeof(short?) ||
+                type == typeof(byte)    || type == typeof(byte?) ||
+                type == typeof(bool)    || type == typeof(bool?) ||
+                type == typeof(double)  || type == typeof(double?) ||
+                type == typeof(float)   || type == typeof(float?))
+                return JsonEvent.ValueNumber;
             
-            if (type == typeof(long)  || type == typeof(long?)  ||
-                type == typeof(int)   || type == typeof(int?)   ||
-                type == typeof(short) || type == typeof(short?) ||
-                type == typeof(byte)  || type == typeof(byte?)  ||
-                type == typeof(bool)  || type == typeof(bool?)  ||
-                type == typeof(double)|| type == typeof(double?)||
-                type == typeof(float) || type == typeof(float?))
-                return TypeCat.Number;
-            
-            return TypeCat.None;
+            return null;
         }
     }
     
     public class BigIntType : StubType
     {
         public BigIntType(Type type, IJsonMapper map)
-            : base(type, map, true, TypeCat.String)
+            : base(type, map, true, JsonEvent.ValueString)
         {
         }
 
@@ -55,7 +56,7 @@ namespace Friflo.Json.Mapper.Types
     public class StringType : StubType
     {
         public StringType(Type type, IJsonMapper map)
-            : base(type, map, true, TypeCat.String) {
+            : base(type, map, true, JsonEvent.ValueString) {
         }
         
         public override void InitStubType(TypeStore typeStore) {

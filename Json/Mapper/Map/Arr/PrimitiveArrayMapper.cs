@@ -171,7 +171,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (elementType.typeCat != TypeCat.String)
+                        if (elementType.expectedEvent != JsonEvent.ValueString)
                             return reader.ErrorIncompatible("array element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
@@ -181,7 +181,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++, nullable);
                         break;
                     case JsonEvent.ValueNumber:
-                        if (elementType.typeCat != TypeCat.Number)
+                        if (elementType.expectedEvent != JsonEvent.ValueNumber)
                             return reader.ErrorIncompatible("array element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
@@ -191,7 +191,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         PrimitiveArray.SetArrayItem(array, ref elemVar, elemVarType, index++,  nullable);
                         break;
                     case JsonEvent.ValueBool:
-                        if (elementType.typeCat != TypeCat.Bool)
+                        if (elementType.expectedEvent != JsonEvent.ValueBool)
                             return reader.ErrorIncompatible("array element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))

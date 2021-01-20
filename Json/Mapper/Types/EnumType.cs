@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
@@ -25,7 +26,7 @@ namespace Friflo.Json.Mapper.Types
         internal readonly Dictionary<long, Enum>        integralToEnum = new Dictionary<long, Enum>();
 
         public EnumType(Type type, IJsonMapper map, bool isNullable) :
-            base(type, map, isNullable, TypeCat.String)
+            base(type, map, isNullable, JsonEvent.ValueString)
         {
             FieldInfo[] fields = type.GetFields();
             for (int n = 0; n < fields.Length; n++) {

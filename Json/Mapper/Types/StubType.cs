@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Types
@@ -19,7 +20,7 @@ namespace Friflo.Json.Mapper.Types
         public  readonly    Type        type;
         public  readonly    IJsonMapper map;
         public  readonly    bool        isNullable;
-        public  readonly    TypeCat     typeCat;
+        public  readonly    JsonEvent?  expectedEvent;
         public  readonly    VarType     varType;
 
         /// <summary>
@@ -39,12 +40,12 @@ namespace Friflo.Json.Mapper.Types
             return null;
         }
 
-        public StubType(Type type, IJsonMapper map, bool isNullable, TypeCat typeCat) {
-            this.type =         type;
-            this.map =          map;
-            this.isNullable =   isNullable;
-            this.typeCat =      typeCat;
-            this.varType =      Var.GetVarType(type);
+        public StubType(Type type, IJsonMapper map, bool isNullable, JsonEvent? expectedEvent) {
+            this.type =             type;
+            this.map =              map;
+            this.isNullable =       isNullable;
+            this.expectedEvent =    expectedEvent;
+            this.varType =          Var.GetVarType(type);
         }
 
         public virtual void Dispose() {
