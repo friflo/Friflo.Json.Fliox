@@ -9,7 +9,6 @@ namespace Friflo.Json.Mapper
 {
 
     public enum VarType {
-        None,
         Double,
         Float,
         Long,
@@ -108,7 +107,6 @@ namespace Friflo.Json.Mapper
         public object Get () {
             if (!isNull) {
                 switch (Cat) {
-                    case VarType.None:      return null;
                     case VarType.Object:    return obj;
                     //
                     case VarType.Double:    return          dbl;
@@ -128,7 +126,6 @@ namespace Friflo.Json.Mapper
         public void Set(object value, VarType varType, bool isNullable) {
 
             switch (varType) {
-                case VarType.None:                      Cat = VarType.None; return; // throw new InvalidOperationException("Must not set Var to None);
                 case VarType.Object:                    Obj = value;        return;
                 //
                 case VarType.Double: if (!isNullable) { Dbl =   (double)value; } else { if (value == null) SetNull(VarType.Double); else Dbl   = (double) value; } return;
@@ -144,7 +141,6 @@ namespace Friflo.Json.Mapper
         }
 
         public void  Clear() {
-            Cat = VarType.None;
             obj = null;
             lng = 0;
             dbl = 0;
@@ -153,7 +149,6 @@ namespace Friflo.Json.Mapper
         public override string ToString() {
             string val = null;
             switch (Cat) {
-                case VarType.None:     return "None";
                 case VarType.Object:   return isNull ? "null" : $"{obj} ({obj.GetType().Name})";
                 //
                 case VarType.Double:   val = isNull ? "null" : dbl.ToString(CultureInfo.InvariantCulture); break;
