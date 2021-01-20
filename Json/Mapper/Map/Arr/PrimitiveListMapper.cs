@@ -84,7 +84,34 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }    
             }
         }
-        
+
+        public static void GetListItem (IList list, ref Var item, VarType varType, int index, bool nullable) {
+            if (nullable) {
+                switch (varType) {
+                    case VarType.Double:    item.NulDbl   = ((List<double?>) list)[index];  return;
+                    case VarType.Float:     item.NulFlt   = ((List<float?>)  list)[index];  return;
+                    case VarType.Long:      item.NulLng   = ((List<long?>)   list)[index];  return;
+                    case VarType.Int:       item.NulInt   = ((List<int?>)    list)[index];  return;
+                    case VarType.Short:     item.NulShort = ((List<short?>)  list)[index];  return;
+                    case VarType.Byte:      item.NulByte  = ((List<byte?>)   list)[index];  return;
+                    case VarType.Bool:      item.NulBool  = ((List<bool?>)   list)[index];  return;
+                    default:
+                        throw new InvalidOperationException("varType not supported: " + varType);
+                }
+            } else {
+                switch (varType) {
+                    case VarType.Double:    item.Dbl =   ((List<double>) list)[index];   return;
+                    case VarType.Float:     item.Flt =   ((List<float>)  list)[index];   return;
+                    case VarType.Long:      item.Lng =   ((List<long>)   list)[index];   return;
+                    case VarType.Int:       item.Int =   ((List<int>)    list)[index];   return;
+                    case VarType.Short:     item.Short = ((List<short>)  list)[index];   return;
+                    case VarType.Byte:      item.Byte =  ((List<byte>)   list)[index];   return;
+                    case VarType.Bool:      item.Bool =  ((List<bool>)   list)[index];   return;
+                    default:
+                        throw new InvalidOperationException("varType not supported: " + varType);
+                }
+            }
+        }
     }
     
     public class PrimitiveListMapper<T> : IJsonMapper
@@ -127,7 +154,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
-                elemVar.Set(list[n], elementType.varType, elementType.isNullable); // todo implement non boxing/unboxing method
+                PrimitiveList.GetListItem(list, ref elemVar, elementType.varType, n, elementType.isNullable);
                 elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');

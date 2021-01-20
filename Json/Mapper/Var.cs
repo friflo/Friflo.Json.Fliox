@@ -68,14 +68,37 @@ namespace Friflo.Json.Mapper
         }
         
         // --------------- nullable primitives
-        public double?  NullableDbl   {  get => isNull ? null : (double?)   dbl; }
-        public float?   NullableFlt   {  get => isNull ? null : (float?)    dbl; }
-        public long?    NullableLng   {  get => isNull ? null : (long?)     lng; }
-        public int?     NullableInt   {  get => isNull ? null : (int?)      lng; }
-        public short?   NullableShort {  get => isNull ? null : (short?)    lng; }
-        public byte?    NullableByte  {  get => isNull ? null : (byte?)     lng; }
-        public bool?    NullableBool  {  get => isNull ? null : (bool?)    (lng != 0); }
         
+        public double? NulDbl {
+            get => isNull ? null : (double?)dbl;            
+            set { Cat = VarType.Double; if (value != null) { dbl = (double)value; isNull = false; } else  isNull = true; }
+        }
+        public float? NulFlt {         
+            get => isNull ? null : (float?)dbl;            
+            set { Cat = VarType.Float;  if (value != null) { dbl = (float)value;  isNull = false; } else  isNull = true; }
+        }          
+        public long? NulLng {          
+            get => isNull ? null : (long?) lng;            
+            set { Cat = VarType.Long;   if (value != null) { lng = (long)value;   isNull = false; } else  isNull = true; }
+        }          
+        public int? NulInt {           
+            get => isNull ? null : (int?)  lng;            
+            set { Cat = VarType.Int;    if (value != null) { lng = (int)value;    isNull = false; } else  isNull = true; }
+        }          
+        public short? NulShort {           
+            get => isNull ? null : (short?)lng;            
+            set { Cat = VarType.Short;  if (value != null) { lng = (short)value;  isNull = false; } else  isNull = true; }
+        }          
+        public byte? NulByte {         
+            get => isNull ? null : (byte?) lng;            
+            set { Cat = VarType.Byte;   if (value != null) { lng = (byte)value;   isNull = false; } else  isNull = true; }
+        }
+        public bool? NulBool {
+            get => isNull ? null : (bool?)(lng != 0);            
+            set { Cat = VarType.Bool;   if (value != null) { lng = (bool)value ? 1 : 0; isNull = false; } else  isNull = true; }
+        }
+        
+     
         
         public void SetNull(VarType varType) {
             isNull = true;
