@@ -47,7 +47,6 @@ namespace Friflo.Json.Mapper
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(typeof(T));
-            slot.SetNull(stubType.varType); // todo recheck
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
             if (!success)
                 return default;
@@ -60,7 +59,6 @@ namespace Friflo.Json.Mapper
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(typeof(T));
-            slot.SetNull(stubType.varType); // todo recheck
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
             if (success)
                 result = (T)slot.Get();
