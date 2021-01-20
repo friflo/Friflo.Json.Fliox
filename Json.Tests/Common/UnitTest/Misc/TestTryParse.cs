@@ -4,12 +4,8 @@ using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
 
-
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
-
-
-    
     class TestTryParse
     {
         // [c# - How do I pass a ref struct argument to a MethodInfo if the struct has a ReadOnlySpan field - Stack Overflow]
@@ -45,9 +41,6 @@ namespace Friflo.Json.Tests.Common.UnitTest
             double.TryParse("123", NumberStyles.Float, NumberFormatInfo.InvariantInfo, out double result2);
             // var span = "123".AsSpan();
 #if !UNITY_5_3_OR_NEWER
-
-
-
             {
                 char[] charBuf = new char[30];
                 charBuf[0] = '1';

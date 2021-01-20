@@ -2,7 +2,7 @@
 using System.Reflection.Emit;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common.UnitTest
+namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
     struct TestFields
     {
