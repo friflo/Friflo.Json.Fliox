@@ -36,7 +36,7 @@ namespace Friflo.Json.Mapper
         
         // --------------- non nullable primitives
         public double Dbl {        
-            get => (double)(type == VarType.Double ?        dbl : obj);
+            get => (type == VarType.Double ?                dbl : (double)obj);
             set { dbl = value;         type = VarType.Double; isNull = false; }
         }
         public float Flt {         
