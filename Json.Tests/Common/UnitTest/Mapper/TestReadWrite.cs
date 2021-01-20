@@ -37,6 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public byte         bytFld;
         public bool         blnFld;
         //
+        // ReSharper disable InconsistentNaming
         public double       dblPrp { get; set; }
         public float        fltPrp { get; set; }
         public long         lngPrp { get; set; }
@@ -52,6 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return Equals((TestMapperClass) obj);
         }
 
+        // ReSharper disable method CompareOfFloatsByEqualityOperator
         private bool Equals(TestMapperClass o) {
             return key == o.key &&
                    dblPrp == o.dblPrp && fltPrp == o.fltPrp && lngPrp == o.lngPrp && intPrp == o.intPrp &&
@@ -130,9 +132,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
             using (var mapNum2 =    new Bytes ("{\"str\":44}"))
             using (var invalid =    new Bytes ("invalid")) {
-                this.reader = enc;
-                this.read2 = read2; 
-                this.write2 = write2; 
+                reader = enc;
+                cmpRead = read2; 
+                cmpWrite = write2; 
                 
                 int iterations = 2; // dont use < 2
                 for (int n = 0; n < iterations; n++) {
@@ -493,8 +495,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         private JsonReader reader;
         
-        private JsonReader read2;
-        private JsonWriter write2;
+        private JsonReader cmpRead;
+        private JsonWriter cmpWrite;
 
         private T Read<T>(Bytes bytes) {
             // return reader.Read<T>(bytes);
@@ -502,8 +504,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             if (!reader.Read(bytes, out T result))
                 return result;
             
-            write2.Write(result);
-            T writeResult = read2.Read<T>(write2.bytes);
+            cmpWrite.Write(result);
+            T writeResult = cmpRead.Read<T>(cmpWrite.bytes);
 
             AreEqual(result, writeResult);
             return result;
@@ -516,8 +518,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             if (!success)
                 return false;
             
-            write2.Write(value);
-            T writeResult = read2.Read<T>(write2.bytes);
+            cmpWrite.Write(value);
+            T writeResult = cmpRead.Read<T>(cmpWrite.bytes);
 
             AreEqual(value, writeResult);
             return true;
