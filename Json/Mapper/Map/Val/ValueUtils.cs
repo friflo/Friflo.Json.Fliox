@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Val
             ref JsonParser parser = ref reader.parser;
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
-                    const string msg = "requirement: null value must be handled by owner. Add JsonEvent.ValueNull case to its Mapper";
+                    const string msg = "requirement: null value must be handled by owner. Add missing JsonEvent.ValueNull case to its Mapper";
                     throw new InvalidOperationException(msg);
                     /*
                     if (!stubType.isNullable)
@@ -22,7 +22,9 @@ namespace Friflo.Json.Mapper.Map.Val
                     return true;
                     */
                 case JsonEvent.Error:
-                    return false;
+                    const string msg2 = "requirement: error must be handled by owner. Add missing JsonEvent.Error case to its Mapper";
+                    throw new InvalidOperationException(msg2);
+                    // return null;
                 default:
                     return reader.ErrorIncompatible("primitive", stubType, ref parser);
             }

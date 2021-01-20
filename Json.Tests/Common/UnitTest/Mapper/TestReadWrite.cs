@@ -470,7 +470,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             if (!reader.Read(bytes, out T result))
                 return result;
             
-            write2.Write<T>(result);
+            write2.Write(result);
             T writeResult = read2.Read<T>(write2.bytes);
 
             AreEqual(result, writeResult);
