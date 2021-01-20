@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = true;
                         return false;
                     }
-                    reader.ErrorIncompatible("object", stubType, ref reader.parser);
+                    reader.ErrorIncompatible(stubType.map.DataTypeName(), stubType, ref reader.parser);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return true;
                 default:
                     success = false;
-                    reader.ErrorIncompatible("object", stubType, ref reader.parser);
+                    reader.ErrorIncompatible(stubType.map.DataTypeName(), stubType, ref reader.parser);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }

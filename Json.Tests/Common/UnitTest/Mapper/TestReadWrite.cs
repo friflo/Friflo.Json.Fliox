@@ -127,13 +127,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 #endif
                     // error cases
                     enc.Read<double>(@true);
-                    StringAssert.Contains("Cannot assign bool to primitive. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to double. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<double>(hello);
-                    StringAssert.Contains("Cannot assign string to primitive. Expect: System.Double, got: 'hello' path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to double. Expect: System.Double, got: 'hello' path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<double>(arrNum);
-                    StringAssert.Contains("Cannot assign array to primitive. Expect: System.Double, got: [...] path: '[]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to double. Expect: System.Double, got: [...] path: '[]'", enc.Error.msg.ToString());
                     enc.Read<double>(mapNum);
-                    StringAssert.Contains("Cannot assign object to primitive. Expect: System.Double, got: {...} path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to double. Expect: System.Double, got: {...} path: '(root)'", enc.Error.msg.ToString());
                     enc.Read<long>(bigInt);
                     StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
                     enc.Read<float>(bigInt);
@@ -340,20 +340,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     StringAssert.Contains("Cannot assign bool to List element. Expect: System.String, got: true path: '[0]'", enc.Error.msg.ToString());
                     
                     enc.Read<List<string>>(mapStr);
-                    StringAssert.Contains("Cannot assign object to array. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to List. Expect:", enc.Error.msg.ToString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
                     enc.Read<Dictionary<string, long>>(arrNull);
-                    StringAssert.Contains("Cannot assign array to object. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, long>>(arrStr);
-                    StringAssert.Contains("Cannot assign array to object. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, string>>(arrNum);
-                    StringAssert.Contains("Cannot assign array to object. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.ToString());
                         
                     enc.Read<Dictionary<string, string>>(arrBln);
-                    StringAssert.Contains("Cannot assign array to object. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.ToString());
                     {
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<int, string>>(mapStr));
                         AreEqual("Dictionary only support string as key type. Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
