@@ -143,7 +143,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         field.GetField(obj, ref elemVar);
-                        if (elemVar.Cat != VarType.Object)
+                        if (elemVar.VarType != VarType.Object)
                             return reader.ErrorNull("Expect field of type object. Type: ", field.FieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;

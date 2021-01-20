@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Types
         {
             if (field != null) {
                 if (useDirect) {
-                    switch (val.Cat) {
+                    switch (val.VarType) {
                         case VarType.Object:   field.SetValue      (obj,            val.Obj);    return;
                         //
                         case VarType.Double:   field.SetValueDirect(__makeref(obj), val.Dbl);    return;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Mapper.Types
                         case VarType.Bool:     field.SetValueDirect(__makeref(obj), val.Bool);   return;
                     }
                 } else {
-                    switch (val.Cat) {
+                    switch (val.VarType) {
                         case VarType.Object:   field.SetValue (obj, val.Obj);    return;
                         //
                         case VarType.Double:   field.SetValue (obj, val.Dbl);    return;
@@ -79,7 +79,7 @@ namespace Friflo.Json.Mapper.Types
                     }
                 }
             } else {
-                switch (val.Cat) {
+                switch (val.VarType) {
                     case VarType.Object:   getter.SetValue (obj, val.Obj);    return;
                     //
                     case VarType.Double:   getter.SetValue (obj, val.Dbl);    return;
