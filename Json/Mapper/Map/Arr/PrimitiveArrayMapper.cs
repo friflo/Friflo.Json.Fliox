@@ -74,8 +74,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
         }
         
-        public static void GetArrayItem(Array array, ref Var item, VarType varType, int index, bool nullable, out bool isNull) {
-            isNull = false;
+        public static void GetArrayItem(Array array, ref Var item, VarType varType, int index, bool nullable) {
             if (!nullable) {
                 switch (varType) {
                     case VarType.Object:    item.Obj =  ((object[])array)[index];    return; // remove - object is always nullable
@@ -144,11 +143,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             for (int n = 0; n < array.Length; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
-                PrimitiveArray.GetArrayItem(array, ref elemVar, elemVarType, n, nullable, out bool isNull);
-                if (isNull)
-                    writer.bytes.AppendBytes(ref writer.@null);
-                else
-                    elementType.map.Write(writer, ref elemVar, elementType);
+                PrimitiveArray.GetArrayItem(array, ref elemVar, elemVarType, n, nullable);
+                elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
         }
