@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter write = new JsonWriter(typeStore))
             
             using (var num1 = new Bytes("1"))
+            using (var arr1 = new Bytes("[1]"))
             {
                 // --- Read ---
                 // 1. a
@@ -48,6 +49,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var value = new Var {Int = 1};
                 write.Write<int>(ref value);                        // generic
                 AreEqual("1", write.bytes.ToString());
+                
+                
+                // --- ReadTo ---
+                int[] arr = new int[1];
+                IsTrue(read.ReadTo(arr1, arr));                     // generic
+                AreEqual(new [] { 1 }, arr);
             }
         }
     }

@@ -123,12 +123,6 @@ namespace Friflo.Json.Mapper
             return success;
         }
 
-        public bool ReadTo<T>(ByteList bytes, int offset, int len, T obj) {
-            Var slot = new Var { Obj = obj };
-            StubType stubType = typeCache.GetType(slot.Obj.GetType());
-            return ReadToStart(bytes, offset, len, stubType, ref slot);
-        }
-
         private bool ReadToStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {
             parser.InitParser(bytes, offset, len);
 
