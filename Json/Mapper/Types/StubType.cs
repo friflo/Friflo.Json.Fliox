@@ -6,16 +6,6 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Types
 {
-    public enum TypeCat
-    {
-        None,
-        String,
-        Number,
-        Bool,
-        Object,
-        Array
-    }
-    
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonMapper map;
