@@ -35,6 +35,10 @@ namespace Friflo.Json.Mapper.Types
                 }
                 else
                 {
+                    PropertyInfo[] properties = Reflect.GetProperties(type);
+                    for (int n = 0; n < properties. Length; n++)
+                        Set(properties[n]. Name);
+
                     FieldInfo[] field = Reflect.GetFields(type);
                     for (int n = 0; n < field. Length; n++)
                         Set(field[n]. Name);

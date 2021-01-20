@@ -28,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public string       str;
         public BigInteger   bigInt;
         public int[]        intArray;
+        public int          intProp { get; set; }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -58,6 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""testChild"":null,
     ""key"":42,
     ""bigInt"":""{BigInt}"",
+    ""intProp"":55,
     ""unknownObject"": {{
         ""anotherUnknown"": 42
     }},
@@ -195,7 +197,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // ------------------------------------- class -------------------------------------
                     {
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
-                        var expect = new TestMapperClass { key = 42, bigInt = bigIntVal };
+                        var expect = new TestMapperClass { key = 42, bigInt = bigIntVal, intProp = 55 };
                         var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.parser.Event)
                             Fail(enc.Error.msg.ToString());
