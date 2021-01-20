@@ -142,13 +142,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
-                    IsTrue(enc.ReadTo(arrFlt, reusedArrDbl));             AreEqual(11.5d, reusedArrDbl[0]);
-                    IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrLng));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrInt));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrShort));
-                    IsTrue(enc.ReadTo(arrNum, reusedArrByte));
-                    IsTrue(enc.ReadTo(arrBln, reusedArrBool));
+                    NotNull(enc.ReadTo(arrFlt, reusedArrDbl,   out bool _));             AreEqual(11.5d, reusedArrDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedArrFlt,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedArrLng,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedArrInt,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedArrShort, out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedArrByte,  out bool _));
+                    NotNull(enc.ReadTo(arrBln, reusedArrBool,  out bool _));
 
                     // --------------------------------- enum -----------------------------------
                     {
@@ -161,25 +161,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // --------------------------------- List<> ---------------------------------
                     // non nullable elements
-                    IsTrue(enc.ReadTo(arrFlt, reusedListDbl));              AreEqual(11.5d, reusedListDbl[0]);
-                    IsTrue(enc.ReadTo(arrNum, reusedListFlt));
-                    IsTrue(enc.ReadTo(arrNum, reusedListLng));
-                    IsTrue(enc.ReadTo(arrNum, reusedListInt));
-                    IsTrue(enc.ReadTo(arrNum, reusedListShort));
-                    IsTrue(enc.ReadTo(arrNum, reusedListByte));
-                    IsTrue(enc.ReadTo(arrBln, reusedListBool));
+                    NotNull(enc.ReadTo(arrFlt, reusedListDbl,   out bool _));              AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListFlt,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListLng,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListInt,   out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListShort, out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListByte,  out bool _));
+                    NotNull(enc.ReadTo(arrBln, reusedListBool,  out bool _));
                     
                     // nullable elements
-                    IsTrue(enc.ReadTo(arrFlt, reusedListNulDbl));           AreEqual(11.5d, reusedListDbl[0]);
-                    IsTrue(enc.ReadTo(arrNum, reusedListNulFlt));
-                    IsTrue(enc.ReadTo(arrNum, reusedListNulLng));
-                    IsTrue(enc.ReadTo(arrNum, reusedListNulInt));
-                    IsTrue(enc.ReadTo(arrNum, reusedListNulShort));
-                    IsTrue(enc.ReadTo(arrNum, reusedListNulByte));
-                    IsTrue(enc.ReadTo(arrBln, reusedListNulBool));
+                    NotNull(enc.ReadTo(arrFlt, reusedListNulDbl,    out bool _));           AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListNulFlt,    out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulLng,    out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulInt,    out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulShort, out bool _));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulByte,  out bool _));
+                    NotNull(enc.ReadTo(arrBln, reusedListNulBool,  out bool _));
 
                     // --------------------------------- class ---------------------------------
-                    IsTrue(enc.ReadTo(testClass, reusedClass));
+                    NotNull(enc.ReadTo(testClass, reusedClass,  out bool _));
                     AreEqual(3,               reusedClass.intArray.Length);
                     IsTrue(SomeEnum.Value1 == reusedClass.someEnum); // avoid boxing. AreEqual() boxes
                     IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum); // avoid boxing. AreEqual() boxes

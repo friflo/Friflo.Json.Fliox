@@ -52,6 +52,12 @@ namespace Friflo.Json.Tests.Common.Utils
                 throw new TestException("Expect: false\nBut was: true");
         }
         
+        public static void NotNull(object value) {
+            if (value == null)
+                throw new TestException("Expect: null\nBut was: not null");
+        }
+        
+        
 
         public static TActual Throws<TActual>(TestDelegate code) where TActual : Exception {
             try {

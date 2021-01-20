@@ -117,7 +117,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
                 // --- arrays
             using (var arrNum =     new Bytes ("[1,2,3]"))
-            using (var arrStr =     new Bytes ("[\"hello\"]"))
+            using (var arrBigInt=   new Bytes ("[\"1\",\"2\",\"1234567890123456789012345678901234567890\"]"))
+            using (var arrStr =     new Bytes ("[\"A\",\"B\",\"C\"]"))
             using (var arrBln =     new Bytes ("[true, false]"))
             using (var arrObj =     new Bytes ("[{\"key\":42}]"))
             using (var arrNull =    new Bytes ("[null]"))
@@ -275,14 +276,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     enc.Read<int[]>(arrNull);
                     StringAssert.Contains("Cannot assign null to array element. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrStr);
-                    StringAssert.Contains("Cannot assign string to array element. Expect: System.Int32, got: 'hello' path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to array element. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());
 
-                    AreEqual(new [] {"hello"},    Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {"A","B","C"},    Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
-                        var inOut = new string[1];
-                        IsTrue(ReadTo(arrStr, inOut));
+                        var reused = new string[1];
+                        AreEqual(new[] {"A","B","C"}, ReadTo(arrStr, reused, out bool _));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
-                        AreEqual(new[] {"hello"}, inOut);
                     }
                     // --- array non nullable
                     AreEqual(new [] {1,2,3},      Read   <long[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -359,13 +359,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     {
                         List<List<int>> expect = new List<List<int>> {new List<int> {1, 2, 3}};
                         AreEqual(expect, Read<List<List<int>>>(arrArrNum));
+                    } {
+                        List<int> expect = new List<int> {1, 2, 3};
+                        List<int> reused = new List<int> (expect);
+                        AreEqual(expect, ReadTo (arrNum, reused, out bool _));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    } {
+                        List<bool> expect = new List<bool> {true, false};
+                        List<bool> reused = new List<bool> (expect);
+                        AreEqual(expect, ReadTo (arrBln, reused, out bool _));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    } {
+                        List<string> expect = new List<string> {"A", "B", "C"};
+                        List<string> reused = new List<string> (expect);
+                        AreEqual(expect, ReadTo (arrStr, reused, out bool _));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    } {
+                        var big = BigInteger.Parse("1234567890123456789012345678901234567890");
+                        List<BigInteger> expect = new List<BigInteger> {new BigInteger(1), new BigInteger(2), big};
+                        List<BigInteger> reused = new List<BigInteger> (expect);
+                        AreEqual(expect, ReadTo (arrBigInt, reused, out bool _));
+                        AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     
                     enc.Read<List<int>>(arrNull);
                     StringAssert.Contains("Cannot assign null to List element. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
                     
                     enc.Read<List<int>>(arrStr);
-                    StringAssert.Contains("Cannot assign string to List element. Expect: System.Int32, got: 'hello' path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to List element. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());
                     
                     enc.Read<List<string>>(arrNum);
                     StringAssert.Contains("Cannot assign number to List element. Expect: System.String, got: 1 path: '[0]'", enc.Error.msg.ToString());
@@ -483,7 +504,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // Ensure minimum required type lookups
                     if (n > 0) {
 #if !UNITY_EDITOR
-                        AreEqual(125, enc.typeCache.LookupCount);
+                        AreEqual(129, enc.typeCache.LookupCount);
 #endif
                         AreEqual( 0, enc.typeCache.StoreLookupCount);
                         AreEqual( 0, enc.typeCache.TypeCreationCount);
@@ -511,18 +532,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return result;
         }
         
-        private bool ReadTo<T>(Bytes bytes, T value) where T : class {
+        private T ReadTo<T>(Bytes bytes, T value, out bool success) where T : class {
             // return reader.ReadTo<T>(bytes, value);
 
-            bool success = reader.ReadTo(bytes, value);
+            T result = reader.ReadTo(bytes, value, out success);
             if (!success)
-                return false;
+                return default;
             
             cmpWrite.Write(value);
             T writeResult = cmpRead.Read<T>(cmpWrite.bytes);
 
             AreEqual(value, writeResult);
-            return true;
+            return result;
         }
 
 

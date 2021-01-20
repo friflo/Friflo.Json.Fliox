@@ -113,14 +113,16 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        public bool ReadTo<T>(Bytes bytes, T obj) where T : class {
+        public T ReadTo<T>(Bytes bytes, T obj, out bool success) where T : class {
             int start = bytes.Start;
             int len = bytes.Len;
             Var slot = new Var { Obj = obj };
             StubType stubType = typeCache.GetType(slot.Obj.GetType());
-            bool success = ReadToStart(bytes.buffer, start, len, stubType, ref slot);
+            success = ReadToStart(bytes.buffer, start, len, stubType, ref slot);
+            if (!success)
+                return default;
             parser.NextEvent(); // EOF
-            return success;
+            return (T)slot.Obj;
         }
 
         private bool ReadToStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {

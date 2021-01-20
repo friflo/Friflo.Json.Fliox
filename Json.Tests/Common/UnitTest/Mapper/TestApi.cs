@@ -53,8 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 // --- ReadTo ---
                 int[] arr = new int[1];
-                IsTrue(read.ReadTo(arr1, arr));                     // generic
-                AreEqual(new [] { 1 }, arr);
+                AreEqual(new [] { 1 }, read.ReadTo(arr1, arr, out bool _));                     // generic
             }
         }
     }

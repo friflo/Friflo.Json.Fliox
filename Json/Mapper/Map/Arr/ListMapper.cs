@@ -59,13 +59,13 @@ namespace Friflo.Json.Mapper.Map.Arr
             IList list = (IList) slot.Obj;
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
+            
             StubType elementType = collectionType.ElementType;
-            // todo: document why != SlotType.Object
-            if (collectionType.elementVarType != VarType.Object)
-                list.Clear();
+            list.Clear();
             int startLen = list.Count;
             int index = 0;
             Var elemVar = new Var();
+            
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -116,7 +116,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                                 return false;
                             list.Add(elemVar.Obj);
                         }
-
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
