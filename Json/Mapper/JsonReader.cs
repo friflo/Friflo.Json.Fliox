@@ -71,7 +71,6 @@ namespace Friflo.Json.Mapper
         public bool Read<T>(Bytes bytes, ref Var result) {
             int start = bytes.Start;
             int len = bytes.Len;
-            result.Clear();
             StubType stubType = typeCache.GetType(typeof(T));
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref result);
             parser.NextEvent(); // EOF
@@ -85,14 +84,6 @@ namespace Friflo.Json.Mapper
             StubType stubType = typeCache.GetType(type);
             if (!ReadStart(bytes.buffer, start, len, stubType, ref slot))
                 return default;
-            parser.NextEvent(); // EOF
-            return slot.Get();
-        }
-
-        public Object Read(ByteList buffer, int offset, int len, Type type) {
-            Var slot = new Var();
-            StubType stubType = typeCache.GetType(type);
-            ReadStart(buffer, offset, len, stubType, ref slot);
             parser.NextEvent(); // EOF
             return slot.Get();
         }

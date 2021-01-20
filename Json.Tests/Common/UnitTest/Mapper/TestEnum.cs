@@ -32,17 +32,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var num11 =  new Bytes("11"))
             using (var num999 = new Bytes("999"))
             {
-                AreEqual(EnumClass.Value1, enc.Read(value1, typeof(EnumClass)));
-                AreEqual(EnumClass.Value2, enc.Read(value2, typeof(EnumClass)));
-                AreEqual(EnumClass.Value3, enc.Read(value3, typeof(EnumClass)));
-                AreEqual(EnumClass.Value1, enc.Read(value3, typeof(EnumClass)));
+                AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));
+                AreEqual(EnumClass.Value2, enc.Read<EnumClass>(value2));
+                AreEqual(EnumClass.Value3, enc.Read<EnumClass>(value3));
+                AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value3));
                 
-                enc.Read(hello, typeof(EnumClass));
+                enc.Read<EnumClass>(hello);
                 StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 'hello'", enc.Error.msg.ToString());
 
-                AreEqual(EnumClass.Value1, enc.Read(num11, typeof(EnumClass)));
+                AreEqual(EnumClass.Value1, enc.Read<EnumClass>(num11));
                 
-                enc.Read(num999, typeof(EnumClass));
+                enc.Read<EnumClass>(num999);
                 StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
 
                 write.Write(EnumClass.Value1);
