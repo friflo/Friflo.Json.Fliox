@@ -75,6 +75,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedListByte =    new List<byte>();
             var reusedListBool =    new List<bool>();
             
+            var reusedListNulDbl =     new List<double?>();
+            var reusedListNulFlt =     new List<float?>();
             var reusedListNulLng =     new List<long?>();
             var reusedListNulInt =     new List<int?>();
             var reusedListNulShort =   new List<short?>();
@@ -158,6 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
 
                     // --------------------------------- List<> ---------------------------------
+                    // non nullable elements
                     IsTrue(enc.ReadTo(arrFlt, reusedListDbl));              AreEqual(11.5d, reusedListDbl[0]);
                     IsTrue(enc.ReadTo(arrNum, reusedListFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedListLng));
@@ -166,8 +169,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrNum, reusedListByte));
                     IsTrue(enc.ReadTo(arrBln, reusedListBool));
                     
-                    IsTrue(enc.ReadTo(arrFlt, reusedListDbl));              AreEqual(11.5d, reusedListDbl[0]);
-                    IsTrue(enc.ReadTo(arrNum, reusedListFlt));
+                    // nullable elements
+                    IsTrue(enc.ReadTo(arrFlt, reusedListNulDbl));           AreEqual(11.5d, reusedListDbl[0]);
+                    IsTrue(enc.ReadTo(arrNum, reusedListNulFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulLng));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulInt));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulShort));
