@@ -18,8 +18,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             DateTime value = (DateTime) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));

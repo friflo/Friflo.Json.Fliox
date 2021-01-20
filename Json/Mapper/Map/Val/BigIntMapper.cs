@@ -19,8 +19,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             BigInteger value = (BigInteger) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());

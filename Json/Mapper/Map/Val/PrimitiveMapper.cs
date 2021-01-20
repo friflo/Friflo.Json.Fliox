@@ -19,8 +19,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.WriteString((string) slot.Obj);
         }
 
@@ -44,8 +42,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
@@ -68,8 +64,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
@@ -92,8 +86,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
@@ -116,8 +108,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
@@ -140,8 +130,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
@@ -164,8 +152,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
@@ -188,8 +174,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 

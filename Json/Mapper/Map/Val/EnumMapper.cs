@@ -19,8 +19,6 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            if (JsonWriter.WriteNull(writer, ref slot))
-                return;
             EnumType enumType = (EnumType) stubType;
             if (enumType.enumToString.TryGetValue((Enum)slot.Obj, out BytesString enumName)) {
                 writer.bytes.AppendChar('\"');

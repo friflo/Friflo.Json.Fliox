@@ -64,7 +64,10 @@ namespace Friflo.Json.Mapper
             strBuf.InitBytes(128);
             format.InitTokenFormat();
             bytes.Clear();
-            stubType.map.Write(this, ref valueVar, stubType);
+            if (valueVar.IsNull)
+                bytes.AppendBytes(ref @null);
+            else
+                stubType.map.Write(this, ref valueVar, stubType);
         }
 
         public void WriteKey(PropField field) {

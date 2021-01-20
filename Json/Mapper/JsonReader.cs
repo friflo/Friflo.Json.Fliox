@@ -108,8 +108,12 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                    case JsonEvent.ValueNull:
                         return stubType.map.Read(this, ref slot, stubType);
+                    case JsonEvent.ValueNull:
+                        if (!stubType.isNullable)
+                            return ErrorIncompatible("getNameFromStubType", stubType, ref parser);
+                        slot.SetNull(stubType.varType);
+                        return true;
                     case JsonEvent.Error:
                         return false;
                     default:

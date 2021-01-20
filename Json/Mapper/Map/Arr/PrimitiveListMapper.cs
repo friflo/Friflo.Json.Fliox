@@ -162,7 +162,10 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (n > 0)
                     writer.bytes.AppendChar(',');
                 PrimitiveList.GetListItem(list, ref elemVar, elementType.varType, n, elementType.isNullable);
-                elementType.map.Write(writer, ref elemVar, elementType);
+                if (elemVar.IsNull)
+                    writer.bytes.AppendBytes(ref writer.@null);
+                else
+                    elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
         }

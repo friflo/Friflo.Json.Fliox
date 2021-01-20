@@ -116,12 +116,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(null,                      Read<double?>       (@null));
 
                     enc.Read<double>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect:", enc.Error.msg.ToString());
 #if !UNITY_EDITOR
                     {
                         enc.ThrowException = true;
                         var e = Throws<FrifloException>(() => enc.Read<double>(@null));
-                        StringAssert.Contains("Cannot assign null to primitive. Expect: System.Double, got: null path: '(root)'", e.Message);
+                        StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Double, got: null path: '(root)'", e.Message);
                         enc.ThrowException = false;
                     }
 #endif
@@ -148,42 +148,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(12.5,                      Read<float?>   (@double));
                     AreEqual(null,                      Read<float?>   (@null));
                     enc.Read<float>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Single, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Single, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long?>    (@long));
                     AreEqual(null,      enc.Read<long?>    (@null));
                     enc.Read<long>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int?>     (@long));
                     AreEqual(null,      enc.Read<int?>     (@null));
                     enc.Read<int>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short?>   (@long));
                     AreEqual(null,      enc.Read<short?>   (@null));
                     enc.Read<short>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<byte>     (@long));
                     AreEqual(42,        Read<byte>     (@long));
                     AreEqual(42,        Read<byte?>    (@long));
                     AreEqual(null,      Read<byte?>    (@null));
                     enc.Read<byte>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(true,      enc.Read<bool>     (@true));
                     AreEqual(true,      enc.Read<bool>     (@true));
                     AreEqual(true,      enc.Read<bool?>    (@true));
                     AreEqual(null,      enc.Read<bool?>    (@null));
                     enc.Read<bool>(@null);
-                    StringAssert.Contains("Cannot assign null to primitive. Expect: System.Boolean, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect: System.Boolean, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     
                     AreEqual(null,      enc.Read<object>(@null));
@@ -416,7 +416,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to object. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to getNameFromStubType. Expect:", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, Read<BigInteger>(bigIntStr));
