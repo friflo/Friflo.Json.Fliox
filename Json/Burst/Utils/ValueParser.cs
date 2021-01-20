@@ -20,6 +20,9 @@ namespace Friflo.Json.Burst.Utils
         private     Str32   _1;
         private     Str32   _0;
         private     bool    initialized;
+#if !UNITY_5_3_OR_NEWER
+        private char[]      charBuf;
+#endif
 
 
         public void InitValueParser() {
@@ -30,6 +33,9 @@ namespace Friflo.Json.Burst.Utils
             @false =    "false";
             _1 =        "1";
             _0 =        "0";
+#if !UNITY_5_3_OR_NEWER
+            charBuf = new char[32];
+#endif
         }
         
         public void Dispose() {
@@ -310,12 +316,31 @@ namespace Friflo.Json.Burst.Utils
             SetErrorFalse ("Parsing double failed. val: ", ref bytes, ref valueError);
             return 0;
         }
-        
+
+        private bool ParseFloatInternal(ref Bytes bytes, out float result) {
+#if UNITY_5_3_OR_NEWER
+            String val = bytes.ToString();
+            return float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+#else
+            if (bytes.Len > charBuf.Length) {
+                result = default;
+                return false;
+            }
+            byte[] arr = bytes.buffer.array;
+            int pos = bytes.start;
+            int len = bytes.Len;
+            for (int n = 0; n < len; n++)
+                charBuf[n] = (char)arr[pos + n];
+            ReadOnlySpan<char> span = new ReadOnlySpan<char> (charBuf, 0 , len);
+            return float.TryParse(span, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out result);
+#endif
+        }
+
         public float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
             String val = bytes.ToString();
             success = true;
-            if (float.TryParse(val, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out float result)) {
+            if (ParseFloatInternal(ref bytes, out float result)) {
                 if (float.IsInfinity(result) || float.IsNegativeInfinity(result)) {
                     SetErrorFalse ("float value out of range. val: ", ref bytes, ref valueError);
                     success = false;
