@@ -91,44 +91,15 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             } else {
                 switch (varType) {
-                    case VarType.Object:
-                        item.Obj = ((object[]) array)[index];
-                        return;
-                    case VarType.Double:
-                        var dbl = ((double?[]) array)[index];
-                        if (dbl == null)    isNull = true;
-                        else                item.Dbl = (double)dbl;
-                        return;
-                    case VarType.Float:
-                        var flt = ((float?[]) array)[index];
-                        if (flt == null)    isNull = true;
-                        else                item.Flt = (float)flt;
-                        return;
-                    case VarType.Long:
-                        var lng = ((long?[]) array)[index];
-                        if (lng == null)    isNull = true;
-                        else                item.Lng = (long)lng;
-                        return;
-                    case VarType.Int:
-                        var integer = ((int?[]) array)[index];
-                        if (integer == null)isNull = true;
-                        else                item.Int = (int)integer;
-                        return;
-                    case VarType.Short:
-                        var shrt = ((short?[]) array)[index];
-                        if (shrt == null)   isNull = true;
-                        else                item.Short = (short)shrt;
-                        return;
-                    case VarType.Byte:
-                        var byt = ((byte?[]) array)[index];
-                        if (byt == null)    isNull = true;
-                        else                item.Byte = (byte)byt;
-                        return;
-                    case VarType.Bool:
-                        var bln = ((bool?[]) array)[index];
-                        if (bln == null)    isNull = true;
-                        else                item.Bool = (bool)bln;
-                        return;
+                    case VarType.Object: item.Obj =      ((object []) array)[index];   return;
+                    case VarType.Double: item.NulDbl =   ((double?[]) array)[index];   return;
+                    case VarType.Float:  item.NulFlt =   ((float? []) array)[index];   return;
+                    case VarType.Long:   item.NulLng =   ((long?  []) array)[index];   return;
+                    case VarType.Int:    item.NulInt =   ((int?   []) array)[index];   return;
+                    case VarType.Short:  item.NulShort = ((short? []) array)[index];   return;
+                    case VarType.Byte:   item.NulByte =  ((byte?  []) array)[index];   return;
+                    case VarType.Bool:   item.NulBool =  ((bool?  []) array)[index];   return;
+
                     default:
                         throw new InvalidOperationException("varType not supported: " + varType);
                 }
