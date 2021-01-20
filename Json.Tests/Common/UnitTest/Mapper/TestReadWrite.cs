@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(null,                      Read<double?>       (@null));
 
                     enc.Read<double>(@null);
-                    StringAssert.Contains("Cannot assign null to double. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("JsonReader/error: Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
 #if !UNITY_EDITOR
                     {
                         enc.ThrowException = true;
@@ -416,7 +416,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to class. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, Read<BigInteger>(bigIntStr));
