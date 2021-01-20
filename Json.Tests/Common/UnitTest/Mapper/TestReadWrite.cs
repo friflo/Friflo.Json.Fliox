@@ -29,13 +29,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public BigInteger   bigInt;
         public int[]        intArray;
         //
-        public double       dblProp { get; set; }
-        public float        fltProp { get; set; }
-        public long         lngProp { get; set; }
-        public int          intProp { get; set; }
-        public short        srtProp { get; set; }
-        public byte         bytProp { get; set; }
-        public bool         blnProp{ get; set; }
+        public double       dblFld;
+        public float        fltFld;
+        public long         lngFld;
+        public int          intFld;
+        public short        srtFld;
+        public byte         bytFld;
+        public bool         blnFld;
+        //
+        public double       dblPrp { get; set; }
+        public float        fltPrp { get; set; }
+        public long         lngPrp { get; set; }
+        public int          intPrp { get; set; }
+        public short        srtPrp { get; set; }
+        public byte         bytPrp { get; set; }
+        public bool         blnPrp { get; set; }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -44,8 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return Equals((TestMapperClass) obj);
         }
 
-        private bool Equals(TestMapperClass other) {
-            return key == other.key && bigInt.Equals(other.bigInt);
+        private bool Equals(TestMapperClass o) {
+            return key == o.key &&
+                   dblPrp == o.dblPrp && fltPrp == o.fltPrp && lngPrp == o.lngPrp && intPrp == o.intPrp &&
+                   srtPrp == o.srtPrp && bytPrp == o.bytPrp && blnPrp == o.blnPrp &&
+                   dblFld == o.dblFld && fltFld == o.fltFld && lngFld == o.lngFld && intFld == o.intFld &&
+                   srtFld == o.srtFld && bytFld == o.bytFld && blnFld == o.blnFld &&
+                   bigInt.Equals(o.bigInt);
         }
 
         // ReSharper disable NonReadonlyMemberInGetHashCode
@@ -67,13 +80,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""key"":42,
     ""bigInt"":""{BigInt}"",
 
-    ""dblProp"": 100,
-    ""fltProp"": 101,
-    ""lngProp"": 102,
-    ""intProp"": 103,
-    ""srtProp"": 104,
-    ""bytProp"": 105,
-    ""blnProp"": true,
+    ""dblPrp"": 100,    ""fltPrp"": 101,    ""lngPrp"": 102,    ""intPrp"": 103,
+    ""srtPrp"": 104,    ""bytPrp"": 105,    ""blnPrp"": true,
+
+    ""dblFld"": 200,    ""fltFld"": 201,    ""lngFld"": 202,    ""intFld"": 203,
+    ""srtFld"": 204,    ""bytFld"": 205,    ""blnFld"": true,
 
     ""unknownObject"": {{
         ""anotherUnknown"": 42
@@ -213,8 +224,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     {
                         BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
                         var expect = new TestMapperClass {
-                            key = 42, bigInt = bigIntVal, dblProp = 100, fltProp = 101,
-                            lngProp = 102, intProp = 103, srtProp = 104, bytProp = 105, blnProp = true
+                            key = 42, bigInt = bigIntVal,
+                            dblPrp = 100, fltPrp = 101, lngPrp = 102, intPrp = 103, srtPrp = 104, bytPrp = 105, blnPrp = true,
+                            dblFld = 200, fltFld = 201, lngFld = 202, intFld = 203, srtFld = 204, bytFld = 205, blnFld = true
                         };
                         var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.parser.Event)
