@@ -462,18 +462,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         private T Read<T>(Bytes bytes) {
             // return reader.Read<T>(bytes);
+
+            if (!reader.Read(bytes, out T result))
+                return result;
             
-            Var value = new Var();
-            if (!reader.Read<T>(bytes, ref value))
-                return default;
- 
-            write2.Write<T>(ref value);
-            
+            write2.Write<T>(result);
             T writeResult = read2.Read<T>(write2.bytes);
 
-            var result = value.Get();
             AreEqual(result, writeResult);
-            return (T)result;
+            return result;
         }
 
 

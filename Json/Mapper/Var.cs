@@ -106,22 +106,36 @@ namespace Friflo.Json.Mapper
         }
         
         public object Get () {
-            if (isNull)
-                return null;
-
-            switch (Cat) {
-                case VarType.None:      return null;
-                case VarType.Object:    return obj;
-                //
-                case VarType.Double:    return          dbl;
-                case VarType.Float:     return (float)  dbl;
-                //
-                case VarType.Long:      return          lng;
-                case VarType.Int:       return (int)    lng;
-                case VarType.Short:     return (short)  lng;
-                case VarType.Byte:      return (byte)   lng;
-                //
-                case VarType.Bool:      return lng != 0;
+            if (!isNull) {
+                switch (Cat) {
+                    case VarType.None:      return null;
+                    case VarType.Object:    return obj;
+                    //
+                    case VarType.Double:    return          dbl;
+                    case VarType.Float:     return (float)  dbl;
+                    //
+                    case VarType.Long:      return          lng;
+                    case VarType.Int:       return (int)    lng;
+                    case VarType.Short:     return (short)  lng;
+                    case VarType.Byte:      return (byte)   lng;
+                    //
+                    case VarType.Bool:      return lng != 0;
+                }
+            } else {
+                switch (Cat) {
+                    case VarType.None:      return null;
+                    case VarType.Object:    return null;
+                    //
+                    case VarType.Double:    return (double?) null;
+                    case VarType.Float:     return (float?)  null;
+                    //
+                    case VarType.Long:      return (long?)   null;
+                    case VarType.Int:       return (int?)    null;
+                    case VarType.Short:     return (short?)  null;
+                    case VarType.Byte:      return (byte?)   null;
+                    //
+                    case VarType.Bool:      return (bool?)   null;
+                }
             }
             return null; // unreachable
         }

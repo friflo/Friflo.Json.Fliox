@@ -55,6 +55,21 @@ namespace Friflo.Json.Mapper
             return (T) slot.Get();
         }
         
+        public bool Read<T>(Bytes bytes, out T result) {
+            int start = bytes.Start;
+            int len = bytes.Len;
+            Var slot = new Var();
+            StubType stubType = typeCache.GetType(typeof(T));
+            slot.SetNull(stubType.varType); // todo recheck
+            bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
+            if (success)
+                result = (T)slot.Get();
+            else
+                result = default;
+            parser.NextEvent(); // EOF
+            return success;
+        }
+        
         public bool Read<T>(Bytes bytes, ref Var result) {
             int start = bytes.Start;
             int len = bytes.Len;
