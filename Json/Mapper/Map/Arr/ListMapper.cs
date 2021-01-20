@@ -57,12 +57,13 @@ namespace Friflo.Json.Mapper.Map.Arr
             ref var parser = ref reader.parser;
             CollectionType collectionType = (CollectionType) stubType;
             IList list = (IList) slot.Obj;
+            int startLen = 0;
             if (list == null)
                 list = (IList) collectionType.CreateInstance();
+            else
+                startLen = list.Count;
             
             StubType elementType = collectionType.ElementType;
-            list.Clear();
-            int startLen = list.Count;
             int index = 0;
             Var elemVar = new Var();
             
@@ -75,7 +76,11 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemVar.Get());
+                        if (index < startLen)
+                            list[index] = elemVar.Get();
+                        else
+                            list.Add(elemVar.Get());
+                        index++;
                         break;
                     case JsonEvent.ValueNumber:
                         if (elementType.typeCat != TypeCat.Number)
@@ -83,7 +88,11 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemVar.Get());
+                        if (index < startLen)
+                            list[index] = elemVar.Get();
+                        else
+                            list.Add(elemVar.Get());
+                        index++;
                         break;
                     case JsonEvent.ValueBool:
                         if (elementType.typeCat != TypeCat.Bool)
@@ -91,7 +100,11 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
-                        list.Add(elemVar.Get());
+                        if (index < startLen)
+                            list[index] = elemVar.Get();
+                        else
+                            list.Add(elemVar.Get());
+                        index++;
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
@@ -136,7 +149,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ArrayEnd:
                         // Remove from tail to head to avoid copying items after remove index
                        for (int n = startLen - 1; n >= index; n--)
-                            list.Remove(n);
+                            list.RemoveAt(n);
                         slot.Obj = list;
                         return true;
                     case JsonEvent.Error:

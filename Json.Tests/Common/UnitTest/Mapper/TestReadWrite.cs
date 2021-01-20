@@ -371,13 +371,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<string> expect = new List<string> {"A", "B", "C"};
-                        List<string> reused = new List<string> (expect);
+                        List<string> reused = new List<string> {"1", "2", "3", "4", "5"};
                         AreEqual(expect, ReadTo (arrStr, reused, out bool _));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         var big = BigInteger.Parse("1234567890123456789012345678901234567890");
                         List<BigInteger> expect = new List<BigInteger> {new BigInteger(1), new BigInteger(2), big};
-                        List<BigInteger> reused = new List<BigInteger> (expect);
+                        List<BigInteger> reused = new List<BigInteger> {new BigInteger(10), new BigInteger(11), new BigInteger(12), new BigInteger(13)};
                         AreEqual(expect, ReadTo (arrBigInt, reused, out bool _));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
