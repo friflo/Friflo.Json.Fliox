@@ -153,21 +153,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long?>    (@long));
-                    AreEqual(null,      enc.Read<long?>    (@null));
+                    AreEqual(null,      Read<long?>    (@null));
                     enc.Read<long>(@null);
                     StringAssert.Contains("Cannot assign null to long. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int?>     (@long));
-                    AreEqual(null,      enc.Read<int?>     (@null));
+                    AreEqual(null,      Read<int?>     (@null));
                     enc.Read<int>(@null);
                     StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short?>   (@long));
-                    AreEqual(null,      enc.Read<short?>   (@null));
+                    AreEqual(null,      Read<short?>   (@null));
                     enc.Read<short>(@null);
                     StringAssert.Contains("Cannot assign null to short. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.ToString());
 
@@ -178,15 +178,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     enc.Read<byte>(@null);
                     StringAssert.Contains("Cannot assign null to byte. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.ToString());
 
-                    AreEqual(true,      enc.Read<bool>     (@true));
-                    AreEqual(true,      enc.Read<bool>     (@true));
-                    AreEqual(true,      enc.Read<bool?>    (@true));
-                    AreEqual(null,      enc.Read<bool?>    (@null));
+                    AreEqual(true,      Read<bool>     (@true));
+                    AreEqual(true,      Read<bool>     (@true));
+                    AreEqual(true,      Read<bool?>    (@true));
+                    AreEqual(null,      Read<bool?>    (@null));
                     enc.Read<bool>(@null);
                     StringAssert.Contains("Cannot assign null to bool. Expect: System.Boolean, got: null path: '(root)'", enc.Error.msg.ToString());
 
                     
-                    AreEqual(null,      enc.Read<object>(@null));
+                    AreEqual(null,      Read<object>(@null));
                     AreEqual(JsonEvent.EOF, enc.parser.Event);
                     
                     AreEqual(null,      enc.Read<object>(invalid));
@@ -243,10 +243,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     enc.Read<int[]>(arrStr);
                     StringAssert.Contains("Cannot assign string to array element. Expect: System.Int32, got: 'hello' path: '[0]'", enc.Error.msg.ToString());
 
-                    AreEqual(new [] {"hello"},    enc.Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {"hello"},    Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
                         var inOut = new string[1];
-                        IsTrue(enc.ReadTo(arrStr, inOut));
+                        IsTrue(ReadTo(arrStr, inOut));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                         AreEqual(new[] {"hello"}, inOut);
                     }
@@ -269,7 +269,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(new [] {1,2,3},      Read<double?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new [] {1,2,3},      Read <float?[]>    (arrNum));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                             
-                    AreEqual(new [] {true, false},enc.Read <bool?[]>     (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(new [] {true, false},Read <bool?[]>     (arrBln));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     // array nullable - with null
                     AreEqual(new   long?[] {null},  Read   <long?[]>   (arrNull));         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     AreEqual(new    int?[] {null},  Read    <int?[]>   (arrNull));         AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -306,7 +306,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     
                     // ------------------------------------- List<T> -------------------------------------
-                    AreEqual(null, enc.Read<List<int>>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
+                    AreEqual(null, Read<List<int>>    (@null));           AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
                         List<int> expect = new List<int> {1, 2, 3};
                         AreEqual(expect, Read<List<int>> (arrNum));
@@ -475,6 +475,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             AreEqual(result, writeResult);
             return result;
+        }
+        
+        private bool ReadTo<T>(Bytes bytes, T value) where T : class {
+            // return reader.ReadTo<T>(bytes, value);
+
+            bool success = reader.ReadTo(bytes, value);
+            if (!success)
+                return false;
+            
+            write2.Write(value);
+            T writeResult = read2.Read<T>(write2.bytes);
+
+            AreEqual(value, writeResult);
+            return true;
         }
 
 
