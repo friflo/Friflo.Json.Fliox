@@ -338,7 +338,6 @@ namespace Friflo.Json.Burst.Utils
 
         public float ParseFloatStd(ref Bytes bytes, ref Bytes valueError, out bool success) {
             valueError.Clear();
-            String val = bytes.ToString();
             success = true;
             if (ParseFloatInternal(ref bytes, out float result)) {
                 if (float.IsInfinity(result) || float.IsNegativeInfinity(result)) {

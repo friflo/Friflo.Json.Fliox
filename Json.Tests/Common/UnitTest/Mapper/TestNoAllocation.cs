@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     
                     // --------------------------------- primitives -------------------------------
                     //IsTrue(enc.Read<double> (@double, ref result));     AreEqual(12.5d, result.Dbl);
-                    //IsTrue(enc.Read<float>  (@double, ref result));     AreEqual(12.5,  result.Flt);
+                    IsTrue(enc.Read<float>      (@double, ref result));     AreEqual(12.5,  result.Flt);
                     //
                     IsTrue(enc.Read<long>       (@long, ref result));     AreEqual(42, result.Lng);
                     IsTrue(enc.Read<int>        (@long, ref result));     AreEqual(42, result.Int);
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
                     
                     // IsTrue(enc.ReadTo(arrNum, reusedArrDbl));
-                    // IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
+                    IsTrue(enc.ReadTo(arrNum, reusedArrFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedArrLng));
                     IsTrue(enc.ReadTo(arrNum, reusedArrInt));
                     IsTrue(enc.ReadTo(arrNum, reusedArrShort));
@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // --------------------------------- List<> ---------------------------------
                     // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
+                    IsTrue(enc.ReadTo(arrNum, reusedListFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedListLng));
                     IsTrue(enc.ReadTo(arrNum, reusedListInt));
                     IsTrue(enc.ReadTo(arrNum, reusedListShort));
@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     IsTrue(enc.ReadTo(arrBln, reusedListBool));
                     
                     // IsTrue(enc.ReadTo(arrNum, reusedListDbl));
-                    // IsTrue(enc.ReadTo(arrNum, reusedListFlt));
+                    IsTrue(enc.ReadTo(arrNum, reusedListFlt));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulLng));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulInt));
                     IsTrue(enc.ReadTo(arrNum, reusedListNulShort));
@@ -184,13 +184,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 33, enc.typeCache.LookupCount);
+                        AreEqual( 37, enc.typeCache.LookupCount);
                         AreEqual(  0, enc.typeCache.StoreLookupCount);
                         AreEqual(  0, enc.typeCache.TypeCreationCount);
                     }
                     enc.typeCache.ClearCounts();
                 }
-                AreEqual(510000,   enc.parser.ProcessedBytes);
+                AreEqual(535000,   enc.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
