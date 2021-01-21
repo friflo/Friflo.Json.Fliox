@@ -74,6 +74,9 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 - No unsafe code in CLR library
+- No global state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
+  Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
+  `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.
 - Fail safe in case of JSON and application errors
 - No dependencies to 3rd party libraries.  
   Except when compiling within Unity with **UNITY_BURST** it requires
