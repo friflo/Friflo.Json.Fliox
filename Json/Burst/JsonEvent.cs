@@ -1,10 +1,16 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
+
 namespace Friflo.Json.Burst
 {
     /// <summary>
     /// The set of all JSON events returned by <see cref="JsonParser.NextEvent()"/> while iterating a JSON document.
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public enum JsonEvent
     {
         /// <summary>
@@ -80,16 +86,16 @@ namespace Friflo.Json.Burst
 #pragma warning disable 618 // Performance degradation by string copy
         public static void AppendEvent(JsonEvent ev, ref Bytes bytes) {
             switch (ev) {
-                case JsonEvent.ValueString: bytes.AppendStr32("ValueString");   break; 
-                case JsonEvent.ValueNumber: bytes.AppendStr32("ValueNumber");   break; 
-                case JsonEvent.ValueBool:   bytes.AppendStr32("ValueBool");     break; 
-                case JsonEvent.ValueNull:   bytes.AppendStr32("ValueNull");     break; 
-                case JsonEvent.ObjectStart: bytes.AppendStr32("ObjectStart");   break; 
-                case JsonEvent.ObjectEnd:   bytes.AppendStr32("ObjectEnd");     break; 
-                case JsonEvent.ArrayStart:  bytes.AppendStr32("ArrayStart");    break; 
-                case JsonEvent.ArrayEnd:    bytes.AppendStr32("ArrayEnd");      break; 
-                case JsonEvent.EOF:         bytes.AppendStr32("EOF");           break; 
-                case JsonEvent.Error:       bytes.AppendStr32("Error");         break; 
+                case JsonEvent.ValueString: bytes.AppendStr32Val("ValueString");   break; 
+                case JsonEvent.ValueNumber: bytes.AppendStr32Val("ValueNumber");   break; 
+                case JsonEvent.ValueBool:   bytes.AppendStr32Val("ValueBool");     break; 
+                case JsonEvent.ValueNull:   bytes.AppendStr32Val("ValueNull");     break; 
+                case JsonEvent.ObjectStart: bytes.AppendStr32Val("ObjectStart");   break; 
+                case JsonEvent.ObjectEnd:   bytes.AppendStr32Val("ObjectEnd");     break; 
+                case JsonEvent.ArrayStart:  bytes.AppendStr32Val("ArrayStart");    break; 
+                case JsonEvent.ArrayEnd:    bytes.AppendStr32Val("ArrayEnd");      break; 
+                case JsonEvent.EOF:         bytes.AppendStr32Val("EOF");           break; 
+                case JsonEvent.Error:       bytes.AppendStr32Val("Error");         break; 
             }
 #pragma warning restore 618
         }

@@ -21,6 +21,9 @@ namespace Friflo.Json.Burst
     /// The count numbers are incremented while skipping via one of the <see cref="JsonParser"/> Skip...() methods like
     /// <see cref="JsonParser.SkipTree()"/> and <see cref="JsonParser.SkipEvent"/>. 
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct SkipInfo {
         public int arrays;
         public int booleans;
@@ -61,6 +64,9 @@ namespace Friflo.Json.Burst
     ///
     /// To maximize performance the <see cref="JsonParser"/> instance should be reused. This avoids unnecessary allocations on the heap.
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public partial struct JsonParser : IDisposable
     {
         private     int                 pos;
@@ -162,16 +168,16 @@ namespace Friflo.Json.Burst
             errMsg.Clear();
             errMsg.AppendStr32(ref module);
             switch (errorType) {
-                case ErrorType.JsonError:           errMsg.AppendStr32("/JSON error: ");    break;
-                case ErrorType.Assertion:           errMsg.AppendStr32("/assertion: ");     break;
-                case ErrorType.ExternalError:       errMsg.AppendStr32("/error: ");         break;
+                case ErrorType.JsonError:           errMsg.AppendStr32Val("/JSON error: ");    break;
+                case ErrorType.Assertion:           errMsg.AppendStr32Val("/assertion: ");     break;
+                case ErrorType.ExternalError:       errMsg.AppendStr32Val("/error: ");         break;
             }
 
             errMsg.AppendStr128(ref msg);
             errMsg.AppendBytes(ref value);
-            errMsg.AppendStr32(" path: '");
+            errMsg.AppendStr32Val(" path: '");
             AppendPath(ref errMsg);
-            errMsg.AppendStr32("' at position: ");
+            errMsg.AppendStr32Val("' at position: ");
             format.AppendInt(ref errMsg, position);
 #pragma warning restore 618
             error.Error(pos);
@@ -183,16 +189,16 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="module">Name of the module raising the error</param>
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
-        public void Error(Str32 module, Str128 msg) {
+        public void ErrorMsgVal(Str32 module, Str128 msg) {
             errVal.Clear();
             Error(module, ErrorType.ExternalError, ref msg, ref errVal);
         }
         
-        public void Error(Str32 module, ref Bytes msg) {
+        public void ErrorMsg(Str32 module, ref Bytes msg) {
             Error(module, ErrorType.ExternalError, ref emptyString, ref msg);
         }
         
-        public void Error(Str32 module, Str128 msg, ref Bytes value) {
+        public void ErrorMsgParam(Str32 module, Str128 msg, ref Bytes value) {
             Error(module, ErrorType.ExternalError, ref msg, ref value);
         }
         
@@ -298,7 +304,7 @@ namespace Friflo.Json.Burst
             }
 #pragma warning disable 618 // Performance degradation by string copy
             if (initialEnd == str.end)
-                str.AppendStr32("(root)");
+                str.AppendStr32Val("(root)");
 #pragma warning restore 618
         }
 
@@ -346,7 +352,7 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="bytes">The JSON document to parse</param>
         public void InitParser(Bytes bytes) {
-            InitParser (bytes.buffer, bytes.Start, bytes.Len);
+            InitParser (bytes.buffer, bytes.StartPos, bytes.Len);
         }
 
         /// <summary>
@@ -417,7 +423,7 @@ namespace Friflo.Json.Burst
                 // update current path
                 path.SetEnd(pathPos.array[stateLevel-1]);  // "Clear"
                 path.AppendBytes(ref key);
-                pathPos.array[stateLevel] = path.End;
+                pathPos.array[stateLevel] = path.EndPos;
                 //
                 c = ReadWhiteSpace();
                 if (c != ':')
@@ -646,7 +652,7 @@ namespace Friflo.Json.Burst
             // UTF-8 Encoding
             tokenBuffer.EnsureCapacity(4);
             ref var str = ref token.buffer.array;
-            int i = token.End;
+            int i = token.EndPos;
             if (uni < 0x80)
             {
                 str[i] =    (byte)uni;

@@ -5,9 +5,12 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Burst.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct Utf8Utils
     {
-        public static bool IsStringEqualUtf8(String str, Bytes bytes) {
+        public static bool IsStringEqualUtf8Val(String str, Bytes bytes) {
             return IsStringEqualUtf8(str, ref bytes);
         }
 
@@ -79,7 +82,7 @@ namespace Friflo.Json.Burst.Utils
             // UTF-8 Encoding
             dst.EnsureCapacity(4);
             ref var str = ref dst.buffer.array;
-            int i = dst.End;
+            int i = dst.EndPos;
             if (uni < 0x80)
             {
                 str[i] =    (byte)uni;

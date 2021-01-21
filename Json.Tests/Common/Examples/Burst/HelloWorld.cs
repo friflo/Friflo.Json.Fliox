@@ -16,8 +16,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
-                if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
-                if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
+                if (p.UseMemberStrVal(ref i, "say"))  { say = p.value.ToString(); }
+                if (p.UseMemberStrVal(ref i, "to"))   { to =  p.value.ToString(); }
             }
             Console.WriteLine($"Output: {say}, {to}");
             // Output: Hello, World 🌎
@@ -28,8 +28,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-                s.MemberStr("say", "Hello");
-                s.MemberStr("to",  "World 🌎");
+                s.MemberStrVal("say", "Hello");
+                s.MemberStrVal("to",  "World 🌎");
             s.ObjectEnd();
             Console.WriteLine($"Output: {s.dst}");
             // Output: {"say":"Hello","to":"World 🌎"}

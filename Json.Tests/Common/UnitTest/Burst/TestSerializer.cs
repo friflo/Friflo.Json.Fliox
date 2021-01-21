@@ -49,20 +49,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 s.InitSerializer();
                 s.ObjectStart();
-                    s.MemberStr("string", "World");
-                    s.MemberDbl("double", 10.5);
-                    s.MemberDbl("long", 42);
-                    s.MemberBln("bool", true);
-                    s.MemberNul("null");
+                    s.MemberStrVal("string", "World");
+                    s.MemberDblVal("double", 10.5);
+                    s.MemberDblVal("long", 42);
+                    s.MemberBlnVal("bool", true);
+                    s.MemberNulVal("null");
                 s.ObjectEnd();
                 AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", s.dst.ToString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
-                    s.MemberArrayStart("array");
+                    s.MemberArrayStartVal("array");
                     s.ArrayEnd();
                     
-                    s.MemberObjectStart("object");
+                    s.MemberObjectStartVal("object");
                     s.ObjectEnd();
                 s.ObjectEnd();
                 AreEqual("{\"array\":[],\"object\":{}}", s.dst.ToString());
@@ -141,14 +141,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
-                    ser.MemberBln("Test", true); // member not in root
+                    ser.MemberBlnVal("Test", true); // member not in root
                 });
                 AreEqual("Member...() methods and ObjectEnd() must not be called on root level", e.Message);
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ArrayStart();
-                    ser.MemberBln("Test", true); // member not in array
+                    ser.MemberBlnVal("Test", true); // member not in array
                 });
                 AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
             } {

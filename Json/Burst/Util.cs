@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -19,6 +20,9 @@ namespace Friflo.Json.Burst
         public StackTrace stackTrace;
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public enum AllocType {
         Temp,
         Persistent

@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var key2 = new BytesStr("key2"))
             using (var key3 = new BytesStr("key3"))
             using (var key4 = new BytesStr("key4"))
-            using (var key5 = new BytesStr("key5"))
+            using (var key5 = new BytesStr("key5")) 
             {
                 var hashMap = new HashMapOpen<Bytes, string>(7, removed);
                 int iterations = 1000;

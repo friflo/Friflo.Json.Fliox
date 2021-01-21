@@ -37,9 +37,9 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberObj(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberObjVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -55,9 +55,9 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberArr(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberArrVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -73,9 +73,9 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberNum(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberNumVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -91,9 +91,9 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberStr(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberStrVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -109,9 +109,9 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberBln(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberBlnVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
@@ -127,16 +127,16 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public bool UseMemberNul(ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberNulVal(ref ObjectIterator iterator, Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(name))
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32Val(name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         public bool UseMemberNul(ref ObjectIterator iterator, ref Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(ref name))
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(ref name)) 
                 return false;
             iterator.usedMember = true;
             return true;

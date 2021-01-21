@@ -56,15 +56,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var euro         = new Bytes("€"))   //  € U+20AC    (3 bytes)
             using (var smiley       = new Bytes("😎"))   //  😎 U+1F60E   (4 bytes)
             {
-                IsTrue (Utf8Utils.IsStringEqualUtf8("", empty));
-                IsTrue (Utf8Utils.IsStringEqualUtf8("a", a));
+                IsTrue (Utf8Utils.IsStringEqualUtf8Val("", empty));
+                IsTrue (Utf8Utils.IsStringEqualUtf8Val("a", a));
 
-                IsFalse(Utf8Utils.IsStringEqualUtf8("a",  ab));
-                IsFalse(Utf8Utils.IsStringEqualUtf8("ab", a));
+                IsFalse(Utf8Utils.IsStringEqualUtf8Val("a",  ab));
+                IsFalse(Utf8Utils.IsStringEqualUtf8Val("ab", a));
 
-                IsTrue (Utf8Utils.IsStringEqualUtf8("©", copyright));
-                IsTrue (Utf8Utils.IsStringEqualUtf8("€", euro));
-                IsTrue (Utf8Utils.IsStringEqualUtf8("😎", smiley));
+                IsTrue (Utf8Utils.IsStringEqualUtf8Val("©", copyright));
+                IsTrue (Utf8Utils.IsStringEqualUtf8Val("€", euro));
+                IsTrue (Utf8Utils.IsStringEqualUtf8Val("😎", smiley));
             }
         }
 
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 int val = 42;
                 int val2 = 43;
                 char a = 'a';
-                bytes.AppendStr32($"With Bytes {val} {val2} {a}");
+                bytes.AppendStr32Val($"With Bytes {val} {val2} {a}");
                 AreEqual("With Bytes 42 43 a", $"{bytes.ToStr32()}");
 
                 var withValues = bytes.ToStr32();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var s = new JsonSerializer()) {
                 s.InitSerializer();
                 s.ObjectStart();
-                s.MemberStr("test", "a©€😎🌍");
+                s.MemberStrVal("test", "a©€😎🌍");
                 s.ObjectEnd();
                 Console.WriteLine(s.dst.ToString());
                 string dst = s.dst.ToString();

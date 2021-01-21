@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                 case JsonEvent.ArrayStart:  strBuf.AppendString("[...]");                                   break;
                 case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;
             }
-            parser.Error("JsonReader", ref strBuf);
+            parser.ErrorMsg("JsonReader", ref strBuf);
             return false;
         }
         
@@ -67,7 +67,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
-            reader.parser.Error("JsonReader", ref strBuf);
+            reader.parser.ErrorMsg("JsonReader", ref strBuf);
             return false;
         }
 
@@ -75,12 +75,12 @@ namespace Friflo.Json.Mapper.Map.Utils
             reader.strBuf.Clear();
             reader.strBuf.AppendString(msg);
             JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
-            reader.parser.Error("JsonReader", ref reader.strBuf);
+            reader.parser.ErrorMsg("JsonReader", ref reader.strBuf);
             return false;
         }
 
         public static bool ErrorMsg(JsonReader reader, string msg, ref Bytes value) {
-            reader.parser.Error("JsonReader", msg, ref value);
+            reader.parser.ErrorMsgParam("JsonReader", msg, ref value);
             return false;
         }
         

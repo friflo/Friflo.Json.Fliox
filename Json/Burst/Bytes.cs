@@ -26,6 +26,10 @@ namespace Friflo.Json.Burst
         bool    IsSet();
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [assembly: CLSCompliant(true)]
+    [CLSCompliant(true)]
+#endif
     public struct Bytes : IDisposable, IMapKey<Bytes>
     {
 
@@ -36,8 +40,8 @@ namespace Friflo.Json.Burst
         public  ByteList        buffer;
         
         public  int             Len => end - start;
-        public  int             Start => start;
-        public  int             End => end;
+        public  int             StartPos => start;
+        public  int             EndPos => end;
 
 
         private static readonly int     upper2Lower = 'a' - 'A';  // 97 - 65 = 32
@@ -307,7 +311,7 @@ namespace Friflo.Json.Burst
 
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public bool IsEqual32(Str32 value) {
+        public bool IsEqual32Val(Str32 value) {
             return IsEqual32(ref value);
         }
 
@@ -330,7 +334,7 @@ namespace Friflo.Json.Burst
             return IsEqualString(cs);
         }
         
-        public bool IsEqual32(String cs) {
+        public bool IsEqual32Val(String cs) {
             return IsEqualString (cs);
         }
 #endif
@@ -634,7 +638,7 @@ namespace Friflo.Json.Burst
 
         // Note: Prefer using AppendStr32 (ref Str32 str)
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public void AppendStr32(Str32 str) {
+        public void AppendStr32Val(Str32 str) {
             AppendStr32(ref str);
         }
 
@@ -655,7 +659,7 @@ namespace Friflo.Json.Burst
         }
         
         // Note: Prefer using AppendStr32 (ref String str)
-        public void AppendStr32 (String str) {
+        public void AppendStr32Val (String str) {
             AppendString(str);
         }
         
@@ -699,7 +703,7 @@ namespace Friflo.Json.Burst
             int     newEnd = curEnd + caLen;
             ref var buf = ref buffer.array;
             EnsureCapacity(caLen);
-            int     n2 = ca.Start;
+            int     n2 = ca.StartPos;
             ref var str2 = ref ca.buffer.array;
             for (int n = curEnd; n < newEnd; n++)
                 buf[n] = str2[n2++];
@@ -721,7 +725,7 @@ namespace Friflo.Json.Burst
         public void AppendReplace (Bytes src, Bytes target, Bytes replacement)
         {
             EnsureCapacity(src.Len);
-            int             strStart = src.Start;
+            int             strStart = src.StartPos;
             ref ByteList    srcBuf = ref src.buffer;
             while (true)
             {
@@ -733,7 +737,7 @@ namespace Friflo.Json.Burst
                     strStart = idx + target.Len;
                     continue;
                 }
-                AppendArray (ref srcBuf, strStart, src.End);
+                AppendArray (ref srcBuf, strStart, src.EndPos);
                 hc = BytesConst.notHashed;
                 return;
             }       

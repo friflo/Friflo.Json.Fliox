@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
         public T Read<T>(Bytes bytes) {
-            int start = bytes.Start;
+            int start = bytes.StartPos;
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(typeof(T));
@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper
         }
         
         public bool Read<T>(Bytes bytes, out T result) {
-            int start = bytes.Start;
+            int start = bytes.StartPos;
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(typeof(T));
@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper
         }
         
         public bool Read<T>(Bytes bytes, ref Var result) {
-            int start = bytes.Start;
+            int start = bytes.StartPos;
             int len = bytes.Len;
             StubType stubType = typeCache.GetType(typeof(T));
             bool success = ReadStart(bytes.buffer, start, len, stubType, ref result);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper
         }
         
         public object Read(Bytes bytes, Type type) {
-            int start = bytes.Start;
+            int start = bytes.StartPos;
             int len = bytes.Len;
             Var slot = new Var();
             StubType stubType = typeCache.GetType(type);
@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper
         }
 
         public T ReadTo<T>(Bytes bytes, T obj, out bool success) where T : class {
-            int start = bytes.Start;
+            int start = bytes.StartPos;
             int len = bytes.Len;
             Var slot = new Var { Obj = obj };
             StubType stubType = typeCache.GetType(slot.Obj.GetType());

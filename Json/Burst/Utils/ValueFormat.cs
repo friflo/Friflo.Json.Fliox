@@ -11,6 +11,9 @@ using System.Globalization;
 
 namespace Friflo.Json.Burst.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct ValueFormat : IDisposable
     {
         private ValueArray<int> digit;

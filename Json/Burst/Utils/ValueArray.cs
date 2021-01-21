@@ -4,6 +4,9 @@ using System;
 
 namespace Friflo.Json.Burst.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct ValueArray<T> : IDisposable where T : struct
     {
 #if JSON_BURST
