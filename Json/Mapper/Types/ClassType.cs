@@ -50,8 +50,11 @@ namespace Friflo.Json.Mapper.Types
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                field.FieldType = typeStore.GetType(field.fieldTypeNative);
-                field.collectionConstructor  = field.FieldType is CollectionType propCollection ? propCollection.constructor : null;
+                StubType stubType = typeStore.GetType(field.fieldTypeNative);
+                FieldInfo fieldInfo = field.GetType().GetField("fieldType");
+                // ReSharper disable once PossibleNullReferenceException
+                fieldInfo.SetValue(field, stubType);
+                field.collectionConstructor  = field.fieldType is CollectionType propCollection ? propCollection.constructor : null;
             }
         }
         

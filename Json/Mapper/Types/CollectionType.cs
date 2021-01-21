@@ -19,7 +19,7 @@ namespace Friflo.Json.Mapper.Types
         public   readonly   Type            keyType;
         public   readonly   int             rank;
         // ReSharper disable once UnassignedReadonlyField
-        // field ist set via reflection bellow, to enable using a readonly field
+        // field ist set via reflection below to enable using a readonly field
         public   readonly   StubType        elementType;
         private  readonly   Type            elementTypeNative;
         public   readonly   VarType         elementVarType;

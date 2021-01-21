@@ -61,10 +61,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 field.GetField(obj, ref elemVar);
                 WriteUtils.WriteKey(writer, field);
-                if (field.FieldType.varType == VarType.Object && elemVar.Obj == null) {
+                if (field.fieldType.varType == VarType.Object && elemVar.Obj == null) {
                     WriteUtils.AppendNull(writer);
                 } else {
-                    StubType fieldType = field.FieldType;
+                    StubType fieldType = field.fieldType;
                     fieldType.map.Write(writer, ref elemVar, fieldType);
                 }
             }
@@ -101,7 +101,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                                 parser.SkipEvent();
                             break;
                         }
-                        StubType valueType = field.FieldType;
+                        StubType valueType = field.fieldType;
                         
                         elemVar.SetObjNull();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -113,7 +113,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        valueType = field.FieldType;
+                        valueType = field.fieldType;
                         
                         elemVar.SetObjNull();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -123,8 +123,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNull:
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        if (!field.FieldType.isNullable)
-                            return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, field.FieldType, ref parser);
+                        if (!field.fieldType.isNullable)
+                            return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, field.fieldType, ref parser);
                         elemVar.Obj = null;
                         field.SetField(obj, ref elemVar);
                         break;
@@ -134,15 +134,15 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         field.GetField(obj, ref elemVar);
                         if (elemVar.VarType != VarType.Object)
-                            return ReadUtils.ErrorMsg(reader, "Expect field of type object. Type: ", field.FieldType.type.ToString());
+                            return ReadUtils.ErrorMsg(reader, "Expect field of type object. Type: ", field.fieldType.type.ToString());
                         object sub = elemVar.Obj;
-                        StubType fieldType = field.FieldType;
+                        StubType fieldType = field.fieldType;
                         if (!fieldType.map.Read(reader, ref elemVar, fieldType))
                             return false;
                         //
                         object subRet = elemVar.Obj;
-                        if (!field.FieldType.isNullable && subRet == null)
-                            return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, field.FieldType, ref parser);
+                        if (!fieldType.isNullable && subRet == null)
+                            return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, fieldType, ref parser);
                         if (sub != subRet)
                             field.SetField(obj, ref elemVar);
                         break;

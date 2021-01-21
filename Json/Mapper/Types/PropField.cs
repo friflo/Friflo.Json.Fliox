@@ -14,7 +14,9 @@ namespace Friflo.Json.Mapper.Types
     {
         internal readonly   String          name;
 
-        public              StubType        FieldType { get; internal set; }    // never null 
+        // ReSharper disable once UnassignedReadonlyField
+        // field ist set via reflection to enable using a readonly field
+        public   readonly   StubType        fieldType;   // never null 
         internal readonly   Type            fieldTypeNative;                    // never null 
         private  readonly   ClassType       declType;
         internal            Bytes           nameBytes; // dont mutate
@@ -103,7 +105,7 @@ namespace Friflo.Json.Mapper.Types
         {
             if (field != null) {
                 if (useDirect) {
-                    switch (FieldType.varType) {
+                    switch (fieldType.varType) {
                         case VarType.Object:   val.Obj     =           field.GetValueDirect (__makeref(obj)); return;
                      
                         case VarType.Double:   val.Dbl     = (double)  field.GetValueDirect (__makeref(obj)); return;
@@ -117,7 +119,7 @@ namespace Friflo.Json.Mapper.Types
                         case VarType.Bool:     val.Bool    = (bool)    field.GetValueDirect (__makeref(obj)); return;
                     }
                 } else {
-                    switch (FieldType.varType) {
+                    switch (fieldType.varType) {
                         case VarType.Object:   val.Obj     =           field.GetValue   (obj); return;
                        
                         case VarType.Double:   val.Dbl     = (double)  field.GetValue   (obj); return;
@@ -132,7 +134,7 @@ namespace Friflo.Json.Mapper.Types
                     }
                 }
             } else {
-                switch (FieldType.varType) {
+                switch (fieldType.varType) {
                     case VarType.Object:   val.Obj     =           setter.GetValue   (obj);    return;
                     //
                     case VarType.Double:   val.Dbl     = (double)  setter.GetValue   (obj);    return;
