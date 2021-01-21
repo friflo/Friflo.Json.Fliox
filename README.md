@@ -17,8 +17,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 # Features
 
 - **JSON parser/serializer**
-    - [**JsonParser**](Json/Burst/JsonParser.cs) / [**JsonSerializer**](Json/Burst/JsonSerializer.cs)
-      in namespace: **`Friflo.Json.Burst`**
+    - **`JsonParser`** / **`JsonSerializer`** in namespace: **`Friflo.Json.Burst`**
     - Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
     - Skipping of JSON object members and elements (array elements and values on root)  
         Provide statistics (counts) about skipped JSON entries:
@@ -46,8 +45,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
 - **Object Mapper reader/writer**
-    - [**JsonReader**](Json/Mapper/JsonReader.cs) / [**JsonWriter**](Json/Mapper/JsonWriter.cs)
-      in namespace: **`Friflo.Json.Managed`**
+    - **`JsonReader`** / **`JsonWriter`** in namespace: **`Friflo.Json.Managed`**
     - Support deserialization in two ways:
         - Create new object instances and deserialize by using `Read()` to them which is the common practice of many object mapper implementations.
         - Deserialize to passed object instances by using ReadTo() while reusing also their child objects referenced by fields,
