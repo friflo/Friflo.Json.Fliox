@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) slot.Obj;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             Var elemVar = new Var();
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0)
@@ -59,20 +59,20 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             ref var parser = ref reader.parser;
             var collection = (CollectionType) stubType;
+            StubType elementType = collection.elementType;
             int startLen;
             int len;
             Array array;
             if (slot.Obj == null) {
                 startLen = 0;
                 len = ReadUtils.minLen;
-                array = Arrays.CreateInstance(collection.ElementType.type, len);
+                array = Arrays.CreateInstance(elementType.type, len);
             }
             else {
                 array = (Array) slot.Obj;
                 startLen = len = array.Length;
             }
 
-            StubType elementType = collection.ElementType;
             int index = 0;
             Var elemVar = new Var();
             while (true) {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
                     case JsonEvent.ValueNull:
                         if (index >= len)
-                            array = Arrays.CopyOfType(collection.ElementType.type, array, len = ReadUtils.Inc(len));
+                            array = Arrays.CopyOfType(elementType.type, array, len = ReadUtils.Inc(len));
                         if (!elementType.isNullable)
                             return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
                         array.SetValue(null, index++);
@@ -102,14 +102,14 @@ namespace Friflo.Json.Mapper.Map.Arr
                             if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = ReadUtils.Inc(len));
+                                array = Arrays.CopyOfType(elementType.type, array, len = ReadUtils.Inc(len));
                             array.SetValue(elemVar.Obj, index);
                         }
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
-                            array = Arrays.CopyOfType(collection.ElementType.type, array, index);
+                            array = Arrays.CopyOfType(elementType.type, array, index);
                         slot.Obj = array;
                         return true;
                     case JsonEvent.Error:

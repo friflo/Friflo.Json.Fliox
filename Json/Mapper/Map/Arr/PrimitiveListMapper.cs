@@ -160,7 +160,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             List<T> list = (List<T>) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             Var elemVar = new Var();
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0)
@@ -184,7 +184,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             List<T> list = (List<T>) slot.Obj;
             if (list == null)
                 list = (List<T>) collectionType.CreateInstance();
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             bool nullable = elementType.isNullable;
 
             int startLen = list.Count;

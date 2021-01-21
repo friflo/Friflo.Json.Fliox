@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             bytes.AppendChar('{');
             int n = 0;
 
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             Var elemVar = new Var();
             foreach (DictionaryEntry entry in map) {
                 if (n++ > 0)
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 slot.Obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) slot.Obj;
             ref var parser = ref reader.parser;
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             Var elemVar = new Var(); 
             while (true) {
                 JsonEvent ev = parser.NextEvent();

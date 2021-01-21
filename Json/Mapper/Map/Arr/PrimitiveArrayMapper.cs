@@ -141,9 +141,9 @@ namespace Friflo.Json.Mapper.Map.Arr
             T[] array = (T[]) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
-            var elementType = collectionType.ElementType;
+            var elementType = collectionType.elementType;
             Var elemVar = new Var();
-            bool nullable = collectionType.ElementType.isNullable;
+            bool nullable = elementType.isNullable;
             for (int n = 0; n < array.Length; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
@@ -164,7 +164,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             ref var parser = ref reader.parser;
             CollectionType collectionType = (CollectionType) stubType;
             T[] array = (T[]) slot.Obj;
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             if (array == null)
                 array = (T[])Arrays.CreateInstance(elementType.type, ReadUtils.minLen);
             bool nullable = elementType.isNullable;

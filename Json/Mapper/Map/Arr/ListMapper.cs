@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             IList list = (IList) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             Var elemVar = new Var();
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0) writer.bytes.AppendChar(',');
@@ -67,7 +67,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             else
                 startLen = list.Count;
             
-            StubType elementType = collectionType.ElementType;
+            StubType elementType = collectionType.elementType;
             int index = 0;
             Var elemVar = new Var();
             
@@ -96,7 +96,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ArrayStart:
-                        StubType subElementType = collectionType.ElementType;
+                        StubType subElementType = elementType;
                         if (index < startLen) {
                             elemVar.Obj = list[index];
                             if (!subElementType.map.Read(reader, ref elemVar, subElementType))

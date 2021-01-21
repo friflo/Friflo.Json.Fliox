@@ -18,7 +18,9 @@ namespace Friflo.Json.Mapper.Types
     {
         public   readonly   Type            keyType;
         public   readonly   int             rank;
-        public              StubType        ElementType { get; private set; }
+        // ReSharper disable once UnassignedReadonlyField
+        // field ist set via reflection bellow, to enable using a readonly field
+        public   readonly   StubType        elementType;
         private  readonly   Type            elementTypeNative;
         public   readonly   VarType         elementVarType;
         internal readonly   ConstructorInfo constructor;
@@ -42,7 +44,10 @@ namespace Friflo.Json.Mapper.Types
         }
         
         public override void InitStubType(TypeStore typeStore) {
-            ElementType = typeStore.GetType(elementTypeNative);
+            FieldInfo fieldInfo = GetType().GetField("elementType");
+            StubType stubType = typeStore.GetType(elementTypeNative);
+            // ReSharper disable once PossibleNullReferenceException
+            fieldInfo.SetValue(this, stubType);
         }
 
         
