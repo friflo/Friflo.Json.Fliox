@@ -11,6 +11,10 @@ using Friflo.Json.Mapper.Types;
 // ReSharper disable InlineOutVariableDeclaration
 namespace Friflo.Json.Mapper.Map
 {
+    public interface ITypeResolver {
+        StubType CreateStubType(Type type);
+    }
+
     public enum ResolverMode {
         Debug,
         Release
@@ -27,8 +31,7 @@ namespace Friflo.Json.Mapper.Map
 
         public DefaultTypeResolver(ResolverMode mode) {
             this.mode = mode;
-            if (mode == ResolverMode.Release)
-                mappers = GetMappers();
+            mappers = GetMappers();
         }
 
         public StubType CreateStubType(Type type) {
