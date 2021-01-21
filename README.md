@@ -43,6 +43,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       This exclude the usage of managed types like classes, strings, arrays or exceptions.  
       To support this subset the library need to be compiled with `JSON_BURST`.  
       The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
+    - Used .NET API namespaces: `System`, `System.Text` & `System.Globalization`
 
 - **Object Mapper reader/writer**
     - **`JsonReader`** / **`JsonWriter`** in namespace: **`Friflo.Json.Managed`**
@@ -72,6 +73,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
         - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
         - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
     - Uses internally the JSON parser mentioned above
+    - Used .NET API namespaces additional to Burst: `System.Collections`, `System.Collections.Generic` & `System.Reflection`
 
 - UTF-8 support
 - Compatible to .NET Standard.
@@ -84,8 +86,8 @@ CPU/memory resources to the main thread being the critical path in game loops.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
   `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.
 - Fail safe in case of JSON and application errors
-- No dependencies to 3rd party libraries.  
-  Except when compiling within Unity with **UNITY_BURST** it requires
+- No dependencies to 3rd party libraries. The used .NET API namespaces are mentioned above.  
+  A Unity specific dependency is required when compiling within Unity with **UNITY_BURST** which is
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 - Small library (Friflo.Json.Burst.dll ~ 100kb )
