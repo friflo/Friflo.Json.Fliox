@@ -12,6 +12,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ListMapper : IJsonMapper
     {
         public static readonly ListMapper Interface = new ListMapper();

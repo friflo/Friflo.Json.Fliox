@@ -9,6 +9,9 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class JsonWriter : IDisposable
     {
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>

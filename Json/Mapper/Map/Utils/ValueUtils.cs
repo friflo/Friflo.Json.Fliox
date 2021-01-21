@@ -7,6 +7,9 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public static class ValueUtils
     {
         public static bool CheckElse(JsonReader reader, ref Var value, StubType stubType) {

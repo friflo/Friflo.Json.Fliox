@@ -18,6 +18,9 @@ namespace Friflo.Json.Mapper.Types
     /// }
     /// </code>
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class EnumType : StubType
     {
         internal readonly Dictionary<BytesString, Enum> stringToEnum = new Dictionary<BytesString, Enum>();

@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public static class ArrayUtils {
         public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
             var ev = reader.parser.Event;

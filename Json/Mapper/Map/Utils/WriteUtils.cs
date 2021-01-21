@@ -6,6 +6,9 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public static class WriteUtils
     {
         public static void WriteKey(JsonWriter writer, PropField field) {

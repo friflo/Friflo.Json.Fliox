@@ -12,6 +12,9 @@ namespace Friflo.Json.Mapper.Types
         /// It is created within a <see cref="JsonReader"/> and <see cref="JsonWriter"/> to access type information
         /// without locking if already cached.
         /// </summary>
+#if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+#endif
         public class TypeCache : IDisposable
         {
             private readonly    Dictionary <Type,  StubType>   typeMap =      new Dictionary <Type,  StubType >();

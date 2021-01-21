@@ -10,7 +10,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
-    // JsonReader
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class JsonReader : IDisposable
     {
         public              JsonParser      parser;

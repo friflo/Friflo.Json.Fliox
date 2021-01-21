@@ -9,6 +9,9 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class BigIntMapper : IJsonMapper
     {
         public static readonly BigIntMapper Interface = new BigIntMapper();

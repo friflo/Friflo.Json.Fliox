@@ -9,6 +9,9 @@ using Friflo.Json.Mapper.Utils;
 namespace Friflo.Json.Mapper.Types
 {
     // PropertyFields
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public sealed class PropertyFields : Property, IDisposable
     {
         private     readonly    List<PropField>     fieldList = new List <PropField>();

@@ -13,6 +13,9 @@ namespace Friflo.Json.Mapper
     /// Thread safe store containing the required <see cref="Type"/> information for marshalling and unmarshalling.
     /// Can be shared across threads by <see cref="JsonReader"/> and <see cref="JsonWriter"/> instances.
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class TypeStore : IDisposable
     {
         private     readonly    Dictionary <Type,  StubType>   typeMap=        new Dictionary <Type,  StubType >();

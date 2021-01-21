@@ -9,6 +9,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class EnumMapper : IJsonMapper
     {
         public static readonly EnumMapper Interface = new EnumMapper();

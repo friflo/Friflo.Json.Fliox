@@ -10,7 +10,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Types
 {
-
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class CollectionType : StubType
     {
         public   readonly   Type            keyType;

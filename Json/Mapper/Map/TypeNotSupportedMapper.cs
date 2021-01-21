@@ -7,7 +7,9 @@ using Friflo.Json.Mapper.Types;
 namespace Friflo.Json.Mapper.Map
 {
 
-    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class TypeNotSupportedMapper : IJsonMapper
     {
         public static readonly TypeNotSupportedMapper Interface = new TypeNotSupportedMapper();

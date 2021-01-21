@@ -6,6 +6,9 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Types
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
         public  readonly    IJsonMapper map;

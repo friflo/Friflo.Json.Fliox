@@ -10,7 +10,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Types
 {
-    // PropType
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ClassType : StubType
     {
         private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);

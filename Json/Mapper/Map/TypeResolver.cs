@@ -15,6 +15,9 @@ namespace Friflo.Json.Mapper.Map
         StubType CreateStubType(Type type);
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class DefaultTypeResolver : ITypeResolver
     {
         /// <summary>This mapper list is not used by the type resolver itself. Its only available for debugging purposes.</summary>

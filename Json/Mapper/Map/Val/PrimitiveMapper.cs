@@ -8,6 +8,10 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class StringMapper : IJsonMapper
     {
         public static readonly StringMapper Interface = new StringMapper();

@@ -5,7 +5,9 @@ using System;
 
 namespace Friflo.Json.Mapper.Utils
 {
-    // FrifloIOException
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class FrifloException : Exception
     {
         public FrifloException()

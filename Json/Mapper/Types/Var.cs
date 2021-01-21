@@ -7,7 +7,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Types
 {
-
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public enum VarType {
         Double,
         Float,
@@ -19,6 +21,9 @@ namespace Friflo.Json.Mapper.Types
         Object,
     }
 
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public ref struct Var {
         private VarType     type;
         private object      obj;

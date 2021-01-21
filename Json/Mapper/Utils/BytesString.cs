@@ -1,9 +1,14 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class BytesString
     {
         public Bytes value;

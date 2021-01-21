@@ -6,6 +6,9 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper.Utils
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public static class Arrays
     {
         public static T[] CopyOf <T> (T[] src, int length)
