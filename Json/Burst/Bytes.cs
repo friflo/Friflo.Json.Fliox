@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Utils;
+
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
     using Str128 = Unity.Collections.FixedString128;
@@ -12,6 +13,7 @@ using Friflo.Json.Mapper.Utils;
     using Str32 = System.String;
     using Str128 = System.String;
     // ReSharper disable InconsistentNaming
+    [assembly: CLSCompliant(true)]
 #endif
 
 namespace Friflo.Json.Burst
@@ -27,7 +29,6 @@ namespace Friflo.Json.Burst
     }
     
 #if !UNITY_5_3_OR_NEWER
-    [assembly: CLSCompliant(true)]
     [CLSCompliant(true)]
 #endif
     public struct Bytes : IDisposable, IMapKey<Bytes>
