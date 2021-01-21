@@ -1,6 +1,5 @@
 ﻿using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -30,12 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // 2.
                 AreEqual(1,     read.Read(num1, typeof(int)));       // non generic
                 
-                // 3.
-                var varResult = new Var();
-                IsTrue(read.Read<int>(num1, ref varResult));         // generic
-                AreEqual(1, varResult.Int);
-
-
+                
                 // --- Write ---
                 // 1.
                 write.Write(1);                                     // generic
@@ -45,12 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 write.Write((object) 1);                            // non generic
                 AreEqual("1", write.bytes.ToString());
                 
-                // 3.
-                var value = new Var {Int = 1};
-                write.Write<int>(ref value);                        // generic
-                AreEqual("1", write.bytes.ToString());
-                
-                
+
                 // --- ReadTo ---
                 int[] arr = new int[1];
                 AreEqual(new [] { 1 }, read.ReadTo(arr1, arr, out bool _));                     // generic

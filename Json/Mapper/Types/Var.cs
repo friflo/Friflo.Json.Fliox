@@ -5,7 +5,7 @@ using System;
 using System.Globalization;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Mapper.Types
 {
 
     public enum VarType {
