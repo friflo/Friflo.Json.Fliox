@@ -7,6 +7,8 @@ using Friflo.Json.Mapper.Types;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#if !UNITY_5_3_OR_NEWER  // no clean up of native containers for Unity/JSON_BURST
+
 namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     // Custom type as an example to split tokens in a JSON value like "Hello World" into a string[]
@@ -29,7 +31,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             StringTokens value = (StringTokens) slot.Obj;
             writer.bytes.AppendChar('\"');
-            writer.bytes.AppendString(string.Join(' ', value.tokens));
+            writer.bytes.AppendString(string.Join(" ", value.tokens));
             writer.bytes.AppendChar('\"');
         }
 
@@ -68,3 +70,5 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         }
     }
 }
+
+#endif
