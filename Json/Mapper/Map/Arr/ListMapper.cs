@@ -44,7 +44,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     elemVar.Obj = item;
                     elementType.map.Write(writer, ref elemVar, elementType);
                 } else
-                    writer.bytes.AppendBytes(ref writer.@null);
+                    WriteUtils.AppendNull(writer);
             }
             writer.bytes.AppendChar(']');
         }

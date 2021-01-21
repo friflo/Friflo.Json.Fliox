@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper
@@ -15,7 +16,7 @@ namespace Friflo.Json.Mapper
         public              ValueFormat format;
         public              Bytes       strBuf;
 
-        public              Bytes       @null = new Bytes("null");
+        internal            Bytes       @null = new Bytes("null");
         internal            Bytes       discriminator = new Bytes("\"$type\":\"");
 
         public          ref Bytes Output => ref bytes;
@@ -58,7 +59,7 @@ namespace Friflo.Json.Mapper
             format.InitTokenFormat();
             bytes.Clear();
             if (valueVar.IsNull)
-                bytes.AppendBytes(ref @null);
+                WriteUtils.AppendNull(this);
             else
                 stubType.map.Write(this, ref valueVar, stubType);
         }

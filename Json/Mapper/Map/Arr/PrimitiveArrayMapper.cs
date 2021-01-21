@@ -144,7 +144,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.bytes.AppendChar(',');
                 PrimitiveArray.GetArrayItem(array, ref elemVar, elemVarType, n, nullable);
                 if (elemVar.IsNull)
-                    writer.bytes.AppendBytes(ref writer.@null);
+                    WriteUtils.AppendNull(writer);
                 else
                     elementType.map.Write(writer, ref elemVar, elementType);
             }

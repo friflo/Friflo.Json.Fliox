@@ -52,7 +52,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 // elemVar.Set(entry.Value, elementType.varType, elementType.isNullable);
                 elemVar.Obj = entry.Value;
                 if (elemVar.IsNull)
-                    writer.bytes.AppendBytes(ref writer.@null);
+                    WriteUtils.AppendNull(writer);
                 else
                     elementType.map.Write(writer, ref elemVar, elementType);
             }

@@ -22,6 +22,10 @@ namespace Friflo.Json.Mapper.Map
             JsonSerializer.AppendEscString(ref bytes, ref strBuf);
             bytes.AppendChar('\"');
         }
+
+        public static void AppendNull(JsonWriter writer) {
+            writer.bytes.AppendBytes(ref writer.@null);
+        }
         
     }
 }
