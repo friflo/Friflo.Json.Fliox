@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = true;
                         return false;
                     }
-                    JsonReader.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
+                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
                     success = false;
                     return false;
                 case JsonEvent.ArrayStart:
@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     return true;
                 default:
                     success = false;
-                    JsonReader.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
+                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
                     return false;
             }
         }

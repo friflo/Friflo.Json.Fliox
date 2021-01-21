@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     throw new InvalidOperationException(msg2);
                     // return null;
                 default:
-                    return JsonReader.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref parser);
+                    return ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref parser);
             }
         }
     }

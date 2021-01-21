@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     slot.Obj = enumValue;
                     return true;
                 }
-                return JsonReader.ErrorIncompatible(reader, "enum value. Value unknown", stubType, ref parser);
+                return ReadUtils.ErrorIncompatible(reader, "enum value. Value unknown", stubType, ref parser);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out bool success);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     slot.Obj = enumValue;
                     return true;
                 }
-                return JsonReader.ErrorIncompatible(reader, "enum value. Value unknown", stubType, ref parser);
+                return ReadUtils.ErrorIncompatible(reader, "enum value. Value unknown", stubType, ref parser);
             }
             return ValueUtils.CheckElse(reader, ref slot, stubType);
         }

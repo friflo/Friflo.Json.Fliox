@@ -74,7 +74,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         if (elementType.expectedEvent != ev)
-                            return JsonReader.ErrorIncompatible(reader, "List element", elementType, ref parser);
+                            return ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable)
-                            return JsonReader.ErrorIncompatible(reader, "List element", elementType, ref parser);
+                            return ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser);
                         if (index < startLen)
                             list[index] = null;
                         else
@@ -133,7 +133,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return JsonReader.ErrorMsg(reader, "unexpected state: ", ev);
+                        return ReadUtils.ErrorMsg(reader, "unexpected state: ", ev);
                 }
             }
         }

@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Types;
 using Friflo.Json.Mapper.Utils;
 
@@ -103,13 +104,13 @@ namespace Friflo.Json.Mapper
                         return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.ValueNull:
                         if (!stubType.isNullable)
-                            return ErrorIncompatible(this, stubType.map.DataTypeName(), stubType, ref parser);
+                            return ReadUtils.ErrorIncompatible(this, stubType.map.DataTypeName(), stubType, ref parser);
                         slot.SetNull(stubType.varType);
                         return true;
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorMsg(this, "unexpected state in Read() : ", ev);
+                        return ReadUtils.ErrorMsg(this, "unexpected state in Read() : ", ev);
                 }
             }
         }
@@ -138,91 +139,9 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorMsg(this, "ReadTo() can only used on an JSON object or array", ev);
+                        return ReadUtils.ErrorMsg(this, "ReadTo() can only used on an JSON object or array", ev);
                 }
             }
         }
-
-        public static bool ErrorIncompatible(JsonReader reader, string msg, StubType expectType, ref JsonParser parser) {
-            ErrorIncompatible(reader, msg, "", expectType, ref parser);
-            return false;
-        }
-
-        public static bool ErrorIncompatible(JsonReader reader, string msg, string msgParam, StubType expectType, ref JsonParser parser) {
-            ref Bytes strBuf = ref reader.strBuf;
-            /*
-            string evType = null;
-            string value = null;
-            switch (parser.Event) {
-                case JsonEvent.ValueBool:   evType = "bool";   value = parser.boolValue ? "true" : "false"; break;
-                case JsonEvent.ValueString: evType = "string"; value = "'" + parser.value + "'";            break;
-                case JsonEvent.ValueNumber: evType = "number"; value = parser.value.ToString();             break;
-                case JsonEvent.ValueNull:   evType = "null";   value = "null";                              break;
-                case JsonEvent.ArrayStart:  evType = "array";  value = "[...]";                             break;
-                case JsonEvent.ObjectStart: evType = "object"; value = "{...}";                             break;
-            } */
-            // Error format: $"Cannot assign {evType} to {msg}. Expect: {expectType.type.Name}, got: {value}";
-            strBuf.Clear();
-            strBuf.AppendString("Cannot assign ");
-            switch (parser.Event) {
-                case JsonEvent.ValueBool:   strBuf.AppendString("bool");    break;
-                case JsonEvent.ValueString: strBuf.AppendString("string");  break;
-                case JsonEvent.ValueNumber: strBuf.AppendString("number");  break;
-                case JsonEvent.ValueNull:   strBuf.AppendString("null");    break;
-                case JsonEvent.ArrayStart:  strBuf.AppendString("array");   break;
-                case JsonEvent.ObjectStart: strBuf.AppendString("object");  break;
-            }
-            strBuf.AppendString(" to ");
-            strBuf.AppendString(msg);
-            strBuf.AppendString(msgParam);
-            strBuf.AppendString(". Expect: ");
-            strBuf.AppendString(expectType.type.ToString());
-            strBuf.AppendString(", got: ");
-            switch (parser.Event) {
-                case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;
-                case JsonEvent.ValueString:
-                    strBuf.AppendChar('\'');strBuf.AppendBytes(ref parser.value); strBuf.AppendChar('\'');  break;
-                case JsonEvent.ValueNumber: strBuf.AppendBytes(ref parser.value);                           break;
-                case JsonEvent.ValueNull:   strBuf.AppendString("null");                                    break;
-                case JsonEvent.ArrayStart:  strBuf.AppendString("[...]");                                   break;
-                case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;
-            }
-            parser.Error("JsonReader", ref strBuf);
-            return false;
-        }
-        
-        public static bool ErrorMsg(JsonReader reader, string msg, string value) {
-            ref Bytes strBuf = ref reader.strBuf;
-            strBuf.Clear();
-            strBuf.AppendString(msg);
-            strBuf.AppendString(value);
-            reader.parser.Error("JsonReader", ref strBuf);
-            return false;
-        }
-
-        public static bool ErrorMsg(JsonReader reader, string msg, JsonEvent ev) {
-            reader.strBuf.Clear();
-            reader.strBuf.AppendString(msg);
-            JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
-            reader.parser.Error("JsonReader", ref reader.strBuf);
-            return false;
-        }
-
-        public static bool ErrorMsg(JsonReader reader, string msg, ref Bytes value) {
-            reader.parser.Error("JsonReader", msg, ref value);
-            return false;
-        }
-        
-        /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
-        public static bool ValueParseError(JsonReader reader) {
-            return false; // ErrorNull(parser.parseCx.GetError().ToString());
-        }
-
-        public static readonly int minLen = 8;
-
-        public static int Inc(int len) {
-            return len < 5 ? minLen : 2 * len;
-        }
-
     }
 }

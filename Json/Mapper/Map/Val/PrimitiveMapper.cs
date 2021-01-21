@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.WriteString((string) slot.Obj);
+            WriteUtils.WriteString(writer, (string) slot.Obj);
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {

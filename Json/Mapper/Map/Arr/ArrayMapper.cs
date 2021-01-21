@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             Array array;
             if (slot.Obj == null) {
                 startLen = 0;
-                len = JsonReader.minLen;
+                len = ReadUtils.minLen;
                 array = Arrays.CreateInstance(collection.ElementType.type, len);
             }
             else {
@@ -78,12 +78,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return JsonReader.ErrorIncompatible(reader, "array element", elementType, ref parser);
+                        return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
                     case JsonEvent.ValueNull:
                         if (index >= len)
-                            array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
+                            array = Arrays.CopyOfType(collection.ElementType.type, array, len = ReadUtils.Inc(len));
                         if (!elementType.isNullable)
-                            return JsonReader.ErrorIncompatible(reader, "array element", elementType, ref parser);
+                            return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
@@ -99,7 +99,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             if (index >= len)
-                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
+                                array = Arrays.CopyOfType(collection.ElementType.type, array, len = ReadUtils.Inc(len));
                             array.SetValue(elemVar.Obj, index);
                         }
                         index++;
@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return JsonReader.ErrorMsg(reader, "unexpected state: ", ev);
+                        return ReadUtils.ErrorMsg(reader, "unexpected state: ", ev);
                 }
             }
         }

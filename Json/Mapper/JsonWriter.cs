@@ -10,13 +10,13 @@ namespace Friflo.Json.Mapper
 {
     public class JsonWriter : IDisposable
     {
-        public readonly     TypeCache   typeCache;
+        internal readonly   TypeCache   typeCache;
         public              Bytes       bytes;
         public              ValueFormat format;
-        private             Bytes       strBuf;
+        public              Bytes       strBuf;
 
         public              Bytes       @null = new Bytes("null");
-        public              Bytes       discriminator = new Bytes("\"$type\":\"");
+        internal            Bytes       discriminator = new Bytes("\"$type\":\"");
 
         public          ref Bytes Output => ref bytes;
 
@@ -62,20 +62,5 @@ namespace Friflo.Json.Mapper
             else
                 stubType.map.Write(this, ref valueVar, stubType);
         }
-
-        public void WriteKey(PropField field) {
-            bytes.AppendChar('\"');
-            field.AppendName(ref bytes);
-            bytes.AppendString("\":");
-        }
-
-        public void WriteString(String str) {
-            bytes.AppendChar('\"');
-            strBuf.Clear();
-            strBuf.FromString(str);
-            JsonSerializer.AppendEscString(ref bytes, ref strBuf);
-            bytes.AppendChar('\"');
-        }
-
     }
 }
