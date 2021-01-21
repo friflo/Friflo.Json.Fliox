@@ -2,7 +2,7 @@
 using Friflo.Json.Burst;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Burst
+namespace Friflo.Json.Tests.Common.Examples.Burst
 {
 #if !UNITY_5_3_OR_NEWER  // no clean up of native containers for Unity/JSON_BURST
     

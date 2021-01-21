@@ -6,7 +6,7 @@ using static NUnit.Framework.Assert;
 
 // ReSharper disable InconsistentNaming
 
-namespace Friflo.Json.Tests.Common.Examples
+namespace Friflo.Json.Tests.Common.Examples.Burst
 {
     public class Serializer
     {

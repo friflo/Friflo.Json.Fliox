@@ -2,7 +2,6 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 
 // ReSharper disable InconsistentNaming
@@ -14,7 +13,7 @@ using static NUnit.Framework.Assert;
     using Str128 = System.String;
 #endif
 
-namespace Friflo.Json.Tests.Common.Examples
+namespace Friflo.Json.Tests.Common.Examples.Burst
 {
     public class ParserBurst
     {

@@ -14,7 +14,7 @@ using static NUnit.Framework.Assert;
     using Str128 = System.String;
 #endif
 
-namespace Friflo.Json.Tests.Common.Examples
+namespace Friflo.Json.Tests.Common.Examples.Burst
 {
     public class SerializerBurst
     {

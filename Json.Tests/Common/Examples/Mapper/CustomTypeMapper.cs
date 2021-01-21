@@ -7,7 +7,7 @@ using Friflo.Json.Mapper.Types;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.Examples
+namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     // Custom type as an example to split tokens in a JSON value like "Hello World" into a string[]
     public class StringTokens {
