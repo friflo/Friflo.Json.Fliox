@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.Types
         internal readonly Dictionary<long, Enum>        integralToEnum = new Dictionary<long, Enum>();
 
         public EnumType(Type type, ITypeMapper map, bool isNullable) :
-            base(type, map, isNullable, null)
+            base(type, map, isNullable, JsonEvent.ValueNull)
         {
             FieldInfo[] fields = type.GetFields();
             for (int n = 0; n < fields.Length; n++) {

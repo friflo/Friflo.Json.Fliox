@@ -13,7 +13,8 @@ namespace Friflo.Json.Mapper.Types
         public  readonly    Type        type;
         public  readonly    ITypeMapper map;
         public  readonly    bool        isNullable;
-        public  readonly    JsonEvent?  expectedEvent;
+        /// <summary>Use <see cref="JsonEvent.ValueNull"/>, if value can be either a string, number or a bool</summary>
+        public  readonly    JsonEvent  expectedEvent;
         public  readonly    VarType     varType;
 
         /// <summary>
@@ -33,7 +34,14 @@ namespace Friflo.Json.Mapper.Types
             return null;
         }
 
-        public StubType(Type type, ITypeMapper map, bool isNullable, JsonEvent? expectedEvent) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="map"></param>
+        /// <param name="isNullable"></param>
+        /// <param name="expectedEvent">Use <see cref="JsonEvent.ValueNull"/>, if value can be either a string, number or a bool</param>
+        public StubType(Type type, ITypeMapper map, bool isNullable, JsonEvent expectedEvent) {
             this.type =             type;
             this.map =              map;
             this.isNullable =       isNullable;

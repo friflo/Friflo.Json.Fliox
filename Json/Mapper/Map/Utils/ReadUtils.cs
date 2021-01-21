@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         public static bool IsCompatible(StubType stubType, JsonEvent ev) {
-            return stubType.expectedEvent == null || stubType.expectedEvent == ev;
+            return stubType.expectedEvent == JsonEvent.ValueNull || stubType.expectedEvent == ev;
         }
         
         public static bool ErrorIncompatible(JsonReader reader, string msg, StubType expectType, ref JsonParser parser) {

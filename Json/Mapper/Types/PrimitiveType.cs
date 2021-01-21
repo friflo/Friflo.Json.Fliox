@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Types
             return Nullable.GetUnderlyingType(type) != null;
         }
         
-        private static JsonEvent? GetExpectedEvent(Type type) {
+        private static JsonEvent GetExpectedEvent(Type type) {
             if (type == typeof(string))
                 return JsonEvent.ValueString;
             
@@ -41,14 +41,14 @@ namespace Friflo.Json.Mapper.Types
                 type == typeof(float)   || type == typeof(float?))
                 return JsonEvent.ValueNumber;
             
-            return null;
+            return JsonEvent.ValueNull;
         }
     }
     
     public class BigIntType : StubType
     {
         public BigIntType(Type type, ITypeMapper map)
-            : base(type, map, true, null)
+            : base(type, map, true, JsonEvent.ValueNull)
         {
         }
 

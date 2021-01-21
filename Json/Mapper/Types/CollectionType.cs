@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
@@ -28,7 +29,7 @@ namespace Friflo.Json.Mapper.Types
             ITypeMapper     map,
             int             rank,
             Type            keyType,
-            ConstructorInfo constructor) : base (type, map, true, null)
+            ConstructorInfo constructor) : base (type, map, true, JsonEvent.ValueNull)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;
