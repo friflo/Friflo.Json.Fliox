@@ -59,13 +59,13 @@ CPU/memory resources to the main thread being the critical path in game loops.
       By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:
         1. Don't throw any exception and provide the error state via a boolean and a message.
         2. Throw exception in error case - which is useful for debugging.
-    - Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simplify by flooding with invalid JSON.
+    - Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simply by flooding a service with invalid JSON.
     - Optimized for performance and low memory footprint
         - Create an immutable type description for each `Type` to invoke only the minimum required
           reflection calls while de-/serializing
         - Reusing of object mapper instance to avoid allocations on the heap
         - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
-        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types: arrays & `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
+        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types: arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
     - Supported C#/.NET types:
         - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
         - Primitive types, `BigInteger` & `DateTime`
@@ -81,11 +81,11 @@ CPU/memory resources to the main thread being the critical path in game loops.
   Except when compiling within Unity with **UNITY_BURST** it requires
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
+- Small library (Friflo.Json.Burst.dll ~ 100kb )
 - Expressive error messages when parsing invalid JSON. E.g.  
     ```
     JsonParser/JSON error: unexpected character > expect key. Found: v path: 'map.key1' at position: 23
     ```
-- Small library (Friflo.Json.Burst.dll - 70kb )
 
 
 # Unit test / Performance
