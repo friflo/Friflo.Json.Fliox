@@ -47,14 +47,16 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - **Object Mapper reader/writer**
     - **`JsonReader`** / **`JsonWriter`** in namespace: **`Friflo.Json.Managed`**
     - Support deserialization in two ways:
-        - Create new object instances and deserialize by using `Read()` to them which is the common practice of many object mapper implementations.
-        - Deserialize to passed object instances by using ReadTo() while reusing also their child objects referenced by fields,
+        - Create new object instances and deserialize by using `Read()` to them which is the common practice of
+          many object mapper implementations.
+        - Deserialize to passed object instances by using `ReadTo()` while reusing also their child objects referenced by fields,
           arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
           This avoids object allocation on the heap for the given instance and all its child objects
     - Support polymorphism: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
     - `JsonReader` support two error handling modes while parsing and deserialization (unmarshalling) -
       e.g. JSON validation errors.  
-      By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:
+      By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation
+      because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:
         1. Don't throw any exception and provide the error state via a boolean and a message.
         2. Throw exception in error case - which is useful for debugging.
     - Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simply by flooding a service with invalid JSON.
@@ -63,7 +65,8 @@ CPU/memory resources to the main thread being the critical path in game loops.
           reflection calls while de-/serializing
         - Reusing of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
         - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
-        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types: arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
+        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types:
+          arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
     - Supported C#/.NET types:
         - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
         - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
@@ -74,7 +77,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - Compatible to .NET Standard.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 - No unsafe code in CLR library
-- No global state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
+- No global mutable state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
   `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.
 - Fail safe in case of JSON and application errors
@@ -91,7 +94,8 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Unit test / Performance
 
-The current result of the unit test are available as CI tests at [Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
+The current result of the unit test are available as CI tests at
+[Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
@@ -206,7 +210,8 @@ The reason is using `native container`'s within the Editor are a bottleneck. Thr
 Imho - this is an acceptable development scenario.
 
 - Without **JSON_BURST** in Unity Editor  
-It is faster than *'with JSON_BURST in Unity Editor'* because in this scenario managed container are used instead of `native container`s. Throughput: **25-88 MB/sec**.  
+It is faster than *'with JSON_BURST in Unity Editor'* because in this scenario managed container are used instead
+of `native container`s. Throughput: **25-88 MB/sec**.  
 *Note*: In this mode the parser & serializer cannot be used in Burst Jobs.
 
 - With **JSON_BURST** in a Unity Build  
