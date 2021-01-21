@@ -49,21 +49,27 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - [**JsonReader**](Json/Managed/JsonReader.cs) / [**JsonWriter**](Json/Managed/JsonWriter.cs)
       in namespace: **`Friflo.Json.Managed`**
     - Support deserialization in two ways:
-        - Create new object instances and deserialize to them which is the common practice of many object mapper implementations.
-        - Deserialize to passed object instances while reusing also their child objects referenced by fields,
+        - Create new object instances and deserialize by using `Read()` to them which is the common practice of many object mapper implementations.
+        - Deserialize to passed object instances by using ReadTo() while reusing also their child objects referenced by fields,
           arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
           This avoids object allocation on the heap for the given instance and all its child objects
-    - Support polymorphism
+    - Support polymorphism: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
     - `JsonReader` support two error handling modes while parsing and deserialization (unmarshalling) -
       e.g. JSON validation errors.  
-      When avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation because of object creation the heap. The error handling modes are:
+      By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:
         1. Don't throw any exception and provide the error state via a boolean and a message.
         2. Throw exception in error case - which is useful for debugging.
+    - Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simplify by flooding with invalid JSON.
     - Optimized for performance and low memory footprint
         - Create an immutable type description for each `Type` to invoke only the minimum required
           reflection calls while de-/serializing
-        - Support reusing of object mapper instance to avoid allocations on the heap
-    - Support the container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
+        - Reusing of object mapper instance to avoid allocations on the heap
+        - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
+        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types: arrays & `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
+    - Supported C#/.NET types:
+        - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
+        - Primitive types, `BigInteger` & `DateTime`
+        - Support adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
     - Uses internally the JSON parser mentioned above
 
 - UTF-8 support
