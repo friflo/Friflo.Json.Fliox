@@ -242,10 +242,10 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberStr(ref Str32 key, ref Unity.Collections.FixedString128 value) {
+        public void MemberStrRef(ref Str32 key, ref Unity.Collections.FixedString128 value) {
             strBuf.Clear();
             strBuf.AppendStr128(ref value);
-            MemberStr(ref key, ref strBuf);
+            MemberStrRef(ref key, ref strBuf);
         }
 #else
         public void MemberStrRef(ref string key, ref string value) {
@@ -317,7 +317,7 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
         public void MemberStr (Str32 key, Unity.Collections.FixedString128 value) {
-            MemberStr(ref key, ref value);
+            MemberStrRef(ref key, ref value);
         }
 #else
         public void MemberStr (string key, string value) {
@@ -445,11 +445,11 @@ namespace Friflo.Json.Burst
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
-                        MemberObjectStart(ref p.key);
+                        MemberObjectStartRef(ref p.key);
                         WriteObject(ref p);
                         break;
                     case JsonEvent.ValueString:
-                        MemberStr(ref p.key, ref p.value);
+                        MemberStrRef(ref p.key, ref p.value);
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
@@ -466,10 +466,10 @@ namespace Friflo.Json.Burst
                         dst.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
-                        MemberBln(ref p.key, p.boolValue);
+                        MemberBlnRef(ref p.key, p.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        MemberNul(ref p.key);
+                        MemberNulRef(ref p.key);
                         break;
                     case JsonEvent.ObjectEnd:
                     case JsonEvent.ArrayEnd:

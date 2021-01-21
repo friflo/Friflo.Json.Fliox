@@ -313,10 +313,10 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
         public bool IsEqual32 (Str32 value) {
-            return IsEqual32(ref value);
+            return IsEqual32Ref(ref value);
         }
 
-        public bool IsEqual32(ref Str32 value) {
+        public bool IsEqual32Ref(ref Str32 value) {
             int len = Len;
             if (len != value.Length)
                 return false;
@@ -640,10 +640,10 @@ namespace Friflo.Json.Burst
         // Note: Prefer using AppendStr32 (ref Str32 str)
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
         public void AppendStr32 (Str32 str) {
-            AppendStr32(ref str);
+            AppendStr32Ref(ref str);
         }
 
-        public void AppendStr32 (ref Str32 str) {
+        public void AppendStr32Ref (ref Str32 str) {
             int strLen = str.Length;
             EnsureCapacity(Len + strLen);
             int curEnd = end;

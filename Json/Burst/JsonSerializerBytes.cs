@@ -117,7 +117,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObjectStart(ref Bytes key) {
+        public void MemberObjectStartRef(ref Bytes key) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -128,7 +128,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberStr(ref Bytes key, ref Bytes value) {
+        public void MemberStrRef(ref Bytes key, ref Bytes value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -143,7 +143,7 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberStr(ref Bytes key, Unity.Collections.FixedString32 value) {
+        public void MemberStrRef(ref Bytes key, Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -154,7 +154,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
         }
 #else
-        public void MemberStr(ref Bytes key, string value) {
+        public void MemberStrRef(ref Bytes key, string value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -166,7 +166,7 @@ namespace Friflo.Json.Burst
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
-        public void MemberDbl(ref Bytes key, double value) {
+        public void MemberDblRef(ref Bytes key, double value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -176,7 +176,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberDbl(ref Bytes key, long value) {
+        public void MemberDblRef(ref Bytes key, long value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -186,7 +186,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
-        public void MemberBln(ref Bytes key, bool value) {
+        public void MemberBlnRef(ref Bytes key, bool value) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -196,7 +196,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
-        public void MemberNul(ref Bytes key) {
+        public void MemberNulRef(ref Bytes key) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
