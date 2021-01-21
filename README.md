@@ -46,7 +46,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
 - **Object Mapper reader/writer**
-    - [**JsonReader**](Json/Managed/JsonReader.cs) / [**JsonWriter**](Json/Managed/JsonWriter.cs)
+    - [**JsonReader**](Json/Mapper/JsonReader.cs) / [**JsonWriter**](Json/Mapper/JsonWriter.cs)
       in namespace: **`Friflo.Json.Managed`**
     - Support deserialization in two ways:
         - Create new object instances and deserialize by using `Read()` to them which is the common practice of many object mapper implementations.
@@ -190,7 +190,7 @@ The parser returns the JSON tree structure via an iterator. The keys and the JSO
 values (strings, numbers, booleans are nulls) are ready to be consumed at this stage.
 
 To reduce side effects in measurement by NUnit of throughput increase `impliedThroughput`
-at [TestParserPerformance.cs](Json.Tests/Common/TestParserPerformance.cs)
+at [TestParserPerformance.cs](Json.Tests/Common/UnitTest/Burst/TestParserPerformance.cs)
 
 On the used development system (Intel Core i7-4790k 4Ghz, Windows 10) the throughput of the example JSON files
 within the CLR are at **200-550 MB/sec**. All tests are measured on one core.
