@@ -90,7 +90,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Unit test / Performance
 
-The current result of the unit test are available at [Github actions](actions).
+The current result of the unit test are available as CI tests at [Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
