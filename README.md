@@ -61,13 +61,13 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - Optimized for performance and low memory footprint
         - Create an immutable type description for each `Type` to invoke only the minimum required
           reflection calls while de-/serializing
-        - Reusing of object mapper instance to avoid allocations on the heap
+        - Reusing of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
         - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
         - No heap allocations are performed when using `ReadTo()` and using a subset of supported types: arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
     - Supported C#/.NET types:
         - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
-        - Primitive types, `BigInteger` & `DateTime`
-        - Support adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
+        - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
+        - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
     - Uses internally the JSON parser mentioned above
 
 - UTF-8 support
