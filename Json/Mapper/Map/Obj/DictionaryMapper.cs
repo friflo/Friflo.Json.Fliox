@@ -103,7 +103,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return reader.ErrorNull("unexpected state: ", ev);
+                        return reader.ErrorMsg("unexpected state: ", ev);
                 }
             }
         }

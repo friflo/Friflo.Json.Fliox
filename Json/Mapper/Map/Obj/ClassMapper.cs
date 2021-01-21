@@ -80,7 +80,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
                     classType = (ClassType) reader.typeCache.GetTypeByName(ref parser.value);
                     if (classType == null)
-                        return reader.ErrorNull("Object with discriminator $type not found: ", ref parser.value);
+                        return reader.ErrorMsg("Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
                 obj = classType.CreateInstance();
@@ -133,7 +133,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         field.GetField(obj, ref elemVar);
                         if (elemVar.VarType != VarType.Object)
-                            return reader.ErrorNull("Expect field of type object. Type: ", field.FieldType.type.ToString());
+                            return reader.ErrorMsg("Expect field of type object. Type: ", field.FieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;
                         if (!fieldType.map.Read(reader, ref elemVar, fieldType))
@@ -151,7 +151,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return reader.ErrorNull("unexpected state: ", ev);
+                        return reader.ErrorMsg("unexpected state: ", ev);
                 }
                 ev = parser.NextEvent();
             }

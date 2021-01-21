@@ -108,7 +108,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorNull("unexpected state in Read() : ", ev);
+                        return ErrorMsg("unexpected state in Read() : ", ev);
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorNull("ReadTo() can only used on an JSON object or array", ev);
+                        return ErrorMsg("ReadTo() can only used on an JSON object or array", ev);
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Mapper
             return false;
         }
         
-        public bool ErrorNull(string msg, string value) {
+        public bool ErrorMsg(string msg, string value) {
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
@@ -197,7 +197,7 @@ namespace Friflo.Json.Mapper
             return false;
         }
 
-        public bool ErrorNull(string msg, JsonEvent ev) {
+        public bool ErrorMsg(string msg, JsonEvent ev) {
             strBuf.Clear();
             strBuf.AppendString(msg);
             JsonEventUtils.AppendEvent(ev, ref strBuf);
@@ -205,7 +205,7 @@ namespace Friflo.Json.Mapper
             return false;
         }
 
-        public bool ErrorNull(string msg, ref Bytes value) {
+        public bool ErrorMsg(string msg, ref Bytes value) {
             parser.Error("JsonReader", msg, ref value);
             return false;
         }

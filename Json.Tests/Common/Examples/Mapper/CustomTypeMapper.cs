@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             if (reader.parser.Event == JsonEvent.ValueString) {
                 string value =  reader.parser.value.ToString();
                 if (value.Contains(","))
-                    return reader.ErrorNull("Invalid separator in token value", value);
+                    return reader.ErrorMsg("Invalid separator in token value", value);
                 slot.Obj = new StringTokens { tokens = value.Split(' ')};
                 return true;
             }
