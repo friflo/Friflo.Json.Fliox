@@ -53,6 +53,9 @@ namespace Friflo.Json.Mapper.Types
                 typeStore.typeCreationCount = 0;
             }
 
+            /// <summary>
+            /// Lookup by Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
+            /// </summary>
             public StubType GetTypeByName(ref Bytes name) {
                 if (!nameToType.TryGetValue(name, out StubType propType)) {
                     lock (typeStore) {
@@ -68,6 +71,9 @@ namespace Friflo.Json.Mapper.Types
                 return propType;
             }
 
+            /// <summary>
+            /// Append the Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
+            /// </summary>
             public void AppendDiscriminator(ref Bytes dst, StubType type) {
                 typeToName.TryGetValue(type.type, out Bytes name);
                 if (!name.buffer.IsCreated()) {

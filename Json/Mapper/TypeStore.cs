@@ -82,6 +82,13 @@ namespace Friflo.Json.Mapper
             return stubType;
         }
             
+        /// <summary>
+        /// Register a polymorphic type by its discriminant. Currently this need the first member in an JSON object
+        /// and its name have to be "$type". E.g.<br/>
+        /// <code>
+        /// { "$type": "discriminatorName", ... }
+        /// </code> 
+        /// </summary>
         public void RegisterType (String name, Type type)
         {
             using (var bytesName = new Bytes(name)) {

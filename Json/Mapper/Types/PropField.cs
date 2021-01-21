@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Types
         public              StubType        FieldType { get; internal set; }    // never null 
         internal readonly   Type            fieldTypeNative;                    // never null 
         private  readonly   ClassType       declType;
-        internal            Bytes           nameBytes;
+        internal            Bytes           nameBytes; // dont mutate
         internal            ConstructorInfo collectionConstructor;
         //
         private readonly    FieldInfo       field;
