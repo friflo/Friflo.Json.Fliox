@@ -14,41 +14,25 @@ namespace Friflo.Json.Mapper.Map
     public interface ITypeResolver {
         StubType CreateStubType(Type type);
     }
-
-    public enum ResolverMode {
-        Debug,
-        Release
-    }
     
     public class DefaultTypeResolver : ITypeResolver
     {
-        private readonly ResolverMode        mode;
-        private readonly List<IJsonMapper>   mappers;
+        public  readonly List<IJsonMapper>  mapperList =            new List<IJsonMapper>();
+        private readonly List<IJsonMapper>  specificTypeMappers =   new List<IJsonMapper>();
         
-        public DefaultTypeResolver() :
-            this (ResolverMode.Release) {
-        }
-
-        public DefaultTypeResolver(ResolverMode mode) {
-            this.mode = mode;
-            mappers = GetMappers();
+        public DefaultTypeResolver() {
+            UpdateMapperList();
         }
 
         public StubType CreateStubType(Type type) {
-            if (mode == ResolverMode.Debug) {
-                var query = new Query(Mode.Search);
-                return QueryStubType(type, query);
-            }
-            for (int i = 0; i < mappers.Count; i++) {
-                StubType stubType = mappers[i].CreateStubType(type);
-                if (stubType != null)
-                    return stubType;
-            }
-            return null;
+            var query = new Query(Mode.Search);
+            return QueryStubType(type, query);
         }
         
         // find a codec manually to simplify debugging
         private StubType QueryStubType (Type type, Query q) {
+
+            if (MatchMappers(specificTypeMappers, type, q))               return q.hit;
             
             // Specific types on top
             if (Match(BigIntMapper.     Interface,          type, ref q)) return q.hit;
@@ -111,8 +95,21 @@ namespace Friflo.Json.Mapper.Map
 
             return null;
         }
+        
+        public void AddSpecificTypeMapper(IJsonMapper mapper) {
+            specificTypeMappers.Add(mapper);
+            UpdateMapperList();
+        }
 
-        private bool Match(IJsonMapper mapper, Type type, ref Query query) {
+        private static bool MatchMappers(List<IJsonMapper> mappers, Type type, Query query) {
+            for (int i = 0; i < mappers.Count; i++) {
+                if (Match(mappers[i], type, ref query))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool Match(IJsonMapper mapper, Type type, ref Query query) {
             if (query.mode == Mode.Search) {
                 query.hit = mapper.CreateStubType(type);
                 return query.hit != null;
@@ -137,14 +134,15 @@ namespace Friflo.Json.Mapper.Map
                 this.mode = mode;
             }
         }
-        
-        public List<IJsonMapper>  GetMappers() {
+
+        private void UpdateMapperList() {
+            mapperList.Clear();
             var query = new Query(Mode.Enumerate) {
-                mappers = new List<IJsonMapper>()
+                mappers = mapperList
             };
             QueryStubType(null, query);
-            return query.mappers;
         }
+
 
     }
 }
