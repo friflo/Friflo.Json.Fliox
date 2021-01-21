@@ -17,8 +17,10 @@ namespace Friflo.Json.Mapper.Map
     
     public class DefaultTypeResolver : ITypeResolver
     {
+        /// <summary>This mapper list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
         public  readonly List<IJsonMapper>  mapperList =            new List<IJsonMapper>();
         private readonly List<IJsonMapper>  specificTypeMappers =   new List<IJsonMapper>();
+        private readonly List<IJsonMapper>  genericTypeMappers =    new List<IJsonMapper>();
         
         public DefaultTypeResolver() {
             UpdateMapperList();
@@ -82,6 +84,8 @@ namespace Friflo.Json.Mapper.Map
             
             if (Match(PrimitiveArray.   StringInterface ,   type, ref q)) return q.hit;
 
+            
+            if (MatchMappers(genericTypeMappers, type, q))               return q.hit;
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
@@ -98,6 +102,11 @@ namespace Friflo.Json.Mapper.Map
         
         public void AddSpecificTypeMapper(IJsonMapper mapper) {
             specificTypeMappers.Add(mapper);
+            UpdateMapperList();
+        }
+        
+        public void AddGenericTypeMapper(IJsonMapper mapper) {
+            genericTypeMappers.Add(mapper);
             UpdateMapperList();
         }
 
