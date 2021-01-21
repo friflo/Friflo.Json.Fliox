@@ -39,68 +39,73 @@ namespace Friflo.Json.Mapper.Map
         
         public StubType CreateStubType (Type type) {
             // find a codec manually to simplify debugging 
-            StubType stubType;
+            StubType result;
             
             // Specific types on top
-            if ((stubType = BigIntMapper.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DateTimeMapper.           Interface.CreateStubType(type)) != null) return stubType;
+            if (Match(BigIntMapper.     Interface,          type, out result)) return result;
+            if (Match(DateTimeMapper.   Interface,          type, out result)) return result;
             
             //
-            if ((stubType = StringMapper.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DoubleMapper.             Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = FloatMapper.              Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = LongMapper.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = IntMapper.                Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ShortMapper.              Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ByteMapper.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = BoolMapper.               Interface.CreateStubType(type)) != null) return stubType;
+            if (Match(StringMapper.     Interface,          type, out result)) return result;
+            if (Match(DoubleMapper.     Interface,          type, out result)) return result;
+            if (Match(FloatMapper.      Interface,          type, out result)) return result;
+            if (Match(LongMapper.       Interface,          type, out result)) return result;
+            if (Match(IntMapper.        Interface,          type, out result)) return result;
+            if (Match(ShortMapper.      Interface,          type, out result)) return result;
+            if (Match(ByteMapper.       Interface,          type, out result)) return result;
+            if (Match(BoolMapper.       Interface,          type, out result)) return result;
             // --- List
-            if ((stubType = PrimitiveList.            DoubleInterface.CreateStubType(type))    != null) return stubType;
-            if ((stubType = PrimitiveList.            FloatInterface.CreateStubType(type))     != null) return stubType;
-            if ((stubType = PrimitiveList.            LongInterface.CreateStubType(type))      != null) return stubType;
-            if ((stubType = PrimitiveList.            IntInterface.CreateStubType(type))       != null) return stubType;
-            if ((stubType = PrimitiveList.            ShortInterface.CreateStubType(type))     != null) return stubType;
-            if ((stubType = PrimitiveList.            ByteInterface.CreateStubType(type))      != null) return stubType;
-            if ((stubType = PrimitiveList.            BoolInterface.CreateStubType(type))      != null) return stubType;
+            if (Match(PrimitiveList.    DoubleInterface,    type, out result)) return result;
+            if (Match(PrimitiveList.    FloatInterface,     type, out result)) return result;
+            if (Match(PrimitiveList.    LongInterface,      type, out result)) return result;
+            if (Match(PrimitiveList.    IntInterface,       type, out result)) return result;
+            if (Match(PrimitiveList.    ShortInterface,     type, out result)) return result;
+            if (Match(PrimitiveList.    ByteInterface,      type, out result)) return result;
+            if (Match(PrimitiveList.    BoolInterface,      type, out result)) return result;
             
-            if ((stubType = PrimitiveList.            DoubleNulInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveList.            FloatNulInterface.CreateStubType(type))  != null) return stubType;
-            if ((stubType = PrimitiveList.            LongNulInterface.CreateStubType(type))   != null) return stubType;
-            if ((stubType = PrimitiveList.            IntNulInterface.CreateStubType(type))    != null) return stubType;
-            if ((stubType = PrimitiveList.            ShortNulInterface.CreateStubType(type))  != null) return stubType;
-            if ((stubType = PrimitiveList.            ByteNulInterface.CreateStubType(type))   != null) return stubType;
-            if ((stubType = PrimitiveList.            BoolNulInterface.CreateStubType(type))   != null) return stubType;
+            if (Match(PrimitiveList.    DoubleNulInterface, type, out result)) return result;
+            if (Match(PrimitiveList.    FloatNulInterface,  type, out result)) return result;
+            if (Match(PrimitiveList.    LongNulInterface,   type, out result)) return result;
+            if (Match(PrimitiveList.    IntNulInterface,    type, out result)) return result;
+            if (Match(PrimitiveList.    ShortNulInterface,  type, out result)) return result;
+            if (Match(PrimitiveList.    ByteNulInterface,   type, out result)) return result;
+            if (Match(PrimitiveList.    BoolNulInterface,   type, out result)) return result;
             // --- array            
-            if ((stubType = PrimitiveArray.           DoubleInterface.CreateStubType(type))    != null) return stubType;
-            if ((stubType = PrimitiveArray.           FloatInterface.CreateStubType(type))     != null) return stubType;
-            if ((stubType = PrimitiveArray.           LongInterface.CreateStubType(type))      != null) return stubType;
-            if ((stubType = PrimitiveArray.           IntInterface.CreateStubType(type))       != null) return stubType;
-            if ((stubType = PrimitiveArray.           ShortInterface.CreateStubType(type))     != null) return stubType;
-            if ((stubType = PrimitiveArray.           ByteInterface.CreateStubType(type))      != null) return stubType;
-            if ((stubType = PrimitiveArray.           BoolInterface.CreateStubType(type))      != null) return stubType;
+            if (Match(PrimitiveArray.   DoubleInterface,    type, out result)) return result;
+            if (Match(PrimitiveArray.   FloatInterface,     type, out result)) return result;
+            if (Match(PrimitiveArray.   LongInterface,      type, out result)) return result;
+            if (Match(PrimitiveArray.   IntInterface,       type, out result)) return result;
+            if (Match(PrimitiveArray.   ShortInterface,     type, out result)) return result;
+            if (Match(PrimitiveArray.   ByteInterface,      type, out result)) return result;
+            if (Match(PrimitiveArray.   BoolInterface,      type, out result)) return result;
 
-            if ((stubType = PrimitiveArray.           DoubleNulInterface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = PrimitiveArray.           FloatNulInterface.CreateStubType(type))  != null) return stubType;
-            if ((stubType = PrimitiveArray.           LongNulInterface.CreateStubType(type))   != null) return stubType;
-            if ((stubType = PrimitiveArray.           IntNulInterface.CreateStubType(type))    != null) return stubType;
-            if ((stubType = PrimitiveArray.           ShortNulInterface.CreateStubType(type))  != null) return stubType;
-            if ((stubType = PrimitiveArray.           ByteNulInterface.CreateStubType(type))   != null) return stubType;
-            if ((stubType = PrimitiveArray.           BoolNulInterface.CreateStubType(type))   != null) return stubType;
+            if (Match(PrimitiveArray.   DoubleNulInterface, type, out result)) return result;
+            if (Match(PrimitiveArray.   FloatNulInterface,  type, out result)) return result;
+            if (Match(PrimitiveArray.   LongNulInterface,   type, out result)) return result;
+            if (Match(PrimitiveArray.   IntNulInterface,    type, out result)) return result;
+            if (Match(PrimitiveArray.   ShortNulInterface,  type, out result)) return result;
+            if (Match(PrimitiveArray.   ByteNulInterface,   type, out result)) return result;
+            if (Match(PrimitiveArray.   BoolNulInterface,   type, out result)) return result;
             
-            if ((stubType = PrimitiveArray.           StringInterface.CreateStubType(type))    != null) return stubType;
+            if (Match(PrimitiveArray.   StringInterface ,   type, out result)) return result;
 
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if ((stubType = ArrayMapper.              Interface.CreateStubType(type)) != null) return stubType;
+            if (Match(ArrayMapper.      Interface,          type, out result)) return result;
             //
             //
-            if ((stubType = EnumMapper.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ListMapper.               Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = DictionaryMapper.         Interface.CreateStubType(type)) != null) return stubType;
-            if ((stubType = ClassMapper.              Interface.CreateStubType(type)) != null) return stubType;
+            if (Match(EnumMapper.       Interface,          type, out result)) return result;
+            if (Match(ListMapper.       Interface,          type, out result)) return result;
+            if (Match(DictionaryMapper. Interface,          type, out result)) return result;
+            if (Match(ClassMapper.      Interface,          type, out result)) return result;
 
             return null;
+        }
+
+        private bool Match(IJsonMapper mapper, Type type, out StubType result) {
+            result = mapper.CreateStubType(type);
+            return result != null;
         }
 
     }
