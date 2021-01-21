@@ -11,9 +11,13 @@ namespace Friflo.Json.Mapper
 {
     public class JsonWriter : IDisposable
     {
-        internal readonly   TypeCache   typeCache;
+        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
+        public readonly     TypeCache   typeCache;
         public              Bytes       bytes;
+        /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>
         public              ValueFormat format;
+        /// <summary>Can be used for custom mappers to create a temporary "string"
+        /// without creating a string on the heap.</summary>
         public              Bytes       strBuf;
 
         internal            Bytes       @null = new Bytes("null");

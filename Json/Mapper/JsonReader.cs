@@ -14,6 +14,7 @@ namespace Friflo.Json.Mapper
     public class JsonReader : IDisposable
     {
         public              JsonParser      parser;
+        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public   readonly   TypeCache       typeCache;
 
         internal readonly   Bytes           discriminator   = new Bytes("$type");
