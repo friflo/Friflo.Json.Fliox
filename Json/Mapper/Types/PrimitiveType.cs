@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Types
     {
         
         public PrimitiveType(Type type, ITypeMapper map)
-            : base(type, map, IsPrimitiveNullable(type), GetExpectedEvent(type))
+            : base(type, map, IsPrimitiveNullable(type))
         {
         }
 
@@ -24,31 +24,12 @@ namespace Friflo.Json.Mapper.Types
         private static bool IsPrimitiveNullable(Type type) {
             return Nullable.GetUnderlyingType(type) != null;
         }
-        
-        private static JsonEvent GetExpectedEvent(Type type) {
-            if (type == typeof(string))
-                return JsonEvent.ValueString;
-            
-            if (type == typeof(bool)  || type == typeof(bool?))
-                return JsonEvent.ValueBool;
-
-            if (type == typeof(long)    || type == typeof(long?) ||
-                type == typeof(int)     || type == typeof(int?) ||
-                type == typeof(short)   || type == typeof(short?) ||
-                type == typeof(byte)    || type == typeof(byte?) ||
-                type == typeof(bool)    || type == typeof(bool?) ||
-                type == typeof(double)  || type == typeof(double?) ||
-                type == typeof(float)   || type == typeof(float?))
-                return JsonEvent.ValueNumber;
-            
-            return JsonEvent.ValueNull;
-        }
     }
     
     public class BigIntType : StubType
     {
         public BigIntType(Type type, ITypeMapper map)
-            : base(type, map, true, JsonEvent.ValueNull)
+            : base(type, map, true)
         {
         }
 
@@ -59,7 +40,7 @@ namespace Friflo.Json.Mapper.Types
     public class StringType : StubType
     {
         public StringType(Type type, ITypeMapper map)
-            : base(type, map, true, JsonEvent.ValueString) {
+            : base(type, map, true) {
         }
         
         public override void InitStubType(TypeStore typeStore) {

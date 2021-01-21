@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Types
         public readonly string msg;
         
         public NotSupportedType(Type type, string msg) : 
-            base(type, TypeNotSupportedMapper.Interface, false, JsonEvent.ValueNull) {
+            base(type, TypeNotSupportedMapper.Interface, false) {
             this.msg = msg;
         }
 

@@ -29,11 +29,10 @@ namespace Friflo.Json.Mapper.Map.Val
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (reader.parser.Event == JsonEvent.ValueString) {
-                slot.Obj = reader.parser.value.ToString();
-                return true;
-            }
-            return false;
+            if (reader.parser.Event != JsonEvent.ValueString)
+                return ValueUtils.CheckElse(reader, ref slot, stubType);
+            slot.Obj = reader.parser.value.ToString();
+            return true;
         }
     }
     

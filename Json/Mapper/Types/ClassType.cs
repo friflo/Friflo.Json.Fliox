@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Types
 
         // PropType
         internal ClassType (Type type, ITypeMapper map, ConstructorInfo constructor) :
-            base (type, map, IsNullable(type), JsonEvent.ValueNull) {
+            base (type, map, IsNullable(type)) {
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
