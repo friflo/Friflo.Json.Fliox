@@ -18,6 +18,10 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static int Inc(int len) {
             return len < 5 ? minLen : 2 * len;
         }
+
+        public static bool IsCompatible(StubType stubType, JsonEvent ev) {
+            return stubType.expectedEvent == null || stubType.expectedEvent == ev;
+        }
         
         public static bool ErrorIncompatible(JsonReader reader, string msg, StubType expectType, ref JsonParser parser) {
             ErrorIncompatible(reader, msg, "", expectType, ref parser);

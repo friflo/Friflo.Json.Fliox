@@ -105,9 +105,12 @@ namespace Friflo.Json.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
+                        return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
+                        if (!ReadUtils.IsCompatible(stubType, ev))
+                            return ReadUtils.ErrorIncompatible(this, stubType.map.DataTypeName(), stubType, ref parser);
                         return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.ValueNull:
                         if (!stubType.isNullable)

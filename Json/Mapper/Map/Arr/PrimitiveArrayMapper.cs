@@ -178,7 +178,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        if (elementType.expectedEvent != ev)
+                        if (!ReadUtils.IsCompatible(elementType, ev))
                             return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))

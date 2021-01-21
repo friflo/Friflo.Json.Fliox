@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Types
     public class BigIntType : StubType
     {
         public BigIntType(Type type, ITypeMapper map)
-            : base(type, map, true, JsonEvent.ValueString)
+            : base(type, map, true, null)
         {
         }
 

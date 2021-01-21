@@ -102,7 +102,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         }
                         StubType valueType = field.FieldType;
-                        if (valueType.expectedEvent != JsonEvent.ValueString)
+                        if (!ReadUtils.IsCompatible(valueType, ev))
                             return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
@@ -116,7 +116,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         valueType = field.FieldType;
-                        if (valueType.expectedEvent != ev)
+                        if (!ReadUtils.IsCompatible(valueType, ev))
                             return ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
