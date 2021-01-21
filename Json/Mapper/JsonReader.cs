@@ -33,6 +33,7 @@ namespace Friflo.Json.Mapper
         }
 
         public void Dispose() {
+            typeCache.Dispose();
             discriminator.Dispose();
             parser.Dispose();
             strBuf.Dispose();

@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Types
         /// It is created within a <see cref="JsonReader"/> and <see cref="JsonWriter"/> to access type information
         /// without locking if already cached.
         /// </summary>
-        public class TypeCache
+        public class TypeCache : IDisposable
         {
             private readonly    Dictionary <Type,  StubType>   typeMap =      new Dictionary <Type,  StubType >();
             //
@@ -25,11 +25,17 @@ namespace Friflo.Json.Mapper.Types
             public              int     LookupCount         => lookupCount;
             public              int     StoreLookupCount    => typeStore.storeLookupCount;
             public              int     TypeCreationCount   => typeStore.typeCreationCount;
+
             
-
-
             public TypeCache (TypeStore typeStore) {
                 this.typeStore = typeStore;
+            }
+            
+            public void Dispose() {
+                foreach (var item in nameToType.Keys)
+                    item.Dispose();
+                foreach (var item in typeToName.Values)
+                    item.Dispose();
             }
             
             public StubType GetType (Type type) {
@@ -53,9 +59,12 @@ namespace Friflo.Json.Mapper.Types
                         typeStore.nameToType.TryGetValue(name, out StubType storeType);
                         propType = storeType;
                     }
+                    if (propType == null)
+                        throw new InvalidOperationException("No type registered with discriminator: " + name);
+                    
+                    Bytes newName = new Bytes(ref name);
+                    nameToType.Add(newName, propType);
                 }
-                if (propType == null)
-                    throw new InvalidOperationException("No type registered with discriminator: " + name);
                 return propType;
             }
 
@@ -66,9 +75,12 @@ namespace Friflo.Json.Mapper.Types
                         typeStore.typeToName.TryGetValue(type.type, out Bytes storeName);
                         name = storeName;
                     }
+                    if (!name.buffer.IsCreated())
+                        throw new InvalidOperationException("no discriminator registered for type: " + type.type);
+                    
+                    Bytes newName = new Bytes(ref name);
+                    typeToName.Add(type.type, newName);
                 }
-                if (!name.buffer.IsCreated())
-                    throw new InvalidOperationException("no discriminator registered for type: " + type.type);
                 dst.AppendBytes(ref name);
             }
         }

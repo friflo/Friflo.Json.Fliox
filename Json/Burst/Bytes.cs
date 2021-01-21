@@ -84,6 +84,14 @@ namespace Friflo.Json.Burst
             FromString(str);
         }
         
+        public Bytes (ref Bytes src) {
+            hc =    src.hc;
+            start = 0;
+            end =   0;
+            buffer = new ByteList(src.Len, AllocType.Persistent);
+            AppendBytes(ref src);
+        }
+        
         public Bytes(ByteList array) {
             hc = 0;
             start = 0;

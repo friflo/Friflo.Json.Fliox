@@ -25,6 +25,7 @@ namespace Friflo.Json.Mapper
         }
         
         public void Dispose() {
+            typeCache.Dispose();
             @null.Dispose();
             discriminator.Dispose();
             format.Dispose();

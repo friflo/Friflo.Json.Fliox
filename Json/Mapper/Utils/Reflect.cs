@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Friflo.Json.Mapper.Utils
 {
     // Reflect
-    public class Reflect
+    public static class Reflect
     {
         // GetField
         public static FieldInfo GetField (Type type, String name)
