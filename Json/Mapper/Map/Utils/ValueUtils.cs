@@ -5,7 +5,7 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
 
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Mapper.Map.Utils
 {
     public static class ValueUtils
     {

@@ -4,7 +4,7 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
 
-namespace Friflo.Json.Mapper.Map.Obj
+namespace Friflo.Json.Mapper.Map.Utils
 {
     public static class ObjectUtils
     {

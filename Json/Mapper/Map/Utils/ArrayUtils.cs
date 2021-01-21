@@ -4,7 +4,7 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
 
-namespace Friflo.Json.Mapper.Map.Arr
+namespace Friflo.Json.Mapper.Map.Utils
 {
     public static class ArrayUtils {
         public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
