@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.Examples
                 string value =  reader.parser.value.ToString();
                 if (value.Contains(","))
                     return reader.ErrorNull("Invalid separator in token value", value);
-                slot.Obj = new StringTokens { tokens = value.Split(' ')};;
+                slot.Obj = new StringTokens { tokens = value.Split(' ')};
                 return true;
             }
             return ValueUtils.CheckElse(reader, ref slot, stubType);

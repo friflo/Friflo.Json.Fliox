@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void Run() {
             // Ensure existence of basic API methods
-            using (TypeStore typeStore = new TypeStore(new DefaultTypeResolver()))
+            using (TypeStore typeStore = new TypeStore())
             using (JsonReader read = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
             

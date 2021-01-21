@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestJsonComplex : LeakTestsFixture
     {
         private TypeStore createStore() {
-            TypeStore      typeStore = new TypeStore(new DefaultTypeResolver());
+            TypeStore      typeStore = new TypeStore();
             typeStore.RegisterType("Sub", typeof( Sub ));
             return typeStore;
         }

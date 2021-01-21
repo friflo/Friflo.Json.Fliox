@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""unknownBool"":true,
     ""unknownNull"":null
 }}";
-            using (TypeStore typeStore = new TypeStore(new DefaultTypeResolver()))
+            using (TypeStore typeStore = new TypeStore())
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
             //
