@@ -43,7 +43,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       This exclude the usage of managed types like classes, strings, arrays or exceptions.  
       To support this subset the library need to be compiled with `JSON_BURST`.  
       The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
-    - Used .NET API namespaces: `System`, `System.Text` & `System.Globalization`
+    - Used .NET API namespaces: `System`, `System.Text` .Encoding.UTF8 & `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
 
 - **Object Mapper reader/writer**
     - **`JsonReader`** / **`JsonWriter`** in namespace: **`Friflo.Json.Managed`**
