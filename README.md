@@ -90,6 +90,8 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Unit test / Performance
 
+The current result of the unit test are available at [Github actions](actions).
+
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
 dotnet test -c Release -l "console;verbosity=detailed"
