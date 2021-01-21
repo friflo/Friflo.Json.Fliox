@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper
             bytes.Dispose();
         }
 
-        public void Write(Object obj) { 
+        public void Write(object obj) { 
             StubType stubType = typeCache.GetType(obj.GetType());
             Var valueVar = new Var();
             valueVar.Obj = obj;

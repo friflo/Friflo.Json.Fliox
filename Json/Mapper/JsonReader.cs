@@ -13,17 +13,21 @@ namespace Friflo.Json.Mapper
     // JsonReader
     public class JsonReader : IDisposable
     {
-        public          JsonParser      parser;
-        public readonly TypeCache       typeCache;
+        public              JsonParser      parser;
+        public   readonly   TypeCache       typeCache;
 
-        public readonly Bytes           discriminator   = new Bytes("$type");
-        public          Bytes           strBuf          = new Bytes(0);
-        public readonly BytesString     bytesRef        = new BytesString();
+        internal readonly   Bytes           discriminator   = new Bytes("$type");
+        /// <summary>Can be used for custom mappers to create a temporary "string"
+        /// without creating a string on the heap.</summary>
+        public              Bytes           strBuf          = new Bytes(0);
+        /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
+        /// without creating a string on the heap.</summary>
+        public readonly     BytesString     keyRef          = new BytesString();
 
-        public          JsonError       Error => parser.error;
-        public          SkipInfo        SkipInfo => parser.skipInfo;
+        public              JsonError       Error => parser.error;
+        public              SkipInfo        SkipInfo => parser.skipInfo;
         
-        public          bool            ThrowException {
+        public              bool            ThrowException {
             get => parser.error.throwException;
             set => parser.error.throwException = value;
         }
@@ -79,7 +83,7 @@ namespace Friflo.Json.Mapper
             return success;
         }
         
-        public Object Read(Bytes bytes, Type type) {
+        public object Read(Bytes bytes, Type type) {
             int start = bytes.Start;
             int len = bytes.Len;
             Var slot = new Var();

@@ -33,8 +33,8 @@ namespace Friflo.Json.Mapper.Map.Val
             EnumType enumType = (EnumType) stubType;
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.bytesRef.value = parser.value;
-                if (enumType.stringToEnum.TryGetValue(reader.bytesRef, out Enum enumValue)) {
+                reader.keyRef.value = parser.value;
+                if (enumType.stringToEnum.TryGetValue(reader.keyRef, out Enum enumValue)) {
                     slot.Obj = enumValue;
                     return true;
                 }
