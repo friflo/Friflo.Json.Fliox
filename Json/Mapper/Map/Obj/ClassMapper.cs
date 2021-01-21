@@ -80,7 +80,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
                     classType = (ClassType) reader.typeCache.GetTypeByName(ref parser.value);
                     if (classType == null)
-                        return reader.ErrorMsg("Object with discriminator $type not found: ", ref parser.value);
+                        return JsonReader.ErrorMsg(reader, "Object with discriminator $type not found: ", ref parser.value);
                     ev = parser.NextEvent();
                 }
                 obj = classType.CreateInstance();
@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         StubType valueType = field.FieldType;
                         if (valueType.expectedEvent != JsonEvent.ValueString)
-                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.FieldType;
                         if (valueType.expectedEvent != ev)
-                            return reader.ErrorIncompatible("class field: ", field.name, valueType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "class field: ", field.name, valueType, ref parser);
                         
                         elemVar.Clear();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
@@ -123,7 +123,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         if (!field.FieldType.isNullable)
-                            return reader.ErrorIncompatible("class field: ", field.name, field.FieldType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "class field: ", field.name, field.FieldType, ref parser);
                         elemVar.Obj = null;
                         field.SetField(obj, ref elemVar);
                         break;
@@ -133,7 +133,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         field.GetField(obj, ref elemVar);
                         if (elemVar.VarType != VarType.Object)
-                            return reader.ErrorMsg("Expect field of type object. Type: ", field.FieldType.type.ToString());
+                            return JsonReader.ErrorMsg(reader, "Expect field of type object. Type: ", field.FieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.FieldType;
                         if (!fieldType.map.Read(reader, ref elemVar, fieldType))
@@ -141,7 +141,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         //
                         object subRet = elemVar.Obj;
                         if (!field.FieldType.isNullable && subRet == null)
-                            return reader.ErrorIncompatible("class field: ", field.name, field.FieldType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "class field: ", field.name, field.FieldType, ref parser);
                         if (sub != subRet)
                             field.SetField(obj, ref elemVar);
                         break;
@@ -151,7 +151,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return reader.ErrorMsg("unexpected state: ", ev);
+                        return JsonReader.ErrorMsg(reader, "unexpected state: ", ev);
                 }
                 ev = parser.NextEvent();
             }

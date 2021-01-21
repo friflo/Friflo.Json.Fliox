@@ -78,12 +78,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return reader.ErrorIncompatible("array element", elementType, ref parser);
+                        return JsonReader.ErrorIncompatible(reader, "array element", elementType, ref parser);
                     case JsonEvent.ValueNull:
                         if (index >= len)
                             array = Arrays.CopyOfType(collection.ElementType.type, array, len = JsonReader.Inc(len));
                         if (!elementType.isNullable)
-                            return reader.ErrorIncompatible("array element", elementType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "array element", elementType, ref parser);
                         array.SetValue(null, index++);
                         break;
                     case JsonEvent.ArrayStart:
@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return reader.ErrorMsg("unexpected state: ", ev);
+                        return JsonReader.ErrorMsg(reader, "unexpected state: ", ev);
                 }
             }
         }

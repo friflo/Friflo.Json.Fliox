@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     throw new InvalidOperationException(msg);
                     /*
                     if (!stubType.isNullable)
-                        return reader.ErrorIncompatible("primitive", stubType, ref parser);
+                        return JsonReader.ErrorIncompatible(reader, "primitive", stubType, ref parser);
                     value.SetNull(stubType.varType); // not necessary. null value us handled by owner.
                     return true;
                     */
@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     throw new InvalidOperationException(msg2);
                     // return null;
                 default:
-                    return reader.ErrorIncompatible(stubType.map.DataTypeName(), stubType, ref parser);
+                    return JsonReader.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref parser);
             }
         }
     }

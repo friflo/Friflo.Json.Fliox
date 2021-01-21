@@ -103,13 +103,13 @@ namespace Friflo.Json.Mapper
                         return stubType.map.Read(this, ref slot, stubType);
                     case JsonEvent.ValueNull:
                         if (!stubType.isNullable)
-                            return ErrorIncompatible(stubType.map.DataTypeName(), stubType, ref parser);
+                            return ErrorIncompatible(this, stubType.map.DataTypeName(), stubType, ref parser);
                         slot.SetNull(stubType.varType);
                         return true;
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorMsg("unexpected state in Read() : ", ev);
+                        return ErrorMsg(this, "unexpected state in Read() : ", ev);
                 }
             }
         }
@@ -138,17 +138,18 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ErrorMsg("ReadTo() can only used on an JSON object or array", ev);
+                        return ErrorMsg(this, "ReadTo() can only used on an JSON object or array", ev);
                 }
             }
         }
 
-        public bool ErrorIncompatible(string msg, StubType expectType, ref JsonParser parser) {
-            ErrorIncompatible(msg, "", expectType, ref parser);
+        public static bool ErrorIncompatible(JsonReader reader, string msg, StubType expectType, ref JsonParser parser) {
+            ErrorIncompatible(reader, msg, "", expectType, ref parser);
             return false;
         }
 
-        public bool ErrorIncompatible(string msg, string msgParam, StubType expectType, ref JsonParser parser) {
+        public static bool ErrorIncompatible(JsonReader reader, string msg, string msgParam, StubType expectType, ref JsonParser parser) {
+            ref Bytes strBuf = ref reader.strBuf;
             /*
             string evType = null;
             string value = null;
@@ -190,29 +191,30 @@ namespace Friflo.Json.Mapper
             return false;
         }
         
-        public bool ErrorMsg(string msg, string value) {
+        public static bool ErrorMsg(JsonReader reader, string msg, string value) {
+            ref Bytes strBuf = ref reader.strBuf;
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
-            parser.Error("JsonReader", ref strBuf);
+            reader.parser.Error("JsonReader", ref strBuf);
             return false;
         }
 
-        public bool ErrorMsg(string msg, JsonEvent ev) {
-            strBuf.Clear();
-            strBuf.AppendString(msg);
-            JsonEventUtils.AppendEvent(ev, ref strBuf);
-            parser.Error("JsonReader", ref strBuf);
+        public static bool ErrorMsg(JsonReader reader, string msg, JsonEvent ev) {
+            reader.strBuf.Clear();
+            reader.strBuf.AppendString(msg);
+            JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
+            reader.parser.Error("JsonReader", ref reader.strBuf);
             return false;
         }
 
-        public bool ErrorMsg(string msg, ref Bytes value) {
-            parser.Error("JsonReader", msg, ref value);
+        public static bool ErrorMsg(JsonReader reader, string msg, ref Bytes value) {
+            reader.parser.Error("JsonReader", msg, ref value);
             return false;
         }
         
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
-        public bool ValueParseError() {
+        public static bool ValueParseError(JsonReader reader) {
             return false; // ErrorNull(parser.parseCx.GetError().ToString());
         }
 

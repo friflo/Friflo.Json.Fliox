@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNull:
                         String key = parser.key.ToString();
                         if (!elementType.isNullable)
-                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "Dictionary value", elementType, ref parser);
                         map[key] = null;
                         break;
                     case JsonEvent.ObjectStart:
@@ -91,7 +91,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
                         if (elementType.expectedEvent != ev)
-                            return reader.ErrorIncompatible("Dictionary value", elementType, ref parser);
+                            return JsonReader.ErrorIncompatible(reader, "Dictionary value", elementType, ref parser);
                         elemVar.Clear();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
@@ -103,7 +103,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return reader.ErrorMsg("unexpected state: ", ev);
+                        return JsonReader.ErrorMsg(reader, "unexpected state: ", ev);
                 }
             }
         }
