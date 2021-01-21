@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ArrayMapper : IJsonMapper
+    public class ArrayMapper : ITypeMapper
     {
         public static readonly ArrayMapper Interface = new ArrayMapper();
 

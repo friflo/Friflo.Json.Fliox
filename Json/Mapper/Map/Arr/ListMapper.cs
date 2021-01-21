@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper : IJsonMapper
+    public class ListMapper : ITypeMapper
     {
         public static readonly ListMapper Interface = new ListMapper();
         

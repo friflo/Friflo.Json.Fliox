@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class BigIntMapper : IJsonMapper
+    public class BigIntMapper : ITypeMapper
     {
         public static readonly BigIntMapper Interface = new BigIntMapper();
         

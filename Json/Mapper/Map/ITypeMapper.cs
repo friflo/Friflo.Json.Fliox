@@ -9,7 +9,7 @@ namespace Friflo.Json.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public interface IJsonMapper
+    public interface ITypeMapper
     {
         string      DataTypeName();
         StubType    CreateStubType  (Type type);

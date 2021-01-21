@@ -21,9 +21,9 @@ namespace Friflo.Json.Mapper.Map
     public class DefaultTypeResolver : ITypeResolver
     {
         /// <summary>This mapper list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
-        public  readonly List<IJsonMapper>  mapperList =            new List<IJsonMapper>();
-        private readonly List<IJsonMapper>  specificTypeMappers =   new List<IJsonMapper>();
-        private readonly List<IJsonMapper>  genericTypeMappers =    new List<IJsonMapper>();
+        public  readonly List<ITypeMapper>  mapperList =            new List<ITypeMapper>();
+        private readonly List<ITypeMapper>  specificTypeMappers =   new List<ITypeMapper>();
+        private readonly List<ITypeMapper>  genericTypeMappers =    new List<ITypeMapper>();
         
         public DefaultTypeResolver() {
             UpdateMapperList();
@@ -103,17 +103,17 @@ namespace Friflo.Json.Mapper.Map
             return null;
         }
         
-        public void AddSpecificTypeMapper(IJsonMapper mapper) {
+        public void AddSpecificTypeMapper(ITypeMapper mapper) {
             specificTypeMappers.Add(mapper);
             UpdateMapperList();
         }
         
-        public void AddGenericTypeMapper(IJsonMapper mapper) {
+        public void AddGenericTypeMapper(ITypeMapper mapper) {
             genericTypeMappers.Add(mapper);
             UpdateMapperList();
         }
 
-        private static bool MatchMappers(List<IJsonMapper> mappers, Type type, Query query) {
+        private static bool MatchMappers(List<ITypeMapper> mappers, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
                 if (Match(mappers[i], type, query))
                     return true;
@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper.Map
             return false;
         }
 
-        private static bool Match(IJsonMapper mapper, Type type, Query query) {
+        private static bool Match(ITypeMapper mapper, Type type, Query query) {
             if (query.mode == Mode.Search) {
                 query.hit = mapper.CreateStubType(type);
                 return query.hit != null;
@@ -139,7 +139,7 @@ namespace Friflo.Json.Mapper.Map
 
         class Query {
             public readonly Mode                mode;
-            public          List<IJsonMapper>   mappers;
+            public          List<ITypeMapper>   mappers;
             public          StubType            hit;
 
             public Query(Mode mode) {

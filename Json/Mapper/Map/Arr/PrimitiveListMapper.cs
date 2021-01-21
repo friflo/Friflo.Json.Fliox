@@ -125,7 +125,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PrimitiveListMapper<T> : IJsonMapper
+    public class PrimitiveListMapper<T> : ITypeMapper
     {
         private readonly Type       elemType;
         private readonly VarType    elemVarType;

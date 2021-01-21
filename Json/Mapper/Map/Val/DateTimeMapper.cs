@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DateTimeMapper : IJsonMapper
+    public class DateTimeMapper : ITypeMapper
     {
         public static readonly DateTimeMapper Interface = new DateTimeMapper();
         

@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public string[] tokens;
     }
     
-    public class StringTokenMapper : IJsonMapper
+    public class StringTokenMapper : ITypeMapper
     {
         public static readonly StringTokenMapper Interface = new StringTokenMapper();
         

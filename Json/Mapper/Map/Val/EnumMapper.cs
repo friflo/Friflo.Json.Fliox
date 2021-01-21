@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EnumMapper : IJsonMapper
+    public class EnumMapper : ITypeMapper
     {
         public static readonly EnumMapper Interface = new EnumMapper();
         

@@ -110,7 +110,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PrimitiveArrayMapper<T> : IJsonMapper
+    public class PrimitiveArrayMapper<T> : ITypeMapper
     {
         private readonly Type       elemType;
         private readonly VarType    elemVarType;

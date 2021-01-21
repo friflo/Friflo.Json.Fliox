@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DictionaryMapper : IJsonMapper
+    public class DictionaryMapper : ITypeMapper
     {
         public static readonly DictionaryMapper Interface = new DictionaryMapper();
         

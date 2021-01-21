@@ -11,14 +11,14 @@ namespace Friflo.Json.Mapper.Types
 #endif
     public abstract class StubType : IDisposable {
         public  readonly    Type        type;
-        public  readonly    IJsonMapper map;
+        public  readonly    ITypeMapper map;
         public  readonly    bool        isNullable;
         public  readonly    JsonEvent?  expectedEvent;
         public  readonly    VarType     varType;
 
         /// <summary>
         /// Need to be overriden, in case the derived <see cref="StubType"/> uses <see cref="System.Type"/>'s
-        /// which are required in a <see cref="IJsonMapper"/> implementation returning a <see cref="StubType"/>.<br/>
+        /// which are required in a <see cref="ITypeMapper"/> implementation returning a <see cref="StubType"/>.<br/>
         /// 
         /// In this case <see cref="InitStubType"/> is used to map a <see cref="System.Type"/> to a required
         /// <see cref="StubType"/> by calling <see cref="TypeStore.GetType(System.Type)"/> and storing the returned
@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Types
             return null;
         }
 
-        public StubType(Type type, IJsonMapper map, bool isNullable, JsonEvent? expectedEvent) {
+        public StubType(Type type, ITypeMapper map, bool isNullable, JsonEvent? expectedEvent) {
             this.type =             type;
             this.map =              map;
             this.isNullable =       isNullable;

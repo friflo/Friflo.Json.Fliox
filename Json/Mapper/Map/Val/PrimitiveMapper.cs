@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class StringMapper : IJsonMapper
+    public class StringMapper : ITypeMapper
     {
         public static readonly StringMapper Interface = new StringMapper();
         
@@ -37,7 +37,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class DoubleMapper : IJsonMapper
+    public class DoubleMapper : ITypeMapper
     {
         public static readonly DoubleMapper Interface = new DoubleMapper();
         
@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class FloatMapper : IJsonMapper
+    public class FloatMapper : ITypeMapper
     {
         public static readonly FloatMapper Interface = new FloatMapper();
         
@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class LongMapper : IJsonMapper
+    public class LongMapper : ITypeMapper
     {
         public static readonly LongMapper Interface = new LongMapper();
         
@@ -109,7 +109,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class IntMapper : IJsonMapper
+    public class IntMapper : ITypeMapper
     {
         public static readonly IntMapper Interface = new IntMapper();
         
@@ -133,7 +133,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class ShortMapper : IJsonMapper
+    public class ShortMapper : ITypeMapper
     {
         public static readonly ShortMapper Interface = new ShortMapper();
         
@@ -157,7 +157,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class ByteMapper : IJsonMapper
+    public class ByteMapper : ITypeMapper
     {
         public static readonly ByteMapper Interface = new ByteMapper();
         
@@ -181,7 +181,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class BoolMapper : IJsonMapper
+    public class BoolMapper : ITypeMapper
     {
         public static readonly BoolMapper Interface = new BoolMapper();
         
