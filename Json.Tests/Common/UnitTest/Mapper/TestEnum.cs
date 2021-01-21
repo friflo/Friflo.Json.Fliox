@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             // C#/.NET behavior in case of duplicate enum v
             AreEqual(EnumClass.Value1, EnumClass.Value3);
 
-            using (TypeStore typeStore = new TypeStore(new DebugTypeResolver()))
+            using (TypeStore typeStore = new TypeStore(new DefaultTypeResolver(ResolverMode.Debug)))
             using (JsonReader enc = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
             using (var value1 = new Bytes("\"Value1\""))

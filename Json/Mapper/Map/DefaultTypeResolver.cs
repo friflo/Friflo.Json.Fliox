@@ -7,37 +7,42 @@ using Friflo.Json.Mapper.Map.Arr;
 using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Val;
 using Friflo.Json.Mapper.Types;
-// ReSharper disable InlineOutVariableDeclaration
 
+// ReSharper disable InlineOutVariableDeclaration
 namespace Friflo.Json.Mapper.Map
 {
-    public class DefaultTypeResolver : TypeResolver
-    {
-        public DefaultTypeResolver() : base (DefaultResolvers) {
-        }
-        
-        private static readonly IJsonMapper[] DefaultResolvers = {
-            BigIntMapper.Interface,
-            DateTimeMapper.Interface,
-            //
-            StringMapper.Interface,
-            DoubleMapper.Interface,
-            FloatMapper.Interface,
-            LongMapper.Interface,
-            IntMapper.Interface,
-            ShortMapper.Interface,
-            ByteMapper.Interface,
-            BoolMapper.Interface,
-            //  
-            ArrayMapper.Interface,
-            //  
-            ListMapper.Interface,
-            DictionaryMapper.Interface,
-            ClassMapper.Interface,
-        };
+    public enum ResolverMode {
+        Debug,
+        Release
     }
     
-    public class DebugTypeResolver : ITypeResolver {
+    public class DefaultTypeResolver : ITypeResolver
+    {
+        private readonly ResolverMode        mode;
+        private readonly List<IJsonMapper>   mappers;
+        
+        public DefaultTypeResolver() :
+            this (ResolverMode.Release) {
+        }
+
+        public DefaultTypeResolver(ResolverMode mode) {
+            this.mode = mode;
+            if (mode == ResolverMode.Release)
+                mappers = GetMappers();
+        }
+
+        public StubType CreateStubType(Type type) {
+            if (mode == ResolverMode.Debug) {
+                var query = new Query(Mode.Search);
+                return QueryStubType(type, query);
+            }
+            for (int i = 0; i < mappers.Count; i++) {
+                StubType stubType = mappers[i].CreateStubType(type);
+                if (stubType != null)
+                    return stubType;
+            }
+            return null;
+        }
         
         // find a codec manually to simplify debugging
         private StubType QueryStubType (Type type, Query q) {
@@ -105,10 +110,11 @@ namespace Friflo.Json.Mapper.Map
         }
 
         private bool Match(IJsonMapper mapper, Type type, ref Query query) {
-            query.hit = mapper.CreateStubType(type);
-            if (query.mode == Mode.Search)
+            if (query.mode == Mode.Search) {
+                query.hit = mapper.CreateStubType(type);
                 return query.hit != null;
-            
+            }
+
             query.mappers.Add(mapper);
             query.hit = null;
             return false;
@@ -133,13 +139,10 @@ namespace Friflo.Json.Mapper.Map
             var query = new Query(Mode.Enumerate) {
                 mappers = new List<IJsonMapper>()
             };
+            QueryStubType(null, query);
             return query.mappers;
         }
 
-        public StubType CreateStubType(Type type) {
-            var query = new Query(Mode.Search);
-            return QueryStubType(type, query);
-        }
     }
 }
 
