@@ -10,11 +10,11 @@ namespace Friflo.Json.Burst.Utils
 #endif
     public struct Utf8Utils
     {
-        public static bool IsStringEqualUtf8Val(String str, Bytes bytes) {
-            return IsStringEqualUtf8(str, ref bytes);
+        public static bool IsStringEqualUtf8 (String str, Bytes bytes) {
+            return IsStringEqualUtf8Ref(str, ref bytes);
         }
 
-        public static bool IsStringEqualUtf8(String str, ref Bytes bytes) {
+        public static bool IsStringEqualUtf8Ref(String str, ref Bytes bytes) {
             return IsStringEqualUtf8(str, ref bytes.buffer, bytes.start, bytes.end);
         }
 

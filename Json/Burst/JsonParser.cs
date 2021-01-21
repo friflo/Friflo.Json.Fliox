@@ -166,18 +166,18 @@ namespace Friflo.Json.Burst
 #pragma warning disable 618 // Performance degradation
             ref Bytes errMsg = ref error.msg;
             errMsg.Clear();
-            errMsg.AppendStr32(ref module);
+            errMsg.AppendStr32Ref(ref module);
             switch (errorType) {
-                case ErrorType.JsonError:           errMsg.AppendStr32Val("/JSON error: ");    break;
-                case ErrorType.Assertion:           errMsg.AppendStr32Val("/assertion: ");     break;
-                case ErrorType.ExternalError:       errMsg.AppendStr32Val("/error: ");         break;
+                case ErrorType.JsonError:           errMsg.AppendStr32 ("/JSON error: ");    break;
+                case ErrorType.Assertion:           errMsg.AppendStr32 ("/assertion: ");     break;
+                case ErrorType.ExternalError:       errMsg.AppendStr32 ("/error: ");         break;
             }
 
             errMsg.AppendStr128(ref msg);
             errMsg.AppendBytes(ref value);
-            errMsg.AppendStr32Val(" path: '");
+            errMsg.AppendStr32 (" path: '");
             AppendPath(ref errMsg);
-            errMsg.AppendStr32Val("' at position: ");
+            errMsg.AppendStr32 ("' at position: ");
             format.AppendInt(ref errMsg, position);
 #pragma warning restore 618
             error.Error(pos);
@@ -189,7 +189,7 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="module">Name of the module raising the error</param>
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
-        public void ErrorMsgVal(Str32 module, Str128 msg) {
+        public void ErrorMsg (Str32 module, Str128 msg) {
             errVal.Clear();
             Error(module, ErrorType.ExternalError, ref msg, ref errVal);
         }
@@ -298,13 +298,13 @@ namespace Friflo.Json.Burst
                             str.AppendChar(']');
                         }
                         else
-                            str.AppendStr32(ref emptyArray);
+                            str.AppendStr32Ref(ref emptyArray);
                         break;
                 }
             }
 #pragma warning disable 618 // Performance degradation by string copy
             if (initialEnd == str.end)
-                str.AppendStr32Val("(root)");
+                str.AppendStr32 ("(root)");
 #pragma warning restore 618
         }
 

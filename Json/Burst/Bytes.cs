@@ -312,7 +312,7 @@ namespace Friflo.Json.Burst
 
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public bool IsEqual32Val(Str32 value) {
+        public bool IsEqual32 (Str32 value) {
             return IsEqual32(ref value);
         }
 
@@ -331,11 +331,11 @@ namespace Friflo.Json.Burst
             return true;
         }
 #else
-        public bool IsEqual32(ref String cs) {
+        public bool IsEqual32Ref(ref String cs) {
             return IsEqualString(cs);
         }
         
-        public bool IsEqual32Val(String cs) {
+        public bool IsEqual32 (String cs) {
             return IsEqualString (cs);
         }
 #endif
@@ -381,7 +381,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool IsEqualString (String str) {
-            return Utf8Utils.IsStringEqualUtf8(str, ref this);
+            return Utf8Utils.IsStringEqualUtf8Ref(str, ref this);
         }
 /*
 #if JSON_BURST
@@ -639,7 +639,7 @@ namespace Friflo.Json.Burst
 
         // Note: Prefer using AppendStr32 (ref Str32 str)
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public void AppendStr32Val(Str32 str) {
+        public void AppendStr32 (Str32 str) {
             AppendStr32(ref str);
         }
 
@@ -660,11 +660,11 @@ namespace Friflo.Json.Burst
         }
         
         // Note: Prefer using AppendStr32 (ref String str)
-        public void AppendStr32Val (String str) {
+        public void AppendStr32 (String str) {
             AppendString(str);
         }
         
-        public void AppendStr32 (ref String str) {
+        public void AppendStr32Ref (ref String str) {
             AppendString(str);
         }
 #endif

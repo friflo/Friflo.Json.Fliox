@@ -106,7 +106,7 @@ namespace Friflo.Json.Burst
         
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStart(ref Bytes key) {
+        public void MemberArrayStartRef(ref Bytes key) {
             AssertMember();
             AddSeparator();
             dst.AppendChar('"');
@@ -202,7 +202,7 @@ namespace Friflo.Json.Burst
             dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
             dst.AppendChar2('\"', ':');
-            dst.AppendStr32(ref @null);
+            dst.AppendStr32Ref(ref @null);
         }
         
  

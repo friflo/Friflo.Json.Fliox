@@ -78,9 +78,9 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
 
         private static void WriteBuddy(ref JsonSerializer s, ref Keys k, ref Buddy buddy) {
             s.ObjectStart();
-            s.MemberStr (ref k.firstName,   ref buddy.firstName);
-            s.MemberDbl (ref k.age,         buddy.age);
-            s.MemberArrayStart(ref k.hobbies);
+            s.MemberStrRef (ref k.firstName,   ref buddy.firstName);
+            s.MemberDblRef (ref k.age,         buddy.age);
+            s.MemberArrayStartRef(ref k.hobbies);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, ref k, ref buddy.hobbies.ElementAt(n));
             s.ArrayEnd();
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         
         private static void WriteHobby(ref JsonSerializer s, ref Keys k, ref Hobby buddy) {
             s.ObjectStart();
-            s.MemberStr(ref k.name, ref buddy.name);
+            s.MemberStrRef(ref k.name, ref buddy.name);
             s.ObjectEnd();
         }
     }

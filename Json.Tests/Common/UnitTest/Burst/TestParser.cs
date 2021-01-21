@@ -380,7 +380,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     int arrCount = 0;
                     var obj = parser.GetObjectIterator ();
                     while (parser.NextObjectMember(ref obj, Skip.Auto)) {
-                        if (parser.UseMemberArrVal(ref obj, "arr")) {
+                        if (parser.UseMemberArr (ref obj, "arr")) {
                             arrCount++;
                             var arr = parser.GetArrayIterator();
                             while (parser.NextArrayElement(ref arr, Skip.Auto))
@@ -474,7 +474,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         var obj = parser.GetObjectIterator();
                         parser.NextObjectMember(ref obj, Skip.Auto);
                         AreEqual(JsonEvent.ArrayStart, parser.Event);
-                        AreEqual(true, parser.UseMemberArrVal(ref obj, "arr")); // used array without skipping
+                        AreEqual(true, parser.UseMemberArr (ref obj, "arr")); // used array without skipping
                         IsFalse(parser.NextObjectMember(ref obj, Skip.Auto));
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);

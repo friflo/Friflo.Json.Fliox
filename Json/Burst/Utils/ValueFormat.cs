@@ -45,9 +45,9 @@ namespace Friflo.Json.Burst.Utils
         public void AppendBool (ref Bytes dst, bool val)
         {
             if (val)
-                dst.AppendStr32(ref @true);
+                dst.AppendStr32Ref(ref @true);
             else
-                dst.AppendStr32(ref @false);
+                dst.AppendStr32Ref(ref @false);
             dst.hc = BytesConst.notHashed;
         }
 
@@ -140,24 +140,24 @@ namespace Friflo.Json.Burst.Utils
         public void AppendFlt (ref Bytes dst, float val)
         {
             if (val == 0.0f) {
-                dst.AppendStr32(ref zero);
+                dst.AppendStr32Ref(ref zero);
                 return;
             }
 
             // if (val == 1.0f / 0.0f) {
             if (float.IsPositiveInfinity(val)) {
-                dst.AppendStr32(ref infinity);
+                dst.AppendStr32Ref(ref infinity);
                 return;
             }
 
             // if (val == -1.0f / 0.0f) {
             if (float.IsNegativeInfinity(val)) {
-                dst.AppendStr32(ref negInfinity);
+                dst.AppendStr32Ref(ref negInfinity);
                 return;
             }
 
             if (Single.IsNaN(val)) {
-                dst.AppendStr32(ref nan);
+                dst.AppendStr32Ref(ref nan);
                 return;
             }
 
@@ -184,24 +184,24 @@ namespace Friflo.Json.Burst.Utils
         public void AppendDbl (ref Bytes dst, double val)
         {
             if (val == 0.0) {
-                dst.AppendStr32(ref zero);
+                dst.AppendStr32Ref(ref zero);
                 return;
             }
 
             // if (val == 1.0 / 0.0) {
             if (double.IsPositiveInfinity(val)) {
-                dst.AppendStr32(ref infinity);
+                dst.AppendStr32Ref(ref infinity);
                 return;
             }
 
             // if (val == -1.0 / 0.0) {
             if (double.IsNegativeInfinity(val)) {
-                dst.AppendStr32(ref negInfinity);
+                dst.AppendStr32Ref(ref negInfinity);
                 return;
             }
 
             if (Double.IsNaN(val)) {
-                dst.AppendStr32(ref nan);
+                dst.AppendStr32Ref(ref nan);
                 return;
             }
 

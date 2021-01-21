@@ -41,12 +41,12 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             s.InitSerializer();
             try {
                 s.ObjectStart();
-                    s.MemberStrVal ("firstName",   buddy.firstName);
-                    s.MemberDblVal ("age",         buddy.age);
-                    s.MemberArrayStartVal("hobbies");
+                    s.MemberStr ("firstName",   buddy.firstName);
+                    s.MemberDbl ("age",         buddy.age);
+                    s.MemberArrayStart ("hobbies");
                     for (int n = 0; n < buddy.hobbies.Count; n++) {
                         s.ObjectStart();
-                        s.MemberStrVal  ("name", buddy.hobbies[n].name);
+                        s.MemberStr ("name", buddy.hobbies[n].name);
                         s.ObjectEnd();
                     }
                     s.ArrayEnd();

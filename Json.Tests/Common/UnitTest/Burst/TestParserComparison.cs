@@ -211,19 +211,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             public void RootManualSkip(ref JsonParser p) {
                 ref var key = ref p.key;
                 while (NextObjectMember(ref p)) {
-                    if      (key.IsEqual32(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
-                    else if (key.IsEqual32(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
-                    else if (key.IsEqual32(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
-                    else if (key.IsEqual32(ref nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrManual(ref p); }
-                    else if (key.IsEqual32(ref nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrManual(ref p); }
-                    else if (key.IsEqual32(ref nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
-                    else if (key.IsEqual32(ref nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(ref nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
-                    else if (key.IsEqual32(ref nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(ref p.value); }
-                    else if (key.IsEqual32(ref nm.t)        && p.Event == JsonEvent.ValueBool)     { t = p.boolValue; }
-                    else if (key.IsEqual32(ref nm.n)        && p.Event == JsonEvent.ValueNull)     { foundNull = true; }
-                    else if (key.IsEqual32(ref nm.dbl)      && p.Event == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
-                    else if (key.IsEqual32(ref nm.flt)      && p.Event == JsonEvent.ValueNumber)   { flt = p.ValueAsFloat(out _); }
+                    if      (key.IsEqual32Ref(ref nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32Ref(ref nm.map2)     && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
+                    else if (key.IsEqual32Ref(ref nm.listStr)  && p.Event == JsonEvent.ArrayStart)    { ReadListStrManual(ref p); }
+                    else if (key.IsEqual32Ref(ref nm.arr)      && p.Event == JsonEvent.ArrayStart)    { ReadArrManual(ref p); }
+                    else if (key.IsEqual32Ref(ref nm.boolArr)  && p.Event == JsonEvent.ArrayStart)    { ReadBoolArrManual(ref p); }
+                    else if (key.IsEqual32Ref(ref nm.i64Arr)   && p.Event == JsonEvent.ArrayStart)    { int3.ReadManual(ref p); }
+                    else if (key.IsEqual32Ref(ref nm.i64)      && p.Event == JsonEvent.ValueNumber)   { i64 = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32Ref(ref nm.i64Neg)   && p.Event == JsonEvent.ValueNumber)   { i64Neg = p.ValueAsLong(out _); }
+                    else if (key.IsEqual32Ref(ref nm.str)      && p.Event == JsonEvent.ValueString)   { str.Set(ref p.value); }
+                    else if (key.IsEqual32Ref(ref nm.t)        && p.Event == JsonEvent.ValueBool)     { t = p.boolValue; }
+                    else if (key.IsEqual32Ref(ref nm.n)        && p.Event == JsonEvent.ValueNull)     { foundNull = true; }
+                    else if (key.IsEqual32Ref(ref nm.dbl)      && p.Event == JsonEvent.ValueNumber)   { dbl = p.ValueAsDouble(out _); }
+                    else if (key.IsEqual32Ref(ref nm.flt)      && p.Event == JsonEvent.ValueNumber)   { flt = p.ValueAsFloat(out _); }
                     else                                                                           { p.SkipEvent(); }
                 }
             }
@@ -231,19 +231,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             public void RootAutoSkip(ref JsonParser p) {
                 var i = p.GetObjectIterator();
                 while (p.NextObjectMember(ref i, Skip.Auto)) {
-                    if      (p.UseMemberObj(ref i, ref nm.map))       { p.SkipTree(); }
-                    else if (p.UseMemberObj(ref i, ref nm.map2))      { p.SkipTree(); }
-                    else if (p.UseMemberArr(ref i, ref nm.listStr))   { ReadListStrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, ref nm.arr))       { ReadArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, ref nm.boolArr))   { ReadBoolArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, ref nm.i64Arr))    { int3.ReadAuto(ref p); }
-                    else if (p.UseMemberNum(ref i, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
-                    else if (p.UseMemberNum(ref i, ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.UseMemberStr(ref i, ref nm.str))       { str.Set(ref p.value); }
-                    else if (p.UseMemberBln(ref i, ref nm.t))         { t = p.boolValue; }
-                    else if (p.UseMemberNul(ref i, ref nm.n))         { foundNull = true; }
-                    else if (p.UseMemberNum(ref i, ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
-                    else if (p.UseMemberNum(ref i, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
+                    if      (p.UseMemberObjRef(ref i, ref nm.map))       { p.SkipTree(); }
+                    else if (p.UseMemberObjRef(ref i, ref nm.map2))      { p.SkipTree(); }
+                    else if (p.UseMemberArrRef(ref i, ref nm.listStr))   { ReadListStrAuto(ref p); }
+                    else if (p.UseMemberArrRef(ref i, ref nm.arr))       { ReadArrAuto(ref p); }
+                    else if (p.UseMemberArrRef(ref i, ref nm.boolArr))   { ReadBoolArrAuto(ref p); }
+                    else if (p.UseMemberArrRef(ref i, ref nm.i64Arr))    { int3.ReadAuto(ref p); }
+                    else if (p.UseMemberNumRef(ref i, ref nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (p.UseMemberNumRef(ref i, ref nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
+                    else if (p.UseMemberStrRef(ref i, ref nm.str))       { str.Set(ref p.value); }
+                    else if (p.UseMemberBlnRef(ref i, ref nm.t))         { t = p.boolValue; }
+                    else if (p.UseMemberNulRef(ref i, ref nm.n))         { foundNull = true; }
+                    else if (p.UseMemberNumRef(ref i, ref nm.dbl))       { dbl = p.ValueAsDouble(out _); }
+                    else if (p.UseMemberNumRef(ref i, ref nm.flt))       { flt = p.ValueAsFloat(out _); }
                 }
             }
             
