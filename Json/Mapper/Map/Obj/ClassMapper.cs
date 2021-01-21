@@ -103,7 +103,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         StubType valueType = field.FieldType;
                         
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.FieldType;
                         
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!valueType.map.Read(reader, ref elemVar, valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case

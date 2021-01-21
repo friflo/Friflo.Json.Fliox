@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();
@@ -94,7 +94,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         map[key] = elemVar.Get();

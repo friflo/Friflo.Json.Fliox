@@ -97,9 +97,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                             if(!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             array.SetValue(elemVar.Obj, index);
-                        }
-                        else {
-                            elemVar.Clear();
+                        } else {
+                            elemVar.SetObjNull();
                             if (!elementType.map.Read(reader, ref elemVar, elementType))
                                 return false;
                             if (index >= len)

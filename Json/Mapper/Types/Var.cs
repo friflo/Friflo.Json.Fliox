@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Types
@@ -143,10 +144,13 @@ namespace Friflo.Json.Mapper.Types
             }
         }
 
-        public void  Clear() {
+        /// <summary>
+        /// Json.Burst support reusing existing object instances when calling <see cref="ITypeMapper.Read"/> via its
+        /// <see cref="Var"/> parameter. In case no object is available for reusing it net to be set to null with this method.
+        /// </summary>
+        public void  SetObjNull() {
             obj = null;
-            lng = 0;
-            dbl = 0;
+            isNull = true;
         }
 
         public override string ToString() {

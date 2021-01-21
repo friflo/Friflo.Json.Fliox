@@ -178,7 +178,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         if (index >= len)
@@ -192,7 +192,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        elemVar.Clear();
+                        elemVar.SetObjNull();
                         if (!elementType.map.Read(reader, ref elemVar, elementType))
                             return false;
                         if (index >= len)
