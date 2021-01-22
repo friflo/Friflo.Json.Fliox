@@ -100,5 +100,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(1, writer.Level);
             }
         }
+
+        class Base {
+            public int baseField;
+        }
+
+        class Derived : Base {
+            public int derivedField;
+        }
+        
+
+        [Test]
+        public void TestDerivedClass() {
+            string derivedJson = "{\"derivedField\":22,\"baseField\":11}";
+
+            using (var typeStore = new TypeStore())
+            using (var reader = new JsonReader(typeStore))
+            using (var writer = new JsonWriter(typeStore))
+            {
+                var result = reader.Read<Derived>(new Bytes(derivedJson));
+                AreEqual(11, result.baseField);
+                AreEqual(22, result.derivedField);
+                
+                writer.Write(result);
+                AreEqual(derivedJson, writer.Output.ToString());
+            }
+        }
     }
 }
