@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper
 
         public          ref Bytes Output => ref bytes;
 
-        public              int         level;
+        internal            int         level;
         public              int         maxDepth;
         
 
