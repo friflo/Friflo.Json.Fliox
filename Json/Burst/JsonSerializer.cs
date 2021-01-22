@@ -71,7 +71,7 @@ namespace Friflo.Json.Burst
             dst.Clear();
             format.InitTokenFormat();
             int initDepth = 16;
-            maxDepth = 1000;
+            maxDepth = 100;
             if (!firstEntry.IsCreated())
                 firstEntry = new ValueList<bool>  (initDepth, AllocType.Persistent); firstEntry.Resize(initDepth);
 #if DEBUG

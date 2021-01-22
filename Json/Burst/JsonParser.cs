@@ -338,7 +338,7 @@ namespace Friflo.Json.Burst
         private void InitContainers() {
             if (state.IsCreated())
                 return;
-            maxDepth = 1000;
+            maxDepth = 100;
             int initSize = 16;
             state =    new ValueList<State>(initSize, AllocType.Persistent); state.   Resize(initSize);
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
