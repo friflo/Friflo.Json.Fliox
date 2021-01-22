@@ -30,7 +30,9 @@ namespace Friflo.Json.Mapper.Types
         public EnumType(Type type, ITypeMapper map, bool isNullable) :
             base(type, map, isNullable)
         {
-            FieldInfo[] fields = type.GetFields();
+            Type enumType = isNullable ? Nullable.GetUnderlyingType(type): type;
+            // ReSharper disable once PossibleNullReferenceException
+            FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {
                 FieldInfo enumField = fields[n];
                 if (enumField.FieldType.IsEnum) {

@@ -53,6 +53,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 write.Write(EnumClass.Value3);
                 AreEqual("\"Value1\"", write.bytes.ToString());
+                
+                // --- Nullable
+                AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value1));
+                AreEqual(EnumClass.Value2, enc.Read<EnumClass?>(value2));
+                AreEqual(EnumClass.Value3, enc.Read<EnumClass?>(value3));
+                AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value3));
+                
+                write.Write<EnumClass?>(null);
+                AreEqual("null", write.bytes.ToString());
+                
+                write.Write<EnumClass?>(EnumClass.Value1);
+                AreEqual("\"Value1\"", write.bytes.ToString());
+                
             }
         }
 
