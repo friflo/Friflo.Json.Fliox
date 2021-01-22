@@ -30,9 +30,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             StringTokens value = (StringTokens) slot.Obj;
-            writer.bytes.AppendChar('\"');
-            writer.bytes.AppendString(string.Join(" ", value.tokens));
-            writer.bytes.AppendChar('\"');
+            WriteUtils.WriteString(writer, string.Join(" ", value.tokens));
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
@@ -45,7 +43,6 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             return true;
         }
     }
-    
 
     public class CustomTypeMapper
     {
