@@ -112,18 +112,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestDerivedClass() {
-            string derivedJson = "{\"derivedField\":22,\"baseField\":11}";
-
             using (var typeStore = new TypeStore())
+            using (var derivedJson = new Bytes("{\"derivedField\":22,\"baseField\":11}"))
             using (var reader = new JsonReader(typeStore))
             using (var writer = new JsonWriter(typeStore))
             {
-                var result = reader.Read<Derived>(new Bytes(derivedJson));
+                var result = reader.Read<Derived>(derivedJson);
                 AreEqual(11, result.baseField);
                 AreEqual(22, result.derivedField);
                 
                 writer.Write(result);
-                AreEqual(derivedJson, writer.Output.ToString());
+                AreEqual(derivedJson.ToString(), writer.Output.ToString());
             }
         }
     }
