@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         Value3 = 11, // duplicate constant value - C#/.NET maps these enum values to the first value using same constant   
     }
 
-    public class TestEnum
+    public class TestMapper
     { 
         [Test]
         public void TestEnumMapper() {
@@ -53,6 +53,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 write.Write(EnumClass.Value3);
                 AreEqual("\"Value1\"", write.bytes.ToString());
+            }
+        }
+
+        class RecursiveClass {
+            private RecursiveClass recField;
+        }
+        
+        [Test]
+        public void TestMaxDepth() {
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader enc = new JsonReader(typeStore))
+            using (var recDepth1 = new Bytes("{\"recField\":null}"))
+            using (var recDepth2 = new Bytes("{\"recField\":{\"recField\":null}}"))
+            {
+                enc.maxDepth = 1;
+                enc.Read<RecursiveClass>(recDepth1);
+                AreEqual(JsonEvent.EOF, enc.parser.Event);
+
+                enc.Read<RecursiveClass>(recDepth2);
+                AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: 'recField' at position: 13", enc.Error.msg.ToString());
+
             }
         }
     }

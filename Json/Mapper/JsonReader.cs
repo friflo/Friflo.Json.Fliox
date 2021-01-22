@@ -16,6 +16,7 @@ namespace Friflo.Json.Mapper
     public class JsonReader : IDisposable
     {
         public              JsonParser      parser;
+        public              int             maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public   readonly   TypeCache       typeCache;
 
@@ -38,6 +39,7 @@ namespace Friflo.Json.Mapper
         public JsonReader(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
             parser = new JsonParser {error = {throwException = false}};
+            maxDepth = 100;
         }
 
         public void Dispose() {
@@ -99,6 +101,7 @@ namespace Friflo.Json.Mapper
 
         private bool ReadStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {
             parser.InitParser(bytes, offset, len);
+            parser.SetMaxDepth(maxDepth);
             
             while (true) {
                 JsonEvent ev = parser.NextEvent();
