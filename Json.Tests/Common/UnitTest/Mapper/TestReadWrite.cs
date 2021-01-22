@@ -245,9 +245,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         curTestClass = curTestClass.selfReference;
                     }
                     write.Write(root);
-                    Read<TestMapperClass>(write.Output);
-                    AreEqual(JsonEvent.EOF, enc.parser.Event);
-                    
+                    {
+                        var result = Read<TestMapperClass>(write.Output);
+                        if (JsonEvent.Error == enc.parser.Event)
+                            Fail(enc.Error.msg.ToString());
+                        AreEqual(root, result);
+                    }
                     enc.Read<TestMapperClass>(mapNull);
                     StringAssert.Contains("Cannot assign null to class field: key. Expect: System.Int32, got: null path: 'key'", enc.Error.msg.ToString());
                     

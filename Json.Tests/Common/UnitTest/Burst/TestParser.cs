@@ -503,7 +503,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 while (true) {
                     var ev = parser.NextEvent();
                     if (ev == JsonEvent.Error) {
-                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth1 path: '[0]' at position: 2", parser.error.msg.ToString());
+                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: '[0]' at position: 2", parser.error.msg.ToString());
                         break;
                     }
                 }

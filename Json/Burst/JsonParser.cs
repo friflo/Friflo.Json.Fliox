@@ -520,7 +520,7 @@ namespace Friflo.Json.Burst
                     return JsonEvent.Error;
                 case '{':
                     if (stateLevel >= maxDepth)
-                        return SetErrorInt("nesting in JSON document exceed maxDepth", maxDepth);
+                        return SetErrorInt("nesting in JSON document exceed maxDepth: ", maxDepth);
                     if (++stateLevel >= pathPos.Count)
                         ResizeBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
@@ -528,7 +528,7 @@ namespace Friflo.Json.Burst
                     return lastEvent = JsonEvent.ObjectStart;
                 case '[':
                     if (stateLevel >= maxDepth)
-                        return SetErrorInt("nesting in JSON document exceed maxDepth", maxDepth);
+                        return SetErrorInt("nesting in JSON document exceed maxDepth: ", maxDepth);
                     if (++stateLevel >= pathPos.Count)
                         ResizeBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
