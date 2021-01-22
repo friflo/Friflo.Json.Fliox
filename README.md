@@ -86,6 +86,13 @@ CPU/memory resources to the main thread being the critical path in game loops.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
   `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.
 - Fail safe in case of JSON and application errors
+- Ensuring a maximum level (`maxDepth`) of nested JSON objects and arrays. E.g. a JSON like `[[[...]]]`.
+  The default `maxDepth` is set 100.  
+  A limit of 3000 (Windows 10) is possible without getting a stack overflow.
+  The reason for the limit is that both `JsonReader` & `JsonWriter` are using a recursive implementation.
+  The low level parser itself  can be used without any limit as it is an iterator used by `JsonParser.NextEvent()`.
+    - Reading JSON exceeding `maxDepth` with `JsonParser` or `JsonReader` will result in an JSON error.
+    - When writing JSON the `JsonSerializer` and `JsonWriter` ensures this constrain via a runtime exception to avoid accidentally raising this limit.
 - No dependencies to 3rd party libraries. The used .NET API namespaces are mentioned above.  
   A Unity specific dependency is required when compiling within Unity with **UNITY_BURST** which is
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
