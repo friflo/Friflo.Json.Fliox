@@ -29,6 +29,7 @@ namespace Friflo.Json.Mapper
         public          ref Bytes Output => ref bytes;
 
         internal            int         level;
+        public              int         Level => level;
         public              int         maxDepth;
         
 
@@ -75,7 +76,8 @@ namespace Friflo.Json.Mapper
                 WriteUtils.AppendNull(this);
             else
                 stubType.map.Write(this, ref valueVar, stubType);
-            WriteUtils.DecLevel(this, 0);
+            if (level != 0)
+                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
         }
     }
 }

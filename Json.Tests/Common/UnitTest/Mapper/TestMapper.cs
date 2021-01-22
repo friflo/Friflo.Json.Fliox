@@ -68,6 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var recDepth1 = new Bytes("{\"recField\":null}"))
             using (var recDepth2 = new Bytes("{\"recField\":{\"recField\":null}}"))
             {
+                // --- JsonReader
                 enc.maxDepth = 1;
                 var result = enc.Read<RecursiveClass>(recDepth1);
                 AreEqual(JsonEvent.EOF, enc.parser.Event);
@@ -75,14 +76,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                 enc.Read<RecursiveClass>(recDepth2);
                 AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: 'recField' at position: 13", enc.Error.msg.ToString());
-                //
+                
+                // --- JsonWriter
+                // maxDepth: 1
                 writer.maxDepth = 1;
                 writer.Write(new RecursiveClass());
+                AreEqual(0, writer.Level);
                 // no exception
 
                 var rec = new RecursiveClass { recField = new RecursiveClass() };
                 var e = Throws<InvalidOperationException>(() => writer.Write(rec));
                 AreEqual("JsonParser: maxDepth exceeded. maxDepth: 1", e.Message);
+                AreEqual(2, writer.Level);
+                
+                // maxDepth: 0
+                writer.maxDepth = 0;
+                writer.Write(1);
+                AreEqual(0, writer.Level);
+                // no exception
+                
+                var e2 = Throws<InvalidOperationException>(() => writer.Write(new RecursiveClass()));
+                AreEqual("JsonParser: maxDepth exceeded. maxDepth: 0", e2.Message);
+                AreEqual(1, writer.Level);
             }
         }
     }
