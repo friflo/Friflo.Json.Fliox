@@ -157,6 +157,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+            int startLevel = WriteUtils.IncLevel(writer);
             List<T> list = (List<T>) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
             writer.bytes.AppendChar('[');
@@ -172,6 +173,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     elementType.map.Write(writer, ref elemVar, elementType);
             }
             writer.bytes.AppendChar(']');
+            WriteUtils.DecLevel(writer, startLevel);
         }
         
 

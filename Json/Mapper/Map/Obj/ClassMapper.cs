@@ -36,6 +36,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+            int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             object obj = slot.Obj;
             ClassType type = (ClassType)stubType;
@@ -69,6 +70,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             }
             bytes.AppendChar('}');
+            WriteUtils.DecLevel(writer, startLevel);
         }
             
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {

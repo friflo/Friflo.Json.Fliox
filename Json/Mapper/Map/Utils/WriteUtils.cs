@@ -32,5 +32,16 @@ namespace Friflo.Json.Mapper.Map.Utils
             writer.bytes.AppendBytes(ref writer.@null);
         }
         
+        public static int IncLevel(JsonWriter writer) {
+            if (writer.level++ < writer.maxDepth)
+                return writer.level;
+            throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {writer.maxDepth}");
+        }
+
+        public static void DecLevel(JsonWriter writer, int expectedLevel) {
+            if (writer.level-- != expectedLevel)
+                throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {writer.level + 1}");
+        }
+        
     }
 }

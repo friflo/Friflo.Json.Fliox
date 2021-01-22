@@ -28,8 +28,13 @@ namespace Friflo.Json.Mapper
 
         public          ref Bytes Output => ref bytes;
 
+        public              int         level;
+        public              int         maxDepth;
+        
+
         public JsonWriter(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
+            maxDepth = 1000;
         }
         
         public void Dispose() {
@@ -65,10 +70,12 @@ namespace Friflo.Json.Mapper
             strBuf.InitBytes(128);
             format.InitTokenFormat();
             bytes.Clear();
+            level = 0;
             if (valueVar.IsNull)
                 WriteUtils.AppendNull(this);
             else
                 stubType.map.Write(this, ref valueVar, stubType);
+            WriteUtils.DecLevel(this, 0);
         }
     }
 }
