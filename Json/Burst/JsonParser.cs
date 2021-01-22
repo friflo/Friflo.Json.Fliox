@@ -325,7 +325,7 @@ namespace Friflo.Json.Burst
 #pragma warning restore 618
         }
 
-        private void ResizeBuffers(int size) {
+        private void ResizeDepthBuffers(int size) {
             // resizing to size is enough, but allocate more in advance
             size *= 2;
             state.Resize(size);
@@ -522,7 +522,7 @@ namespace Friflo.Json.Burst
                     if (stateLevel >= maxDepth)
                         return SetErrorInt("nesting in JSON document exceed maxDepth: ", maxDepth);
                     if (++stateLevel >= pathPos.Count)
-                        ResizeBuffers(stateLevel + 1);
+                        ResizeDepthBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
                     state.array[stateLevel] = State.ExpectMemberFirst;
                     return lastEvent = JsonEvent.ObjectStart;
@@ -530,7 +530,7 @@ namespace Friflo.Json.Burst
                     if (stateLevel >= maxDepth)
                         return SetErrorInt("nesting in JSON document exceed maxDepth: ", maxDepth);
                     if (++stateLevel >= pathPos.Count)
-                        ResizeBuffers(stateLevel + 1);
+                        ResizeDepthBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
                     state.array[stateLevel] = State.ExpectElementFirst;
                     arrIndex.array[stateLevel] = -1;

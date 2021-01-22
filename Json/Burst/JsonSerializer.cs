@@ -40,8 +40,8 @@ namespace Friflo.Json.Burst
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
         public      Bytes                   dst;
         private     ValueFormat             format;
-        private     ValueArray<bool>        firstEntry;
-        private     ValueArray<NodeType>    nodeType;
+        private     ValueList<bool>         firstEntry;
+        private     ValueList<NodeType>     nodeType;
         private     Bytes                   strBuf;
         private     int                     level;
         private     Str32                   @null;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Burst
         public      int                     Level => level;
         
 #pragma warning disable 649  // Field 'startGuard' is never assigned
-        private     ValueArray<bool>        startGuard;
+        private     ValueList<bool>         startGuard;
 #pragma warning restore 649
 
         enum NodeType {
@@ -67,20 +67,29 @@ namespace Friflo.Json.Burst
                 dst.InitBytes(128);
             dst.Clear();
             format.InitTokenFormat();
+            int initDepth = 16;
             if (!firstEntry.IsCreated())
-                firstEntry = new ValueArray<bool>(32);
+                firstEntry = new ValueList<bool>  (initDepth, AllocType.Persistent); firstEntry.Resize(initDepth);
 #if DEBUG
             if (!startGuard.IsCreated())
-                startGuard = new ValueArray<bool>(32);
+                startGuard = new ValueList<bool>  (initDepth, AllocType.Persistent); startGuard.Resize(initDepth);
 #endif
             if (!nodeType.IsCreated())
-                nodeType = new ValueArray<NodeType>(32);
+                nodeType = new ValueList<NodeType>(initDepth, AllocType.Persistent); nodeType.  Resize(initDepth);
             if (!strBuf.buffer.IsCreated())
                 strBuf.InitBytes(128);
             @null = "null"; 
             level = 0;
             firstEntry.array[0] = true;
             nodeType.array[0] = NodeType.Undefined;
+        }
+
+        private void ResizeDepthBuffers(int size) {
+            // resizing to size is enough, but allocate more in advance
+            size *= 2;
+            firstEntry.Resize(size);
+            startGuard.Resize(size);
+            nodeType.Resize(size);
         }
         
         [Conditional("DEBUG")]
@@ -191,7 +200,9 @@ namespace Friflo.Json.Burst
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('{');
-            firstEntry.array[++level] = true;
+            level++;
+            ResizeDepthBuffers(level + 1);
+            firstEntry.array[level] = true;
             nodeType.array[level] = NodeType.Object;
             ClearStartGuard();
         }
@@ -366,7 +377,9 @@ namespace Friflo.Json.Burst
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('[');
-            firstEntry.array[++level] = true;
+            level++;
+            ResizeDepthBuffers(level + 1);
+            firstEntry.array[level] = true;
             nodeType.array[level] = NodeType.Array;
             SetStartGuard();
         }
