@@ -36,14 +36,13 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         }
 
         public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (reader.parser.Event == JsonEvent.ValueString) {
-                string value =  reader.parser.value.ToString();
-                if (value.Contains(","))
-                    return ReadUtils.ErrorMsg(reader, "Invalid separator in token value", value);
-                slot.Obj = new StringTokens { tokens = value.Split(' ')};
-                return true;
-            }
-            return ValueUtils.CheckElse(reader, ref slot, stubType);
+            if (reader.parser.Event != JsonEvent.ValueString)
+                return ValueUtils.CheckElse(reader, ref slot, stubType);    
+            string value =  reader.parser.value.ToString();
+            if (value.Contains(","))
+                return ReadUtils.ErrorMsg(reader, "Invalid separator in token value", value);
+            slot.Obj = new StringTokens { tokens = value.Split(' ')};
+            return true;
         }
     }
     
