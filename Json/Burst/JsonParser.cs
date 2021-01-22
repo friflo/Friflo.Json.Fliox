@@ -327,7 +327,7 @@ namespace Friflo.Json.Burst
 
         private void ResizeBuffers(int size) {
             // resizing to size is enough, but allocate more in advance
-            size += 16;
+            size *= 2;
             state.Resize(size);
             pathPos.Resize(size);
             arrIndex.Resize(size);
