@@ -73,6 +73,7 @@ namespace Friflo.Json.Burst
         private     ByteList            buf;
         private     int                 bufEnd;
         private     int                 stateLevel;
+        private     int                 maxDepth;
         private     int                 startPos;
     
         private     State               preErrorState;
@@ -142,7 +143,9 @@ namespace Friflo.Json.Burst
 
         /// <summary>Returns the current depth inside the JSON document while parsing</summary>
         public int          Level => stateLevel;
-
+        public int          MaxDepth => maxDepth;
+        public void         SetMaxDepth(int value) { this.maxDepth = value; }
+        
         enum ErrorType {
             JsonError,
             Assertion,
@@ -211,6 +214,13 @@ namespace Friflo.Json.Burst
         private JsonEvent SetErrorChar (Str128 msg, char c) {
             errVal.Clear();
             errVal.AppendChar(c);
+            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            return JsonEvent.Error;
+        }
+        
+        private JsonEvent SetErrorInt (Str128 msg, int value) {
+            errVal.Clear();
+            format.AppendInt(ref errVal, value);
             Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
             return JsonEvent.Error;
         }
@@ -303,6 +313,11 @@ namespace Friflo.Json.Burst
                             str.AppendStr32Ref(ref emptyArray);
                         break;
                 }
+                // Limit path "string" to reasonable size. Otherwise DDoS may abuse unlimited error messages.
+                if (str.Len > 500) {
+                    str.AppendStr32("...");
+                    return;
+                }
             }
 #pragma warning disable 618 // Performance degradation by string copy
             if (initialEnd == str.end)
@@ -321,6 +336,7 @@ namespace Friflo.Json.Burst
         private void InitContainers() {
             if (state.IsCreated())
                 return;
+            maxDepth = 1000;
             int initSize = 16;
             state =    new ValueList<State>(initSize, AllocType.Persistent); state.   Resize(initSize);
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
@@ -465,14 +481,12 @@ namespace Friflo.Json.Burst
                 switch (c)
                 {
                     case '{':
-                        if (++stateLevel >= pathPos.Count)
-                            ResizeBuffers(stateLevel + 1);
+                        stateLevel++; // no index check, iterator is on root level (stateLevel == 0)
                         pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
                         state.array[stateLevel] = State.ExpectMemberFirst;
                         return lastEvent = JsonEvent.ObjectStart;
                     case '[':
-                        if (++stateLevel >= pathPos.Count)
-                            ResizeBuffers(stateLevel + 1);
+                        stateLevel++; // no index check, iterator is on root level (stateLevel == 0)
                         pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
                         state.array[stateLevel] = State.ExpectElementFirst;
                         arrIndex.array[stateLevel] = -1;
@@ -505,12 +519,16 @@ namespace Friflo.Json.Burst
                         return lastEvent = JsonEvent.ValueString;
                     return JsonEvent.Error;
                 case '{':
+                    if (stateLevel >= maxDepth)
+                        return SetErrorInt("nesting in JSON document exceed maxDepth", maxDepth);
                     if (++stateLevel >= pathPos.Count)
                         ResizeBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
                     state.array[stateLevel] = State.ExpectMemberFirst;
                     return lastEvent = JsonEvent.ObjectStart;
                 case '[':
+                    if (stateLevel >= maxDepth)
+                        return SetErrorInt("nesting in JSON document exceed maxDepth", maxDepth);
                     if (++stateLevel >= pathPos.Count)
                         ResizeBuffers(stateLevel + 1);
                     pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];

@@ -482,5 +482,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 #endif
             }
         }
+
+        [Test]
+        public void TestMaxDepth() {
+            using (JsonParser parser = new JsonParser())
+            using (var jsonDepth1 = new Bytes("[]"))
+            using (var jsonDepth2 = new Bytes("[[]]"))
+            {
+                parser.InitParser(jsonDepth1);
+                parser.SetMaxDepth (1);
+                while (true) {
+                    var ev = parser.NextEvent();
+                    if (ev == JsonEvent.EOF) 
+                        break; // expected
+                    if (ev == JsonEvent.Error)
+                        Fail(parser.error.msg.ToString());
+                }
+                parser.InitParser(jsonDepth2);
+                parser.SetMaxDepth (1);
+                while (true) {
+                    var ev = parser.NextEvent();
+                    if (ev == JsonEvent.Error) {
+                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth1 path: '[0]' at position: 2", parser.error.msg.ToString());
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
