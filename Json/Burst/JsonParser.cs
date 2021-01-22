@@ -76,9 +76,9 @@ namespace Friflo.Json.Burst
         private     int                 startPos;
     
         private     State               preErrorState;
-        private     ValueArray<State>   state;
-        private     ValueArray<int>     pathPos; // used for current path
-        private     ValueArray<int>     arrIndex; // used for current path
+        private     ValueList<State>   state;
+        private     ValueList<int>     pathPos; // used for current path
+        private     ValueList<int>     arrIndex; // used for current path
 
         public      JsonError           error;
 
@@ -274,11 +274,13 @@ namespace Friflo.Json.Burst
             if (errored)
                 level++;
             for (int n = 1; n <= level; n++) {
-                State curState = state.array[n];
+                State curState;
                 int index = n;
                 if (errored && n == level) {
                     curState = preErrorState;
                     index = n - 1;
+                } else {
+                    curState = state.array[n];
                 }
                 switch (curState) {
                     case State.ExpectMember:
@@ -308,12 +310,21 @@ namespace Friflo.Json.Burst
 #pragma warning restore 618
         }
 
+        private void ResizeBuffers(int size) {
+            // resizing to size is enough, but allocate more in advance
+            size += 16;
+            state.Resize(size);
+            pathPos.Resize(size);
+            arrIndex.Resize(size);
+        }
+
         private void InitContainers() {
             if (state.IsCreated())
                 return;
-            state =  new ValueArray<State>(32);
-            pathPos = new ValueArray<int>(32);
-            arrIndex = new ValueArray<int>(32);
+            int initSize = 16;
+            state =    new ValueList<State>(initSize, AllocType.Persistent); state.   Resize(initSize);
+            pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
+            arrIndex = new ValueList<int>  (initSize, AllocType.Persistent); arrIndex.Resize(initSize);
             error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -454,12 +465,16 @@ namespace Friflo.Json.Burst
                 switch (c)
                 {
                     case '{':
-                        pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
-                        state.array[++stateLevel] = State.ExpectMemberFirst;
+                        if (++stateLevel >= pathPos.Count)
+                            ResizeBuffers(stateLevel + 1);
+                        pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
+                        state.array[stateLevel] = State.ExpectMemberFirst;
                         return lastEvent = JsonEvent.ObjectStart;
                     case '[':
-                        pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
-                        state.array[++stateLevel] = State.ExpectElementFirst;
+                        if (++stateLevel >= pathPos.Count)
+                            ResizeBuffers(stateLevel + 1);
+                        pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
+                        state.array[stateLevel] = State.ExpectElementFirst;
                         arrIndex.array[stateLevel] = -1;
                         return lastEvent = JsonEvent.ArrayStart;
                     case -1:
@@ -490,12 +505,16 @@ namespace Friflo.Json.Burst
                         return lastEvent = JsonEvent.ValueString;
                     return JsonEvent.Error;
                 case '{':
-                    pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
-                    state.array[++stateLevel] = State.ExpectMemberFirst;
+                    if (++stateLevel >= pathPos.Count)
+                        ResizeBuffers(stateLevel + 1);
+                    pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
+                    state.array[stateLevel] = State.ExpectMemberFirst;
                     return lastEvent = JsonEvent.ObjectStart;
                 case '[':
-                    pathPos.array[stateLevel+1] = pathPos.array[stateLevel];
-                    state.array[++stateLevel] = State.ExpectElementFirst;
+                    if (++stateLevel >= pathPos.Count)
+                        ResizeBuffers(stateLevel + 1);
+                    pathPos.array[stateLevel] = pathPos.array[stateLevel - 1];
+                    state.array[stateLevel] = State.ExpectElementFirst;
                     arrIndex.array[stateLevel] = -1;
                     return lastEvent = JsonEvent.ArrayStart;
                 case '0':   case '1':   case '2':   case '3':   case '4':
