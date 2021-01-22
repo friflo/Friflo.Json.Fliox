@@ -15,17 +15,49 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             IList<int> iList = null;
             ISet<int> iSet = null;
             //
-            var set = new HashSet<int>();
-            var queue = new Queue<int>();
-            var stack = new Stack<int>();
-            var linkedList = new LinkedList<int>();
+            {
+                var set = new HashSet<int>();
+                set.Add(1);
+                IEnumerator iter = set.GetEnumerator();
+                iter.MoveNext();
+            }
+            {
+                var queue = new Queue<int>();
+                queue.Enqueue(1);
+                IEnumerator iter = queue.GetEnumerator();
+                iter.MoveNext();
+            } {
+                var stack = new Stack<int>();
+                stack.Push(1);
+                IEnumerator iter = stack.GetEnumerator();
+                iter.MoveNext();
+            } {
+                var linkedList = new LinkedList<int>();
+                linkedList.AddLast(1);
+                var last = linkedList.Last;
+                if (last != null)
+                    linkedList.AddAfter(last, 2);
+                IEnumerator iter = linkedList.GetEnumerator();
+                iter.MoveNext();
+            } {
+                var sortedList = new SortedList<string, int>();
+                sortedList.Add("a", 1);
+                IEnumerator iter = sortedList.GetEnumerator();
+                iter.MoveNext();
+            } {
+                var arrayList = new ArrayList();
+                arrayList.Add(1);
+                IEnumerator iter = arrayList.GetEnumerator();
+                iter.MoveNext();
+            }
             //
-            var arrayList = new ArrayList();
-            //
-            var sortedListObj = new SortedList();
-            var sortedList = new SortedList<string, int>();
-            
+            {
+                var sortedList = new SortedList();
+                sortedList.Add("a", 1);
+                IEnumerator iter = sortedList.GetEnumerator();
+                iter.MoveNext();
 
+            } 
         }
     }
 }
