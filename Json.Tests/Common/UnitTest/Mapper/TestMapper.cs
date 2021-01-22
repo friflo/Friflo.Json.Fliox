@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class RecursiveClass {
-            private RecursiveClass recField;
+            public readonly RecursiveClass recField = null;
         }
         
         [Test]
@@ -68,8 +68,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var recDepth2 = new Bytes("{\"recField\":{\"recField\":null}}"))
             {
                 enc.maxDepth = 1;
-                enc.Read<RecursiveClass>(recDepth1);
+                var result = enc.Read<RecursiveClass>(recDepth1);
                 AreEqual(JsonEvent.EOF, enc.parser.Event);
+                IsNull(result.recField);
 
                 enc.Read<RecursiveClass>(recDepth2);
                 AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: 'recField' at position: 13", enc.Error.msg.ToString());

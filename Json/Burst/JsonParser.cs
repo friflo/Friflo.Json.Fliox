@@ -315,13 +315,15 @@ namespace Friflo.Json.Burst
                 }
                 // Limit path "string" to reasonable size. Otherwise DDoS may abuse unlimited error messages.
                 if (str.Len > 500) {
+#pragma warning disable 618 // Performance degradation by string copy
                     str.AppendStr32("...");
+#pragma warning restore 618
                     return;
                 }
             }
 #pragma warning disable 618 // Performance degradation by string copy
             if (initialEnd == str.end)
-                str.AppendStr32 ("(root)");
+                str.AppendStr32 ("(root)"); 
 #pragma warning restore 618
         }
 
