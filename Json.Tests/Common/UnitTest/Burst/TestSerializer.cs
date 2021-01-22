@@ -187,5 +187,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
 #endif
         }
+        
+        [Test]
+        public void TestMaxDepth() {
+            using (JsonSerializer ser = new JsonSerializer())
+            {
+                // --- JsonSerializer
+                ser.InitSerializer();
+                ser.SetMaxDepth(1);
+                
+                // case OK
+                ser.ArrayStart();
+                ser.ArrayEnd();
+                AreEqual(0, ser.Level);
+                AreEqual("[]", ser.dst.ToString());
+                
+                // case exception
+                ser.ArrayStart();
+                var e = Throws<InvalidOperationException>(() => ser.ArrayStart()); // add second array
+                AreEqual("JsonSerializer exceed maxDepth: 1", e.Message);
+            }
+        }
+
     }
 }

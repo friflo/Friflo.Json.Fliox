@@ -44,9 +44,12 @@ namespace Friflo.Json.Burst
         private     ValueList<NodeType>     nodeType;
         private     Bytes                   strBuf;
         private     int                     level;
+        private     int                     maxDepth;
         private     Str32                   @null;
 
         public      int                     Level => level;
+        public      int                     MaxDepth => maxDepth;
+        public      void                    SetMaxDepth(int size) { maxDepth= size; }
         
 #pragma warning disable 649  // Field 'startGuard' is never assigned
         private     ValueList<bool>         startGuard;
@@ -68,6 +71,7 @@ namespace Friflo.Json.Burst
             dst.Clear();
             format.InitTokenFormat();
             int initDepth = 16;
+            maxDepth = 1000;
             if (!firstEntry.IsCreated())
                 firstEntry = new ValueList<bool>  (initDepth, AllocType.Persistent); firstEntry.Resize(initDepth);
 #if DEBUG
@@ -200,8 +204,10 @@ namespace Friflo.Json.Burst
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('{');
-            level++;
-            ResizeDepthBuffers(level + 1);
+            if (level >= maxDepth)
+                throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
+            if (++level >= firstEntry.Count)
+                ResizeDepthBuffers(level + 1);
             firstEntry.array[level] = true;
             nodeType.array[level] = NodeType.Object;
             ClearStartGuard();
@@ -377,8 +383,10 @@ namespace Friflo.Json.Burst
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             dst.AppendChar('[');
-            level++;
-            ResizeDepthBuffers(level + 1);
+            if (level >= maxDepth)
+                throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
+            if (++level >= firstEntry.Count)
+                ResizeDepthBuffers(level + 1);
             firstEntry.array[level] = true;
             nodeType.array[level] = NodeType.Array;
             SetStartGuard();
