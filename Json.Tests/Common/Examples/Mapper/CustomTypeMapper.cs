@@ -27,19 +27,19 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         }
     }
     
-    public class StringTokenMapper : ITypeMapper
+    public class StringTokenMapper : TypeMapper
     {
         public static readonly StringTokenMapper Interface = new StringTokenMapper();
         
-        public string DataTypeName() { return "tokens"; }
+        public override string DataTypeName() { return "tokens"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             StringTokens value = (StringTokens) slot.Obj;
             WriteUtils.WriteString(writer, string.Join(" ", value.tokens));
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueString)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);    
             string value =  reader.parser.value.ToString();

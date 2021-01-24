@@ -33,12 +33,12 @@ namespace Friflo.Json.Mapper.Map.Obj
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ClassMapper : ITypeMapper {
+    public class ClassMapper : TypeMapper {
         public static readonly ClassMapper Interface = new ClassMapper();
         
-        public string DataTypeName() { return "class"; }
+        public override string DataTypeName() { return "class"; }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             object obj = slot.Obj;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             WriteUtils.DecLevel(writer, startLevel);
         }
             
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             // Ensure preconditions are fulfilled
             if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
                 return success;

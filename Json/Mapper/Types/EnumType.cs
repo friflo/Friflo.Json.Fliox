@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Types
         //
         internal readonly Dictionary<long, Enum>        integralToEnum = new Dictionary<long, Enum>();
 
-        public EnumType(Type type, ITypeMapper map, bool isNullable) :
+        public EnumType(Type type, TypeMapper map, bool isNullable) :
             base(type, map, isNullable)
         {
             Type enumType = isNullable ? Nullable.GetUnderlyingType(type): type;

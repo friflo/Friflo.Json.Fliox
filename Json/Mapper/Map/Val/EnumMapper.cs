@@ -23,13 +23,13 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EnumMapper : ITypeMapper
+    public class EnumMapper : TypeMapper
     {
         public static readonly EnumMapper Interface = new EnumMapper();
         
-        public string DataTypeName() { return "enum"; }
+        public override string DataTypeName() { return "enum"; }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
             if (enumType.enumToString.TryGetValue((Enum)slot.Obj, out BytesString enumName)) {
                 writer.bytes.AppendChar('\"');
@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Val
             }
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {

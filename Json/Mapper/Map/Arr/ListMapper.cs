@@ -33,13 +33,13 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper : ITypeMapper
+    public class ListMapper : TypeMapper
     {
         public static readonly ListMapper Interface = new ListMapper();
         
-        public string DataTypeName() { return "List"; }
+        public override string DataTypeName() { return "List"; }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);
             IList list = (IList) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             

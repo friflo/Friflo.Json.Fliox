@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Types
         internal CollectionType (
             Type            type,
             Type            elementType,
-            ITypeMapper     map,
+            TypeMapper     map,
             int             rank,
             Type            keyType,
             ConstructorInfo constructor) : base (type, map, true)

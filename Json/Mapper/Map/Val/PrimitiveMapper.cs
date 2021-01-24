@@ -21,18 +21,17 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class StringMapper : ITypeMapper
+    public class StringMapper : TypeMapper
     {
         public static readonly StringMapper Interface = new StringMapper();
         
-        public string DataTypeName() { return "string"; }
+        public override string DataTypeName() { return "string"; }
 
-        
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             WriteUtils.WriteString(writer, (string) slot.Obj);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueString)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Obj = reader.parser.value.ToString();
@@ -51,18 +50,17 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class DoubleMapper : ITypeMapper
+    public class DoubleMapper : TypeMapper
     {
         public static readonly DoubleMapper Interface = new DoubleMapper();
         
-        public string DataTypeName() { return "double"; }
+        public override string DataTypeName() { return "double"; }
 
-        
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
@@ -81,18 +79,18 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class FloatMapper : ITypeMapper
+    public class FloatMapper : TypeMapper
     {
         public static readonly FloatMapper Interface = new FloatMapper();
         
-        public string DataTypeName() { return "float"; }
+        public override string DataTypeName() { return "float"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendFlt(ref writer.bytes, slot.Flt);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
@@ -110,18 +108,18 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class LongMapper : ITypeMapper
+    public class LongMapper : TypeMapper
     {
         public static readonly LongMapper Interface = new LongMapper();
         
-        public string DataTypeName() { return "long"; }
+        public override string DataTypeName() { return "long"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendLong(ref writer.bytes, slot.Lng);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Lng = reader.parser.ValueAsLong(out bool success);
@@ -139,18 +137,18 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class IntMapper : ITypeMapper
+    public class IntMapper : TypeMapper
     {
         public static readonly IntMapper Interface = new IntMapper();
         
-        public string DataTypeName() { return "int"; }
+        public override string DataTypeName() { return "int"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Int);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Int = reader.parser.ValueAsInt(out bool success);
@@ -167,17 +165,17 @@ namespace Friflo.Json.Mapper.Map.Val
             return new PrimitiveType (type, ShortMapper.Interface);
         }
     }
-    public class ShortMapper : ITypeMapper
+    public class ShortMapper : TypeMapper
     {
         public static readonly ShortMapper Interface = new ShortMapper();
         
-        public string DataTypeName() { return "short"; }
+        public override string DataTypeName() { return "short"; }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Short = reader.parser.ValueAsShort(out bool success);
@@ -195,18 +193,18 @@ namespace Friflo.Json.Mapper.Map.Val
             return new PrimitiveType (type, ByteMapper.Interface);
         }
     }
-    public class ByteMapper : ITypeMapper
+    public class ByteMapper : TypeMapper
     {
         public static readonly ByteMapper Interface = new ByteMapper();
         
-        public string DataTypeName() { return "byte"; }
+        public override string DataTypeName() { return "byte"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Byte);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Byte = reader.parser.ValueAsByte(out bool success);
@@ -224,18 +222,18 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
-    public class BoolMapper : ITypeMapper
+    public class BoolMapper : TypeMapper
     {
         public static readonly BoolMapper Interface = new BoolMapper();
         
-        public string DataTypeName() { return "bool"; }
+        public override string DataTypeName() { return "bool"; }
 
         
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendBool(ref writer.bytes, slot.Bool);
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (reader.parser.Event != JsonEvent.ValueBool)
                 return ValueUtils.CheckElse(reader, ref slot, stubType);
             slot.Bool = reader.parser.ValueAsBool(out bool success);

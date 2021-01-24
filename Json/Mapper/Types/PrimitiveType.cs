@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Types
     public class PrimitiveType : StubType
     {
         
-        public PrimitiveType(Type type, ITypeMapper map)
+        public PrimitiveType(Type type, TypeMapper map)
             : base(type, map, IsPrimitiveNullable(type))
         {
         }
@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Types
     
     public class BigIntType : StubType
     {
-        public BigIntType(Type type, ITypeMapper map)
+        public BigIntType(Type type, TypeMapper map)
             : base(type, map, true)
         {
         }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Types
     
     public class StringType : StubType
     {
-        public StringType(Type type, ITypeMapper map)
+        public StringType(Type type, TypeMapper map)
             : base(type, map, true) {
         }
         

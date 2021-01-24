@@ -159,19 +159,19 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PrimitiveArrayMapper<T> : ITypeMapper
+    public class PrimitiveArrayMapper<T> : TypeMapper
     {
         public  readonly Type       elemType;
         private readonly VarType    elemVarType;
         
-        public string DataTypeName() { return "array"; }
+        public override string DataTypeName() { return "array"; }
         
         public PrimitiveArrayMapper () {
             elemType            = typeof(T);
             elemVarType         = Var.GetVarType(elemType);
         }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);
             T[] array = (T[]) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
@@ -193,7 +193,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
                 return startSuccess;
             

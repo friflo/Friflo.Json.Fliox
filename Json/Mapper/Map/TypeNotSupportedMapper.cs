@@ -10,22 +10,22 @@ namespace Friflo.Json.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeNotSupportedMapper : ITypeMapper
+    public class TypeNotSupportedMapper : TypeMapper
     {
         public static readonly TypeNotSupportedMapper Interface = new TypeNotSupportedMapper();
         
-        public string DataTypeName() { return "unsupported type"; }
+        public override string DataTypeName() { return "unsupported type"; }
 
         public StubType CreateStubType(Type type) {
             return new NotSupportedType(type, "Type not supported");
         }
         
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             NotSupportedType specific = (NotSupportedType) stubType;
             throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             NotSupportedType specific = (NotSupportedType) stubType;
             throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
         }

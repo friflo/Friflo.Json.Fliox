@@ -22,22 +22,20 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DateTimeMapper : ITypeMapper
+    public class DateTimeMapper : TypeMapper
     {
         public static readonly DateTimeMapper Interface = new DateTimeMapper();
         
-        public string DataTypeName() { return "DateTime"; }
-        
+        public override string DataTypeName() { return "DateTime"; }
 
-        
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             DateTime value = (DateTime) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
             writer.bytes.AppendChar('\"');
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             if (reader.parser.Event == JsonEvent.ValueString) {
                 if (DateTime.TryParse(value.ToString(), out DateTime ret)) {

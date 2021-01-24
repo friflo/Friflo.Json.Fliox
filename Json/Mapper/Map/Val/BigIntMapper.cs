@@ -22,20 +22,20 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class BigIntMapper : ITypeMapper
+    public class BigIntMapper : TypeMapper
     {
         public static readonly BigIntMapper Interface = new BigIntMapper();
         
-        public string DataTypeName() { return "BigInteger"; }
+        public override string DataTypeName() { return "BigInteger"; }
 
-        public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             BigInteger value = (BigInteger) slot.Obj;
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());
             writer.bytes.AppendChar('\"');
         }
 
-        public bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
