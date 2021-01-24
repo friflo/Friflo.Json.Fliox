@@ -154,15 +154,15 @@ namespace Friflo.Json.Mapper.Map.Val
             return reader.parser.ValueAsLong(out success);
         }
     }
-    public class NullableLongMapper : TypeMapper<long> {
+    public class NullableLongMapper : TypeMapper<long?> {
         public override string DataTypeName() { return "long?"; }
 
         public NullableLongMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, long slot) {
-            writer.format.AppendLong(ref writer.bytes, slot);
+        public override void Write(JsonWriter writer, long? slot) {
+            writer.format.AppendLong(ref writer.bytes, (long)slot);
         }
-        public override long Read(JsonReader reader, long slot, out bool success) {
+        public override long? Read(JsonReader reader, long? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, this, out success);
             return reader.parser.ValueAsLong(out success);
@@ -195,15 +195,15 @@ namespace Friflo.Json.Mapper.Map.Val
             return reader.parser.ValueAsInt(out success);
         }
     }
-    public class NullableIntMapper : TypeMapper<int> {
+    public class NullableIntMapper : TypeMapper<int?> {
         public override string DataTypeName() { return "int?"; }
 
         public NullableIntMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, int slot) {
-            writer.format.AppendInt(ref writer.bytes, slot);
+        public override void Write(JsonWriter writer, int? slot) {
+            writer.format.AppendInt(ref writer.bytes, (int)slot);
         }
-        public override int Read(JsonReader reader, int slot, out bool success) {
+        public override int? Read(JsonReader reader, int? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, this, out success);
             return reader.parser.ValueAsInt(out success);
@@ -261,36 +261,36 @@ namespace Friflo.Json.Mapper.Map.Val
         public ITypeMapper CreateStubType(Type type) {
             if (type == typeof(byte))
                 return new ByteMapper (type); 
-            if (type != typeof(byte?))
+            if (type == typeof(byte?))
                 return new NullableByteMapper(type);
             return null;
         }
     }
-    public class ByteMapper : TypeMapper<byte?> {
+    public class ByteMapper : TypeMapper<byte> {
         public override string DataTypeName() { return "byte"; }
 
         public ByteMapper(Type type) : base (type, false) { }
-        
-        public override void Write(JsonWriter writer, byte? slot) {
-            writer.format.AppendInt(ref writer.bytes, (byte)slot);
-        }
-
-        public override byte? Read(JsonReader reader, byte? slot, out bool success) {
-            if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
-            return reader.parser.ValueAsByte(out success);
-        }
-    }
-    public class NullableByteMapper : TypeMapper<byte> {
-        public override string DataTypeName() { return "byte?"; }
-
-        public NullableByteMapper(Type type) : base (type, true) { }
         
         public override void Write(JsonWriter writer, byte slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
 
         public override byte Read(JsonReader reader, byte slot, out bool success) {
+            if (reader.parser.Event != JsonEvent.ValueNumber)
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsByte(out success);
+        }
+    }
+    public class NullableByteMapper : TypeMapper<byte?> {
+        public override string DataTypeName() { return "byte?"; }
+
+        public NullableByteMapper(Type type) : base (type, true) { }
+        
+        public override void Write(JsonWriter writer, byte? slot) {
+            writer.format.AppendInt(ref writer.bytes, (byte)slot);
+        }
+
+        public override byte? Read(JsonReader reader, byte? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
                 return ValueUtils.CheckElse(reader, this, out success);
             return reader.parser.ValueAsByte(out success);
