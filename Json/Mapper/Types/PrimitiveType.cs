@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Types
         public override void InitStubType(TypeStore typeStore) {
         }
 
-        private static bool IsPrimitiveNullable(Type type) {
+        public static bool IsPrimitiveNullable(Type type) {
             return Nullable.GetUnderlyingType(type) != null;
         }
     }

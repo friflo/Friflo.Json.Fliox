@@ -171,7 +171,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             elemVarType         = Var.GetVarType(elemType);
         }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, TVal slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             T[] array = (T[]) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
@@ -186,19 +186,19 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (elemVar.IsNull)
                     WriteUtils.AppendNull(writer);
                 else
-                    elementType.map.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, elemVar);
             }
             writer.bytes.AppendChar(']');
             WriteUtils.DecLevel(writer, startLevel);
         }
         
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+        public override TVal Read(JsonReader reader, TVal slot, out bool success) {
+            if (!ArrayUtils.StartArray(reader, ref slot, success, out bool startSuccess))
                 return startSuccess;
             
             ref var parser = ref reader.parser;
-            CollectionType collectionType = (CollectionType) stubType;
+            CollectionType collectionType = (CollectionType) success;
             T[] array = (T[]) slot.Obj;
             StubType elementType = collectionType.elementType;
             if (array == null)
@@ -215,7 +215,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, elemVar, out elementType))
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
@@ -229,7 +229,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, elemVar, out elementType))
                             return false;
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));

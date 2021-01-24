@@ -4,38 +4,37 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
     public class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(string))
                 return null;
-            return new StringType(type, StringMapper.Interface);
+            return new StringMapper(type);
         }
     }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class StringMapper : TypeMapper
+    public class StringMapper : TypeMapper<string>
     {
-        public static readonly StringMapper Interface = new StringMapper();
-        
         public override string DataTypeName() { return "string"; }
+        
+        public StringMapper(Type type) : base (type, true) { }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            WriteUtils.WriteString(writer, (string) slot.Obj);
+        public override void Write(JsonWriter writer, string slot) {
+            WriteUtils.WriteString(writer, (slot));
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override string Read(JsonReader reader, string slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Obj = reader.parser.value.ToString();
-            return true;
+                return ValueUtils.CheckElse(reader, this, out success);
+            success = true;
+            return reader.parser.value.ToString();
         }
     }
     
@@ -43,28 +42,27 @@ namespace Friflo.Json.Mapper.Map.Val
     public class DoubleMatcher : ITypeMatcher {
         public static readonly DoubleMatcher Instance = new DoubleMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(double) && type != typeof(double?))
                 return null;
-            return new PrimitiveType (type, DoubleMapper.Interface);
+            return new DoubleMapper (type);
         }
     }
     
-    public class DoubleMapper : TypeMapper
+    public class DoubleMapper : TypeMapper<double>
     {
-        public static readonly DoubleMapper Interface = new DoubleMapper();
-        
         public override string DataTypeName() { return "double"; }
+        
+        public DoubleMapper(Type type) : base (type, true) { }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
+        public override void Write(JsonWriter writer, double slot) {
+            writer.format.AppendDbl(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override double Read(JsonReader reader, double slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Dbl = reader.parser.ValueAsDoubleStd(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsDoubleStd(out success);
         }
     }
     
@@ -72,114 +70,107 @@ namespace Friflo.Json.Mapper.Map.Val
     public class FloatMatcher : ITypeMatcher {
         public static readonly FloatMatcher Instance = new FloatMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(float) && type != typeof(float?))
                 return null;
-            return new PrimitiveType (type, FloatMapper.Interface);
+            return new FloatMapper (type);
         }
     }
     
-    public class FloatMapper : TypeMapper
+    public class FloatMapper : TypeMapper<float>
     {
-        public static readonly FloatMapper Interface = new FloatMapper();
-        
         public override string DataTypeName() { return "float"; }
 
+        public FloatMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendFlt(ref writer.bytes, slot.Flt);
+        public override void Write(JsonWriter writer, float slot) {
+            writer.format.AppendFlt(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override float Read(JsonReader reader, float slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Flt = reader.parser.ValueAsFloatStd(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsFloatStd(out success);
         }
     }
     
     public class LongMatcher : ITypeMatcher {
         public static readonly LongMatcher Instance = new LongMatcher();
                 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(long) && type != typeof(long?))
                 return null;
-            return new PrimitiveType (type, LongMapper.Interface);
+            return new LongMapper (type);
         }
     }
     
-    public class LongMapper : TypeMapper
+    public class LongMapper : TypeMapper<long>
     {
-        public static readonly LongMapper Interface = new LongMapper();
-        
         public override string DataTypeName() { return "long"; }
 
+        public LongMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendLong(ref writer.bytes, slot.Lng);
+        public override void Write(JsonWriter writer, long slot) {
+            writer.format.AppendLong(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override long Read(JsonReader reader, long slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Lng = reader.parser.ValueAsLong(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsLong(out success);
         }
     }
     
     public class IntMatcher : ITypeMatcher {
         public static readonly IntMatcher Instance = new IntMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(int) && type != typeof(int?))
                 return null;
-            return new PrimitiveType (type, IntMapper.Interface);
+            return new IntMapper (type);
         }
     }
     
-    public class IntMapper : TypeMapper
+    public class IntMapper : TypeMapper<int>
     {
-        public static readonly IntMapper Interface = new IntMapper();
-        
         public override string DataTypeName() { return "int"; }
 
+        public IntMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Int);
+        public override void Write(JsonWriter writer, int slot) {
+            writer.format.AppendInt(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override int Read(JsonReader reader, int slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Int = reader.parser.ValueAsInt(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsInt(out success);
         }
     }
     
     public class ShortMatcher : ITypeMatcher {
         public static readonly ShortMatcher Instance = new ShortMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(short) && type != typeof(short?))
                 return null;
-            return new PrimitiveType (type, ShortMapper.Interface);
+            return new ShortMapper (type);
         }
     }
-    public class ShortMapper : TypeMapper
+    public class ShortMapper : TypeMapper<short>
     {
-        public static readonly ShortMapper Interface = new ShortMapper();
-        
         public override string DataTypeName() { return "short"; }
+        
+        public ShortMapper(Type type) : base (type, true) { }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Short);
+        public override void Write(JsonWriter writer, short slot) {
+            writer.format.AppendInt(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override short Read(JsonReader reader, short slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Short = reader.parser.ValueAsShort(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsShort(out success);
         }
     }
     
@@ -187,57 +178,53 @@ namespace Friflo.Json.Mapper.Map.Val
     public class ByteMatcher : ITypeMatcher {
         public static readonly ByteMatcher Instance = new ByteMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(byte) && type != typeof(byte?))
                 return null;
-            return new PrimitiveType (type, ByteMapper.Interface);
+            return new ByteMapper (type);
         }
     }
-    public class ByteMapper : TypeMapper
+    public class ByteMapper : TypeMapper<byte>
     {
-        public static readonly ByteMapper Interface = new ByteMapper();
-        
         public override string DataTypeName() { return "byte"; }
 
+        public ByteMapper(Type type) : base (type, true) { }
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendInt(ref writer.bytes, slot.Byte);
+        public override void Write(JsonWriter writer, byte slot) {
+            writer.format.AppendInt(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override byte Read(JsonReader reader, byte slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Byte = reader.parser.ValueAsByte(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsByte(out success);
         }
     }
     
     public class BoolMatcher : ITypeMatcher {
         public static readonly BoolMatcher Instance = new BoolMatcher();
 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(bool) && type != typeof(bool?))
                 return null;
-            return new PrimitiveType (type, BoolMapper.Interface);
+            return new BoolMapper (type);
         }
     }
     
-    public class BoolMapper : TypeMapper
+    public class BoolMapper : TypeMapper<bool>
     {
-        public static readonly BoolMapper Interface = new BoolMapper();
-        
         public override string DataTypeName() { return "bool"; }
-
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            writer.format.AppendBool(ref writer.bytes, slot.Bool);
+        public BoolMapper(Type type) : base (type, true) { }
+
+        public override void Write(JsonWriter writer, bool slot) {
+            writer.format.AppendBool(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override bool Read(JsonReader reader, bool slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);
-            slot.Bool = reader.parser.ValueAsBool(out bool success);
-            return success;
+                return ValueUtils.CheckElse(reader, this, out success);
+            return reader.parser.ValueAsBool(out success);
         }
     }
 }

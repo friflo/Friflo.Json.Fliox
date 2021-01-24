@@ -34,11 +34,9 @@ namespace Friflo.Json.Mapper.Map.Obj
     [CLSCompliant(true)]
 #endif
     public class ClassMapper : TypeMapper {
-        public static readonly ClassMapper Interface = new ClassMapper();
-        
         public override string DataTypeName() { return "class"; }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, TVal slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             object obj = slot.Obj;
@@ -69,21 +67,21 @@ namespace Friflo.Json.Mapper.Map.Obj
                     WriteUtils.AppendNull(writer);
                 } else {
                     StubType fieldType = field.fieldType;
-                    fieldType.map.Write(writer, ref elemVar, fieldType);
+                    fieldType.map.Write(writer, elemVar);
                 }
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
             
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override TVal Read(JsonReader reader, TVal slot, out bool success1) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
+            if (!ObjectUtils.StartObject(reader, ref slot, success1, out bool success))
                 return success;
                 
             ref var parser = ref reader.parser;
             object obj = slot.Obj;
-            ClassType classType = (ClassType) stubType;
+            ClassType classType = (ClassType) success1;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
@@ -109,7 +107,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         StubType valueType = field.fieldType;
                         
                         elemVar.SetObjNull();
-                        if (!valueType.map.Read(reader, ref elemVar, valueType))
+                        if (!valueType.map.Read(reader, elemVar, out valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
@@ -121,7 +119,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         valueType = field.fieldType;
                         
                         elemVar.SetObjNull();
-                        if (!valueType.map.Read(reader, ref elemVar, valueType))
+                        if (!valueType.map.Read(reader, elemVar, out valueType))
                             return false;
                         field.SetField(obj, ref elemVar); // set also to null in error case
                         break;
@@ -142,7 +140,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             return ReadUtils.ErrorMsg(reader, "Expect field of type object. Type: ", field.fieldType.type.ToString());
                         object sub = elemVar.Obj;
                         StubType fieldType = field.fieldType;
-                        if (!fieldType.map.Read(reader, ref elemVar, fieldType))
+                        if (!fieldType.map.Read(reader, elemVar, out fieldType))
                             return false;
                         //
                         object subRet = elemVar.Obj;

@@ -2,32 +2,37 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map
 {
+    public class TypeNotSupportedMatcher : ITypeMatcher {
+        public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
+        
+        public ITypeMapper CreateStubType(Type type) {
+            return new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
+        }
+    }
+
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeNotSupportedMapper : TypeMapper
+    public class TypeNotSupportedMapper : TypeMapper<object>
     {
-        public static readonly TypeNotSupportedMapper Interface = new TypeNotSupportedMapper();
+        private string msg;
         
         public override string DataTypeName() { return "unsupported type"; }
 
-        public StubType CreateStubType(Type type) {
-            return new NotSupportedType(type, "Type not supported");
-        }
-        
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            NotSupportedType specific = (NotSupportedType) stubType;
-            throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
+        public TypeNotSupportedMapper(Type type, string msg) : base(type, true) {
+            this.msg = msg;
         }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            NotSupportedType specific = (NotSupportedType) stubType;
-            throw new NotSupportedException(specific.msg + ". Type: " + stubType.type);
+        public override object Read(JsonReader reader, object slot, out bool success) {
+            throw new NotSupportedException(msg);
+        }
+
+        public override void Write(JsonWriter writer, object slot) {
+            throw new NotSupportedException(msg);
         }
     }
 }

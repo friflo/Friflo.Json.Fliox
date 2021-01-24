@@ -5,53 +5,51 @@ using System;
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
     public class BigIntMatcher : ITypeMatcher {
         public static readonly BigIntMatcher Instance = new BigIntMatcher();
         
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(BigInteger))
                 return null;
-            return new BigIntType (typeof(BigInteger), BigIntMapper.Interface);
+            return new BigIntMapper (type);
         }
     }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class BigIntMapper : TypeMapper
+    public class BigIntMapper : TypeMapper<BigInteger>
     {
-        public static readonly BigIntMapper Interface = new BigIntMapper();
-        
         public override string DataTypeName() { return "BigInteger"; }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            BigInteger value = (BigInteger) slot.Obj;
+        public BigIntMapper(Type type) : base (type, true) { }
+
+        public override void Write(JsonWriter writer, BigInteger value) {
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendString(value.ToString());
             writer.bytes.AppendChar('\"');
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override BigInteger Read(JsonReader reader, BigInteger slot, out bool success) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
                     if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
                         value.end--;
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return ReadUtils.ErrorMsg(reader, "Failed parsing BigInt. value: ", value.ToString());
-                    slot.Obj = ret;
-                    return true;
+                        return ReadUtils.ErrorMsg<BigInteger>(reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                    success = true;
+                    return ret;
                 case  JsonEvent.ValueNumber:
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return ReadUtils.ErrorMsg(reader, "Failed parsing BigInt. value: ", value.ToString());
-                    slot.Obj = ret2;
-                    return true;
+                        return ReadUtils.ErrorMsg<BigInteger>(reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                    success = true;
+                    return ret2;
                 default:
-                    return ValueUtils.CheckElse(reader, ref slot, stubType);
+                    return ValueUtils.CheckElse(reader, this, out success);
             }
         }
     }

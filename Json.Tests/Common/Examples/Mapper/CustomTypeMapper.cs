@@ -3,7 +3,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Types;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -20,33 +19,31 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public static readonly StringTokenMatcher Instance = new StringTokenMatcher();
         
                 
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type != typeof(StringTokens))
                 return null;
-            return new PrimitiveType (typeof(StringTokens), StringTokenMapper.Interface);
+            return new StringTokenMapper (type);
         }
     }
     
-    public class StringTokenMapper : TypeMapper
+    public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public static readonly StringTokenMapper Interface = new StringTokenMapper();
-        
         public override string DataTypeName() { return "tokens"; }
-
         
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
-            StringTokens value = (StringTokens) slot.Obj;
+        public StringTokenMapper(Type type) : base (type, true) { }
+
+        public override void Write(JsonWriter writer, StringTokens value) {
             WriteUtils.WriteString(writer, string.Join(" ", value.tokens));
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
+        public override StringTokens Read(JsonReader reader, StringTokens slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(reader, ref slot, stubType);    
+                return ValueUtils.CheckElse(reader, this, out success);    
             string value =  reader.parser.value.ToString();
             if (value.Contains(","))
-                return ReadUtils.ErrorMsg(reader, "Invalid separator in token value", value);
-            slot.Obj = new StringTokens { tokens = value.Split(' ')};
-            return true;
+                return ReadUtils.ErrorMsg<StringTokens>(reader, "Invalid separator in token value", value, out success);
+            success = true;
+            return new StringTokens { tokens = value.Split(' ')};
         }
     }
 
@@ -55,9 +52,9 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void Run() {
             var resolver = new DefaultTypeResolver();
-            var mapperCount = resolver.mapperList.Count;
+            var mapperCount = resolver.matcherList.Count;
             resolver.AddSpecificTypeMapper(StringTokenMatcher.Instance);
-            AreEqual(mapperCount + 1, resolver.mapperList.Count);
+            AreEqual(mapperCount + 1, resolver.matcherList.Count);
             
             var typeStore = new TypeStore(resolver);
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value

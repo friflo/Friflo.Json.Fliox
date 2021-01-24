@@ -35,11 +35,9 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class ArrayMapper : TypeMapper
     {
-        public static readonly ArrayMapper Interface = new ArrayMapper();
-
         public override string DataTypeName() { return "array"; }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, TVal slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             CollectionType collectionType = (CollectionType) stubType;
             Array arr = (Array) slot.Obj;
@@ -54,18 +52,18 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (elemVar.IsNull)
                     WriteUtils.AppendNull(writer);
                 else
-                    elementType.map.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, elemVar);
             }
             writer.bytes.AppendChar(']');
             WriteUtils.DecLevel(writer, startLevel);
         }
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool success))
+        public override TVal Read(JsonReader reader, TVal slot, out bool success1) {
+            if (!ArrayUtils.StartArray(reader, ref slot, success1, out bool success))
                 return success;
             
             ref var parser = ref reader.parser;
-            var collection = (CollectionType) stubType;
+            var collection = (CollectionType) success1;
             StubType elementType = collection.elementType;
             int startLen;
             int len;
@@ -101,12 +99,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar.Obj = array.GetValue(index);
-                            if(!elementType.map.Read(reader, ref elemVar, elementType))
+                            if(!elementType.map.Read(reader, elemVar, out elementType))
                                 return false;
                             array.SetValue(elemVar.Obj, index);
                         } else {
                             elemVar.SetObjNull();
-                            if (!elementType.map.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, elemVar, out elementType))
                                 return false;
                             if (index >= len)
                                 array = Arrays.CopyOfType(elementType.type, array, len = ReadUtils.Inc(len));

@@ -75,7 +75,7 @@ namespace Friflo.Json.Mapper
             if (valueVar.IsNull)
                 WriteUtils.AppendNull(this);
             else
-                stubType.map.Write(this, ref valueVar, stubType);
+                stubType.map.Write(this, valueVar);
             if (level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
         }

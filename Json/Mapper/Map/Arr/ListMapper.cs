@@ -35,11 +35,9 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class ListMapper : TypeMapper
     {
-        public static readonly ListMapper Interface = new ListMapper();
-        
         public override string DataTypeName() { return "List"; }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, TVal slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             IList list = (IList) slot.Obj;
             CollectionType collectionType = (CollectionType) stubType;
@@ -51,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 Object item = list[n];
                 if (item != null) {
                     elemVar.Obj = item;
-                    elementType.map.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, elemVar);
                 } else
                     WriteUtils.AppendNull(writer);
             }
@@ -60,12 +58,12 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ArrayUtils.StartArray(reader, ref slot, stubType, out bool startSuccess))
+        public override TVal Read(JsonReader reader, TVal slot, out bool success) {
+            if (!ArrayUtils.StartArray(reader, ref slot, success, out bool startSuccess))
                 return startSuccess;
             
             ref var parser = ref reader.parser;
-            CollectionType collectionType = (CollectionType) stubType;
+            CollectionType collectionType = (CollectionType) success;
             IList list = (IList) slot.Obj;
             int startLen = 0;
             if (list == null)
@@ -84,7 +82,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, elemVar, out elementType))
                             return false;
                         if (index < startLen)
                             list[index] = elemVar.Get();
@@ -105,12 +103,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                         StubType subElementType = elementType;
                         if (index < startLen) {
                             elemVar.Obj = list[index];
-                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
+                            if (!subElementType.map.Read(reader, elemVar, out subElementType))
                                 return false;
                             list[index] = elemVar.Obj;
                         } else {
                             elemVar.SetObjNull();
-                            if (!subElementType.map.Read(reader, ref elemVar, subElementType))
+                            if (!subElementType.map.Read(reader, elemVar, out subElementType))
                                 return false;
                             list.Add(elemVar.Obj);
                         }
@@ -119,12 +117,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar.Obj = list[index];
-                            if (!elementType.map.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, elemVar, out elementType))
                                 return false;
                             list[index] = elemVar.Obj;
                         } else {
                             elemVar.SetObjNull();
-                            if (!elementType.map.Read(reader, ref elemVar, elementType))
+                            if (!elementType.map.Read(reader, elemVar, out elementType))
                                 return false;
                             list.Add(elemVar.Obj);
                         }

@@ -19,12 +19,13 @@ namespace Friflo.Json.Mapper.Map.Utils
             return len < 5 ? minLen : 2 * len;
         }
         
-        public static bool ErrorIncompatible(JsonReader reader, string msg, StubType expectType, ref JsonParser parser) {
-            ErrorIncompatible(reader, msg, "", expectType, ref parser);
-            return false;
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, TypeMapper<TVal> expectType, ref JsonParser parser, out bool success) {
+            ErrorIncompatible(reader, msg, "", expectType, ref parser, out success);
+            success = false;
+            return default;
         }
 
-        public static bool ErrorIncompatible(JsonReader reader, string msg, string msgParam, StubType expectType, ref JsonParser parser) {
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper<TVal> expectType, ref JsonParser parser, out bool success) {
             ref Bytes strBuf = ref reader.strBuf;
             /*
             string evType = null;
@@ -64,29 +65,33 @@ namespace Friflo.Json.Mapper.Map.Utils
                 case JsonEvent.ObjectStart: strBuf.AppendString("{...}");                                   break;
             }
             parser.ErrorMsg("JsonReader", ref strBuf);
-            return false;
+            success = false;
+            return default;
         }
         
-        public static bool ErrorMsg(JsonReader reader, string msg, string value) {
+        public static TVal ErrorMsg<TVal>(JsonReader reader, string msg, string value, out bool success) {
             ref Bytes strBuf = ref reader.strBuf;
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
             reader.parser.ErrorMsg("JsonReader", ref strBuf);
-            return false;
+            success = false;
+            return default;
         }
 
-        public static bool ErrorMsg(JsonReader reader, string msg, JsonEvent ev) {
+        public static TVal ErrorMsg<TVal>(JsonReader reader, string msg, JsonEvent ev, out bool success) {
             reader.strBuf.Clear();
             reader.strBuf.AppendString(msg);
             JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
             reader.parser.ErrorMsg("JsonReader", ref reader.strBuf);
-            return false;
+            success = false;
+            return default;
         }
 
-        public static bool ErrorMsg(JsonReader reader, string msg, ref Bytes value) {
+        public static TVal ErrorMsg<TVal>(JsonReader reader, string msg, ref Bytes value, out bool success) {
             reader.parser.ErrorMsgParam("JsonReader", msg, ref value);
-            return false;
+            success = false;
+            return default;
         }
         
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */

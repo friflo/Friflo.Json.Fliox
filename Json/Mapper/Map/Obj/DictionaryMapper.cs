@@ -38,11 +38,9 @@ namespace Friflo.Json.Mapper.Map.Obj
 #endif
     public class DictionaryMapper : TypeMapper
     {
-        public static readonly DictionaryMapper Interface = new DictionaryMapper();
-        
         public override string DataTypeName() { return "Dictionary"; }
 
-        public override void Write(JsonWriter writer, ref Var slot, StubType stubType) {
+        public override void Write(JsonWriter writer, TVal slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             CollectionType collectionType = (CollectionType)stubType;
             IDictionary map = (IDictionary) slot.Obj;
@@ -63,17 +61,17 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (elemVar.IsNull)
                     WriteUtils.AppendNull(writer);
                 else
-                    elementType.map.Write(writer, ref elemVar, elementType);
+                    elementType.map.Write(writer, elemVar);
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override bool Read(JsonReader reader, ref Var slot, StubType stubType) {
-            if (!ObjectUtils.StartObject(reader, ref slot, stubType, out bool success))
+        public override TVal Read(JsonReader reader, TVal slot, out bool success1) {
+            if (!ObjectUtils.StartObject(reader, ref slot, success1, out bool success))
                 return success;
             
-            CollectionType collectionType = (CollectionType) stubType;
+            CollectionType collectionType = (CollectionType) success1;
             if (slot.Obj == null)
                 slot.Obj = collectionType.CreateInstance();
             IDictionary map = (IDictionary) slot.Obj;
@@ -92,7 +90,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
                         elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, elemVar, out elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
@@ -101,7 +99,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
                         elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, ref elemVar, elementType))
+                        if (!elementType.map.Read(reader, elemVar, out elementType))
                             return false;
                         map[key] = elemVar.Get();
                         break;
