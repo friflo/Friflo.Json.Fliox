@@ -135,9 +135,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
-                        // Remove from tail to head to avoid copying items after remove index
-                       for (int n = startLen - 1; n >= index; n--)
-                            list.RemoveAt(n);
+                        if (startLen - index > 0)
+                            list.RemoveRange(index, startLen - index);
                         success = true;
                         return list;
                     case JsonEvent.Error:
