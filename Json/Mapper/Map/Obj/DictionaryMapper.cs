@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override Dictionary<string, TElm> Read(JsonReader reader, Dictionary<string, TElm> slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+            if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
 
             if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(slot, default))

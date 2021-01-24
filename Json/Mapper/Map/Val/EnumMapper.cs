@@ -18,6 +18,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 return null;
             return new EnumMapper (type, isNullable);
         }
+        
     }
 
     /// <summary>

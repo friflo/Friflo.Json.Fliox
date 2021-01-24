@@ -28,19 +28,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromString(JsonSimpleObj))
             {
-                JsonSimple obj = (JsonSimple) EncodeJson(bytes, typeof(JsonSimple), typeStore);
+                JsonSimple obj = EncodeJson<JsonSimple>(bytes, typeStore);
                 AreEqual(5L, obj.val);
             }
         }
         
         int                 num2 =              2;
         
-        private Object EncodeJson(Bytes json, Type type, TypeStore typeStore) {
-            Object ret = null;
+        private T EncodeJson<T>(Bytes json, TypeStore typeStore) {
+            T ret = default;
             using (var enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
-                    ret = enc.Read(json, type);
+                    ret = enc.Read<T>(json);
                     if (ret == null)
                         throw new FrifloException(enc.Error.msg.ToString());
                 }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void EncodeJsonComplex() {
             using (TypeStore typeStore = createStore())
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
-                JsonComplex obj = (JsonComplex) EncodeJson(bytes, typeof(JsonComplex), typeStore);
+                JsonComplex obj = EncodeJson<JsonComplex>(bytes, typeStore);
                 CheckJsonComplex(obj);
             }
         }

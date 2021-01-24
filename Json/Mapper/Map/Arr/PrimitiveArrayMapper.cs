@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
 
         public override T[] Read(JsonReader reader, T[] slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+            if (!ArrayUtils.StartArray(reader, this, out success))
                 return default;
             
             ref var parser = ref reader.parser;

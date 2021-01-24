@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Utils
     [CLSCompliant(true)]
 #endif
     public static class ArrayUtils {
-        public static bool StartArray<TVal, TElm>(JsonReader reader, TVal slot, CollectionMapper<TVal, TElm> map, out bool success) {
+        public static bool StartArray<TVal, TElm>(JsonReader reader, CollectionMapper<TVal, TElm> map, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:

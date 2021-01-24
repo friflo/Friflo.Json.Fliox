@@ -12,16 +12,15 @@ namespace Friflo.Json.Mapper.Map.Utils
 #endif
     public static class ObjectUtils
     {
-        public static bool StartObject(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
+        public static bool StartObject<T>(JsonReader reader, TypeMapper<T> mapper, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
-                    if (stubType.isNullable) {
-                        slot.Obj = null;
+                    if (mapper.isNullable) {
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
+                    ReadUtils.ErrorIncompatible(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -29,7 +28,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
+                    ReadUtils.ErrorIncompatible(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }

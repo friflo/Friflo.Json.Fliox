@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Types;
 using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -116,31 +115,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    Var result = new Var();
+
                     
                     // --------------------------------- primitives -------------------------------
-                    IsTrue(enc.Read<double>     (@double, ref result));   AreEqual(12.5d, result.Dbl);
-                    IsTrue(enc.Read<float>      (@double, ref result));   AreEqual(12.5,  result.Flt);
+                    { IsTrue(enc.Read (@double, out double  result));   AreEqual(12.5d, result); }
+                    { IsTrue(enc.Read (@double, out float   result));   AreEqual(12.5,  result); }
                     //
-                    IsTrue(enc.Read<long>       (@long, ref result));     AreEqual(42, result.Lng);
-                    IsTrue(enc.Read<int>        (@long, ref result));     AreEqual(42, result.Int);
-                    IsTrue(enc.Read<short>      (@long, ref result));     AreEqual(42, result.Short);
-                    IsTrue(enc.Read<byte>       (@long, ref result));     AreEqual(42, result.Byte);
-                    
-                    IsTrue(enc.Read<bool>       (@true, ref result));     AreEqual(true, result.Bool);
-                    
-                    IsTrue(enc.Read<object>     (@null, ref result));     AreEqual(null, result.Obj);
+                    { IsTrue(enc.Read (@long,   out long    result));   AreEqual(42,    result); }
+                    { IsTrue(enc.Read (@long,   out int     result));   AreEqual(42,    result); }
+                    { IsTrue(enc.Read (@long,   out short   result));   AreEqual(42,    result); }
+                    { IsTrue(enc.Read (@long,   out byte    result));   AreEqual(42,    result); }
+                     
+                    { IsTrue(enc.Read (@true,   out bool    result));   AreEqual(true,  result); }
+
+                    { IsTrue(enc.Read (@null,   out object  result));   AreEqual(null,  result); }
 
                     // --------------------------------- array -----------------------------------
-                    IsTrue(enc.Read<string[]>   (@null, ref result));     AreEqual(null, result.Obj); // no alloc only, if not containing string
-                    
-                    IsTrue(enc.Read<double[]>   (@null, ref result));     AreEqual(null, result.Obj); 
-                    IsTrue(enc.Read<float[]>    (@null, ref result));     AreEqual(null, result.Obj);
-                    IsTrue(enc.Read<long[]>     (@null, ref result));     AreEqual(null, result.Obj);
-                    IsTrue(enc.Read<int[]>      (@null, ref result));     AreEqual(null, result.Obj);
-                    IsTrue(enc.Read<short[]>    (@null, ref result));     AreEqual(null, result.Obj);
-                    IsTrue(enc.Read<byte[]>     (@null, ref result));     AreEqual(null, result.Obj);
-                    IsTrue(enc.Read<bool[]>     (@null, ref result));     AreEqual(null, result.Obj);
+                    { IsTrue(enc.Read (@null, out string[]  result));   AreEqual(null, result); } // no alloc only, if not containing string
+ 
+                    { IsTrue(enc.Read (@null, out double[]  result));   AreEqual(null, result);  }
+                    { IsTrue(enc.Read (@null, out float[]   result));   AreEqual(null, result); }
+                    { IsTrue(enc.Read (@null, out long[]    result));   AreEqual(null, result); }
+                    { IsTrue(enc.Read (@null, out int[]     result));   AreEqual(null, result); }
+                    { IsTrue(enc.Read (@null, out short[]   result));   AreEqual(null, result); }
+                    { IsTrue(enc.Read (@null, out byte[]    result));   AreEqual(null, result); }
+                    { IsTrue(enc.Read (@null, out bool[]    result));   AreEqual(null, result); }
                     
                     NotNull(enc.ReadTo(arrFlt, reusedArrDbl,   out bool _));             AreEqual(11.5d, reusedArrDbl[0]);
                     NotNull(enc.ReadTo(arrNum, reusedArrFlt,   out bool _));
@@ -156,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         SomeEnum? res = enc.Read<SomeEnum?>(@null);         AreEqual(null, res);
                     } {
-                        enc.Read<SomeEnum?>(hello, ref result);             IsTrue(enc.Error.ErrSet);
+                        enc.Read(hello, out SomeEnum?  result);             IsTrue(enc.Error.ErrSet);
                     }
 
                     // --------------------------------- List<> ---------------------------------

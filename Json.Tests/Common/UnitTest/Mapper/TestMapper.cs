@@ -115,11 +115,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class Base {
-            public int baseField;
+            public int baseField = 0;
         }
 
         class Derived : Base {
-            public int derivedField;
+            public int derivedField = 0;
         }
         
 

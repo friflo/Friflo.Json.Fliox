@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
 
         public override List<TElm> Read(JsonReader reader, List<TElm> slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+            if (!ArrayUtils.StartArray(reader, this, out success))
                 return default;
             
             ref var parser = ref reader.parser;

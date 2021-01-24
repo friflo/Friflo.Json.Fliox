@@ -12,8 +12,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void Run() {
             AreEqual(1,1 );
-            IList<int> iList = null;
-            ISet<int> iSet = null;
+            // IList<int> iList = null;
+            // ISet<int> iSet = null;
             //
             {
                 var set = new HashSet<int>();
