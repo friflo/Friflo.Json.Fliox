@@ -9,6 +9,10 @@ namespace Friflo.Json.Mapper.Map
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
+            return CreateTypeNotSupported(type);
+        }
+
+        public static ITypeMapper CreateTypeNotSupported(Type type) {
             return new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
         }
     }

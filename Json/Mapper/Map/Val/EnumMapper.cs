@@ -20,7 +20,15 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
 
-    
+    /// <summary>
+    /// The mapping <see cref="enumToString"/> and <see cref="stringToEnum"/> is not bidirectional as this is the behaviour of C# enum's
+    /// <code>
+    /// public enum TestEnum {
+    ///     Value1 = 11,
+    ///     Value2 = 11, // duplicate constant value - C#/.NET maps these enum values to the first value using same constant
+    /// }
+    /// </code>
+    /// </summary>    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif

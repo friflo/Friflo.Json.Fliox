@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
@@ -15,19 +14,19 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class DictionaryMatcher : ITypeMatcher {
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];
                 if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                    return new NotSupportedType(type, "Dictionary only support string as key type");
+                    return new TypeNotSupportedMapper(type, "Dictionary only support string as key type");
                 Type elementType = args[1];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                return new CollectionType  (type, elementType, DictionaryMapper.Interface, 1, keyType, constructor);
+                return new DictionaryMapper<object>  (type, constructor); // todo replace generic type 
             }
             return null;
         }
@@ -36,80 +35,88 @@ namespace Friflo.Json.Mapper.Map.Obj
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DictionaryMapper : TypeMapper
+    public class DictionaryMapper<TElm> : CollectionMapper<Dictionary<string, TElm>, TElm>
     {
         public override string DataTypeName() { return "Dictionary"; }
+        
+        public DictionaryMapper(Type type, ConstructorInfo constructor) :
+            base(type, typeof(TElm), 1, typeof(string), constructor) {
+        }
 
-        public override void Write(JsonWriter writer, TVal slot) {
+        public override void Write(JsonWriter writer, Dictionary<string, TElm> slot) {
             int startLevel = WriteUtils.IncLevel(writer);
-            CollectionType collectionType = (CollectionType)stubType;
-            IDictionary map = (IDictionary) slot.Obj;
+            
+            var map = slot;
 
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             int n = 0;
 
-            StubType elementType = collectionType.elementType;
-            Var elemVar = new Var();
-            foreach (DictionaryEntry entry in map) {
+            TElm elemVar;
+            foreach (var entry in map) {
                 if (n++ > 0)
                     bytes.AppendChar(',');
-                WriteUtils.WriteString(writer, (String) entry.Key);
+                WriteUtils.WriteString(writer, entry.Key);
                 bytes.AppendChar(':');
                 // elemVar.Set(entry.Value, elementType.varType, elementType.isNullable);
-                elemVar.Obj = entry.Value;
-                if (elemVar.IsNull)
+                elemVar = entry.Value;
+                //if (elemVar.IsNull)
+                if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
                 else
-                    elementType.map.Write(writer, elemVar);
+                    elementType.Write(writer, elemVar);
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override TVal Read(JsonReader reader, TVal slot, out bool success1) {
-            if (!ObjectUtils.StartObject(reader, ref slot, success1, out bool success))
-                return success;
-            
-            CollectionType collectionType = (CollectionType) success1;
-            if (slot.Obj == null)
-                slot.Obj = collectionType.CreateInstance();
-            IDictionary map = (IDictionary) slot.Obj;
+        public override Dictionary<string, TElm> Read(JsonReader reader, Dictionary<string, TElm> slot, out bool success) {
+            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+                return default;
+
+            if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(slot, default))
+                slot = new Dictionary<string, TElm>(ReadUtils.minLen);
+            var map = slot;
             ref var parser = ref reader.parser;
-            StubType elementType = collectionType.elementType;
-            Var elemVar = new Var(); 
+
+            TElm elemVar; 
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueNull:
                         String key = parser.key.ToString();
-                        if (!elementType.isNullable)
-                            return ReadUtils.ErrorIncompatible(reader, "Dictionary value", elementType, ref parser);
-                        map[key] = null;
+                        if (!elementType.isNullable) {
+                            ReadUtils.ErrorIncompatible(reader, "Dictionary value", elementType, ref parser, out success);
+                            return default;
+                        }
+                        map[key] = default;
                         break;
                     case JsonEvent.ObjectStart:
                         key = parser.key.ToString();
-                        elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, elemVar, out elementType))
-                            return false;
-                        map[key] = elemVar.Get();
+                        elemVar = default;
+                        elemVar = elementType.Read(reader, elemVar, out success);
+                        if (!success)
+                            return default;
+                        map[key] = elemVar;
                         break;
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         key = parser.key.ToString();
-                        elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, elemVar, out elementType))
-                            return false;
-                        map[key] = elemVar.Get();
+                        elemVar = default;
+                        elemVar = elementType.Read(reader, elemVar, out success);
+                        if (!success)
+                            return default;
+                        map[key] = elemVar;
                         break;
                     case JsonEvent.ObjectEnd:
-                        slot.Obj = map;
-                        return true;
+                        success = true;
+                        return map;
                     case JsonEvent.Error:
-                        return false;
+                        success = false;
+                        return default;
                     default:
-                        return ReadUtils.ErrorMsg(reader, "unexpected state: ", ev);
+                        return ReadUtils.ErrorMsg<Dictionary<string, TElm>>(reader, "unexpected state: ", ev, out success);
                 }
             }
         }

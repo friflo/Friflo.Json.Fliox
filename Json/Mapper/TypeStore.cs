@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper
 {
@@ -18,12 +17,12 @@ namespace Friflo.Json.Mapper
 #endif
     public class TypeStore : IDisposable
     {
-        private     readonly    Dictionary <Type,  StubType>   typeMap=        new Dictionary <Type,  StubType >();
+        private     readonly    Dictionary <Type,  ITypeMapper> typeMap=        new Dictionary <Type,  ITypeMapper >();
         //
-        internal    readonly    Dictionary <Bytes, StubType>   nameToType=     new Dictionary <Bytes, StubType >();
-        internal    readonly    Dictionary <Type,  Bytes>      typeToName =    new Dictionary <Type,  Bytes >();
+        internal    readonly    Dictionary <Bytes, ITypeMapper> nameToType=     new Dictionary <Bytes, ITypeMapper >();
+        internal    readonly    Dictionary <Type,  Bytes>       typeToName =    new Dictionary <Type,  Bytes >();
         
-        private     readonly    List<StubType>                  newTypes =      new List<StubType>();
+        private     readonly    List<ITypeMapper>               newTypes =      new List<ITypeMapper>();
 
 
         private     readonly    ITypeResolver                   typeResolver;
@@ -48,15 +47,15 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        internal StubType GetType (Type type)
+        internal ITypeMapper GetType (Type type)
         {
             lock (this)
             {
-                StubType stubType = GetStubType(type);
+                ITypeMapper stubType = GetStubType(type);
 
                 while (newTypes.Count > 0) {
                     int lastPos = newTypes.Count - 1;
-                    StubType last = newTypes[lastPos];
+                    ITypeMapper last = newTypes[lastPos];
                     newTypes.RemoveAt(lastPos);
                     // Deferred initialization of StubType references by their related Type to allow circular type dependencies.
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
@@ -69,15 +68,15 @@ namespace Friflo.Json.Mapper
             }
         }
         
-        private StubType GetStubType(Type type) {
+        private ITypeMapper GetStubType(Type type) {
             storeLookupCount++;
-            if (typeMap.TryGetValue(type, out StubType stubType))
+            if (typeMap.TryGetValue(type, out ITypeMapper stubType))
                 return stubType;
             
             typeCreationCount++;
             stubType = typeResolver.CreateStubType(type);
             if (stubType == null)
-                stubType = TypeNotSupportedMatcher.CreateStubType(type);
+                stubType = TypeNotSupportedMatcher.CreateTypeNotSupported(type);
 
             
             typeMap.Add(type, stubType);
@@ -96,14 +95,14 @@ namespace Friflo.Json.Mapper
         {
             using (var bytesName = new Bytes(name)) {
                 lock (this) {
-                    if (nameToType.TryGetValue(bytesName, out StubType stubType)) {
-                        if (type != stubType.type)
+                    if (nameToType.TryGetValue(bytesName, out ITypeMapper stubType)) {
+                        if (type != stubType.GetNativeType())
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
                     stubType = GetType(type);
                     Bytes discriminator = new Bytes(name);
-                    typeToName.Add(stubType.type, discriminator);
+                    typeToName.Add(stubType.GetNativeType(), discriminator);
                     nameToType.Add(discriminator, stubType);
                 }
             }

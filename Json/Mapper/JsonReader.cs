@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Types;
 using Friflo.Json.Mapper.Utils;
@@ -37,16 +38,16 @@ namespace Friflo.Json.Mapper
         }
 
         public JsonReader(TypeStore typeStore) {
-            typeCache = new TypeCache(typeStore);
-            parser = new JsonParser {error = {throwException = false}};
-            maxDepth = 100;
+            typeCache   = new TypeCache(typeStore);
+            parser      = new JsonParser {error = {throwException = false}};
+            maxDepth    = 100;
         }
 
         public void Dispose() {
-            typeCache.Dispose();
-            discriminator.Dispose();
-            parser.Dispose();
-            strBuf.Dispose();
+            typeCache.      Dispose();
+            discriminator.  Dispose();
+            parser.         Dispose();
+            strBuf.         Dispose();
         }
         
         /// <summary>
@@ -54,52 +55,42 @@ namespace Friflo.Json.Mapper
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
         public T Read<T>(Bytes bytes) {
-            int start = bytes.StartPos;
-            int len = bytes.Len;
-            Var slot = new Var();
-            StubType stubType = typeCache.GetType(typeof(T));
-            bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
+            T       value   = default;
+            int     start   = bytes.StartPos;
+            int     len     = bytes.Len;
+            var     mapper  = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            
+            T result = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
-            return (T) slot.Get();
+            return result;
         }
         
-        public bool Read<T>(Bytes bytes, out T result) {
-            int start = bytes.StartPos;
-            int len = bytes.Len;
-            Var slot = new Var();
-            StubType stubType = typeCache.GetType(typeof(T));
-            bool success = ReadStart(bytes.buffer, start, len, stubType, ref slot);
-            if (success)
-                result = (T)slot.Get();
-            else
-                result = default;
+        public T Read<T>(Bytes bytes, out bool success) {
+            T       value   = default;
+            int     start   = bytes.StartPos;
+            int     len     = bytes.Len;
+            var     mapper  = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            
+            T result  = ReadStart(bytes.buffer, start, len, mapper, value, out success);
             parser.NextEvent(); // EOF
-            return success;
+            return result;
         }
         
-        public bool Read<T>(Bytes bytes, ref Var result) {
-            int start = bytes.StartPos;
-            int len = bytes.Len;
-            StubType stubType = typeCache.GetType(typeof(T));
-            bool success = ReadStart(bytes.buffer, start, len, stubType, ref result);
-            parser.NextEvent(); // EOF
-            return success;
-        }
-        
+        /*
         public object Read(Bytes bytes, Type type) {
-            int start = bytes.StartPos;
-            int len = bytes.Len;
-            Var slot = new Var();
-            StubType stubType = typeCache.GetType(type);
+            int         start       = bytes.StartPos;
+            int         len         = bytes.Len;
+            Var         slot        = new Var();
+            ITypeMapper stubType    = (TypeMapper<T>)typeCache.GetType(type);
             if (!ReadStart(bytes.buffer, start, len, stubType, ref slot))
                 return default;
             parser.NextEvent(); // EOF
             return slot.Get();
-        }
+        } */
 
-        private bool ReadStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {
+        private T ReadStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
             parser.InitParser(bytes, offset, len);
             parser.SetMaxDepth(maxDepth);
             
@@ -111,33 +102,34 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        return stubType.map.Read(this, slot, out stubType);
+                        return mapper.Read(this, value, out success);
                     case JsonEvent.ValueNull:
-                        if (!stubType.isNullable)
-                            return ReadUtils.ErrorIncompatible(this, stubType.map.DataTypeName(), stubType, ref parser);
-                        slot.SetNull(stubType.varType);
-                        return true;
+                        if (!mapper.isNullable)
+                            return ReadUtils.ErrorIncompatible(this, mapper.DataTypeName(), mapper, ref parser, out success);
+                        success = true;
+                        return default;
                     case JsonEvent.Error:
-                        return false;
+                        success = false;
+                        return default;
                     default:
-                        return ReadUtils.ErrorMsg(this, "unexpected state in Read() : ", ev);
+                        return ReadUtils.ErrorMsg<T>(this, "unexpected state in Read() : ", ev, out success);
                 }
             }
         }
 
         public T ReadTo<T>(Bytes bytes, T obj, out bool success) where T : class {
-            int start = bytes.StartPos;
-            int len = bytes.Len;
-            Var slot = new Var { Obj = obj };
-            StubType stubType = typeCache.GetType(slot.Obj.GetType());
-            success = ReadToStart(bytes.buffer, start, len, stubType, ref slot);
+            int     start   = bytes.StartPos;
+            int     len     = bytes.Len;
+            var     mapper  = (TypeMapper<T>)typeCache.GetType(obj.GetType());
+            
+            T result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
-            return (T)slot.Obj;
+            return result;
         }
 
-        private bool ReadToStart(ByteList bytes, int offset, int len, StubType stubType, ref Var slot) {
+        private T ReadToStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
             parser.InitParser(bytes, offset, len);
 
             while (true) {
@@ -145,11 +137,13 @@ namespace Friflo.Json.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        return stubType.map.Read(this, slot, out stubType);
+                        
+                        return mapper.Read(this, value, out success);
                     case JsonEvent.Error:
-                        return false;
+                        success = false;
+                        return default;
                     default:
-                        return ReadUtils.ErrorMsg(this, "ReadTo() can only used on an JSON object or array", ev);
+                        return ReadUtils.ErrorMsg<T>(this, "ReadTo() can only used on an JSON object or array", ev, out success);
                 }
             }
         }

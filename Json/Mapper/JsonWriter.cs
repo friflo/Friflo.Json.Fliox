@@ -2,8 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Types;
 
@@ -46,36 +48,37 @@ namespace Friflo.Json.Mapper
             strBuf.Dispose();
             bytes.Dispose();
         }
-
+        /*
         public void Write(object obj) { 
             StubType stubType = typeCache.GetType(obj.GetType());
             Var valueVar = new Var();
             valueVar.Obj = obj;
             WriteStart(stubType, ref valueVar);
-        }
+        } */
         
         public void Write<T>(T value) {
-            StubType stubType = typeCache.GetType(typeof(T));
-            Var valueVar = new Var();
-            valueVar.Set (value, stubType.varType, stubType.isNullable);
-            WriteStart(stubType, ref valueVar);
+            var stubType = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            
+            WriteStart(stubType, value);
         }
         
+        /*
         public void Write<T>(ref Var valueVar) { 
             StubType stubType = typeCache.GetType(typeof(T));
             WriteStart(stubType, ref valueVar);
-        }
+        } */
         
-        private void WriteStart(StubType stubType, ref Var valueVar) {
-            bytes.InitBytes(128);
-            strBuf.InitBytes(128);
-            format.InitTokenFormat();
+        private void WriteStart<T>(TypeMapper<T> mapper, T value) {
+            bytes.  InitBytes(128);
+            strBuf. InitBytes(128);
+            format. InitTokenFormat();
             bytes.Clear();
             level = 0;
-            if (valueVar.IsNull)
+            if (EqualityComparer<T>.Default.Equals(value, default))
                 WriteUtils.AppendNull(this);
             else
-                stubType.map.Write(this, valueVar);
+                mapper.Write(this, value);
+            
             if (level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
         }

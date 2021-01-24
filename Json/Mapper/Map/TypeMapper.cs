@@ -11,7 +11,10 @@ namespace Friflo.Json.Mapper.Map
     [CLSCompliant(true)]
 #endif
 
-    public interface ITypeMapper : IDisposable {
+    public interface ITypeMapper : IDisposable
+    {
+        void    InitStubType(TypeStore typeStore);
+        Type    GetNativeType();
     }
     
     public abstract class TypeMapper<TVal> : ITypeMapper
@@ -24,12 +27,26 @@ namespace Friflo.Json.Mapper.Map
             this.type = type;
             this.isNullable = isNullable;
         }
-        
+
+        public virtual      Type    GetNativeType() { return type; }
+
         public abstract     string  DataTypeName();
         public abstract     void    Write(JsonWriter writer, TVal slot);
         public abstract     TVal    Read(JsonReader reader, TVal slot, out bool success);
 
         public virtual      void    Dispose() { }
+        
+        /// <summary>
+        /// Need to be overriden, in case the derived <see cref="TypeMapper{TVal}"/> support <see cref="System.Type"/>'s
+        /// as fields or elements returning a <see cref="TypeMapper{TVal}"/>.<br/>
+        /// 
+        /// In this case <see cref="InitStubType"/> is used to map a <see cref="System.Type"/> to a required
+        /// <see cref="TypeMapper{TVal}"/> by calling <see cref="TypeStore.GetType(System.Type)"/> and storing the returned
+        /// reference also in the created <see cref="TypeMapper{TVal}"/> instance.<br/>
+        ///
+        /// This enables deferred initialization of StubType references by their related Type to support circular type dependencies.
+        /// The goal is to support also type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
+        /// </summary>
         public virtual      void    InitStubType(TypeStore typeStore) { }
     }
     
@@ -63,7 +80,7 @@ namespace Friflo.Json.Mapper.Map
         
         public override void InitStubType(TypeStore typeStore) {
             FieldInfo fieldInfo = GetType().GetField(nameof(elementType));
-            StubType stubType = typeStore.GetType(elementTypeNative);
+            ITypeMapper stubType = typeStore.GetType(elementTypeNative);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, stubType);
         }
