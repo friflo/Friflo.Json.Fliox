@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Types;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ArrayMatcher : ITypeMatcher {
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -22,7 +22,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, ArrayMapper.Interface, type.GetArrayRank(), null, constructor);
+                    return new ArrayMapper<object> (type, elementType,  constructor); // todo replace generic type
                 }
             }
             return null;
@@ -33,53 +33,56 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ArrayMapper : TypeMapper
+    public class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
     {
         public override string DataTypeName() { return "array"; }
 
-        public override void Write(JsonWriter writer, TVal slot) {
+        public ArrayMapper(Type type, Type elementType, ConstructorInfo constructor) :
+            base(type, elementType, 1, typeof(string), constructor) {
+        }
+
+        public override void Write(JsonWriter writer, TElm[] slot) {
             int startLevel = WriteUtils.IncLevel(writer);
-            CollectionType collectionType = (CollectionType) stubType;
-            Array arr = (Array) slot.Obj;
+            var arr = slot;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.elementType;
-            Var elemVar = new Var();
+            TElm elemVar;
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
                 // elemVar.Set(arr.GetValue(n), elementType.varType, elementType.isNullable);
-                elemVar.Obj = arr.GetValue(n);
-                if (elemVar.IsNull)
+                elemVar = arr[n];
+                
+                // if (elemVar.IsNull)
+                if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
                 else
-                    elementType.map.Write(writer, elemVar);
+                    elementType.Write(writer, elemVar);
             }
             writer.bytes.AppendChar(']');
             WriteUtils.DecLevel(writer, startLevel);
         }
 
-        public override TVal Read(JsonReader reader, TVal slot, out bool success1) {
-            if (!ArrayUtils.StartArray(reader, ref slot, success1, out bool success))
-                return success;
+        public override TElm[] Read(JsonReader reader, TElm[] slot, out bool success) {
+            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+                return default;
             
             ref var parser = ref reader.parser;
-            var collection = (CollectionType) success1;
-            StubType elementType = collection.elementType;
             int startLen;
             int len;
-            Array array;
-            if (slot.Obj == null) {
+            TElm[] array;
+            // if (slot.Obj == null) {
+            if (EqualityComparer<TElm[]>.Default.Equals(slot, default)) {
                 startLen = 0;
                 len = ReadUtils.minLen;
-                array = Arrays.CreateInstance(elementType.type, len);
+                array = new TElm[len];
             }
             else {
-                array = (Array) slot.Obj;
+                array = slot;
                 startLen = len = array.Length;
             }
 
             int index = 0;
-            Var elemVar = new Var();
+            TElm elemVar;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -87,40 +90,46 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
+                        ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser, out success);
+                        return default;
                     case JsonEvent.ValueNull:
                         if (index >= len)
-                            array = Arrays.CopyOfType(elementType.type, array, len = ReadUtils.Inc(len));
-                        if (!elementType.isNullable)
-                            return ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser);
-                        array.SetValue(null, index++);
+                            array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
+                        if (!elementType.isNullable) {
+                            ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser, out success);
+                            return default;
+                        }
+                        array[index++] = default;
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            elemVar.Obj = array.GetValue(index);
-                            if(!elementType.map.Read(reader, elemVar, out elementType))
-                                return false;
-                            array.SetValue(elemVar.Obj, index);
+                            elemVar = array[index];
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            array[index] = elemVar;
                         } else {
-                            elemVar.SetObjNull();
-                            if (!elementType.map.Read(reader, elemVar, out elementType))
-                                return false;
+                            elemVar = default;
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
                             if (index >= len)
-                                array = Arrays.CopyOfType(elementType.type, array, len = ReadUtils.Inc(len));
-                            array.SetValue(elemVar.Obj, index);
+                                array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
+                            array[index] = elemVar;
                         }
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
-                            array = Arrays.CopyOfType(elementType.type, array, index);
-                        slot.Obj = array;
-                        return true;
+                            array = Arrays.CopyOf(array, index);
+                        success = true;
+                        return array;
                     case JsonEvent.Error:
-                        return false;
+                        success = false;
+                        return default;
                     default:
-                        return ReadUtils.ErrorMsg(reader, "unexpected state: ", ev);
+                        return ReadUtils.ErrorMsg<TElm[]>(reader, "unexpected state: ", ev, out success);
                 }
             }
         }

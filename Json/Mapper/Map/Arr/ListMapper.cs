@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
@@ -15,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ListMatcher : ITypeMatcher {
         public static readonly ListMatcher Instance = new ListMatcher();
         
-        public StubType CreateStubType(Type type) {
+        public ITypeMapper CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
@@ -24,7 +23,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new CollectionType  (type, elementType, ListMapper.Interface, 1, null, constructor);
+                return new ListMapper<object>  (type, elementType, constructor); // todo replace generic type 
             }
             return null;
         }        
@@ -33,23 +32,25 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper : TypeMapper
+    public class ListMapper<TElm> : CollectionMapper<List<TElm>, TElm>
     {
         public override string DataTypeName() { return "List"; }
+        
+        public ListMapper(Type type, Type elementType, ConstructorInfo constructor) :
+            base(type, elementType, 1, typeof(string), constructor) {
+        }
 
-        public override void Write(JsonWriter writer, TVal slot) {
+        public override void Write(JsonWriter writer, List<TElm> slot) {
             int startLevel = WriteUtils.IncLevel(writer);
-            IList list = (IList) slot.Obj;
-            CollectionType collectionType = (CollectionType) stubType;
+            var list = slot;
             writer.bytes.AppendChar('[');
-            StubType elementType = collectionType.elementType;
-            Var elemVar = new Var();
+
             for (int n = 0; n < list.Count; n++) {
-                if (n > 0) writer.bytes.AppendChar(',');
-                Object item = list[n];
+                if (n > 0)
+                    writer.bytes.AppendChar(',');
+                TElm item = list[n];
                 if (item != null) {
-                    elemVar.Obj = item;
-                    elementType.map.Write(writer, elemVar);
+                    elementType.Write(writer, item);
                 } else
                     WriteUtils.AppendNull(writer);
             }
@@ -58,22 +59,20 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override TVal Read(JsonReader reader, TVal slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, ref slot, success, out bool startSuccess))
-                return startSuccess;
+        public override List<TElm> Read(JsonReader reader, List<TElm> slot, out bool success) {
+            if (!ArrayUtils.StartArray(reader, slot, this, out success))
+                return default;
             
             ref var parser = ref reader.parser;
-            CollectionType collectionType = (CollectionType) success;
-            IList list = (IList) slot.Obj;
+            var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (IList) collectionType.CreateInstance();
+                list = new List<TElm>(ReadUtils.minLen);
             else
                 startLen = list.Count;
             
-            StubType elementType = collectionType.elementType;
             int index = 0;
-            Var elemVar = new Var();
+            TElm elemVar;
             
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -81,50 +80,57 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        elemVar.SetObjNull();
-                        if (!elementType.map.Read(reader, elemVar, out elementType))
-                            return false;
+                        elemVar = default;
+                        elemVar = elementType.Read(reader, elemVar, out success);
+                        if (!success)
+                            return default;
                         if (index < startLen)
-                            list[index] = elemVar.Get();
+                            list[index] = elemVar;
                         else
-                            list.Add(elemVar.Get());
+                            list.Add(elemVar);
                         index++;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!elementType.isNullable)
-                            return ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser);
+                        if (!elementType.isNullable) {
+                            ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser, out success);
+                            return default;
+                        }
+
                         if (index < startLen)
-                            list[index] = null;
+                            list[index] = default;
                         else
-                            list.Add(null);
+                            list.Add(default);
                         index++;
                         break;
                     case JsonEvent.ArrayStart:
-                        StubType subElementType = elementType;
                         if (index < startLen) {
-                            elemVar.Obj = list[index];
-                            if (!subElementType.map.Read(reader, elemVar, out subElementType))
-                                return false;
-                            list[index] = elemVar.Obj;
+                            elemVar = list[index];
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            list[index] = elemVar;
                         } else {
-                            elemVar.SetObjNull();
-                            if (!subElementType.map.Read(reader, elemVar, out subElementType))
-                                return false;
-                            list.Add(elemVar.Obj);
+                            elemVar = default;
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            list.Add(elemVar);
                         }
                         index++;
                         break;
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
-                            elemVar.Obj = list[index];
-                            if (!elementType.map.Read(reader, elemVar, out elementType))
-                                return false;
-                            list[index] = elemVar.Obj;
+                            elemVar = list[index];
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            list[index] = elemVar;
                         } else {
-                            elemVar.SetObjNull();
-                            if (!elementType.map.Read(reader, elemVar, out elementType))
-                                return false;
-                            list.Add(elemVar.Obj);
+                            elemVar = default;
+                            elemVar = elementType.Read(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            list.Add(elemVar);
                         }
                         index++;
                         break;
@@ -132,12 +138,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                         // Remove from tail to head to avoid copying items after remove index
                        for (int n = startLen - 1; n >= index; n--)
                             list.RemoveAt(n);
-                        slot.Obj = list;
-                        return true;
+                        success = true;
+                        return list;
                     case JsonEvent.Error:
-                        return false;
+                        success = false;
+                        return default;
                     default:
-                        return ReadUtils.ErrorMsg(reader, "unexpected state: ", ev);
+                        return ReadUtils.ErrorMsg<List<TElm>>(reader, "unexpected state: ", ev, out success);
                 }
             }
         }

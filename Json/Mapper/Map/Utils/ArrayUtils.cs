@@ -11,24 +11,22 @@ namespace Friflo.Json.Mapper.Map.Utils
     [CLSCompliant(true)]
 #endif
     public static class ArrayUtils {
-        public static bool StartArray(JsonReader reader, ref Var slot, StubType stubType, out bool success) {
+        public static bool StartArray<TVal, TElm>(JsonReader reader, TVal slot, CollectionMapper<TVal, TElm> map, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
-                    if (stubType.isNullable) {
-                        slot.Obj = null;
+                    if (map.isNullable) {
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
-                    success = false;
-                    return false;
+                    ReadUtils.ErrorIncompatible(reader, map.DataTypeName(), map, ref reader.parser, out success);
+                    return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible(reader, stubType.map.DataTypeName(), stubType, ref reader.parser);
+                    ReadUtils.ErrorIncompatible(reader, map.DataTypeName(), map, ref reader.parser, out success);
                     return false;
             }
         }
