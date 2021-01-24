@@ -14,10 +14,30 @@ namespace Friflo.Json.Mapper.Map.Val
         public static readonly EnumMatcher Instance = new EnumMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
-            if (!EnumMapper.IsEnum(type, out bool isNullable))
+            if (!IsEnum(type, out bool isNullable))
                 return null;
-            return new EnumMapper (type, isNullable);
+            Type generic = typeof(EnumMapper<>);
+            var typeArgs = new Type[] {type};
+            var genericType = generic.MakeGenericType(typeArgs);
+            var enumMapper = Activator.CreateInstance(genericType);
+
+            return (ITypeMapper)enumMapper;
         }
+        
+        public static bool IsEnum(Type type, out bool isNullable) {
+            isNullable = false;
+            if (!type.IsEnum) {
+                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
+                if (args == null)
+                    return false;
+                Type nullableType = args[0];
+                if (!nullableType.IsEnum)
+                    return false;
+                isNullable = true;
+            }
+            return true;
+        }
+
         
     }
 
@@ -33,7 +53,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EnumMapper : TypeMapper<Enum>
+    public class EnumMapper<T> : TypeMapper<T> where T : Enum
     {
         internal readonly Dictionary<BytesString, Enum> stringToEnum = new Dictionary<BytesString, Enum>();
         internal readonly Dictionary<Enum, BytesString> enumToString = new Dictionary<Enum, BytesString>();
@@ -42,8 +62,8 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public override string DataTypeName() { return "enum"; }
         
-        public EnumMapper(Type type, bool isNullable) :
-            base (type, isNullable)
+        public EnumMapper() :
+            base (typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null)
         {
             Type enumType = isNullable ? Nullable.GetUnderlyingType(type): type;
             // ReSharper disable once PossibleNullReferenceException
@@ -97,21 +117,7 @@ namespace Friflo.Json.Mapper.Map.Val
             throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
         }
         
-        public static bool IsEnum(Type type, out bool isNullable) {
-            isNullable = false;
-            if (!type.IsEnum) {
-                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
-                if (args == null)
-                    return false;
-                Type nullableType = args[0];
-                if (!nullableType.IsEnum)
-                    return false;
-                isNullable = true;
-            }
-            return true;
-        }
-
-        public override void Write(JsonWriter writer, Enum slot) {
+        public override void Write(JsonWriter writer, T slot) {
             if (enumToString.TryGetValue(slot, out BytesString enumName)) {
                 writer.bytes.AppendChar('\"');
                 writer.bytes.AppendBytes(ref enumName.value);
@@ -119,13 +125,13 @@ namespace Friflo.Json.Mapper.Map.Val
             }
         }
 
-        public override Enum Read(JsonReader reader, Enum slot, out bool success) {
+        public override T Read(JsonReader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
                 if (stringToEnum.TryGetValue(reader.keyRef, out Enum enumValue)) {
                     success = true;
-                    return enumValue;
+                    return (T)enumValue;
                 }
                 return ReadUtils.ErrorIncompatible(reader, "enum value. Value unknown", this, ref parser, out success);
             }
@@ -135,7 +141,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     return default;
                 if (integralToEnum.TryGetValue(integralValue, out Enum enumValue)) {
                     success = true;
-                    return enumValue;
+                    return (T)enumValue;
                 }
                 return ReadUtils.ErrorIncompatible(reader, "enum value. Value unknown", this, ref parser, out success);
             }
