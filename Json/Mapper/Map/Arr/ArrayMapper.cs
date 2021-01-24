@@ -10,14 +10,8 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class ArrayMapper : ITypeMapper
-    {
-        public static readonly ArrayMapper Interface = new ArrayMapper();
-
-        public string DataTypeName() { return "array"; }
+    public class ArrayMatcher : ITypeMatcher {
+        public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
         public StubType CreateStubType(Type type) {
             if (type. IsArray) {
@@ -28,12 +22,23 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, this, type.GetArrayRank(), null, constructor);
+                    return new CollectionType(type, elementType, ArrayMapper.Interface, type.GetArrayRank(), null, constructor);
                 }
             }
             return null;
         }
-        
+    }
+    
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class ArrayMapper : ITypeMapper
+    {
+        public static readonly ArrayMapper Interface = new ArrayMapper();
+
+        public string DataTypeName() { return "array"; }
+
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);
             CollectionType collectionType = (CollectionType) stubType;

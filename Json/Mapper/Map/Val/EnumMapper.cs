@@ -9,6 +9,17 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+    public class EnumMatcher : ITypeMatcher {
+        public static readonly EnumMatcher Instance = new EnumMatcher();
+        
+        public StubType CreateStubType(Type type) {
+            if (!EnumType.IsEnum(type, out bool isNullable))
+                return null;
+            return new EnumType (type, EnumMapper.Interface, isNullable);
+        }
+    }
+
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -18,12 +29,6 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public string DataTypeName() { return "enum"; }
 
-        public StubType CreateStubType(Type type) {
-            if (!EnumType.IsEnum(type, out bool isNullable))
-                return null;
-            return new EnumType (type, Interface, isNullable);
-        }
-        
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             EnumType enumType = (EnumType) stubType;
             if (enumType.enumToString.TryGetValue((Enum)slot.Obj, out BytesString enumName)) {

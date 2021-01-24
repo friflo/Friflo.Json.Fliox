@@ -9,6 +9,16 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+    public class BigIntMatcher : ITypeMatcher {
+        public static readonly BigIntMatcher Instance = new BigIntMatcher();
+        
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(BigInteger))
+                return null;
+            return new BigIntType (typeof(BigInteger), BigIntMapper.Interface);
+        }
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -17,13 +27,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public static readonly BigIntMapper Interface = new BigIntMapper();
         
         public string DataTypeName() { return "BigInteger"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(BigInteger))
-                return null;
-            return new BigIntType (typeof(BigInteger), Interface);
-        }
-        
+
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             BigInteger value = (BigInteger) slot.Obj;
             writer.bytes.AppendChar('\"');

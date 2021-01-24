@@ -9,6 +9,16 @@ using Friflo.Json.Mapper.Types;
 namespace Friflo.Json.Mapper.Map.Val
 {
     
+    public class DateTimeMatcher : ITypeMatcher {
+        public static readonly DateTimeMatcher Instance = new DateTimeMatcher();
+        
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(DateTime))
+                return null;
+            return new PrimitiveType (typeof(DateTime), DateTimeMapper.Interface);
+        }
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -18,11 +28,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public string DataTypeName() { return "DateTime"; }
         
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(DateTime))
-                return null;
-            return new PrimitiveType (typeof(DateTime), Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             DateTime value = (DateTime) slot.Obj;

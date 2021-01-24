@@ -8,6 +8,15 @@ using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
+    public class StringMatcher : ITypeMatcher {
+        public static readonly StringMatcher Instance = new StringMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(string))
+                return null;
+            return new StringType(type, StringMapper.Interface);
+        }
+    }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -17,12 +26,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public static readonly StringMapper Interface = new StringMapper();
         
         public string DataTypeName() { return "string"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(string))
-                return null;
-            return new StringType(type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             WriteUtils.WriteString(writer, (string) slot.Obj);
@@ -36,17 +40,23 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    
+    public class DoubleMatcher : ITypeMatcher {
+        public static readonly DoubleMatcher Instance = new DoubleMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(double) && type != typeof(double?))
+                return null;
+            return new PrimitiveType (type, DoubleMapper.Interface);
+        }
+    }
+    
     public class DoubleMapper : ITypeMapper
     {
         public static readonly DoubleMapper Interface = new DoubleMapper();
         
         public string DataTypeName() { return "double"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(double) && type != typeof(double?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendDbl(ref writer.bytes, slot.Dbl);
@@ -60,17 +70,23 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    
+    public class FloatMatcher : ITypeMatcher {
+        public static readonly FloatMatcher Instance = new FloatMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(float) && type != typeof(float?))
+                return null;
+            return new PrimitiveType (type, FloatMapper.Interface);
+        }
+    }
+    
     public class FloatMapper : ITypeMapper
     {
         public static readonly FloatMapper Interface = new FloatMapper();
         
         public string DataTypeName() { return "float"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(float) && type != typeof(float?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendFlt(ref writer.bytes, slot.Flt);
@@ -84,17 +100,22 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    public class LongMatcher : ITypeMatcher {
+        public static readonly LongMatcher Instance = new LongMatcher();
+                
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(long) && type != typeof(long?))
+                return null;
+            return new PrimitiveType (type, LongMapper.Interface);
+        }
+    }
+    
     public class LongMapper : ITypeMapper
     {
         public static readonly LongMapper Interface = new LongMapper();
         
         public string DataTypeName() { return "long"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(long) && type != typeof(long?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendLong(ref writer.bytes, slot.Lng);
@@ -108,17 +129,22 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    public class IntMatcher : ITypeMatcher {
+        public static readonly IntMatcher Instance = new IntMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(int) && type != typeof(int?))
+                return null;
+            return new PrimitiveType (type, IntMapper.Interface);
+        }
+    }
+    
     public class IntMapper : ITypeMapper
     {
         public static readonly IntMapper Interface = new IntMapper();
         
         public string DataTypeName() { return "int"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(int) && type != typeof(int?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Int);
@@ -132,18 +158,21 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    public class ShortMatcher : ITypeMatcher {
+        public static readonly ShortMatcher Instance = new ShortMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(short) && type != typeof(short?))
+                return null;
+            return new PrimitiveType (type, ShortMapper.Interface);
+        }
+    }
     public class ShortMapper : ITypeMapper
     {
         public static readonly ShortMapper Interface = new ShortMapper();
         
         public string DataTypeName() { return "short"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(short) && type != typeof(short?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
-        
+
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Short);
         }
@@ -156,17 +185,22 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    
+    public class ByteMatcher : ITypeMatcher {
+        public static readonly ByteMatcher Instance = new ByteMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(byte) && type != typeof(byte?))
+                return null;
+            return new PrimitiveType (type, ByteMapper.Interface);
+        }
+    }
     public class ByteMapper : ITypeMapper
     {
         public static readonly ByteMapper Interface = new ByteMapper();
         
         public string DataTypeName() { return "byte"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(byte) && type != typeof(byte?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendInt(ref writer.bytes, slot.Byte);
@@ -180,17 +214,22 @@ namespace Friflo.Json.Mapper.Map.Val
         }
     }
     
+    public class BoolMatcher : ITypeMatcher {
+        public static readonly BoolMatcher Instance = new BoolMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(bool) && type != typeof(bool?))
+                return null;
+            return new PrimitiveType (type, BoolMapper.Interface);
+        }
+    }
+    
     public class BoolMapper : ITypeMapper
     {
         public static readonly BoolMapper Interface = new BoolMapper();
         
         public string DataTypeName() { return "bool"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(bool) && type != typeof(bool?))
-                return null;
-            return new PrimitiveType (type, Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             writer.format.AppendBool(ref writer.bytes, slot.Bool);

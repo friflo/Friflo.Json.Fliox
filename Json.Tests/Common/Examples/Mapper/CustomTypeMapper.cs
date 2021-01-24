@@ -16,17 +16,23 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public string[] tokens;
     }
     
+    public class StringTokenMatcher : ITypeMatcher {
+        public static readonly StringTokenMatcher Instance = new StringTokenMatcher();
+        
+                
+        public StubType CreateStubType(Type type) {
+            if (type != typeof(StringTokens))
+                return null;
+            return new PrimitiveType (typeof(StringTokens), StringTokenMapper.Interface);
+        }
+    }
+    
     public class StringTokenMapper : ITypeMapper
     {
         public static readonly StringTokenMapper Interface = new StringTokenMapper();
         
         public string DataTypeName() { return "tokens"; }
-        
-        public StubType CreateStubType(Type type) {
-            if (type != typeof(StringTokens))
-                return null;
-            return new PrimitiveType (typeof(StringTokens), Interface);
-        }
+
         
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             StringTokens value = (StringTokens) slot.Obj;
@@ -50,7 +56,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public void Run() {
             var resolver = new DefaultTypeResolver();
             var mapperCount = resolver.mapperList.Count;
-            resolver.AddSpecificTypeMapper(StringTokenMapper.Interface);
+            resolver.AddSpecificTypeMapper(StringTokenMatcher.Instance);
             AreEqual(mapperCount + 1, resolver.mapperList.Count);
             
             var typeStore = new TypeStore(resolver);

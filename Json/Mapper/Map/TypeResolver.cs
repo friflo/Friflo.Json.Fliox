@@ -21,9 +21,9 @@ namespace Friflo.Json.Mapper.Map
     public class DefaultTypeResolver : ITypeResolver
     {
         /// <summary>This mapper list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
-        public  readonly List<ITypeMapper>  mapperList =            new List<ITypeMapper>();
-        private readonly List<ITypeMapper>  specificTypeMappers =   new List<ITypeMapper>();
-        private readonly List<ITypeMapper>  genericTypeMappers =    new List<ITypeMapper>();
+        public  readonly List<ITypeMatcher>  mapperList =            new List<ITypeMatcher>();
+        private readonly List<ITypeMatcher>  specificTypeMappers =   new List<ITypeMatcher>();
+        private readonly List<ITypeMatcher>  genericTypeMappers =    new List<ITypeMatcher>();
         
         public DefaultTypeResolver() {
             UpdateMapperList();
@@ -37,83 +37,53 @@ namespace Friflo.Json.Mapper.Map
         // find a codec manually to simplify debugging
         private StubType QueryStubType (Type type, Query q) {
 
-            if (MatchMappers(specificTypeMappers, type, q))               return q.hit;
+            if (MatchMappers(specificTypeMappers,       type, q)) return q.hit;
             
             // Specific types on top
-            if (Match(BigIntMapper.     Interface,          type, q)) return q.hit;
-            if (Match(DateTimeMapper.   Interface,          type, q)) return q.hit;
-            
-            //
-            if (Match(StringMapper.     Interface,          type, q)) return q.hit;
-            if (Match(DoubleMapper.     Interface,          type, q)) return q.hit;
-            if (Match(FloatMapper.      Interface,          type, q)) return q.hit;
-            if (Match(LongMapper.       Interface,          type, q)) return q.hit;
-            if (Match(IntMapper.        Interface,          type, q)) return q.hit;
-            if (Match(ShortMapper.      Interface,          type, q)) return q.hit;
-            if (Match(ByteMapper.       Interface,          type, q)) return q.hit;
-            if (Match(BoolMapper.       Interface,          type, q)) return q.hit;
-            // --- List
-            if (Match(PrimitiveList.    DoubleInterface,    type, q)) return q.hit;
-            if (Match(PrimitiveList.    FloatInterface,     type, q)) return q.hit;
-            if (Match(PrimitiveList.    LongInterface,      type, q)) return q.hit;
-            if (Match(PrimitiveList.    IntInterface,       type, q)) return q.hit;
-            if (Match(PrimitiveList.    ShortInterface,     type, q)) return q.hit;
-            if (Match(PrimitiveList.    ByteInterface,      type, q)) return q.hit;
-            if (Match(PrimitiveList.    BoolInterface,      type, q)) return q.hit;
-            
-            if (Match(PrimitiveList.    DoubleNulInterface, type, q)) return q.hit;
-            if (Match(PrimitiveList.    FloatNulInterface,  type, q)) return q.hit;
-            if (Match(PrimitiveList.    LongNulInterface,   type, q)) return q.hit;
-            if (Match(PrimitiveList.    IntNulInterface,    type, q)) return q.hit;
-            if (Match(PrimitiveList.    ShortNulInterface,  type, q)) return q.hit;
-            if (Match(PrimitiveList.    ByteNulInterface,   type, q)) return q.hit;
-            if (Match(PrimitiveList.    BoolNulInterface,   type, q)) return q.hit;
-            // --- array            
-            if (Match(PrimitiveArray.   DoubleInterface,    type, q)) return q.hit;
-            if (Match(PrimitiveArray.   FloatInterface,     type, q)) return q.hit;
-            if (Match(PrimitiveArray.   LongInterface,      type, q)) return q.hit;
-            if (Match(PrimitiveArray.   IntInterface,       type, q)) return q.hit;
-            if (Match(PrimitiveArray.   ShortInterface,     type, q)) return q.hit;
-            if (Match(PrimitiveArray.   ByteInterface,      type, q)) return q.hit;
-            if (Match(PrimitiveArray.   BoolInterface,      type, q)) return q.hit;
+            if (Match(BigIntMatcher.        Instance,   type, q)) return q.hit;
+            if (Match(DateTimeMatcher.      Instance,   type, q)) return q.hit;
+                
+            //  
+            if (Match(StringMatcher.        Instance,   type, q)) return q.hit;
+            if (Match(DoubleMatcher.        Instance,   type, q)) return q.hit;
+            if (Match(FloatMatcher.         Instance,   type, q)) return q.hit;
+            if (Match(LongMatcher.          Instance,   type, q)) return q.hit;
+            if (Match(IntMatcher.           Instance,   type, q)) return q.hit;
+            if (Match(ShortMatcher.         Instance,   type, q)) return q.hit;
+            if (Match(ByteMatcher.          Instance,   type, q)) return q.hit;
+            if (Match(BoolMatcher.          Instance,   type, q)) return q.hit;
+            // --- List's
+            if (Match(PrimitiveListMatcher. Instance,   type, q)) return q.hit;
 
-            if (Match(PrimitiveArray.   DoubleNulInterface, type, q)) return q.hit;
-            if (Match(PrimitiveArray.   FloatNulInterface,  type, q)) return q.hit;
-            if (Match(PrimitiveArray.   LongNulInterface,   type, q)) return q.hit;
-            if (Match(PrimitiveArray.   IntNulInterface,    type, q)) return q.hit;
-            if (Match(PrimitiveArray.   ShortNulInterface,  type, q)) return q.hit;
-            if (Match(PrimitiveArray.   ByteNulInterface,   type, q)) return q.hit;
-            if (Match(PrimitiveArray.   BoolNulInterface,   type, q)) return q.hit;
+            // --- array's           
+            if (Match(PrimitiveArrayMatcher.Instance,   type, q)) return q.hit;
             
-            if (Match(PrimitiveArray.   StringInterface ,   type, q)) return q.hit;
-
-            
-            if (MatchMappers(genericTypeMappers, type, q))               return q.hit;
+            if (MatchMappers(genericTypeMappers,        type, q)) return q.hit;
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if (Match(ArrayMapper.      Interface,          type, q)) return q.hit;
+            if (Match(ArrayMatcher.         Instance,   type, q)) return q.hit;
             //
             //
-            if (Match(EnumMapper.       Interface,          type, q)) return q.hit;
-            if (Match(ListMapper.       Interface,          type, q)) return q.hit;
-            if (Match(DictionaryMapper. Interface,          type, q)) return q.hit;
-            if (Match(ClassMapper.      Interface,          type, q)) return q.hit;
+            if (Match(EnumMatcher.          Instance,   type, q)) return q.hit;
+            if (Match(ListMatcher.          Instance,   type, q)) return q.hit;
+            if (Match(DictionaryMatcher.    Instance,   type, q)) return q.hit;
+            if (Match(ClassMatcher.         Instance,   type, q)) return q.hit;
 
             return null;
         }
         
-        public void AddSpecificTypeMapper(ITypeMapper mapper) {
+        public void AddSpecificTypeMapper(ITypeMatcher mapper) {
             specificTypeMappers.Add(mapper);
             UpdateMapperList();
         }
         
-        public void AddGenericTypeMapper(ITypeMapper mapper) {
+        public void AddGenericTypeMapper(ITypeMatcher mapper) {
             genericTypeMappers.Add(mapper);
             UpdateMapperList();
         }
 
-        private static bool MatchMappers(List<ITypeMapper> mappers, Type type, Query query) {
+        private static bool MatchMappers(List<ITypeMatcher> mappers, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
                 if (Match(mappers[i], type, query))
                     return true;
@@ -121,7 +91,7 @@ namespace Friflo.Json.Mapper.Map
             return false;
         }
 
-        private static bool Match(ITypeMapper mapper, Type type, Query query) {
+        private static bool Match(ITypeMatcher mapper, Type type, Query query) {
             if (query.mode == Mode.Search) {
                 query.hit = mapper.CreateStubType(type);
                 return query.hit != null;
@@ -139,7 +109,7 @@ namespace Friflo.Json.Mapper.Map
 
         class Query {
             public readonly Mode                mode;
-            public          List<ITypeMapper>   mappers;
+            public          List<ITypeMatcher>  mappers;
             public          StubType            hit;
 
             public Query(Mode mode) {

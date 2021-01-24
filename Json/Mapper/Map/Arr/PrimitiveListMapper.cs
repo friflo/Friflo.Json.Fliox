@@ -122,20 +122,8 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class PrimitiveListMapper<T> : ITypeMapper
-    {
-        private readonly Type       elemType;
-        private readonly VarType    elemVarType;
-        
-        public string DataTypeName() { return "List"; }
-        
-        public PrimitiveListMapper () {
-            elemType            = typeof(T);
-            elemVarType         = Var.GetVarType(elemType);
-        }
+    public class PrimitiveListMatcher : ITypeMatcher {
+        public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
@@ -143,17 +131,62 @@ namespace Friflo.Json.Mapper.Map.Arr
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
-                if (elemVarType == VarType.Object)
-                    return null;
-                if (elemType != elementType)
-                    return null;
-                
-                ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
-                if (constructor == null)
-                    constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new CollectionType  (type, elementType, this, 1, null, constructor);
+                return Find(type, elementType);
             }
             return null;
+        }
+        
+         class Query {
+            public  StubType hit;
+        }
+
+        StubType Find(Type type, Type elementType) {
+            Query query = new Query();
+            if (Match(type, elementType, PrimitiveList.DoubleInterface,   query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.FloatInterface,    query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.LongInterface,     query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.IntInterface,      query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.ShortInterface,    query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.ByteInterface,     query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.BoolInterface,     query)) return query.hit;
+            //
+            if (Match(type, elementType, PrimitiveList.DoubleNulInterface,query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.FloatNulInterface, query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.LongNulInterface,  query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.IntNulInterface,   query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.ShortNulInterface, query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.ByteNulInterface,  query)) return query.hit;
+            if (Match(type, elementType, PrimitiveList.BoolNulInterface,  query)) return query.hit;
+            return null;
+        }
+
+        bool Match<T>(Type type, Type elementType, PrimitiveListMapper<T> mapper, Query query) {
+            if (mapper.elemVarType == VarType.Object)
+                return false;
+            if (mapper.elemType != elementType)
+                return false;
+            
+            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+            if (constructor == null)
+                constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
+            query.hit = new CollectionType  (type, elementType, mapper, 1, null, constructor);
+            return true;
+        }
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class PrimitiveListMapper<T> : ITypeMapper
+    {
+        public  readonly Type       elemType;
+        public  readonly VarType    elemVarType;
+        
+        public string DataTypeName() { return "List"; }
+        
+        public PrimitiveListMapper () {
+            elemType            = typeof(T);
+            elemVarType         = Var.GetVarType(elemType);
         }
 
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {

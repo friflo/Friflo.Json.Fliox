@@ -12,9 +12,16 @@ namespace Friflo.Json.Mapper.Map
     public interface ITypeMapper
     {
         string      DataTypeName();
-        StubType    CreateStubType  (Type type);
         void        Write (JsonWriter writer, ref Var slot, StubType stubType);
         bool        Read  (JsonReader reader, ref Var slot, StubType stubType);
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public interface ITypeMatcher
+    {
+        StubType CreateStubType(Type type);
     }
 
 }

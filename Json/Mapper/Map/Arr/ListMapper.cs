@@ -12,14 +12,8 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class ListMapper : ITypeMapper
-    {
-        public static readonly ListMapper Interface = new ListMapper();
-        
-        public string DataTypeName() { return "List"; }
+    public class ListMatcher : ITypeMatcher {
+        public static readonly ListMatcher Instance = new ListMatcher();
         
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
@@ -30,10 +24,20 @@ namespace Friflo.Json.Mapper.Map.Arr
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new CollectionType  (type, elementType, this, 1, null, constructor);
+                return new CollectionType  (type, elementType, ListMapper.Interface, 1, null, constructor);
             }
             return null;
-        }
+        }        
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class ListMapper : ITypeMapper
+    {
+        public static readonly ListMapper Interface = new ListMapper();
+        
+        public string DataTypeName() { return "List"; }
 
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);

@@ -106,13 +106,62 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
     }
     
+    public class PrimitiveArrayMatcher : ITypeMatcher {
+        public static readonly PrimitiveArrayMatcher Instance = new PrimitiveArrayMatcher();
+
+        public StubType CreateStubType(Type type) {
+            if (type. IsArray) {
+                int rank = type.GetArrayRank();
+                if (rank > 1)
+                    return null; // todo implement multi dimensional array support
+                return Find(type);
+            }
+            return null;
+        }
+
+        class Query {
+            public  StubType hit;
+        }
+
+        StubType Find(Type type) {
+            Query query = new Query();
+            if (Match(typeof(double),   type, PrimitiveArray.DoubleInterface,   query)) return query.hit;
+            if (Match(typeof(float),    type, PrimitiveArray.FloatInterface,    query)) return query.hit;
+            if (Match(typeof(long),     type, PrimitiveArray.LongInterface,     query)) return query.hit;
+            if (Match(typeof(int),      type, PrimitiveArray.IntInterface,      query)) return query.hit;
+            if (Match(typeof(short),    type, PrimitiveArray.ShortInterface,    query)) return query.hit;
+            if (Match(typeof(byte),     type, PrimitiveArray.ByteInterface,     query)) return query.hit;
+            if (Match(typeof(bool),     type, PrimitiveArray.BoolInterface,     query)) return query.hit;
+            //
+            if (Match(typeof(double?),  type, PrimitiveArray.DoubleNulInterface,query)) return query.hit;
+            if (Match(typeof(float?),   type, PrimitiveArray.FloatNulInterface, query)) return query.hit;
+            if (Match(typeof(long?),    type, PrimitiveArray.LongNulInterface,  query)) return query.hit;
+            if (Match(typeof(int?),     type, PrimitiveArray.IntNulInterface,   query)) return query.hit;
+            if (Match(typeof(short?),   type, PrimitiveArray.ShortNulInterface, query)) return query.hit;
+            if (Match(typeof(byte?),    type, PrimitiveArray.ByteNulInterface,  query)) return query.hit;
+            if (Match(typeof(bool?),    type, PrimitiveArray.BoolNulInterface,  query)) return query.hit;
+            //
+            if (Match(typeof(string),   type, PrimitiveArray.StringInterface,   query)) return query.hit;
+            return null;
+        }
+
+        bool Match<T>(Type expect, Type type, PrimitiveArrayMapper<T> mapper, Query query) {
+            Type elementType = type.GetElementType();
+            if (expect != elementType)
+                return false;
+            ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
+            // ReSharper disable once ExpressionIsAlwaysNull
+            query.hit = new CollectionType(type, elementType, mapper, type.GetArrayRank(), null, constructor);
+            return true;
+        }
+    }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     public class PrimitiveArrayMapper<T> : ITypeMapper
     {
-        private readonly Type       elemType;
+        public  readonly Type       elemType;
         private readonly VarType    elemVarType;
         
         public string DataTypeName() { return "array"; }
@@ -120,21 +169,6 @@ namespace Friflo.Json.Mapper.Map.Arr
         public PrimitiveArrayMapper () {
             elemType            = typeof(T);
             elemVarType         = Var.GetVarType(elemType);
-        }
-        
-        public StubType CreateStubType(Type type) {
-            if (type. IsArray) {
-                Type elementType = type.GetElementType();
-                int rank = type.GetArrayRank();
-                if (rank > 1)
-                    return null; // todo implement multi dimensional array support
-                if (elementType == elemType) {
-                    ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    // ReSharper disable once ExpressionIsAlwaysNull
-                    return new CollectionType(type, elementType, this, type.GetArrayRank(), null, constructor);
-                }
-            }
-            return null;
         }
 
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {

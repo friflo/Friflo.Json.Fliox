@@ -10,15 +10,9 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj
 {
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class ClassMapper : ITypeMapper {
-        public static readonly ClassMapper Interface = new ClassMapper();
+    public class ClassMatcher : ITypeMatcher {
+        public static readonly ClassMatcher Instance = new ClassMatcher();
         
-        public string DataTypeName() { return "class"; }
-
         public StubType CreateStubType(Type type) {
             if (StubType.IsStandardType(type)) // dont handle standard types
                 return null;
@@ -29,12 +23,21 @@ namespace Friflo.Json.Mapper.Map.Obj
             
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass)
-                return new ClassType(type, this, constructor);
+                return new ClassType(type, ClassMapper.Interface, constructor);
             if (type.IsValueType)
-                return new ClassType(type, this, constructor);
+                return new ClassType(type, ClassMapper.Interface, constructor);
             return null;
         }
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class ClassMapper : ITypeMapper {
+        public static readonly ClassMapper Interface = new ClassMapper();
         
+        public string DataTypeName() { return "class"; }
+
         public void Write(JsonWriter writer, ref Var slot, StubType stubType) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
