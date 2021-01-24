@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (!IsEnum(type, out bool isNullable))
                 return null;
             Type generic = typeof(EnumMapper<>);
-            var typeArgs = new Type[] {type};
+            var typeArgs = new [] { type };
             var genericType = generic.MakeGenericType(typeArgs);
             var enumMapper = Activator.CreateInstance(genericType);
 
@@ -53,12 +53,12 @@ namespace Friflo.Json.Mapper.Map.Val
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EnumMapper<T> : TypeMapper<T> where T : Enum
+    public class EnumMapper<T> : TypeMapper<T>
     {
-        internal readonly Dictionary<BytesString, Enum> stringToEnum = new Dictionary<BytesString, Enum>();
-        internal readonly Dictionary<Enum, BytesString> enumToString = new Dictionary<Enum, BytesString>();
+        internal readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
+        internal readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
         //
-        internal readonly Dictionary<long, Enum>        integralToEnum = new Dictionary<long, Enum>();
+        internal readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
         
         public override string DataTypeName() { return "enum"; }
         
@@ -129,7 +129,7 @@ namespace Friflo.Json.Mapper.Map.Val
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
-                if (stringToEnum.TryGetValue(reader.keyRef, out Enum enumValue)) {
+                if (stringToEnum.TryGetValue(reader.keyRef, out object enumValue)) {
                     success = true;
                     return (T)enumValue;
                 }
@@ -139,7 +139,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 long integralValue = parser.ValueAsLong(out success);
                 if (!success)
                     return default;
-                if (integralToEnum.TryGetValue(integralValue, out Enum enumValue)) {
+                if (integralToEnum.TryGetValue(integralValue, out object enumValue)) {
                     success = true;
                     return (T)enumValue;
                 }
