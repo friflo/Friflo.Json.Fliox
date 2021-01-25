@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }

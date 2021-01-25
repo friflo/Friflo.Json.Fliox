@@ -21,12 +21,15 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (args != null) {
                 Type keyType = args[0];
                 if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                    return new TypeNotSupportedMapper(type, "Dictionary only support string as key type");
+                    return TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Dictionary only support string as key type");
                 Type elementType = args[1];
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                return new DictionaryMapper<object>  (type, constructor); // todo replace generic type 
+                object[] constructorParams = {type, constructor};
+                // return new DictionaryMapper<object>  (type, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<>), new[] {elementType}, constructorParams);
+                return (ITypeMapper) newInstance;
             }
             return null;
         }
@@ -86,7 +89,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNull:
                         String key = parser.key.ToString();
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible(reader, "Dictionary value", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, ref parser, out success);
                             return default;
                         }
                         map[key] = default;

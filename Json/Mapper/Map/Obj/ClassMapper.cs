@@ -44,7 +44,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         public override string DataTypeName() { return "class"; }
         
-        internal ClassMapper (Type type, ConstructorInfo constructor) :
+        public ClassMapper (Type type, ConstructorInfo constructor) :
             base (type, IsNullable(type))
         {
             removedKey = new Bytes("__REMOVED");
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                var         mapper      = (TypeMapper<object>)typeStore.GetType(field.fieldTypeNative); // TypeMapper<T>
+                var         mapper      = typeStore.GetType(field.fieldTypeNative);
                 FieldInfo   fieldInfo   = field.GetType().GetField(nameof(PropField.fieldType));
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(field, mapper);
@@ -132,11 +132,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 object elemVar = field.GetField(obj);
                 WriteUtils.WriteKey(writer, field);
-                if (field.fieldType.varType == VarType.Object && elemVar == null) {
+                // if (field.fieldType.varType == VarType.Object && elemVar == null) {
+                if (elemVar == null) {
                     WriteUtils.AppendNull(writer);
                 } else {
                     var fieldType = field.fieldType;
-                    fieldType.Write(writer, elemVar);
+                    fieldType.WriteBoxed(writer, elemVar);
                 }
             }
             bytes.AppendChar('}');
@@ -175,7 +176,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         var valueType = field.fieldType;
 
-                        elemVar = valueType.Read(reader, null, out success);
+                        elemVar = valueType.ReadBoxed(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -187,7 +188,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.fieldType;
 
-                        elemVar = valueType.Read(reader, null, out success);
+                        elemVar = valueType.ReadBoxed(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -195,8 +196,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNull:
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        if (!field.fieldType.isNullable) {
-                            ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
+                        if (!field.fieldType.IsNullable()) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
                             return default;
                         }
                         field.SetField(obj, null);
@@ -206,19 +207,19 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         elemVar = field.GetField(obj);
-                        if (field.fieldType.varType != VarType.Object) {
-                            ReadUtils.ErrorMsg<T>(reader, "Expect field of type object. Type: ", field.fieldType.type.ToString(), out success);
-                            return default;
-                        }
+                        // if (field.fieldType.varType != VarType.Object) {
+                        //     ReadUtils.ErrorMsg<T>(reader, "Expect field of type object. Type: ", field.fieldType.GetNativeType().ToString(), out success);
+                        //     return default;
+                        // }
                         object sub = elemVar;
                         var fieldType = field.fieldType;
-                        elemVar = fieldType.Read(reader, elemVar, out success);
+                        elemVar = fieldType.ReadBoxed(reader, elemVar, out success);
                         if (!success)
                             return default;
                         //
                         object subRet = elemVar;
-                        if (!fieldType.isNullable && subRet == null) {
-                            ReadUtils.ErrorIncompatible(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                        if (!fieldType.IsNullable() && subRet == null) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                             return default;
                         }
                         if (sub != subRet)

@@ -23,7 +23,11 @@ namespace Friflo.Json.Mapper.Map.Arr
                 ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                return new ListMapper<object>  (type, elementType, constructor); // todo replace generic type 
+                 
+                object[] constructorParams = {type, elementType, constructor};
+                // new ListMapper<object>  (type, elementType, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
+                return (ITypeMapper) newInstance;
             }
             return null;
         }        
@@ -92,7 +96,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<List<TElm>>(reader, "List element", elementType, ref parser, out success);
                             return default;
                         }
 

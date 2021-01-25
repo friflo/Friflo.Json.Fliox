@@ -116,7 +116,7 @@ namespace Friflo.Json.Mapper
                         return mapper.Read(this, value, out success);
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible(this, mapper.DataTypeName(), mapper, ref parser, out success);
+                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, ref parser, out success);
                         success = true;
                         return default;
                     case JsonEvent.Error:

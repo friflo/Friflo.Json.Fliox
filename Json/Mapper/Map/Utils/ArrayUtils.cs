@@ -19,14 +19,14 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible(reader, map.DataTypeName(), map, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, ref reader.parser, out success);
                     return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible(reader, map.DataTypeName(), map, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, ref reader.parser, out success);
                     return false;
             }
         }

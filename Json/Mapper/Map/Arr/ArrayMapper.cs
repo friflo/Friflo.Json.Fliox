@@ -22,7 +22,10 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (Reflect.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    return new ArrayMapper<object> (type, elementType,  constructor); // todo replace generic type
+                    object[] constructorParams = {type, elementType, constructor};
+                    // new ArrayMapper<T>(type, elementType, constructor);
+                    var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ArrayMapper<>), new[] {elementType}, constructorParams);
+                    return (ITypeMapper) newInstance;
                 }
             }
             return null;
@@ -90,13 +93,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser, out success);
+                        ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
                         return default;
                     case JsonEvent.ValueNull:
                         if (index >= len)
                             array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
                             return default;
                         }
                         array[index++] = default;

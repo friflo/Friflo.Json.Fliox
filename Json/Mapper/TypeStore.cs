@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper
             typeCreationCount++;
             stubType = typeResolver.CreateStubType(type);
             if (stubType == null)
-                stubType = TypeNotSupportedMatcher.CreateTypeNotSupported(type);
+                stubType = TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Found no TypeMapper in TypeStore");
 
             
             typeMap.Add(type, stubType);

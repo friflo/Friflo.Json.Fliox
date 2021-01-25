@@ -51,7 +51,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             Type elementType = type.GetElementType();
             if (typeof(T) != elementType)
                 return false;
-            query.hit = new PrimitiveArrayMapper<T>(type);
+            
+            // new PrimitiveArrayMapper<T>(type);
+            object[] constructorParams = {type };
+            query.hit = (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveArrayMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
     }
@@ -77,7 +80,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.bytes.AppendChar(',');
                 elemVar = array[n];
                 // if (elemVar.IsNull)
-                if (EqualityComparer<T>.Default.Equals(elemVar, default))
+                if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
                 else
                     elementType.Write(writer, elemVar);
@@ -116,7 +119,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     case JsonEvent.ValueNull:
                         if (!nullable) {
-                            ReadUtils.ErrorIncompatible(reader, "array element", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<T[]>(reader, "array element", elementType, ref parser, out success);
                             return default;
                         }
                         array[index++] = default;

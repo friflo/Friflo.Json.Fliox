@@ -73,7 +73,9 @@ namespace Friflo.Json.Mapper.Map.Arr
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (constructor == null)
                 constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-            query.hit = new PrimitiveListMapper<T> (type, constructor);
+            //  new PrimitiveListMapper<T> (type, constructor);
+            object[] constructorParams = { type, constructor };
+            query.hit = (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveListMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
     }
@@ -99,7 +101,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.bytes.AppendChar(',');
                 elemVar = list[n];
                 // if (elemVar.IsNull)
-                if (EqualityComparer<T>.Default.Equals(elemVar, default))
+                if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
                 else
                     elementType.Write(writer, elemVar);
@@ -135,7 +137,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible(reader, "List element", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<List<T>>(reader, "List element", elementType, ref parser, out success);
                             return default;
                         }
                         PrimitiveList.AddListItemNull(list, index++, startLen);

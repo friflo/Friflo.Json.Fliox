@@ -19,13 +19,13 @@ namespace Friflo.Json.Mapper.Map.Utils
             return len < 5 ? minLen : 2 * len;
         }
         
-        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, TypeMapper<TVal> expectType, ref JsonParser parser, out bool success) {
-            ErrorIncompatible(reader, msg, "", expectType, ref parser, out success);
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, ITypeMapper expectType, ref JsonParser parser, out bool success) {
+            ErrorIncompatible<TVal>(reader, msg, "", expectType, ref parser, out success);
             success = false;
             return default;
         }
 
-        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper<TVal> expectType, ref JsonParser parser, out bool success) {
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, ITypeMapper expectType, ref JsonParser parser, out bool success) {
             ref Bytes strBuf = ref reader.strBuf;
             /*
             string evType = null;
@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             strBuf.AppendString(msg);
             strBuf.AppendString(msgParam);
             strBuf.AppendString(". Expect: ");
-            strBuf.AppendString(expectType.type.ToString());
+            strBuf.AppendString(expectType.GetNativeType().ToString());
             strBuf.AppendString(", got: ");
             switch (parser.Event) {
                 case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;

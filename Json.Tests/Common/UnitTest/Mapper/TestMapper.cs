@@ -150,5 +150,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(derivedJson.ToString(), writer.Output.ToString());
             }
         }
+
     }
 }

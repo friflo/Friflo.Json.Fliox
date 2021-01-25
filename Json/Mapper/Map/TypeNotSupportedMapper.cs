@@ -9,11 +9,14 @@ namespace Friflo.Json.Mapper.Map
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
-            return CreateTypeNotSupported(type);
+            return CreateTypeNotSupported(type, "");
         }
 
-        public static ITypeMapper CreateTypeNotSupported(Type type) {
-            return new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
+        public static ITypeMapper CreateTypeNotSupported(Type type, string msg) {
+            //  new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
+            object[] constructorParams = {type, $"Type not supported. {msg} Type: " + type};
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(TypeNotSupportedMapper<>), new[] {type}, constructorParams);
+            return (ITypeMapper) newInstance;
         }
     }
 
@@ -21,7 +24,7 @@ namespace Friflo.Json.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeNotSupportedMapper : TypeMapper<object>
+    public class TypeNotSupportedMapper<T> : TypeMapper<T>
     {
         private string msg;
         
@@ -31,11 +34,11 @@ namespace Friflo.Json.Mapper.Map
             this.msg = msg;
         }
 
-        public override object Read(JsonReader reader, object slot, out bool success) {
+        public override T Read(JsonReader reader, T slot, out bool success) {
             throw new NotSupportedException(msg);
         }
 
-        public override void Write(JsonWriter writer, object slot) {
+        public override void Write(JsonWriter writer, T slot) {
             throw new NotSupportedException(msg);
         }
     }

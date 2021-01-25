@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Types
 
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
-        public   readonly   TypeMapper<object>  fieldType;          // never null  // todo 1. replace by generic type, 2. rename to fieldMapper
+        public   readonly   ITypeMapper         fieldType;          // never null
         internal readonly   Type                fieldTypeNative;    // never null 
         internal            Bytes               nameBytes;          // dont mutate
         //
