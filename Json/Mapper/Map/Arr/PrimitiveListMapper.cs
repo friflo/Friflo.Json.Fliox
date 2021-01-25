@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
-            if (StubType.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {

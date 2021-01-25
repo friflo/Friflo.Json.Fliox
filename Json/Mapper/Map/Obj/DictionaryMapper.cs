@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
-            if (StubType.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {

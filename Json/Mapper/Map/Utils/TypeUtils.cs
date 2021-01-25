@@ -2,14 +2,10 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-namespace Friflo.Json.Mapper.Types
+namespace Friflo.Json.Mapper.Map.Utils
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public static class StubType {
-
-        
+    public static class TypeUtils
+    {
         public static bool IsStandardType(Type type) {
             return type.IsPrimitive || type == typeof(string) || type.IsArray;
         }

@@ -16,9 +16,9 @@ namespace Friflo.Json.Mapper.Map.Obj
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
         public ITypeMapper CreateStubType(Type type) {
-            if (StubType.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            if (StubType.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
+            if (TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
                 return null;
             if (EnumMatcher.IsEnum(type, out bool _))
                 return null;
