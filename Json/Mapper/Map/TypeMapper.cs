@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map
@@ -12,13 +13,16 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public interface ITypeMapper : IDisposable
     {
-        bool    IsNullable();
+        bool        IsNullable();
             
-        void    InitStubType(TypeStore typeStore);
-        Type    GetNativeType();
+        void        InitStubType(TypeStore typeStore);
+        Type        GetNativeType();
         
-        void    WriteBoxed(JsonWriter writer,   object slot);
-        object  ReadBoxed (JsonReader reader,   object slot, out bool success);
+        void        WriteBoxed(JsonWriter writer,   object slot);
+        object      ReadBoxed (JsonReader reader,   object slot, out bool success);
+        
+        PropField       GetField(ref Bytes fieldName);
+        PropertyFields  GetPropFields();
 
 
         object  CreateInstance();
@@ -55,6 +59,14 @@ namespace Friflo.Json.Mapper.Map
             if (slot != null)
                 return Read(reader, (TVal) slot, out success);
             return Read(reader, default, out success);
+        }
+
+        public virtual PropField GetField(ref Bytes fieldName) {
+            throw new InvalidOperationException("method not applicable");
+        }
+        
+        public virtual PropertyFields GetPropFields() {
+            throw new InvalidOperationException("method not applicable");
         }
 
         public virtual      void    Dispose() { }

@@ -78,7 +78,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return default;
 
             if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(slot, default))
-                slot = new Dictionary<string, TElm>(ReadUtils.minLen);
+                slot = (Dictionary<string, TElm>) CreateInstance();
             var map = slot;
             ref var parser = ref reader.parser;
 

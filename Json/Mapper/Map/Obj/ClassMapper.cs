@@ -94,7 +94,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             return Reflect.CreateInstance(constructor);
         }
 
-        private PropField GetField (ref Bytes fieldName) {
+        public override PropField GetField (ref Bytes fieldName) {
             // Note: its likely that hashcode ist not set properly. So calculate anyway
             fieldName.UpdateHashCode();
             PropField pf = fieldMap.Get(ref fieldName);
@@ -103,25 +103,29 @@ namespace Friflo.Json.Mapper.Map.Obj
             return pf;
         }
         
+        public override PropertyFields GetPropFields() {
+            return propFields;
+        }
+        
         // ----------------------------------- Write / Read -----------------------------------
         
         public override void Write(JsonWriter writer, T slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             T obj = slot;
-            var classMapper = this;
+            ITypeMapper classMapper = this;
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
-            if (classMapper.type != objType) {
-                classMapper = (ClassMapper<T>)writer.typeCache.GetType(objType);
+            if (type != objType) {
+                classMapper = writer.typeCache.GetType(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref writer.discriminator);
                 writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
                 bytes.AppendChar('\"');
             }
 
-            PropField[] fields = classMapper.propFields.fieldsSerializable;
+            PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
 
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -151,12 +155,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 
             ref var parser = ref reader.parser;
             T obj = slot;
-            ClassMapper<T> classType = this;
+            ITypeMapper classType = this;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
                 if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
-                    classType = (ClassMapper<T>)reader.typeCache.GetTypeByName(ref parser.value);
+                    classType = reader.typeCache.GetTypeByName(ref parser.value);
                     if (classType == null)
                         return ReadUtils.ErrorMsg<T>(reader, "Object with discriminator $type not found: ", ref parser.value, out success);
                     ev = parser.NextEvent();
@@ -238,7 +242,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
         }
 
-        private static PropField GetField<TField>(JsonReader reader, ClassMapper<TField> classType) {
+        private static PropField GetField(JsonReader reader, ITypeMapper classType) {
             PropField field = classType.GetField(ref reader.parser.key);
             if (field != null)
                 return field;

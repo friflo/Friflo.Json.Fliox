@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Mapper.Types;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
@@ -39,6 +40,11 @@ namespace Friflo.Json.Mapper.Map
             ITypeMapper stubType = typeStore.GetType(elementTypeNative);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, stubType);
+        }
+        
+        public override Object CreateInstance ()
+        {
+            return Reflect.CreateInstance(constructor);
         }
     }
 }
