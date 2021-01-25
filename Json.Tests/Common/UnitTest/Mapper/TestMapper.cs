@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
@@ -66,6 +67,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 write.Write<EnumClass?>(EnumClass.Value1);
                 AreEqual("\"Value1\"", write.bytes.ToString());
                 
+            }
+        }
+        
+        [Test]
+        public void TestBigInteger() {
+            const string bigIntStr = "1234567890123456789012345678901234567890";
+            var bigIntNum = BigInteger.Parse(bigIntStr);
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader enc = new JsonReader(typeStore))
+            using (var bigInt = new Bytes($"\"{bigIntStr}\"")) {
+                AreEqual(bigIntNum, enc.Read<BigInteger>(bigInt));
             }
         }
 
