@@ -22,12 +22,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return null;
             if (EnumMatcher.IsEnum(type, out bool _))
                 return null;
-            
+           
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
-            if (type.IsClass)
-                return new ClassMapper<object>(type, constructor);
-            if (type.IsValueType)
-                return new ClassMapper<object>(type, constructor);
+            if (type.IsClass || type.IsValueType) {
+                object[] constructorParams = {type, constructor};
+                return (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams); // new ClassMapper<T>(type, constructor);
+            }
             return null;
         }
     }
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                var         mapper      = (TypeMapper<object>)typeStore.GetType(field.fieldTypeNative);
+                var         mapper      = (TypeMapper<object>)typeStore.GetType(field.fieldTypeNative); // TypeMapper<T>
                 FieldInfo   fieldInfo   = field.GetType().GetField(nameof(PropField.fieldType));
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(field, mapper);

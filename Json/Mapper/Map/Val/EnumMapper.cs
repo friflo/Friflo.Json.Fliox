@@ -16,11 +16,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public ITypeMapper CreateStubType(Type type) {
             if (!IsEnum(type, out bool isNullable))
                 return null;
-            Type generic = typeof(EnumMapper<>);
-            var typeArgs = new [] { type };
-            var genericType = generic.MakeGenericType(typeArgs);
-            var enumMapper = Activator.CreateInstance(genericType);
-
+            var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()
             return (ITypeMapper)enumMapper;
         }
         

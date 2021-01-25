@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Reflection;
 using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map
@@ -63,6 +64,19 @@ namespace Friflo.Json.Mapper.Map
     public interface ITypeMatcher
     {
         ITypeMapper CreateStubType(Type type);
+    }
+    
+    public static class TypeMapperUtils {
+        public static object CreateGenericInstance(Type genericType, Type[] genericArgs) {
+            var genericTypeArgs = genericType.MakeGenericType(genericArgs);
+            return Activator.CreateInstance(genericTypeArgs);
+        }
+        
+        public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams) {
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+            var genericTypeArgs = genericType.MakeGenericType(genericArgs);
+            return Activator.CreateInstance(genericTypeArgs, flags, null, constructorParams, null);
+        } 
     }
 
 }
