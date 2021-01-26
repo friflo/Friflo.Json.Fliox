@@ -23,6 +23,7 @@ namespace Friflo.Json.Mapper.Map
 
         public abstract void            Dispose();
             
+        public abstract string          DataTypeName();
         public abstract void            InitTypeMapper(TypeStore typeStore);
         
         public abstract void            WriteObject(JsonWriter writer,   object slot);
@@ -42,7 +43,6 @@ namespace Friflo.Json.Mapper.Map
         {
         }
 
-        public abstract     string  DataTypeName();
         public abstract     void    Write(JsonWriter writer, TVal slot);
         public abstract     TVal    Read(JsonReader reader, TVal slot, out bool success);
 

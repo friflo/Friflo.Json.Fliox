@@ -78,17 +78,43 @@ namespace Friflo.Json.Mapper
             return result;
         }
         
-        /*
-        public object Read(Bytes bytes, Type type) {
-            int         start       = bytes.StartPos;
-            int         len         = bytes.Len;
-            Var         slot        = new Var();
-            ITypeMapper stubType    = (TypeMapper<T>)typeCache.GetType(type);
-            if (!ReadStart(bytes.buffer, start, len, stubType, ref slot))
-                return default;
+        public object Read(Bytes bytes, Type type, out bool success) {
+            int         start   = bytes.StartPos;
+            int         len     = bytes.Len;
+            TypeMapper  mapper  = typeCache.GetTypeMapper(type);
+            object result = ReadStart(bytes.buffer, start, len, mapper, null, out success);
+            if (!success)
+                return null;
             parser.NextEvent(); // EOF
-            return slot.Get();
-        } */
+            return result;
+        }
+        
+        private object ReadStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
+            parser.InitParser(bytes, offset, len);
+            parser.SetMaxDepth(maxDepth);
+            
+            while (true) {
+                JsonEvent ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ObjectStart:
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ValueString:
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                        return mapper.ReadObject(this, value, out success);
+                    case JsonEvent.ValueNull:
+                        if (!mapper.isNullable)
+                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, ref parser, out success);
+                        success = true;
+                        return default;
+                    case JsonEvent.Error:
+                        success = false;
+                        return default;
+                    default:
+                        return ReadUtils.ErrorMsg<object>(this, "unexpected state in Read() : ", ev, out success);
+                }
+            }
+        }
 
         private T ReadStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
             parser.InitParser(bytes, offset, len);

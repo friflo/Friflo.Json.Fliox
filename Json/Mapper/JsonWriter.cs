@@ -48,13 +48,11 @@ namespace Friflo.Json.Mapper
             strBuf.Dispose();
             bytes.Dispose();
         }
-        /*
-        public void Write(object obj) { 
-            StubType stubType = typeCache.GetType(obj.GetType());
-            Var valueVar = new Var();
-            valueVar.Obj = obj;
-            WriteStart(stubType, ref valueVar);
-        } */
+
+        public void Write(object value) { 
+            TypeMapper stubType = typeCache.GetTypeMapper(value.GetType());
+            WriteStart(stubType, value);
+        }
         
         public void Write<T>(T value) {
             var mapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
@@ -62,11 +60,20 @@ namespace Friflo.Json.Mapper
             WriteStart(mapper, value);
         }
         
-        /*
-        public void Write<T>(ref Var valueVar) { 
-            StubType stubType = typeCache.GetType(typeof(T));
-            WriteStart(stubType, ref valueVar);
-        } */
+        private void WriteStart(TypeMapper mapper, object value) {
+            bytes.  InitBytes(128);
+            strBuf. InitBytes(128);
+            format. InitTokenFormat();
+            bytes.Clear();
+            level = 0;
+            if (value == null)
+                WriteUtils.AppendNull(this);
+            else
+                mapper.WriteObject(this, value);
+            
+            if (level != 0)
+                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
+        }
         
         private void WriteStart<T>(TypeMapper<T> mapper, T value) {
             bytes.  InitBytes(128);
