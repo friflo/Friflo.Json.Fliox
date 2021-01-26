@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Burst.Utils
 {
@@ -54,7 +53,7 @@ namespace Friflo.Json.Burst.Utils
             }
 
             if (b < m_11oooooo) {
-                throw new FrifloException("highNibble < 1100 (binary)");
+                throw new InvalidOperationException("highNibble < 1100 (binary)");
             }
 
             if (b < m_111ooooo) {

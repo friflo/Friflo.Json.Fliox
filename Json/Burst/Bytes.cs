@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.Utils;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
@@ -179,10 +178,10 @@ namespace Friflo.Json.Burst
         public void TrimFence (char c)
         {
             if (Len < 2)
-                throw new FrifloException("Expected len >= 2. len: " + Len);
+                throw new InvalidOperationException("Expected len >= 2");
             ref var str = ref buffer.array;
             if (str[start] != c || str[end - 1] != c)
-                throw new FrifloException("Expected char '" + c + "'");
+                throw new InvalidOperationException("Expected fence char not on start or end");
             start++;
             end--;
             this.hc = BytesConst.notHashed;
