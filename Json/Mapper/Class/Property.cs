@@ -15,10 +15,10 @@ namespace Friflo.Json.Mapper.Class
     {
         private static readonly     Type[] Types = new Type [] { typeof( Property ) };
 
-        public abstract void    Set(String name) ;
-        public abstract void    Set(String name, String field) ;
+        protected abstract void    Set(String name) ;
+        public    abstract void    Set(String name, String field) ;
 
-        public static MethodInfo GetPropertiesDeclaration (Type type)
+        private static MethodInfo GetPropertiesDeclaration (Type type)
         {
             return Reflect.GetMethodEx(type, "SetProperties", Types);
         }

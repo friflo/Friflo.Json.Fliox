@@ -5,6 +5,7 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
 
+// ReSharper disable PossibleInvalidOperationException
 namespace Friflo.Json.Mapper.Map.Val
 {
     public class StringMatcher : ITypeMatcher {
@@ -44,7 +45,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type) {
             if (type == typeof(double))
-                return new DoubleMapper (type);;
+                return new DoubleMapper (type);
             if (type == typeof(double?))
                 return new NullableDoubleMapper (type);
             return null;

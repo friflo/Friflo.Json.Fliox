@@ -14,14 +14,18 @@ namespace Friflo.Json.Mapper.Class
 #endif
     public sealed class PropertyFields : Property, IDisposable
     {
-        private     readonly    List<PropField>     fieldList = new List <PropField>();
-        public      readonly    String              typeName;
         public      readonly    PropField []        fields;
         public      readonly    PropField []        fieldsSerializable;
         public      readonly    int                 num;
+        
         private     readonly    Type                type;
+        private     readonly    List<PropField>     fieldList = new List <PropField>();
+        
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private     readonly    String              typeName;
 
-        private static readonly Type[]                      Types = new Type [] { typeof( PropCall ) };
+        // ReSharper disable once UnusedMember.Local
+        private static readonly Type[]                      Types = { typeof( PropCall ) };
 
         public PropertyFields (Type type)
         {
@@ -73,7 +77,7 @@ namespace Friflo.Json.Mapper.Class
             throw new FrifloException ("Field '" + name + "' ('" + fieldName + "') not found in type " + type);
         }
 
-        public override void Set(String name)
+        protected override void Set(String name)
         {
             CreatePropField (name, name);
         }

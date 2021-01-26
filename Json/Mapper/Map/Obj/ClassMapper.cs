@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMapper<T> : TypeMapper<T> {
         private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
         private readonly HashMapOpen<Bytes,  PropField> fieldMap;
-        public  readonly PropertyFields                 propFields;
+        private readonly PropertyFields                 propFields;
         private readonly ConstructorInfo                constructor;
         private readonly Bytes                          removedKey;
         

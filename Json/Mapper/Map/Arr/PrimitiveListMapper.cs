@@ -94,11 +94,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             int startLevel = WriteUtils.IncLevel(writer);
             var list = slot;
             writer.bytes.AppendChar('[');
-            T elemVar;
             for (int n = 0; n < list.Count; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
-                elemVar = list[n];
+                var elemVar = list[n];
                 // if (elemVar.IsNull)
                 if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
@@ -121,8 +120,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 
             int startLen = list.Count;
             int index = 0;
-            T elemVar;
             while (true) {
+                T elemVar;
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:

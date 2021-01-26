@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    Type        type;
         public  readonly    bool        isNullable;
 
-        public TypeMapper(Type type, bool isNullable) {
+        protected TypeMapper(Type type, bool isNullable) {
             this.type       = type;
             this.isNullable = isNullable;
         }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map
     
     public abstract class TypeMapper<TVal> : TypeMapper
     {
-        public TypeMapper(Type type, bool isNullable) :
+        protected TypeMapper(Type type, bool isNullable) :
             base (type, isNullable)
         {
         }

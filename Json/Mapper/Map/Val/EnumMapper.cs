@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public static readonly EnumMatcher Instance = new EnumMatcher();
         
         public TypeMapper MatchTypeMapper(Type type) {
-            if (!IsEnum(type, out bool isNullable))
+            if (!IsEnum(type, out bool _))
                 return null;
             var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()
             return (TypeMapper)enumMapper;
@@ -51,10 +51,10 @@ namespace Friflo.Json.Mapper.Map.Val
 #endif
     public class EnumMapper<T> : TypeMapper<T>
     {
-        internal readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
-        internal readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
+        private readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
+        private readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
         //
-        internal readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
+        private readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
         
         public override string DataTypeName() { return "enum"; }
         

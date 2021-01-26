@@ -75,9 +75,9 @@ namespace Friflo.Json.Mapper.Map.Arr
                 startLen = list.Count;
             
             int index = 0;
-            TElm elemVar;
-            
+
             while (true) {
+                TElm elemVar;
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:

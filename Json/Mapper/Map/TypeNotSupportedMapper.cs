@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public class TypeNotSupportedMapper<T> : TypeMapper<T>
     {
-        private string msg;
+        private readonly string msg;
         
         public override string DataTypeName() { return "unsupported type"; }
 

@@ -33,6 +33,7 @@ namespace Friflo.Json.Mapper.Map.Val
             WriteUtils.WriteString(writer, value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
         }
 
+        // ReSharper disable once RedundantAssignment
         public override DateTime Read(JsonReader reader, DateTime slot, out bool success) {
             ref var value = ref reader.parser.value;
             if (reader.parser.Event != JsonEvent.ValueString)

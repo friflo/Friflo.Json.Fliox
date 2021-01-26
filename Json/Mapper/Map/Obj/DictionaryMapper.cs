@@ -54,14 +54,13 @@ namespace Friflo.Json.Mapper.Map.Obj
             bytes.AppendChar('{');
             int n = 0;
 
-            TElm elemVar;
             foreach (var entry in map) {
                 if (n++ > 0)
                     bytes.AppendChar(',');
                 WriteUtils.WriteString(writer, entry.Key);
                 bytes.AppendChar(':');
                 // elemVar.Set(entry.Value, elementType.varType, elementType.isNullable);
-                elemVar = entry.Value;
+                var elemVar = entry.Value;
                 //if (elemVar.IsNull)
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
@@ -81,8 +80,8 @@ namespace Friflo.Json.Mapper.Map.Obj
             var map = slot;
             ref var parser = ref reader.parser;
 
-            TElm elemVar; 
             while (true) {
+                TElm elemVar;
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueNull:

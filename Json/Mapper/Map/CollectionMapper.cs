@@ -8,13 +8,15 @@ namespace Friflo.Json.Mapper.Map
 {
     public abstract class CollectionMapper<TVal, TElm> : TypeMapper<TVal>
     {
-        public   readonly   TypeMapper<TElm>    elementType;
-        public   readonly   Type                keyType;
-        public   readonly   int                 rank;
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection below to enable using a readonly field
+        public   readonly   TypeMapper<TElm>    elementType;
         private  readonly   Type                elementTypeNative;
-        internal readonly   ConstructorInfo     constructor;
+        private  readonly   ConstructorInfo     constructor;
+        
+        // ReSharper disable NotAccessedField.Local
+        private  readonly   int                 rank;
+        private  readonly   Type                keyType;
 
         internal CollectionMapper (
             Type                type,
