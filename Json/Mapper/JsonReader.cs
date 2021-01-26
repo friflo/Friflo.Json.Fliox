@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonReader : IDisposable, IErrorHandler
+    public partial class JsonReader : IDisposable, IErrorHandler
     {
         public              JsonParser          parser;
         public              int                 maxDepth;
@@ -50,6 +50,7 @@ namespace Friflo.Json.Mapper
             discriminator.  Dispose();
             parser.         Dispose();
             strBuf.         Dispose();
+            DisposeClassPayloads();
         }
         
         public void HandleError(int pos, ref Bytes message) {
@@ -172,6 +173,7 @@ namespace Friflo.Json.Mapper
 
         private T ReadToStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
             parser.InitParser(bytes, offset, len);
+            classLevel = 0;
 
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -205,6 +207,7 @@ namespace Friflo.Json.Mapper
 
         private object ReadToStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
             parser.InitParser(bytes, offset, len);
+            classLevel = 0;
 
             while (true) {
                 JsonEvent ev = parser.NextEvent();

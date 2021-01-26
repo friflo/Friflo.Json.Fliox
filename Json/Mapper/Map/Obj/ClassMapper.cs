@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Class;
+using Friflo.Json.Mapper.Class.IL;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Map.Val;
 using Friflo.Json.Mapper.Utils;
@@ -168,6 +169,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
+            ClassPayload payload = reader.BeginPayload();
+
             while (true) {
                 object elemVar;
                 switch (ev) {
@@ -178,9 +181,13 @@ namespace Friflo.Json.Mapper.Map.Obj
                                 parser.SkipEvent();
                             break;
                         }
-                        var valueType = field.fieldType;
-
-                        elemVar = valueType.ReadObject(reader, null, out success);
+                        var fieldType = field.fieldType;
+                        if (reader.useIL && field.isValueType) {
+                            if (!fieldType.ReadField(reader, payload, field))
+                                return default;
+                            // break;
+                        }
+                        elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -190,9 +197,9 @@ namespace Friflo.Json.Mapper.Map.Obj
                         // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        valueType = field.fieldType;
+                        fieldType = field.fieldType;
 
-                        elemVar = valueType.ReadObject(reader, null, out success);
+                        elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -216,7 +223,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         //     return default;
                         // }
                         object sub = elemVar;
-                        var fieldType = field.fieldType;
+                        fieldType = field.fieldType;
                         elemVar = fieldType.ReadObject(reader, elemVar, out success);
                         if (!success)
                             return default;
@@ -230,6 +237,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
+                        reader.ApplyPayload(obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Class;
+using Friflo.Json.Mapper.Class.IL;
 
 namespace Friflo.Json.Mapper.Map
 {
@@ -26,8 +27,12 @@ namespace Friflo.Json.Mapper.Map
         public abstract string          DataTypeName();
         public abstract void            InitTypeMapper(TypeStore typeStore);
         
-        public abstract void            WriteObject(JsonWriter writer,   object slot);
-        public abstract object          ReadObject (JsonReader reader,   object slot, out bool success);
+        public abstract void            WriteObject (JsonWriter writer,   object slot);
+        public abstract object          ReadObject  (JsonReader reader,   object slot, out bool success);
+        
+        public abstract  void           WriteField  (JsonWriter writer, ClassPayload payload, PropField field);
+        public abstract  bool           ReadField   (JsonReader reader, ClassPayload payload, PropField field);
+
         
         public abstract PropField       GetField(ref Bytes fieldName);
         public abstract PropertyFields  GetPropFields();
@@ -43,8 +48,17 @@ namespace Friflo.Json.Mapper.Map
         {
         }
 
-        public abstract     void    Write(JsonWriter writer, TVal slot);
-        public abstract     TVal    Read(JsonReader reader, TVal slot, out bool success);
+        public abstract void    Write       (JsonWriter writer, TVal slot);
+        public abstract TVal    Read        (JsonReader reader, TVal slot, out bool success);
+
+        
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
+            throw new InvalidOperationException("WriteField() not applicable");
+        }
+
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
+            throw new InvalidOperationException("WriteField() not applicable");
+        }
 
         public override void WriteObject(JsonWriter writer, object slot) {
             if (slot != null)
