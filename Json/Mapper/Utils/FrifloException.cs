@@ -10,24 +10,14 @@ namespace Friflo.Json.Mapper.Utils
 #endif
     public class FrifloException : Exception
     {
-        public FrifloException()
-        :
-            base("FrifloException") {
+        public FrifloException(String message) :
+            base (message)
+        {
         }
 
-        public FrifloException(String message)
-        :
-            base (message) {
+        public FrifloException(String message, Exception cause) :
+            base (message, cause)
+        {
         }
-
-        public FrifloException(String message, Exception cause)
-        :
-            base (message, cause) {
-        }
-
-
-
-
-
     }
 }
