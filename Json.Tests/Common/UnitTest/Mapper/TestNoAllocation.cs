@@ -118,28 +118,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     
                     // --------------------------------- primitives -------------------------------
-                    { IsTrue(enc.Read (@double, out double  result));   AreEqual(12.5d, result); }
-                    { IsTrue(enc.Read (@double, out float   result));   AreEqual(12.5,  result); }
-                    //
-                    { IsTrue(enc.Read (@long,   out long    result));   AreEqual(42,    result); }
-                    { IsTrue(enc.Read (@long,   out int     result));   AreEqual(42,    result); }
-                    { IsTrue(enc.Read (@long,   out short   result));   AreEqual(42,    result); }
-                    { IsTrue(enc.Read (@long,   out byte    result));   AreEqual(42,    result); }
-                     
-                    { IsTrue(enc.Read (@true,   out bool    result));   AreEqual(true,  result); }
+                    AreEqual(12.5d,   enc.Read<double>  (@double, out bool _)); 
+                    AreEqual(12.5,    enc.Read<float>   (@double, out bool _)); 
+                    
+                    AreEqual(42,      enc.Read<long>    (@long,   out bool _)); 
+                    AreEqual(42,      enc.Read<int>     (@long,   out bool _)); 
+                    AreEqual(42,      enc.Read<short>   (@long,   out bool _)); 
+                    AreEqual(42,      enc.Read<byte>    (@long,   out bool _)); 
+                    
+                    AreEqual(true,    enc.Read<bool>    (@true,   out bool _)); 
 
-                    { IsTrue(enc.Read (@null,   out object  result));   AreEqual(null,  result); }
+                    AreEqual(null,    enc.Read<object>  (@null,   out bool _)); 
 
                     // --------------------------------- array -----------------------------------
-                    { IsTrue(enc.Read (@null, out string[]  result));   AreEqual(null, result); } // no alloc only, if not containing string
- 
-                    { IsTrue(enc.Read (@null, out double[]  result));   AreEqual(null, result);  }
-                    { IsTrue(enc.Read (@null, out float[]   result));   AreEqual(null, result); }
-                    { IsTrue(enc.Read (@null, out long[]    result));   AreEqual(null, result); }
-                    { IsTrue(enc.Read (@null, out int[]     result));   AreEqual(null, result); }
-                    { IsTrue(enc.Read (@null, out short[]   result));   AreEqual(null, result); }
-                    { IsTrue(enc.Read (@null, out byte[]    result));   AreEqual(null, result); }
-                    { IsTrue(enc.Read (@null, out bool[]    result));   AreEqual(null, result); }
+                    AreEqual(null,    enc.Read<string[]>(@null,   out bool _));  // no alloc only, if not containing string
+   
+                    AreEqual(null,    enc.Read<double[]>(@null,   out bool _));
+                    AreEqual(null,    enc.Read<float[]> (@null,   out bool _));
+                    AreEqual(null,    enc.Read<long[]>  (@null,   out bool _));
+                    AreEqual(null,    enc.Read<int[]>   (@null,   out bool _));
+                    AreEqual(null,    enc.Read<short[]> (@null,   out bool _));
+                    AreEqual(null,    enc.Read<byte[]>  (@null,   out bool _));
+                    AreEqual(null,    enc.Read<bool[]>  (@null,   out bool _));
                     
                     NotNull(enc.ReadTo(arrFlt, reusedArrDbl,   out bool _));             AreEqual(11.5d, reusedArrDbl[0]);
                     NotNull(enc.ReadTo(arrNum, reusedArrFlt,   out bool _));
@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         SomeEnum? res = enc.Read<SomeEnum?>(@null);         AreEqual(null, res);
                     } {
-                        enc.Read(hello, out SomeEnum?  result);             IsTrue(enc.Error.ErrSet);
+                        enc.Read<SomeEnum>(hello, out bool  result);        IsTrue(enc.Error.ErrSet);
                     }
 
                     // --------------------------------- List<> ---------------------------------

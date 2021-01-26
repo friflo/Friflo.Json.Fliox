@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
@@ -524,7 +523,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private T Read<T>(Bytes bytes) {
             // return reader.Read<T>(bytes);
 
-            if (!reader.Read(bytes, out T result))
+            var result = reader.Read<T>(bytes, out bool success);
+            if (!success)
                 return result;
             
             cmpWrite.Write(result);

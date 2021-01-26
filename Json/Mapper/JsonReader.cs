@@ -78,17 +78,6 @@ namespace Friflo.Json.Mapper
             return result;
         }
         
-        public bool Read<T>(Bytes bytes, out T result) {
-            T       value   = default;
-            int     start   = bytes.StartPos;
-            int     len     = bytes.Len;
-            var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
-            
-            result  = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
-            parser.NextEvent(); // EOF
-            return success;
-        }
-        
         /*
         public object Read(Bytes bytes, Type type) {
             int         start       = bytes.StartPos;
