@@ -23,7 +23,7 @@ namespace Friflo.Json.Mapper.Map
 
         public abstract void            Dispose();
             
-        public abstract void            InitStubType(TypeStore typeStore);
+        public abstract void            InitTypeMapper(TypeStore typeStore);
         
         public abstract void            WriteObject(JsonWriter writer,   object slot);
         public abstract object          ReadObject (JsonReader reader,   object slot, out bool success);
@@ -76,14 +76,14 @@ namespace Friflo.Json.Mapper.Map
         /// Need to be overriden, in case the derived <see cref="TypeMapper{TVal}"/> support <see cref="System.Type"/>'s
         /// as fields or elements returning a <see cref="TypeMapper{TVal}"/>.<br/>
         /// 
-        /// In this case <see cref="InitStubType"/> is used to map a <see cref="System.Type"/> to a required
+        /// In this case <see cref="InitTypeMapper"/> is used to map a <see cref="System.Type"/> to a required
         /// <see cref="TypeMapper{TVal}"/> by calling <see cref="TypeStore.GetTypeMapper"/> and storing the returned
         /// reference also in the created <see cref="TypeMapper{TVal}"/> instance.<br/>
         ///
         /// This enables deferred initialization of StubType references by their related Type to support circular type dependencies.
         /// The goal is to support also type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
         /// </summary>
-        public override      void    InitStubType(TypeStore typeStore) { }
+        public override      void    InitTypeMapper(TypeStore typeStore) { }
 
         public override      object  CreateInstance() {
             return null;

@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 key.value.Dispose();
         }
 
-        public override void InitStubType(TypeStore typeStore) {
+        public override void InitTypeMapper(TypeStore typeStore) {
         }
 
         private long GetIntegralValue(object enumConstant) {

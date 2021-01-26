@@ -59,7 +59,7 @@ namespace Friflo.Json.Mapper
                     newTypes.RemoveAt(lastPos);
                     // Deferred initialization of StubType references by their related Type to allow circular type dependencies.
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
-                    last.InitStubType(this);
+                    last.InitTypeMapper(this);
                 }
                 if (mapper != null)
                     return mapper;

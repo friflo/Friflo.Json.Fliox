@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map
             this.constructor    = constructor;
         }
         
-        public override void InitStubType(TypeStore typeStore) {
+        public override void InitTypeMapper(TypeStore typeStore) {
             FieldInfo fieldInfo = GetType().GetField(nameof(elementType));
             TypeMapper mapper = typeStore.GetTypeMapper(elementTypeNative);
             // ReSharper disable once PossibleNullReferenceException

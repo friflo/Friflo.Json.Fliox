@@ -68,7 +68,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             removedKey.Dispose();
         }
 
-        public override void InitStubType(TypeStore typeStore) {
+        public override void InitTypeMapper(TypeStore typeStore) {
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
