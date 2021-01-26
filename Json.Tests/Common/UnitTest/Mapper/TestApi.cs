@@ -36,16 +36,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual("1", write.bytes.ToString());
                 
                 // 2.
-                write.Write((object) 1);                                // non generic 
+                write.WriteObject(1);                                   // non generic 
                 AreEqual("1", write.bytes.ToString());
                 
 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
-                int[] result = read.ReadTo(arr1, reuse, out bool _);    // generic
+                int[] result = read.ReadTo(arr1, reuse, out bool _);            // generic
                 AreEqual(expect, result);   
                 IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = read.ReadObjectTo(arr1, reuse, out bool _);  // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+                
             }
         }
     }

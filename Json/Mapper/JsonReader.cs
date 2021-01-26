@@ -173,5 +173,36 @@ namespace Friflo.Json.Mapper
                 }
             }
         }
+        
+        public object ReadObjectTo(Bytes bytes, object obj, out bool success)  {
+            int     start   = bytes.StartPos;
+            int     len     = bytes.Len;
+            var     mapper  = typeCache.GetTypeMapper(obj.GetType());
+            
+            object result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
+            if (!success)
+                return default;
+            parser.NextEvent(); // EOF
+            return result;
+        }
+
+        private object ReadToStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
+            parser.InitParser(bytes, offset, len);
+
+            while (true) {
+                JsonEvent ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ObjectStart:
+                    case JsonEvent.ArrayStart:
+                        
+                        return mapper.ReadObject(this, value, out success);
+                    case JsonEvent.Error:
+                        success = false;
+                        return default;
+                    default:
+                        return ReadUtils.ErrorMsg<object>(this, "ReadTo() can only used on an JSON object or array", ev, out success);
+                }
+            }
+        }
     }
 }

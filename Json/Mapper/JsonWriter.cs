@@ -49,7 +49,7 @@ namespace Friflo.Json.Mapper
             bytes.Dispose();
         }
 
-        public void Write(object value) { 
+        public void WriteObject(object value) { 
             TypeMapper stubType = typeCache.GetTypeMapper(value.GetType());
             WriteStart(stubType, value);
         }
