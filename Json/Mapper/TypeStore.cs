@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
-[assembly: CLSCompliant(true)]
+#if !UNITY_5_3_OR_NEWER
+    [assembly: CLSCompliant(true)]
+#endif
 
 namespace Friflo.Json.Mapper
 {
