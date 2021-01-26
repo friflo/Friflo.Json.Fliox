@@ -18,9 +18,9 @@ namespace Friflo.Json.Mapper.Types
 #endif
         public class TypeCache : IDisposable
         {
-            private readonly    Dictionary <Type,  ITypeMapper> typeMap =      new Dictionary <Type,  ITypeMapper >();
+            private readonly    Dictionary <Type,  TypeMapper>  typeMap =      new Dictionary <Type,  TypeMapper >();
             //
-            private readonly    Dictionary <Bytes, ITypeMapper> nameToType =   new Dictionary <Bytes, ITypeMapper >();
+            private readonly    Dictionary <Bytes, TypeMapper>  nameToType =   new Dictionary <Bytes, TypeMapper >();
             private readonly    Dictionary <Type,  Bytes>       typeToName =   new Dictionary <Type,  Bytes >();
             
             private readonly    TypeStore                       typeStore;
@@ -42,9 +42,9 @@ namespace Friflo.Json.Mapper.Types
                     item.Dispose();
             }
             
-            public ITypeMapper GetTypeMapper (Type type) {
+            public TypeMapper GetTypeMapper (Type type) {
                 lookupCount++;
-                if (!typeMap.TryGetValue(type, out ITypeMapper propType)) {
+                if (!typeMap.TryGetValue(type, out TypeMapper propType)) {
                     propType = typeStore.GetTypeMapper(type);
                     typeMap.Add(type, propType);
                 }
@@ -60,10 +60,10 @@ namespace Friflo.Json.Mapper.Types
             /// <summary>
             /// Lookup by Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
             /// </summary>
-            public ITypeMapper GetTypeByName(ref Bytes name) {
-                if (!nameToType.TryGetValue(name, out ITypeMapper propType)) {
+            public TypeMapper GetTypeByName(ref Bytes name) {
+                if (!nameToType.TryGetValue(name, out TypeMapper propType)) {
                     lock (typeStore) {
-                        typeStore.nameToType.TryGetValue(name, out ITypeMapper storeType);
+                        typeStore.nameToType.TryGetValue(name, out TypeMapper storeType);
                         propType = storeType;
                     }
                     if (propType == null)
@@ -78,8 +78,8 @@ namespace Friflo.Json.Mapper.Types
             /// <summary>
             /// Append the Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
             /// </summary>
-            public void AppendDiscriminator(ref Bytes dst, ITypeMapper type) {
-                Type nativeType = type.GetNativeType();
+            public void AppendDiscriminator(ref Bytes dst, TypeMapper type) {
+                Type nativeType = type.type;
                 typeToName.TryGetValue(nativeType, out Bytes name);
                 if (!name.buffer.IsCreated()) {
                     lock (typeStore) {

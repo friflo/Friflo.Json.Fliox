@@ -8,15 +8,15 @@ namespace Friflo.Json.Mapper.Map
     public class TypeNotSupportedMatcher : ITypeMatcher {
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             return CreateTypeNotSupported(type, "");
         }
 
-        public static ITypeMapper CreateTypeNotSupported(Type type, string msg) {
+        public static TypeMapper CreateTypeNotSupported(Type type, string msg) {
             //  new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
             object[] constructorParams = {type, $"Type not supported. {msg} Type: " + type};
             var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(TypeNotSupportedMapper<>), new[] {type}, constructorParams);
-            return (ITypeMapper) newInstance;
+            return (TypeMapper) newInstance;
         }
     }
 

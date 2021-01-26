@@ -11,7 +11,7 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
-        ITypeMapper CreateTypeMapper(Type type);
+        TypeMapper CreateTypeMapper(Type type);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -28,13 +28,13 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
-        public ITypeMapper CreateTypeMapper(Type type) {
+        public TypeMapper CreateTypeMapper(Type type) {
             var query = new Query(Mode.Search);
             return QueryTypeMapper(type, query);
         }
         
         // find a codec manually to simplify debugging
-        private ITypeMapper QueryTypeMapper (Type type, Query q) {
+        private TypeMapper QueryTypeMapper (Type type, Query q) {
 
             if (MatchMappers(specificTypeMatcher,       type, q)) return q.hit;
             
@@ -109,7 +109,7 @@ namespace Friflo.Json.Mapper.Map
         class Query {
             public readonly Mode                mode;
             public          List<ITypeMatcher>  matchers;
-            public          ITypeMapper         hit;
+            public          TypeMapper          hit;
 
             public Query(Mode mode) {
                 this.mode = mode;

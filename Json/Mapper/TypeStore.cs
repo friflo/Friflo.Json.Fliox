@@ -17,12 +17,12 @@ namespace Friflo.Json.Mapper
 #endif
     public class TypeStore : IDisposable
     {
-        private     readonly    Dictionary <Type,  ITypeMapper> typeMap=        new Dictionary <Type,  ITypeMapper >();
+        private     readonly    Dictionary <Type,  TypeMapper> typeMap=        new Dictionary <Type,  TypeMapper >();
         //
-        internal    readonly    Dictionary <Bytes, ITypeMapper> nameToType=     new Dictionary <Bytes, ITypeMapper >();
-        internal    readonly    Dictionary <Type,  Bytes>       typeToName =    new Dictionary <Type,  Bytes >();
+        internal    readonly    Dictionary <Bytes, TypeMapper> nameToType=     new Dictionary <Bytes, TypeMapper >();
+        internal    readonly    Dictionary <Type,  Bytes>      typeToName =    new Dictionary <Type,  Bytes >();
         
-        private     readonly    List<ITypeMapper>               newTypes =      new List<ITypeMapper>();
+        private     readonly    List<TypeMapper>               newTypes =      new List<TypeMapper>();
 
 
         private     readonly    ITypeResolver                   typeResolver;
@@ -47,15 +47,15 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        internal ITypeMapper GetTypeMapper (Type type)
+        internal TypeMapper GetTypeMapper (Type type)
         {
             lock (this)
             {
-                ITypeMapper mapper = GetOrCreateTypeMapper(type);
+                TypeMapper mapper = GetOrCreateTypeMapper(type);
 
                 while (newTypes.Count > 0) {
                     int lastPos = newTypes.Count - 1;
-                    ITypeMapper last = newTypes[lastPos];
+                    TypeMapper last = newTypes[lastPos];
                     newTypes.RemoveAt(lastPos);
                     // Deferred initialization of StubType references by their related Type to allow circular type dependencies.
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
@@ -68,9 +68,9 @@ namespace Friflo.Json.Mapper
             }
         }
         
-        private ITypeMapper GetOrCreateTypeMapper(Type type) {
+        private TypeMapper GetOrCreateTypeMapper(Type type) {
             storeLookupCount++;
-            if (typeMap.TryGetValue(type, out ITypeMapper mapper))
+            if (typeMap.TryGetValue(type, out TypeMapper mapper))
                 return mapper;
             
             typeCreationCount++;
@@ -95,14 +95,14 @@ namespace Friflo.Json.Mapper
         {
             using (var bytesName = new Bytes(name)) {
                 lock (this) {
-                    if (nameToType.TryGetValue(bytesName, out ITypeMapper mapper)) {
-                        if (type != mapper.GetNativeType())
+                    if (nameToType.TryGetValue(bytesName, out TypeMapper mapper)) {
+                        if (type != mapper.type)
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
                     mapper = GetTypeMapper(type);
                     Bytes discriminator = new Bytes(name);
-                    typeToName.Add(mapper.GetNativeType(), discriminator);
+                    typeToName.Add(mapper.type, discriminator);
                     nameToType.Add(discriminator, mapper);
                 }
             }

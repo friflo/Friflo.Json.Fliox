@@ -17,13 +17,13 @@ namespace Friflo.Json.Mapper.Types
 
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
-        public   readonly   ITypeMapper         fieldType;          // never null
-        internal readonly   Type                fieldTypeNative;    // never null 
-        internal            Bytes               nameBytes;          // dont mutate
+        public   readonly   TypeMapper      fieldType;          // never null
+        internal readonly   Type            fieldTypeNative;    // never null 
+        internal            Bytes           nameBytes;          // dont mutate
         //
-        private readonly    FieldInfo           field;
-        private readonly    PropertyInfo        getter;
-        private readonly    PropertyInfo        setter;
+        private readonly    FieldInfo       field;
+        private readonly    PropertyInfo    getter;
+        private readonly    PropertyInfo    setter;
 
         internal PropField (String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter)
         {

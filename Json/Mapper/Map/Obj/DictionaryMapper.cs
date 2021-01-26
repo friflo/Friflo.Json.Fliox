@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class DictionaryMatcher : ITypeMatcher {
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 object[] constructorParams = {type, constructor};
                 // return new DictionaryMapper<object>  (type, constructor);
                 var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<>), new[] {elementType}, constructorParams);
-                return (ITypeMapper) newInstance;
+                return (TypeMapper) newInstance;
             }
             return null;
         }

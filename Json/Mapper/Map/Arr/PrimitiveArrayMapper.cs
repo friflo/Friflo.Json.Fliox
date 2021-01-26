@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class PrimitiveArrayMatcher : ITypeMatcher {
         public static readonly PrimitiveArrayMatcher Instance = new PrimitiveArrayMatcher();
 
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (type. IsArray) {
                 int rank = type.GetArrayRank();
                 if (rank > 1)
@@ -22,10 +22,10 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         class Query {
-            public  ITypeMapper hit;
+            public  TypeMapper hit;
         }
 
-        ITypeMapper Find(Type type) {
+        TypeMapper Find(Type type) {
             Query query = new Query();
             if (Match<double>   (type, query)) return query.hit;
             if (Match<float>    (type, query)) return query.hit;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             // new PrimitiveArrayMapper<T>(type);
             object[] constructorParams = {type };
-            query.hit = (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveArrayMapper<>), new[] {elementType}, constructorParams);
+            query.hit = (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveArrayMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
     }

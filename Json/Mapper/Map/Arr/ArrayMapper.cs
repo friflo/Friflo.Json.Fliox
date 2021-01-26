@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ArrayMatcher : ITypeMatcher {
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     object[] constructorParams = {type, elementType, constructor};
                     // new ArrayMapper<T>(type, elementType, constructor);
                     var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ArrayMapper<>), new[] {elementType}, constructorParams);
-                    return (ITypeMapper) newInstance;
+                    return (TypeMapper) newInstance;
                 }
             }
             return null;

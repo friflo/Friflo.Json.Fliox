@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class DateTimeMatcher  : ITypeMatcher {
         public static readonly DateTimeMatcher Instance = new DateTimeMatcher();
 
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (type != typeof(DateTime))
                 return null;
             return new DateTimeMapper (type);

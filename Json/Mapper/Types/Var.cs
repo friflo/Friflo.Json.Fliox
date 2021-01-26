@@ -145,9 +145,9 @@ namespace Friflo.Json.Mapper.Types
         }
 
         /// <summary>
-        /// Json.Burst support reusing existing object instances when calling <see cref="TypeMapper.Read"/> via its
+        /// Json.Burst support reusing existing object instances when calling <see cref="TypeMapper{TVal}.Read"/> via its
         /// <see cref="Var"/> parameter. In case no object is available for reusing it need to be set to null before
-        /// calling <see cref="TypeMapper.Read"/>
+        /// calling <see cref="TypeMapper{TVal}.Read"/>
         /// </summary>
         public void  SetObjNull() {
             obj = null;

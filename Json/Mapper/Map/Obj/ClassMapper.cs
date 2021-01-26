@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             if (TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
                 object[] constructorParams = {type, constructor};
-                return (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams); // new ClassMapper<T>(type, constructor);
+                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams); // new ClassMapper<T>(type, constructor);
             }
             return null;
         }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             T obj = slot;
-            ITypeMapper classMapper = this;
+            TypeMapper classMapper = this;
             bool firstMember = true;
             bytes.AppendChar('{');
             Type objType = obj.GetType();
@@ -155,7 +155,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 
             ref var parser = ref reader.parser;
             T obj = slot;
-            ITypeMapper classType = this;
+            TypeMapper classType = this;
             JsonEvent ev = parser.NextEvent();
             if (obj == null) {
                 // Is first member is discriminator - "$type": "<typeName>" ?
@@ -200,7 +200,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNull:
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        if (!field.fieldType.IsNullable()) {
+                        if (!field.fieldType.isNullable) {
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
                             return default;
                         }
@@ -222,7 +222,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             return default;
                         //
                         object subRet = elemVar;
-                        if (!fieldType.IsNullable() && subRet == null) {
+                        if (!fieldType.isNullable && subRet == null) {
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                             return default;
                         }
@@ -242,7 +242,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
         }
 
-        private static PropField GetField(JsonReader reader, ITypeMapper classType) {
+        private static PropField GetField(JsonReader reader, TypeMapper classType) {
             PropField field = classType.GetField(ref reader.parser.key);
             if (field != null)
                 return field;

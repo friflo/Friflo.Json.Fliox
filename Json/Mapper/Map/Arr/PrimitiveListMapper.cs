@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class PrimitiveListMatcher : ITypeMatcher {
         public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
-        public ITypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
@@ -43,10 +43,10 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
          class Query {
-            public  ITypeMapper hit;
+            public  TypeMapper hit;
         }
 
-         ITypeMapper Find(Type type, Type elementType) {
+         TypeMapper Find(Type type, Type elementType) {
             Query query = new Query();
             if (Match<double>   (type, elementType, query)) return query.hit;
             if (Match<float>    (type, elementType, query)) return query.hit;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
             //  new PrimitiveListMapper<T> (type, constructor);
             object[] constructorParams = { type, constructor };
-            query.hit = (ITypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveListMapper<>), new[] {elementType}, constructorParams);
+            query.hit = (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveListMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
     }
