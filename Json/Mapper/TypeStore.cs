@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
+[assembly: CLSCompliant(true)]
+
 namespace Friflo.Json.Mapper
 {
     /// <summary>

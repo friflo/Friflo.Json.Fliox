@@ -25,7 +25,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Json\Friflo.Json.Burst.csproj" />
+      <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
+      <ProjectReference Include="..\Json\Mapper\Friflo.Json.Mapper.csproj" />
     </ItemGroup>
 	
     <ItemGroup>
