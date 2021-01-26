@@ -15,11 +15,20 @@ namespace Friflo.Json.Mapper.Map
         ResolverConfig  GetConfig();
     }
     
+    /// <summary>
+    /// An immutable configuration class for settings which are used by the lifetime of a <see cref="TypeStore"/>  
+    /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     public class ResolverConfig {
-        public bool useIL = false;
+        // ReSharper disable once InconsistentNaming
+        public readonly bool useIL = false;
+
+        // ReSharper disable once InconsistentNaming
+        public ResolverConfig(bool useIL) {
+            this.useIL = useIL;
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -36,7 +45,7 @@ namespace Friflo.Json.Mapper.Map
 
         public ResolverConfig GetConfig() { return config; }
         
-        public DefaultTypeResolver() : this (new ResolverConfig()) {
+        public DefaultTypeResolver() : this (new ResolverConfig(useIL: false)) {
         }
         
         public DefaultTypeResolver(ResolverConfig config) {
