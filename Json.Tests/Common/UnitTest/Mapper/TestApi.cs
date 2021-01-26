@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue(success);
 
                 // 2.
-                AreEqual(1, read.Read(num1, typeof(int), out bool _));  // non generic
+                AreEqual(1, read.ReadObject(num1, typeof(int), out bool _));  // non generic
                 
                 
                 // --- Write ---

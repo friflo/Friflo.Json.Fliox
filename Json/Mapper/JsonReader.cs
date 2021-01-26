@@ -52,9 +52,9 @@ namespace Friflo.Json.Mapper
             strBuf.         Dispose();
         }
         
-        public void HandleException() {
+        public void HandleException(int pos, ref Bytes message) {
             if (errorHandler != null)
-                errorHandler.HandleException();
+                errorHandler.HandleException(pos, ref message);
             if (throwException)
                 throw new FrifloException(parser.error.msg.ToString());
         }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper
             return result;
         }
         
-        public object Read(Bytes bytes, Type type, out bool success) {
+        public object ReadObject(Bytes bytes, Type type, out bool success) {
             int         start   = bytes.StartPos;
             int         len     = bytes.Len;
             TypeMapper  mapper  = typeCache.GetTypeMapper(type);
