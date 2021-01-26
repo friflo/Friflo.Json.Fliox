@@ -17,6 +17,10 @@ namespace Friflo.Json.Mapper.Map.Utils
                 type = type.BaseType;
             }
             return false;
-        } 
+        }
+        
+        public static bool IsPrimitiveNullable(Type type) {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
     }
 }

@@ -7,13 +7,6 @@ using Friflo.Json.Mapper.Map.Utils;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
-    public static class PrimitiveUtils
-    {
-        public static bool IsPrimitiveNullable(Type type) {
-            return Nullable.GetUnderlyingType(type) != null;
-        }
-    }
-    
     public class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();
 
