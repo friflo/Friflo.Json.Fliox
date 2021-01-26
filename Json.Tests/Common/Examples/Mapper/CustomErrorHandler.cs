@@ -4,9 +4,10 @@ using Friflo.Json.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#if !UNITY_5_3_OR_NEWER  // IErrorHandler not supported for Unity/JSON_BURST
+
 namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
-    
     public class CustomErrorHandler : IErrorHandler {
         
         public void HandleException(int pos, ref Bytes message) {
@@ -28,3 +29,5 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     }
     
 }
+
+#endif
