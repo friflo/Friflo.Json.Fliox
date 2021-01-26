@@ -4,6 +4,7 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Class;
 using Friflo.Json.Mapper.Types;
 
 namespace Friflo.Json.Mapper.Map
