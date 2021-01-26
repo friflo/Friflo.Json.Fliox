@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class EnumMatcher : ITypeMatcher {
         public static readonly EnumMatcher Instance = new EnumMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (!IsEnum(type, out bool _))
                 return null;
             var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()

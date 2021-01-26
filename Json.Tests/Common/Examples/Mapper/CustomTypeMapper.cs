@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public static readonly StringTokenMatcher Instance = new StringTokenMatcher();
         
                 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type != typeof(StringTokens))
                 return null;
             return new StringTokenMapper (type);

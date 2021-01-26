@@ -108,7 +108,7 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public interface ITypeMatcher
     {
-        TypeMapper MatchTypeMapper(Type type);
+        TypeMapper MatchTypeMapper(Type type, ResolverConfig config);
     }
     
     public static class TypeMapperUtils {

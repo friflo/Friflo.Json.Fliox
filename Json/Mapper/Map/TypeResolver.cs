@@ -17,14 +17,27 @@ namespace Friflo.Json.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
+    public class ResolverConfig {
+        public bool useIL = false;
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class DefaultTypeResolver : ITypeResolver
     {
+        private readonly ResolverConfig      config;
+        
         /// <summary>This matcher list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
         public  readonly List<ITypeMatcher>  matcherList =            new List<ITypeMatcher>();
         private readonly List<ITypeMatcher>  specificTypeMatcher =   new List<ITypeMatcher>();
         private readonly List<ITypeMatcher>  genericTypeMatcher =    new List<ITypeMatcher>();
         
-        public DefaultTypeResolver() {
+        public DefaultTypeResolver() : this (new ResolverConfig()) {
+        }
+        
+        public DefaultTypeResolver(ResolverConfig config) {
+            this.config = config;
             UpdateMapperList();
         }
 
@@ -82,7 +95,7 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
-        private static bool MatchMappers(List<ITypeMatcher> mappers, Type type, Query query) {
+        private bool MatchMappers(List<ITypeMatcher> mappers, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
                 if (Match(mappers[i], type, query))
                     return true;
@@ -90,9 +103,9 @@ namespace Friflo.Json.Mapper.Map
             return false;
         }
 
-        private static bool Match(ITypeMatcher matcher, Type type, Query query) {
+        private bool Match(ITypeMatcher matcher, Type type, Query query) {
             if (query.mode == Mode.Search) {
-                query.hit = matcher.MatchTypeMapper(type);
+                query.hit = matcher.MatchTypeMapper(type, config);
                 return query.hit != null;
             }
 

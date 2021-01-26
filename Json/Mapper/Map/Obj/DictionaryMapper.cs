@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class DictionaryMatcher : ITypeMatcher {
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );

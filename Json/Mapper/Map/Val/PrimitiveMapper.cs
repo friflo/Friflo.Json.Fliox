@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type != typeof(string))
                 return null;
             return new StringMapper(type);
@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class DoubleMatcher : ITypeMatcher {
         public static readonly DoubleMatcher Instance = new DoubleMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(double))
                 return new DoubleMapper (type);
             if (type == typeof(double?))
@@ -84,7 +84,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class FloatMatcher : ITypeMatcher {
         public static readonly FloatMatcher Instance = new FloatMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(float))
                 return new FloatMapper (type); 
             if (type == typeof(float?))
@@ -125,7 +125,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class LongMatcher : ITypeMatcher {
         public static readonly LongMatcher Instance = new LongMatcher();
                 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(long))
                 return new LongMapper (type);
             if (type == typeof(long?))
@@ -167,7 +167,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class IntMatcher : ITypeMatcher {
         public static readonly IntMatcher Instance = new IntMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(int))
                 return new IntMapper (type); 
             if (type == typeof(int?))
@@ -208,7 +208,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class ShortMatcher : ITypeMatcher {
         public static readonly ShortMatcher Instance = new ShortMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(short))
                 return new ShortMapper (type);
             if (type == typeof(short?))
@@ -252,7 +252,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class ByteMatcher : ITypeMatcher {
         public static readonly ByteMatcher Instance = new ByteMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(byte))
                 return new ByteMapper (type); 
             if (type == typeof(byte?))
@@ -295,7 +295,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class BoolMatcher : ITypeMatcher {
         public static readonly BoolMatcher Instance = new BoolMatcher();
 
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(bool))
                 return new BoolMapper (type);
             if (type == typeof(bool?))

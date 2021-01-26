@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type) {
+        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             if (TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
