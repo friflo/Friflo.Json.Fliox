@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper
             
             T result = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
             if (success == parser.error.ErrSet)
-                throw new InvalidOperationException("Expect success == parser.error.ErrSet");
+                throw new InvalidOperationException("Expect success != parser.error.ErrSet");
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
@@ -86,7 +86,7 @@ namespace Friflo.Json.Mapper
             TypeMapper  mapper  = typeCache.GetTypeMapper(type);
             object result = ReadStart(bytes.buffer, start, len, mapper, null, out success);
             if (success == parser.error.ErrSet)
-                throw new InvalidOperationException("Expect success == parser.error.ErrSet");
+                throw new InvalidOperationException("Expect success != parser.error.ErrSet");
             if (!success)
                 return null;
             parser.NextEvent(); // EOF
@@ -154,7 +154,7 @@ namespace Friflo.Json.Mapper
             
             T result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
             if (success == parser.error.ErrSet)
-                throw new InvalidOperationException("Expect success == parser.error.ErrSet");
+                throw new InvalidOperationException("Expect success != parser.error.ErrSet");
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
@@ -187,7 +187,7 @@ namespace Friflo.Json.Mapper
             
             object result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
             if (success == parser.error.ErrSet)
-                throw new InvalidOperationException("Expect success == parser.error.ErrSet");
+                throw new InvalidOperationException("Expect success != parser.error.ErrSet");
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
