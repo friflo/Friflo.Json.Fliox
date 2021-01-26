@@ -16,9 +16,11 @@ namespace Friflo.Json.Mapper
         internal readonly   bool                useIL;
 
         internal ClassPayload BeginPayload(TypeMapper classType) {
+            return null;
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
+            handler.data.Resize(classType.layout.size);
             return handler;
         }
 

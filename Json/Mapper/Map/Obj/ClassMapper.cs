@@ -39,21 +39,18 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMapper<T> : TypeMapper<T> {
         private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
         private readonly HashMapOpen<Bytes,  PropField> fieldMap;
-        private readonly PropertyFields                 propFields;
         private readonly ConstructorInfo                constructor;
         private readonly Bytes                          removedKey;
         
         public override string DataTypeName() { return "class"; }
         
         public ClassMapper (Type type, ConstructorInfo constructor) :
-            base (type, IsNullable(type))
+            base (type, IsNullable(type), new PropertyFields (type))
         {
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
-            propFields = new  PropertyFields (type);
-            for (int n = 0; n < propFields.num; n++)
-            {
+            for (int n = 0; n < propFields.num; n++) {
                 PropField   field = propFields.fields[n];
                 if (strMap.ContainsKey(field.name))
                     throw new InvalidOperationException("assert field is accessible via string lookup");
@@ -61,7 +58,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                 fieldMap.Put(ref field.nameBytes, field);
             }
             this.constructor = constructor;
-            InitClassLayout(propFields);
         }
         
         public override void Dispose() {
@@ -186,7 +182,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (reader.useIL && field.isValueType) {
                             if (!fieldType.ReadField(reader, payload, field))
                                 return default;
-                            // break;
+                            continue;
                         }
                         elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
