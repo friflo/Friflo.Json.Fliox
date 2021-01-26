@@ -22,10 +22,8 @@ namespace Friflo.Json.Mapper.Map
     [CLSCompliant(true)]
 #endif
     public class ResolverConfig {
-        // ReSharper disable once InconsistentNaming
         public readonly bool useIL = false;
 
-        // ReSharper disable once InconsistentNaming
         public ResolverConfig(bool useIL) {
             this.useIL = useIL;
         }

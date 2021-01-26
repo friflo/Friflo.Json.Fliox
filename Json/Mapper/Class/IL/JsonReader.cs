@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper
     {
         private readonly    List<ClassPayload>  handlerStack = new List<ClassPayload>(16);
         private             int                 classLevel;
-        internal            bool                useIL;
+        internal readonly   bool                useIL;
 
         internal ClassPayload BeginPayload(TypeMapper classType) {
             if (classLevel >= handlerStack.Count)

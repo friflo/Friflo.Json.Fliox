@@ -61,6 +61,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 fieldMap.Put(ref field.nameBytes, field);
             }
             this.constructor = constructor;
+            InitClassLayout(propFields);
         }
         
         public override void Dispose() {
