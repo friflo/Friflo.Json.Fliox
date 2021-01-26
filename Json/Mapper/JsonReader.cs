@@ -52,9 +52,9 @@ namespace Friflo.Json.Mapper
             strBuf.         Dispose();
         }
         
-        public void HandleException(int pos, ref Bytes message) {
+        public void HandleError(int pos, ref Bytes message) {
             if (errorHandler != null)
-                errorHandler.HandleException(pos, ref message);
+                errorHandler.HandleError(pos, ref message);
             if (throwException)
                 throw new FrifloException(parser.error.msg.ToString());
         }

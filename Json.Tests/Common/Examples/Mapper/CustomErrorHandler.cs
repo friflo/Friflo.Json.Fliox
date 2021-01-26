@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     public class CustomErrorHandler : IErrorHandler {
         
-        public void HandleException(int pos, ref Bytes message) {
+        public void HandleError(int pos, ref Bytes message) {
             throw new Exception(message.ToString());
         }
         
