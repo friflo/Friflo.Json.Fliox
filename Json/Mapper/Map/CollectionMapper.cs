@@ -8,7 +8,7 @@ namespace Friflo.Json.Mapper.Map
 {
     public abstract class CollectionMapper<TVal, TElm> : TypeMapper<TVal>
     {
-        public   readonly   TypeMapper<TElm>    elementType;  // todo rename to elementMapper
+        public   readonly   TypeMapper<TElm>    elementType;
         public   readonly   Type                keyType;
         public   readonly   int                 rank;
         // ReSharper disable once UnassignedReadonlyField
