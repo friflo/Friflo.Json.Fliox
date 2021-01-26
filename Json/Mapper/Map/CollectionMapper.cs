@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Reflection;
-using Friflo.Json.Mapper.Types;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
