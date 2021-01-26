@@ -141,7 +141,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     WriteUtils.AppendNull(writer);
                 } else {
                     var fieldType = field.fieldType;
-                    fieldType.WriteBoxed(writer, elemVar);
+                    fieldType.WriteObject(writer, elemVar);
                 }
             }
             bytes.AppendChar('}');
@@ -180,7 +180,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         var valueType = field.fieldType;
 
-                        elemVar = valueType.ReadBoxed(reader, null, out success);
+                        elemVar = valueType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -192,7 +192,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         valueType = field.fieldType;
 
-                        elemVar = valueType.ReadBoxed(reader, null, out success);
+                        elemVar = valueType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
                         field.SetField(obj, elemVar); // set also to null in error case
@@ -217,7 +217,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         // }
                         object sub = elemVar;
                         var fieldType = field.fieldType;
-                        elemVar = fieldType.ReadBoxed(reader, elemVar, out success);
+                        elemVar = fieldType.ReadObject(reader, elemVar, out success);
                         if (!success)
                             return default;
                         //

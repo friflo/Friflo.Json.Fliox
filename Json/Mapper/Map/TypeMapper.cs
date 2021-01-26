@@ -18,8 +18,8 @@ namespace Friflo.Json.Mapper.Map
         void        InitStubType(TypeStore typeStore);
         Type        GetNativeType();
         
-        void        WriteBoxed(JsonWriter writer,   object slot);
-        object      ReadBoxed (JsonReader reader,   object slot, out bool success);
+        void        WriteObject(JsonWriter writer,   object slot);
+        object      ReadObject (JsonReader reader,   object slot, out bool success);
         
         PropField       GetField(ref Bytes fieldName);
         PropertyFields  GetPropFields();
@@ -48,14 +48,14 @@ namespace Friflo.Json.Mapper.Map
         public abstract     void    Write(JsonWriter writer, TVal slot);
         public abstract     TVal    Read(JsonReader reader, TVal slot, out bool success);
 
-        public void WriteBoxed(JsonWriter writer, object slot) {
+        public void WriteObject(JsonWriter writer, object slot) {
             if (slot != null)
                 Write(writer, (TVal) slot);
             else
                 Write(writer, default);
         }
 
-        public object ReadBoxed(JsonReader reader, object slot, out bool success) {
+        public object ReadObject(JsonReader reader, object slot, out bool success) {
             if (slot != null)
                 return Read(reader, (TVal) slot, out success);
             return Read(reader, default, out success);
