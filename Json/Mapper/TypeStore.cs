@@ -51,7 +51,7 @@ namespace Friflo.Json.Mapper
         {
             lock (this)
             {
-                ITypeMapper stubType = GetOrCreateTypeMapper(type);
+                ITypeMapper mapper = GetOrCreateTypeMapper(type);
 
                 while (newTypes.Count > 0) {
                     int lastPos = newTypes.Count - 1;
@@ -61,8 +61,8 @@ namespace Friflo.Json.Mapper
                     // So it supports type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
                     last.InitStubType(this);
                 }
-                if (stubType != null)
-                    return stubType;
+                if (mapper != null)
+                    return mapper;
                 
                 throw new NotSupportedException($"Type not supported: " + type);
             }
@@ -70,18 +70,18 @@ namespace Friflo.Json.Mapper
         
         private ITypeMapper GetOrCreateTypeMapper(Type type) {
             storeLookupCount++;
-            if (typeMap.TryGetValue(type, out ITypeMapper stubType))
-                return stubType;
+            if (typeMap.TryGetValue(type, out ITypeMapper mapper))
+                return mapper;
             
             typeCreationCount++;
-            stubType = typeResolver.CreateTypeMapper(type);
-            if (stubType == null)
-                stubType = TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Found no TypeMapper in TypeStore");
+            mapper = typeResolver.CreateTypeMapper(type);
+            if (mapper == null)
+                mapper = TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Found no TypeMapper in TypeStore");
 
             
-            typeMap.Add(type, stubType);
-            newTypes.Add(stubType);
-            return stubType;
+            typeMap.Add(type, mapper);
+            newTypes.Add(mapper);
+            return mapper;
         }
             
         /// <summary>
@@ -95,15 +95,15 @@ namespace Friflo.Json.Mapper
         {
             using (var bytesName = new Bytes(name)) {
                 lock (this) {
-                    if (nameToType.TryGetValue(bytesName, out ITypeMapper stubType)) {
-                        if (type != stubType.GetNativeType())
+                    if (nameToType.TryGetValue(bytesName, out ITypeMapper mapper)) {
+                        if (type != mapper.GetNativeType())
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
-                    stubType = GetTypeMapper(type);
+                    mapper = GetTypeMapper(type);
                     Bytes discriminator = new Bytes(name);
-                    typeToName.Add(stubType.GetNativeType(), discriminator);
-                    nameToType.Add(discriminator, stubType);
+                    typeToName.Add(mapper.GetNativeType(), discriminator);
+                    nameToType.Add(discriminator, mapper);
                 }
             }
         }

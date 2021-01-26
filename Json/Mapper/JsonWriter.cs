@@ -57,9 +57,9 @@ namespace Friflo.Json.Mapper
         } */
         
         public void Write<T>(T value) {
-            var stubType = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            var mapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             
-            WriteStart(stubType, value);
+            WriteStart(mapper, value);
         }
         
         /*

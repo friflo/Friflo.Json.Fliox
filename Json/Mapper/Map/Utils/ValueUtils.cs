@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 #endif
     public static class ValueUtils
     {
-        public static TVal CheckElse<TVal>(JsonReader reader, TypeMapper<TVal> stubType, out bool success) {
+        public static TVal CheckElse<TVal>(JsonReader reader, TypeMapper<TVal> mapper, out bool success) {
             ref JsonParser parser = ref reader.parser;
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     throw new InvalidOperationException(msg2);
                     // return null;
                 default:
-                    return ReadUtils.ErrorIncompatible<TVal>(reader, stubType.DataTypeName(), stubType, ref parser, out success);
+                    return ReadUtils.ErrorIncompatible<TVal>(reader, mapper.DataTypeName(), mapper, ref parser, out success);
             }
         }
     }
