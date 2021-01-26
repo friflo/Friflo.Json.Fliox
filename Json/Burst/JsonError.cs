@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Mapper.Utils;
+
 #if JSON_BURST
     using Str128 = Unity.Collections.FixedString128;
 #else
@@ -18,11 +18,13 @@ namespace Friflo.Json.Burst
     // Intended to be passed as ref parameter to be able notify a possible error 
     public struct JsonError : IDisposable
     {
-        public          bool        throwException; // has only effect in managed code
-        public          bool        ErrSet  { get; private set; }
-        public          Bytes       msg;
-        public          int         Pos     { get; private set; }
-
+        public  bool            ErrSet  { get; private set; }
+        public  Bytes           msg;
+        public  int             Pos     { get; private set; }
+        
+#if !JSON_BURST
+        public  IErrorHandler   errorHandler;
+#endif
         public void InitJsonError(int capacity) {
             msg.InitBytes(capacity);
         }
@@ -35,8 +37,8 @@ namespace Friflo.Json.Burst
             ErrSet = true;
             Pos = pos;
 #if !JSON_BURST
-            if (throwException)
-                throw new FrifloException (msg.ToString());
+            if (errorHandler != null)
+                errorHandler.HandleException();
 #endif
             return false;
         }
@@ -50,4 +52,9 @@ namespace Friflo.Json.Burst
             return msg.ToString();
         }   
     }
+
+    public interface IErrorHandler {
+        void HandleException();
+    }
+
 }

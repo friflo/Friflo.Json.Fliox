@@ -14,32 +14,34 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonReader : IDisposable
+    public class JsonReader : IDisposable, IErrorHandler
     {
-        public              JsonParser      parser;
-        public              int             maxDepth;
+        public              JsonParser          parser;
+        public              int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
-        public   readonly   TypeCache       typeCache;
+        public   readonly   TypeCache           typeCache;
 
-        internal readonly   Bytes           discriminator   = new Bytes("$type");
+        internal readonly   Bytes               discriminator   = new Bytes("$type");
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
-        public              Bytes           strBuf          = new Bytes(0);
+        public              Bytes               strBuf          = new Bytes(0);
         /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
         /// without creating a string on the heap.</summary>
-        public readonly     BytesString     keyRef          = new BytesString();
+        public readonly     BytesString         keyRef          = new BytesString();
 
-        public              JsonError       Error => parser.error;
-        public              SkipInfo        SkipInfo => parser.skipInfo;
-        
-        public              bool            ThrowException {
-            get => parser.error.throwException;
-            set => parser.error.throwException = value;
-        }
+        public              JsonError           Error => parser.error;
+        public              SkipInfo            SkipInfo => parser.skipInfo;
+
+        public              bool                throwException;
+        public              IErrorHandler       errorHandler = null;
 
         public JsonReader(TypeStore typeStore) {
             typeCache   = new TypeCache(typeStore);
-            parser      = new JsonParser {error = {throwException = false}};
+            parser      = new JsonParser {
+#if !JSON_BURST
+                error = { errorHandler = this }
+#endif 
+            };
             maxDepth    = 100;
         }
 
@@ -50,8 +52,15 @@ namespace Friflo.Json.Mapper
             strBuf.         Dispose();
         }
         
+        public void HandleException() {
+            if (errorHandler != null)
+                errorHandler.HandleException();
+            if (throwException)
+                throw new FrifloException(parser.error.msg.ToString());
+        }
+        
         /// <summary>
-        /// Dont throw exceptions in error case, if not enabled by <see cref="ThrowException"/>
+        /// Dont throw exceptions in error case, if not enabled by <see cref="throwException"/>
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
         public T Read<T>(Bytes bytes) {

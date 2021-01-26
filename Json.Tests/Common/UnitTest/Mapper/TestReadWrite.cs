@@ -148,10 +148,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     StringAssert.Contains("JsonReader/error: Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
 #if !UNITY_EDITOR
                     {
-                        enc.ThrowException = true;
+                        enc.throwException = true;
                         var e = Throws<FrifloException>(() => enc.Read<double>(@null));
                         StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", e.Message);
-                        enc.ThrowException = false;
+                        enc.throwException = false;
                     }
 #endif
                     // error cases
