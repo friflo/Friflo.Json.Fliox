@@ -169,7 +169,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassPayload payload = reader.BeginPayload();
+            ClassPayload payload = reader.BeginPayload(classType);
 
             while (true) {
                 object elemVar;

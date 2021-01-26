@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper
         private     readonly    List<TypeMapper>               newTypes =      new List<TypeMapper>();
 
 
-        private     readonly    ITypeResolver                   typeResolver;
+        internal    readonly    ITypeResolver                   typeResolver;
 
         public                  int                             typeCreationCount;
         public                  int                             storeLookupCount;

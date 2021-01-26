@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Class.IL;
 using Friflo.Json.Mapper.Map.Utils;
 
 // ReSharper disable PossibleInvalidOperationException
@@ -169,7 +170,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(int))
-                return new IntMapper (type); 
+                return config.useIL ? new IntFieldMapper(type) : new IntMapper (type); 
             if (type == typeof(int?))
                 return new NullableIntMapper(type);
             return null;

@@ -11,7 +11,8 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
-        TypeMapper CreateTypeMapper(Type type);
+        TypeMapper      CreateTypeMapper(Type type);
+        ResolverConfig  GetConfig();
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -32,6 +33,8 @@ namespace Friflo.Json.Mapper.Map
         public  readonly List<ITypeMatcher>  matcherList =            new List<ITypeMatcher>();
         private readonly List<ITypeMatcher>  specificTypeMatcher =   new List<ITypeMatcher>();
         private readonly List<ITypeMatcher>  genericTypeMatcher =    new List<ITypeMatcher>();
+
+        public ResolverConfig GetConfig() { return config; }
         
         public DefaultTypeResolver() : this (new ResolverConfig()) {
         }

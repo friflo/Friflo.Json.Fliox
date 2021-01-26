@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Mapper.Class.IL;
+using Friflo.Json.Mapper.Map;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Mapper
@@ -13,7 +14,7 @@ namespace Friflo.Json.Mapper
         private             int                 classLevel;
         internal            bool                useIL;
 
-        internal ClassPayload BeginPayload() {
+        internal ClassPayload BeginPayload(TypeMapper classType) {
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];

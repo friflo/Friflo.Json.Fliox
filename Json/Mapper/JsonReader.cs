@@ -43,6 +43,7 @@ namespace Friflo.Json.Mapper
 #endif 
             };
             maxDepth    = 100;
+            useIL = typeStore.typeResolver.GetConfig().useIL;
         }
 
         public void Dispose() {

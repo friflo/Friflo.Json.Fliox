@@ -2,12 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Friflo.Json.Mapper.Class.IL
 {
     public class ClassPayload : IDisposable
     {
-        private readonly byte[] data; // payload size is known exactly upfront - class layout is fixed
+        // payload size changes, depending on which class is used at the current classLevel
+        internal readonly List<byte> data = new List<byte>(32);
         
         public void Dispose() {
         }
