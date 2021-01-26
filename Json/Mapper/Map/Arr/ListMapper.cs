@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ListMatcher : ITypeMatcher {
         public static readonly ListMatcher Instance = new ListMatcher();
         
-        public ITypeMapper CreateStubType(Type type) {
+        public ITypeMapper MatchTypeMapper(Type type) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );

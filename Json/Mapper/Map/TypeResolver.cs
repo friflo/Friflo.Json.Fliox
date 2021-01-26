@@ -11,7 +11,7 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
-        ITypeMapper CreateStubType(Type type);
+        ITypeMapper CreateTypeMapper(Type type);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -28,13 +28,13 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
-        public ITypeMapper CreateStubType(Type type) {
+        public ITypeMapper CreateTypeMapper(Type type) {
             var query = new Query(Mode.Search);
-            return QueryStubType(type, query);
+            return QueryTypeMapper(type, query);
         }
         
         // find a codec manually to simplify debugging
-        private ITypeMapper QueryStubType (Type type, Query q) {
+        private ITypeMapper QueryTypeMapper (Type type, Query q) {
 
             if (MatchMappers(specificTypeMatcher,       type, q)) return q.hit;
             
@@ -92,7 +92,7 @@ namespace Friflo.Json.Mapper.Map
 
         private static bool Match(ITypeMatcher matcher, Type type, Query query) {
             if (query.mode == Mode.Search) {
-                query.hit = matcher.CreateStubType(type);
+                query.hit = matcher.MatchTypeMapper(type);
                 return query.hit != null;
             }
 
@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper.Map
             var query = new Query(Mode.Enumerate) {
                 matchers = matcherList
             };
-            QueryStubType(null, query);
+            QueryTypeMapper(null, query);
         }
 
 

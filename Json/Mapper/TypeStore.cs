@@ -47,11 +47,11 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        internal ITypeMapper GetType (Type type)
+        internal ITypeMapper GetTypeMapper (Type type)
         {
             lock (this)
             {
-                ITypeMapper stubType = GetStubType(type);
+                ITypeMapper stubType = GetOrCreateTypeMapper(type);
 
                 while (newTypes.Count > 0) {
                     int lastPos = newTypes.Count - 1;
@@ -68,13 +68,13 @@ namespace Friflo.Json.Mapper
             }
         }
         
-        private ITypeMapper GetStubType(Type type) {
+        private ITypeMapper GetOrCreateTypeMapper(Type type) {
             storeLookupCount++;
             if (typeMap.TryGetValue(type, out ITypeMapper stubType))
                 return stubType;
             
             typeCreationCount++;
-            stubType = typeResolver.CreateStubType(type);
+            stubType = typeResolver.CreateTypeMapper(type);
             if (stubType == null)
                 stubType = TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Found no TypeMapper in TypeStore");
 
@@ -100,7 +100,7 @@ namespace Friflo.Json.Mapper
                             throw new InvalidOperationException("Another type is already registered with this name: " + name);
                         return;
                     }
-                    stubType = GetType(type);
+                    stubType = GetTypeMapper(type);
                     Bytes discriminator = new Bytes(name);
                     typeToName.Add(stubType.GetNativeType(), discriminator);
                     nameToType.Add(discriminator, stubType);

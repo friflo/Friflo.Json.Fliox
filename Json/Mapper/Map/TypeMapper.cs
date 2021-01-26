@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper.Map
         /// as fields or elements returning a <see cref="TypeMapper{TVal}"/>.<br/>
         /// 
         /// In this case <see cref="InitStubType"/> is used to map a <see cref="System.Type"/> to a required
-        /// <see cref="TypeMapper{TVal}"/> by calling <see cref="TypeStore.GetType(System.Type)"/> and storing the returned
+        /// <see cref="TypeMapper{TVal}"/> by calling <see cref="TypeStore.GetTypeMapper"/> and storing the returned
         /// reference also in the created <see cref="TypeMapper{TVal}"/> instance.<br/>
         ///
         /// This enables deferred initialization of StubType references by their related Type to support circular type dependencies.
@@ -96,7 +96,7 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public interface ITypeMatcher
     {
-        ITypeMapper CreateStubType(Type type);
+        ITypeMapper MatchTypeMapper(Type type);
     }
     
     public static class TypeMapperUtils {

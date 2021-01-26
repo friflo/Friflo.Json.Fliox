@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public static readonly StringTokenMatcher Instance = new StringTokenMatcher();
         
                 
-        public ITypeMapper CreateStubType(Type type) {
+        public ITypeMapper MatchTypeMapper(Type type) {
             if (type != typeof(StringTokens))
                 return null;
             return new StringTokenMapper (type);

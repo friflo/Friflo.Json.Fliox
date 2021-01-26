@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
-        public ITypeMapper CreateStubType(Type type) {
+        public ITypeMapper MatchTypeMapper(Type type) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             if (TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             for (int n = 0; n < propFields.num; n++) {
                 PropField field = propFields.fields[n];
 
-                var         mapper      = typeStore.GetType(field.fieldTypeNative);
+                var         mapper      = typeStore.GetTypeMapper(field.fieldTypeNative);
                 FieldInfo   fieldInfo   = field.GetType().GetField(nameof(PropField.fieldType));
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(field, mapper);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             bytes.AppendChar('{');
             Type objType = obj.GetType();
             if (type != objType) {
-                classMapper = writer.typeCache.GetType(objType);
+                classMapper = writer.typeCache.GetTypeMapper(objType);
                 firstMember = false;
                 bytes.AppendBytes(ref writer.discriminator);
                 writer.typeCache.AppendDiscriminator(ref bytes, classMapper);

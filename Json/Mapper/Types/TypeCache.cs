@@ -42,10 +42,10 @@ namespace Friflo.Json.Mapper.Types
                     item.Dispose();
             }
             
-            public ITypeMapper GetType (Type type) {
+            public ITypeMapper GetTypeMapper (Type type) {
                 lookupCount++;
                 if (!typeMap.TryGetValue(type, out ITypeMapper propType)) {
-                    propType = typeStore.GetType(type);
+                    propType = typeStore.GetTypeMapper(type);
                     typeMap.Add(type, propType);
                 }
                 return propType;

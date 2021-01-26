@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper
             T       value   = default;
             int     start   = bytes.StartPos;
             int     len     = bytes.Len;
-            var     mapper  = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             
             T result = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
             if (!success)
@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper
             T       value   = default;
             int     start   = bytes.StartPos;
             int     len     = bytes.Len;
-            var     mapper  = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             
             T result  = ReadStart(bytes.buffer, start, len, mapper, value, out success);
             parser.NextEvent(); // EOF
@@ -82,7 +82,7 @@ namespace Friflo.Json.Mapper
             T       value   = default;
             int     start   = bytes.StartPos;
             int     len     = bytes.Len;
-            var     mapper  = (TypeMapper<T>)typeCache.GetType(typeof(T));
+            var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             
             result  = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
             parser.NextEvent(); // EOF
@@ -131,7 +131,7 @@ namespace Friflo.Json.Mapper
         public T ReadTo<T>(Bytes bytes, T obj, out bool success)  {
             int     start   = bytes.StartPos;
             int     len     = bytes.Len;
-            var     mapper  = (TypeMapper<T>) typeCache.GetType(obj.GetType());
+            var     mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(obj.GetType());
             
             T result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
             if (!success)

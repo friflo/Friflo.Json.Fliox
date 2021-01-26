@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class PrimitiveArrayMatcher : ITypeMatcher {
         public static readonly PrimitiveArrayMatcher Instance = new PrimitiveArrayMatcher();
 
-        public ITypeMapper CreateStubType(Type type) {
+        public ITypeMapper MatchTypeMapper(Type type) {
             if (type. IsArray) {
                 int rank = type.GetArrayRank();
                 if (rank > 1)
