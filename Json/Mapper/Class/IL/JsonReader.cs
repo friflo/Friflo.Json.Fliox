@@ -8,6 +8,7 @@ using Friflo.Json.Mapper.Map;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Mapper
 {
+    // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     partial class JsonReader
     {
         private readonly    List<ClassPayload>  handlerStack = new List<ClassPayload>(16);

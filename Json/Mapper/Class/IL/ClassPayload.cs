@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Mapper.Class.IL
 {
+    // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     public class ClassPayload : IDisposable
     {
         // payload size changes, depending on which class is used at the current classLevel

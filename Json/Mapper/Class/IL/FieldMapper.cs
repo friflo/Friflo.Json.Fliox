@@ -7,27 +7,8 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Class.IL
 {
 
-    
-    /*
-    abstract class FieldMapper : TypeMapper
-    {
-        public FieldMapper(Type type, bool isNullable) :
-            base(type, isNullable)
-        {
-        }
-
-        public override void            Dispose() { }
-        public override void            InitTypeMapper(TypeStore typeStore) {  }
-        
-        public override void            WriteObject(JsonWriter writer, object slot)                     { throw new NotImplementedException(); }
-        public override object          ReadObject(JsonReader reader, object slot, out bool success)    { throw new NotImplementedException(); }
-        public override PropField       GetField(ref Bytes fieldName)                                   { throw new NotImplementedException(); }
-        public override PropertyFields  GetPropFields()                                                 { throw new NotImplementedException(); }
-        public override object          CreateInstance()                                                { throw new NotImplementedException(); }
-    } */
-    
-    
-
+    // This class is shared via multiple JsonReader / JsonWriter instances which run in various threads.
+    // So its must not contain any mutable state.
     class IntFieldMapper : IntMapper
     {
         public IntFieldMapper(Type type) : base(type) { }
