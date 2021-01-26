@@ -37,12 +37,9 @@ namespace Friflo.Json.Mapper.Map
     
     public abstract class TypeMapper<TVal> : TypeMapper
     {
-        public  readonly    VarType     varType;
-
         public TypeMapper(Type type, bool isNullable) :
             base (type, isNullable)
         {
-            varType         = Var.GetVarType(type);
         }
 
         public abstract     string  DataTypeName();

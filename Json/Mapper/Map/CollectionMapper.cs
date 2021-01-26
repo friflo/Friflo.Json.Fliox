@@ -15,7 +15,6 @@ namespace Friflo.Json.Mapper.Map
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection below to enable using a readonly field
         private  readonly   Type                elementTypeNative;
-        public   readonly   VarType             elementVarType;
         internal readonly   ConstructorInfo     constructor;
 
         internal CollectionMapper (
@@ -30,7 +29,6 @@ namespace Friflo.Json.Mapper.Map
             if (elementType == null)
                 throw new NullReferenceException("elementType is required");
             this.rank           = rank;
-            elementVarType       = Var.GetVarType(elementType);
             // constructor can be null. E.g. All array types have none.
             this.constructor    = constructor;
         }
