@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-using Friflo.Json.Burst;
-using Friflo.Json.Mapper;
+﻿using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 

@@ -51,7 +51,7 @@ namespace Friflo.Json.Mapper
             discriminator.  Dispose();
             parser.         Dispose();
             strBuf.         Dispose();
-            DisposeClassPayloads();
+            DisposePayloads();
         }
         
         public void HandleError(int pos, ref Bytes message) {

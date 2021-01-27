@@ -15,12 +15,12 @@ namespace Friflo.Json.Mapper
         private             int                     classLevel;
         internal readonly   bool                    useIL;
 
-        private void DisposeClassPayloads() {
+        private void DisposePayloads() {
             for (int n = 0; n < handlerStack.Count; n++)
                 handlerStack[n].Dispose();
         }
         
-        internal ClassPayload PayloadLoad(TypeMapper classType, object obj) {
+        internal ClassPayload InstanceLoad(TypeMapper classType, object obj) {
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper
             return handler;
         }
 
-        internal void PayloadEnd() {
+        internal void InstancePop() {
             --classLevel;
         }
     }

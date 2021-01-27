@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper
             format.Dispose();
             strBuf.Dispose();
             bytes.Dispose();
-            DisposeClassPayloads();
+            DisposePayloads();
         }
 
         public void WriteObject(object value) { 
