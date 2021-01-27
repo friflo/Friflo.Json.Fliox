@@ -22,33 +22,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         
         [Test]
         public void CodeGenPatternStoreLoad() {
+            var myInstance = new SampleClass();
             // --- store
             long[]  src = { 0, 1, 2, 3, 1, 5, 6 };
             
-            long    field0 =            src[0];
-            int     field1 = (int)      src[1];
-            short   field2 = (short)    src[2];
-            byte    field3 = (byte)     src[3];
+            myInstance.field0 =            src[0];
+            myInstance.field1 = (int)      src[1];
+            myInstance.field2 = (short)    src[2];
+            myInstance.field3 = (byte)     src[3];
             
-            bool    field4 =            src[4] != 0;
+            myInstance.field4 =            src[4] != 0;
             
-            double  field5 = BitConverter.Int64BitsToDouble (     src[5]);
-            float   field6 = BitConverter.Int32BitsToSingle ((int)src[6]);
+            myInstance.field5 = BitConverter.Int64BitsToDouble (     src[5]);
+            myInstance.field6 = BitConverter.Int32BitsToSingle ((int)src[6]);
 
             // --- load
             long[] dst = new long[7];
 
-            dst[0] = field0;
-            dst[1] = field1;
-            dst[2] = field2;
-            dst[3] = field3;
+            dst[0] = myInstance.field0;
+            dst[1] = myInstance.field1;
+            dst[2] = myInstance.field2;
+            dst[3] = myInstance.field3;
             
-            dst[4] = field4 ? 1 : 0;
+            dst[4] = myInstance.field4 ? 1 : 0;
 
-            dst[5] = BitConverter.DoubleToInt64Bits(field5);
-            dst[6] = BitConverter.SingleToInt32Bits(field6);
+            dst[5] = BitConverter.DoubleToInt64Bits(myInstance.field5);
+            dst[6] = BitConverter.SingleToInt32Bits(myInstance.field6);
 
             AreEqual(src, dst);
         }
+    }
+
+    public class SampleClass {
+        public long     field0;
+        public int      field1;
+        public short    field2;
+        public byte     field3;
+        public bool     field4;
+        public double   field5;
+        public float    field6;
     }
 }
