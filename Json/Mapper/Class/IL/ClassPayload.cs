@@ -8,14 +8,20 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Class.IL
 {
-    // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
+    /// <summary>
+    /// This class has two main purposes: 
+    /// 1. Load the fields of a class instance into the <see cref="data"/> array.
+    /// 2. Store the "instances fields" represented by the <see cref="data"/> array to the fields of a given class instance.
+    ///  
+    /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe. 
+    /// </summary>
     public class ClassPayload : IDisposable
     {
         // payload size changes, depending on which class is used at the current classLevel
         private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
-        public void InitClassPayload(TypeMapper classType) {
+        public void LoadInstance(TypeMapper classType) {
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
         }

@@ -20,11 +20,12 @@ namespace Friflo.Json.Mapper
                 handlerStack[n].Dispose();
         }
         
+        /// <summary> Load the fields of a class instance into the <see cref="ClassPayload.data"/> array. </summary>
         internal ClassPayload InstanceLoad(TypeMapper classType, object obj) {
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
-            handler.InitClassPayload(classType);
+            handler.LoadInstance(classType);
             return handler;
         }
 
