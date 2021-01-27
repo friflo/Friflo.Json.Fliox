@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
-namespace Friflo.Json.Mapper.Types
+namespace Friflo.Json.Mapper.Utils
 {
         /// <summary>
         /// In contrast to <see cref="typeStore"/> this Cache is by intention not thread safe.

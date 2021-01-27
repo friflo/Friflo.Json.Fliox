@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Class.IL;
+using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Utils;
 
 // ReSharper disable PossibleInvalidOperationException

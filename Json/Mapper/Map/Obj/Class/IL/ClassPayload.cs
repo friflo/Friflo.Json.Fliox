@@ -4,10 +4,9 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.Class.Reflect;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 
-namespace Friflo.Json.Mapper.Class.IL
+namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
     /// <summary>
     /// This class has two main purposes: 

@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Mapper.Class.Reflect;
+using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Friflo.Json.Mapper.Map.Val;
 
-namespace Friflo.Json.Mapper.Class.IL
+namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
 #if UNITY_5_3_OR_NEWER
 
