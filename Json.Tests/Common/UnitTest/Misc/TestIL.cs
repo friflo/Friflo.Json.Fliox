@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#if !UNITY_5_3_OR_NEWER
+
 namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
     public class TestIL
@@ -13,15 +15,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             double dblResult    = BitConverter.Int64BitsToDouble(lng);
             AreEqual(dbl64, dblResult);
             
-#if !UNITY_5_3_OR_NEWER
+
             float  flt32 = 123.456f;
             int integer        = BitConverter.SingleToInt32Bits(flt32);
             float result32     = BitConverter.Int32BitsToSingle(integer);
             AreEqual(flt32, result32);
-#endif
+
         }
         
-#if !UNITY_5_3_OR_NEWER
+
         [Test]
         public void CodeGenPatternStoreLoad() {
             
@@ -54,9 +56,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
 
             AreEqual(src, dst);
         }
-#endif
     }
-
+    
+    // --- Following code snippet can be copy- / pasted into https://www.linqpad.net/ to see generated IL
     public class SampleClass {
         public long     field0;
         public int      field1;
@@ -65,5 +67,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         public bool     field4;
         public double   field5;
         public float    field6;
+            
+        private void LoadInstance(long[] dst, SampleClass src) {
+            dst[0] = src.field0;
+            dst[1] = src.field1;
+            dst[2] = src.field2;
+            dst[3] = src.field3;
+            
+            dst[4] = src.field4 ? 1 : 0;
+
+            dst[5] = BitConverter.DoubleToInt64Bits(src.field5);
+            dst[6] = BitConverter.SingleToInt32Bits(src.field6);
+        }
+        
+        [Test]
+        public void LoadWithExpressionPattern () {
+            long[] dst = new long[7];
+            var src = new SampleClass() {field0 = 10, field1 = 11, field2 = 12, field3 = 13, field4 = true, field5 = 11.5, field6 = 22.5f };
+            LoadInstance(dst, src);
+        }
     }
+    // --- end of snippet
+
+
+
 }
+
+#endif
