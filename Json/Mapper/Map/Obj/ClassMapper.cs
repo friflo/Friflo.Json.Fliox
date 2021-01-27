@@ -39,17 +39,22 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMapper<T> : TypeMapper<T> {
         private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
         private readonly HashMapOpen<Bytes,  PropField> fieldMap;
+        private readonly PropertyFields                 propFields;
         private readonly ConstructorInfo                constructor;
         private readonly Bytes                          removedKey;
+        private readonly ClassLayout                    layout;
         
         public override string DataTypeName() { return "class"; }
+
+        public override ClassLayout GetClassLayout() { return layout; }
         
         public ClassMapper (Type type, ConstructorInfo constructor) :
-            base (type, IsNullable(type), new PropertyFields (type))
+            base (type, IsNullable(type))
         {
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
+            propFields = new PropertyFields(type);
             for (int n = 0; n < propFields.num; n++) {
                 PropField   field = propFields.fields[n];
                 if (strMap.ContainsKey(field.name))
@@ -57,6 +62,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
             }
+            layout = new ClassLayout(type, propFields);
             this.constructor = constructor;
         }
         

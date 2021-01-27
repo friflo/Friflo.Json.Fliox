@@ -17,11 +17,9 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    Type        type;
         public  readonly    bool        isNullable;
 
-        protected TypeMapper(Type type, bool isNullable, PropertyFields fields) {
+        protected TypeMapper(Type type, bool isNullable) {
             this.type       = type;
             this.isNullable = isNullable;
-            this.propFields = fields;
-            layout = CreateClassLayout(type, fields);
         }
 
         public abstract void            Dispose();
@@ -39,14 +37,17 @@ namespace Friflo.Json.Mapper.Map
         public abstract PropField       GetField(ref Bytes fieldName);
         public abstract PropertyFields  GetPropFields();
 
+        public virtual ClassLayout      GetClassLayout() { throw new NotImplementedException(); }
+
+
 
         public abstract object          CreateInstance();
     }
     
     public abstract class TypeMapper<TVal> : TypeMapper
     {
-        protected TypeMapper(Type type, bool isNullable, PropertyFields fields = null) :
-            base(type, isNullable, fields) {
+        protected TypeMapper(Type type, bool isNullable) :
+            base(type, isNullable) {
         }
 
         public abstract void    Write       (JsonWriter writer, TVal slot);
