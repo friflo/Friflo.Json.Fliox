@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Class.IL;
 
@@ -23,7 +24,7 @@ namespace Friflo.Json.Mapper
         /// <summary> Load the fields of a class instance into the <see cref="ClassPayload.data"/> array. </summary>
         internal ClassPayload InstanceLoad(TypeMapper classType) {
             if (classLevel >= handlerStack.Count)
-                handlerStack.Add(new ClassPayload());
+                handlerStack.Add(new ClassPayload(Default.Constructor));
             var handler = handlerStack[classLevel++];
             handler.LoadInstance(classType);
             return handler;

@@ -140,7 +140,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 
                 PropField field = fields[n];
                 if (writer.useIL && field.isValueType) {
-                    field.fieldType.WriteField(writer, payload, field);
+                    field.fieldType.WriteField(writer, ref payload, field);
                     continue;
                 }                
                 object elemVar = field.GetField(obj);
@@ -192,7 +192,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         var fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadField(reader, payload, field))
+                            if (!fieldType.ReadField(reader, ref payload, field))
                                 return default;
                             continue;
                         }
@@ -208,7 +208,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadField(reader, payload, field))
+                            if (!fieldType.ReadField(reader, ref payload, field))
                                 return default;
                             continue;
                         }
