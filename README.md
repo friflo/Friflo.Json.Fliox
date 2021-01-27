@@ -15,90 +15,96 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 
 
-# Features
+# **Features**
 
-- **JSON parser/serializer**
+# JSON parser/serializer -  **`Friflo.Json.Burst`**
 
-    - **`JsonParser`** / **`JsonSerializer`** in namespace: **`Friflo.Json.Burst`**
+API: **`JsonParser`** / **`JsonSerializer`**
 
-    - Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
+- Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
 
-    - Skipping of JSON object members and elements (array elements and values on root)  
-        Provide statistics (counts) about skipped JSON entries:
-        arrays, objects, strings, integers, numbers, booleans and nulls
+- Skipping of JSON object members and elements (array elements and values on root)  
+    Provide statistics (counts) about skipped JSON entries:
+    arrays, objects, strings, integers, numbers, booleans and nulls
 
-    - Don't throw exceptions in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
+- Don't throw exceptions in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
 
-    - Throw exceptions in `Debug` build to notice applications errors when using the library.
+- Throw exceptions in `Debug` build to notice applications errors when using the library.
 
-    - No heap allocation in case of invalid JSON when creating an error message
+- No heap allocation in case of invalid JSON when creating an error message
 
-    - Support parsing/serializing of JSON objects, arrays and values (string, number, boolean and null) on root level
+- Support parsing/serializing of JSON objects, arrays and values (string, number, boolean and null) on root level
 
-    - Optimization principles:
-        - Minimize **memory footprint**
-            - No (0) allocations after a few iterations by using a few internal byte & int buffers
-            - Support reusing parser & serializer instances to avoid allocations on the heap
+- Optimization principles:
+    - Minimize **memory footprint**
+        - No (0) allocations after a few iterations by using a few internal byte & int buffers
+        - Support reusing parser & serializer instances to avoid allocations on the heap
 
-        - Minimize **CPU load**
-            - Using only struct's, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
-                As a result the complete parser/serializer state lives on the stack.
-            - Pass method parameters of struct's - a value type in .NET - always by `ref`.
-            - No string copy or memcpy
+    - Minimize **CPU load**
+        - Using only struct's, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
+            As a result the complete parser/serializer state lives on the stack.
+        - Pass method parameters of struct's - a value type in .NET - always by `ref`.
+        - No string copy or memcpy
 
-    - Compatible to [Unity Burst Jobs](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
-      which requires using a
-      [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
-      in the parser implementation.  
-      In short this is the absense of using the heap in any way.
-      This exclude the usage of managed types like classes, strings, arrays or exceptions.  
-      To support this subset the library need to be compiled with `JSON_BURST`.  
-      The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
+- Compatible to [Unity Burst Jobs](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
+    which requires using a
+    [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
+    in the parser implementation.  
+    In short this is the absense of using the heap in any way.
+    This exclude the usage of managed types like classes, strings, arrays or exceptions.  
+    To support this subset the library need to be compiled with `JSON_BURST`.  
+    The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
-    - Used .NET API namespaces: `System`, `System.Text` .Encoding.UTF8 & `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
+- Used .NET API namespaces: `System`, `System.Text` .Encoding.UTF8 & `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
 
-- **Object Mapper reader/writer**
 
-    - **`JsonReader`** / **`JsonWriter`** in namespace: **`Friflo.Json.Managed`**
 
-    - Support deserialization in two ways:
-        - Create new object instances and deserialize by using `Read()` to them which is the common practice of
-          many object mapper implementations.
-        - Deserialize to passed object instances by using `ReadTo()` while reusing also their child objects referenced by fields,
-          arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
-          This avoids object allocation on the heap for the given instance and all its child objects
+# Object Mapper reader/writer - **`Friflo.Json.Mapper`**
 
-    - Support polymorphism: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
+API **`JsonReader`** / **`JsonWriter`**
 
-    - `JsonReader` support two error handling modes while parsing and deserialization (unmarshalling) -
-      e.g. JSON validation errors.  
-      By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation
-      because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:      
-        1. Don't throw any exception and provide the error state via a boolean and a message.
-        2. Throw exception in error case - which is useful for debugging.
+- Support deserialization in two ways:
+    - Create new object instances and deserialize by using `Read()` to them which is the common practice of
+        many object mapper implementations.
+    - Deserialize to passed object instances by using `ReadTo()` while reusing also their child objects referenced by fields,
+        arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
+        This avoids object allocation on the heap for the given instance and all its child objects
 
-    - Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simply by flooding a service with invalid JSON.
+- Support polymorphism: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
 
-    - Optimized for performance and low memory footprint
+- `JsonReader` support two error handling modes while parsing and deserialization (unmarshalling) -
+    e.g. JSON validation errors.  
+    By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation
+    because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:      
+    1. Don't throw any exception and provide the error state via a boolean and a message.
+    2. Throw exception in error case - which is useful for debugging.
 
-        - Create an immutable type description for each `Type` to invoke only the minimum required
-          reflection calls while de-/serializing
+- Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simply by flooding a service with invalid JSON.
 
-        - Reusing of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
+- Optimized for performance and low memory footprint
 
-        - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
+    - Create an immutable type description for each `Type` to invoke only the minimum required
+        reflection calls while de-/serializing
 
-        - No heap allocations are performed when using `ReadTo()` and using a subset of supported types:
-          arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
+    - Reusing of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
 
-    - Supported C#/.NET types:
-        - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
-        - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
-        - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
+    - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
 
-    - Uses internally the JSON parser mentioned above
+    - No heap allocations are performed when using `ReadTo()` and using a subset of supported types:
+        arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
 
-    - Used .NET API namespaces additional to Burst: `System.Collections`, `System.Collections.Generic` & `System.Reflection`
+- Supported C#/.NET types:
+    - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
+    - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
+    - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
+
+- Uses internally the JSON parser mentioned above
+
+- Used .NET API namespaces additional to Burst: `System.Collections`, `System.Collections.Generic` & `System.Reflection`
+
+
+
+# General Features
 
 - UTF-8 support
 
@@ -142,7 +148,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
     ```
 
 
-# Unit test / Performance
+# **Unit tests**
 
 The current result of the unit test are available as CI tests at
 [Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
@@ -151,7 +157,7 @@ The project is using [NUnit](https://nunit.org/) for unit testing. Execute them 
 ```
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
-The units can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/),
+The unit tests can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/),
 [Rider](https://www.jetbrains.com/rider/) and [Visual Studio Code](https://visualstudio.microsoft.com/).
 
 By using NUnit the unit tests can be executed via the Test Runner in the [Unity Editor](https://unity.com/)
@@ -163,14 +169,14 @@ with additional assertions:
 - No leaks of `native containers` are left over after tear down a unit test.  
   This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
 
-## Examples
+# **Examples**
 
 The unit test also contain a folder explaining single file (self contained) examples illustrating usage and
 anti patterns how to use (and how not to use) the `JsonParser` and `JsonSerializer`.
 
 The examples can be found at [Json.Tests/Common/Examples/](Json.Tests/Common/Examples)
 
-## Parser & Serializer
+## **Parser & Serializer**
 
 A minimal *Hello world* example showing how to parse a given JSON string via the `JsonParser`
 
@@ -205,7 +211,7 @@ A minimal *Hello world* using the serializer to create JSON via the `JsonSeriali
         }
 ```
 
-## Object Mapper - Reader & Writer
+## **Object Mapper - Reader & Writer**
 
 An ObjectMapper maps a class to a JSON string and vise vera. Given the following class:
 
@@ -238,8 +244,9 @@ Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
         }
 ```
 
+# **Performance**
 
-## Performance .NET CLR (Common Language Runtime)
+# Performance .NET CLR (Common Language Runtime)
 
 The test cases contain also JSON parser performance tests.
 Various JSON examples files are parsed by iteration them from begin to end.
@@ -252,7 +259,7 @@ at [TestParserPerformance.cs](Json.Tests/Common/UnitTest/Burst/TestParserPerform
 On the used development system (Intel Core i7-4790k 4Ghz, Windows 10) the throughput of the example JSON files
 within the CLR are at **200-550 MB/sec**. All tests are measured on one core.
 
-## Performance Unity
+# Performance Unity
 
 - With **JSON_BURST** in Unity Editor  
 Running the performance inside the Unity Editor in `Edit Mode` or in the `Test Runner` show weak performance numbers.
