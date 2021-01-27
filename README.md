@@ -14,12 +14,26 @@ CPU/memory resources to the main thread being the critical path in game loops.
  
 
 
+## Content
+- [Features](#Features)
+    - [JSON Parser/Serializer](#json-parserserializer)
+    - [Object Mapper Reader/Writer](#object-mapper-readerwriter)
+    - [General Features](#general-features)
+
+- [Unit tests](#unit-tests)
+
+- [Examples](#examples)
+
+- [Performance](#performance)
+
+
+
 
 # **Features**
 
-# JSON Parser/Serializer -  **`Friflo.Json.Burst`**
+# JSON Parser/Serializer
 
-API: **`JsonParser`** / **`JsonSerializer`**
+## **`Friflo.Json.Burst`**
 
 - Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
 
@@ -59,9 +73,9 @@ API: **`JsonParser`** / **`JsonSerializer`**
 
 
 
-# Object Mapper Reader/Writer - **`Friflo.Json.Mapper`**
+# Object Mapper Reader/Writer
 
-API **`JsonReader`** / **`JsonWriter`**
+## **`Friflo.Json.Mapper`**
 
 - Support deserialization in two ways:
     - Create new object instances and deserialize by using `Read()` to them which is the common practice of
