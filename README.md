@@ -17,7 +17,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # **Features**
 
-# JSON parser/serializer -  **`Friflo.Json.Burst`**
+# JSON Parser/Serializer -  **`Friflo.Json.Burst`**
 
 API: **`JsonParser`** / **`JsonSerializer`**
 
@@ -59,7 +59,7 @@ API: **`JsonParser`** / **`JsonSerializer`**
 
 
 
-# Object Mapper reader/writer - **`Friflo.Json.Mapper`**
+# Object Mapper Reader/Writer - **`Friflo.Json.Mapper`**
 
 API **`JsonReader`** / **`JsonWriter`**
 
@@ -246,7 +246,10 @@ Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
 
 # **Performance**
 
-# Performance .NET CLR (Common Language Runtime)
+The performance tests are included in the unit tests. They can be executed within the CLR (Common Language Runtime)
+and within Unity.
+
+# Performance .NET CLR
 
 The test cases contain also JSON parser performance tests.
 Various JSON examples files are parsed by iteration them from begin to end.
