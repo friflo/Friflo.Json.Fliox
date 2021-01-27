@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Class
+namespace Friflo.Json.Mapper.Class.Reflect
 {
     // PropertyFields
 #if !UNITY_5_3_OR_NEWER

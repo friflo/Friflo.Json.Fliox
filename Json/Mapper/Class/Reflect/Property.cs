@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Class
+namespace Friflo.Json.Mapper.Class.Reflect
 {
     public interface IProperties
     {

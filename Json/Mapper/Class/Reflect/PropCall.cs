@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Friflo.Json.Mapper.Class
+namespace Friflo.Json.Mapper.Class.Reflect
 {
     public class PropCall
     {
