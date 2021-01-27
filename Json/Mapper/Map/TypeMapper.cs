@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public abstract partial class TypeMapper : IDisposable
+    public abstract class TypeMapper : IDisposable
     {
         public  readonly    Type        type;
         public  readonly    bool        isNullable;

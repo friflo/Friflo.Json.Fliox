@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Class.IL
     public class ClassPayload : IDisposable
     {
         // payload size changes, depending on which class is used at the current classLevel
-        private     ValueList<byte>     data = new ValueList<byte>(32, AllocType.Persistent);
+        private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
         public void InitClassPayload(TypeMapper classType) {
@@ -24,16 +24,30 @@ namespace Friflo.Json.Mapper.Class.IL
         public void Dispose() {
             data.Dispose();
         }
+        
+        public void     StoreDbl    (int idx,           double value) {  data.array[layout.fieldPos[idx]] = BitConverter.DoubleToInt64Bits(value); }
+        public double   LoadDbl     (int idx) {
+            return BitConverter.Int64BitsToDouble(                       data.array[layout.fieldPos[idx]]); }
+        
+        public void     StoreFlt    (int idx,           float value) {   data.array[layout.fieldPos[idx]] = BitConverter.SingleToInt32Bits(value); }
+        public float    LoadFlt     (int idx) {
+            return BitConverter.Int32BitsToSingle(                  (int)data.array[layout.fieldPos[idx]]); }
 
-        public void StoreInt(int fieldPos, int value) {
-            int start = layout.fieldPos[fieldPos];
-            MemoryMarshal.Write(new Span<byte>(data.array, start, 4), ref value);
-        }
+        public void     StoreLong   (int idx,            long value)   { data.array[layout.fieldPos[idx]] = value; }
+        public long     LoadLong    (int idx)                   { return data.array[layout.fieldPos[idx]]; }
+        
+        public void     StoreInt    (int idx,            int value)    { data.array[layout.fieldPos[idx]] = value; }
+        public int      LoadInt     (int idx)  { return (int)            data.array[layout.fieldPos[idx]]; }
+        
+        public void     StoreShort  (int idx,            short value)  { data.array[layout.fieldPos[idx]] = value; }
+        public short    LoadShort   (int idx)  { return (short)          data.array[layout.fieldPos[idx]]; }
+        
+        public void     StoreByte   (int idx,            byte value)   { data.array[layout.fieldPos[idx]] = value; }
+        public byte     LoadByte    (int idx)  { return (byte)           data.array[layout.fieldPos[idx]]; }
+        
+        public void     StoreBool   (int idx,            bool value)   { data.array[layout.fieldPos[idx]] = value ? 1 : 0; }
+        public bool     LoadBool    (int idx)  { return                  data.array[layout.fieldPos[idx]] != 0; }
 
-        public int LoadInt(int fieldPos) {
-            int start = layout.fieldPos[fieldPos];
-            return MemoryMarshal.Read<int>(new Span<byte>(data.array, start, 4));
-        }
     }
 
     public readonly struct ClassLayout
@@ -46,8 +60,8 @@ namespace Friflo.Json.Mapper.Class.IL
             int count = 0;
             int[] tempPos = new int[fields.Length]; 
             for (int n = 0; n < fields.Length; n++) {
-                tempPos[n] = 4 * n; // fake pos;
-                count += 4;
+                tempPos[n] = n; // fake pos;
+                count ++;
             }
             size       = count;
             fieldPos   = tempPos;
