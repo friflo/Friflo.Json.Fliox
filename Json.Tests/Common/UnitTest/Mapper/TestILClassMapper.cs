@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
-        public int key;
+        public int key = 11;
     }
     
     public class TestILClassMapper
