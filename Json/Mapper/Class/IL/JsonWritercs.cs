@@ -9,18 +9,18 @@ using Friflo.Json.Mapper.Map;
 namespace Friflo.Json.Mapper
 {
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
-    partial class JsonReader
+    partial class JsonWriter
     {
         private  readonly   List<ClassPayload>      handlerStack = new List<ClassPayload>(16);
         private             int                     classLevel;
         internal readonly   bool                    useIL;
-        
+
         private void DisposeClassPayloads() {
             for (int n = 0; n < handlerStack.Count; n++)
                 handlerStack[n].Dispose();
         }
-
-        internal ClassPayload BeginPayload(TypeMapper classType) {
+        
+        internal ClassPayload PayloadLoad(TypeMapper classType, object obj) {
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper
             return handler;
         }
 
-        internal void ApplyPayload(object obj) {
+        internal void PayloadEnd() {
             --classLevel;
         }
     }

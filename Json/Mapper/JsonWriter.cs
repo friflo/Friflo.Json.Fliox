@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonWriter : IDisposable
+    public partial class JsonWriter : IDisposable
     {
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public readonly     TypeCache   typeCache;
@@ -38,6 +38,7 @@ namespace Friflo.Json.Mapper
         public JsonWriter(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
             maxDepth = 100;
+            useIL = typeStore.typeResolver.GetConfig().useIL;
         }
         
         public void Dispose() {
@@ -47,6 +48,7 @@ namespace Friflo.Json.Mapper
             format.Dispose();
             strBuf.Dispose();
             bytes.Dispose();
+            DisposeClassPayloads();
         }
 
         public void WriteObject(object value) { 

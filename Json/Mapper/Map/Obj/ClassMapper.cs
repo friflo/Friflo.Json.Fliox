@@ -130,6 +130,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
 
             PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
+            ClassPayload payload = writer.PayloadLoad(classMapper, obj);
 
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -138,6 +139,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                     bytes.AppendChar(',');
                 
                 PropField field = fields[n];
+                if (writer.useIL && field.isValueType) {
+                    field.fieldType.WriteField(writer, payload, field);
+                    continue;
+                }                
                 object elemVar = field.GetField(obj);
                 WriteUtils.WriteKey(writer, field);
                 // if (field.fieldType.varType == VarType.Object && elemVar == null) {
@@ -148,6 +153,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     fieldType.WriteObject(writer, elemVar);
                 }
             }
+            writer.PayloadEnd();
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
@@ -201,7 +207,11 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-
+                        if (reader.useIL && field.isValueType) {
+                            if (!fieldType.ReadField(reader, payload, field))
+                                return default;
+                            continue;
+                        }
                         elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
