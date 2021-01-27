@@ -61,8 +61,8 @@ namespace Friflo.Json.Tests.Unity.Utils
             if (DebugUtils.Allocations.Count > 0) {
                 StringBuilder msg = new StringBuilder();
                 foreach (var allocation in DebugUtils.Allocations) {
-                    StackFrame[] frames = allocation.Value.GetFrames();
-                    allocation.Value.GetFrames();
+                    StackFrame[] frames = allocation.Value.stackTrace.GetFrames();
+                    allocation.Value.stackTrace.GetFrames();
                     /* int lastFrameIndex;
                     for (int i = frames.Length - 1; i > 0; i--) {
                         StackFrame frame = frames[i];
