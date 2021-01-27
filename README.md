@@ -4,8 +4,9 @@
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
-An **extra requirement** is to enable the JSON parser/serializer running in a
+An **unique feature** is to enable the JSON parsing / serializing in a
 [Unity Burst Job](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html).  
+As of now no other JSON library provide this possibility.  
 This supports running the parser/serializer within a separate thread of a bursted Job while leaving
 CPU/memory resources to the main thread being the critical path in game loops.
 
