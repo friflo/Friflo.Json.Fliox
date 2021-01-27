@@ -6,11 +6,16 @@ using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.Mapper.Class.IL
 {
+#if UNITY_5_3_OR_NEWER
+
+    // dummy implementations for Unity
+    class IntFieldMapper : IntMapper { public IntFieldMapper(Type type) : base(type) { } }
+    
+#else
 
     // This class is shared via multiple JsonReader / JsonWriter instances which run in various threads.
     // So its must not contain any mutable state.
-    class IntFieldMapper : IntMapper
-    {
+    class IntFieldMapper : IntMapper {
         public IntFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
@@ -22,8 +27,9 @@ namespace Friflo.Json.Mapper.Class.IL
             payload.StoreInt(field.payloadPos, value);
             return success;
         }
-
     }
     
+    
+#endif
     
 }

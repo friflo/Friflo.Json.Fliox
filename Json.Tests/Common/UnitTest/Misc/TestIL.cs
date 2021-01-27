@@ -13,15 +13,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             double dblResult    = BitConverter.Int64BitsToDouble(lng);
             AreEqual(dbl64, dblResult);
             
+#if !UNITY_5_3_OR_NEWER
             float  flt32 = 123.456f;
             int integer        = BitConverter.SingleToInt32Bits(flt32);
             float result32     = BitConverter.Int32BitsToSingle(integer);
             AreEqual(flt32, result32);
-
+#endif
         }
         
+#if !UNITY_5_3_OR_NEWER
         [Test]
         public void CodeGenPatternStoreLoad() {
+            
             var myInstance = new SampleClass();
             // --- store
             long[]  src = { 0, 1, 2, 3, 1, 5, 6 };
@@ -51,6 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
 
             AreEqual(src, dst);
         }
+#endif
     }
 
     public class SampleClass {

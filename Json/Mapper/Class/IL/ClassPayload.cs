@@ -24,6 +24,7 @@ namespace Friflo.Json.Mapper.Class.IL
             data.Dispose();
         }
         
+#if !UNITY_5_3_OR_NEWER
         public void     StoreDbl    (int idx,           double value) {  data.array[layout.fieldPos[idx]] = BitConverter.DoubleToInt64Bits(value); }
         public double   LoadDbl     (int idx) {
             return BitConverter.Int64BitsToDouble(                       data.array[layout.fieldPos[idx]]); }
@@ -46,6 +47,7 @@ namespace Friflo.Json.Mapper.Class.IL
         
         public void     StoreBool   (int idx,            bool value)   { data.array[layout.fieldPos[idx]] = value ? 1 : 0; }
         public bool     LoadBool    (int idx)  { return                  data.array[layout.fieldPos[idx]] != 0; }
+#endif
 
     }
 
