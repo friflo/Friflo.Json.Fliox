@@ -59,16 +59,16 @@ namespace Friflo.Json.Mapper.Class
         private void CreatePropField (String name, String fieldName)
         {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
-            PropertyInfo getter = Reflect.GetPropertyGet(type, fieldName );
+            PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
             if (getter != null)
             {
-                PropertyInfo setter = Reflect.GetPropertySet(type, fieldName );
+                PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
                 PropField pf = new PropField(name, getter.PropertyType, null, getter, setter);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
-            FieldInfo field = Reflect.GetField(type, fieldName );
+            FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
                 PropField pf = new PropField(name, field.FieldType,     field, null, null);
                 fieldList. Add (pf);

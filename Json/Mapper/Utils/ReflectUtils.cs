@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Friflo.Json.Mapper.Utils
 {
     // Reflect
-    public static class Reflect
+    public static class ReflectUtils
     {
         // GetField
         public static FieldInfo GetField (Type type, String name)
@@ -235,7 +235,7 @@ namespace Friflo.Json.Mapper.Utils
         // GetMethodEx
         public static MethodInfo GetMethodEx (Type type, String method, Type[] types)
         {
-            MethodInfo[] methods = Reflect.GetMethods(type);
+            MethodInfo[] methods = ReflectUtils.GetMethods(type);
             for (int n = 0; n < methods. Length; n++)
             {
                 MethodInfo m = methods[n];

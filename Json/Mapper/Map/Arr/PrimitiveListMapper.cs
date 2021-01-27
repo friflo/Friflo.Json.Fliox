@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
                 return Find(type, elementType);
@@ -69,9 +69,9 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (typeof(T) != elementType)
                 return false;
             
-            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (constructor == null)
-                constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
+                constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
             //  new PrimitiveListMapper<T> (type, constructor);
             object[] constructorParams = { type, constructor };
             query.hit = (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveListMapper<>), new[] {elementType}, constructorParams);

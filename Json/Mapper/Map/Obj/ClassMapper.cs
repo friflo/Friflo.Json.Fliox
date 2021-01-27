@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (EnumMatcher.IsEnum(type, out bool _))
                 return null;
            
-            ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
                 object[] constructorParams = {type, constructor};
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams); // new ClassMapper<T>(type, constructor);
@@ -95,7 +95,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return Activator.CreateInstance(type);
                 throw new FrifloException("No default constructor available for: " + type.Name);
             }
-            return Reflect.CreateInstance(constructor);
+            return ReflectUtils.CreateInstance(constructor);
         }
 
         public override PropField GetField (ref Bytes fieldName) {

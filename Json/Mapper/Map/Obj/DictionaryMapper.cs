@@ -16,15 +16,15 @@ namespace Friflo.Json.Mapper.Map.Obj
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args != null) {
                 Type keyType = args[0];
                 if (keyType != typeof(string)) // Support only Dictionary with key type: string
                     return TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Dictionary only support string as key type");
                 Type elementType = args[1];
-                ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+                ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
                 if (constructor == null)
-                    constructor = Reflect.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
+                    constructor = ReflectUtils.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
                 object[] constructorParams = {type, constructor};
                 // return new DictionaryMapper<object>  (type, constructor);
                 var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<>), new[] {elementType}, constructorParams);

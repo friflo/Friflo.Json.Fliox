@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map
         
         public override Object CreateInstance ()
         {
-            return Reflect.CreateInstance(constructor);
+            return ReflectUtils.CreateInstance(constructor);
         }
     }
 }

@@ -16,12 +16,12 @@ namespace Friflo.Json.Mapper.Map.Arr
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( IList<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
-                ConstructorInfo constructor = Reflect.GetDefaultConstructor(type);
+                ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
                 if (constructor == null)
-                    constructor = Reflect.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
+                    constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
                 object[] constructorParams = {type, elementType, constructor};
                 // new ListMapper<object>  (type, elementType, constructor);

@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Class
 
         private static MethodInfo GetPropertiesDeclaration (Type type)
         {
-            return Reflect.GetMethodEx(type, "SetProperties", Types);
+            return ReflectUtils.GetMethodEx(type, "SetProperties", Types);
         }
 
         internal void SetProperties (Type type)
@@ -31,15 +31,15 @@ namespace Friflo.Json.Mapper.Class
                 if (method != null)
                 {
                     Object[] args = new Object[] { this };
-                    Reflect.Invoke (method, null, args);
+                    ReflectUtils.Invoke (method, null, args);
                 }
                 else
                 {
-                    PropertyInfo[] properties = Reflect.GetProperties(type);
+                    PropertyInfo[] properties = ReflectUtils.GetProperties(type);
                     for (int n = 0; n < properties. Length; n++)
                         Set(properties[n]. Name);
 
-                    FieldInfo[] field = Reflect.GetFields(type);
+                    FieldInfo[] field = ReflectUtils.GetFields(type);
                     for (int n = 0; n < field. Length; n++)
                         Set(field[n]. Name);
                 }

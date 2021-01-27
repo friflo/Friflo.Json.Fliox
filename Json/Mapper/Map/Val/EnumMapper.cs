@@ -23,7 +23,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public static bool IsEnum(Type type, out bool isNullable) {
             isNullable = false;
             if (!type.IsEnum) {
-                Type[] args = Reflect.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
+                Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( Nullable<>) );
                 if (args == null)
                     return false;
                 Type nullableType = args[0];
