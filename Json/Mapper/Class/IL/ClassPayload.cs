@@ -11,8 +11,8 @@ namespace Friflo.Json.Mapper.Class.IL
     public class ClassPayload : IDisposable
     {
         // payload size changes, depending on which class is used at the current classLevel
-        internal readonly ValueList<byte> data = new ValueList<byte>(32, AllocType.Persistent);
-        
+        internal    ValueList<byte> data = new ValueList<byte>(32, AllocType.Persistent);
+
         public ClassPayload () { }
         
         public void Dispose() {

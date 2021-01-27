@@ -11,12 +11,11 @@ namespace Friflo.Json.Mapper
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     partial class JsonReader
     {
-        private readonly    List<ClassPayload>  handlerStack = new List<ClassPayload>(16);
-        private             int                 classLevel;
-        internal readonly   bool                useIL;
+        private  readonly   List<ClassPayload>      handlerStack = new List<ClassPayload>(16);
+        private             int                     classLevel;
+        internal readonly   bool                    useIL;
 
         internal ClassPayload BeginPayload(TypeMapper classType) {
-            return null;
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
