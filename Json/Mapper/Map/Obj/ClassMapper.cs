@@ -195,12 +195,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (reader.useIL && field.isValueType) {
                             if (!fieldType.ReadField(reader, payload, field))
                                 return default;
-                            goto NextEvent;
+                        } else {
+                            elemVar = fieldType.ReadObject(reader, null, out success);
+                            if (!success)
+                                return default;
+                            field.SetField(obj, elemVar); // set also to null in error case
                         }
-                        elemVar = fieldType.ReadObject(reader, null, out success);
-                        if (!success)
-                            return default;
-                        field.SetField(obj, elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
@@ -211,12 +211,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (reader.useIL && field.isValueType) {
                             if (!fieldType.ReadField(reader, payload, field))
                                 return default;
-                            goto NextEvent;
+                        } else {
+                            elemVar = fieldType.ReadObject(reader, null, out success);
+                            if (!success)
+                                return default;
+                            field.SetField(obj, elemVar); // set also to null in error case
                         }
-                        elemVar = fieldType.ReadObject(reader, null, out success);
-                        if (!success)
-                            return default;
-                        field.SetField(obj, elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = GetField(reader, classType)) == null)
@@ -261,7 +261,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                     default:
                         return ReadUtils.ErrorMsg<T>(reader, "unexpected state: ", ev, out success);
                 }
-            NextEvent:
                 ev = parser.NextEvent();
             }
         }
