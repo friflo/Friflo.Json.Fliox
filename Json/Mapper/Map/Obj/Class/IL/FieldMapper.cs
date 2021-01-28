@@ -19,11 +19,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class IntFieldMapper : IntMapper {
         public IntFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField(JsonWriter writer, ref ClassPayload payload, PropField field) {
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
             Write(writer, payload.LoadInt(field.payloadPos));
         }
 
-        public override bool ReadField (JsonReader reader, ref ClassPayload payload, PropField field) {
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
             payload.StoreInt(field.payloadPos, value);
             return success;

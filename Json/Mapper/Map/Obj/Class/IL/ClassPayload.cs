@@ -13,20 +13,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     /// 1. Load the fields of a class instance into the <see cref="data"/> array.
     /// 2. Store the "instances fields" represented by the <see cref="data"/> array to the fields of a given class instance.
     ///  
-    /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
-    ///
-    /// Is a struct to avoid callvirt. Could be class also, if it contains too many members to avoid big copies.
+    /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe. 
     /// </summary>
-    public struct ClassPayload : IDisposable
+    public class ClassPayload : IDisposable
     {
         // payload size changes, depending on which class is used at the current classLevel
-        private     ValueList<long>     data;
+        private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
-
-        public ClassPayload(Default _) {
-            data    = new ValueList<long>(8, AllocType.Persistent);
-            layout  = new ClassLayout();
-        }
 
         public void LoadInstance(TypeMapper classType) {
             layout = classType.GetClassLayout();

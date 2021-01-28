@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Class.IL;
 
@@ -22,16 +21,16 @@ namespace Friflo.Json.Mapper
         }
         
         /// <summary> Load the fields of a class instance into the <see cref="ClassPayload.data"/> array. </summary>
-        internal static ClassPayload InstanceLoad(JsonWriter writer, TypeMapper classType, object obj) {
-            if (writer.classLevel >= writer.handlerStack.Count)
-                writer.handlerStack.Add(new ClassPayload(Default.Constructor));
-            ClassPayload payload = writer.handlerStack[writer.classLevel++];
-            payload.LoadInstance(classType);
-            return payload;
+        internal ClassPayload InstanceLoad(TypeMapper classType, object obj) {
+            if (classLevel >= handlerStack.Count)
+                handlerStack.Add(new ClassPayload());
+            var handler = handlerStack[classLevel++];
+            handler.LoadInstance(classType);
+            return handler;
         }
 
-        internal static void InstancePop(JsonWriter writer) {
-            --writer.classLevel;
+        internal void InstancePop() {
+            --classLevel;
         }
     }
 }
