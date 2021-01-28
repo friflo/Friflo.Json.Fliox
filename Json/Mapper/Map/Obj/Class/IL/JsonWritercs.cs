@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());
             var handler = handlerStack[classLevel++];
-            handler.LoadInstance(classType);
+            handler.LoadInstance(classType, obj);
             return handler;
         }
 

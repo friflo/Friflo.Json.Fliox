@@ -178,7 +178,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassPayload payload = reader.InstanceLoad(classType);
+            ClassPayload payload = reader.InstanceLoad(classType, obj);
 
             while (true) {
                 object elemVar;
@@ -250,7 +250,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
-                        reader.InstanceStore(obj);
+                        reader.InstanceStore(payload, obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

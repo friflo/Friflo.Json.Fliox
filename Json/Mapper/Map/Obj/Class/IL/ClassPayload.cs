@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq.Expressions;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
@@ -21,9 +22,16 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
-        public void LoadInstance(TypeMapper classType) {
+        public void LoadInstance(TypeMapper classType, object obj) {
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
+            // call load instance expression delegate
+            
+        }
+        
+        public void StoreInstance(object obj) {
+            // call store instance expression delegate
+            
         }
         
         public void Dispose() {
@@ -72,7 +80,27 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             }
             size       = count;
             fieldPos   = tempPos;
+            
+            // create load/store instance expression
+            
         }
+        
+        /*
+        public static Expression<Func<T, bool>> LoadInstance<T>(long[] dst, object src) {
+            var type = src.GetType();
+            var member = Expression.Parameter(type, "param");
+            var memberExpression = Expression.PropertyOrField( member, fieldName);
+            var targetMethod = memberExpression.Type.GetMethod( "IndexOf", new Type[] { typeof(string), typeof(StringComparison) } );
+            var methodCallExpression = Expression.Call( memberExpression, targetMethod, Expression.Constant(val), Expression.Constant( StringComparison.CurrentCultureIgnoreCase ) );
+
+            return Expression.Lambda<Func<T, bool>>( 
+                Expression.AndAlso(
+                    Expression.NotEqual(memberExpression, Expression.Constant(null)), 
+                    Expression.GreaterThanOrEqual( methodCallExpression, Expression.Constant(0) )
+                ), 
+                member
+            );
+        } */
     }
 
 }
