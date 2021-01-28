@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
@@ -26,7 +27,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
             
-            // layout.loadObjectToPayload(data.array, obj);
+            layout.loadObjectToPayload(data.array, obj);
         }
         
         public void StoreInstance(object obj) {
@@ -66,10 +67,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
     public readonly struct ClassLayout
     {
-        internal readonly int       size;
-        internal readonly int[]     fieldPos;
+        internal readonly int   size;
+        internal readonly int[] fieldPos;
 
-        internal readonly Func<long[], object, object> loadObjectToPayload;
 
         internal ClassLayout(Type type, PropertyFields  propFields) {
             var fields = propFields.fields;
@@ -84,32 +84,38 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             
             // create load/store instance expression
 
-            var loadExpr = LoadInstanceExpression(propFields, type);
-            loadObjectToPayload = loadExpr.Compile();
+            var lambda = LoadInstanceExpression(propFields, type);
+            loadObjectToPayload = lambda.Compile();
         }
 
-        public static Expression<Func<long[], object, object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
-            var dstArrayParam   = Expression.Parameter(typeof(long[]), "dst");              // parameter: long[] dst
-            var srcObjectParam  = Expression.Parameter(typeof(object), "src");              // parameter: object src;
+        internal readonly Action<long[], object>  loadObjectToPayload;
+
+
+        private static Expression<Action<long[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
+            var dst         = Expression.Parameter(typeof(long[]), "dst");      // parameter: long[] dst
+            var src         = Expression.Parameter(typeof(object), "src");      // parameter: object src;
             
-            var srcTyped        = Expression.Convert(srcObjectParam, type);                 // <Type> srcTyped = (Type)src;
-            
+            var srcTyped    = Expression.Convert(src, type);                    // <Type> srcTyped = (<Type>)src;
+
+            var assignmentList = new List<BinaryExpression>();
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
                 if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
                     continue;
                 
-                var memberVal   = Expression.PropertyOrField(srcTyped, field.name);         // memberVal = srcTyped.<field.name>;
-                var longVal     = Expression.Convert(memberVal, typeof(long));              // longVal   = (long)memberVal; 
+                var memberVal   = Expression.PropertyOrField(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
+                var longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal; 
                 
-                var arrayIndex  = Expression.Constant(n, typeof(int));                      // int arrayIndex = <field index>;
-                var dstElement  = Expression.ArrayAccess(dstArrayParam, arrayIndex);        // ref dstElement = ref dst[arrayIndex];
+                var arrayIndex  = Expression.Constant(n, typeof(int));              // int arrayIndex = <field index>;
+                var dstElement  = Expression.ArrayAccess(dst, arrayIndex);          // ref dstElement = ref dst[arrayIndex];
 
-                Expression.Assign(dstElement, longVal);                                     // dstElement = longVal;
+                var dstAssign   = Expression.Assign(dstElement, longVal);           // dstElement = longVal;
+                assignmentList.Add(dstAssign);
             }
-
-            // Echo srcObject to enable using an expression instead of a statement
-            return Expression.Lambda<Func<long[], object, object>>(srcObjectParam, dstArrayParam, srcObjectParam);
+            var assignmentsBlock = Expression.Block(assignmentList);
+            
+            var lambda = Expression.Lambda<Action<long[], object>> (assignmentsBlock, dst, src);
+            return lambda;
         }
     }
 

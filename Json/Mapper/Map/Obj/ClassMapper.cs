@@ -137,14 +137,14 @@ namespace Friflo.Json.Mapper.Map.Obj
                     firstMember = false;
                 else
                     bytes.AppendChar(',');
-                
                 PropField field = fields[n];
+                WriteUtils.WriteKey(writer, field);
+                
                 if (writer.useIL && field.isValueType) {
                     field.fieldType.WriteField(writer, payload, field);
                     continue;
                 }                
                 object elemVar = field.GetField(obj);
-                WriteUtils.WriteKey(writer, field);
                 // if (field.fieldType.varType == VarType.Object && elemVar == null) {
                 if (elemVar == null) {
                     WriteUtils.AppendNull(writer);

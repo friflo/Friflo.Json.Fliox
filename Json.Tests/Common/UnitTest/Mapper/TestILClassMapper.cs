@@ -1,6 +1,7 @@
 ﻿using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -25,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 var sample = new SampleIL();
                 writer.Write(sample);
-
+                AreEqual("{\"key\":11}", writer.Output.ToString());
             }
         }  
     }
