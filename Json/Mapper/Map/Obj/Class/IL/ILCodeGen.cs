@@ -35,7 +35,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
                     continue;
                 
-                var memberVal   = Exp.PropertyOrField(srcTyped, field.name);    // memberVal = srcTyped.<field.name>;
+                MemberExpression memberVal;
+                if (field.field != null)
+                    memberVal   = Exp.Field(   srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
+                else
+                    memberVal   = Exp.Property(srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
                 
                 Expression longVal;
                 if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
@@ -99,9 +103,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 }
                 else
                     throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
-                
-                 
-                var dstMember   = Exp.PropertyOrField(dstTyped, field.name);    // ref dstMember = ref dstTyped.<field.name>;
+
+                MemberExpression dstMember;
+                if (field.field != null)
+                    dstMember   = Exp.Field   (dstTyped, field.name);           // ref dstMember = ref dstTyped.<field.name>;
+                else
+                    dstMember   = Exp.Property(dstTyped, field.name);           // ref dstMember = ref dstTyped.<field.name>;
 
                 var dstAssign   = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
                 assignmentList.Add(dstAssign);

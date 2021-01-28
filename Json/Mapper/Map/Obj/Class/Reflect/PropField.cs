@@ -22,9 +22,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         internal readonly   Type            fieldTypeNative;    // never null 
         internal            Bytes           nameBytes;          // dont mutate
         //
-        private readonly    FieldInfo       field;
-        private readonly    PropertyInfo    getter;
-        private readonly    PropertyInfo    setter;
+        internal readonly   FieldInfo       field;
+        private  readonly   PropertyInfo    getter;
+        private  readonly   PropertyInfo    setter;
 
         internal PropField (String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter, int fieldIndex)
         {
