@@ -84,11 +84,16 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             
             // create load/store instance expression
 
-            var lambda = LoadInstanceExpression(propFields, type);
-            loadObjectToPayload = lambda.Compile();
+            var loadLambda = LoadInstanceExpression(propFields, type);
+            loadObjectToPayload = loadLambda.Compile();
+            
+            // var storeLambda = StoreInstanceExpression(propFields, type);
+            // storePayloadToObject = storeLambda.Compile();
         }
 
-        internal readonly Action<long[], object>  loadObjectToPayload;
+        internal readonly Action<long[], object>  loadObjectToPayload; 
+    //  internal readonly Action<object, long[]>  storePayloadToObject;
+
 
         // Nice Blog about expression trees:
         // [Working with Expression Trees in C# | Alexey Golub] https://tyrrrz.me/blog/expression-trees
@@ -109,7 +114,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 var longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal; 
                 
                 var arrayIndex  = Expression.Constant(n, typeof(int));              // int arrayIndex = <field index>;
-                var dstElement  = Expression.ArrayAccess(dst, arrayIndex);          // ref dstElement = ref dst[arrayIndex];
+                var dstElement  = Expression.ArrayAccess(dst, arrayIndex);          // ref long[] dstElement = ref dst[arrayIndex];
 
                 var dstAssign   = Expression.Assign(dstElement, longVal);           // dstElement = longVal;
                 assignmentList.Add(dstAssign);
@@ -119,6 +124,35 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var lambda = Expression.Lambda<Action<long[], object>> (assignmentsBlock, dst, src);
             return lambda;
         }
+        
+
+        private static Expression<Action<object, long[]>> StoreInstanceExpression (PropertyFields propFields, Type type) {
+            var dst         = Expression.Parameter(typeof(object), "dst");      // parameter: long[] dst
+            var src         = Expression.Parameter(typeof(long[]), "src");      // parameter: object src;
+            
+            var dstTyped    = Expression.Convert(dst, type);                    // <Type> dstTyped = (<Type>)dst;
+
+            var assignmentList = new List<BinaryExpression>();
+            for (int n = 0; n < propFields.fields.Length; n++) {
+                PropField field = propFields.fields[n];
+                if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
+                    continue;
+                
+                var arrayIndex  = Expression.Constant(n, typeof(int));                  // int arrayIndex = <field index>;
+                var srcElement  = Expression.ArrayAccess(src, arrayIndex);              // ref long[] srcElement = ref src[arrayIndex];
+                
+                var srcTyped    = Expression.Convert(srcElement, field.fieldTypeNative);// srcTyped  = (<Field Type>)srcElement; 
+                var dstMember   = Expression.PropertyOrField(dstTyped, field.name);     // ref dstMember = ref dstTyped.<field.name>;
+
+                var dstAssign   = Expression.Assign(dstMember, srcTyped);               // dstMember = srcTyped;
+                assignmentList.Add(dstAssign);
+            }
+            var assignmentsBlock = Expression.Block(assignmentList);
+            
+            var lambda = Expression.Lambda<Action<object, long[]>> (assignmentsBlock, dst, src);
+            return lambda;
+        }
+
     }
 
 }
