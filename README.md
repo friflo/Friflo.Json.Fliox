@@ -71,12 +71,14 @@ CPU/memory resources to the main thread being the critical path in game loops.
   [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
   in the parser implementation.  
 
-  In short this is the absense of using the heap in any way.
+  In short this is the absense of using managed objects in any way.
   This exclude the usage of managed types like classes, strings, arrays or exceptions.  
   To support this subset the library need to be compiled with `JSON_BURST`.  
-  The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
+  The default / CLR implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
-- Used .NET API namespaces: `System`, `System.Text` .Encoding.UTF8 & `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
+- Used .NET API namespaces:
+  `System`, `System.Text` .Encoding.UTF8 &
+  `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
 
 
 
