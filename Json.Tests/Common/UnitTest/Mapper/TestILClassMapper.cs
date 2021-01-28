@@ -69,9 +69,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             string payloadStr = $@"
 {{
     ""dbl"":   22.5,
-    ""int64"": 10,
-
     ""flt"":   33.5,
+
+    ""int64"": 10,
     ""int32"": 11,
     ""int16"": 12,
     ""int8"":  13,
