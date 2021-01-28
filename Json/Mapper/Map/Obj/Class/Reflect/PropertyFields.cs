@@ -63,14 +63,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (getter != null)
             {
                 PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
-                PropField pf = new PropField(name, getter.PropertyType, null, getter, setter);
+                PropField pf = new PropField(name, getter.PropertyType, null, getter, setter, fieldList.Count);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = new PropField(name, field.FieldType,     field, null, null);
+                PropField pf = new PropField(name, field.FieldType,     field, null, null, fieldList.Count);
                 fieldList. Add (pf);
                 return;
             }

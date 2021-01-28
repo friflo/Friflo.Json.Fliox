@@ -7,10 +7,10 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
-        public int int64 = 10;
-        // public int int32 = 11;
-        // public int int16 = 12;
-        // public int int8  = 13;
+        public long     int64 = 10;
+        public int      int32 = 11;
+        public short    int16 = 12;
+        public byte     int8  = 13;
     }
     
     public class TestILClassMapper
@@ -20,7 +20,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
-    ""int64"": 10
+    ""int64"": 10,
+    ""int32"": 11,
+    ""int16"": 12,
+    ""int8"":  13
 }}
 ";
             string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
