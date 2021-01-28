@@ -90,8 +90,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             if (config.useIL) {
                 var loadLambda = LoadInstanceExpression(propFields, type);
                 load  = loadLambda.Compile();
-                // var storeLambda = StoreInstanceExpression(propFields, type);
-                // store = storeLambda.Compile();
+                
+                var storeLambda = StoreInstanceExpression(propFields, type);
+                store = storeLambda.Compile();
             }
             loadObjectToPayload  = load;
             storePayloadToObject = store;
@@ -123,7 +124,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
                     longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal;
                 } else if (fieldType == typeof(bool)) {
-                    longVal = Expression.Condition(memberVal, Expression.Constant(1L), Expression.Constant(0L));
+                    longVal     = Expression.Condition(memberVal, Expression.Constant(1L), Expression.Constant(0L)); // longVal   = memberVal ? 1 : 0;
                 } else if (fieldType == typeof(double)) {
                     
                 } else if (fieldType == typeof(float)) {
@@ -154,13 +155,27 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var assignmentList = new List<BinaryExpression>();
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
+                Type fieldType  = field.fieldTypeNative; 
                 if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
                     continue;
                 
                 var arrayIndex  = Expression.Constant(n, typeof(int));                  // int arrayIndex = <field index>;
                 var srcElement  = Expression.ArrayAccess(src, arrayIndex);              // ref long[] srcElement = ref src[arrayIndex];
+                Expression srcTyped = null;
+                if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
+                    srcTyped    = Expression.Convert(srcElement, field.fieldTypeNative);// srcTyped  = (<Field Type>)srcElement;
+                } else if (fieldType == typeof(bool)) {
+                    var not0    = Expression.NotEqual(srcElement, Expression.Constant(0L));
+                    srcTyped    = Expression.Condition(not0, Expression.Constant(true), Expression.Constant(false)); // srcTyped   = srcElement != 0;
+                } else if (fieldType == typeof(double)) {
+                    
+                } else if (fieldType == typeof(float)) {
+                    
+                }
+                else
+                    throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
                 
-                var srcTyped    = Expression.Convert(srcElement, field.fieldTypeNative);// srcTyped  = (<Field Type>)srcElement; 
+                 
                 var dstMember   = Expression.PropertyOrField(dstTyped, field.name);     // ref dstMember = ref dstTyped.<field.name>;
 
                 var dstAssign   = Expression.Assign(dstMember, srcTyped);               // dstMember = srcTyped;
