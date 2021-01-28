@@ -74,6 +74,20 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
     }
     
+    class BoolFieldMapper : BoolMapper {
+        public BoolFieldMapper(Type type) : base(type) { }
+        
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
+            Write(writer, payload.LoadBool(field.fieldIndex));
+        }
+
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
+            var value = Read(reader, false, out bool success);
+            payload.StoreBool(field.fieldIndex, value);
+            return success;
+        }
+    }
+    
     
 #endif
     

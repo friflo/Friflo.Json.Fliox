@@ -11,6 +11,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public int      int32 = 11;
         public short    int16 = 12;
         public byte     int8  = 13;
+        
+        public bool     bln   = true;
+
     }
     
     public class TestILClassMapper
@@ -23,7 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""int64"": 10,
     ""int32"": 11,
     ""int16"": 12,
-    ""int8"":  13
+    ""int8"":  13,
+    ""bln"":   true
 }}
 ";
             string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));

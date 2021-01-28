@@ -84,15 +84,21 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             
             // create load/store instance expression
 
-            var loadLambda = LoadInstanceExpression(propFields, type);
-            loadObjectToPayload  = config.useIL ? loadLambda.Compile() : null;
-
-            // var storeLambda = StoreInstanceExpression(propFields, type);
-            // storePayloadToObject = config.useIL ? storeLambda.Compile() : null;
+            Action<long[], object> load = null;
+            Action<object, long[]> store = null;
+            
+            if (config.useIL) {
+                var loadLambda = LoadInstanceExpression(propFields, type);
+                load  = loadLambda.Compile();
+                // var storeLambda = StoreInstanceExpression(propFields, type);
+                // store = storeLambda.Compile();
+            }
+            loadObjectToPayload  = load;
+            storePayloadToObject = store;
         }
 
         internal readonly Action<long[], object>  loadObjectToPayload; 
-        // internal readonly Action<object, long[]>  storePayloadToObject;
+        internal readonly Action<object, long[]>  storePayloadToObject;
 
 
         // Nice Blog about expression trees:
@@ -107,12 +113,25 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var assignmentList = new List<BinaryExpression>();
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
+                Type fieldType  = field.fieldTypeNative; 
                 if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
                     continue;
                 
                 var memberVal   = Expression.PropertyOrField(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
-                var longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal; 
                 
+                Expression longVal = null;
+                if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
+                    longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal;
+                } else if (fieldType == typeof(bool)) {
+                    longVal = Expression.Condition(memberVal, Expression.Constant(1L), Expression.Constant(0L));
+                } else if (fieldType == typeof(double)) {
+                    
+                } else if (fieldType == typeof(float)) {
+                    
+                }
+                else
+                    throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
+
                 var arrayIndex  = Expression.Constant(n, typeof(int));              // int arrayIndex = <field index>;
                 var dstElement  = Expression.ArrayAccess(dst, arrayIndex);          // ref long[] dstElement = ref dst[arrayIndex];
 

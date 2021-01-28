@@ -255,7 +255,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(byte))
-                return config.useIL ? new ByteFieldMapper(type) :new ByteMapper (type); 
+                return config.useIL ? new ByteFieldMapper(type) : new ByteMapper (type); 
             if (type == typeof(byte?))
                 return new NullableByteMapper(type);
             return null;
@@ -298,7 +298,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(bool))
-                return new BoolMapper (type);
+                return config.useIL ? new BoolFieldMapper(type) : new BoolMapper (type);
             if (type == typeof(bool?))
                 return new NullableBoolMapper (type);
             return null;
