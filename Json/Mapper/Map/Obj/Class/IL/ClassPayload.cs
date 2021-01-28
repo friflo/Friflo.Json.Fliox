@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         public void StoreInstance(object obj) {
-            // call store instance expression delegate
+            layout.storePayloadToObject(obj, data.array);
         }
         
         public void Dispose() {

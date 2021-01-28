@@ -195,7 +195,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (reader.useIL && field.isValueType) {
                             if (!fieldType.ReadField(reader, payload, field))
                                 return default;
-                            continue;
+                            goto NextEvent;
                         }
                         elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
@@ -211,7 +211,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (reader.useIL && field.isValueType) {
                             if (!fieldType.ReadField(reader, payload, field))
                                 return default;
-                            continue;
+                            goto NextEvent;
                         }
                         elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
@@ -261,6 +261,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     default:
                         return ReadUtils.ErrorMsg<T>(reader, "unexpected state: ", ev, out success);
                 }
+            NextEvent:
                 ev = parser.NextEvent();
             }
         }
