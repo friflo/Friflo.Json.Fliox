@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
             Action<long[], object> load = null;
             Action<object, long[]> store = null;
-            
+#if !UNITY_5_3_OR_NEWER
             if (config.useIL) {
                 var loadLambda = ILCodeGen.LoadInstanceExpression(propFields, type);
                 load  = loadLambda.Compile();
@@ -96,6 +96,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 var storeLambda = ILCodeGen.StoreInstanceExpression(propFields, type);
                 store = storeLambda.Compile();
             }
+#endif
             loadObjectToPayload  = load;
             storePayloadToObject = store;
         }

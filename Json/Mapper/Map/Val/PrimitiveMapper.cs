@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(double))
-                return new DoubleMapper (type);
+                return config.useIL ? new DoubleFieldMapper(type) : new DoubleMapper (type);
             if (type == typeof(double?))
                 return new NullableDoubleMapper (type);
             return null;
@@ -87,7 +87,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(float))
-                return new FloatMapper (type); 
+                return config.useIL ? new FloatFieldMapper(type) : new FloatMapper (type); 
             if (type == typeof(float?))
                 return new NullableFloatMapper (type); 
             return null;

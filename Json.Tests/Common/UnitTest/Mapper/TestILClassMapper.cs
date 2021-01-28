@@ -10,6 +10,9 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
+        public double   dbl;
+        // public float    flt;
+        
         public long     int64;
         public int      int32;
         public short    int16;
@@ -18,6 +21,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool     bln;
 
         public void Init() {
+            dbl   = 22.5d;
+            // flt   = 33.5f;
+            
             int64 = 10;
             int32 = 11;
             int16 = 12;
@@ -33,6 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
+    ""dbl"":   22.5,
     ""int64"": 10,
     ""int32"": 11,
     ""int16"": 12,
@@ -58,6 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
+    ""dbl"":   22.5,
     ""int64"": 10,
     ""int32"": 11,
     ""int16"": 12,
@@ -74,6 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var result = reader.Read<SampleIL>(json);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
+                
+                AreEqual(22.5,  result.dbl);
+                // AreEqual(33.5,  result.flt);
                 
                 AreEqual(10,    result.int64);
                 AreEqual(11,    result.int32);

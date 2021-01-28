@@ -22,6 +22,34 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
     // All field mapper classes are shared via multiple JsonReader / JsonWriter instances which run in various threads.
     // So they must not contain any mutable state.
+    
+    class DoubleFieldMapper : DoubleMapper {
+        public DoubleFieldMapper(Type type) : base(type) { }
+        
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
+            Write(writer, payload.LoadDbl(field.fieldIndex));
+        }
+
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
+            var value = Read(reader, 0, out bool success);
+            payload.StoreDbl(field.fieldIndex, value);
+            return success;
+        }
+    }
+    
+    class FloatFieldMapper : FloatMapper {
+        public FloatFieldMapper(Type type) : base(type) { }
+        
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
+            Write(writer, payload.LoadFlt(field.fieldIndex));
+        }
+
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
+            var value = Read(reader, 0, out bool success);
+            payload.StoreFlt(field.fieldIndex, value);
+            return success;
+        }
+    }
 
     class LongFieldMapper : LongMapper {
         public LongFieldMapper(Type type) : base(type) { }

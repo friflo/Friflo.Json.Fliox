@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+#if !UNITY_5_3_OR_NEWER
+
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -21,6 +23,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var src         = Expression.Parameter(typeof(object), "src");      // parameter: object src;
             
             var srcTyped    = Expression.Convert(src, type);                    // <Type> srcTyped = (<Type>)src;
+            
+            var doubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
+            var singleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
             var assignmentList = new List<BinaryExpression>();
             for (int n = 0; n < propFields.fields.Length; n++) {
@@ -37,9 +42,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 } else if (fieldType == typeof(bool)) {
                     longVal     = Expression.Condition(memberVal, Expression.Constant(1L), Expression.Constant(0L)); // longVal   = memberVal ? 1 : 0;
                 } else if (fieldType == typeof(double)) {
-                    
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    longVal     = Expression.Call(doubleToInt64Bits, memberVal);
                 } else if (fieldType == typeof(float)) {
-                    
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    longVal     = Expression.Call(singleToInt32Bits, memberVal);
                 }
                 else
                     throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
@@ -61,6 +68,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var src         = Expression.Parameter(typeof(long[]), "src");      // parameter: object src;
             
             var dstTyped    = Expression.Convert(dst, type);                    // <Type> dstTyped = (<Type>)dst;
+            
+            var int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
+            var int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
             var assignmentList = new List<BinaryExpression>();
             for (int n = 0; n < propFields.fields.Length; n++) {
@@ -78,9 +88,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     var not0    = Expression.NotEqual(srcElement, Expression.Constant(0L));
                     srcTyped    = Expression.Condition(not0, Expression.Constant(true), Expression.Constant(false)); // srcTyped   = srcElement != 0;
                 } else if (fieldType == typeof(double)) {
-                    
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    srcTyped    = Expression.Call(int64BitsToDouble, srcElement);
                 } else if (fieldType == typeof(float)) {
-                    
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    srcTyped    = Expression.Call(int32BitsToSingle, srcElement);
                 }
                 else
                     throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
@@ -98,3 +110,5 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
     }
 }
+
+#endif
