@@ -17,30 +17,27 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     /// </summary>
     public class ClassPayload : IDisposable
     {
+
+#if !UNITY_5_3_OR_NEWER
         // payload size changes, depending on which class is used at the current classLevel
         private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
         public void LoadInstance(TypeMapper classType, object obj) {
-#if !UNITY_5_3_OR_NEWER
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
             
             layout.loadObjectToPayload(data.array, obj);
-#endif
         }
         
         public void StoreInstance(object obj) {
-#if !UNITY_5_3_OR_NEWER
             layout.storePayloadToObject(obj, data.array);
-#endif
         }
         
         public void Dispose() {
             data.Dispose();
         }
         
-#if !UNITY_5_3_OR_NEWER
         public void     StoreDbl    (int idx,           double value) {  data.array[idx] = BitConverter.DoubleToInt64Bits(value); }
         public double   LoadDbl     (int idx) {
             return BitConverter.Int64BitsToDouble(                       data.array[idx]); }
@@ -63,12 +60,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         
         public void     StoreBool   (int idx,            bool value)   { data.array[idx] = value ? 1 : 0; }
         public bool     LoadBool    (int idx)  { return                  data.array[idx] != 0; }
+#else
+        // Unity dummies
+        public void LoadInstance(TypeMapper classType, object obj) {}
+        public void StoreInstance(object obj) {}
+        public void Dispose() {}
 #endif
-
     }
 
     public readonly struct ClassLayout
     {
+#if !UNITY_5_3_OR_NEWER
         internal readonly int   size;
 
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
@@ -79,7 +81,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
             Action<long[], object> load = null;
             Action<object, long[]> store = null;
-#if !UNITY_5_3_OR_NEWER
             if (config.useIL) {
                 var loadLambda = ILCodeGen.LoadInstanceExpression(propFields, type);
                 load  = loadLambda.Compile();
@@ -87,12 +88,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 var storeLambda = ILCodeGen.StoreInstanceExpression(propFields, type);
                 store = storeLambda.Compile();
             }
-#endif
             loadObjectToPayload  = load;
             storePayloadToObject = store;
         }
 
         internal readonly Action<long[], object>  loadObjectToPayload; 
         internal readonly Action<object, long[]>  storePayloadToObject;
+#else
+        internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) { }
+#endif
     }
 }
