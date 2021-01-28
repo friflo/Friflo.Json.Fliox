@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal readonly int[] fieldPos;
 
 
-        internal ClassLayout(Type type, PropertyFields  propFields) {
+        internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
             var fields = propFields.fields;
             int count = 0;
             int[] tempPos = new int[fields.Length]; 
@@ -85,14 +85,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             // create load/store instance expression
 
             var loadLambda = LoadInstanceExpression(propFields, type);
-            loadObjectToPayload = loadLambda.Compile();
-            
+            loadObjectToPayload  = config.useIL ? loadLambda.Compile() : null;
+
             // var storeLambda = StoreInstanceExpression(propFields, type);
-            // storePayloadToObject = storeLambda.Compile();
+            // storePayloadToObject = config.useIL ? storeLambda.Compile() : null;
         }
 
         internal readonly Action<long[], object>  loadObjectToPayload; 
-    //  internal readonly Action<object, long[]>  storePayloadToObject;
+        // internal readonly Action<object, long[]>  storePayloadToObject;
 
 
         // Nice Blog about expression trees:

@@ -26,8 +26,9 @@ namespace Friflo.Json.Mapper.Map.Obj
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
-                object[] constructorParams = {type, constructor};
-                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams); // new ClassMapper<T>(type, constructor);
+                object[] constructorParams = {type, constructor, config};
+                // new ClassMapper<T>(type, constructor, config);
+                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
             return null;
         }
@@ -48,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 
         public override ClassLayout GetClassLayout() { return layout; }
         
-        public ClassMapper (Type type, ConstructorInfo constructor) :
+        public ClassMapper (Type type, ConstructorInfo constructor, ResolverConfig config) :
             base (type, IsNullable(type))
         {
             removedKey = new Bytes("__REMOVED");
@@ -62,7 +63,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
             }
-            layout = new ClassLayout(type, propFields);
+            layout = new ClassLayout(type, propFields, config);
             this.constructor = constructor;
         }
         
@@ -130,7 +131,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
 
             PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
-            ClassPayload payload = writer.InstanceLoad(classMapper, obj);
+            ClassPayload payload = writer.useIL ? writer.InstanceLoad(classMapper, obj) : null;
 
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -178,7 +179,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassPayload payload = reader.InstanceLoad(classType, obj);
+            ClassPayload payload = reader.useIL ? reader.InstanceLoad(classType, obj) : null;
 
             while (true) {
                 object elemVar;
@@ -250,7 +251,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                             field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
-                        reader.InstanceStore(payload, obj);
+                        if (reader.useIL)
+                            reader.InstanceStore(payload, obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:
