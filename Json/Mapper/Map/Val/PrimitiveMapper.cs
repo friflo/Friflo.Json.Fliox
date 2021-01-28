@@ -128,7 +128,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(long))
-                return new LongMapper (type);
+                return config.useIL ? new LongFieldMapper(type) : new LongMapper (type);
             if (type == typeof(long?))
                 return new NullableLongMapper (type);
             return null;
@@ -211,7 +211,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(short))
-                return new ShortMapper (type);
+                return config.useIL ? new ShortFieldMapper(type) : new ShortMapper (type);
             if (type == typeof(short?))
                 return new NullableShortMapper (type);
             return null;
@@ -255,7 +255,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (type == typeof(byte))
-                return new ByteMapper (type); 
+                return config.useIL ? new ByteFieldMapper(type) :new ByteMapper (type); 
             if (type == typeof(byte?))
                 return new NullableByteMapper(type);
             return null;

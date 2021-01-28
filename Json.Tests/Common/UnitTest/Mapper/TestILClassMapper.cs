@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Mapper;
+﻿using System.Linq;
+using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -6,7 +7,10 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
-        public int key = 11;
+        public int int64 = 10;
+        // public int int32 = 11;
+        // public int int16 = 12;
+        // public int int8  = 13;
     }
     
     public class TestILClassMapper
@@ -16,9 +20,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
-    ""key"": 11
+    ""int64"": 10
 }}
 ";
+            string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
             var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
             using (TypeStore typeStore = new TypeStore(resolver))
@@ -26,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 var sample = new SampleIL();
                 writer.Write(sample);
-                AreEqual("{\"key\":11}", writer.Output.ToString());
+                AreEqual(payloadTrimmed, writer.Output.ToString());
             }
         }  
     }
