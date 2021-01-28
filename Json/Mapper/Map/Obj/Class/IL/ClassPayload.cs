@@ -25,13 +25,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public void LoadInstance(TypeMapper classType, object obj) {
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
-            // call load instance expression delegate
             
+            // layout.loadObjectToPayload(data.array, obj);
         }
         
         public void StoreInstance(object obj) {
             // call store instance expression delegate
-            
         }
         
         public void Dispose() {
@@ -70,6 +69,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal readonly int       size;
         internal readonly int[]     fieldPos;
 
+        internal readonly Func<long[], object, object> loadObjectToPayload;
+
         internal ClassLayout(Type type, PropertyFields  propFields) {
             var fields = propFields.fields;
             int count = 0;
@@ -82,25 +83,34 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             fieldPos   = tempPos;
             
             // create load/store instance expression
-            
-        }
-        
-        /*
-        public static Expression<Func<T, bool>> LoadInstance<T>(long[] dst, object src) {
-            var type = src.GetType();
-            var member = Expression.Parameter(type, "param");
-            var memberExpression = Expression.PropertyOrField( member, fieldName);
-            var targetMethod = memberExpression.Type.GetMethod( "IndexOf", new Type[] { typeof(string), typeof(StringComparison) } );
-            var methodCallExpression = Expression.Call( memberExpression, targetMethod, Expression.Constant(val), Expression.Constant( StringComparison.CurrentCultureIgnoreCase ) );
 
-            return Expression.Lambda<Func<T, bool>>( 
-                Expression.AndAlso(
-                    Expression.NotEqual(memberExpression, Expression.Constant(null)), 
-                    Expression.GreaterThanOrEqual( methodCallExpression, Expression.Constant(0) )
-                ), 
-                member
-            );
-        } */
+            var loadExpr = LoadInstanceExpression(propFields, type);
+            loadObjectToPayload = loadExpr.Compile();
+        }
+
+        public static Expression<Func<long[], object, object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
+            var dstArrayParam   = Expression.Parameter(typeof(long[]), "dst");              // parameter: long[] dst
+            var srcObjectParam  = Expression.Parameter(typeof(object), "src");              // parameter: object src;
+            
+            var srcTyped        = Expression.Convert(srcObjectParam, type);                 // <Type> srcTyped = (Type)src;
+            
+            for (int n = 0; n < propFields.fields.Length; n++) {
+                PropField field = propFields.fields[n];
+                if (!field.isValueType || !field.fieldTypeNative.IsPrimitive)
+                    continue;
+                
+                var memberVal   = Expression.PropertyOrField(srcTyped, field.name);         // memberVal = srcTyped.<field.name>;
+                var longVal     = Expression.Convert(memberVal, typeof(long));              // longVal   = (long)memberVal; 
+                
+                var arrayIndex  = Expression.Constant(n, typeof(int));                      // int arrayIndex = <field index>;
+                var dstElement  = Expression.ArrayAccess(dstArrayParam, arrayIndex);        // ref dstElement = ref dst[arrayIndex];
+
+                Expression.Assign(dstElement, longVal);                                     // dstElement = longVal;
+            }
+
+            // Echo srcObject to enable using an expression instead of a statement
+            return Expression.Lambda<Func<long[], object, object>>(srcObjectParam, dstArrayParam, srcObjectParam);
+        }
     }
 
 }
