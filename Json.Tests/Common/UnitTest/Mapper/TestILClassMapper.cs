@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
         public double   dbl;
-        // public float    flt;
+        public float    flt;
         
         public long     int64;
         public int      int32;
@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         public void Init() {
             dbl   = 22.5d;
-            // flt   = 33.5f;
+            flt   = 33.5f;
             
             int64 = 10;
             int32 = 11;
@@ -40,10 +40,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             string payloadStr = $@"
 {{
     ""dbl"":   22.5,
+    ""flt"":   33.5,
+
     ""int64"": 10,
     ""int32"": 11,
     ""int16"": 12,
     ""int8"":  13,
+
     ""bln"":   true
 }}
 ";
@@ -67,9 +70,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {{
     ""dbl"":   22.5,
     ""int64"": 10,
+
+    ""flt"":   33.5,
     ""int32"": 11,
     ""int16"": 12,
     ""int8"":  13,
+
     ""bln"":   true
 }}
 ";
@@ -84,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     Fail(reader.Error.msg.ToString());
                 
                 AreEqual(22.5,  result.dbl);
-                // AreEqual(33.5,  result.flt);
+                AreEqual(33.5,  result.flt);
                 
                 AreEqual(10,    result.int64);
                 AreEqual(11,    result.int32);

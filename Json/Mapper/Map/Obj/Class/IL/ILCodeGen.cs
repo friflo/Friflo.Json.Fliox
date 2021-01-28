@@ -36,7 +36,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 
                 var memberVal   = Expression.PropertyOrField(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
                 
-                Expression longVal = null;
+                Expression longVal;
                 if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
                     longVal     = Expression.Convert(memberVal, typeof(long));      // longVal   = (long)memberVal;
                 } else if (fieldType == typeof(bool)) {
@@ -46,7 +46,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     longVal     = Expression.Call(doubleToInt64Bits, memberVal);
                 } else if (fieldType == typeof(float)) {
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    longVal     = Expression.Call(singleToInt32Bits, memberVal);
+                    var intVal  = Expression.Call(singleToInt32Bits, memberVal);
+                    longVal     = Expression.Convert(intVal, typeof(long));
                 }
                 else
                     throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
@@ -81,9 +82,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 
                 var arrayIndex  = Expression.Constant(n, typeof(int));                  // int arrayIndex = <field index>;
                 var srcElement  = Expression.ArrayAccess(src, arrayIndex);              // ref long[] srcElement = ref src[arrayIndex];
-                Expression srcTyped = null;
+                Expression srcTyped;
                 if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
-                    srcTyped    = Expression.Convert(srcElement, field.fieldTypeNative);// srcTyped  = (<Field Type>)srcElement;
+                    srcTyped    = Expression.Convert(srcElement, fieldType);// srcTyped  = (<Field Type>)srcElement;
                 } else if (fieldType == typeof(bool)) {
                     var not0    = Expression.NotEqual(srcElement, Expression.Constant(0L));
                     srcTyped    = Expression.Condition(not0, Expression.Constant(true), Expression.Constant(false)); // srcTyped   = srcElement != 0;
@@ -91,8 +92,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     // ReSharper disable once AssignNullToNotNullAttribute
                     srcTyped    = Expression.Call(int64BitsToDouble, srcElement);
                 } else if (fieldType == typeof(float)) {
+                    var srcInt  = Expression.Convert(srcElement, typeof(int));
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    srcTyped    = Expression.Call(int32BitsToSingle, srcElement);
+                    srcTyped    = Expression.Call(int32BitsToSingle, srcInt);
                 }
                 else
                     throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
