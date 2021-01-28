@@ -128,10 +128,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                 writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
                 bytes.AppendChar('\"');
             }
-
+            
+            var payload = JsonWriter.InstanceLoad(writer, classMapper, obj);
+            
             PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
-            ClassPayload payload = writer.InstanceLoad(classMapper, obj);
-
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
                     firstMember = false;
@@ -153,7 +153,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     fieldType.WriteObject(writer, elemVar);
                 }
             }
-            writer.InstancePop();
+            JsonWriter.InstancePop(writer);
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
@@ -178,7 +178,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassPayload payload = reader.InstanceLoad(classType);
+            var payload = JsonReader.InstanceLoad(reader, classType);
 
             while (true) {
                 object elemVar;
@@ -250,7 +250,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
-                        reader.InstanceStore(obj);
+                        JsonReader.InstanceStore(reader, obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

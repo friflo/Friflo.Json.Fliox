@@ -22,20 +22,20 @@ namespace Friflo.Json.Mapper
         }
 
         /// <summary> Load the fields of a class instance into the <see cref="ClassPayload.data"/> array. </summary>
-        internal ClassPayload InstanceLoad(TypeMapper classType) {
-            if (classLevel >= handlerStack.Count)
-                handlerStack.Add(new ClassPayload(Default.Constructor));
-            var handler = handlerStack[classLevel++];
-            handler.LoadInstance(classType);
-            return handler;
+        internal static ClassPayload InstanceLoad(JsonReader reader, TypeMapper classType) {
+            if (reader.classLevel >= reader.handlerStack.Count)
+                reader.handlerStack.Add(new ClassPayload(Default.Constructor));
+            ClassPayload payload = reader.handlerStack[reader.classLevel++];
+            payload.LoadInstance(classType);
+            return payload;
         }
 
         /// <summary>
         /// Store the "instances fields" represented by the <see cref="ClassPayload.data"/> array to the fields
         /// of a given class instance.
         /// </summary>
-        internal void InstanceStore(object obj) {
-            --classLevel;
+        internal static void InstanceStore(JsonReader reader, object obj) {
+            --reader.classLevel;
         }
     }
 }
