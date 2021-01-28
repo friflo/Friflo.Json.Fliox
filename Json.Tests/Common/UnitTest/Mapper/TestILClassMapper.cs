@@ -5,6 +5,8 @@ using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+#if !UNITY_5_3_OR_NEWER
+
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class SampleIL {
@@ -82,3 +84,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }  
     }
 }
+
+#endif

@@ -22,14 +22,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private     ClassLayout         layout;
 
         public void LoadInstance(TypeMapper classType, object obj) {
+#if !UNITY_5_3_OR_NEWER
             layout = classType.GetClassLayout();
             data.Resize(layout.size);
             
             layout.loadObjectToPayload(data.array, obj);
+#endif
         }
         
         public void StoreInstance(object obj) {
+#if !UNITY_5_3_OR_NEWER
             layout.storePayloadToObject(obj, data.array);
+#endif
         }
         
         public void Dispose() {

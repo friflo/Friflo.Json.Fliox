@@ -13,6 +13,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // Nice Blog about expression trees:
         // [Working with Expression Trees in C# | Alexey Golub] https://tyrrrz.me/blog/expression-trees
         //
+        // The idea of loading/storing all fields of a class with one method call came to this nice blog:
+        // [Optimizing reflection in C# via dynamic code generation | by Sergio Pedri | Medium]
+        // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
         internal static Expression<Action<long[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
             var dst         = Expression.Parameter(typeof(long[]), "dst");      // parameter: long[] dst
             var src         = Expression.Parameter(typeof(object), "src");      // parameter: object src;
