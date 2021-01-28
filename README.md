@@ -35,39 +35,46 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 ## **`Friflo.Json.Burst`**
 
-- Clear/Compact API: `Iterator API` for parser - `Appender API` for serializer.
+- **Clear/Compact API** `Iterator API` for parser - `Appender API` for serializer.
 
-- Skipping of JSON object members and elements (array elements and values on root)  
+- **Skipping** of JSON object members and elements (array elements and values on root)  
     Provide statistics (counts) about skipped JSON entries:
     arrays, objects, strings, integers, numbers, booleans and nulls
 
-- Don't throw exceptions in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
+- **Don't throw exceptions** in `Release` build in any case - e.g. of invalid JSON. Provide a concept to return gracefully in application code.
 
 - Throw exceptions in `Debug` build to notice applications errors when using the library.
 
-- No heap allocation in case of invalid JSON when creating an error message
+- **No heap allocation** in case of invalid JSON when creating an error message.
 
-- Support parsing/serializing of JSON objects, arrays and values (string, number, boolean and null) on root level
+- Support parsing/serializing of JSON objects, arrays and values (string, number, boolean and null) on **root level**.
 
-- Optimization principles:
+- Optimization principles
+
     - Minimize **memory footprint**
-        - No (0) allocations after a few iterations by using a few internal byte & int buffers
-        - Support reusing parser & serializer instances to avoid allocations on the heap
+
+        - **No (0) allocations** after a few iterations by using a few internal byte & int buffers
+
+        - Support **reusing** parser & serializer instances to avoid allocations on the heap
 
     - Minimize **CPU load**
-        - Using only struct's, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
-            As a result the complete parser/serializer state lives on the stack.
-        - Pass method parameters of struct's - a value type in .NET - always by `ref`.
-        - No string copy or memcpy
 
-- Compatible to [Unity Burst Jobs](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
-    which requires using a
-    [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
-    in the parser implementation.  
-    In short this is the absense of using the heap in any way.
-    This exclude the usage of managed types like classes, strings, arrays or exceptions.  
-    To support this subset the library need to be compiled with `JSON_BURST`.  
-    The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
+        - Using **only struct's**, no classes (a requirement of Unity/Burst) enabling high memory locality to reduce page misses.  
+            As a result the complete parser/serializer state lives on the stack.
+
+        - Pass method parameters of struct's - a value type in .NET - **always by `ref`**.
+
+        - **No string copy or memcpy**
+
+- Compatible to [**Unity Burst Jobs**](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/QuickStart.html)
+  which requires using a
+  [subset of C#/.NET language](https://docs.unity3d.com/Packages/com.unity.burst@1.5/manual/docs/CSharpLanguageSupport_Types.html)
+  in the parser implementation.  
+
+  In short this is the absense of using the heap in any way.
+  This exclude the usage of managed types like classes, strings, arrays or exceptions.  
+  To support this subset the library need to be compiled with `JSON_BURST`.  
+  The default implementation is a little less restrict: arrays (`byte` & `int`) are used.
 
 - Used .NET API namespaces: `System`, `System.Text` .Encoding.UTF8 & `System.Globalization` .CultureInfo, .NumberFormatInfo, .NumberStyles
 
@@ -78,38 +85,48 @@ CPU/memory resources to the main thread being the critical path in game loops.
 ## **`Friflo.Json.Mapper`**
 
 - Support deserialization in two ways:
-    - Create new object instances and deserialize by using `Read()` to them which is the common practice of
+
+    - **Create new object instances** and deserialize by using `Read()` to them which is the common practice of
         many object mapper implementations.
-    - Deserialize to passed object instances by using `ReadTo()` while reusing also their child objects referenced by fields,
+
+    - **Deserialize to passed object** instances by using `ReadTo()` while reusing also their child objects referenced by fields,
         arrays and `List`'s. Right now `Dictionary` (maps) entries are not reused.  
         This avoids object allocation on the heap for the given instance and all its child objects
 
-- Support polymorphism: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
+- **Support polymorphism**: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
 
-- `JsonReader` support two error handling modes while parsing and deserialization (unmarshalling) -
+- `JsonReader` support **two error handling modes** while parsing and deserialization (unmarshalling) -
     e.g. JSON validation errors.  
     By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation
-    because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:      
-    1. Don't throw any exception and provide the error state via a boolean and a message.
-    2. Throw exception in error case - which is useful for debugging.
+    because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:  
 
-- Error messages are created without heap allocation to avoid vulnerability to DDoS attacks simply by flooding a service with invalid JSON.
+    1. **Don't throw exception** and provide the error state via a boolean and a message.
 
-- Optimized for performance and low memory footprint
+    2. **Throw exception** in error case - which is useful for debugging.
 
-    - Create an immutable type description for each `Type` to invoke only the minimum required
-        reflection calls while de-/serializing
+- Error messages are created **without heap allocation** to avoid vulnerability to DDoS attacks simply by flooding a service
+  with invalid JSON.
 
-    - Reusing of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
+- Optimized for performance by maximizing CPU utilization and low memory footprint
 
-    - Avoid boxing/unboxing of primitive types (e.g. int, float, ...) to minimize heap allocations.
+    - **Dynamically create IL code** ensuring no reflection code is used for mapping to and from data structures.
+      Doing so enables JSON processing without heap allocations.
 
-    - No heap allocations are performed when using `ReadTo()` and using a subset of supported types:
+    - Also support **mapping via reflection** by configuration if IL code generation is not wanted or enabled.
+      Mapping data structures via reflection is inherent slower as is requires heap allocation caused by
+      boxing & unboxing.
+
+    - **Reusing** of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
+
+    - **No heap allocations** are performed when using `ReadTo()` and using a subset of supported types:
         arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
 
 - Supported C#/.NET types:
+
     - Container types: arrays, `List`, `IList`, `Dictionary` & `IDictionary`
+
     - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
+
     - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
 
 - Uses internally the JSON parser mentioned above
@@ -120,24 +137,24 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # General Features
 
-- UTF-8 support
+- **UTF-8** support
 
-- Compatible to .NET Standard.
+- Compatible to **.NET Standard**.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 
-- CLS compliant API. Meaning the API of the **Friflo.Json.Burst** library is compatible to all languages targeting .NET. These are:
+- **CLS compliant API**. Meaning the API of the **Friflo.Json.Burst** library is compatible to all languages targeting .NET. These are:
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:
   [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/language-independence-and-language-independent-components)
 
-- No unsafe code in CLR library
+- **No unsafe code** in CLR library
 
-- No global mutable state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
+- **No global mutable** state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
   `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.
 
-- Fail safe in case of JSON and application errors
+- **Fail safe** in case of JSON and application errors
 
-- Ensuring a maximum level (`maxDepth`) of nested JSON objects and arrays. E.g. a JSON like `[[[...]]]`.
+- **Ensuring a maximum depth** (`maxDepth`) of nested JSON objects and arrays. E.g. a JSON like `[[[...]]]`.
   The default `maxDepth` is set 100.  
   A limit of 3000 (Windows 10) is possible without getting a stack overflow.
   The reason for the limit is that both `JsonReader` & `JsonWriter` are using a recursive implementation.
@@ -149,14 +166,14 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - When writing JSON the `JsonSerializer` and `JsonWriter` ensures this constrain via a runtime exception
       to avoid accidentally raising this limit.
 
-- No dependencies to 3rd party libraries. The used .NET API namespaces are mentioned above.  
+- **No dependencies** to 3rd party libraries. The used .NET API namespaces are mentioned above.  
   A Unity specific dependency is required when compiling within Unity with **UNITY_BURST** which is
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 
-- Small library (Friflo.Json.Burst.dll ~ 100kb )
+- Small library: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Mapper.dll` ~ **60 kb**
 
-- Expressive error messages when parsing invalid JSON. E.g.  
+- **Expressive error messages** when parsing invalid JSON. E.g.  
     ```
     JsonParser/JSON error: unexpected character > expect key. Found: v path: 'map.key1' at position: 23
     ```
@@ -164,7 +181,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # **Unit tests**
 
-The current result of the unit test are available as CI tests at
+The current result of the unit test are available as **CI tests** at
 [Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
@@ -179,8 +196,8 @@ By using NUnit the unit tests can be executed via the Test Runner in the [Unity 
 
 Additional to common unit testing of expected behavior, the test also ensure the following principles
 with additional assertions:
-- No (exact 0) allocations occur on the heap while running a parser or serializer a couple of times.
-- No leaks of `native containers` are left over after tear down a unit test.  
+- **No (0) allocations** occur on the heap while running a parser or serializer a couple of times.
+- **No leaks of `native containers`** are left over after tear down a unit test.  
   This is relevant only when using the library in Unity compiled with **JSON_BURST** - it is not relevant when running in CLR
 
 # **Examples**
