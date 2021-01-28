@@ -90,7 +90,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         internal readonly Action<long[], object>  loadObjectToPayload;
 
-
+        // Nice Blog about expression trees:
+        // [Working with Expression Trees in C# | Alexey Golub] https://tyrrrz.me/blog/expression-trees
+        //
         private static Expression<Action<long[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
             var dst         = Expression.Parameter(typeof(long[]), "dst");      // parameter: long[] dst
             var src         = Expression.Parameter(typeof(object), "src");      // parameter: object src;
