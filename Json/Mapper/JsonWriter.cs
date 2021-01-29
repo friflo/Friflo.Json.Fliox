@@ -68,11 +68,15 @@ namespace Friflo.Json.Mapper
             format. InitTokenFormat();
             bytes.Clear();
             level = 0;
-            if (value == null)
+            if (value == null) {
                 WriteUtils.AppendNull(this);
-            else
-                mapper.WriteObject(this, value);
-            
+            } else {
+                try {
+                    mapper.WriteObject(this, value);
+                }
+                finally { ClearObjectReferences(); }
+            }
+
             if (level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
         }
@@ -83,11 +87,15 @@ namespace Friflo.Json.Mapper
             format. InitTokenFormat();
             bytes.Clear();
             level = 0;
-            if (EqualityComparer<T>.Default.Equals(value, default))
+            if (EqualityComparer<T>.Default.Equals(value, default)) {
                 WriteUtils.AppendNull(this);
-            else
-                mapper.Write(this, value);
-            
+            } else {
+                try {
+                    mapper.Write(this, value);
+                }
+                finally { ClearObjectReferences(); }
+            }
+
             if (level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
         }

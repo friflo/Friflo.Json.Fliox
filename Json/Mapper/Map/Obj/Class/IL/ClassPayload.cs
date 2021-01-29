@@ -36,6 +36,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             layout.storePayloadToObject(obj, primitives.array, objects.array);
         }
         
+        internal void ClearObjectReferences() {
+            for (int n = 0; n < objects.Count; n++)
+                objects.array[n] = null;
+        }
+        
         public void Dispose() {
             primitives.Dispose();
             objects.   Dispose();

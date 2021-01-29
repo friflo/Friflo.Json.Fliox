@@ -115,7 +115,10 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        return mapper.ReadObject(this, value, out success);
+                        try {
+                            return mapper.ReadObject(this, value, out success);
+                        }
+                        finally { ClearObjectReferences(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, ref parser, out success);
@@ -142,7 +145,10 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        return mapper.Read(this, value, out success);
+                        try {
+                            return mapper.Read(this, value, out success);
+                        }
+                        finally { ClearObjectReferences(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, ref parser, out success);
@@ -180,8 +186,10 @@ namespace Friflo.Json.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        
-                        return mapper.Read(this, value, out success);
+                        try {
+                            return mapper.Read(this, value, out success);
+                        }
+                        finally { ClearObjectReferences(); }
                     case JsonEvent.Error:
                         success = false;
                         return default;
@@ -214,8 +222,10 @@ namespace Friflo.Json.Mapper
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
-                        
-                        return mapper.ReadObject(this, value, out success);
+                        try {
+                            return mapper.ReadObject(this, value, out success);
+                        }
+                        finally { ClearObjectReferences(); }
                     case JsonEvent.Error:
                         success = false;
                         return default;
