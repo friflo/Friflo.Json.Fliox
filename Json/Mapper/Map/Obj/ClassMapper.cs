@@ -27,6 +27,10 @@ namespace Friflo.Json.Mapper.Map.Obj
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
                 object[] constructorParams = {type, constructor, config};
+                if (type.IsValueType) {
+                    // new StructMapper<T>(type, constructor, config);
+                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>), new[] {type}, constructorParams);
+                }
                 // new ClassMapper<T>(type, constructor, config);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
@@ -114,10 +118,6 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
-            if (field.isStruct) { // todo add StructMapper
-                WriteILStruct(writer, payload, field, primPos, objPos);
-                return;
-            }
             object obj = payload.LoadObj(objPos + field.objIndex);
             if (obj == null)
                 WriteUtils.AppendNull(writer);
@@ -298,27 +298,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             return null;
         }
  
-        // todo move to separate StructMapper
-        private void WriteILStruct(JsonWriter writer, ClassPayload payload, PropField structField, int primPos, int objPos) {
-            int startLevel = WriteUtils.IncLevel(writer);
-            ref var bytes = ref writer.bytes;
-            TypeMapper classMapper = structField.fieldType;
-            PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
-            bool firstMember = true;
-            bytes.AppendChar('{');
 
-            for (int n = 0; n < fields.Length; n++) {
-                if (firstMember)
-                    firstMember = false;
-                else
-                    bytes.AppendChar(',');
-                PropField field = fields[n];
-                WriteUtils.WriteKey(writer, field);
-                
-                field.fieldType.WriteField(writer, payload, field, primPos + structField.primIndex, objPos + structField.objIndex);
-            }
-            bytes.AppendChar('}');
-            WriteUtils.DecLevel(writer, startLevel);
-        }
     }
 }
