@@ -18,9 +18,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         internal readonly   List<PropField>     fieldList = new List <PropField>();
         internal            int                 primCount;
         internal            int                 objCount;
+        private             bool                useIL;
 
         private static readonly     Type[] Types = new Type [] { typeof( FieldQuery ) };
 
+
+        internal FieldQuery(bool useIL) {
+            this.useIL = useIL;
+        }
 
         private void Set(Type type, String name)
         {
@@ -38,18 +43,28 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (getter != null)
             {
                 PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
-                PropField pf = getter.PropertyType.IsPrimitive
-                    ? new PropField(name, getter.PropertyType, null, getter, setter, primCount++, -1)
-                    : new PropField(name, getter.PropertyType, null, getter, setter, -1, objCount++);
+                Type propType = getter.PropertyType;
+                // is struct?
+                if (useIL && propType.IsValueType && !propType.IsPrimitive) {
+                    
+                }
+                PropField pf = propType.IsPrimitive
+                    ? new PropField(name, propType, null, getter, setter, primCount++, -1)
+                    : new PropField(name, propType, null, getter, setter, -1, objCount++);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = field.FieldType.IsPrimitive
-                    ? new PropField(name, field.FieldType,     field, null, null, primCount++, -1)
-                    : new PropField(name, field.FieldType,     field, null, null, -1, objCount++);
+                Type fieldType = field.FieldType;
+                // is struct?
+                if (useIL && fieldType.IsValueType && !fieldType.IsPrimitive) {
+                    
+                }
+                PropField pf = fieldType.IsPrimitive
+                    ? new PropField(name, fieldType,     field, null, null, primCount++, -1)
+                    : new PropField(name, fieldType,     field, null, null, -1, objCount++);
                 fieldList. Add (pf);
                 return;
             }

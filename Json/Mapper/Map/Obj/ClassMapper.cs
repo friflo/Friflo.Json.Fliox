@@ -55,7 +55,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
-            propFields = new PropertyFields(type);
+            propFields = new PropertyFields(type, config.useIL);
             for (int n = 0; n < propFields.num; n++) {
                 PropField   field = propFields.fields[n];
                 if (strMap.ContainsKey(field.name))

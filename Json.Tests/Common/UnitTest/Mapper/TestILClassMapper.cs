@@ -14,21 +14,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public int val;
     }
     
+    struct StructIL
+    {
+        public int val2;
+    }
+    
     class SampleIL {
+        // public StructIL childStruct;
         public ChildIL  child;
         public ChildIL  childNull;
         public double   dbl;
         public float    flt;
-        
+              
         public long     int64;
         public int      int32;
         public short    int16;
         public byte     int8;
-        
+              
         public bool     bln;
 
         public void Init() {
             child = new ChildIL { val = 42 };
+            // childStruct.val2 = 43;
             childNull = null;
             dbl   = 22.5d;
             flt   = 33.5f;
