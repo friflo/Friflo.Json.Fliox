@@ -30,9 +30,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadDbl(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreDbl(field.primIndex, value);
+            mirror.StoreDbl(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -44,9 +44,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadFlt(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreFlt(field.primIndex, value);
+            mirror.StoreFlt(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -58,9 +58,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadLong(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreLong(field.primIndex, value);
+            mirror.StoreLong(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -73,9 +73,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadInt(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreInt(field.primIndex, value);
+            mirror.StoreInt(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -87,9 +87,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadShort(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreShort(field.primIndex, value);
+            mirror.StoreShort(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -101,9 +101,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadByte(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreByte(field.primIndex, value);
+            mirror.StoreByte(primPos + field.primIndex, value);
             return success;
         }
     }
@@ -115,9 +115,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             Write(writer, mirror.LoadBool(primPos + field.primIndex));
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
             var value = Read(reader, false, out bool success);
-            mirror.StoreBool(field.primIndex, value);
+            mirror.StoreBool(primPos + field.primIndex, value);
             return success;
         }
     }

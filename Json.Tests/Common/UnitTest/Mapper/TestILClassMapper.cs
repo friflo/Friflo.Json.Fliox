@@ -20,8 +20,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     class SampleIL {
-        // public StructIL childStruct1;
-        // public StructIL childStruct2;
+        public StructIL childStruct1;
+        public StructIL childStruct2;
         public ChildIL  child;
         public ChildIL  childNull;
         public double   dbl;
@@ -36,8 +36,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         public void Init() {
             child = new ChildIL { val = 42 };
-            // childStruct1.val2 = 111;
-            // childStruct2.val2 = 112;
+            childStruct1.val2 = 111;
+            childStruct2.val2 = 112;
             childNull = null;
             dbl   = 22.5d;
             flt   = 33.5f;
@@ -57,6 +57,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
+    ""childStruct1"": {{
+        ""val2"": 111
+    }},
+    ""childStruct2"": {{
+        ""val2"": 112
+    }},
     ""child"": {{
         ""val"": 42
     }},
@@ -85,11 +91,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]
+        [Test][Ignore("Prepare support for struct's as class fields")]
         public void ReadJson() {
 
             string payloadStr = $@"
 {{
+    ""childStruct1"": {{
+        ""val2"": 111
+    }},
+    ""childStruct2"": {{
+        ""val2"": 112
+    }},
     ""child"": {{
         ""val"": 42
     }},
@@ -125,6 +137,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(true,  result.bln);
                 AreEqual(42,    result.child.val);
                 AreEqual(null,  result.childNull);
+                AreEqual(111,   result.childStruct1.val2);
+                AreEqual(112,   result.childStruct1.val2);
             }
         }
         

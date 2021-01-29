@@ -125,9 +125,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                 Write(writer, (T)obj);
         }
 
-        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
-            var value = Read(reader, (T)mirror.LoadObj(field.objIndex), out bool success);
-            mirror.StoreObj(field.objIndex, value);
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+            T src = (T) mirror.LoadObj(objPos + field.objIndex);
+            T value = Read(reader, src, out bool success);
+            mirror.StoreObj(objPos + field.objIndex, value);
             return success;
         }
         
@@ -212,7 +213,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         var fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
                                 return default;
                         } else {
                             elemVar = fieldType.ReadObject(reader, null, out success);
@@ -224,11 +225,11 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
-                        if ((field = GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
                                 return default;
                         } else {
                             elemVar = fieldType.ReadObject(reader, null, out success);
@@ -238,7 +239,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         if (!field.fieldType.isNullable) {
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
@@ -248,16 +249,19 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        if ((field = GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
                         if (mirror != null) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field))
-                                return default;
-                            object subRet = mirror.LoadObj(field.objIndex);
-                            if (!fieldType.isNullable && subRet == null) {
-                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return default;
+                            if (field.isValueType) {
+                                if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
+                                    return default;
+                            } else {
+                                object subRet = mirror.LoadObj(field.objIndex);
+                                if (!fieldType.isNullable && subRet == null) {
+                                    ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                                    return default;
+                                }
                             }
                         } else {
                             elemVar = field.GetField(obj);
@@ -290,13 +294,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
         }
 
-        private static PropField GetField(JsonReader reader, TypeMapper classType) {
-            PropField field = classType.GetField(ref reader.parser.key);
-            if (field != null)
-                return field;
-            reader.parser.SkipEvent();
-            return null;
-        }
+
  
 
     }

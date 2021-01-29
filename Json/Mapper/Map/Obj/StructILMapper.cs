@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
@@ -38,6 +39,76 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
+        }
+        
+        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField structField, int primPos, int objPos) {
+            if (this != structField.fieldType)
+                throw new InvalidOperationException("expect this == structField.fieldType");
+            // Ensure preconditions are fulfilled
+            if (!ObjectUtils.StartObject(reader, this, out bool success))
+                return success;
+                
+            ref var parser = ref reader.parser;
+            JsonEvent ev = parser.NextEvent();
+ 
+            while (true) {
+                object elemVar;
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                        PropField field = GetField(ref parser.key);
+                        if (field == null) {
+                            if (!reader.discriminator.IsEqualBytes(ref parser.key)) // dont count discriminators
+                                parser.SkipEvent();
+                            break;
+                        }
+                        var fieldType = field.fieldType;
+                        if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
+                            return default;
+                        break;
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                        // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
+                        if ((field = ObjectUtils.GetField(reader, this)) == null)
+                            break;
+                        fieldType = field.fieldType;
+                        if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
+                            return default;
+                        break;
+                    case JsonEvent.ValueNull:
+                        if ((field = ObjectUtils.GetField(reader, this)) == null)
+                            break;
+                        if (!field.fieldType.isNullable) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
+                            return default;
+                        }
+                        // field.SetField(obj, null);
+                        throw new NotImplementedException();
+                        break;
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
+                        if ((field = ObjectUtils.GetField(reader, this)) == null)
+                            break;
+                        fieldType = field.fieldType;
+
+                        if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
+                            return default;
+                        object subRet = mirror.LoadObj(field.objIndex);
+                        if (!fieldType.isNullable && subRet == null) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                            return default;
+                        }
+                        break;
+                    case JsonEvent.ObjectEnd:
+                        //if (reader.useIL)
+                        //    reader.InstanceStore(mirror, obj);
+                        return true;
+                    case JsonEvent.Error:
+                        return false;
+                    default:
+                        return ReadUtils.ErrorMsg<bool>(reader, "unexpected state: ", ev, out success);
+                }
+                ev = parser.NextEvent();
+            }
         }
     }
 }

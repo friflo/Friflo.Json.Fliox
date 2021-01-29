@@ -44,6 +44,12 @@ namespace Friflo.Json.Mapper
             maxDepth    = 100;
             useIL = typeStore.typeResolver.GetConfig().useIL;
         }
+        
+        private void InitJsonReader(ref ByteList bytes, int offset, int len) {
+            parser.InitParser(bytes, offset, len);
+            parser.SetMaxDepth(maxDepth);
+            classLevel = 0;
+        }
 
         public void Dispose() {
             typeCache.      Dispose();
@@ -104,8 +110,7 @@ namespace Friflo.Json.Mapper
         }
         
         private object ReadStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
-            parser.InitParser(bytes, offset, len);
-            parser.SetMaxDepth(maxDepth);
+            InitJsonReader(ref bytes, offset, len);
             
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -134,8 +139,7 @@ namespace Friflo.Json.Mapper
         }
 
         private T ReadStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
-            parser.InitParser(bytes, offset, len);
-            parser.SetMaxDepth(maxDepth);
+            InitJsonReader(ref bytes, offset, len);
             
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -178,9 +182,8 @@ namespace Friflo.Json.Mapper
         }
 
         private T ReadToStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
-            parser.InitParser(bytes, offset, len);
-            classLevel = 0;
-
+            InitJsonReader(ref bytes, offset, len);
+            
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -214,9 +217,8 @@ namespace Friflo.Json.Mapper
         }
 
         private object ReadToStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
-            parser.InitParser(bytes, offset, len);
-            classLevel = 0;
-
+            InitJsonReader(ref bytes, offset, len);
+            
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {

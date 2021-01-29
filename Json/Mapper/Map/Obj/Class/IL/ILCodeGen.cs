@@ -141,34 +141,41 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     dstMember   = Exp.Property(dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
                 
                 BinaryExpression dstAssign;
-                if (!fieldType.IsPrimitive) {
+                if (!fieldType.IsPrimitive && !fieldType.IsValueType) {
                     // --- object field
                     var arrayIndex  = Exp.Constant(ctx.objIndex++, typeof(int));    // int arrayIndex = objIndex;
                     var srcElement  = Exp.ArrayAccess(ctx.srcObj, arrayIndex);      // ref object srcElement = ref srcObj[arrayIndex];
                     var srcTyped    = Exp.Convert(srcElement, fieldType);           // <fieldType>srcTyped = (<fieldType>)srcElement;
                     dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
                 } else {
-                    // --- primitive field
-                    var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
-                    var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
-                    Expression srcTyped;
-                    if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
-                        srcTyped    = Exp.Convert(srcElement, fieldType);           // srcTyped  = (<Field Type>)srcElement;
-                    } else if (fieldType == typeof(bool)) {
-                        var not0    = Exp.NotEqual(srcElement, Exp.Constant(0L));
-                        srcTyped    = Exp.Condition(not0, Exp.Constant(true), Exp.Constant(false)); // srcTyped = srcElement != 0;
-                    } else if (fieldType == typeof(double)) {
-                        // ReSharper disable once AssignNullToNotNullAttribute
-                        srcTyped    = Exp.Call(Int64BitsToDouble, srcElement);      // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
-                    } else if (fieldType == typeof(float)) {
-                        var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
-                        // ReSharper disable once AssignNullToNotNullAttribute
-                        srcTyped    = Exp.Call(Int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
-                    }
-                    else
-                        throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
+                    if (fieldType.IsPrimitive) {
+                        // --- primitive field
+                        var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
+                        var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
+                        Expression srcTyped;
+                        if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
+                            srcTyped    = Exp.Convert(srcElement, fieldType);           // srcTyped  = (<Field Type>)srcElement;
+                        } else if (fieldType == typeof(bool)) {
+                            var not0    = Exp.NotEqual(srcElement, Exp.Constant(0L));
+                            srcTyped    = Exp.Condition(not0, Exp.Constant(true), Exp.Constant(false)); // srcTyped = srcElement != 0;
+                        } else if (fieldType == typeof(double)) {
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            srcTyped    = Exp.Call(Int64BitsToDouble, srcElement);      // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                        } else if (fieldType == typeof(float)) {
+                            var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            srcTyped    = Exp.Call(Int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
+                        }
+                        else
+                            throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
 
-                    dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
+                        dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
+                    } else {
+                        // --- struct field
+                        var structTyped = Exp.Convert(dstMember, fieldType);           // <fieldType> structTyped = (<fieldType>)memberVal;
+                        AddStoreMembers(ctx, field.fieldType.GetPropFields(), structTyped);
+                        continue; // struct itself is not assigned - only its members
+                    }
                 }
                 ctx.assignmentList.Add(dstAssign);
             }

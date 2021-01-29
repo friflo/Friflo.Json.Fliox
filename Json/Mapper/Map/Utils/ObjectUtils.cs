@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {
@@ -31,6 +32,14 @@ namespace Friflo.Json.Mapper.Map.Utils
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }
+        }
+        
+        public static PropField GetField(JsonReader reader, TypeMapper classType) {
+            PropField field = classType.GetField(ref reader.parser.key);
+            if (field != null)
+                return field;
+            reader.parser.SkipEvent();
+            return null;
         }
         
     }
