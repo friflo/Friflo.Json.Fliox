@@ -78,6 +78,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
+    ""child"": {{
+        ""val"": 42
+    }},
     ""dbl"":   22.5,
     ""flt"":   33.5,
 

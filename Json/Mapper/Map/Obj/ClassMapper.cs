@@ -112,6 +112,16 @@ namespace Friflo.Json.Mapper.Map.Obj
             return propFields;
         }
         
+        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
+            Write(writer, (T)payload.LoadObj(field.objIndex));
+        }
+
+        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
+            var value = Read(reader, (T)payload.LoadObj(field.objIndex), out bool success);
+            payload.StoreObj(field.objIndex, value);
+            return success;
+        }
+        
         // ----------------------------------- Write / Read -----------------------------------
         
         public override void Write(JsonWriter writer, T slot) {
@@ -141,7 +151,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
                 
-                if (writer.useIL && field.isValueType) {
+                if (writer.useIL) {
                     field.fieldType.WriteField(writer, payload, field);
                     continue;
                 }                
@@ -231,24 +241,30 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ObjectStart:
                         if ((field = GetField(reader, classType)) == null)
                             break;
-                        elemVar = field.GetField(obj);
-                        // if (field.fieldType.varType != VarType.Object) {
-                        //     ReadUtils.ErrorMsg<T>(reader, "Expect field of type object. Type: ", field.fieldType.GetNativeType().ToString(), out success);
-                        //     return default;
-                        // }
-                        object sub = elemVar;
                         fieldType = field.fieldType;
-                        elemVar = fieldType.ReadObject(reader, elemVar, out success);
-                        if (!success)
-                            return default;
-                        //
-                        object subRet = elemVar;
-                        if (!fieldType.isNullable && subRet == null) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                            return default;
+                        if (payload != null) {
+                            if (!fieldType.ReadField(reader, payload, field))
+                                return default;
+                            object subRet = payload.LoadObj(field.objIndex);
+                            if (!fieldType.isNullable && subRet == null) {
+                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                                return default;
+                            }
+                        } else {
+                            elemVar = field.GetField(obj);
+                            object sub = elemVar;
+                            elemVar = fieldType.ReadObject(reader, elemVar, out success);
+                            if (!success)
+                                return default;
+                            //
+                            object subRet = elemVar;
+                            if (!fieldType.isNullable && subRet == null) {
+                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                                return default;
+                            }
+                            if (sub != subRet)
+                                field.SetField(obj, elemVar);
                         }
-                        if (sub != subRet)
-                            field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
                         if (reader.useIL)

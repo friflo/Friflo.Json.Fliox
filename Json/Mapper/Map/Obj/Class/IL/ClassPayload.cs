@@ -68,6 +68,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         
         public void     StoreBool   (int idx,            bool value)   { primitives.array[idx] = value ? 1 : 0; }
         public bool     LoadBool    (int idx)  { return                  primitives.array[idx] != 0; }
+
+        public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
+        public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
+
 #else
         // Unity dummies
         public void LoadInstance(TypeMapper classType, object obj) {}
