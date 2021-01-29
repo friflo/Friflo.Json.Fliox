@@ -9,7 +9,13 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
+    class ChildIL
+    {
+        public int val;
+    }
+    
     class SampleIL {
+        public ChildIL  child;
         public double   dbl;
         public float    flt;
         
@@ -21,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool     bln;
 
         public void Init() {
+            child = new ChildIL { val = 42 };
             dbl   = 22.5d;
             flt   = 33.5f;
             
@@ -39,6 +46,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             string payloadStr = $@"
 {{
+    ""child"": {{
+        ""val"": 42
+    }},
     ""dbl"":   22.5,
     ""flt"":   33.5,
 
