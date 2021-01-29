@@ -228,9 +228,18 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
-                                return default;
+                        if (reader.useIL) {
+                            if (field.isValueType) {
+                                if (!fieldType.ReadFieldIL(reader, mirror, field, 0, 0))
+                                    return default;
+                            } else {
+                                // ReSharper disable once PossibleNullReferenceException
+                                object subRet = mirror.LoadObj(field.objIndex);
+                                if (!fieldType.isNullable && subRet == null) {
+                                    ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                                    return default;
+                                }
+                            }
                         } else {
                             elemVar = fieldType.ReadObject(reader, null, out success);
                             if (!success)
@@ -252,16 +261,21 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (mirror != null) {
+                        if (reader.useIL) {
                             if (field.isValueType) {
                                 if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
                                     return default;
                             } else {
-                                object subRet = mirror.LoadObj(field.objIndex);
+                                // ReSharper disable once PossibleNullReferenceException
+                                object sub = mirror.LoadObj(field.objIndex);
+                                object subRet = fieldType.ReadObject(reader, sub, out success);
+                                if (!success)
+                                    return default;
                                 if (!fieldType.isNullable && subRet == null) {
                                     ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                                     return default;
                                 }
+                                mirror.StoreObj(field.objIndex, subRet);
                             }
                         } else {
                             elemVar = field.GetField(obj);

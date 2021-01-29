@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         public int val;
     }
-    
+
     struct StructIL
     {
         public int val2;
@@ -33,6 +33,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public byte     int8;
               
         public bool     bln;
+
+        public SampleIL() {
+            childStruct1.val2 = 90;
+            childStruct2.val2 = 91;
+            child =     new ChildIL { val = 92 };
+            // childNull = new ChildIL { val = 93 }; todo if set, it will not be cleared
+            dbl   = 94;
+            flt   = 95;
+            
+            int64 = 96;
+            int32 = 97;
+            int16 = 98;
+            int8  = 99;
+            bln   = true;
+        }
 
         public void Init() {
             child = new ChildIL { val = 42 };

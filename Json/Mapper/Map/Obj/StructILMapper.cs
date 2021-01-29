@@ -52,7 +52,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             JsonEvent ev = parser.NextEvent();
  
             while (true) {
-                object elemVar;
                 switch (ev) {
                     case JsonEvent.ValueString:
                         PropField field = GetField(ref parser.key);
@@ -83,7 +82,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         // field.SetField(obj, null);
                         throw new NotImplementedException();
-                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         if ((field = ObjectUtils.GetField(reader, this)) == null)
@@ -99,8 +97,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         break;
                     case JsonEvent.ObjectEnd:
-                        //if (reader.useIL)
-                        //    reader.InstanceStore(mirror, obj);
+                        // reader.InstanceStore(mirror, obj);
                         return true;
                     case JsonEvent.Error:
                         return false;
