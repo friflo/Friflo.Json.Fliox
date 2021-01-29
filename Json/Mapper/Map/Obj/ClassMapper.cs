@@ -117,17 +117,17 @@ namespace Friflo.Json.Mapper.Map.Obj
             return propFields;
         }
         
-        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
-            object obj = payload.LoadObj(objPos + field.objIndex);
+        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
+            object obj = mirror.LoadObj(objPos + field.objIndex);
             if (obj == null)
                 WriteUtils.AppendNull(writer);
             else
                 Write(writer, (T)obj);
         }
 
-        public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
-            var value = Read(reader, (T)payload.LoadObj(field.objIndex), out bool success);
-            payload.StoreObj(field.objIndex, value);
+        public override bool ReadFieldIL  (JsonReader reader, ClassMirror mirror, PropField field) {
+            var value = Read(reader, (T)mirror.LoadObj(field.objIndex), out bool success);
+            mirror.StoreObj(field.objIndex, value);
             return success;
         }
         
@@ -150,7 +150,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
 
             PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
-            ClassPayload payload = writer.useIL ? writer.InstanceLoad(classMapper, obj) : null;
+            ClassMirror mirror = writer.useIL ? writer.InstanceLoad(classMapper, obj) : null;
 
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -161,7 +161,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 WriteUtils.WriteKey(writer, field);
                 
                 if (writer.useIL) {
-                    field.fieldType.WriteField(writer, payload, field, 0, 0);
+                    field.fieldType.WriteFieldIL(writer, mirror, field, 0, 0);
                     continue;
                 }
                 object elemVar = field.GetField(obj);
@@ -198,7 +198,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassPayload payload = reader.useIL ? reader.InstanceLoad(classType, obj) : null;
+            ClassMirror mirror = reader.useIL ? reader.InstanceLoad(classType, obj) : null;
 
             while (true) {
                 object elemVar;
@@ -212,7 +212,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         var fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadField(reader, payload, field))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field))
                                 return default;
                         } else {
                             elemVar = fieldType.ReadObject(reader, null, out success);
@@ -228,7 +228,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         fieldType = field.fieldType;
                         if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadField(reader, payload, field))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field))
                                 return default;
                         } else {
                             elemVar = fieldType.ReadObject(reader, null, out success);
@@ -251,10 +251,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (payload != null) {
-                            if (!fieldType.ReadField(reader, payload, field))
+                        if (mirror != null) {
+                            if (!fieldType.ReadFieldIL(reader, mirror, field))
                                 return default;
-                            object subRet = payload.LoadObj(field.objIndex);
+                            object subRet = mirror.LoadObj(field.objIndex);
                             if (!fieldType.isNullable && subRet == null) {
                                 ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                                 return default;
@@ -277,7 +277,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ObjectEnd:
                         if (reader.useIL)
-                            reader.InstanceStore(payload, obj);
+                            reader.InstanceStore(mirror, obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:

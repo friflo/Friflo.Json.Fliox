@@ -11,35 +11,35 @@ namespace Friflo.Json.Mapper
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     partial class JsonReader
     {
-        private  readonly   List<ClassPayload>      handlerStack = new List<ClassPayload>(16);
+        private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);
         private             int                     classLevel;
         internal readonly   bool                    useIL;
         
         private void DisposePayloads() {
-            for (int n = 0; n < handlerStack.Count; n++)
-                handlerStack[n].Dispose();
+            for (int n = 0; n < mirrorStack.Count; n++)
+                mirrorStack[n].Dispose();
         }
 
         private void ClearObjectReferences() {
-            for (int n = 0; n < handlerStack.Count; n++)
-                handlerStack[n].ClearObjectReferences();
+            for (int n = 0; n < mirrorStack.Count; n++)
+                mirrorStack[n].ClearObjectReferences();
         }
 
-        /// <summary> Load the fields of a class instance into the <see cref="ClassPayload"/> arrays. </summary>
-        internal ClassPayload InstanceLoad(TypeMapper classType, object obj) {
-            if (classLevel >= handlerStack.Count)
-                handlerStack.Add(new ClassPayload());
-            var payload = handlerStack[classLevel++];
-            payload.LoadInstance(classType, obj);
-            return payload;
+        /// <summary> Load the fields of a class instance into the <see cref="ClassMirror"/> arrays. </summary>
+        internal ClassMirror InstanceLoad(TypeMapper classType, object obj) {
+            if (classLevel >= mirrorStack.Count)
+                mirrorStack.Add(new ClassMirror());
+            var mirror = mirrorStack[classLevel++];
+            mirror.LoadInstance(classType, obj);
+            return mirror;
         }
 
         /// <summary>
-        /// Store the "instances fields" represented by the <see cref="ClassPayload"/> arrays to the fields
+        /// Store the "instances fields" represented by the <see cref="ClassMirror"/> arrays to the fields
         /// of a given class instance.
         /// </summary>
-        internal void InstanceStore(ClassPayload payload, object obj) {
-            payload.StoreInstance(obj);
+        internal void InstanceStore(ClassMirror mirror, object obj) {
+            mirror.StoreInstance(obj);
             --classLevel;
         }
     }

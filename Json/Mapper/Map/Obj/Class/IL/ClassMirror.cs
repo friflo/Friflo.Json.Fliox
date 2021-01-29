@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     ///  
     /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe. 
     /// </summary>
-    public class ClassPayload : IDisposable
+    public class ClassMirror : IDisposable
     {
 
 #if !UNITY_5_3_OR_NEWER

@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         }
         
-        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField structField, int primPos, int objPos) {
+        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField structField, int primPos, int objPos) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             TypeMapper classMapper = structField.fieldType;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
                 
-                field.fieldType.WriteField(writer, payload, field, primPos + structField.primIndex, objPos + structField.objIndex);
+                field.fieldType.WriteFieldIL(writer, mirror, field, primPos + structField.primIndex, objPos + structField.objIndex);
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
