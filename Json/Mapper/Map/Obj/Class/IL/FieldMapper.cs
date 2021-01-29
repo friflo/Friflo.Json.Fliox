@@ -27,12 +27,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public DoubleFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadDbl(field.fieldIndex));
+            Write(writer, payload.LoadDbl(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreDbl(field.fieldIndex, value);
+            payload.StoreDbl(field.primIndex, value);
             return success;
         }
     }
@@ -41,12 +41,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public FloatFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadFlt(field.fieldIndex));
+            Write(writer, payload.LoadFlt(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreFlt(field.fieldIndex, value);
+            payload.StoreFlt(field.primIndex, value);
             return success;
         }
     }
@@ -55,12 +55,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public LongFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadLong(field.fieldIndex));
+            Write(writer, payload.LoadLong(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreLong(field.fieldIndex, value);
+            payload.StoreLong(field.primIndex, value);
             return success;
         }
     }
@@ -70,12 +70,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public IntFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadInt(field.fieldIndex));
+            Write(writer, payload.LoadInt(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreInt(field.fieldIndex, value);
+            payload.StoreInt(field.primIndex, value);
             return success;
         }
     }
@@ -84,12 +84,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public ShortFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadShort(field.fieldIndex));
+            Write(writer, payload.LoadShort(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreShort(field.fieldIndex, value);
+            payload.StoreShort(field.primIndex, value);
             return success;
         }
     }
@@ -98,12 +98,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public ByteFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadByte(field.fieldIndex));
+            Write(writer, payload.LoadByte(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, 0, out bool success);
-            payload.StoreByte(field.fieldIndex, value);
+            payload.StoreByte(field.primIndex, value);
             return success;
         }
     }
@@ -112,12 +112,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public BoolFieldMapper(Type type) : base(type) { }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadBool(field.fieldIndex));
+            Write(writer, payload.LoadBool(field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
             var value = Read(reader, false, out bool success);
-            payload.StoreBool(field.fieldIndex, value);
+            payload.StoreBool(field.primIndex, value);
             return success;
         }
     }

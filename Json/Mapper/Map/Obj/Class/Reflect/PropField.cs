@@ -18,7 +18,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         // field ist set via reflection to enable using a readonly field
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   bool            isValueType;
-        public   readonly   int             fieldIndex;
+        public   readonly   int             primIndex;
+        public   readonly   int             objIndex;
         internal readonly   Type            fieldTypeNative;    // never null 
         internal            Bytes           nameBytes;          // dont mutate
         //
@@ -26,7 +27,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         private  readonly   PropertyInfo    getter;
         private  readonly   PropertyInfo    setter;
 
-        internal PropField (String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter, int fieldIndex)
+        internal PropField (String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter,
+            int primIndex, int objIndex)
         {
             this.name               = name;
             this.nameBytes          = new Bytes(name);
@@ -36,7 +38,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             this.field              = field;
             this.getter             = getter;
             this.setter             = setter;
-            this.fieldIndex         = fieldIndex;
+            this.primIndex          = primIndex;
+            this.objIndex           = objIndex;
             if (fieldType == null)
                 throw new InvalidOperationException("Expect fieldType non null");
         }

@@ -15,7 +15,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
     
     public class  FieldQuery
     {
-        internal readonly           List<PropField>     fieldList = new List <PropField>();
+        internal readonly   List<PropField>     fieldList = new List <PropField>();
+        internal            int                 primCount;
+        internal            int                 objCount;
 
         private static readonly     Type[] Types = new Type [] { typeof( FieldQuery ) };
 
@@ -36,14 +38,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (getter != null)
             {
                 PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
-                PropField pf = new PropField(name, getter.PropertyType, null, getter, setter, fieldList.Count);
+                PropField pf = true // getter.PropertyType.IsPrimitive
+                    ? new PropField(name, getter.PropertyType, null, getter, setter, primCount++, -1)
+                    : new PropField(name, getter.PropertyType, null, getter, setter, -1, objCount++);
                 fieldList. Add (pf);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = new PropField(name, field.FieldType,     field, null, null, fieldList.Count);
+                PropField pf = true // field.FieldType.IsPrimitive
+                    ? new PropField(name, field.FieldType,     field, null, null, primCount++, -1)
+                    : new PropField(name, field.FieldType,     field, null, null, -1, objCount++);
                 fieldList. Add (pf);
                 return;
             }

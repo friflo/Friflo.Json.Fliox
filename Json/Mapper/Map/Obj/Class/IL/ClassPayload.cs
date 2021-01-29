@@ -74,8 +74,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal readonly int   size;
 
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
-            var fields = propFields.fields;
-            size       = fields.Length;
+            size       = propFields.primCount;
             
             // create load/store instance expression
 

@@ -15,6 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         public      readonly    PropField []        fields;
         public      readonly    PropField []        fieldsSerializable;
         public      readonly    int                 num;
+        public      readonly    int                 primCount;
         
         
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -29,6 +30,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             try {
                 var query = new FieldQuery();
                 query.SetProperties(type);
+                primCount = query.primCount;
                 var fieldList = query.fieldList;
                 num = fieldList. Count;
                 fields = new PropField [num];
