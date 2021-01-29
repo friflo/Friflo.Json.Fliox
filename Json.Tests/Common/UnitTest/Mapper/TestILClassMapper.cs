@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test][Ignore("Prepare support for struct's as class fields")]
+        [Test]
         public void ReadJson() {
 
             string payloadStr = $@"
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(42,    result.child.val);
                 AreEqual(null,  result.childNull);
                 AreEqual(111,   result.childStruct1.val2);
-                AreEqual(112,   result.childStruct1.val2);
+                AreEqual(112,   result.childStruct2.val2);
             }
         }
         

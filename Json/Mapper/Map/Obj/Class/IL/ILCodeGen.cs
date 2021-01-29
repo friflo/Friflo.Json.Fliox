@@ -49,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static readonly MethodInfo DoubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
         private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
-        private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, UnaryExpression srcTyped) {
+        private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, Expression srcTyped) {
 
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
@@ -91,8 +91,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         dstAssign       = Exp.Assign(dstElement, longVal);              // dstElement = longVal;
                     } else {
                         // --- struct field
-                        var structTyped = Exp.Convert(memberVal, fieldType);            // <fieldType> structTyped = (<fieldType>)memberVal;
-                        AddLoadMembers(ctx, field.fieldType.GetPropFields(), structTyped);
+                        AddLoadMembers(ctx, field.fieldType.GetPropFields(), memberVal);
                         continue; // struct itself is not assigned - only its members
                     }
                 }
@@ -128,7 +127,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static readonly MethodInfo Int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
         private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
-        private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, UnaryExpression dstTyped) {
+        private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, Expression dstTyped) {
             
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
@@ -172,8 +171,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
                     } else {
                         // --- struct field
-                        var structTyped = Exp.Convert(dstMember, fieldType);           // <fieldType> structTyped = (<fieldType>)memberVal;
-                        AddStoreMembers(ctx, field.fieldType.GetPropFields(), structTyped);
+                        AddStoreMembers(ctx, field.fieldType.GetPropFields(), dstMember);
                         continue; // struct itself is not assigned - only its members
                     }
                 }
