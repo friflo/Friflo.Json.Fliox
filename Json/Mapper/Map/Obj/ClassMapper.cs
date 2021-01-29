@@ -113,8 +113,12 @@ namespace Friflo.Json.Mapper.Map.Obj
             return propFields;
         }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            object obj = payload.LoadObj(field.objIndex);
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            if (field.isStruct) { // todo add StructMapper
+                WriteILStruct(writer, payload, field, primPos, objPos);
+                return;
+            }
+            object obj = payload.LoadObj(objPos + field.objIndex);
             if (obj == null)
                 WriteUtils.AppendNull(writer);
             else
@@ -157,9 +161,9 @@ namespace Friflo.Json.Mapper.Map.Obj
                 WriteUtils.WriteKey(writer, field);
                 
                 if (writer.useIL) {
-                    field.fieldType.WriteField(writer, payload, field);
+                    field.fieldType.WriteField(writer, payload, field, 0, 0);
                     continue;
-                }                
+                }
                 object elemVar = field.GetField(obj);
                 // if (field.fieldType.varType == VarType.Object && elemVar == null) {
                 if (elemVar == null) {
@@ -292,6 +296,29 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return field;
             reader.parser.SkipEvent();
             return null;
+        }
+ 
+        // todo move to separate StructMapper
+        private void WriteILStruct(JsonWriter writer, ClassPayload payload, PropField structField, int primPos, int objPos) {
+            int startLevel = WriteUtils.IncLevel(writer);
+            ref var bytes = ref writer.bytes;
+            TypeMapper classMapper = structField.fieldType;
+            PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
+            bool firstMember = true;
+            bytes.AppendChar('{');
+
+            for (int n = 0; n < fields.Length; n++) {
+                if (firstMember)
+                    firstMember = false;
+                else
+                    bytes.AppendChar(',');
+                PropField field = fields[n];
+                WriteUtils.WriteKey(writer, field);
+                
+                field.fieldType.WriteField(writer, payload, field, primPos + structField.primIndex, objPos + structField.objIndex);
+            }
+            bytes.AppendChar('}');
+            WriteUtils.DecLevel(writer, startLevel);
         }
     }
 }

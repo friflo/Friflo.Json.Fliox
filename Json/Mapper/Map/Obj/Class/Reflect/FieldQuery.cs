@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (field != null) {
                 Type fieldType = field.FieldType;
                 if (addMembers) {
-                    PropField pf = fieldType.IsPrimitive
+                    PropField pf = fieldType.IsValueType
                         ? new PropField(fieldName, fieldType, field, null, null, primCount, -1)
                         : new PropField(fieldName, fieldType, field, null, null, -1, objCount);
                     fieldList. Add (pf);
@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (memberType.IsPrimitive)
                 primCount++;
             else if (memberType.IsValueType)
-                // struct itself has no position only its members. Their position need to be counted 
+                // struct itself must not be incremented only its members. Their position need to be counted 
                 TraverseMembers(memberType, false);
             else
                 objCount++; // object

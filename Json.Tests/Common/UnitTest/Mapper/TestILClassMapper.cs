@@ -20,7 +20,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     class SampleIL {
-        // public StructIL childStruct;
+        // public StructIL childStruct1;
+        // public StructIL childStruct2;
         public ChildIL  child;
         public ChildIL  childNull;
         public double   dbl;
@@ -35,7 +36,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         public void Init() {
             child = new ChildIL { val = 42 };
-            // childStruct.val2 = 43;
+            // childStruct1.val2 = 111;
+            // childStruct2.val2 = 112;
             childNull = null;
             dbl   = 22.5d;
             flt   = 33.5f;
@@ -169,3 +171,4 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 }
 
 #endif
+

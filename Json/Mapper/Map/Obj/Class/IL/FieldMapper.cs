@@ -26,8 +26,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class DoubleFieldMapper : DoubleMapper {
         public DoubleFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadDbl(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadDbl(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -40,8 +40,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class FloatFieldMapper : FloatMapper {
         public FloatFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadFlt(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadFlt(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -54,8 +54,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class LongFieldMapper : LongMapper {
         public LongFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadLong(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadLong(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -69,8 +69,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class IntFieldMapper : IntMapper {
         public IntFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadInt(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadInt(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -83,8 +83,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class ShortFieldMapper : ShortMapper {
         public ShortFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadShort(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadShort(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -97,8 +97,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class ByteFieldMapper : ByteMapper {
         public ByteFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadByte(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadByte(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
@@ -111,8 +111,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class BoolFieldMapper : BoolMapper {
         public BoolFieldMapper(Type type) : base(type) { }
         
-        public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, payload.LoadBool(field.primIndex));
+        public override void WriteField(JsonWriter writer, ClassPayload payload, PropField field, int primPos, int objPos) {
+            Write(writer, payload.LoadBool(primPos + field.primIndex));
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
