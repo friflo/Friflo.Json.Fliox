@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (getter != null)
             {
                 PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
-                PropField pf = true // getter.PropertyType.IsPrimitive
+                PropField pf = getter.PropertyType.IsPrimitive
                     ? new PropField(name, getter.PropertyType, null, getter, setter, primCount++, -1)
                     : new PropField(name, getter.PropertyType, null, getter, setter, -1, objCount++);
                 fieldList. Add (pf);
@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
-                PropField pf = true // field.FieldType.IsPrimitive
+                PropField pf = field.FieldType.IsPrimitive
                     ? new PropField(name, field.FieldType,     field, null, null, primCount++, -1)
                     : new PropField(name, field.FieldType,     field, null, null, -1, objCount++);
                 fieldList. Add (pf);

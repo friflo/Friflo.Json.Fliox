@@ -10,8 +10,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
     /// <summary>
     /// This class has two main purposes: 
-    /// 1. Load the fields of a class instance into the <see cref="data"/> array.
-    /// 2. Store the "instances fields" represented by the <see cref="data"/> array to the fields of a given class instance.
+    /// 1. Load the fields of a class instance into the <see cref="primitives"/> array.
+    /// 2. Store the "instances fields" represented by the <see cref="primitives"/> array to the fields of a given class instance.
     ///  
     /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe. 
     /// </summary>
@@ -20,46 +20,46 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
 #if !UNITY_5_3_OR_NEWER
         // payload size changes, depending on which class is used at the current classLevel
-        private     ValueList<long>     data = new ValueList<long>(8, AllocType.Persistent);
+        private     ValueList<long>     primitives = new ValueList<long>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
         public void LoadInstance(TypeMapper classType, object obj) {
             layout = classType.GetClassLayout();
-            data.Resize(layout.size);
+            primitives.Resize(layout.primCount);
             
-            layout.loadObjectToPayload(data.array, obj);
+            layout.loadObjectToPayload(primitives.array, obj);
         }
         
         public void StoreInstance(object obj) {
-            layout.storePayloadToObject(obj, data.array);
+            layout.storePayloadToObject(obj, primitives.array);
         }
         
         public void Dispose() {
-            data.Dispose();
+            primitives.Dispose();
         }
         
-        public void     StoreDbl    (int idx,           double value) {  data.array[idx] = BitConverter.DoubleToInt64Bits(value); }
+        public void     StoreDbl    (int idx,           double value) {  primitives.array[idx] = BitConverter.DoubleToInt64Bits(value); }
         public double   LoadDbl     (int idx) {
-            return BitConverter.Int64BitsToDouble(                       data.array[idx]); }
+            return BitConverter.Int64BitsToDouble(                       primitives.array[idx]); }
         
-        public void     StoreFlt    (int idx,           float value) {   data.array[idx] = BitConverter.SingleToInt32Bits(value); }
+        public void     StoreFlt    (int idx,           float value) {   primitives.array[idx] = BitConverter.SingleToInt32Bits(value); }
         public float    LoadFlt     (int idx) {
-            return BitConverter.Int32BitsToSingle(                  (int)data.array[idx]); }
+            return BitConverter.Int32BitsToSingle(                  (int)primitives.array[idx]); }
 
-        public void     StoreLong   (int idx,            long value)   { data.array[idx] = value; }
-        public long     LoadLong    (int idx)                   { return data.array[idx]; }
+        public void     StoreLong   (int idx,            long value)   { primitives.array[idx] = value; }
+        public long     LoadLong    (int idx)                   { return primitives.array[idx]; }
         
-        public void     StoreInt    (int idx,            int value)    { data.array[idx] = value; }
-        public int      LoadInt     (int idx)  { return (int)            data.array[idx]; }
+        public void     StoreInt    (int idx,            int value)    { primitives.array[idx] = value; }
+        public int      LoadInt     (int idx)  { return (int)            primitives.array[idx]; }
         
-        public void     StoreShort  (int idx,            short value)  { data.array[idx] = value; }
-        public short    LoadShort   (int idx)  { return (short)          data.array[idx]; }
+        public void     StoreShort  (int idx,            short value)  { primitives.array[idx] = value; }
+        public short    LoadShort   (int idx)  { return (short)          primitives.array[idx]; }
         
-        public void     StoreByte   (int idx,            byte value)   { data.array[idx] = value; }
-        public byte     LoadByte    (int idx)  { return (byte)           data.array[idx]; }
+        public void     StoreByte   (int idx,            byte value)   { primitives.array[idx] = value; }
+        public byte     LoadByte    (int idx)  { return (byte)           primitives.array[idx]; }
         
-        public void     StoreBool   (int idx,            bool value)   { data.array[idx] = value ? 1 : 0; }
-        public bool     LoadBool    (int idx)  { return                  data.array[idx] != 0; }
+        public void     StoreBool   (int idx,            bool value)   { primitives.array[idx] = value ? 1 : 0; }
+        public bool     LoadBool    (int idx)  { return                  primitives.array[idx] != 0; }
 #else
         // Unity dummies
         public void LoadInstance(TypeMapper classType, object obj) {}
@@ -71,10 +71,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     public readonly struct ClassLayout
     {
 #if !UNITY_5_3_OR_NEWER
-        internal readonly int   size;
+        internal readonly int   primCount;
 
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
-            size       = propFields.primCount;
+            primCount       = propFields.primCount;
             
             // create load/store instance expression
 
