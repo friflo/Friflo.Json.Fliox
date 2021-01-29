@@ -20,18 +20,19 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
 #if !UNITY_5_3_OR_NEWER
         // payload size changes, depending on which class is used at the current classLevel
-        private     ValueList<long>     primitives = new ValueList<long>(8, AllocType.Persistent);
+        private     ValueList<long>     primitives = new ValueList<long>  (8, AllocType.Persistent);
+        private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
         public void LoadInstance(TypeMapper classType, object obj) {
             layout = classType.GetClassLayout();
             primitives.Resize(layout.primCount);
             
-            layout.loadObjectToPayload(primitives.array, obj);
+            layout.loadObjectToPayload(primitives.array, objects.array, obj);
         }
         
         public void StoreInstance(object obj) {
-            layout.storePayloadToObject(obj, primitives.array);
+            layout.storePayloadToObject(obj, primitives.array, objects.array);
         }
         
         public void Dispose() {
@@ -78,8 +79,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             
             // create load/store instance expression
 
-            Action<long[], object> load = null;
-            Action<object, long[]> store = null;
+            Action<long[], object[], object> load = null;
+            Action<object, long[], object[]> store = null;
             if (config.useIL) {
                 var loadLambda = ILCodeGen.LoadInstanceExpression(propFields, type);
                 load  = loadLambda.Compile();
@@ -91,8 +92,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             storePayloadToObject = store;
         }
 
-        internal readonly Action<long[], object>  loadObjectToPayload; 
-        internal readonly Action<object, long[]>  storePayloadToObject;
+        internal readonly Action<long[], object[], object>  loadObjectToPayload; 
+        internal readonly Action<object, long[], object[]>  storePayloadToObject;
 #else
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) { }
 #endif

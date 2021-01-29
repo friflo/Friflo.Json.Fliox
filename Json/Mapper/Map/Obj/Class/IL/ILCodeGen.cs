@@ -19,9 +19,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // The idea of loading/storing all fields of a class with one method call came to this nice blog:
         // [Optimizing reflection in C# via dynamic code generation | by Sergio Pedri | Medium]
         // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
-        internal static Expression<Action<long[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
-            var dst         = Exp.Parameter(typeof(long[]), "dst");     // parameter: long[] dst;
-            var src         = Exp.Parameter(typeof(object), "src");     // parameter: object src;
+        internal static Expression<Action<long[], object[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
+            var dst         = Exp.Parameter(typeof(long[]),   "dst");     // parameter: long[]   dst;
+            var dstObj      = Exp.Parameter(typeof(object[]), "dstObj");  // parameter: object[] dstObj;
+            var src         = Exp.Parameter(typeof(object),   "src");     // parameter: object   src;
             
             var srcTyped    = Exp.Convert(src, type);                   // <Type> srcTyped = (<Type>)src;
             
@@ -65,15 +66,16 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             }
             var assignmentsBlock= Exp.Block(assignmentList);
             
-            var lambda = Exp.Lambda<Action<long[], object>> (assignmentsBlock, dst, src);
+            var lambda = Exp.Lambda<Action<long[], object[], object>> (assignmentsBlock, dst, dstObj, src);
             return lambda;
         }
 
-        internal static Expression<Action<object, long[]>> StoreInstanceExpression (PropertyFields propFields, Type type) {
-            var dst         = Exp.Parameter(typeof(object), "dst");     // parameter: long[] dst;
-            var src         = Exp.Parameter(typeof(long[]), "src");     // parameter: object src;
+        internal static Expression<Action<object, long[], object[]>> StoreInstanceExpression (PropertyFields propFields, Type type) {
+            var dst         = Exp.Parameter(typeof(object),   "dst");       // parameter: long[]   dst;
+            var src         = Exp.Parameter(typeof(long[]),   "src");       // parameter: object   src;
+            var srcObj      = Exp.Parameter(typeof(object[]), "srcObj");    // parameter: object[] srcObj;
             
-            var dstTyped    = Exp.Convert(dst, type);                   // <Type> dstTyped = (<Type>)dst;
+            var dstTyped    = Exp.Convert(dst, type);                       // <Type> dstTyped = (<Type>)dst;
             
             var int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
             var int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
@@ -115,7 +117,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             }
             var assignmentsBlock= Exp.Block(assignmentList);
             
-            var lambda = Exp.Lambda<Action<object, long[]>> (assignmentsBlock, dst, src);
+            var lambda = Exp.Lambda<Action<object, long[], object[]>> (assignmentsBlock, dst, src, srcObj);
             return lambda;
         }
     }
