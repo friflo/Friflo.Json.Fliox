@@ -126,20 +126,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(42,    result.child.val);
                 AreEqual(null,  result.childNull);
             }
-        }  
-    }
-    
-    public class TestILPerformance {
-        public Child   child1;
-        public Child   child2;
-        public Child   child3;
-        public Child   child4;
-        public Child   child5;
-        public Child   child6;
-        public Child   child7;
-        public Child   child8;
-
-        public class Child {
         }
         
         [Test]
@@ -167,6 +153,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(obj);
             }
         }
+    }
+    
+    public class TestILPerformance {
+        public Child   child1;
+        public Child   child2;
+        public Child   child3;
+        public Child   child4;
+        public Child   child5;
+        public Child   child6;
+        public Child   child7;
+        public Child   child8;
+
+        public class Child {
+        }
+        
+
     }
 }
 
