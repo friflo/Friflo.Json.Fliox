@@ -17,10 +17,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         class LoadContext {
             internal            ParameterExpression    dst;
             internal            ParameterExpression    dstObj;
-            internal            ParameterExpression    src;
-            internal            UnaryExpression        srcTyped;
+
             internal readonly   List<BinaryExpression> assignmentList = new List<BinaryExpression>();
-            internal            PropertyFields         propFields;
             
             internal            int                    primIndex;
             internal            int                    objIndex;
@@ -34,35 +32,34 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
         internal static Expression<Action<long[], object[], object>> LoadInstanceExpression (PropertyFields propFields, Type type) {
             var ctx = new LoadContext();
-            ctx.propFields  = propFields;
             ctx.dst         = Exp.Parameter(typeof(long[]),   "dst");     // parameter: long[]   dst;
             ctx.dstObj      = Exp.Parameter(typeof(object[]), "dstObj");  // parameter: object[] dstObj;
-            ctx.src         = Exp.Parameter(typeof(object),   "src");     // parameter: object   src;
             
-            ctx.srcTyped    = Exp.Convert(ctx.src, type);                 // <Type> srcTyped = (<Type>)src;
-            
-            AddLoadMembers(ctx);
+            var src         = Exp.Parameter(typeof(object),   "src");     // parameter: object   src;
+            var srcTyped    = Exp.Convert(src, type);                     // <Type> srcTyped = (<Type>)src;
+
+            AddLoadMembers(ctx, propFields, srcTyped);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
             
-            var lambda = Exp.Lambda<Action<long[], object[], object>> (assignmentsBlock, ctx.dst, ctx.dstObj, ctx.src);
+            var lambda = Exp.Lambda<Action<long[], object[], object>> (assignmentsBlock, ctx.dst, ctx.dstObj, src);
             return lambda;
         }
 
         private static readonly MethodInfo DoubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
         private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
-        private static void AddLoadMembers (LoadContext ctx) {
+        private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, UnaryExpression srcTyped) {
 
-            for (int n = 0; n < ctx.propFields.fields.Length; n++) {
-                PropField field = ctx.propFields.fields[n];
+            for (int n = 0; n < propFields.fields.Length; n++) {
+                PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
                 
                 MemberExpression memberVal;
                 if (field.field != null)
-                    memberVal   = Exp.Field(   ctx.srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
+                    memberVal   = Exp.Field(   srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
                 else
-                    memberVal   = Exp.Property(ctx.srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
+                    memberVal   = Exp.Property(srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
 
                 BinaryExpression dstAssign;
                 if (!fieldType.IsPrimitive && !fieldType.IsValueType) {
@@ -102,12 +99,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         class StoreContext {
-            internal            ParameterExpression    dst;
             internal            ParameterExpression    src;
             internal            ParameterExpression    srcObj;
-            internal            UnaryExpression        dstTyped;
+            
             internal readonly   List<BinaryExpression> assignmentList = new List<BinaryExpression>();
-            internal            PropertyFields         propFields;
             
             internal            int                    primIndex;
             internal            int                    objIndex;
@@ -115,34 +110,33 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         internal static Expression<Action<object, long[], object[]>> StoreInstanceExpression (PropertyFields propFields, Type type) {
             var ctx = new StoreContext();
-            ctx.propFields  = propFields;
-            ctx.dst         = Exp.Parameter(typeof(object),   "dst");       // parameter: long[]   dst;
+            var dst         = Exp.Parameter(typeof(object),   "dst");       // parameter: long[]   dst;
             ctx.src         = Exp.Parameter(typeof(long[]),   "src");       // parameter: object   src;
             ctx.srcObj      = Exp.Parameter(typeof(object[]), "srcObj");    // parameter: object[] srcObj;
             
-            ctx.dstTyped    = Exp.Convert(ctx.dst, type);                   // <Type> dstTyped = (<Type>)dst;
+            var dstTyped    = Exp.Convert(dst, type);                   // <Type> dstTyped = (<Type>)dst;
             
-            AddStoreMembers(ctx);
+            AddStoreMembers(ctx, propFields, dstTyped);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
-            var lambda = Exp.Lambda<Action<object, long[], object[]>> (assignmentsBlock, ctx.dst, ctx.src, ctx.srcObj);
+            var lambda = Exp.Lambda<Action<object, long[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
             return lambda;
         }
         
         private static readonly MethodInfo Int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
         private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
-        private static void AddStoreMembers (StoreContext ctx) {
+        private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, UnaryExpression dstTyped) {
             
-            for (int n = 0; n < ctx.propFields.fields.Length; n++) {
-                PropField field = ctx.propFields.fields[n];
+            for (int n = 0; n < propFields.fields.Length; n++) {
+                PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
                 
                 MemberExpression dstMember;
                 if (field.field != null)
-                    dstMember   = Exp.Field   (ctx.dstTyped, field.name);           // ref dstMember = ref dstTyped.<field.name>;
+                    dstMember   = Exp.Field   (dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
                 else
-                    dstMember   = Exp.Property(ctx.dstTyped, field.name);           // ref dstMember = ref dstTyped.<field.name>;
+                    dstMember   = Exp.Property(dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
                 
                 BinaryExpression dstAssign;
                 if (!fieldType.IsPrimitive) {
