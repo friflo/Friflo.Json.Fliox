@@ -62,7 +62,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             if (memberType.IsPrimitive)
                 primCount++;
             else if (memberType.IsValueType)
-                TraverseMembers(memberType, false); // struct have to count its members
+                // struct itself has no position only its members. Their position need to be counted 
+                TraverseMembers(memberType, false);
             else
                 objCount++; // object
         }
