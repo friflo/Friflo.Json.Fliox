@@ -16,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     
     class SampleIL {
         public ChildIL  child;
+        public ChildIL  childNull;
         public double   dbl;
         public float    flt;
         
@@ -28,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         public void Init() {
             child = new ChildIL { val = 42 };
+            childNull = null;
             dbl   = 22.5d;
             flt   = 33.5f;
             
@@ -49,6 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""child"": {{
         ""val"": 42
     }},
+    ""childNull"": null,
     ""dbl"":   22.5,
     ""flt"":   33.5,
 
@@ -81,6 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""child"": {{
         ""val"": 42
     }},
+    ""childNull"": null,
     ""dbl"":   22.5,
     ""flt"":   33.5,
 
@@ -110,8 +114,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(12,    result.int16);
                 AreEqual(13,    result.int8);
                 AreEqual(true,  result.bln);
+                AreEqual(42,    result.child.val);
+                AreEqual(null,  result.childNull);
             }
         }  
+    }
+    
+    public class TestILPerformance {
+        public Child   child1;
+        public Child   child2;
+        public Child   child3;
+        public Child   child4;
+        public Child   child5;
+        public Child   child6;
+        public Child   child7;
+        public Child   child8;
+
+        public class Child {
+        }
+        
+        [Test]
+        public void RunSetValue () {
+            string payloadStr = $@"
+{{
+    ""child1"":   {{}},
+    ""child2"":   {{}},
+    ""child3"":   {{}},
+    ""child4"":   {{}},
+    ""child5"":   {{}},
+    ""child6"":   {{}},
+    ""child7"":   {{}},
+    ""child8"":   {{}},
+}}
+";
+            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (Bytes        json        = new Bytes(payloadStr)) {
+                var obj = new TestILPerformance();
+                for (int n = 0; n < 5; n++)
+                    writer.Write(obj);
+            }
+        }
     }
 }
 

@@ -113,7 +113,11 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override void WriteField (JsonWriter writer, ClassPayload payload, PropField field) {
-            Write(writer, (T)payload.LoadObj(field.objIndex));
+            object obj = payload.LoadObj(field.objIndex);
+            if (obj == null)
+                WriteUtils.AppendNull(writer);
+            else
+                Write(writer, (T)obj);
         }
 
         public override bool ReadField  (JsonReader reader, ClassPayload payload, PropField field) {
