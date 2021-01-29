@@ -72,6 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // Unity dummies
         public void LoadInstance(TypeMapper classType, object obj) {}
         public void StoreInstance(object obj) {}
+        internal void ClearObjectReferences() {}
         public void Dispose() {}
 #endif
     }
