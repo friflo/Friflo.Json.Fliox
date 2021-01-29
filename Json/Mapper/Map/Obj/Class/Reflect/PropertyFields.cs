@@ -12,11 +12,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
 #endif
     public sealed class PropertyFields : IDisposable
     {
-        public      readonly    PropField []        fields;
-        public      readonly    PropField []        fieldsSerializable;
-        public      readonly    int                 num;
-        public      readonly    int                 primCount;
-        
+        public      readonly    PropField []    fields;
+        public      readonly    PropField []    fieldsSerializable;
+        public      readonly    int             num;
+        public      readonly    int             primCount;
+        public      readonly    int             objCount;
+    
         
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private     readonly    String              typeName;
@@ -31,6 +32,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
                 var query = new FieldQuery();
                 query.SetProperties(type);
                 primCount = query.primCount;
+                objCount  = query.objCount;
                 var fieldList = query.fieldList;
                 num = fieldList. Count;
                 fields = new PropField [num];

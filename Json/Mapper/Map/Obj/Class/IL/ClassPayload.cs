@@ -27,6 +27,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public void LoadInstance(TypeMapper classType, object obj) {
             layout = classType.GetClassLayout();
             primitives.Resize(layout.primCount);
+            objects.   Resize(layout.objCount);
             
             layout.loadObjectToPayload(primitives.array, objects.array, obj);
         }
@@ -37,6 +38,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         
         public void Dispose() {
             primitives.Dispose();
+            objects.   Dispose();
         }
         
         public void     StoreDbl    (int idx,           double value) {  primitives.array[idx] = BitConverter.DoubleToInt64Bits(value); }
@@ -73,9 +75,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     {
 #if !UNITY_5_3_OR_NEWER
         internal readonly int   primCount;
+        internal readonly int   objCount;
 
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
             primCount       = propFields.primCount;
+            objCount        = propFields.objCount;
             
             // create load/store instance expression
 

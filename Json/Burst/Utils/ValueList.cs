@@ -7,9 +7,9 @@ namespace Friflo.Json.Burst.Utils
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct ValueList<T> // : IDisposable where T : struct
-    {
 #if JSON_BURST
+    public struct ValueList<T> : IDisposable where T : struct
+    {
         public Unity.Collections.NativeList<T> array;
 
         public ValueList(int size,  AllocType allocType) {
@@ -47,8 +47,12 @@ namespace Friflo.Json.Burst.Utils
         public bool IsCreated() {
             return array.IsCreated;
         }
+    }
         
 #else // MANAGED
+    // managed version does not have the constraint: where T : struct
+    public struct ValueList<T> : IDisposable 
+    {
         public T[] array;
         private int len;
 
@@ -111,6 +115,6 @@ namespace Friflo.Json.Burst.Utils
         public bool IsCreated() {
             return array != null;
         }
-#endif
     }
+#endif
 }
