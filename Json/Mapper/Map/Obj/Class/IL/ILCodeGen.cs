@@ -91,7 +91,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         dstAssign       = Exp.Assign(dstElement, longVal);              // dstElement = longVal;
                     } else {
                         // --- struct field
-                        dstAssign = null;
+                        var structTyped = Exp.Convert(memberVal, fieldType);            // <fieldType> structTyped = (<fieldType>)memberVal;
+                        AddLoadMembers(ctx, field.fieldType.GetPropFields(), structTyped);
+                        continue; // struct itself is not assigned - only its members
                     }
                 }
                 ctx.assignmentList.Add(dstAssign);

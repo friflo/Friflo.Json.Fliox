@@ -27,81 +27,68 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             this.useIL = useIL;
         }
 
-        private void Set(Type type, String name)
-        {
-            CreatePropField (type, name, name);
-        }
-
-        public void Set(Type type, String name, String field)
-        {
-            CreatePropField (type, name, field);
-        }
-        
-        private void CreatePropField (Type type, String name, String fieldName) {
+        private void CreatePropField (Type type, String fieldName, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
-            if (getter != null)
-            {
-                PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName );
+            if (getter != null) {
                 Type propType = getter.PropertyType;
-                // is struct?
-                if (useIL && propType.IsValueType && !propType.IsPrimitive) {
-                    
+                if (addMembers) {
+                    PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName);
+                    PropField pf = propType.IsValueType
+                        ? new PropField(fieldName, propType, null, getter, setter, primCount, -1)
+                        : new PropField(fieldName, propType, null, getter, setter, -1, objCount);
+                    fieldList.Add(pf);
                 }
-                PropField pf = propType.IsPrimitive
-                    ? new PropField(name, propType, null, getter, setter, primCount++, -1)
-                    : new PropField(name, propType, null, getter, setter, -1, objCount++);
-                fieldList. Add (pf);
+                IncrementILCounts(propType);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
                 Type fieldType = field.FieldType;
-                // is struct?
-                if (useIL && fieldType.IsValueType && !fieldType.IsPrimitive) {
-                    
+                if (addMembers) {
+                    PropField pf = fieldType.IsPrimitive
+                        ? new PropField(fieldName, fieldType, field, null, null, primCount, -1)
+                        : new PropField(fieldName, fieldType, field, null, null, -1, objCount);
+                    fieldList. Add (pf);
                 }
-                PropField pf = fieldType.IsPrimitive
-                    ? new PropField(name, fieldType,     field, null, null, primCount++, -1)
-                    : new PropField(name, fieldType,     field, null, null, -1, objCount++);
-                fieldList. Add (pf);
+                IncrementILCounts(fieldType);
                 return;
             }
-            throw new FrifloException ("Field '" + name + "' ('" + fieldName + "') not found in type " + type);
+            throw new FrifloException ("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
         }
 
+        private void IncrementILCounts(Type memberType) {
+            if (memberType.IsPrimitive)
+                primCount++;
+            else if (memberType.IsValueType)
+                TraverseMembers(memberType, false); // struct have to count its members
+            else
+                objCount++; // object
+        }
 
-        private static MethodInfo GetPropertiesDeclaration (Type type)
-        {
+        private static MethodInfo GetPropertiesDeclaration (Type type) {
             return ReflectUtils.GetMethodEx(type, "SetProperties", Types);
         }
 
-        internal void SetProperties (Type type)
-        {
-            try
-            {
-                MethodInfo method = GetPropertiesDeclaration(type);
-                if (method != null)
-                {
-                    Object[] args = new Object[] { this };
-                    ReflectUtils.Invoke (method, null, args);
-                }
-                else
-                {
-                    PropertyInfo[] properties = ReflectUtils.GetProperties(type);
-                    for (int n = 0; n < properties. Length; n++)
-                        Set(type, properties[n]. Name);
+        internal void SetProperties (Type type) {
+            MethodInfo method = GetPropertiesDeclaration(type);
+            if (method != null) {
+                Object[] args = new Object[] { this };
+                ReflectUtils.Invoke (method, null, args);
+            } else {
+                TraverseMembers(type, true);
+            }
+        }
 
-                    FieldInfo[] field = ReflectUtils.GetFields(type);
-                    for (int n = 0; n < field. Length; n++)
-                        Set(type, field[n]. Name);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("SetProperties() failed for type: " + type, e);
-            }
+        private void TraverseMembers(Type type, bool addMembers) {
+            PropertyInfo[] properties = ReflectUtils.GetProperties(type);
+            for (int n = 0; n < properties. Length; n++)
+                CreatePropField(type, properties[n]. Name, addMembers);
+
+            FieldInfo[] field = ReflectUtils.GetFields(type);
+            for (int n = 0; n < field. Length; n++)
+                CreatePropField(type, field[n]. Name, addMembers);
         }
     }
 }

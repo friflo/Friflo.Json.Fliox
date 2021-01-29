@@ -84,18 +84,22 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 #endif
     }
 
-    public readonly struct ClassLayout
+    public struct ClassLayout
     {
 #if !UNITY_5_3_OR_NEWER
         internal readonly int   primCount;
         internal readonly int   objCount;
 
-        internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
+        internal ClassLayout(PropertyFields  propFields) {
             primCount       = propFields.primCount;
             objCount        = propFields.objCount;
+            loadObjectToPayload = null;
+            storePayloadToObject = null;
+        }
+
+        internal void InitClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) {
             
             // create load/store instance expression
-
             Action<long[], object[], object> load = null;
             Action<object, long[], object[]> store = null;
             if (config.useIL) {
@@ -109,8 +113,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             storePayloadToObject = store;
         }
 
-        internal readonly Action<long[], object[], object>  loadObjectToPayload; 
-        internal readonly Action<object, long[], object[]>  storePayloadToObject;
+        internal Action<long[], object[], object>  loadObjectToPayload; 
+        internal Action<object, long[], object[]>  storePayloadToObject;
 #else
         internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) { }
 #endif

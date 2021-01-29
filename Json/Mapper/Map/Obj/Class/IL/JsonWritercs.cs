@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper
                 handlerStack[n].ClearObjectReferences();
         }
         
-        /// <summary> Load the fields of a class instance into the <see cref="ClassPayload.data"/> array. </summary>
+        /// <summary> Load the fields of a class instance into the <see cref="ClassPayload"/> arrays. </summary>
         internal ClassPayload InstanceLoad(TypeMapper classType, object obj) {
             if (classLevel >= handlerStack.Count)
                 handlerStack.Add(new ClassPayload());

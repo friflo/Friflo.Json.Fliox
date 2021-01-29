@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         private readonly PropertyFields                 propFields;
         private readonly ConstructorInfo                constructor;
         private readonly Bytes                          removedKey;
-        private readonly ClassLayout                    layout;
+        private          ClassLayout                    layout;
         
         public override string DataTypeName() { return "class"; }
 
@@ -63,7 +63,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
             }
-            layout = new ClassLayout(type, propFields, config);
+            layout = new ClassLayout(propFields);
             this.constructor = constructor;
         }
         
@@ -82,6 +82,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(field, mapper);
             }
+            layout.InitClassLayout(type, propFields, typeStore.typeResolver.GetConfig());
         }
         
         private static bool IsNullable(Type type) {
