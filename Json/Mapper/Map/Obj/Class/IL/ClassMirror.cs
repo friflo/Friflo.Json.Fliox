@@ -116,7 +116,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal Action<long[], object[], object>  loadObjectToPayload; 
         internal Action<object, long[], object[]>  storePayloadToObject;
 #else
-        internal ClassLayout(Type type, PropertyFields  propFields, ResolverConfig config) { }
+        // Unity dummies
+        internal        ClassLayout     (PropertyFields  propFields) { }
+        internal void   InitClassLayout (Type type, PropertyFields propFields, ResolverConfig config) { }
 #endif
     }
 }
