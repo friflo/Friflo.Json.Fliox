@@ -39,6 +39,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal void ClearObjectReferences() {
             for (int n = 0; n < objects.Count; n++)
                 objects.array[n] = null;
+            objects.Resize(0); // prevent clearing already cleared objects
         }
         
         public void Dispose() {
