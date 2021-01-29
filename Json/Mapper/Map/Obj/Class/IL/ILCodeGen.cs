@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Exp = System.Linq.Expressions.Expression;
     
@@ -47,12 +48,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var lambda = Exp.Lambda<Action<long[], object[], object>> (assignmentsBlock, ctx.dst, ctx.dstObj, ctx.src);
             return lambda;
         }
-        
+
+        private static readonly MethodInfo DoubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
+        private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
+
         private static void AddLoadMembers (LoadContext ctx) {
-            
-            var doubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
-            var singleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
-            
+
             for (int n = 0; n < ctx.propFields.fields.Length; n++) {
                 PropField field = ctx.propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
@@ -79,10 +80,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             longVal     = Exp.Condition(memberVal, Exp.Constant(1L), Exp.Constant(0L)); // longVal   = memberVal ? 1 : 0;
                         } else if (fieldType == typeof(double)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            longVal     = Exp.Call(doubleToInt64Bits, memberVal);       // longVal = BitConverter.DoubleToInt64Bits(memberVal);
+                            longVal     = Exp.Call(DoubleToInt64Bits, memberVal);       // longVal = BitConverter.DoubleToInt64Bits(memberVal);
                         } else if (fieldType == typeof(float)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            var intVal  = Exp.Call(singleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
+                            var intVal  = Exp.Call(SingleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
                             longVal     = Exp.Convert(intVal, typeof(long));            // longVal = (long)intVal;
                         }
                         else
@@ -127,10 +128,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             var lambda = Exp.Lambda<Action<object, long[], object[]>> (assignmentsBlock, ctx.dst, ctx.src, ctx.srcObj);
             return lambda;
         }
-            
+        
+        private static readonly MethodInfo Int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
+        private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
+
         private static void AddStoreMembers (StoreContext ctx) {
-            var int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
-            var int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
             
             for (int n = 0; n < ctx.propFields.fields.Length; n++) {
                 PropField field = ctx.propFields.fields[n];
@@ -161,11 +163,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         srcTyped    = Exp.Condition(not0, Exp.Constant(true), Exp.Constant(false)); // srcTyped = srcElement != 0;
                     } else if (fieldType == typeof(double)) {
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        srcTyped    = Exp.Call(int64BitsToDouble, srcElement);      // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                        srcTyped    = Exp.Call(Int64BitsToDouble, srcElement);      // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
                     } else if (fieldType == typeof(float)) {
                         var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        srcTyped    = Exp.Call(int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
+                        srcTyped    = Exp.Call(Int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
                     }
                     else
                         throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
