@@ -26,9 +26,9 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         public static bool IsNull<T>(T value) {
             Type type = typeof(T);
-            if (type.IsValueType)
-                return Nullable.GetUnderlyingType(typeof(T)) != null && EqualityComparer<T>.Default.Equals(value, default);
-            return value == null;
+            if (type.IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null)
+                return false;
+            return EqualityComparer<T>.Default.Equals(value, default);
         }
     }
 }
