@@ -2,6 +2,7 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -67,10 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     
     public class TestILClassMapper
     {
-        [Test]
-        public void WriteJson() {
-
-            string payloadStr = $@"
+        readonly string payloadStr = $@"
 {{
     ""childStruct1"": {{
         ""val2"": 111
@@ -93,6 +91,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""bln"":   true
 }}
 ";
+        
+        [Test]
+        public void WriteJson() {
+
+
             string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
             var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
@@ -108,30 +111,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadJson() {
-
-            string payloadStr = $@"
-{{
-    ""childStruct1"": {{
-        ""val2"": 111
-    }},
-    ""childStruct2"": {{
-        ""val2"": 112
-    }},
-    ""child"": {{
-        ""val"": 42
-    }},
-    ""childNull"": null,
-    ""dbl"":   22.5,
-    ""flt"":   33.5,
-
-    ""int64"": 10,
-    ""int32"": 11,
-    ""int16"": 12,
-    ""int8"":  13,
-
-    ""bln"":   true
-}}
-";
             var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
             using (TypeStore    typeStore   = new TypeStore(resolver))
@@ -158,46 +137,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void RunSetValue () {
-            string payloadStr = $@"
-{{
-    ""child1"":   {{}},
-    ""child2"":   {{}},
-    ""child3"":   {{}},
-    ""child4"":   {{}},
-    ""child5"":   {{}},
-    ""child6"":   {{}},
-    ""child7"":   {{}},
-    ""child8"":   {{}},
-}}
-";
+        public void EnsureNoAllocations () {
+
+            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
             using (TypeStore    typeStore   = new TypeStore(resolver))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (JsonReader   reader      = new JsonReader(typeStore))
-            using (Bytes        json        = new Bytes(payloadStr)) {
-                var obj = new TestILPerformance();
-                for (int n = 0; n < 5; n++)
+            {
+                var obj = new SampleIL();
+                int iterations = 1000;
+                for (int n = 0; n < iterations; n++) {
+                    memLog.Snapshot();
                     writer.Write(obj);
+                }
             }
+            memLog.AssertNoAllocations();
         }
-    }
-    
-    public class TestILPerformance {
-        public Child   child1;
-        public Child   child2;
-        public Child   child3;
-        public Child   child4;
-        public Child   child5;
-        public Child   child6;
-        public Child   child7;
-        public Child   child8;
-
-        public class Child {
-        }
-        
-
     }
 }
 
