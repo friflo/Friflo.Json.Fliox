@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     [CLSCompliant(true)]
     public class ClassILMapper<T> : ClassMapper<T> {
 
-        private         ClassLayout<T>                    layout;
+        private readonly    ClassLayout<T>                    layout;
 
         public override ClassLayout GetClassLayout() { return layout; }
         

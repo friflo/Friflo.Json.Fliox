@@ -120,7 +120,7 @@ namespace Friflo.Json.Mapper.Map
         }
         
         public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams) {
-            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             var genericTypeArgs = genericType.MakeGenericType(genericArgs);
             return Activator.CreateInstance(genericTypeArgs, flags, null, constructorParams, null);
         } 

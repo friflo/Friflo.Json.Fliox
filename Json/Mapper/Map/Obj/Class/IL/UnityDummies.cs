@@ -1,7 +1,10 @@
-﻿using System;
-using Friflo.Json.Mapper.Map.Val;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
 
 #if UNITY_5_3_OR_NEWER
+
+using System;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {

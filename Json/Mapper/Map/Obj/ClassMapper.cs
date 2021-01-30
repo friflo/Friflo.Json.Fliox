@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         public override string DataTypeName() { return "class"; }
 
        
-        public ClassMapper (Type type, ConstructorInfo constructor) :
+        protected ClassMapper (Type type, ConstructorInfo constructor) :
             base (type, IsNullable(type))
         {
             removedKey = new Bytes("__REMOVED");
