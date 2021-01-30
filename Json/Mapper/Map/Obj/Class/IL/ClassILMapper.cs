@@ -37,37 +37,48 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     WriteUtils.AppendNull(writer);
                 else
                     Write(writer, (T) obj);
-            } else {
-                throw new NotImplementedException();
+                return;
             }
+            throw new NotImplementedException();
+            
         }
 
         public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            T src = (T) mirror.LoadObj(objPos + field.objIndex);
-            T value = Read(reader, src, out bool success);
-            mirror.StoreObj(objPos + field.objIndex, value);
-            return success;
+            if (!isValueType) {
+                T src = (T) mirror.LoadObj(objPos + field.objIndex);
+                T value = Read(reader, src, out bool success);
+                mirror.StoreObj(objPos + field.objIndex, value);
+                return success;
+            }
+            throw new NotImplementedException();
         }
         
         // ----------------------------------- Write / Read -----------------------------------
-    
+
         public override T Read(JsonReader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
             if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
-                
+
             T obj = slot;
             TypeMapper classType = this;
             classType = GetPolymorphType(reader, classType, ref obj, out success);
             if (!success)
                 return default;
             
+            ClassMirror mirror = reader.InstanceLoad(classType, obj);
+            if (!ReadClassMirror(reader, mirror, classType))
+                return default;
+            reader.InstanceStore(mirror, obj);
+            return obj;
+        }
+
+        private static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType) {
             ref var parser = ref reader.parser;
             JsonEvent ev = parser.Event;
 
-            ClassMirror mirror = reader.InstanceLoad(classType, obj);
-
             while (true) {
+                bool success;
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
@@ -83,7 +94,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             object subRet = mirror.LoadObj(field.objIndex);
                             if (!fieldType.isNullable && subRet == null) {
                                 ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return default;
+                                return false;
                             }
                         }
                         break;
@@ -103,28 +114,25 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         fieldType = field.fieldType;
                         if (fieldType.isValueType) {
                             if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
-                                return default;
+                                return false;
                         } else {
                             object sub = mirror.LoadObj(field.objIndex);
                             object subRet = fieldType.ReadObject(reader, sub, out success);
                             if (!success)
-                                return default;
+                                return false;
                             if (!fieldType.isNullable && subRet == null) {
                                 ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return default;
+                                return false;
                             }
                             mirror.StoreObj(field.objIndex, subRet);
                         }
                         break;
                     case JsonEvent.ObjectEnd:
-                        reader.InstanceStore(mirror, obj);
-                        success = true;
-                        return obj;
+                        return true;
                     case JsonEvent.Error:
-                        success = false;
-                        return default;
+                        return false;
                     default:
-                        return ReadUtils.ErrorMsg<T>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<bool>(reader, "unexpected state: ", ev, out success);
                 }
                 ev = parser.NextEvent();
             }
