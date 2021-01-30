@@ -13,8 +13,8 @@ namespace Friflo.Json.Mapper.Map.Obj
     // only used for IL
     public class StructILMapper<T> : ClassMapper<T>
     {
-        public StructILMapper(Type type, ConstructorInfo constructor, ResolverConfig config) :
-            base(type, constructor, config)
+        public StructILMapper(Type type, ConstructorInfo constructor) :
+            base(type, constructor)
         {
         
         }

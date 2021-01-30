@@ -26,12 +26,12 @@ namespace Friflo.Json.Mapper.Map.Obj
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
-                object[] constructorParams = {type, constructor, config};
+                object[] constructorParams = {type, constructor};
                 if (type.IsValueType) {
-                    // new StructMapper<T>(type, constructor, config);
+                    // new StructMapper<T>(type, constructor);
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>), new[] {type}, constructorParams);
                 }
-                // new ClassMapper<T>(type, constructor, config);
+                // new ClassMapper<T>(type, constructor);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
             return null;
@@ -53,13 +53,13 @@ namespace Friflo.Json.Mapper.Map.Obj
 
         public override ClassLayout GetClassLayout() { return layout; }
         
-        public ClassMapper (Type type, ConstructorInfo constructor, ResolverConfig config) :
+        public ClassMapper (Type type, ConstructorInfo constructor) :
             base (type, IsNullable(type))
         {
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
 
-            propFields = new PropertyFields(type, config.useIL);
+            propFields = new PropertyFields(type);
             for (int n = 0; n < propFields.num; n++) {
                 PropField   field = propFields.fields[n];
                 if (strMap.ContainsKey(field.name))

@@ -18,15 +18,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         internal readonly   List<PropField>     fieldList = new List <PropField>();
         internal            int                 primCount;
         internal            int                 objCount;
-        private             bool                useIL;
 
         private static readonly     Type[] Types = new Type [] { typeof( FieldQuery ) };
 
-
-        internal FieldQuery(bool useIL) {
-            this.useIL = useIL;
-        }
-
+        
         private void CreatePropField (Type type, String fieldName, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
