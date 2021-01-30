@@ -16,12 +16,12 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
         private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);
 
-        private void DisposePayloads() {
+        private void DisposeMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].Dispose();
         }
 
-        private void ClearObjectReferences() {
+        private void ClearMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].ClearObjectReferences();
         }
@@ -39,10 +39,10 @@ namespace Friflo.Json.Mapper
             --classLevel;
         }
 #else
-        private void DisposePayloads() { }
-        private void ClearObjectReferences() { }
-        internal ClassMirror InstanceLoad(TypeMapper classType, object obj) { return null; }
-        internal void InstancePop() { }
+        private     void        DisposeMirrorStack() { }
+        private     void        ClearMirrorStack() { }
+        internal    ClassMirror InstanceLoad(TypeMapper classType, object obj) { return null; }
+        internal    void        InstancePop() { }
 #endif
     }
 }

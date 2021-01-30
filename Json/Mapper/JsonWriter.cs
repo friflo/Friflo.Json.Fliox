@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper
             format.Dispose();
             strBuf.Dispose();
             bytes.Dispose();
-            DisposePayloads();
+            DisposeMirrorStack();
         }
 
         public void WriteObject(object value) { 
@@ -74,7 +74,7 @@ namespace Friflo.Json.Mapper
                 try {
                     mapper.WriteObject(this, value);
                 }
-                finally { ClearObjectReferences(); }
+                finally { ClearMirrorStack(); }
             }
 
             if (level != 0)
@@ -93,7 +93,7 @@ namespace Friflo.Json.Mapper
                 try {
                     mapper.Write(this, value);
                 }
-                finally { ClearObjectReferences(); }
+                finally { ClearMirrorStack(); }
             }
 
             if (level != 0)
