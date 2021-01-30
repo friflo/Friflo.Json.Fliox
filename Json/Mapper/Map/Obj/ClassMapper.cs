@@ -27,6 +27,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
                 object[] constructorParams = {type, constructor};
+#if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
                     if (type.IsValueType) {
                         // new StructMapper<T>(type, constructor);
@@ -36,6 +37,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     // new ClassILMapper<T>(type, constructor);
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
                 }
+#endif
                 // new ClassMapper<T>(type, constructor);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }

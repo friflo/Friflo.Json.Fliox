@@ -7,22 +7,22 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 
+#if !UNITY_5_3_OR_NEWER
+
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
-    
-#if !UNITY_5_3_OR_NEWER
+   
     [CLSCompliant(true)]
-#endif
     public class ClassILMapper<T> : ClassMapper<T> {
 
-        private          ClassLayout                    layout;
+        private         ClassLayout<T>                    layout;
 
         public override ClassLayout GetClassLayout() { return layout; }
         
         public ClassILMapper (Type type, ConstructorInfo constructor) :
             base (type, constructor)
         {
-            layout = new ClassLayout(propFields);
+            layout = new ClassLayout<T>(propFields);
         }
 
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -138,3 +138,5 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
     }
 }
+
+#endif
