@@ -5,10 +5,11 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 
+#if !UNITY_5_3_OR_NEWER
 
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
-#if !UNITY_5_3_OR_NEWER
+
     /// <summary>
     /// This class has two main purposes: 
     /// 1. Load the fields of a class instance into the <see cref="primitives"/> array.
@@ -73,9 +74,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
     }
-#else    
-    public class ClassMirror {}
-    public abstract class ClassLayout { }
-#endif
 }
+
+#endif
 

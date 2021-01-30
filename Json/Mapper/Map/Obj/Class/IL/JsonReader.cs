@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper
     partial class JsonReader
     {
         private             int                     classLevel;
-        internal readonly   bool                    useIL;
+        private  readonly   bool                    useIL;
         
 #if !UNITY_5_3_OR_NEWER
         private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);

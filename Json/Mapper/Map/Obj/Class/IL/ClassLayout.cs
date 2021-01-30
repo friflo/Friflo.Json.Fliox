@@ -24,6 +24,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
     public class ClassLayout<T> : ClassLayout
     {
+        private Action<long[], object[], T> loadObjectToPayload;
+        private Action<T, long[], object[]> storePayloadToObject;
+        
         internal ClassLayout(PropertyFields propFields) : base(propFields) {
             loadObjectToPayload = null;
             storePayloadToObject = null;
@@ -53,14 +56,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public override void StoreMirrorToPayload(object dst, long[] srcPrim, object[] srcObj) {
             storePayloadToObject((T) dst, srcPrim, srcObj);
         }
-
-        internal Action<long[], object[], T> loadObjectToPayload;
-        internal Action<T, long[], object[]> storePayloadToObject;
-
-    
-        // Unity dummies
-        // internal        ClassLayout(PropertyFields propFields) : base(propFields) { }
-        // internal void   InitClassLayout (Type type, PropertyFields propFields, ResolverConfig config) { }
     }
 }
 
