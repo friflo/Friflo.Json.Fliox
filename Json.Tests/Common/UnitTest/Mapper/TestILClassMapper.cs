@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             childStruct1.val2 = 90;
             childStruct2.val2 = 91;
             child =     new ChildIL { val = 92 };
-            // childNull = new ChildIL { val = 93 }; todo if set, it will not be cleared
+            childNull = new ChildIL { val = 93 };
             dbl   = 94;
             flt   = 95;
             

@@ -65,7 +65,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         break;
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
                         if ((field = ObjectUtils.GetField(reader, this)) == null)
                             break;
                         fieldType = field.fieldType;

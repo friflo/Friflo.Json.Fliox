@@ -64,7 +64,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             ClassMirror mirror = reader.InstanceLoad(classType, obj);
 
             while (true) {
-                object elemVar;
                 switch (ev) {
                     case JsonEvent.ValueString:
                         PropField field = classType.GetField(ref parser.key);
@@ -101,7 +100,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
                             return default;
                         }
-                        field.SetField(obj, null);
+                        mirror.StoreObj(field.objIndex, null);
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
