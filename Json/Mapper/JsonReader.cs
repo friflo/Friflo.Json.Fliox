@@ -36,13 +36,12 @@ namespace Friflo.Json.Mapper
 
         public JsonReader(TypeStore typeStore) {
             typeCache   = new TypeCache(typeStore);
-            parser      = new JsonParser {
-#if !JSON_BURST
-                error = { errorHandler = this }
-#endif 
-            };
+            parser = new JsonParser();
             maxDepth    = 100;
+#if !JSON_BURST
+            parser.error.errorHandler = this;
             useIL = typeStore.typeResolver.GetConfig().useIL;
+#endif 
         }
         
         private void InitJsonReader(ref ByteList bytes, int offset, int len) {

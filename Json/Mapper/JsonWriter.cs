@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper
             format. InitTokenFormat();
             bytes.Clear();
             level = 0;
-            classLevel = 0;
+            InitMirrorStack();
         }
 
         public void WriteObject(object value) { 
