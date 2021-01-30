@@ -165,26 +165,38 @@ namespace Friflo.Json.Mapper.Map.Obj
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
-            
+
+
+        protected TypeMapper GetPolymorphType(JsonReader reader, ref T obj, out bool success) {
+            ref var parser = ref reader.parser;
+            TypeMapper classType = this;
+            var ev = parser.NextEvent();
+
+            // Is first member is discriminator - "$type": "<typeName>" ?
+            if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
+                classType = reader.typeCache.GetTypeByName(ref parser.value);
+                if (classType == null)
+                    return ReadUtils.ErrorMsg<TypeMapper>(reader, "Object with discriminator $type not found: ",ref parser.value, out success);
+                parser.NextEvent();
+            }
+            if (obj == null)
+                obj = (T)classType.CreateInstance();
+            success = true;
+            return classType;
+        }
+
         public override T Read(JsonReader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
             if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
                 
-            ref var parser = ref reader.parser;
             T obj = slot;
-            TypeMapper classType = this;
-            JsonEvent ev = parser.NextEvent();
-            if (obj == null) {
-                // Is first member is discriminator - "$type": "<typeName>" ?
-                if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
-                    classType = reader.typeCache.GetTypeByName(ref parser.value);
-                    if (classType == null)
-                        return ReadUtils.ErrorMsg<T>(reader, "Object with discriminator $type not found: ", ref parser.value, out success);
-                    ev = parser.NextEvent();
-                }
-                obj = (T)classType.CreateInstance();
-            }
+            TypeMapper classType = GetPolymorphType(reader, ref obj, out success);
+            if (!success)
+                return default;
+            
+            ref var parser = ref reader.parser;
+            JsonEvent ev = parser.Event;
 
             while (true) {
                 object elemVar;

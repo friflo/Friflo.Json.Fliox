@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     if (!success)
                         throw new FrifloException(enc.Error.msg.ToString());
                 }
-                AreEqual(2, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
+                AreEqual(0, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
                 // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());
                 return success;
             }

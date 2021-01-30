@@ -52,20 +52,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
                 
-            ref var parser = ref reader.parser;
             T obj = slot;
-            TypeMapper classType = this;
-            JsonEvent ev = parser.NextEvent();
-            if (obj == null) {
-                // Is first member is discriminator - "$type": "<typeName>" ?
-                if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
-                    classType = reader.typeCache.GetTypeByName(ref parser.value);
-                    if (classType == null)
-                        return ReadUtils.ErrorMsg<T>(reader, "Object with discriminator $type not found: ", ref parser.value, out success);
-                    ev = parser.NextEvent();
-                }
-                obj = (T)classType.CreateInstance();
-            }
+            TypeMapper classType = GetPolymorphType(reader, ref obj, out success);
+            if (!success)
+                return default;
+            
+            ref var parser = ref reader.parser;
+            JsonEvent ev = parser.Event;
 
             ClassMirror mirror = reader.InstanceLoad(classType, obj);
 
