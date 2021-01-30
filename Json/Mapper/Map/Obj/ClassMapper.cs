@@ -139,7 +139,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 bytes.AppendChar('\"');
             }
 
-            PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
+            PropField[] fields = classMapper.GetPropFields().fields;
             ClassMirror mirror = writer.useIL ? writer.InstanceLoad(classMapper, obj) : null;
 
             for (int n = 0; n < fields.Length; n++) {

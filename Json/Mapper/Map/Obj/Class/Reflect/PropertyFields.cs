@@ -13,7 +13,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
     public sealed class PropertyFields : IDisposable
     {
         public      readonly    PropField []    fields;
-        public      readonly    PropField []    fieldsSerializable;
         public      readonly    int             num;
         public      readonly    int             primCount;
         public      readonly    int             objCount;
@@ -27,28 +26,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
 
         public PropertyFields (Type type)
         {
-            this.typeName       = type. ToString();
-            try {
-                var query = new FieldQuery();
-                query.SetProperties(type);
-                primCount = query.primCount;
-                objCount  = query.objCount;
-                var fieldList = query.fieldList;
-                num = fieldList. Count;
-                fields = new PropField [num];
-                for (int n = 0; n < num; n++)
-                    fields[n] = fieldList [n];
-                fieldList. Clear();
-                // to array
-                fieldsSerializable = new PropField [num];
-                int pos = 0;
-                for (int n = 0; n < num; n++)
-                    fieldsSerializable[pos++] = fields[n];
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException ("Failed reading properties from type: " + typeName, e);
-            }
+            typeName       = type. ToString();
+            var query = new FieldQuery();
+            query.SetProperties(type);
+            primCount = query.primCount;
+            objCount  = query.objCount;
+            var fieldList = query.fieldList;
+            num = fieldList. Count;
+            fields = new PropField [num];
+            for (int n = 0; n < num; n++)
+                fields[n] = fieldList [n];
+            fieldList. Clear();
         }
         
         public void Dispose() {

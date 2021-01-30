@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField structField, int primPos, int objPos) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
-            PropField[] fields = GetPropFields().fieldsSerializable;
+            PropField[] fields = GetPropFields().fields;
             bool firstMember = true;
             bytes.AppendChar('{');
 
