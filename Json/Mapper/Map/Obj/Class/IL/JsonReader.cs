@@ -11,17 +11,20 @@ namespace Friflo.Json.Mapper
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     partial class JsonReader
     {
-        private             int                     classLevel;
-        
 #if !UNITY_5_3_OR_NEWER
+        private             int                     classLevel;
         private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);
 
-        private void DisposePayloads() {
+        private void InitMirrorStack() {
+            classLevel = 0;
+        }
+
+        private void DisposeMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].Dispose();
         }
 
-        private void ClearObjectReferences() {
+        private void ClearMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].ClearObjectReferences();
         }
@@ -44,8 +47,9 @@ namespace Friflo.Json.Mapper
             --classLevel;
         }
 #else 
-        private void DisposePayloads() { }
-        private void ClearObjectReferences() { }
+        private void InitMirrorStack() { }
+        private void DisposeMirrorStack() { }
+        private void ClearMirrorStack() { }
 #endif
     }
 }

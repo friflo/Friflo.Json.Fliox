@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper
         private void InitJsonReader(ref ByteList bytes, int offset, int len) {
             parser.InitParser(bytes, offset, len);
             parser.SetMaxDepth(maxDepth);
-            classLevel = 0;
+            InitMirrorStack();
         }
 
         public void Dispose() {
@@ -55,7 +55,7 @@ namespace Friflo.Json.Mapper
             discriminator.  Dispose();
             parser.         Dispose();
             strBuf.         Dispose();
-            DisposePayloads();
+            DisposeMirrorStack();
         }
         
         public void HandleError(int pos, ref Bytes message) {
@@ -122,7 +122,7 @@ namespace Friflo.Json.Mapper
                         try {
                             return mapper.ReadObject(this, value, out success);
                         }
-                        finally { ClearObjectReferences(); }
+                        finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, ref parser, out success);
@@ -151,7 +151,7 @@ namespace Friflo.Json.Mapper
                         try {
                             return mapper.Read(this, value, out success);
                         }
-                        finally { ClearObjectReferences(); }
+                        finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, ref parser, out success);
@@ -191,7 +191,7 @@ namespace Friflo.Json.Mapper
                         try {
                             return mapper.Read(this, value, out success);
                         }
-                        finally { ClearObjectReferences(); }
+                        finally { ClearMirrorStack(); }
                     case JsonEvent.Error:
                         success = false;
                         return default;
@@ -226,7 +226,7 @@ namespace Friflo.Json.Mapper
                         try {
                             return mapper.ReadObject(this, value, out success);
                         }
-                        finally { ClearObjectReferences(); }
+                        finally { ClearMirrorStack(); }
                     case JsonEvent.Error:
                         success = false;
                         return default;
