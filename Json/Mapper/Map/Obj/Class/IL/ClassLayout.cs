@@ -47,11 +47,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
 
         internal void LoadObjectToMirror(long[] dstPrim, object[] dstObj, T src) {
-            loadObjectToPayload(dstPrim, dstObj, (T) src);
+            loadObjectToPayload(dstPrim, dstObj, src);
         }
 
         internal void StoreMirrorToPayload(T dst, long[] srcPrim, object[] srcObj) {
-            storePayloadToObject((T) dst, srcPrim, srcObj);
+            storePayloadToObject(dst, srcPrim, srcObj);
         }
     }
 }

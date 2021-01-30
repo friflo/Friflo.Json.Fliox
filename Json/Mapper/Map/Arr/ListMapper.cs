@@ -52,8 +52,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (n > 0)
                     writer.bytes.AppendChar(',');
                 TElm item = list[n];
-                if (item != null) {
-                    elementType.Write(writer, item);
+                if (!TypeUtils.IsNull(ref item)) {
+                    ObjectUtils.Write(writer, elementType, ref item);
                 } else
                     WriteUtils.AppendNull(writer);
             }
@@ -108,13 +108,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ArrayStart:
                         if (index < startLen) {
                             elemVar = list[index];
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list.Add(elemVar);
@@ -124,13 +124,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ObjectStart:
                         if (index < startLen) {
                             elemVar = list[index];
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list.Add(elemVar);

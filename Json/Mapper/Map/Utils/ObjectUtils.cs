@@ -47,6 +47,15 @@ namespace Friflo.Json.Mapper.Map.Utils
             return mapper.Read(reader, value, out success);
         }
         
+        public static void Write<T>(JsonWriter writer, TypeMapper<T> mapper, ref T value) {
+            if (writer.useIL && mapper.isValueType) {
+                ClassMirror mirror = writer.InstanceLoad<T>(mapper, value);
+                mapper.WriteValueIL(writer, mirror, 0, 0);
+            } else {
+                mapper.Write(writer, value);
+            }
+        }
+        
         public static PropField GetField(JsonReader reader, TypeMapper classType) {
             PropField field = classType.GetField(ref reader.parser.key);
             if (field != null)

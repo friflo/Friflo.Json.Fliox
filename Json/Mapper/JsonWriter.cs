@@ -51,6 +51,15 @@ namespace Friflo.Json.Mapper
             DisposeMirrorStack();
         }
 
+        private void InitJsonWriter() {
+            bytes.  InitBytes(128);
+            strBuf. InitBytes(128);
+            format. InitTokenFormat();
+            bytes.Clear();
+            level = 0;
+            classLevel = 0;
+        }
+
         public void WriteObject(object value) { 
             TypeMapper stubType = typeCache.GetTypeMapper(value.GetType());
             WriteStart(stubType, value);
@@ -63,11 +72,8 @@ namespace Friflo.Json.Mapper
         }
         
         private void WriteStart(TypeMapper mapper, object value) {
-            bytes.  InitBytes(128);
-            strBuf. InitBytes(128);
-            format. InitTokenFormat();
-            bytes.Clear();
-            level = 0;
+            InitJsonWriter();
+
             if (value == null) {
                 WriteUtils.AppendNull(this);
             } else {
@@ -82,12 +88,7 @@ namespace Friflo.Json.Mapper
         }
         
         private void WriteStart<T>(TypeMapper<T> mapper, T value) {
-            bytes.  InitBytes(128);
-            strBuf. InitBytes(128);
-            format. InitTokenFormat();
-            bytes.Clear();
-            level = 0;
-
+            InitJsonWriter();
             try {
                 if (TypeUtils.IsNull(ref value))
                     WriteUtils.AppendNull(this);
