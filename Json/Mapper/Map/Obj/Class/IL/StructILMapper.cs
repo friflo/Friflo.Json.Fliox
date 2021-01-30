@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         
         public override void InitTypeMapper(TypeStore typeStore) {
             base.InitTypeMapper(typeStore);
-            layout.InitClassLayout(type, propFields, typeStore.typeResolver.GetConfig());
+            layout.InitClassLayout(propFields, typeStore.typeResolver.GetConfig());
         }
         
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {

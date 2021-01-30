@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             storePayloadToObject = null;
         }
 
-        internal void InitClassLayout(Type type, PropertyFields propFields, ResolverConfig config) {
+        internal void InitClassLayout(PropertyFields propFields, ResolverConfig config) {
 
             // create load/store instance expression
             Action<long[], object[], T> load = null;
