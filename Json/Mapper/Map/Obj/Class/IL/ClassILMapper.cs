@@ -66,22 +66,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             while (true) {
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        PropField field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            if (!reader.discriminator.IsEqualBytes(ref parser.key)) // dont count discriminators
-                                parser.SkipEvent();
-                            break;
-                        }
-                        var fieldType = field.fieldType;
-                        if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
-                            return default;
-
-                        break;
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
+                        PropField field;
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
-                        fieldType = field.fieldType;
+                        TypeMapper fieldType = field.fieldType;
                         if (field.isValueType) {
                             if (!fieldType.ReadFieldIL(reader, mirror, field, 0, 0))
                                 return default;

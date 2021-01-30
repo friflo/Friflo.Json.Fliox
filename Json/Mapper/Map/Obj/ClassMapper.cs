@@ -204,24 +204,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 object elemVar;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        PropField field = classType.GetField(ref parser.key);
-                        if (field == null) {
-                            if (!reader.discriminator.IsEqualBytes(ref parser.key)) // dont count discriminators
-                                parser.SkipEvent();
-                            break;
-                        }
-                        var fieldType = field.fieldType;
-                        elemVar = fieldType.ReadObject(reader, null, out success);
-                        if (!success)
-                            return default;
-                        field.SetField(obj, elemVar); // set also to null in error case
-                        break;
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        // todo: check in EncodeJsonToComplex, why listObj[0].i64 & subType.i64 are skipped
+                        PropField field;
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
-                        fieldType = field.fieldType;
+                        TypeMapper fieldType = field.fieldType;
                         elemVar = fieldType.ReadObject(reader, null, out success);
                         if (!success)
                             return default;
