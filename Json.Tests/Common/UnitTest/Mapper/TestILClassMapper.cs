@@ -177,7 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             memLog.AssertNoAllocations();
         }
         
-        [Test] [Ignore("delayed")]
+        [Test]
         public void ReadWriteStruct () {
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
@@ -187,9 +187,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 var obj = new StructIL();
                 writer.Write(obj);
-                reader.Read<StructIL>(writer.Output);
+                var result = reader.Read<StructIL>(writer.Output);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
+                AreEqual(obj, result);
             }
         }
         
@@ -232,6 +233,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     reader.ReadTo(writer.Output, arr, out bool _);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
+                }
+            }
+            memLog.AssertNoAllocations();
+        }
+        
+        [Test] [Ignore("delayed")]
+        public void NoAllocArrayStruct () {
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var arr = new [] { new StructIL() };
+                int iterations = 1000;
+                for (int n = 0; n < iterations; n++) {
+                    memLog.Snapshot();
+                    writer.Write(arr);
+                    /* reader.ReadTo(writer.Output, arr, out bool _);
+                    if (reader.Error.ErrSet)
+                        Fail(reader.Error.msg.ToString()); */
                 }
             }
             memLog.AssertNoAllocations();

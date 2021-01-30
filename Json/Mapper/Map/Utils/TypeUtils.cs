@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             return Nullable.GetUnderlyingType(type) != null;
         }
 
-        public static bool IsNull<T>(T value) {
+        public static bool IsNull<T>(ref T value) {
             Type type = typeof(T);
             if (type.IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null)
                 return false;

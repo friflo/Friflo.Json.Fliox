@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper
             level = 0;
 
             try {
-                if (TypeUtils.IsNull(value))
+                if (TypeUtils.IsNull(ref value))
                     WriteUtils.AppendNull(this);
                 else
                     mapper.Write(this, value);
