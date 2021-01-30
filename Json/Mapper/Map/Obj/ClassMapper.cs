@@ -27,9 +27,14 @@ namespace Friflo.Json.Mapper.Map.Obj
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
                 object[] constructorParams = {type, constructor};
-                if (type.IsValueType) {
-                    // new StructMapper<T>(type, constructor);
-                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>), new[] {type}, constructorParams);
+                if (config.useIL) {
+                    if (type.IsValueType) {
+                        // new StructMapper<T>(type, constructor);
+                        return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>),
+                            new[] {type}, constructorParams);
+                    }
+                    // new ClassILMapper<T>(type, constructor);
+                    return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
                 }
                 // new ClassMapper<T>(type, constructor);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
@@ -42,17 +47,15 @@ namespace Friflo.Json.Mapper.Map.Obj
     [CLSCompliant(true)]
 #endif
     public class ClassMapper<T> : TypeMapper<T> {
-        private readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
-        private readonly HashMapOpen<Bytes,  PropField> fieldMap;
-        private readonly PropertyFields                 propFields;
-        private readonly ConstructorInfo                constructor;
-        private readonly Bytes                          removedKey;
-        private          ClassLayout                    layout;
+        private   readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
+        private   readonly HashMapOpen<Bytes,  PropField> fieldMap;
+        protected readonly PropertyFields                 propFields;
+        private   readonly ConstructorInfo                constructor;
+        private   readonly Bytes                          removedKey;
         
         public override string DataTypeName() { return "class"; }
 
-        public override ClassLayout GetClassLayout() { return layout; }
-        
+       
         public ClassMapper (Type type, ConstructorInfo constructor) :
             base (type, IsNullable(type))
         {
@@ -67,7 +70,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
             }
-            layout = new ClassLayout(propFields);
             this.constructor = constructor;
         }
         
@@ -86,7 +88,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(field, mapper);
             }
-            layout.InitClassLayout(type, propFields, typeStore.typeResolver.GetConfig());
         }
         
         private static bool IsNullable(Type type) {
@@ -117,20 +118,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             return propFields;
         }
         
-        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            object obj = mirror.LoadObj(objPos + field.objIndex);
-            if (obj == null)
-                WriteUtils.AppendNull(writer);
-            else
-                Write(writer, (T)obj);
-        }
-
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            T src = (T) mirror.LoadObj(objPos + field.objIndex);
-            T value = Read(reader, src, out bool success);
-            mirror.StoreObj(objPos + field.objIndex, value);
-            return success;
-        }
         
         // ----------------------------------- Write / Read -----------------------------------
         
@@ -199,8 +186,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                 obj = (T)classType.CreateInstance();
             }
 
-            ClassMirror mirror = reader.useIL ? reader.InstanceLoad(classType, obj) : null;
-
             while (true) {
                 object elemVar;
                 switch (ev) {
@@ -212,15 +197,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                             break;
                         }
                         var fieldType = field.fieldType;
-                        if (reader.useIL && field.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
-                                return default;
-                        } else {
-                            elemVar = fieldType.ReadObject(reader, null, out success);
-                            if (!success)
-                                return default;
-                            field.SetField(obj, elemVar); // set also to null in error case
-                        }
+                        elemVar = fieldType.ReadObject(reader, null, out success);
+                        if (!success)
+                            return default;
+                        field.SetField(obj, elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
@@ -228,24 +208,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (reader.useIL) {
-                            if (field.isValueType) {
-                                if (!fieldType.ReadFieldIL(reader, mirror, field, 0, 0))
-                                    return default;
-                            } else {
-                                // ReSharper disable once PossibleNullReferenceException
-                                object subRet = mirror.LoadObj(field.objIndex);
-                                if (!fieldType.isNullable && subRet == null) {
-                                    ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                    return default;
-                                }
-                            }
-                        } else {
-                            elemVar = fieldType.ReadObject(reader, null, out success);
-                            if (!success)
-                                return default;
-                            field.SetField(obj, elemVar); // set also to null in error case
-                        }
+                        elemVar = fieldType.ReadObject(reader, null, out success);
+                        if (!success)
+                            return default;
+                        field.SetField(obj, elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
@@ -261,41 +227,21 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (reader.useIL) {
-                            if (field.isValueType) {
-                                if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
-                                    return default;
-                            } else {
-                                // ReSharper disable once PossibleNullReferenceException
-                                object sub = mirror.LoadObj(field.objIndex);
-                                object subRet = fieldType.ReadObject(reader, sub, out success);
-                                if (!success)
-                                    return default;
-                                if (!fieldType.isNullable && subRet == null) {
-                                    ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                    return default;
-                                }
-                                mirror.StoreObj(field.objIndex, subRet);
-                            }
-                        } else {
-                            elemVar = field.GetField(obj);
-                            object sub = elemVar;
-                            elemVar = fieldType.ReadObject(reader, elemVar, out success);
-                            if (!success)
-                                return default;
-                            //
-                            object subRet = elemVar;
-                            if (!fieldType.isNullable && subRet == null) {
-                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return default;
-                            }
-                            if (sub != subRet)
-                                field.SetField(obj, elemVar);
+                        elemVar = field.GetField(obj);
+                        object sub = elemVar;
+                        elemVar = fieldType.ReadObject(reader, elemVar, out success);
+                        if (!success)
+                            return default;
+                        //
+                        object subRet = elemVar;
+                        if (!fieldType.isNullable && subRet == null) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                            return default;
                         }
+                        if (sub != subRet)
+                            field.SetField(obj, elemVar);
                         break;
                     case JsonEvent.ObjectEnd:
-                        if (reader.useIL)
-                            reader.InstanceStore(mirror, obj);
                         success = true;
                         return obj;
                     case JsonEvent.Error:
@@ -307,9 +253,5 @@ namespace Friflo.Json.Mapper.Map.Obj
                 ev = parser.NextEvent();
             }
         }
-
-
- 
-
     }
 }
