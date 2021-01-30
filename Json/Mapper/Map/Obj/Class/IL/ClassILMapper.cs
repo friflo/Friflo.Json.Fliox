@@ -67,13 +67,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 return default;
             
             ClassMirror mirror = reader.InstanceLoad(classType, obj);
-            if (!ReadClassMirror(reader, mirror, classType))
+            if (!ReadClassMirror(reader, mirror, classType, 0, 0))
                 return default;
             reader.InstanceStore(mirror, obj);
             return obj;
         }
 
-        private static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType) {
+        internal static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
             ref var parser = ref reader.parser;
             JsonEvent ev = parser.Event;
 
@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             break;
                         TypeMapper fieldType = field.fieldType;
                         if (fieldType.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, 0, 0))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
                                 return default;
                         } else {
                             object subRet = mirror.LoadObj(field.objIndex);
@@ -113,7 +113,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             break;
                         fieldType = field.fieldType;
                         if (fieldType.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
+                            if (!fieldType.ReadFieldIL(reader, mirror, field, primPos + field.primIndex, objPos + field.objIndex))
                                 return false;
                         } else {
                             object sub = mirror.LoadObj(field.objIndex);

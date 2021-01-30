@@ -43,59 +43,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField structField, int primPos, int objPos) {
-            if (this != structField.fieldType)
-                throw new InvalidOperationException("expect this == structField.fieldType");
-            // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(reader, this, out bool success))
-                return success;
-                
-            ref var parser = ref reader.parser;
-            JsonEvent ev = parser.NextEvent();
- 
-            while (true) {
-                switch (ev) {
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                        PropField field;
-                        if ((field = ObjectUtils.GetField(reader, this)) == null)
-                            break;
-                        TypeMapper fieldType = field.fieldType;
-                        if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
-                            return default;
-                        break;
-                    case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField(reader, this)) == null)
-                            break;
-                        if (!field.fieldType.isNullable) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
-                            return default;
-                        }
-                        mirror.StoreObj(field.objIndex, null);
-                        break;
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        if ((field = ObjectUtils.GetField(reader, this)) == null)
-                            break;
-                        fieldType = field.fieldType;
-
-                        if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
-                            return default;
-                        object subRet = mirror.LoadObj(field.objIndex);
-                        if (!fieldType.isNullable && subRet == null) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                            return default;
-                        }
-                        break;
-                    case JsonEvent.ObjectEnd:
-                        return true;
-                    case JsonEvent.Error:
-                        return false;
-                    default:
-                        return ReadUtils.ErrorMsg<bool>(reader, "unexpected state: ", ev, out success);
-                }
-                ev = parser.NextEvent();
-            }
+            reader.parser.NextEvent();
+            return ClassILMapper<T>.ReadClassMirror(reader, mirror, this, primPos, objPos);
         }
     }
 }
