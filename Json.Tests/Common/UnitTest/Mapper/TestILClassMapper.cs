@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
@@ -137,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void EnsureNoWriteAllocations () {
+        public void NoAllocWriteClass () {
 
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
@@ -156,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void EnsureNoReadAllocations () {
+        public void NoAllocReadClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
@@ -169,6 +170,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     reader.ReadTo(json, obj, out bool _);
+                    if (reader.Error.ErrSet)
+                        Fail(reader.Error.msg.ToString());
+                }
+            }
+            memLog.AssertNoAllocations();
+        }
+        
+        [Test]
+        public void NoAllocList () {
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var list = new List<SampleIL>() { new SampleIL() };
+                int iterations = 1000;
+                for (int n = 0; n < iterations; n++) {
+                    memLog.Snapshot();
+                    writer.Write(list);
+                    reader.ReadTo(writer.Output, list, out bool _);
+                    if (reader.Error.ErrSet)
+                        Fail(reader.Error.msg.ToString());
+                }
+            }
+            memLog.AssertNoAllocations();
+        }
+        
+        [Test]
+        public void NoAllocArray () {
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var arr = new [] { new SampleIL() };
+                int iterations = 1000;
+                for (int n = 0; n < iterations; n++) {
+                    memLog.Snapshot();
+                    writer.Write(arr);
+                    reader.ReadTo(writer.Output, arr, out bool _);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
