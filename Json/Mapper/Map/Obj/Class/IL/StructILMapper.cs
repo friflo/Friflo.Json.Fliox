@@ -15,16 +15,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     public class StructILMapper<T> : ClassMapper<T>
     {
         public StructILMapper(Type type, ConstructorInfo constructor) :
-            base(type, constructor)
-        {
-        
-        }
+            base(type, constructor) { }
         
         public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField structField, int primPos, int objPos) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
-            TypeMapper classMapper = this;
-            PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
+            PropField[] fields = GetPropFields().fieldsSerializable;
             bool firstMember = true;
             bytes.AppendChar('{');
 
