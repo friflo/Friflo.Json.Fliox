@@ -87,14 +87,15 @@ namespace Friflo.Json.Mapper
             format. InitTokenFormat();
             bytes.Clear();
             level = 0;
-            if (EqualityComparer<T>.Default.Equals(value, default)) {
-                WriteUtils.AppendNull(this);
-            } else {
-                try {
+
+            try {
+                if (TypeUtils.IsNull(value))
+                    WriteUtils.AppendNull(this);
+                else
                     mapper.Write(this, value);
-                }
-                finally { ClearMirrorStack(); }
             }
+            finally { ClearMirrorStack(); }
+            
 
             if (level != 0)
                 throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");

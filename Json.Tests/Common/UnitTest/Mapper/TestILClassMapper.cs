@@ -177,6 +177,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             memLog.AssertNoAllocations();
         }
         
+        [Test] [Ignore("delayed")]
+        public void ReadWriteStruct () {
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var obj = new StructIL();
+                writer.Write(obj);
+                reader.Read<StructIL>(writer.Output);
+                if (reader.Error.ErrSet)
+                    Fail(reader.Error.msg.ToString());
+            }
+        }
+        
         [Test]
         public void NoAllocList () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
@@ -200,7 +216,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void NoAllocArray () {
+        public void NoAllocArrayClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
