@@ -137,10 +137,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void EnsureNoAllocations () {
+        public void EnsureNoWriteAllocations () {
 
-            var memLog = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
             using (TypeStore    typeStore   = new TypeStore(resolver))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
@@ -154,6 +154,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
             memLog.AssertNoAllocations();
         }
+        
+        [Test]
+        public void EnsureNoReadAllocations () {
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (Bytes        json        = new Bytes(payloadStr))
+            {
+                var obj = new SampleIL();
+                int iterations = 1000;
+                for (int n = 0; n < iterations; n++) {
+                    memLog.Snapshot();
+                    reader.ReadTo(json, obj, out bool _);
+                    if (reader.Error.ErrSet)
+                        Fail(reader.Error.msg.ToString());
+                }
+            }
+            memLog.AssertNoAllocations();
+        }
+
     }
 }
 
