@@ -53,7 +53,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 return default;
                 
             T obj = slot;
-            TypeMapper classType = GetPolymorphType(reader, ref obj, out success);
+            TypeMapper classType = this;
+            classType = GetPolymorphType(reader, classType, ref obj, out success);
             if (!success)
                 return default;
             

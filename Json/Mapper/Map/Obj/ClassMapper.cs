@@ -167,9 +167,8 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
 
-        protected TypeMapper GetPolymorphType(JsonReader reader, ref T obj, out bool success) {
+        protected static TypeMapper GetPolymorphType(JsonReader reader, TypeMapper classType, ref T obj, out bool success) {
             ref var parser = ref reader.parser;
-            TypeMapper classType = this;
             var ev = parser.NextEvent();
 
             // Is first member is discriminator - "$type": "<typeName>" ?
@@ -191,7 +190,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return default;
                 
             T obj = slot;
-            TypeMapper classType = GetPolymorphType(reader, ref obj, out success);
+            TypeMapper classType = this;
+            classType = GetPolymorphType(reader, classType, ref obj, out success);
             if (!success)
                 return default;
             
