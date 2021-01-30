@@ -238,7 +238,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             memLog.AssertNoAllocations();
         }
         
-        [Test] [Ignore("delayed")]
+        [Test]
         public void NoAllocArrayStruct () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));

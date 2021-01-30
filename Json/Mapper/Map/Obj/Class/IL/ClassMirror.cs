@@ -25,16 +25,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
-        public void LoadInstance(TypeMapper classType, object obj) {
+        public void LoadInstance<T>(TypeMapper classType, T obj) {
             layout = classType.GetClassLayout();
             primitives.Resize(layout.primCount);
             objects.   Resize(layout.objCount);
-            
-            layout.LoadObjectToMirror(primitives.array, objects.array, obj);
+            ClassLayout<T> l = (ClassLayout<T>) layout;
+            l.LoadObjectToMirror(primitives.array, objects.array, obj);
         }
         
-        public void StoreInstance(object obj) {
-            layout.StoreMirrorToPayload(obj, primitives.array, objects.array);
+        public void StoreInstance<T>(T obj) {
+            ClassLayout<T> l = (ClassLayout<T>) layout;
+            l.StoreMirrorToPayload(obj, primitives.array, objects.array);
         }
         
         internal void ClearObjectReferences() {

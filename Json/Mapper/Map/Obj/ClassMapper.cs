@@ -130,7 +130,12 @@ namespace Friflo.Json.Mapper.Map.Obj
             TypeMapper classMapper = this;
             bool firstMember = true;
             bytes.AppendChar('{');
-            Type objType = obj.GetType();
+
+            Type objType = typeof(T);
+            // Check for polymorphic type only if it is not a value type because Type.GetType() allocates memory
+            if (!objType.IsValueType)    
+                objType = obj.GetType();
+
             if (type != objType) {
                 classMapper = writer.typeCache.GetTypeMapper(objType);
                 firstMember = false;
@@ -163,6 +168,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     fieldType.WriteObject(writer, elemVar);
                 }
             }
+
             writer.InstancePop();
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);

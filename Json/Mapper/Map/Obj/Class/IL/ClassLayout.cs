@@ -17,9 +17,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             primCount       = propFields.primCount;
             objCount        = propFields.objCount;
         }
-
-        public abstract void LoadObjectToMirror  (long[] dstPrim, object[] dstObj, object src);
-        public abstract void StoreMirrorToPayload(object dst, long[] srcPrim, object[] srcObj);
     }
 
     public class ClassLayout<T> : ClassLayout
@@ -49,11 +46,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             storePayloadToObject = store;
         }
 
-        public override void LoadObjectToMirror(long[] dstPrim, object[] dstObj, object src) {
+        internal void LoadObjectToMirror(long[] dstPrim, object[] dstObj, T src) {
             loadObjectToPayload(dstPrim, dstObj, (T) src);
         }
 
-        public override void StoreMirrorToPayload(object dst, long[] srcPrim, object[] srcObj) {
+        internal void StoreMirrorToPayload(T dst, long[] srcPrim, object[] srcObj) {
             storePayloadToObject((T) dst, srcPrim, srcObj);
         }
     }
