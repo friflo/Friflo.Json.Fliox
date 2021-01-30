@@ -151,7 +151,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 WriteUtils.WriteKey(writer, field);
                 
                 if (writer.useIL) {
-                    field.fieldType.WriteFieldIL(writer, mirror, field, 0, 0);
+                    field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
                     continue;
                 }
                 object elemVar = field.GetField(obj);

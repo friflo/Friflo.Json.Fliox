@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public StructILMapper(Type type, ConstructorInfo constructor) :
             base(type, constructor) { }
         
-        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField structField, int primPos, int objPos) {
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             PropField[] fields = GetPropFields().fields;
@@ -31,13 +31,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
                 
-                field.fieldType.WriteFieldIL(writer, mirror, field, primPos + structField.primIndex, objPos + structField.objIndex);
+                field.fieldType.WriteValueIL(writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
             }
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField structField, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             reader.parser.NextEvent();
             return ClassILMapper<T>.ReadClassMirror(reader, mirror, this, primPos, objPos);
         }

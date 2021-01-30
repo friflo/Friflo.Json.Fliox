@@ -33,8 +33,8 @@ namespace Friflo.Json.Mapper.Map
         public abstract void            WriteObject (JsonWriter writer,   object slot);
         public abstract object          ReadObject  (JsonReader reader,   object slot, out bool success);
         
-        public abstract void            WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos);
-        public abstract bool            ReadFieldIL (JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos);
+        public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
+        public abstract bool            ReadValueIL (JsonReader reader, ClassMirror mirror, int primPos, int objPos);
 
         
         public abstract PropField       GetField(ref Bytes fieldName);
@@ -57,11 +57,11 @@ namespace Friflo.Json.Mapper.Map
         public abstract TVal    Read        (JsonReader reader, TVal slot, out bool success);
 
         
-        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             throw new InvalidOperationException("WriteField() not applicable");
         }
 

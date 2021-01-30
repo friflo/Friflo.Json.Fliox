@@ -16,13 +16,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class DoubleFieldMapper : DoubleMapper {
         public DoubleFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadDbl(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadDbl(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreDbl(primPos + field.primIndex, value);
+            mirror.StoreDbl(primPos, value);
             return success;
         }
     }
@@ -30,13 +30,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class FloatFieldMapper : FloatMapper {
         public FloatFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadFlt(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadFlt(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreFlt(primPos + field.primIndex, value);
+            mirror.StoreFlt(primPos, value);
             return success;
         }
     }
@@ -44,13 +44,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class LongFieldMapper : LongMapper {
         public LongFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadLong(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadLong(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreLong(primPos + field.primIndex, value);
+            mirror.StoreLong(primPos, value);
             return success;
         }
     }
@@ -59,13 +59,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class IntFieldMapper : IntMapper {
         public IntFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadInt(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadInt(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreInt(primPos + field.primIndex, value);
+            mirror.StoreInt(primPos, value);
             return success;
         }
     }
@@ -73,13 +73,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class ShortFieldMapper : ShortMapper {
         public ShortFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadShort(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadShort(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreShort(primPos + field.primIndex, value);
+            mirror.StoreShort(primPos, value);
             return success;
         }
     }
@@ -87,13 +87,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class ByteFieldMapper : ByteMapper {
         public ByteFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadByte(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadByte(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, 0, out bool success);
-            mirror.StoreByte(primPos + field.primIndex, value);
+            mirror.StoreByte(primPos, value);
             return success;
         }
     }
@@ -101,13 +101,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class BoolFieldMapper : BoolMapper {
         public BoolFieldMapper(Type type) : base(type) { }
         
-        public override void WriteFieldIL (JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            Write(writer, mirror.LoadBool(primPos + field.primIndex));
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadBool(primPos));
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
             var value = Read(reader, false, out bool success);
-            mirror.StoreBool(primPos + field.primIndex, value);
+            mirror.StoreBool(primPos, value);
             return success;
         }
     }

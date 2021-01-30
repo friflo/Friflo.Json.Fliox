@@ -30,18 +30,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             layout.InitClassLayout(type, propFields, typeStore.typeResolver.GetConfig());
         }
         
-        public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            object obj = mirror.LoadObj(objPos + field.objIndex);
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            object obj = mirror.LoadObj(objPos);
             if (obj == null)
                 WriteUtils.AppendNull(writer);
             else
                 Write(writer, (T) obj);
         }
 
-        public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            T src = (T) mirror.LoadObj(objPos + field.objIndex);
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+            T src = (T) mirror.LoadObj(objPos);
             T value = Read(reader, src, out bool success);
-            mirror.StoreObj(objPos + field.objIndex, value);
+            mirror.StoreObj(objPos, value);
             return success;
         }
         
@@ -80,7 +80,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             break;
                         TypeMapper fieldType = field.fieldType;
                         if (fieldType.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, primPos, objPos))
+                            if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return default;
                         } else {
                             object subRet = mirror.LoadObj(field.objIndex);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             break;
                         fieldType = field.fieldType;
                         if (fieldType.isValueType) {
-                            if (!fieldType.ReadFieldIL(reader, mirror, field, primPos + field.primIndex, objPos + field.objIndex))
+                            if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return false;
                         } else {
                             object sub = mirror.LoadObj(field.objIndex);
