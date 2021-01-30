@@ -6,8 +6,10 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 
+
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
+#if !UNITY_5_3_OR_NEWER
     /// <summary>
     /// This class has two main purposes: 
     /// 1. Load the fields of a class instance into the <see cref="primitives"/> array.
@@ -18,7 +20,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     public class ClassMirror : IDisposable
     {
 
-#if !UNITY_5_3_OR_NEWER
         // payload size changes, depending on which class is used at the current classLevel
         private     ValueList<long>     primitives = new ValueList<long>  (8, AllocType.Persistent);
         private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
@@ -72,16 +73,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
-
-#else
-        // Unity dummies
-        public      void    LoadInstance    (TypeMapper classType, object obj) {}
-        public      void    StoreInstance   (object obj) {}
-        internal    void    ClearObjectReferences() {}
-        public      void    Dispose         () {}
-        public      void    StoreObj        (int idx,object value) {  }
-        public      object  LoadObj         (int idx)  { return null; }
-#endif
     }
     
     public abstract class ClassLayout {
@@ -99,7 +90,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     }
     
     
-#if !UNITY_5_3_OR_NEWER
+
     public class ClassLayout<T> : ClassLayout
     {
         internal ClassLayout(PropertyFields propFields) : base(propFields) {
@@ -140,5 +131,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // internal        ClassLayout(PropertyFields propFields) : base(propFields) { }
         // internal void   InitClassLayout (Type type, PropertyFields propFields, ResolverConfig config) { }
     }
+#else    
+    public class ClassMirror {}
+    public abstract class ClassLayout { }
 #endif
 }
+

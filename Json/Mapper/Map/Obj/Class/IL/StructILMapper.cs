@@ -7,6 +7,8 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 
+#if !UNITY_5_3_OR_NEWER
+
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
     // only used for IL
@@ -107,3 +109,5 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
     }
 }
+
+#endif
