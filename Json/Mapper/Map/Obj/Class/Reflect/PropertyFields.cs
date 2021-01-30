@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
 {
@@ -16,9 +15,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         public      readonly    int             num;
         public      readonly    int             primCount;
         public      readonly    int             objCount;
-    
-        
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+
+        // ReSharper disable once NotAccessedField.Local
         private     readonly    String              typeName;
 
         // ReSharper disable once UnusedMember.Local

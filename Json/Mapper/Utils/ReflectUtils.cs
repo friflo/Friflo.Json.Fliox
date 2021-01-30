@@ -110,54 +110,30 @@ namespace Friflo.Json.Mapper.Utils
             }
         }
 
-        public static T NewInstance <T> (Type type)
-        {
-            try
-            {
-                // return (T) Activator.CreateInstance( type ); // can call only public constructor
-                ConstructorInfo ci = GetDefaultConstructor (type);
-                if (ci == null)
-                    throw new FrifloException("No default constructor accessible. type: " + type);
-                return (T)ci.Invoke (DefConstructorArgs);
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("Failed to invoke default constructor of: " + type, e);
-            }
+        public static T NewInstance <T> (Type type) {
+
+            // return (T) Activator.CreateInstance( type ); // can call only public constructor
+            ConstructorInfo ci = GetDefaultConstructor (type);
+            if (ci == null)
+                throw new InvalidOperationException("No default constructor accessible. type: " + type);
+            return (T)ci.Invoke (DefConstructorArgs);
         }
 
-        public static Object CreateInstance(ConstructorInfo constructor)
-        {
-            try
-            {
-                return constructor. Invoke (DefConstructorArgs);
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("Failed calling default constructor", e);
-            }
+        public static Object CreateInstance(ConstructorInfo constructor) {
+            return constructor. Invoke (DefConstructorArgs);
         }
 
-        public static ConstructorInfo GetDefaultConstructor (Type type)
-        {
-            try
-            {
-                // return type.GetConstructor( new Type[0] ); only .net 3.5
+        public static ConstructorInfo GetDefaultConstructor (Type type) {
+            // return type.GetConstructor( new Type[0] ); only .net 3.5
 #if NETFX_CORE
-                foreach (ConstructorInfo ci in type.GetTypeInfo ().DeclaredConstructors)
+            foreach (ConstructorInfo ci in type.GetTypeInfo ().DeclaredConstructors)
 #else
-                foreach (ConstructorInfo ci in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
+            foreach (ConstructorInfo ci in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
 #endif
-                {
-                    if (ci.GetParameters().Length == 0)
-                        return ci;
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-                throw new FrifloException("Cannot access default constructor", e);
-            }
+                if (ci.GetParameters().Length == 0)
+                    return ci;
+            return null;
+
         }
 
         // IsAssignableFrom
@@ -259,43 +235,8 @@ namespace Friflo.Json.Mapper.Utils
         }
 
         // Invoke
-        public static Object Invoke (MethodInfo method, Object obj, Object[] args)
-        {
-            try
-            {
-                return method. Invoke (obj, args);
-            }
-            catch (TargetInvocationException e)
-            {
-                Exception cause = e. InnerException; // Java: getCause() == getTargetException()
-                if (cause == null)
-                {
-                    throw new FrifloException("Got InvocationTargetException, with cause = null.", e);
-                }
-                else
-                {
-                    throw cause;
-                }
-                // Java only
-
-
-
-
-            }
-            // illegal access
-/*          catch (MethodAccessException e)  missing in WinRT
-            {
-                throw new FrifloIOException("Invoke() illegal access on method: " + GetMethodName(method), e);
-            } */
-            // illegal argument
-            catch (ArgumentException  e)
-            {
-                throw new FrifloException("Invoke() illegal argument on method: " + GetMethodName(method), e);
-            }
-            catch (TargetParameterCountException  e)
-            {
-                throw new FrifloException("Invoke() illegal argument on method: " + GetMethodName(method), e);
-            }
+        public static Object Invoke (MethodInfo method, Object obj, Object[] args) {
+            return method. Invoke (obj, args);
         }
     
         public static String GetMethodName (MethodInfo method)

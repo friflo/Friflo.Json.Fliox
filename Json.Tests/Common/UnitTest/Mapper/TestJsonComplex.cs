@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -42,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < num2; n++) {
                     ret = enc.Read<T>(json);
                     if (ret == null)
-                        throw new FrifloException(enc.Error.msg.ToString());
+                        throw new InvalidOperationException(enc.Error.msg.ToString());
                 }
                 AreEqual(0, enc.SkipInfo.Sum);
                 // FFLog.log("EncodeJson: " + json + " : " + stopwatch.Time());
@@ -55,9 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonReader enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
-                    enc.ReadTo<T>(json, obj, out success);
+                    enc.ReadTo(json, obj, out success);
                     if (!success)
-                        throw new FrifloException(enc.Error.msg.ToString());
+                        throw new InvalidOperationException(enc.Error.msg.ToString());
                 }
                 AreEqual(0, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
                 // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());

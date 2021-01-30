@@ -102,7 +102,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 // Is it a struct?
                 if (type.IsValueType)
                     return Activator.CreateInstance(type);
-                throw new FrifloException("No default constructor available for: " + type.Name);
+                throw new InvalidOperationException("No default constructor available for: " + type.Name);
             }
             return ReflectUtils.CreateInstance(constructor);
         }

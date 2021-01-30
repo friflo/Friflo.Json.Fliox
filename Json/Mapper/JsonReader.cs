@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper
             if (errorHandler != null)
                 errorHandler.HandleError(pos, ref message);
             if (throwException)
-                throw new FrifloException(parser.error.msg.ToString());
+                throw new InvalidOperationException(parser.error.msg.ToString());
         }
         
         /// <summary>

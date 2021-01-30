@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -149,7 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 #if !UNITY_EDITOR
                     {
                         enc.throwException = true;
-                        var e = Throws<FrifloException>(() => enc.Read<double>(@null));
+                        var e = Throws<InvalidOperationException>(() => enc.Read<double>(@null));
                         StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", e.Message);
                         enc.throwException = false;
                     }

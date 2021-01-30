@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
                 IncrementILCounts(fieldType);
                 return;
             }
-            throw new FrifloException ("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
+            throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
         }
 
         private void IncrementILCounts(Type memberType) {
