@@ -252,9 +252,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr);
-                    /* reader.ReadTo(writer.Output, arr, out bool _);
+                    reader.ReadTo(writer.Output, arr, out bool _);
                     if (reader.Error.ErrSet)
-                        Fail(reader.Error.msg.ToString()); */
+                        Fail(reader.Error.msg.ToString());
                 }
             }
             memLog.AssertNoAllocations();

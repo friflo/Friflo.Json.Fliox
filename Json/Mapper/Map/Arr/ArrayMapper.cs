@@ -81,7 +81,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 array = slot;
                 startLen = len = array.Length;
             }
-
+            
             int index = 0;
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -106,13 +106,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                         TElm elemVar;
                         if (index < startLen) {
                             elemVar = array[index];
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             array[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = elementType.Read(reader, elemVar, out success);
+                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             if (index >= len)

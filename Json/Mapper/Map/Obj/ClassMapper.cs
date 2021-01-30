@@ -186,7 +186,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return ReadUtils.ErrorMsg<TypeMapper>(reader, "Object with discriminator $type not found: ",ref parser.value, out success);
                 parser.NextEvent();
             }
-            if (obj == null)
+            if (TypeUtils.IsNull(ref obj))
                 obj = (T)classType.CreateInstance();
             success = true;
             return classType;

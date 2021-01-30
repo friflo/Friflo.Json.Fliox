@@ -42,6 +42,7 @@ namespace Friflo.Json.Mapper
 #endif 
             };
             maxDepth    = 100;
+            useIL = typeStore.typeResolver.GetConfig().useIL;
         }
         
         private void InitJsonReader(ref ByteList bytes, int offset, int len) {
