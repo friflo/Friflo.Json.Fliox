@@ -31,11 +31,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField field, int primPos, int objPos) {
-            object obj = mirror.LoadObj(objPos + field.objIndex);
-            if (obj == null)
-                WriteUtils.AppendNull(writer);
-            else
-                Write(writer, (T)obj);
+            if (!isValueType) {
+                object obj = mirror.LoadObj(objPos + field.objIndex);
+                if (obj == null)
+                    WriteUtils.AppendNull(writer);
+                else
+                    Write(writer, (T) obj);
+            } else {
+                throw new NotImplementedException();
+            }
         }
 
         public override bool ReadFieldIL(JsonReader reader, ClassMirror mirror, PropField field, int primPos, int objPos) {
@@ -72,7 +76,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
-                        if (field.isValueType) {
+                        if (fieldType.isValueType) {
                             if (!fieldType.ReadFieldIL(reader, mirror, field, 0, 0))
                                 return default;
                         } else {
@@ -97,7 +101,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         if ((field = ObjectUtils.GetField(reader, classType)) == null)
                             break;
                         fieldType = field.fieldType;
-                        if (field.isValueType) {
+                        if (fieldType.isValueType) {
                             if (!fieldType.ReadFieldIL(reader, mirror, field, field.primIndex, field.objIndex))
                                 return default;
                         } else {

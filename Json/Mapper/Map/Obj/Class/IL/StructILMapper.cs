@@ -23,7 +23,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public override void WriteFieldIL(JsonWriter writer, ClassMirror mirror, PropField structField, int primPos, int objPos) {
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
-            TypeMapper classMapper = structField.fieldType;
+            TypeMapper classMapper = this;
             PropField[] fields = classMapper.GetPropFields().fieldsSerializable;
             bool firstMember = true;
             bytes.AppendChar('{');
@@ -71,8 +71,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
                             return default;
                         }
-                        // field.SetField(obj, null);
-                        throw new NotImplementedException();
+                        mirror.StoreObj(field.objIndex, null);
+                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         if ((field = ObjectUtils.GetField(reader, this)) == null)
@@ -88,7 +88,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         }
                         break;
                     case JsonEvent.ObjectEnd:
-                        // reader.InstanceStore(mirror, obj);
                         return true;
                     case JsonEvent.Error:
                         return false;

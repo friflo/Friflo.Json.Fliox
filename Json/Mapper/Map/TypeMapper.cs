@@ -16,10 +16,13 @@ namespace Friflo.Json.Mapper.Map
     {
         public  readonly    Type        type;
         public  readonly    bool        isNullable;
+        public  readonly    bool        isValueType;
+
 
         protected TypeMapper(Type type, bool isNullable) {
-            this.type       = type;
-            this.isNullable = isNullable;
+            this.type           = type;
+            this.isNullable     = isNullable;
+            this.isValueType    = type.IsValueType;
         }
 
         public abstract void            Dispose();

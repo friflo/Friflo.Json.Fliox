@@ -17,7 +17,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
         public   readonly   TypeMapper      fieldType;          // never null
-        public   readonly   bool            isValueType;
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         internal readonly   Type            fieldTypeNative;    // never null 
@@ -33,7 +32,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             this.name               = name;
             this.nameBytes          = new Bytes(name);
             this.fieldTypeNative    = fieldType;
-            this.isValueType        = fieldType.IsValueType;
             //
             this.field              = field;
             this.getter             = getter;
