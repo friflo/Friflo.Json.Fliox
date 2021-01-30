@@ -4,11 +4,10 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 
-namespace Friflo.Json.Mapper.Map.Obj
+namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
     // only used for IL
     public class StructILMapper<T> : ClassMapper<T>
