@@ -15,6 +15,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class ShortFieldMapper  : ShortMapper   { public ShortFieldMapper   (Type type) : base(type) { } }
     class ByteFieldMapper   : ByteMapper    { public ByteFieldMapper    (Type type) : base(type) { } }
     class BoolFieldMapper   : BoolMapper    { public BoolFieldMapper    (Type type) : base(type) { } }
+    //
+    class NullableIntFieldMapper    : NullableIntMapper     { public NullableIntFieldMapper     (Type type) : base(type) { } }
+    
 
     public          class ClassMirror { }
     public abstract class ClassLayout { }
