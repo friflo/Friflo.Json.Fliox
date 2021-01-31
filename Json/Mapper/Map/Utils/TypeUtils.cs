@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections.Generic;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {
@@ -22,13 +21,6 @@ namespace Friflo.Json.Mapper.Map.Utils
         
         public static bool IsPrimitiveNullable(Type type) {
             return Nullable.GetUnderlyingType(type) != null;
-        }
-
-        public static bool IsNull<T>(ref T value) {
-            Type type = typeof(T);
-            if (type.IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null)
-                return false;
-            return EqualityComparer<T>.Default.Equals(value, default);
         }
     }
 }

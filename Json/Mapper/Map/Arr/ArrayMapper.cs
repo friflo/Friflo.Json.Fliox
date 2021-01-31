@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 // elemVar.Set(arr.GetValue(n), elementType.varType, elementType.isNullable);
                 var elemVar = arr[n];
                 // if (elemVar.IsNull)
-                if (TypeUtils.IsNull(ref elemVar))
+                if (elementType.IsNull(ref elemVar))
                     WriteUtils.AppendNull(writer);
                 else
                     elementType.Write(writer, elemVar);

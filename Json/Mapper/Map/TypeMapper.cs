@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Class.IL;
@@ -14,15 +15,17 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public abstract class TypeMapper : IDisposable
     {
-        public  readonly    Type        type;
-        public  readonly    bool        isNullable;
-        public  readonly    bool        isValueType;
+        public  readonly    Type    type;
+        public  readonly    bool    isNullable;
+        public  readonly    bool    isValueType;
+        public  readonly    Type    underlyingType;
 
 
         protected TypeMapper(Type type, bool isNullable) {
             this.type           = type;
             this.isNullable     = isNullable;
             this.isValueType    = type.IsValueType;
+            this.underlyingType = Nullable.GetUnderlyingType(type);
         }
 
         public abstract void            Dispose();
@@ -45,6 +48,15 @@ namespace Friflo.Json.Mapper.Map
 
 
         public abstract object          CreateInstance();
+        
+        public bool IsNull<T>(ref T value) {
+            if (isValueType) {
+                if (underlyingType == null)
+                    return false;
+                return EqualityComparer<T>.Default.Equals(value, default);
+            }
+            return value == null;
+        }
     }
     
     public abstract class TypeMapper<TVal> : TypeMapper

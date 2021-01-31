@@ -90,7 +90,7 @@ namespace Friflo.Json.Mapper
         private void WriteStart<T>(TypeMapper<T> mapper, T value) {
             InitJsonWriter();
             try {
-                if (TypeUtils.IsNull(ref value))
+                if (mapper.IsNull(ref value))
                     WriteUtils.AppendNull(this);
                 else
                     mapper.Write(this, value);
