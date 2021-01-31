@@ -22,8 +22,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     class SampleIL {
-        public int?     nulInt32;
-        public int?     nulInt32Null;
+        public double?  nulDouble;
+        public double?  nulDoubleNull;
+        /*
+        public float?   nulFloat;
+        public float?   nulFloatNull;
+        
+        public long?    nulLong;
+        public long?    nulLongNull;
+        
+        public int?     nulInt;
+        public int?     nulIntNull;
+        
+        public short?   nulShort;
+        public short?   nulShortNull;
+        
+        public byte?    nulByte;
+        public byte?    nulByteNull;
+        
+        public bool     nulBool;
+        public bool?    nulBoolNull; */
         
         public StructIL childStruct1;
         public StructIL childStruct2;
@@ -42,8 +60,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool     bln;
 
         public SampleIL() {
-            nulInt32 = 88;
-            nulInt32Null = 89;
+            nulDouble       = 70;
+            nulDoubleNull   = 71;
+            /* nulFloat        = 72;
+            nulFloatNull    = 73;
+            nulLong         = 74;
+            nulLongNull     = 75;
+            nulInt          = 76;
+            nulIntNull      = 77;
+            nulShort        = 78;
+            nulShortNull    = 79;
+            nulByte         = 80;
+            nulByteNull     = 81;
+            nulBool         = true;
+            nulBoolNull     = true; */
+
+            //
             childStruct1.val2 = 90;
             childStruct2.val2 = 91;
             child =     new ChildIL { val = 92 };
@@ -59,8 +91,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         public void Init() {
-            nulInt32 = 9;
-            nulInt32Null = null;
+            nulDouble       = 20;
+            nulDoubleNull   = null;
+            /*
+            nulFloat        = 21;
+            nulFloatNull    = null;
+            nulLong         = 22;
+            nulLongNull     = null;
+            nulInt          = 23;
+            nulIntNull      = null;
+            nulShort        = 24;
+            nulShortNull    = null;
+            nulByte         = 25;
+            nulByteNull     = null;
+            nulBool         = true;
+            nulBoolNull     = null; */
+            
             child = new ChildIL { val = 42 };
             childStruct1.val2 = 111;
             childStruct2.val2 = 112;
@@ -80,8 +126,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         readonly string payloadStr = $@"
 {{
-    ""nulInt32"": 9,
-    ""nulInt32Null"": null,
+    ""nulDouble""       : 20.0,
+    ""nulDoubleNull""   : null,
+
+
     ""childStruct1"": {{
         ""val2"": 111
     }},
@@ -133,8 +181,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 
-                AreEqual(9,     result.nulInt32);
-                AreEqual(null,  result.nulInt32Null);
+                AreEqual(20,    result.nulDouble);
+                AreEqual(null,  result.nulDoubleNull);
                 
                 AreEqual(22.5,  result.dbl);
                 AreEqual(33.5,  result.flt);

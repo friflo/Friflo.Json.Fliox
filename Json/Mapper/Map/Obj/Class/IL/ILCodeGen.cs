@@ -81,6 +81,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var val     = Exp.Call(DoubleToInt64Bits, memberVal);       // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
                             longVal     = Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
+                        } else if (fieldType == typeof(double?)) {
+                            var isNull  = Expression.Equal(memberVal, Expression.Constant(null, typeof(double?)));
+                            var dbl     = Exp.Convert(memberVal, typeof(double)); 
+                            var val     = Exp.Call(DoubleToInt64Bits, dbl);           // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
+                            var longConv= Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
+                            longVal     = Exp.Condition(isNull, Exp.Constant(null, typeof(long?)), longConv);
                         } else if (fieldType == typeof(float)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var intVal  = Exp.Call(SingleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
@@ -164,6 +170,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             var lngVal  = Exp.Convert(srcElement, typeof(long));
                             // ReSharper disable once AssignNullToNotNullAttribute
                             srcTyped    = Exp.Call(Int64BitsToDouble, lngVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                        } else if (fieldType == typeof(double?)) {
+                            var isNull  = Expression.Equal(srcElement, Expression.Constant(null, typeof(double?)));
+                            var lngVal  = Exp.Convert(srcElement, typeof(long));
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            var val     = Exp.Call(Int64BitsToDouble, lngVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                            var valConv = Exp.Convert(val, typeof(double?));
+                            srcTyped    = Exp.Condition(isNull, Exp.Constant(null, typeof(double?)), valConv);
                         } else if (fieldType == typeof(float)) {
                             var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
                             // ReSharper disable once AssignNullToNotNullAttribute
