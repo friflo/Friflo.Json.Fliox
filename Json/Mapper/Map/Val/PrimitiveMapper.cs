@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(double))
                 return config.useIL ? new DoubleFieldMapper(type) : new DoubleMapper (type);
             if (type == typeof(double?))
-                return new NullableDoubleMapper (type);
+                return config.useIL ? new NullableDoubleFieldMapper(type) : new NullableDoubleMapper (type);
             return null;
         }
     }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(float))
                 return config.useIL ? new FloatFieldMapper(type) : new FloatMapper (type); 
             if (type == typeof(float?))
-                return new NullableFloatMapper (type); 
+                return config.useIL ? new NullableFloatFieldMapper(type) : new NullableFloatMapper (type); 
             return null;
         }
     }
@@ -130,7 +130,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(long))
                 return config.useIL ? new LongFieldMapper(type) : new LongMapper (type);
             if (type == typeof(long?))
-                return new NullableLongMapper (type);
+                return config.useIL ? new NullableLongFieldMapper(type) : new NullableLongMapper (type);
             return null;
         }
     }
@@ -213,7 +213,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(short))
                 return config.useIL ? new ShortFieldMapper(type) : new ShortMapper (type);
             if (type == typeof(short?))
-                return new NullableShortMapper (type);
+                return config.useIL ? new NullableShortFieldMapper(type) : new NullableShortMapper (type);
             return null;
         }
     }
@@ -257,7 +257,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(byte))
                 return config.useIL ? new ByteFieldMapper(type) : new ByteMapper (type); 
             if (type == typeof(byte?))
-                return new NullableByteMapper(type);
+                return config.useIL ? new NullableByteFieldMapper(type) : new NullableByteMapper(type);
             return null;
         }
     }
@@ -300,7 +300,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(bool))
                 return config.useIL ? new BoolFieldMapper(type) : new BoolMapper (type);
             if (type == typeof(bool?))
-                return new NullableBoolMapper (type);
+                return config.useIL ? new NullableBoolFieldMapper(type) : new NullableBoolMapper (type);
             return null;
         }
     }

@@ -133,6 +133,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 
+                AreEqual(9,     result.nulInt32);
+                AreEqual(null,  result.nulInt32Null);
+                
                 AreEqual(22.5,  result.dbl);
                 AreEqual(33.5,  result.flt);
                 
