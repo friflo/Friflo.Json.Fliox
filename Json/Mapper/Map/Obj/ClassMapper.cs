@@ -94,7 +94,9 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         private static bool IsNullable(Type type) {
-            return !type.IsValueType;
+            if (!type.IsValueType)
+                return true;
+            return TypeUtils.GetNullableStruct (type) != null;
         }
         
         public override object CreateInstance()

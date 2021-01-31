@@ -29,6 +29,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            if (isNullable && !mirror.LoadPrimitiveHasValue(primPos)) {
+                WriteUtils.AppendNull(writer);
+                return;
+            }
             int startLevel = WriteUtils.IncLevel(writer);
             ref var bytes = ref writer.bytes;
             PropField[] fields = GetPropFields().fields;

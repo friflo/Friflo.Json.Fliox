@@ -52,7 +52,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, Expression srcTyped) {
             Type nullableStruct = TypeUtils.GetNullableStruct(srcTyped.Type);
             if (nullableStruct != null) {
-                var value = Exp.Field(srcTyped, "value");
+                var value    = Exp.Field(srcTyped, "value");     // type of struct
+                var hasValue = Exp.Field(srcTyped, "hasValue");  // type: bool
+                
+                // assign the state of hasValue
+                var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
+                var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);         // ref long dstElement = ref dst[arrayIndex];
+                var val         = Exp.Condition(hasValue, Exp.Constant(1L, typeof(long?)), Exp.Constant(null, typeof(long?)), typeof(long?)); // longVal   = memberVal ? 1 : 0;
+                var dstAssign   = Exp.Assign(dstElement, val);              // dstElement = longVal;
+                ctx.assignmentList.Add(dstAssign);
                 AddLoadMembers(ctx, propFields, value);
                 return;
             }
@@ -154,7 +162,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, Expression dstTyped) {
             Type nullableStruct = TypeUtils.GetNullableStruct(dstTyped.Type);
             if (nullableStruct != null) {
-                var value = Exp.Field(dstTyped, "value");
+                var value       = Exp.Field(dstTyped, "value");    // type of struct
+                
+                var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
+                var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
+                var notNull     = Exp.NotEqual(srcElement, Exp.Constant(null, typeof(long?)));
+                // instantiate new struct and assign to Nullable<>, if src array element is not null
+                var newStruct   = Exp.New(nullableStruct); // , new Expression[0]);
+                var newNullable = Exp.Convert(newStruct, dstTyped.Type);
+                var newValue    = Exp.Condition(notNull, Exp.Constant(null, dstTyped.Type), newNullable, dstTyped.Type); // srcTyped = srcElement != 0;
+                var dstAssign   = Exp.Assign(dstTyped, newValue);              // dstMember = srcTyped;
+                ctx.assignmentList.Add(dstAssign);
                 AddStoreMembers(ctx, propFields, value);
                 return;
             }

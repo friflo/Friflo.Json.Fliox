@@ -139,6 +139,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public void StorePrimitiveNull(int idx) {
             primitives.array[idx] = null;
         }
+        
+        public bool LoadPrimitiveHasValue(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue;
+        }
+        
+        
 
         //
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }

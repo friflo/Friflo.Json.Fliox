@@ -61,12 +61,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         }
 
         private void IncrementILCounts(Type memberType, bool isNullablePrimitive) {
-            if (memberType.IsPrimitive || isNullablePrimitive)
+            if (memberType.IsPrimitive || isNullablePrimitive) {
                 primCount++;
-            else if (memberType.IsValueType)
+            } else if (memberType.IsValueType) {
                 // struct itself must not be incremented only its members. Their position need to be counted 
                 TraverseMembers(memberType, false);
-            else
+            } else
                 objCount++; // object
         }
 
@@ -87,16 +87,21 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         private void TraverseMembers(Type type, bool addMembers) {
             Type nullableStruct = TypeUtils.GetNullableStruct(type);
             if (nullableStruct != null) {
+                primCount++;  // require array element to represent if Nullable<struct> is null or set (1) 
                 TraverseMembers(nullableStruct, addMembers);
                 return;
             }
             PropertyInfo[] properties = ReflectUtils.GetProperties(type);
-            for (int n = 0; n < properties. Length; n++)
-                CreatePropField(type, properties[n]. Name, addMembers);
+            for (int n = 0; n < properties.Length; n++) {
+                var name = properties[n].Name;
+                CreatePropField(type, name, addMembers);
+            }
 
             FieldInfo[] field = ReflectUtils.GetFields(type);
-            for (int n = 0; n < field. Length; n++)
-                CreatePropField(type, field[n]. Name, addMembers);
+            for (int n = 0; n < field.Length; n++) {
+                var name = field[n].Name;
+                CreatePropField(type, name, addMembers);
+            }
         }
     }
 }
