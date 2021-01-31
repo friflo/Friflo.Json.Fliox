@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         public float?   nulFloat;
         public float?   nulFloatNull;
-        /*
+
         public long?    nulLong;
         public long?    nulLongNull;
         
@@ -40,8 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public byte?    nulByte;
         public byte?    nulByteNull;
         
-        public bool     nulBool;
-        public bool?    nulBoolNull; */
+        // public bool     nulBool;
+        // public bool?    nulBoolNull;
         
         public StructIL childStruct1;
         public StructIL childStruct2;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulDoubleNull   = 71;
             nulFloat        = 72;
             nulFloatNull    = 73;
-            /* nulLong         = 74;
+            nulLong         = 74;
             nulLongNull     = 75;
             nulInt          = 76;
             nulIntNull      = 77;
@@ -72,8 +72,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulShortNull    = 79;
             nulByte         = 80;
             nulByteNull     = 81;
-            nulBool         = true;
-            nulBoolNull     = true; */
+            // nulBool         = true;
+            // nulBoolNull     = true;
 
             //
             childStruct1.val2 = 90;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             nulFloat        = 21;
             nulFloatNull    = null;
-            /*
+
             nulLong         = 22;
             nulLongNull     = null;
             nulInt          = 23;
@@ -105,8 +105,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulShortNull    = null;
             nulByte         = 25;
             nulByteNull     = null;
-            nulBool         = true;
-            nulBoolNull     = null; */
+            
+            // nulBool         = true;
+            // nulBoolNull     = null;
             
             child = new ChildIL { val = 42 };
             childStruct1.val2 = 111;
@@ -131,6 +132,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""nulDoubleNull""   : null,
     ""nulFloat""        : 21.0,
     ""nulFloatNull""    : null,
+    ""nulLong""         : 22,
+    ""nulLongNull""     : null,
+    ""nulInt""          : 23,
+    ""nulIntNull""      : null,
+    ""nulShort""        : 24,
+    ""nulShortNull""    : null,
+    ""nulByte""         : 25,
+    ""nulByteNull""     : null,
 
     ""childStruct1"": {{
         ""val2"": 111
