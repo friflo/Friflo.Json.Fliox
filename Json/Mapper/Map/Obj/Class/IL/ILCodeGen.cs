@@ -91,6 +91,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var intVal  = Exp.Call(SingleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
                             longVal     = Exp.Convert(intVal, typeof(long?));            // longVal = (long)intVal;
+                        } else if (fieldType == typeof(float?)) {
+                            var isNull  = Expression.Equal(memberVal, Expression.Constant(null, typeof(float?)));
+                            var flt     = Exp.Convert(memberVal, typeof(float)); 
+                            var val     = Exp.Call(SingleToInt32Bits, flt);           // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
+                            var longConv= Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
+                            longVal     = Exp.Condition(isNull, Exp.Constant(null, typeof(long?)), longConv);
                         } else
                             throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
 
@@ -181,6 +187,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
                             // ReSharper disable once AssignNullToNotNullAttribute
                             srcTyped    = Exp.Call(Int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
+                        } else if (fieldType == typeof(float?)) {
+                            var isNull  = Expression.Equal(srcElement, Expression.Constant(null, typeof(float?)));
+                            var intVal  = Exp.Convert(srcElement, typeof(int));
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            var val     = Exp.Call(Int32BitsToSingle, intVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                            var valConv = Exp.Convert(val, typeof(float?));
+                            srcTyped    = Exp.Condition(isNull, Exp.Constant(null, typeof(float?)), valConv);
                         }
                         else
                             throw new InvalidOperationException("Unexpected primitive type: " + fieldType);

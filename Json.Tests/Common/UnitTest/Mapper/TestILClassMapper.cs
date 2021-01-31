@@ -24,10 +24,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     class SampleIL {
         public double?  nulDouble;
         public double?  nulDoubleNull;
-        /*
+
         public float?   nulFloat;
         public float?   nulFloatNull;
-        
+        /*
         public long?    nulLong;
         public long?    nulLongNull;
         
@@ -62,9 +62,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public SampleIL() {
             nulDouble       = 70;
             nulDoubleNull   = 71;
-            /* nulFloat        = 72;
+            nulFloat        = 72;
             nulFloatNull    = 73;
-            nulLong         = 74;
+            /* nulLong         = 74;
             nulLongNull     = 75;
             nulInt          = 76;
             nulIntNull      = 77;
@@ -93,9 +93,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void Init() {
             nulDouble       = 20;
             nulDoubleNull   = null;
-            /*
+            
             nulFloat        = 21;
             nulFloatNull    = null;
+            /*
             nulLong         = 22;
             nulLongNull     = null;
             nulInt          = 23;
@@ -128,7 +129,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {{
     ""nulDouble""       : 20.0,
     ""nulDoubleNull""   : null,
-
+    ""nulFloat""        : 21.0,
+    ""nulFloatNull""    : null,
 
     ""childStruct1"": {{
         ""val2"": 111
