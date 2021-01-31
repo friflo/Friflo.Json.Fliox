@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
 
 #if !UNITY_5_3_OR_NEWER
 
@@ -47,14 +48,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
 
         public class DbgEntry {
-            public string index;
-            public string name;
-            public object value;
+            public string       index;
+            public string       name;
+            public object       value;
+            public PropField    field;
 
             public override string ToString() {
                 // ReSharper disable once MergeConditionalExpression
                 object valueStr = value == null ? "null" : value;
-                return $"{index} '{name}'  {valueStr}";
+                return $"{index}  '{name}':  {valueStr}";
             }
         }
 
@@ -62,15 +64,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public DbgEntry[] GetDebugView() {
             var fields = classTypeDbg.GetPropFields().fields;
             DbgEntry[] entries = new DbgEntry[fields.Length];
-            int primIdx = 0;
-            int objIdx = 0;
             for (int n = 0; n < fields.Length; n++) {
                 var field = fields[n];
                 var isValueType = field.fieldType.isValueType;
                 var entry = new DbgEntry {
                     name  = field.name,
-                    index = isValueType ? "prim: " + primIdx : "obj: " + objIdx,
-                    value = isValueType ? primitives.array[primIdx++] : objects.array[objIdx++]
+                    index = isValueType ? "prim: " + field.primIndex : "obj: " + field.objIndex,
+                    value = isValueType ? primitives.array[field.primIndex] : objects.array[field.objIndex],
+                    field = field
                 };
                 entries[n] = entry;
             }
