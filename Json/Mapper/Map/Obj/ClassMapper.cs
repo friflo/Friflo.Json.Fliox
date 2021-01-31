@@ -134,11 +134,8 @@ namespace Friflo.Json.Mapper.Map.Obj
             bool firstMember = true;
             bytes.AppendChar('{');
 
-            Type objType = typeof(T);
-            // Check for polymorphic type only if it is not a value type because Type.GetType() allocates memory
-            if (!objType.IsValueType)    
-                objType = obj.GetType();
-
+            // Note: Type.GetType() allocates memory
+            Type objType = obj.GetType();
             if (type != objType) {
                 classMapper = writer.typeCache.GetTypeMapper(objType);
                 firstMember = false;
@@ -148,8 +145,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
 
             PropField[] fields = classMapper.GetPropFields().fields;
-            ClassMirror mirror = writer.useIL ? writer.InstanceLoad(classMapper, obj) : null;
-
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
                     firstMember = false;
@@ -158,12 +153,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
                 
-                if (writer.useIL) {
-                    field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
-                    continue;
-                }
                 object elemVar = field.GetField(obj);
-                // if (field.fieldType.varType == VarType.Object && elemVar == null) {
                 if (elemVar == null) {
                     WriteUtils.AppendNull(writer);
                 } else {
@@ -171,8 +161,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                     fieldType.WriteObject(writer, elemVar);
                 }
             }
-
-            writer.InstancePop();
             bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }

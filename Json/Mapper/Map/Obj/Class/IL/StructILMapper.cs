@@ -11,7 +11,7 @@ using Friflo.Json.Mapper.Map.Utils;
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 {
     // only used for IL
-    public class StructILMapper<T> : ClassMapper<T>
+    public class StructILMapper<T> : ClassILMapper<T>
     {
         private readonly    ClassLayout<T>                    layout;
 
