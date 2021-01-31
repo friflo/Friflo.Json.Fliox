@@ -80,7 +80,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         public double? LoadDblNulL(int idx) {
             var value = primitives.array[idx];
-            return value.HasValue ? BitConverter.Int64BitsToDouble((long) value) : default;
+            return value.HasValue ? (double?)BitConverter.Int64BitsToDouble((long) value) : default;
         }
 
         public void StoreFltNulL(int idx, float? value) {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public float?    LoadFltNulL     (int idx) {
             var value = primitives.array[idx];
             // ReSharper disable once PossibleInvalidOperationException
-            return value.HasValue ? BitConverter.Int32BitsToSingle((int)(long) primitives.array[idx]) : default;
+            return value.HasValue ? (float?)BitConverter.Int32BitsToSingle((int)(long) primitives.array[idx]) : default;
         }
 
         public void StoreLongNulL(int idx, long? value) {
@@ -106,7 +106,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         public int? LoadIntNulL(int idx) {
             var value = primitives.array[idx];
-            return value.HasValue ? (int)value : default;
+            return value.HasValue ? (int?)value : default;
         }
 
         public void StoreShortNulL(int idx, short? value) {
@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         public short? LoadShortNulL(int idx) {
             var value = primitives.array[idx];
-            return value.HasValue ? (short)value : default;
+            return value.HasValue ? (short?)value : default;
         }
 
         public void StoreByteNulL(int idx, byte? value) {
@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         public byte? LoadByteNulL(int idx) {
             var value = primitives.array[idx];
-            return value.HasValue ? (byte)value : default;
+            return value.HasValue ? (byte?)value : default;
         }
 
         public void StoreBoolNulL(int idx, bool? value) {
@@ -133,10 +133,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
         public bool? LoadBoolNulL(int idx) {
             var value = primitives.array[idx];
-            return value.HasValue ? primitives.array[idx] != 0 : default;
+            return value.HasValue ? (bool?)(primitives.array[idx] != 0) : default;
         }
         //
-        
+        public void StorePrimitiveNull(int idx) {
+            primitives.array[idx] = null;
+        }
+
         //
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }

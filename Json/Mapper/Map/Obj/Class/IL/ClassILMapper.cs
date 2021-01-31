@@ -97,7 +97,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
                             return default;
                         }
-                        mirror.StoreObj(field.objIndex, null);
+                        if (field.fieldType.isValueType)
+                            mirror.StorePrimitiveNull(field.primIndex);
+                        else
+                            mirror.StoreObj(field.objIndex, null);
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:

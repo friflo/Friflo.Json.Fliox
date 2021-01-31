@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect; // only used by CLR
+using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Map.Val;
 
 #if !UNITY_5_3_OR_NEWER
@@ -74,7 +75,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public NullableIntFieldMapper(Type type) : base(type) { }
         
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
-            Write(writer, mirror.LoadIntNulL(primPos));
+            var value = mirror.LoadIntNulL(primPos);
+            if (value == default)
+                WriteUtils.AppendNull(writer);
+            else
+                Write(writer, value);
         }
 
         public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {

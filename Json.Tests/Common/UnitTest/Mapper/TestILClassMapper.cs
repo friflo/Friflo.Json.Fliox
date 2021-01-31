@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     class SampleIL {
-        // public int?     nulInt32;
+        public int?     nulInt32;
+        public int?     nulInt32Null;
         
         public StructIL childStruct1;
         public StructIL childStruct2;
@@ -41,6 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool     bln;
 
         public SampleIL() {
+            nulInt32 = 88;
+            nulInt32Null = 89;
             childStruct1.val2 = 90;
             childStruct2.val2 = 91;
             child =     new ChildIL { val = 92 };
@@ -56,6 +59,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         public void Init() {
+            nulInt32 = 9;
+            nulInt32Null = null;
             child = new ChildIL { val = 42 };
             childStruct1.val2 = 111;
             childStruct2.val2 = 112;
@@ -75,6 +80,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         readonly string payloadStr = $@"
 {{
+    ""nulInt32"": 9,
+    ""nulInt32Null"": null,
     ""childStruct1"": {{
         ""val2"": 111
     }},

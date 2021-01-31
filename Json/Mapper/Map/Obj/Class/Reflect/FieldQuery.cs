@@ -27,34 +27,40 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
             PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
             if (getter != null) {
                 Type propType = getter.PropertyType;
+                Type ut         = Nullable.GetUnderlyingType(propType);
+                bool isNullablePrimitive = propType.IsValueType && ut != null && ut.IsPrimitive;
+                
                 if (addMembers) {
                     PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName);
-                    PropField pf = propType.IsValueType
+                    PropField pf = propType.IsValueType || isNullablePrimitive
                         ? new PropField(fieldName, propType, null, getter, setter, primCount, -1)
                         : new PropField(fieldName, propType, null, getter, setter, -1, objCount);
                     fieldList.Add(pf);
                 }
-                IncrementILCounts(propType);
+                IncrementILCounts(propType, isNullablePrimitive);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
                 Type fieldType = field.FieldType;
+                Type ut         = Nullable.GetUnderlyingType(fieldType);
+                bool isNullablePrimitive = fieldType.IsValueType && ut != null && ut.IsPrimitive;
+                
                 if (addMembers) {
-                    PropField pf = fieldType.IsValueType
+                    PropField pf = fieldType.IsValueType || isNullablePrimitive
                         ? new PropField(fieldName, fieldType, field, null, null, primCount, -1)
                         : new PropField(fieldName, fieldType, field, null, null, -1, objCount);
                     fieldList. Add (pf);
                 }
-                IncrementILCounts(fieldType);
+                IncrementILCounts(fieldType, isNullablePrimitive);
                 return;
             }
             throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
         }
 
-        private void IncrementILCounts(Type memberType) {
-            if (memberType.IsPrimitive)
+        private void IncrementILCounts(Type memberType, bool isNullablePrimitive) {
+            if (memberType.IsPrimitive || isNullablePrimitive)
                 primCount++;
             else if (memberType.IsValueType)
                 // struct itself must not be incremented only its members. Their position need to be counted 

@@ -53,6 +53,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
+                Type ut         = field.fieldType.underlyingType;
                 
                 MemberExpression memberVal;
                 if (field.field != null)
@@ -67,10 +68,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     var dstElement  = Exp.ArrayAccess(ctx.dstObj, arrObjIndex);     // ref object dstElement = ref dstObj[arrObjIndex];
                     dstAssign       = Exp.Assign(dstElement, memberVal);            // dstElement = memberVal;
                 } else {
-                    if (fieldType.IsPrimitive) {
+                    if (fieldType.IsPrimitive || ut != null && ut.IsPrimitive) {
                         // --- primitive field
                         Expression longVal;
-                        if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
+                        if (fieldType == typeof(long)  || fieldType == typeof(int)  || fieldType == typeof(short)  || fieldType == typeof(byte) ||
+                            fieldType == typeof(long?) || fieldType == typeof(int?) || fieldType == typeof(short?) || fieldType == typeof(byte?)) {
                             longVal     = Exp.Convert(memberVal, typeof(long?));      // longVal   = (long)memberVal;
                         } else if (fieldType == typeof(bool)) {
                             var val     = Exp.Condition(memberVal, Exp.Constant(1L), Exp.Constant(0L)); // longVal   = memberVal ? 1 : 0;
@@ -130,6 +132,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
+                Type ut         = field.fieldType.underlyingType;
                 
                 MemberExpression dstMember;
                 if (field.field != null)
@@ -145,12 +148,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     var srcTyped    = Exp.Convert(srcElement, fieldType);           // <fieldType>srcTyped = (<fieldType>)srcElement;
                     dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
                 } else {
-                    if (fieldType.IsPrimitive) {
+                    if (fieldType.IsPrimitive || ut != null && ut.IsPrimitive) {
                         // --- primitive field
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
                         var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
                         Expression srcTyped;
-                        if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
+                        if (fieldType == typeof(long)  || fieldType == typeof(int)  || fieldType == typeof(short)  || fieldType == typeof(byte) ||
+                            fieldType == typeof(long?) || fieldType == typeof(int?) || fieldType == typeof(short?) || fieldType == typeof(byte?)) {
                             srcTyped    = Exp.Convert(srcElement, fieldType);           // srcTyped  = (<Field Type>)srcElement;
                         } else if (fieldType == typeof(bool)) {
                             var lngVal  = Exp.Convert(srcElement, typeof(long));
