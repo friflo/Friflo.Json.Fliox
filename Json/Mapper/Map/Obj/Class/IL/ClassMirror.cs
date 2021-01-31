@@ -24,8 +24,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private     ValueList<long?>    primitives = new ValueList<long?>  (8, AllocType.Persistent);
         private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
         private     ClassLayout         layout;
+        private     TypeMapper          classTypeDbg;  // only for debugging
 
         public void LoadInstance<T>(TypeMapper classType, T obj) {
+            classTypeDbg = classType;
             layout = classType.GetClassLayout();
             primitives.Resize(layout.primCount);
             objects.   Resize(layout.objCount);
@@ -43,7 +45,38 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 objects.array[n] = null;
             objects.Resize(0); // prevent clearing already cleared objects
         }
-        
+
+        public class DbgEntry {
+            public string index;
+            public string name;
+            public object value;
+
+            public override string ToString() {
+                // ReSharper disable once MergeConditionalExpression
+                object valueStr = value == null ? "null" : value;
+                return $"{index} '{name}'  {valueStr}";
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public DbgEntry[] GetDebugView() {
+            var fields = classTypeDbg.GetPropFields().fields;
+            DbgEntry[] entries = new DbgEntry[fields.Length];
+            int primIdx = 0;
+            int objIdx = 0;
+            for (int n = 0; n < fields.Length; n++) {
+                var field = fields[n];
+                var isValueType = field.fieldType.isValueType;
+                var entry = new DbgEntry {
+                    name  = field.name,
+                    index = isValueType ? "prim: " + primIdx : "obj: " + objIdx,
+                    value = isValueType ? primitives.array[primIdx++] : objects.array[objIdx++]
+                };
+                entries[n] = entry;
+            }
+            return entries;
+        }
+
         public void Dispose() {
             primitives.Dispose();
             objects.   Dispose();
