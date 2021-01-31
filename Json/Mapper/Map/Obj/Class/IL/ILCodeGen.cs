@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map.Utils;
 using Exp = System.Linq.Expressions.Expression;
     
 namespace Friflo.Json.Mapper.Map.Obj.Class.IL
@@ -49,17 +50,23 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
         private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, Expression srcTyped) {
+            Type nullableStruct = TypeUtils.GetNullableStruct(srcTyped.Type);
+            if (nullableStruct != null) {
+                var value = Exp.Field(srcTyped, "value");
+                AddLoadMembers(ctx, propFields, value);
+                return;
+            }
 
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldTypeNative;
                 Type ut         = field.fieldType.underlyingType;
-                
+
                 MemberExpression memberVal;
                 if (field.field != null)
-                    memberVal   = Exp.Field(   srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
+                    memberVal = Exp.Field   (srcTyped, field.name); // memberVal = srcTyped.<field.name>;
                 else
-                    memberVal   = Exp.Property(srcTyped, field.name);           // memberVal = srcTyped.<field.name>;
+                    memberVal = Exp.Property(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
 
                 BinaryExpression dstAssign;
                 if (!fieldType.IsPrimitive && !fieldType.IsValueType) {
@@ -145,6 +152,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
         private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, Expression dstTyped) {
+            Type nullableStruct = TypeUtils.GetNullableStruct(dstTyped.Type);
+            if (nullableStruct != null) {
+                var value = Exp.Field(dstTyped, "value");
+                AddStoreMembers(ctx, propFields, value);
+                return;
+            }
             
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];

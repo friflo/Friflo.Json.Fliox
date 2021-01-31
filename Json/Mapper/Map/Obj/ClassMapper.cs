@@ -19,7 +19,8 @@ namespace Friflo.Json.Mapper.Map.Obj
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            if (TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
+            Type nullableStruct = TypeUtils.GetNullableStruct(type);
+            if (nullableStruct == null && TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
                 return null;
             if (EnumMatcher.IsEnum(type, out bool _))
                 return null;

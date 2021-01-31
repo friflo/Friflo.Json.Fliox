@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
@@ -84,6 +85,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         }
 
         private void TraverseMembers(Type type, bool addMembers) {
+            Type nullableStruct = TypeUtils.GetNullableStruct(type);
+            if (nullableStruct != null) {
+                TraverseMembers(nullableStruct, addMembers);
+                return;
+            }
             PropertyInfo[] properties = ReflectUtils.GetProperties(type);
             for (int n = 0; n < properties. Length; n++)
                 CreatePropField(type, properties[n]. Name, addMembers);
