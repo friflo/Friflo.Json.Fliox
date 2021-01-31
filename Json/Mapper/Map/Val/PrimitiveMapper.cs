@@ -172,7 +172,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (type == typeof(int))
                 return config.useIL ? new IntFieldMapper(type) : new IntMapper (type); 
             if (type == typeof(int?))
-                return new NullableIntMapper(type);
+                return config.useIL ? new NullableIntFieldMapper(type) : new NullableIntMapper(type);
             return null;
         }
     }

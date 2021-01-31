@@ -30,9 +30,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         // The idea of loading/storing all fields of a class with one method call came to this nice blog:
         // [Optimizing reflection in C# via dynamic code generation | by Sergio Pedri | Medium]
         // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
-        internal static Expression<Action<long[], object[], T>> LoadInstanceExpression<T> (PropertyFields propFields) {
+        internal static Expression<Action<long?[], object[], T>> LoadInstanceExpression<T> (PropertyFields propFields) {
             var ctx = new LoadContext();
-            ctx.dst         = Exp.Parameter(typeof(long[]),   "dst");     // parameter: long[]   dst;
+            ctx.dst         = Exp.Parameter(typeof(long?[]),  "dst");     // parameter: long[]   dst;
             ctx.dstObj      = Exp.Parameter(typeof(object[]), "dstObj");  // parameter: object[] dstObj;
             
             var src         = Exp.Parameter(typeof(T),        "src");     // parameter: object   src;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
             
-            var lambda = Exp.Lambda<Action<long[], object[], T>> (assignmentsBlock, ctx.dst, ctx.dstObj, src);
+            var lambda = Exp.Lambda<Action<long?[], object[], T>> (assignmentsBlock, ctx.dst, ctx.dstObj, src);
             return lambda;
         }
 
@@ -71,18 +71,19 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         // --- primitive field
                         Expression longVal;
                         if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
-                            longVal     = Exp.Convert(memberVal, typeof(long));         // longVal   = (long)memberVal;
+                            longVal     = Exp.Convert(memberVal, typeof(long?));      // longVal   = (long)memberVal;
                         } else if (fieldType == typeof(bool)) {
-                            longVal     = Exp.Condition(memberVal, Exp.Constant(1L), Exp.Constant(0L)); // longVal   = memberVal ? 1 : 0;
+                            var val     = Exp.Condition(memberVal, Exp.Constant(1L), Exp.Constant(0L)); // longVal   = memberVal ? 1 : 0;
+                            longVal     = Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
                         } else if (fieldType == typeof(double)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            longVal     = Exp.Call(DoubleToInt64Bits, memberVal);       // longVal = BitConverter.DoubleToInt64Bits(memberVal);
+                            var val     = Exp.Call(DoubleToInt64Bits, memberVal);       // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
+                            longVal     = Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
                         } else if (fieldType == typeof(float)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var intVal  = Exp.Call(SingleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
-                            longVal     = Exp.Convert(intVal, typeof(long));            // longVal = (long)intVal;
-                        }
-                        else
+                            longVal     = Exp.Convert(intVal, typeof(long?));            // longVal = (long)intVal;
+                        } else
                             throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
 
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
@@ -108,16 +109,16 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             internal            int                    objIndex;
         }
 
-        internal static Expression<Action<T, long[], object[]>> StoreInstanceExpression<T> (PropertyFields propFields) {
+        internal static Expression<Action<T, long?[], object[]>> StoreInstanceExpression<T> (PropertyFields propFields) {
             var ctx = new StoreContext();
             var dst         = Exp.Parameter(typeof(T),        "dst");       // parameter: long[]   dst;
-            ctx.src         = Exp.Parameter(typeof(long[]),   "src");       // parameter: object   src;
+            ctx.src         = Exp.Parameter(typeof(long?[]),  "src");       // parameter: object   src;
             ctx.srcObj      = Exp.Parameter(typeof(object[]), "srcObj");    // parameter: object[] srcObj;
             
             AddStoreMembers(ctx, propFields, dst);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
-            var lambda = Exp.Lambda<Action<T, long[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
+            var lambda = Exp.Lambda<Action<T, long?[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
             return lambda;
         }
         
@@ -152,11 +153,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         if (fieldType == typeof(long) || fieldType == typeof(int) ||fieldType == typeof(short) || fieldType == typeof(byte)) {
                             srcTyped    = Exp.Convert(srcElement, fieldType);           // srcTyped  = (<Field Type>)srcElement;
                         } else if (fieldType == typeof(bool)) {
-                            var not0    = Exp.NotEqual(srcElement, Exp.Constant(0L));
+                            var lngVal  = Exp.Convert(srcElement, typeof(long));
+                            var not0    = Exp.NotEqual(lngVal, Exp.Constant(0L));
                             srcTyped    = Exp.Condition(not0, Exp.Constant(true), Exp.Constant(false)); // srcTyped = srcElement != 0;
                         } else if (fieldType == typeof(double)) {
+                            var lngVal  = Exp.Convert(srcElement, typeof(long));
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            srcTyped    = Exp.Call(Int64BitsToDouble, srcElement);      // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
+                            srcTyped    = Exp.Call(Int64BitsToDouble, lngVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
                         } else if (fieldType == typeof(float)) {
                             var srcInt  = Exp.Convert(srcElement, typeof(int));         // srcInt   = (int)srcElement;
                             // ReSharper disable once AssignNullToNotNullAttribute

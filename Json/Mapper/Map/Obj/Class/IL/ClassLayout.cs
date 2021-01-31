@@ -21,8 +21,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
     public class ClassLayout<T> : ClassLayout
     {
-        private Action<long[], object[], T> loadObjectToPayload;
-        private Action<T, long[], object[]> storePayloadToObject;
+        private Action<long?[], object[], T> loadObjectToPayload;
+        private Action<T, long?[], object[]> storePayloadToObject;
         
         internal ClassLayout(PropertyFields propFields) : base(propFields) {
             loadObjectToPayload = null;
@@ -32,8 +32,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         internal void InitClassLayout(PropertyFields propFields, ResolverConfig config) {
 
             // create load/store instance expression
-            Action<long[], object[], T> load = null;
-            Action<T, long[], object[]> store = null;
+            Action<long?[], object[], T> load = null;
+            Action<T, long?[], object[]> store = null;
             if (config.useIL) {
                 var loadLambda = ILCodeGen.LoadInstanceExpression<T>(propFields);
                 load = loadLambda.Compile();
@@ -46,11 +46,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             storePayloadToObject = store;
         }
 
-        internal void LoadObjectToMirror(long[] dstPrim, object[] dstObj, T src) {
+        internal void LoadObjectToMirror(long?[] dstPrim, object[] dstObj, T src) {
             loadObjectToPayload(dstPrim, dstObj, src);
         }
 
-        internal void StoreMirrorToPayload(T dst, long[] srcPrim, object[] srcObj) {
+        internal void StoreMirrorToPayload(T dst, long?[] srcPrim, object[] srcObj) {
             storePayloadToObject(dst, srcPrim, srcObj);
         }
     }

@@ -22,10 +22,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     class SampleIL {
+        // public int?     nulInt32;
+        
         public StructIL childStruct1;
         public StructIL childStruct2;
+        
         public ChildIL  child;
         public ChildIL  childNull;
+        
         public double   dbl;
         public float    flt;
               

@@ -70,6 +70,20 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
     }
     
+    class NullableIntFieldMapper : NullableIntMapper {
+        public NullableIntFieldMapper(Type type) : base(type) { }
+        
+        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            Write(writer, mirror.LoadIntNulL(primPos));
+        }
+
+        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(reader, 0, out bool success);
+            mirror.StoreIntNulL(primPos, value);
+            return success;
+        }
+    }
+    
     class ShortFieldMapper : ShortMapper {
         public ShortFieldMapper(Type type) : base(type) { }
         

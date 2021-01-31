@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     {
 
         // payload size changes, depending on which class is used at the current classLevel
-        private     ValueList<long>     primitives = new ValueList<long>  (8, AllocType.Persistent);
+        private     ValueList<long?>    primitives = new ValueList<long?>  (8, AllocType.Persistent);
         private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
         private     ClassLayout         layout;
 
@@ -48,17 +48,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             primitives.Dispose();
             objects.   Dispose();
         }
-        
+        // ----------------------------------
         public void     StoreDbl    (int idx,           double value) {  primitives.array[idx] = BitConverter.DoubleToInt64Bits(value); }
         public double   LoadDbl     (int idx) {
-            return BitConverter.Int64BitsToDouble(                       primitives.array[idx]); }
+            return BitConverter.Int64BitsToDouble(                 (long)primitives.array[idx]); }
         
         public void     StoreFlt    (int idx,           float value) {   primitives.array[idx] = BitConverter.SingleToInt32Bits(value); }
         public float    LoadFlt     (int idx) {
             return BitConverter.Int32BitsToSingle(                  (int)primitives.array[idx]); }
 
         public void     StoreLong   (int idx,            long value)   { primitives.array[idx] = value; }
-        public long     LoadLong    (int idx)                   { return primitives.array[idx]; }
+        public long     LoadLong    (int idx)             { return (long)primitives.array[idx]; }
         
         public void     StoreInt    (int idx,            int value)    { primitives.array[idx] = value; }
         public int      LoadInt     (int idx)  { return (int)            primitives.array[idx]; }
@@ -72,6 +72,72 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         public void     StoreBool   (int idx,            bool value)   { primitives.array[idx] = value ? 1 : 0; }
         public bool     LoadBool    (int idx)  { return                  primitives.array[idx] != 0; }
 
+
+        
+        // ----------------------------------
+        public void StoreDblNulL(int idx, double? value) {
+            primitives.array[idx] = value.HasValue ? BitConverter.DoubleToInt64Bits((double) value) : default;
+        }
+        public double? LoadDblNulL(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue ? BitConverter.Int64BitsToDouble((long) value) : default;
+        }
+
+        public void StoreFltNulL(int idx, float? value) {
+            primitives.array[idx] = value.HasValue ? BitConverter.SingleToInt32Bits((float)value) : default;
+        }
+        public float?    LoadFltNulL     (int idx) {
+            var value = primitives.array[idx];
+            // ReSharper disable once PossibleInvalidOperationException
+            return value.HasValue ? BitConverter.Int32BitsToSingle((int)(long) primitives.array[idx]) : default;
+        }
+
+        public void StoreLongNulL(int idx, long? value) {
+            primitives.array[idx] = value;
+        }
+        
+        public long? LoadLongNulL(int idx) {
+            return primitives.array[idx];
+        }
+
+        public void StoreIntNulL(int idx, int? value) {
+            primitives.array[idx] = value;
+        }
+
+        public int? LoadIntNulL(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue ? (int)value : default;
+        }
+
+        public void StoreShortNulL(int idx, short? value) {
+            primitives.array[idx] = value;
+        }
+
+        public short? LoadShortNulL(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue ? (short)value : default;
+        }
+
+        public void StoreByteNulL(int idx, byte? value) {
+            primitives.array[idx] = value;
+        }
+
+        public byte? LoadByteNulL(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue ? (byte)value : default;
+        }
+
+        public void StoreBoolNulL(int idx, bool? value) {
+            primitives.array[idx] = value.HasValue ? (bool)value ? 1 : 0 : default;
+        }
+
+        public bool? LoadBoolNulL(int idx) {
+            var value = primitives.array[idx];
+            return value.HasValue ? primitives.array[idx] != 0 : default;
+        }
+        //
+        
+        //
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
     }
