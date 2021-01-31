@@ -36,6 +36,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             l.LoadObjectToMirror(primitives.array, objects.array, obj);
         }
         
+        // ReSharper disable once UnusedMember.Global
+        public DbgEntry[] DebugView => GetDebugView();
+        
         public void StoreInstance<T>(T obj) {
             ClassLayout<T> l = (ClassLayout<T>) layout;
             l.StoreMirrorToPayload(obj, primitives.array, objects.array);
@@ -46,22 +49,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 objects.array[n] = null;
             objects.Resize(0); // prevent clearing already cleared objects
         }
-
-        public class DbgEntry {
-            public string       index;
-            public string       name;
-            public object       value;
-            public PropField    field;
-
-            public override string ToString() {
-                // ReSharper disable once MergeConditionalExpression
-                object valueStr = value == null ? "null" : value;
-                return $"{index}  '{name}':  {valueStr}";
-            }
-        }
-
-        // ReSharper disable once UnusedMember.Global
-        public DbgEntry[] GetDebugView() {
+        
+        private DbgEntry[] GetDebugView() {
             var fields = classTypeDbg.GetPropFields().fields;
             DbgEntry[] entries = new DbgEntry[fields.Length];
             for (int n = 0; n < fields.Length; n++) {
@@ -184,6 +173,19 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         //
         public void     StoreObj    (int idx,            object value) { objects.array[idx] = value; }
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
+    }
+    
+    public class DbgEntry {
+        public string       index;
+        public string       name;
+        public object       value;
+        public PropField    field;
+
+        public override string ToString() {
+            // ReSharper disable once MergeConditionalExpression
+            object valueStr = value == null ? "null" : value;
+            return $"{index}  '{name}':  {valueStr}";
+        }
     }
 }
 
