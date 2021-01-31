@@ -40,8 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public byte?    nulByte;
         public byte?    nulByteNull;
         
-        // public bool     nulBool;
-        // public bool?    nulBoolNull;
+        public bool     nulBool;
+        public bool?    nulBoolNull;
         
         public StructIL childStruct1;
         public StructIL childStruct2;
@@ -72,8 +72,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulShortNull    = 79;
             nulByte         = 80;
             nulByteNull     = 81;
-            // nulBool         = true;
-            // nulBoolNull     = true;
+            nulBool         = false;
+            nulBoolNull     = true;
 
             //
             childStruct1.val2 = 90;
@@ -106,8 +106,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulByte         = 25;
             nulByteNull     = null;
             
-            // nulBool         = true;
-            // nulBoolNull     = null;
+            nulBool         = true;
+            nulBoolNull     = null;
             
             child = new ChildIL { val = 42 };
             childStruct1.val2 = 111;
@@ -140,6 +140,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""nulShortNull""    : null,
     ""nulByte""         : 25,
     ""nulByteNull""     : null,
+    ""nulBool""         : true,
+    ""nulBoolNull""     : null,
 
     ""childStruct1"": {{
         ""val2"": 111

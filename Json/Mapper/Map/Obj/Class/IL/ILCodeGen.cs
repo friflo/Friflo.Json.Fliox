@@ -77,12 +77,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         } else if (fieldType == typeof(bool)) {
                             var val     = Exp.Condition(memberVal, Exp.Constant(1L), Exp.Constant(0L)); // longVal   = memberVal ? 1 : 0;
                             longVal     = Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
+                        }  else if (fieldType == typeof(bool?)) {
+                            var isNull  = Exp.Equal(memberVal, Exp.Constant(null, typeof(bool?)));
+                            var bln     = Exp.Convert(memberVal, typeof(bool));
+                            var val     = Exp.Condition(bln, Exp.Constant(1L, typeof(long?)), Exp.Constant(0L, typeof(long?))); // longVal   = memberVal ? 1 : 0;
+                            longVal     = Exp.Condition(isNull, Exp.Constant(null, typeof(long?)), val);
                         } else if (fieldType == typeof(double)) {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var val     = Exp.Call(DoubleToInt64Bits, memberVal);       // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
                             longVal     = Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
                         } else if (fieldType == typeof(double?)) {
-                            var isNull  = Expression.Equal(memberVal, Expression.Constant(null, typeof(double?)));
+                            var isNull  = Exp.Equal(memberVal, Exp.Constant(null, typeof(double?)));
                             var dbl     = Exp.Convert(memberVal, typeof(double)); 
                             var val     = Exp.Call(DoubleToInt64Bits, dbl);           // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
                             var longConv= Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
@@ -92,7 +97,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             var intVal  = Exp.Call(SingleToInt32Bits, memberVal);       // intVal  = BitConverter.SingleToInt32Bits(memberVal);
                             longVal     = Exp.Convert(intVal, typeof(long?));            // longVal = (long)intVal;
                         } else if (fieldType == typeof(float?)) {
-                            var isNull  = Expression.Equal(memberVal, Expression.Constant(null, typeof(float?)));
+                            var isNull  = Exp.Equal(memberVal, Exp.Constant(null, typeof(float?)));
                             var flt     = Exp.Convert(memberVal, typeof(float)); 
                             var val     = Exp.Call(SingleToInt32Bits, flt);           // dbVal = BitConverter.DoubleToInt64Bits(memberVal);
                             var longConv= Exp.Convert(val, typeof(long?));            // longVal = (long)dbVal;
@@ -172,12 +177,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             var lngVal  = Exp.Convert(srcElement, typeof(long));
                             var not0    = Exp.NotEqual(lngVal, Exp.Constant(0L));
                             srcTyped    = Exp.Condition(not0, Exp.Constant(true), Exp.Constant(false)); // srcTyped = srcElement != 0;
+                        }  else if (fieldType == typeof(bool?)) {
+                            var isNull  = Exp.Equal(srcElement, Exp.Constant(null, typeof(bool?)));
+                            var lngVal  = Exp.Convert(srcElement, typeof(long?));
+                            var not0    = Exp.NotEqual(lngVal, Exp.Constant(0L, typeof(long?)));
+                            var bln     = Exp.Condition(not0, Exp.Constant(true, typeof(bool?)), Exp.Constant(false, typeof(bool?)));
+                            srcTyped    = Exp.Condition(isNull, Exp.Constant(null, typeof(bool?)), bln);
                         } else if (fieldType == typeof(double)) {
                             var lngVal  = Exp.Convert(srcElement, typeof(long));
                             // ReSharper disable once AssignNullToNotNullAttribute
                             srcTyped    = Exp.Call(Int64BitsToDouble, lngVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
                         } else if (fieldType == typeof(double?)) {
-                            var isNull  = Expression.Equal(srcElement, Expression.Constant(null, typeof(double?)));
+                            var isNull  = Exp.Equal(srcElement, Exp.Constant(null, typeof(double?)));
                             var lngVal  = Exp.Convert(srcElement, typeof(long));
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var val     = Exp.Call(Int64BitsToDouble, lngVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
@@ -188,7 +199,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             // ReSharper disable once AssignNullToNotNullAttribute
                             srcTyped    = Exp.Call(Int32BitsToSingle, srcInt);          // srcTyped = BitConverter.Int32BitsToSingle (srcInt);
                         } else if (fieldType == typeof(float?)) {
-                            var isNull  = Expression.Equal(srcElement, Expression.Constant(null, typeof(float?)));
+                            var isNull  = Exp.Equal(srcElement, Exp.Constant(null, typeof(float?)));
                             var intVal  = Exp.Convert(srcElement, typeof(int));
                             // ReSharper disable once AssignNullToNotNullAttribute
                             var val     = Exp.Call(Int32BitsToSingle, intVal);          // srcTyped = BitConverter.Int64BitsToDouble (srcElement);
