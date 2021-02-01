@@ -25,8 +25,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         public PropertyFields (Type type, TypeStore typeStore)
         {
             typeName       = type. ToString();
-            var query = new FieldQuery(typeStore);
-            query.SetProperties(type);
+            var query = new FieldQuery(typeStore, type);
             primCount = query.primCount;
             objCount  = query.objCount;
             var fieldList = query.fieldList;

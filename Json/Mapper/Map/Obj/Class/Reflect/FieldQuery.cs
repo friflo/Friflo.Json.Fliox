@@ -3,18 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Reflection;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
 {
-    public interface IProperties
-    {
-        // void     SetProperties (Property prop) ; 
-    }
-    
     public class  FieldQuery
     {
         internal readonly   List<PropField>     fieldList = new List <PropField>();
@@ -22,10 +16,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         internal            int                 objCount;
         private  readonly   TypeStore           typeStore;
 
-        private static readonly     Type[] Types = new Type [] { typeof( FieldQuery ) };
-
-        internal FieldQuery(TypeStore typeStore) {
+        internal FieldQuery(TypeStore typeStore, Type type) {
             this.typeStore = typeStore;
+            TraverseMembers(type, true);
         }
 
         private void CreatePropField (Type type, String fieldName, bool addMembers) {
@@ -75,20 +68,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
                 TraverseMembers(mapper.type, false);
             } else
                 objCount++; // object
-        }
-
-        private static MethodInfo GetPropertiesDeclaration (Type type) {
-            return ReflectUtils.GetMethodEx(type, "SetProperties", Types);
-        }
-
-        internal void SetProperties (Type type) {
-            MethodInfo method = GetPropertiesDeclaration(type);
-            if (method != null) {
-                Object[] args = new Object[] { this };
-                ReflectUtils.Invoke (method, null, args);
-            } else {
-                TraverseMembers(type, true);
-            }
         }
 
         private void TraverseMembers(Type type, bool addMembers) {
