@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
+namespace Friflo.Json.Mapper.Map.Obj.Reflect
 {
     // PropertyFields
 #if !UNITY_5_3_OR_NEWER

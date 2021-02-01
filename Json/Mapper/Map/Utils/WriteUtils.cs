@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Mapper.Map.Utils
 {

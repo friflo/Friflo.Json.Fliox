@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
-
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+using System;
+using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Mapper.MapIL.Utils;
+
+namespace Friflo.Json.Mapper.MapIL.Obj
 {
     public abstract class ClassLayout {
 

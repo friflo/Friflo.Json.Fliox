@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
+namespace Friflo.Json.Mapper.Map.Obj.Reflect
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

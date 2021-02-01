@@ -6,7 +6,7 @@
 using System;
 using Friflo.Json.Mapper.Map.Val;
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+namespace Friflo.Json.Mapper.MapIL.Val
 {
     class DoubleFieldMapper : DoubleMapper  { public DoubleFieldMapper  (Type type) : base(type) { } }
     class FloatFieldMapper  : FloatMapper   { public FloatFieldMapper   (Type type) : base(type) { } }
@@ -23,8 +23,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     class NullableShortFieldMapper  : NullableShortMapper   { public NullableShortFieldMapper   (Type type) : base(type) { } }
     class NullableByteFieldMapper   : NullableByteMapper    { public NullableByteFieldMapper    (Type type) : base(type) { } }
     class NullableBoolFieldMapper   : NullableBoolMapper    { public NullableBoolFieldMapper    (Type type) : base(type) { } }
-    
+}
 
+namespace Friflo.Json.Mapper.MapIL.Obj
+{
     public          class ClassMirror { }
     public abstract class ClassLayout { }
 }

@@ -3,12 +3,12 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+namespace Friflo.Json.Mapper.MapIL.Obj
 {
     // only used for IL
     public class StructILMapper<T> : ClassILMapper<T>

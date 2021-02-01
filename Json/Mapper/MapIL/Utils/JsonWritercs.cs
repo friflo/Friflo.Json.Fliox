@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj.Class.IL;
+using Friflo.Json.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Mapper

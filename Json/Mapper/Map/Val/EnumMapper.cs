@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Mapper.MapIL.Val;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Val

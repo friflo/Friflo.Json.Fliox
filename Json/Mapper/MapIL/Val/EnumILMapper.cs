@@ -1,15 +1,18 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+namespace Friflo.Json.Mapper.MapIL.Val
 {
     public class EnumILMapper<T> : TypeMapper<T>
     {

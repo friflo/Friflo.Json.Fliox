@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Exp = System.Linq.Expressions.Expression;
     
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+namespace Friflo.Json.Mapper.MapIL.Utils
 {
     public static class ILCodeGen
     {

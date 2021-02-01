@@ -7,7 +7,7 @@ using System.Reflection;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
+namespace Friflo.Json.Mapper.Map.Obj.Reflect
 {
     public class  FieldQuery
     {

@@ -4,12 +4,14 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Map.Obj;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.Map.Obj.Class.IL
+namespace Friflo.Json.Mapper.MapIL.Obj
 {
    
     [CLSCompliant(true)]
