@@ -66,9 +66,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
             }
 
             for (int n = 0; n < propFields.fields.Length; n++) {
-                PropField field = propFields.fields[n];
-                Type fieldType  = field.fieldTypeNative;
-                Type ut         = field.fieldType.underlyingType;
+                PropField field         = propFields.fields[n];
+                Type fieldType          = field.fieldTypeNative;
+                Type ut                 = field.fieldType.underlyingType;
+
 
                 MemberExpression memberVal;
                 if (field.field != null)
@@ -125,11 +126,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);         // ref long dstElement = ref dst[arrayIndex];
                         dstAssign       = Exp.Assign(dstElement, longVal);              // dstElement = longVal;
                     } else if (fieldType.IsEnum) {
-                        var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
+                        // var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));  
                         var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);
-                        var enumVal     = Exp.Convert(memberVal, underlyingEnumType);   // convert to enum integral numeric type (default int)
-                        var longVal     = Exp.Convert(enumVal, typeof(long?));       // longVal   = (long)memberVal;
+                        var longVal     = Exp.Convert(memberVal, typeof(long?));       // longVal   = (long)memberVal;
                         dstAssign       = Exp.Assign(dstElement, longVal);
                     } else {
                         // --- struct field
@@ -250,12 +250,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
 
                         dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
                     } else if (fieldType.IsEnum) {
-                        var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
                         var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
-                        var enumValue   = Exp.Convert(srcElement, underlyingEnumType);   // convert to enum integral numeric type (default int)
-                        var srcTyped    = Exp.Convert(enumValue, fieldType); 
-                        dstAssign        = Exp.Assign(dstMember, srcTyped);
+                        var srcTyped    = Exp.Convert(srcElement, fieldType); 
+                        dstAssign       = Exp.Assign(dstMember, srcTyped);
                     } else {
                         // --- struct field
                         AddStoreMembers(ctx, field.fieldType.GetPropFields(), dstMember);
