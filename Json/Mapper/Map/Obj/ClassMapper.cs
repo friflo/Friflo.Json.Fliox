@@ -52,7 +52,8 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMapper<T> : TypeMapper<T> {
         private   readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
         private   readonly HashMapOpen<Bytes,  PropField> fieldMap;
-        protected          PropertyFields                 propFields;   // todo readonly
+        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
+        protected readonly PropertyFields                 propFields;
         private   readonly ConstructorInfo                constructor;
         private   readonly Bytes                          removedKey;
         
@@ -74,7 +75,11 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            propFields = new PropertyFields(type, typeStore);
+            var fields = new PropertyFields(type, typeStore);
+            FieldInfo fieldInfo = typeof(ClassMapper<T>).GetField(nameof(propFields), BindingFlags.NonPublic | BindingFlags.Instance);
+            // ReSharper disable once PossibleNullReferenceException
+            fieldInfo.SetValue(this, fields);
+            
             for (int n = 0; n < propFields.num; n++) {
                 PropField   field = propFields.fields[n];
                 if (strMap.ContainsKey(field.name))
