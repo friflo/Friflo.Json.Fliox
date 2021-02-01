@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Friflo.Json.Burst;
@@ -13,7 +14,8 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     class BoxedIL {
-        public BigInteger bigInt;
+        public BigInteger   bigInt;
+        public DateTime     dateTime;
     }
     
     class ChildIL
@@ -143,7 +145,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         readonly string boxedStr = $@"
 {{
-    ""bigInt""           : ""123""
+    ""bigInt""           : ""123"",
+    ""dateTime""         : ""2021-01-14T09:59:40.101Z""
 }}";
         [Test]
         public void ReadWriteBoxed() {
