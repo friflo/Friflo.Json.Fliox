@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     {
         public override string DataTypeName() { return "tokens"; }
         
-        public StringTokenMapper(Type type) : base (type, true) { }
+        public StringTokenMapper(Type type) : base (type, true, false) { }
 
         public override void Write(JsonWriter writer, StringTokens value) {
             WriteUtils.WriteString(writer, string.Join(" ", value.tokens));

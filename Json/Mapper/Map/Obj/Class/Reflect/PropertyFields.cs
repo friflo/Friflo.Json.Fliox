@@ -22,10 +22,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         // ReSharper disable once UnusedMember.Local
         private static readonly Type[]                      Types = { typeof( PropCall ) };
 
-        public PropertyFields (Type type)
+        public PropertyFields (Type type, TypeStore typeStore)
         {
             typeName       = type. ToString();
-            var query = new FieldQuery();
+            var query = new FieldQuery(typeStore);
             query.SetProperties(type);
             primCount = query.primCount;
             objCount  = query.objCount;

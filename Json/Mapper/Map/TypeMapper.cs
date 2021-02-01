@@ -7,6 +7,7 @@ using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Obj.Class.Reflect;
+using Friflo.Json.Mapper.Map.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
@@ -21,10 +22,10 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    Type    underlyingType;
 
 
-        protected TypeMapper(Type type, bool isNullable) {
+        protected TypeMapper(Type type, bool isNullable, bool isValueType) {
             this.type           = type;
             this.isNullable     = isNullable;
-            this.isValueType    = type.IsValueType;
+            this.isValueType    = isValueType;
             this.underlyingType = Nullable.GetUnderlyingType(type);
         }
 
@@ -61,8 +62,8 @@ namespace Friflo.Json.Mapper.Map
     
     public abstract class TypeMapper<TVal> : TypeMapper
     {
-        protected TypeMapper(Type type, bool isNullable) :
-            base(type, isNullable) {
+        protected TypeMapper(Type type, bool isNullable, bool isValueType) :
+            base(type, isNullable, isValueType) {
         }
 
         public abstract void    Write       (JsonWriter writer, TVal slot);
@@ -81,7 +82,7 @@ namespace Friflo.Json.Mapper.Map
             if (slot != null)
                 Write(writer, (TVal) slot);
             else
-                Write(writer, default);
+                WriteUtils.AppendNull(writer);
         }
 
         public override object ReadObject(JsonReader reader, object slot, out bool success) {

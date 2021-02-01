@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Map
         
         public override string DataTypeName() { return "unsupported type"; }
 
-        public TypeNotSupportedMapper(Type type, string msg) : base(type, true) {
+        public TypeNotSupportedMapper(Type type, string msg) : base(type, true, false) {
             this.msg = msg;
         }
 

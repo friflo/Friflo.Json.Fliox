@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
@@ -21,7 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public int val2;
     }
     
-    class SampleIL {
+    class SampleIL
+    {
+        // public BigInteger bigInt;
+        
         public StructIL?childStructNull1;
         public StructIL?childStructNull2;
         

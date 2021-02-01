@@ -77,11 +77,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     memberVal = Exp.Property(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
 
                 BinaryExpression dstAssign;
-                if (!fieldType.IsPrimitive && !fieldType.IsValueType) {
+                if (!fieldType.IsPrimitive && !field.fieldType.isValueType) {
                     // --- object field
                     var arrObjIndex = Exp.Constant(ctx.objIndex++, typeof(int));    // int arrObjIndex = objIndex;
                     var dstElement  = Exp.ArrayAccess(ctx.dstObj, arrObjIndex);     // ref object dstElement = ref dstObj[arrObjIndex];
-                    dstAssign       = Exp.Assign(dstElement, memberVal);            // dstElement = memberVal;
+                    var objVal      = Exp.Convert(memberVal, typeof(object));       // box
+                    dstAssign       = Exp.Assign(dstElement, objVal);            // dstElement = memberVal;
                 } else {
                     if (fieldType.IsPrimitive || ut != null && ut.IsPrimitive) {
                         // --- primitive field
@@ -189,7 +190,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     dstMember   = Exp.Property(dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
                 
                 BinaryExpression dstAssign;
-                if (!fieldType.IsPrimitive && !fieldType.IsValueType) {
+                if (!fieldType.IsPrimitive && !field.fieldType.isValueType) {
                     // --- object field
                     var arrayIndex  = Exp.Constant(ctx.objIndex++, typeof(int));    // int arrayIndex = objIndex;
                     var srcElement  = Exp.ArrayAccess(ctx.srcObj, arrayIndex);      // ref object srcElement = ref srcObj[arrayIndex];

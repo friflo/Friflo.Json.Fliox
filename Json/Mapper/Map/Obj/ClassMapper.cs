@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Map.Obj
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
-                object[] constructorParams = {type, constructor};
+                object[] constructorParams = {type, constructor, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
                     if (type.IsValueType) {
@@ -52,27 +52,18 @@ namespace Friflo.Json.Mapper.Map.Obj
     public class ClassMapper<T> : TypeMapper<T> {
         private   readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
         private   readonly HashMapOpen<Bytes,  PropField> fieldMap;
-        protected readonly PropertyFields                 propFields;
+        protected          PropertyFields                 propFields;   // todo readonly
         private   readonly ConstructorInfo                constructor;
         private   readonly Bytes                          removedKey;
         
         public override string DataTypeName() { return "class"; }
 
        
-        protected ClassMapper (Type type, ConstructorInfo constructor) :
-            base (type, IsNullable(type))
+        protected ClassMapper (Type type, ConstructorInfo constructor, bool isValueType) :
+            base (type, IsNullable(type), isValueType)
         {
             removedKey = new Bytes("__REMOVED");
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
-
-            propFields = new PropertyFields(type);
-            for (int n = 0; n < propFields.num; n++) {
-                PropField   field = propFields.fields[n];
-                if (strMap.ContainsKey(field.name))
-                    throw new InvalidOperationException("assert field is accessible via string lookup");
-                strMap.Add(field.name, field);
-                fieldMap.Put(ref field.nameBytes, field);
-            }
             this.constructor = constructor;
         }
         
@@ -81,15 +72,15 @@ namespace Friflo.Json.Mapper.Map.Obj
             propFields.Dispose();
             removedKey.Dispose();
         }
-
+        
         public override void InitTypeMapper(TypeStore typeStore) {
+            propFields = new PropertyFields(type, typeStore);
             for (int n = 0; n < propFields.num; n++) {
-                PropField field = propFields.fields[n];
-
-                var         mapper      = typeStore.GetTypeMapper(field.fieldTypeNative);
-                FieldInfo   fieldInfo   = field.GetType().GetField(nameof(PropField.fieldType));
-                // ReSharper disable once PossibleNullReferenceException
-                fieldInfo.SetValue(field, mapper);
+                PropField   field = propFields.fields[n];
+                if (strMap.ContainsKey(field.name))
+                    throw new InvalidOperationException("assert field is accessible via string lookup");
+                strMap.Add(field.name, field);
+                fieldMap.Put(ref field.nameBytes, field);
             }
         }
         

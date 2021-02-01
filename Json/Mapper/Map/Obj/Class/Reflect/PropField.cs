@@ -26,20 +26,19 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         private  readonly   PropertyInfo    getter;
         private  readonly   PropertyInfo    setter;
 
-        internal PropField (String name, Type fieldType, FieldInfo field, PropertyInfo getter, PropertyInfo setter,
+        internal PropField (String name, TypeMapper fieldType, Type type, FieldInfo field, PropertyInfo getter, PropertyInfo setter,
             int primIndex, int objIndex)
         {
             this.name               = name;
+            this.fieldType          = fieldType;
             this.nameBytes          = new Bytes(name);
-            this.fieldTypeNative    = fieldType;
+            this.fieldTypeNative    = type;
             //
             this.field              = field;
             this.getter             = getter;
             this.setter             = setter;
             this.primIndex          = primIndex;
             this.objIndex           = objIndex;
-            if (fieldType == null)
-                throw new InvalidOperationException("Expect fieldType non null");
         }
 
         public void Dispose() {

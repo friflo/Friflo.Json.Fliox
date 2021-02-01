@@ -59,7 +59,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public override string DataTypeName() { return "enum"; }
         
         public EnumMapper() :
-            base (typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null)
+            base (typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
         {
             Type enumType = isNullable ? Nullable.GetUnderlyingType(type): type;
             // ReSharper disable once PossibleNullReferenceException

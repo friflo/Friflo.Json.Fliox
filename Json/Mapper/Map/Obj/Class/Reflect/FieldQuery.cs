@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
@@ -19,53 +20,59 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.Reflect
         internal readonly   List<PropField>     fieldList = new List <PropField>();
         internal            int                 primCount;
         internal            int                 objCount;
+        private  readonly   TypeStore           typeStore;
 
         private static readonly     Type[] Types = new Type [] { typeof( FieldQuery ) };
 
-        
+        internal FieldQuery(TypeStore typeStore) {
+            this.typeStore = typeStore;
+        }
+
         private void CreatePropField (Type type, String fieldName, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
             if (getter != null) {
-                Type propType = getter.PropertyType;
-                Type ut         = Nullable.GetUnderlyingType(propType);
+                Type        propType    = getter.PropertyType;
+                TypeMapper  mapper      = typeStore.GetTypeMapper(propType);
+                Type        ut          = Nullable.GetUnderlyingType(propType);
                 bool isNullablePrimitive = propType.IsValueType && ut != null && ut.IsPrimitive;
                 
                 if (addMembers) {
                     PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName);
-                    PropField pf = propType.IsValueType || isNullablePrimitive
-                        ? new PropField(fieldName, propType, null, getter, setter, primCount, -1)
-                        : new PropField(fieldName, propType, null, getter, setter, -1, objCount);
+                    PropField pf = mapper.isValueType || isNullablePrimitive
+                        ? new PropField(fieldName, mapper, propType, null, getter, setter, primCount, -1)
+                        : new PropField(fieldName, mapper, propType, null, getter, setter, -1, objCount);
                     fieldList.Add(pf);
                 }
-                IncrementILCounts(propType, isNullablePrimitive);
+                IncrementILCounts(mapper, isNullablePrimitive);
                 return;
             }
             // create property from field
             FieldInfo field = ReflectUtils.GetField(type, fieldName );
             if (field != null) {
-                Type fieldType = field.FieldType;
-                Type ut         = Nullable.GetUnderlyingType(fieldType);
+                Type        fieldType   = field.FieldType;
+                TypeMapper  mapper      = typeStore.GetTypeMapper(fieldType);
+                Type        ut          = Nullable.GetUnderlyingType(fieldType);
                 bool isNullablePrimitive = fieldType.IsValueType && ut != null && ut.IsPrimitive;
                 
                 if (addMembers) {
-                    PropField pf = fieldType.IsValueType || isNullablePrimitive
-                        ? new PropField(fieldName, fieldType, field, null, null, primCount, -1)
-                        : new PropField(fieldName, fieldType, field, null, null, -1, objCount);
+                    PropField pf = mapper.isValueType || isNullablePrimitive
+                        ? new PropField(fieldName, mapper, fieldType, field, null, null, primCount, -1)
+                        : new PropField(fieldName, mapper, fieldType, field, null, null, -1, objCount);
                     fieldList. Add (pf);
                 }
-                IncrementILCounts(fieldType, isNullablePrimitive);
+                IncrementILCounts(mapper, isNullablePrimitive);
                 return;
             }
             throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
         }
 
-        private void IncrementILCounts(Type memberType, bool isNullablePrimitive) {
-            if (memberType.IsPrimitive || isNullablePrimitive) {
+        private void IncrementILCounts(TypeMapper mapper, bool isNullablePrimitive) {
+            if (mapper.type.IsPrimitive || isNullablePrimitive) {
                 primCount++;
-            } else if (memberType.IsValueType) {
+            } else if (mapper.isValueType) {
                 // struct itself must not be incremented only its members. Their position need to be counted 
-                TraverseMembers(memberType, false);
+                TraverseMembers(mapper.type, false);
             } else
                 objCount++; // object
         }

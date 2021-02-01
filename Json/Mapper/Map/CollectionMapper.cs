@@ -23,7 +23,7 @@ namespace Friflo.Json.Mapper.Map
             Type                elementType,
             int                 rank,
             Type                keyType,
-            ConstructorInfo     constructor) : base (type, true)
+            ConstructorInfo     constructor) : base (type, true, false)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;

@@ -13,18 +13,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     // only used for IL
     public class StructILMapper<T> : ClassILMapper<T>
     {
-        private readonly    ClassLayout<T>                    layout;
+        private     ClassLayout<T>                    layout;  // todo readonly
 
         public override ClassLayout GetClassLayout() { return layout; }
 
-        public StructILMapper(Type type, ConstructorInfo constructor) :
-            base(type, constructor)
+        public StructILMapper(Type type, ConstructorInfo constructor, bool isValueType) :
+            base(type, constructor, isValueType)
         {
-            layout = new ClassLayout<T>(propFields);
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
             base.InitTypeMapper(typeStore);
+            layout = new ClassLayout<T>(propFields);
             layout.InitClassLayout(propFields, typeStore.typeResolver.GetConfig());
         }
         

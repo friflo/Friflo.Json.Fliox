@@ -15,18 +15,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
     [CLSCompliant(true)]
     public class ClassILMapper<T> : ClassMapper<T> {
 
-        private readonly    ClassLayout<T>                    layout;
+        private     ClassLayout<T>                    layout;    // todo readonly
 
         public override ClassLayout GetClassLayout() { return layout; }
         
-        public ClassILMapper (Type type, ConstructorInfo constructor) :
-            base (type, constructor)
+        public ClassILMapper (Type type, ConstructorInfo constructor, bool isValueType) :
+            base (type, constructor, isValueType)
         {
-            layout = new ClassLayout<T>(propFields);
         }
 
         public override void InitTypeMapper(TypeStore typeStore) {
             base.InitTypeMapper(typeStore);
+            layout = new ClassLayout<T>(propFields);
             layout.InitClassLayout(propFields, typeStore.typeResolver.GetConfig());
         }
         
@@ -64,7 +64,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
-                field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
+                if (field.fieldType.isValueType) {
+                    field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
+                } else {
+                    object fieldObj = mirror.LoadObj(field.objIndex);
+                    field.fieldType.WriteObject(writer, fieldObj);
+                }
             }
             writer.InstancePop();
             bytes.AppendChar('}');
