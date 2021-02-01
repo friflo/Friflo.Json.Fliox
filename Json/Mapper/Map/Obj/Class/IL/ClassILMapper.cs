@@ -112,8 +112,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return default;
                         } else {
-                            object subRet = mirror.LoadObj(field.objIndex);
-                            if (!fieldType.isNullable && subRet == null) {
+                            object sub = mirror.LoadObj(field.objIndex);
+                            sub = fieldType.ReadObject(reader, sub, out success);
+                            if (!success)
+                                return false;
+                            mirror.StoreObj(field.objIndex, sub);
+                            if (!fieldType.isNullable && sub == null) {
                                 ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                                 return false;
                             }

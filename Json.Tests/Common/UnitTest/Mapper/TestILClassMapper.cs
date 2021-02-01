@@ -12,6 +12,10 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
+    class BoxedIL {
+        public BigInteger bigInt;
+    }
+    
     class ChildIL
     {
         public int val;
@@ -24,8 +28,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     
     class SampleIL
     {
-        // public BigInteger bigInt;
-        
         public StructIL?childStructNull1;
         public StructIL?childStructNull2;
         
@@ -139,6 +141,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     
     public class TestILClassMapper
     {
+        readonly string boxedStr = $@"
+{{
+    ""bigInt""           : ""123""
+}}";
+        [Test]
+        public void ReadWriteBoxed() {
+            string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
+            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
+            
+            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (Bytes        json        = new Bytes(payloadTrimmed))
+            {
+                var result = reader.Read<BoxedIL>(json);
+                if (reader.Error.ErrSet)
+                    Fail(reader.Error.msg.ToString());
+                writer.Write(result);
+                AreEqual(payloadTrimmed, writer.Output.ToString());
+            }
+        }
+        
+        
         readonly string payloadStr = $@"
 {{
     ""childStructNull1"" : null,
