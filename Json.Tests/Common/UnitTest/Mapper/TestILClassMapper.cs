@@ -16,12 +16,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     enum EnumIL {
         one,
         two,
+        three,
     }
     
     class BoxedIL {
+#pragma warning disable 649
         public BigInteger   bigInt;
         public DateTime     dateTime;
         public EnumIL       enumIL;
+#pragma warning restore 649
     }
     
     class ChildIL
@@ -36,6 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     
     class SampleIL
     {
+        public EnumIL   enumIL;
+            
         public StructIL?childStructNull1;
         public StructIL?childStructNull2;
         
@@ -77,6 +82,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool     bln;
 
         public SampleIL() {
+            enumIL = EnumIL.two;
+                
             childStructNull1 = new StructIL {val2 = 68};
             childStructNull2 = new StructIL {val2 = 69};
             
@@ -111,6 +118,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         public void Init() {
+            enumIL           = EnumIL.three;          
+                
             childStructNull1 = null;
             childStructNull2 = new StructIL {val2 = 19};
             
@@ -176,6 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         readonly string payloadStr = $@"
 {{
+    ""enumIL""           : ""three"",
     ""childStructNull1"" : null,
     ""childStructNull2"" : {{
         ""val2"": 19
@@ -269,7 +279,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
-            
+
             using (TypeStore    typeStore   = new TypeStore(resolver))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {

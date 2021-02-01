@@ -124,6 +124,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
                         var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);         // ref long dstElement = ref dst[arrayIndex];
                         dstAssign       = Exp.Assign(dstElement, longVal);              // dstElement = longVal;
+                    } else if (fieldType.IsEnum) {
+                        var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
+                        var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));  
+                        var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);
+                        var enumVal     = Exp.Convert(memberVal, underlyingEnumType);   // convert to enum integral numeric type (default int)
+                        var longVal     = Exp.Convert(enumVal, typeof(long?));       // longVal   = (long)memberVal;
+                        dstAssign       = Exp.Assign(dstElement, longVal);
                     } else {
                         // --- struct field
                         AddLoadMembers(ctx, field.fieldType.GetPropFields(), memberVal);
@@ -242,6 +249,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                             throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
 
                         dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
+                    } else if (fieldType.IsEnum) {
+                        var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
+                        var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
+                        var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
+                        var enumValue   = Exp.Convert(srcElement, underlyingEnumType);   // convert to enum integral numeric type (default int)
+                        var srcTyped    = Exp.Convert(enumValue, fieldType); 
+                        dstAssign        = Exp.Assign(dstMember, srcTyped);
                     } else {
                         // --- struct field
                         AddStoreMembers(ctx, field.fieldType.GetPropFields(), dstMember);

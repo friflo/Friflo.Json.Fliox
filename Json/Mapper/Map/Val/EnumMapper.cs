@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Map.Obj.Class.IL;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
@@ -16,6 +17,11 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (!IsEnum(type, out bool _))
                 return null;
+            if (config.useIL) {
+                object[] constructorParams = {type};
+                // new EnumILMapper<T>(type);
+                return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EnumILMapper<>), new[] {type}, constructorParams);
+            }
             var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()
             return (TypeMapper)enumMapper;
         }
@@ -51,8 +57,8 @@ namespace Friflo.Json.Mapper.Map.Val
 #endif
     public class EnumMapper<T> : TypeMapper<T>
     {
-        private readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
-        private readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
+        private   readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
+        private   readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
         //
         private readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
         
@@ -70,7 +76,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     Enum    enumValue       = (Enum)enumField.GetValue(type);
                     string  enumName        = enumField.Name;
                     object  enumConst       = enumField.GetRawConstantValue();
-                    long    enumIntegral    = GetIntegralValue(enumConst);
+                    long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, type);
                     var     name            = new BytesString(enumName);
                     stringToEnum.Add(name, enumValue);
                     enumToString.  TryAdd(enumValue, name);
@@ -101,18 +107,6 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void InitTypeMapper(TypeStore typeStore) {
         }
 
-        private long GetIntegralValue(object enumConstant) {
-            if (enumConstant is long    longVal)    return longVal;
-            if (enumConstant is int     intVal)     return intVal;
-            if (enumConstant is short   shortVal)   return shortVal;
-            if (enumConstant is byte    byteVal)    return byteVal;
-            if (enumConstant is uint    uintVal)    return uintVal;
-            if (enumConstant is ushort  ushortVal)  return ushortVal;
-            if (enumConstant is sbyte   sbyteVal)   return sbyteVal;
-
-            throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
-        }
-        
         public override void Write(JsonWriter writer, T slot) {
             if (enumToString.TryGetValue(slot, out BytesString enumName)) {
                 writer.bytes.AppendChar('\"');

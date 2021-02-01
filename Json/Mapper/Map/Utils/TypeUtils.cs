@@ -31,5 +31,17 @@ namespace Friflo.Json.Mapper.Map.Utils
                 return ut;
             return null;
         }
+        
+        public static long GetIntegralValue(object enumConstant, Type type) {
+            if (enumConstant is long    longVal)    return longVal;
+            if (enumConstant is int     intVal)     return intVal;
+            if (enumConstant is short   shortVal)   return shortVal;
+            if (enumConstant is byte    byteVal)    return byteVal;
+            if (enumConstant is uint    uintVal)    return uintVal;
+            if (enumConstant is ushort  ushortVal)  return ushortVal;
+            if (enumConstant is sbyte   sbyteVal)   return sbyteVal;
+
+            throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
+        }
     }
 }
