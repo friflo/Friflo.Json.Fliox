@@ -19,9 +19,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         // ReSharper disable once NotAccessedField.Local
         private     readonly    String              typeName;
 
-        // ReSharper disable once UnusedMember.Local
-        private static readonly Type[]                      Types = { typeof( PropCall ) };
-
         public PropertyFields (Type type, TypeStore typeStore)
         {
             typeName       = type. ToString();

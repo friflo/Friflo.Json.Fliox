@@ -23,44 +23,31 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
 
         private void CreatePropField (Type type, String fieldName, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
-            PropertyInfo getter = ReflectUtils.GetPropertyGet(type, fieldName );
+            PropertyInfo    getter = ReflectUtils.GetPropertyGet(type, fieldName );
+            PropertyInfo    setter = null;
+            FieldInfo       field = null;
+            Type            memberType;
             if (getter != null) {
-                Type        propType    = getter.PropertyType;
-                TypeMapper  mapper      = typeStore.GetTypeMapper(propType);
-                Type        ut          = Nullable.GetUnderlyingType(propType);
-                bool isNullablePrimitive = propType.IsValueType && ut != null && ut.IsPrimitive;
-                
-                if (addMembers) {
-                    PropertyInfo setter = ReflectUtils.GetPropertySet(type, fieldName);
-                    PropField pf = mapper.isValueType || isNullablePrimitive
-                        ? new PropField(fieldName, mapper, propType, null, getter, setter, primCount, -1)
-                        : new PropField(fieldName, mapper, propType, null, getter, setter, -1, objCount);
-                    fieldList.Add(pf);
-                }
-                IncrementILCounts(mapper, isNullablePrimitive);
-                return;
+                setter = ReflectUtils.GetPropertySet(type, fieldName);
+                memberType    = getter.PropertyType;
+            } else {
+                field = ReflectUtils.GetField(type, fieldName);
+                memberType   = field.FieldType;
             }
-            // create property from field
-            FieldInfo field = ReflectUtils.GetField(type, fieldName );
-            if (field != null) {
-                Type        fieldType   = field.FieldType;
-                TypeMapper  mapper      = typeStore.GetTypeMapper(fieldType);
-                Type        ut          = Nullable.GetUnderlyingType(fieldType);
-                bool isNullablePrimitive = fieldType.IsValueType && ut != null && ut.IsPrimitive;
-                
-                if (addMembers) {
-                    PropField pf = mapper.isValueType || isNullablePrimitive
-                        ? new PropField(fieldName, mapper, fieldType, field, null, null, primCount, -1)
-                        : new PropField(fieldName, mapper, fieldType, field, null, null, -1, objCount);
-                    fieldList. Add (pf);
-                }
-                IncrementILCounts(mapper, isNullablePrimitive);
-                return;
-            }
-            throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
-        }
+            if (memberType == null)
+                throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
-        private void IncrementILCounts(TypeMapper mapper, bool isNullablePrimitive) {
+            TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
+            Type        ut          = Nullable.GetUnderlyingType(memberType);
+            bool isNullablePrimitive = memberType.IsValueType && ut != null && ut.IsPrimitive;
+            
+            if (addMembers) {
+                PropField pf = mapper.isValueType || isNullablePrimitive
+                    ? new PropField(fieldName, mapper, memberType, field, getter, setter, primCount, -1)
+                    : new PropField(fieldName, mapper, memberType, field, getter, setter, -1, objCount);
+                fieldList.Add(pf);
+            }
+            
             if (mapper.type.IsPrimitive || isNullablePrimitive) {
                 primCount++;
             } else if (mapper.isValueType) {
