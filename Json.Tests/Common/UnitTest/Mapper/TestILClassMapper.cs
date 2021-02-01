@@ -13,9 +13,15 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
+    enum EnumIL {
+        one,
+        two,
+    }
+    
     class BoxedIL {
         public BigInteger   bigInt;
         public DateTime     dateTime;
+        public EnumIL       enumIL;
     }
     
     class ChildIL
@@ -145,8 +151,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         readonly string boxedStr = $@"
 {{
-    ""bigInt""           : ""123"",
-    ""dateTime""         : ""2021-01-14T09:59:40.101Z""
+    ""bigInt""      : ""123"",
+    ""dateTime""    : ""2021-01-14T09:59:40.101Z"",
+    ""enumIL""      : ""two""
 }}";
         [Test]
         public void ReadWriteBoxed() {
