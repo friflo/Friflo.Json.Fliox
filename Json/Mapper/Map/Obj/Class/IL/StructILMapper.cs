@@ -29,6 +29,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
         }
         
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+            // write JSON value: null, if it is a Nullable<struct>
             if (isNullable && !mirror.LoadPrimitiveHasValue(primPos)) {
                 WriteUtils.AppendNull(writer);
                 return;

@@ -63,7 +63,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Class.IL
                     bytes.AppendChar(',');
                 PropField field = fields[n];
                 WriteUtils.WriteKey(writer, field);
-                // todo: check handling null here - not in WriteValueIL()
+                // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
             }
             writer.InstancePop();
