@@ -19,7 +19,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
-        internal readonly   Type            fieldTypeNative;    // never null 
         internal            Bytes           nameBytes;          // dont mutate
         //
         internal readonly   FieldInfo       field;
@@ -32,7 +31,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             this.name               = name;
             this.fieldType          = fieldType;
             this.nameBytes          = new Bytes(name);
-            this.fieldTypeNative    = type;
             //
             this.field              = field;
             this.getter             = getter;
