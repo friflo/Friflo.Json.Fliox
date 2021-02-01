@@ -17,11 +17,13 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
             if (!IsEnum(type, out bool _))
                 return null;
+#if !UNITY_5_3_OR_NEWER
             if (config.useIL) {
                 object[] constructorParams = {type};
                 // new EnumILMapper<T>(type);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EnumILMapper<>), new[] {type}, constructorParams);
             }
+#endif
             var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()
             return (TypeMapper)enumMapper;
         }
