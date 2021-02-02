@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public   readonly   TypeCache           typeCache;
 
-        internal readonly   Bytes               discriminator   = new Bytes("$type");
+        internal readonly   Bytes               discriminator;
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
         public              Bytes               strBuf          = new Bytes(0);
@@ -36,6 +36,7 @@ namespace Friflo.Json.Mapper
 
         public JsonReader(TypeStore typeStore) {
             typeCache   = new TypeCache(typeStore);
+            discriminator = new Bytes(typeStore.config.discriminator);
             parser = new JsonParser();
             maxDepth    = 100;
 #if !JSON_BURST

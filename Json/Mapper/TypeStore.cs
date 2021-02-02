@@ -19,10 +19,12 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     public class StoreConfig {
-        public  readonly bool        useIL;
+        public  readonly bool       useIL;
+        public  readonly string     discriminator;
 
-        public StoreConfig(TypeAccess typeAccess) {
+        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, string discriminator = "$type") {
             this.useIL = typeAccess == TypeAccess.IL;
+            this.discriminator = discriminator ?? throw new InvalidOperationException("discriminator mus not be null");
         }
     }
 
@@ -55,12 +57,12 @@ namespace Friflo.Json.Mapper
 
         public TypeStore() {
             typeResolver = new DefaultTypeResolver();
-            config = new StoreConfig(TypeAccess.Reflection);
+            config = new StoreConfig();
         }
         
         public TypeStore(ITypeResolver resolver, StoreConfig config) {
             this.typeResolver   = resolver ?? new DefaultTypeResolver();
-            this.config         = config ?? new StoreConfig(TypeAccess.Reflection);
+            this.config         = config ?? new StoreConfig();
         }
             
         public void Dispose() {

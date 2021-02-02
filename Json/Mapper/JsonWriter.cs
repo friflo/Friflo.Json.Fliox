@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper
         public              Bytes       strBuf;
 
         internal            Bytes       @null = new Bytes("null");
-        internal            Bytes       discriminator = new Bytes("\"$type\":\"");
+        internal            Bytes       discriminator;
 
         public          ref Bytes Output => ref bytes;
 
@@ -36,6 +36,7 @@ namespace Friflo.Json.Mapper
 
         public JsonWriter(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
+            discriminator = new Bytes($"\"{typeStore.config.discriminator}\":\"");
             maxDepth = 100;
             useIL = typeStore.config.useIL;
         }
