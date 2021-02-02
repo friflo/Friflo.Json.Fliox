@@ -59,9 +59,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
     
-    public readonly struct JsonStruct
+    public struct JsonStruct   // todo support readonly struct?
     {
-        public readonly long val;
+        public long val; // todo support readonly field?
 
         public JsonStruct(long val) {
             this.val = val;

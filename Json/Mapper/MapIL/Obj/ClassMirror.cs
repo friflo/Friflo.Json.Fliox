@@ -6,6 +6,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
@@ -28,21 +29,34 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         private     ClassLayout         layout;
         private     TypeMapper          classTypeDbg;  // only for debugging
 
-        public void LoadInstance<T>(TypeMapper classType, T obj) {
-            classTypeDbg = classType;
-            layout = classType.GetClassLayout();
-            primitives.Resize(layout.primCount);
-            objects.   Resize(layout.objCount);
-            ClassLayout<T> l = (ClassLayout<T>) layout;
-            l.LoadObjectToMirror(primitives.array, objects.array, obj);
+        public void LoadInstance<T>(TypeCache typeCache, ref TypeMapper classType, T obj) {
+            if (typeof(T) != typeof(object)) {
+                classTypeDbg = classType;
+                layout = classType.GetClassLayout();
+                primitives.Resize(layout.primCount);
+                objects.   Resize(layout.objCount);
+                ClassLayout<T> l = (ClassLayout<T>) layout;
+                l.LoadObjectToMirror(primitives.array, objects.array, obj);
+            } else {
+                classType = typeCache.GetTypeMapper(obj.GetType());
+                classTypeDbg = classType;
+                layout = classTypeDbg.GetClassLayout();
+                primitives.Resize(layout.primCount);
+                objects.   Resize(layout.objCount);
+                layout.LoadObjectToMirror(primitives.array, objects.array, obj);
+            }
         }
         
         // ReSharper disable once UnusedMember.Global
         public DbgEntry[] DebugView => GetDebugView();
         
         public void StoreInstance<T>(T obj) {
-            ClassLayout<T> l = (ClassLayout<T>) layout;
-            l.StoreMirrorToPayload(obj, primitives.array, objects.array);
+            if (typeof(T) != typeof(object)) {
+                ClassLayout<T> l = (ClassLayout<T>) layout;
+                l.StoreMirrorToPayload(obj, primitives.array, objects.array);
+            } else {
+                layout.StoreMirrorToPayload(obj, primitives.array, objects.array);
+            }
         }
         
         internal void ClearObjectReferences() {

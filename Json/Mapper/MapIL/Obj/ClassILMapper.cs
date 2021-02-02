@@ -54,8 +54,20 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             TypeMapper classMapper = this;
             bool firstMember = true;
             bytes.AppendChar('{');
+            
+            Type objType = typeof(T);
+            // Check for polymorphic type only if it is not a value type because Type.GetType() allocates memory
+            if (!objType.IsValueType) // value types have no discriminator
+                objType = obj.GetType();
+            
+            ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
+            if (type != objType) {
+                firstMember = false;
+                bytes.AppendBytes(ref writer.discriminator);
+                writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
+                bytes.AppendChar('\"');
+            }
 
-            ClassMirror mirror = writer.InstanceLoad(classMapper, obj);
             PropField[] fields = classMapper.GetPropFields().fields;
             for (int n = 0; n < fields.Length; n++) {
                 if (firstMember)
@@ -88,7 +100,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             if (!success)
                 return default;
             
-            ClassMirror mirror = reader.InstanceLoad(classType, obj);
+            ClassMirror mirror = reader.InstanceLoad(ref classType, obj);
             if (!ReadClassMirror(reader, mirror, classType, 0, 0))
                 return default;
             reader.InstanceStore(mirror, obj);
