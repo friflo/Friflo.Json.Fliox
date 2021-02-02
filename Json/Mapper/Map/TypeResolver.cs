@@ -84,7 +84,7 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
-        private bool MatchMappers(List<ITypeMatcher> mappers,  StoreConfig config, Type type, Query query) {
+        private static bool MatchMappers(List<ITypeMatcher> mappers,  StoreConfig config, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
                 if (Match(mappers[i], config, type, query))
                     return true;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Mapper.Map
             return false;
         }
 
-        private bool Match(ITypeMatcher matcher, StoreConfig config, Type type, Query query) {
+        private static bool Match(ITypeMatcher matcher, StoreConfig config, Type type, Query query) {
             if (query.mode == Mode.Search) {
                 query.hit = matcher.MatchTypeMapper(type, config);
                 return query.hit != null;
