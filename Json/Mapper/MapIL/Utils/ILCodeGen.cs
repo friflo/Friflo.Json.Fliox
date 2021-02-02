@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Exp = System.Linq.Expressions.Expression;
@@ -31,14 +32,14 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         // The idea of loading/storing all fields of a class with one method call came to this nice blog:
         // [Optimizing reflection in C# via dynamic code generation | by Sergio Pedri | Medium]
         // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
-        internal static Expression<Action<long?[], object[], T>> LoadInstanceExpression<T> (PropertyFields propFields) {
+        internal static Expression<Action<long?[], object[], T>> LoadInstanceExpression<T> (TypeMapper mapper) {
             var ctx = new LoadContext();
             ctx.dst         = Exp.Parameter(typeof(long?[]),  "dst");     // parameter: long[]   dst;
             ctx.dstObj      = Exp.Parameter(typeof(object[]), "dstObj");  // parameter: object[] dstObj;
             
             var src         = Exp.Parameter(typeof(T),        "src");     // parameter: object   src;
 
-            AddLoadMembers(ctx, propFields, src);
+            AddLoadMembers(ctx, mapper, src);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
             
@@ -49,7 +50,8 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         private static readonly MethodInfo DoubleToInt64Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.DoubleToInt64Bits));
         private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
-        private static void AddLoadMembers (LoadContext ctx, PropertyFields propFields, Expression srcTyped) {
+        private static void AddLoadMembers (LoadContext ctx, TypeMapper mapper, Expression srcTyped) {
+            PropertyFields propFields = mapper.GetPropFields();
             Type nullableStruct = TypeUtils.GetNullableStruct(srcTyped.Type);
             if (nullableStruct != null) {
                 var value    = Exp.Field(srcTyped, "value");     // type of struct
@@ -61,7 +63,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                 var val         = Exp.Condition(hasValue, Exp.Constant(1L, typeof(long?)), Exp.Constant(null, typeof(long?)), typeof(long?)); // longVal   = memberVal ? 1 : 0;
                 var dstAssign   = Exp.Assign(dstElement, val);              // dstElement = longVal;
                 ctx.assignmentList.Add(dstAssign);
-                AddLoadMembers(ctx, propFields, value);
+                AddLoadMembers(ctx, mapper, value);
                 return;
             }
 
@@ -133,7 +135,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                         dstAssign       = Exp.Assign(dstElement, longVal);
                     } else {
                         // --- struct field
-                        AddLoadMembers(ctx, field.fieldType.GetPropFields(), memberVal);
+                        AddLoadMembers(ctx, field.fieldType, memberVal);
                         continue; // struct itself is not assigned - only its members
                     }
                 }
@@ -151,13 +153,13 @@ namespace Friflo.Json.Mapper.MapIL.Utils
             internal            int                    objIndex;
         }
 
-        internal static Expression<Action<T, long?[], object[]>> StoreInstanceExpression<T> (PropertyFields propFields) {
+        internal static Expression<Action<T, long?[], object[]>> StoreInstanceExpression<T> (TypeMapper mapper) {
             var ctx = new StoreContext();
             var dst         = Exp.Parameter(typeof(T),        "dst");       // parameter: long[]   dst;
             ctx.src         = Exp.Parameter(typeof(long?[]),  "src");       // parameter: object   src;
             ctx.srcObj      = Exp.Parameter(typeof(object[]), "srcObj");    // parameter: object[] srcObj;
             
-            AddStoreMembers(ctx, propFields, dst);
+            AddStoreMembers(ctx, mapper, dst);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
             var lambda = Exp.Lambda<Action<T, long?[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
@@ -167,7 +169,8 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         private static readonly MethodInfo Int64BitsToDouble = typeof(BitConverter).GetMethod(nameof(BitConverter.Int64BitsToDouble));
         private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
-        private static void AddStoreMembers (StoreContext ctx, PropertyFields propFields, Expression dstTyped) {
+        private static void AddStoreMembers (StoreContext ctx, TypeMapper mapper, Expression dstTyped) {
+            PropertyFields propFields = mapper.GetPropFields();
             Type nullableStruct = TypeUtils.GetNullableStruct(dstTyped.Type);
             if (nullableStruct != null) {
                 var value       = Exp.Field(dstTyped, "value");    // type of struct
@@ -181,7 +184,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                 var newValue    = Exp.Condition(notNull, Exp.Constant(null, dstTyped.Type), newNullable, dstTyped.Type); // srcTyped = srcElement != 0;
                 var dstAssign   = Exp.Assign(dstTyped, newValue);              // dstMember = srcTyped;
                 ctx.assignmentList.Add(dstAssign);
-                AddStoreMembers(ctx, propFields, value);
+                AddStoreMembers(ctx, mapper, value);
                 return;
             }
             
@@ -256,7 +259,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                         dstAssign       = Exp.Assign(dstMember, srcTyped);
                     } else {
                         // --- struct field
-                        AddStoreMembers(ctx, field.fieldType.GetPropFields(), dstMember);
+                        AddStoreMembers(ctx, field.fieldType, dstMember);
                         continue; // struct itself is not assigned - only its members
                     }
                 }

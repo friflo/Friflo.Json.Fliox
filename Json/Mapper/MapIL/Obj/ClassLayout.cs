@@ -15,7 +15,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         internal readonly int   primCount;
         internal readonly int   objCount;
         
-        internal ClassLayout(PropertyFields  propFields) {
+        internal ClassLayout(TypeMapper mapper) {
+            PropertyFields propFields = mapper.GetPropFields();
             primCount       = propFields.primCount;
             objCount        = propFields.objCount;
         }
@@ -26,7 +27,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         private readonly Action<long?[], object[], T> loadObjectToPayload;
         private readonly Action<T, long?[], object[]> storePayloadToObject;
         
-        internal ClassLayout(PropertyFields propFields, ResolverConfig config) : base(propFields) {
+        internal ClassLayout(TypeMapper mapper, ResolverConfig config) : base(mapper) {
             loadObjectToPayload = null;
             storePayloadToObject = null;
 
@@ -34,10 +35,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             Action<long?[], object[], T> load = null;
             Action<T, long?[], object[]> store = null;
             if (config.useIL) {
-                var loadLambda = ILCodeGen.LoadInstanceExpression<T>(propFields);
+                var loadLambda = ILCodeGen.LoadInstanceExpression<T>(mapper);
                 load = loadLambda.Compile();
 
-                var storeLambda = ILCodeGen.StoreInstanceExpression<T>(propFields);
+                var storeLambda = ILCodeGen.StoreInstanceExpression<T>(mapper);
                 store = storeLambda.Compile();
             }
 
