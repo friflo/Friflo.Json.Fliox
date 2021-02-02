@@ -21,17 +21,12 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             TraverseMembers(type, true);
         }
 
-        private void CreatePropField (Type type, String fieldName, bool addMembers) {
+        private void CreatePropField (Type type, String fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
-            PropertyInfo    getter = ReflectUtils.GetPropertyGet(type, fieldName );
-            PropertyInfo    setter = null;
-            FieldInfo       field = null;
             Type            memberType;
-            if (getter != null) {
-                setter = ReflectUtils.GetPropertySet(type, fieldName);
-                memberType    = getter.PropertyType;
+            if (property != null) {
+                memberType   = property.PropertyType;
             } else {
-                field = ReflectUtils.GetField(type, fieldName);
                 memberType   = field.FieldType;
             }
             if (memberType == null)
@@ -45,9 +40,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             if (addMembers) {
                 PropField pf;
                 if (mapper.isValueType || isNullablePrimitive || isNullableEnum)
-                    pf = new PropField(fieldName, mapper, memberType, field, getter, primCount, -1);
+                    pf = new PropField(fieldName, mapper, memberType, field, property, primCount, -1);
                 else
-                    pf = new PropField(fieldName, mapper, memberType, field, getter, -1, objCount);
+                    pf = new PropField(fieldName, mapper, memberType, field, property, -1, objCount);
                 fieldList.Add(pf);
             }
             
@@ -69,13 +64,13 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             PropertyInfo[] properties = ReflectUtils.GetProperties(type);
             for (int n = 0; n < properties.Length; n++) {
                 var name = properties[n].Name;
-                CreatePropField(type, name, addMembers);
+                CreatePropField(type, name, properties[n], null, addMembers);
             }
 
             FieldInfo[] field = ReflectUtils.GetFields(type);
             for (int n = 0; n < field.Length; n++) {
                 var name = field[n].Name;
-                CreatePropField(type, name, addMembers);
+                CreatePropField(type, name, null, field[n], addMembers);
             }
         }
     }
