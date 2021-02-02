@@ -19,11 +19,16 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     public class StoreConfig {
-        public readonly bool useIL;
+        public  readonly bool        useIL;
 
-        public StoreConfig(bool useIL) {
-            this.useIL = useIL;
+        public StoreConfig(TypeAccess typeAccess) {
+            this.useIL = typeAccess == TypeAccess.IL;
         }
+    }
+
+    public enum TypeAccess {
+        Reflection,
+        IL
     }
     
     /// <summary>
@@ -50,22 +55,14 @@ namespace Friflo.Json.Mapper
 
         public TypeStore() {
             typeResolver = new DefaultTypeResolver();
-            config = new StoreConfig(useIL: false);
-        }
-        
-        public TypeStore(StoreConfig config) {
-            typeResolver = new DefaultTypeResolver();
-            this.config = config;
-        }
-        
-        public TypeStore(ITypeResolver resolver) {
-            typeResolver = resolver;
-            this.config = new StoreConfig(useIL: false);
+            config = new StoreConfig(TypeAccess.Reflection);
         }
         
         public TypeStore(ITypeResolver resolver, StoreConfig config) {
-            this.typeResolver = resolver;
-            this.config = config;
+            // ReSharper disable once MergeConditionalExpression
+            this.typeResolver   = resolver != null ? resolver : new DefaultTypeResolver();
+            // ReSharper disable once MergeConditionalExpression
+            this.config         = config   != null ? config   : new StoreConfig(TypeAccess.Reflection);
         }
             
         public void Dispose() {

@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             resolver.AddSpecificTypeMapper(StringTokenMatcher.Instance);
             AreEqual(mapperCount + 1, resolver.matcherList.Count);
             
-            var typeStore = new TypeStore(resolver);
+            var typeStore = new TypeStore(resolver, null);
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
             JsonReader reader = new JsonReader(typeStore);
