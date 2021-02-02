@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper
             maxDepth    = 100;
 #if !JSON_BURST
             parser.error.errorHandler = this;
-            useIL = typeStore.typeResolver.GetConfig().useIL;
+            useIL = typeStore.config.useIL;
 #endif 
         }
         

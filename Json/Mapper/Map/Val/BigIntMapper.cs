@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class BigIntMatcher : ITypeMatcher {
         public static readonly BigIntMatcher Instance = new BigIntMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(BigInteger))
                 return null;
             return new BigIntMapper (type);

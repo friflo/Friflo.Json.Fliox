@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class EnumMatcher : ITypeMatcher {
         public static readonly EnumMatcher Instance = new EnumMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (!IsEnum(type, out bool _))
                 return null;
 #if !UNITY_5_3_OR_NEWER

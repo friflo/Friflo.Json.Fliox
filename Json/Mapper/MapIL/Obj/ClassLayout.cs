@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         private readonly Action<long?[], object[], T> loadObjectToPayload;
         private readonly Action<T, long?[], object[]> storePayloadToObject;
         
-        internal ClassLayout(TypeMapper mapper, ResolverConfig config) : base(mapper) {
+        internal ClassLayout(TypeMapper mapper, StoreConfig config) : base(mapper) {
             loadObjectToPayload = null;
             storePayloadToObject = null;
 

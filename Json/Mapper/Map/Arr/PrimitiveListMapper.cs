@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class PrimitiveListMatcher : ITypeMatcher {
         public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );

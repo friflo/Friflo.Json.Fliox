@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ListMatcher : ITypeMatcher {
         public static readonly ListMatcher Instance = new ListMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );

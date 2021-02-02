@@ -37,7 +37,7 @@ namespace Friflo.Json.Mapper
         public JsonWriter(TypeStore typeStore) {
             typeCache = new TypeCache(typeStore);
             maxDepth = 100;
-            useIL = typeStore.typeResolver.GetConfig().useIL;
+            useIL = typeStore.config.useIL;
         }
         
         public void Dispose() {

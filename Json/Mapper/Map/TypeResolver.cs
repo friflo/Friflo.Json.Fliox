@@ -11,22 +11,7 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
-        TypeMapper      CreateTypeMapper(Type type);
-        ResolverConfig  GetConfig();
-    }
-    
-    /// <summary>
-    /// An immutable configuration class for settings which are used by the lifetime of a <see cref="TypeStore"/>  
-    /// </summary>
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class ResolverConfig {
-        public readonly bool useIL = false;
-
-        public ResolverConfig(bool useIL) {
-            this.useIL = useIL;
-        }
+        TypeMapper      CreateTypeMapper(StoreConfig config, Type type);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -34,63 +19,57 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public class DefaultTypeResolver : ITypeResolver
     {
-        private readonly ResolverConfig      config;
         
         /// <summary>This matcher list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
-        public  readonly List<ITypeMatcher>  matcherList =            new List<ITypeMatcher>();
-        private readonly List<ITypeMatcher>  specificTypeMatcher =   new List<ITypeMatcher>();
-        private readonly List<ITypeMatcher>  genericTypeMatcher =    new List<ITypeMatcher>();
+        public  readonly List<ITypeMatcher>  matcherList =          new List<ITypeMatcher>();
+        private readonly List<ITypeMatcher>  specificTypeMatcher =  new List<ITypeMatcher>();
+        private readonly List<ITypeMatcher>  genericTypeMatcher =   new List<ITypeMatcher>();
 
-        public ResolverConfig GetConfig() { return config; }
-        
-        public DefaultTypeResolver() : this (new ResolverConfig(useIL: false)) {
-        }
-        
-        public DefaultTypeResolver(ResolverConfig config) {
-            this.config = config;
+      
+        public DefaultTypeResolver() {
             UpdateMapperList();
         }
 
-        public TypeMapper CreateTypeMapper(Type type) {
+        public TypeMapper CreateTypeMapper(StoreConfig config, Type type) {
             var query = new Query(Mode.Search);
-            return QueryTypeMapper(type, query);
+            return QueryTypeMapper(config, type, query);
         }
         
         // find a codec manually to simplify debugging
-        private TypeMapper QueryTypeMapper (Type type, Query q) {
+        private TypeMapper QueryTypeMapper (StoreConfig config, Type type, Query q) {
 
-            if (MatchMappers(specificTypeMatcher,       type, q)) return q.hit;
+            if (MatchMappers(specificTypeMatcher,       config, type, q)) return q.hit;
             
             // Specific types on top
-            if (Match(BigIntMatcher.        Instance,   type, q)) return q.hit;
-            if (Match(DateTimeMatcher.      Instance,   type, q)) return q.hit;
+            if (Match(BigIntMatcher.        Instance,   config, type, q)) return q.hit;
+            if (Match(DateTimeMatcher.      Instance,   config, type, q)) return q.hit;
                 
             //  
-            if (Match(StringMatcher.        Instance,   type, q)) return q.hit;
-            if (Match(DoubleMatcher.        Instance,   type, q)) return q.hit;
-            if (Match(FloatMatcher.         Instance,   type, q)) return q.hit;
-            if (Match(LongMatcher.          Instance,   type, q)) return q.hit;
-            if (Match(IntMatcher.           Instance,   type, q)) return q.hit;
-            if (Match(ShortMatcher.         Instance,   type, q)) return q.hit;
-            if (Match(ByteMatcher.          Instance,   type, q)) return q.hit;
-            if (Match(BoolMatcher.          Instance,   type, q)) return q.hit;
+            if (Match(StringMatcher.        Instance,   config, type, q)) return q.hit;
+            if (Match(DoubleMatcher.        Instance,   config, type, q)) return q.hit;
+            if (Match(FloatMatcher.         Instance,   config, type, q)) return q.hit;
+            if (Match(LongMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(IntMatcher.           Instance,   config, type, q)) return q.hit;
+            if (Match(ShortMatcher.         Instance,   config, type, q)) return q.hit;
+            if (Match(ByteMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(BoolMatcher.          Instance,   config, type, q)) return q.hit;
             // --- List's
-            if (Match(PrimitiveListMatcher. Instance,   type, q)) return q.hit;
+            if (Match(PrimitiveListMatcher. Instance,   config, type, q)) return q.hit;
 
             // --- array's           
-            if (Match(PrimitiveArrayMatcher.Instance,   type, q)) return q.hit;
+            if (Match(PrimitiveArrayMatcher.Instance,   config, type, q)) return q.hit;
             
-            if (MatchMappers(genericTypeMatcher,        type, q)) return q.hit;
+            if (MatchMappers(genericTypeMatcher,        config, type, q)) return q.hit;
             //
             // The order of codecs bellow need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
-            if (Match(ArrayMatcher.         Instance,   type, q)) return q.hit;
+            if (Match(ArrayMatcher.         Instance,   config, type, q)) return q.hit;
             //
             //
-            if (Match(EnumMatcher.          Instance,   type, q)) return q.hit;
-            if (Match(ListMatcher.          Instance,   type, q)) return q.hit;
-            if (Match(DictionaryMatcher.    Instance,   type, q)) return q.hit;
-            if (Match(ClassMatcher.         Instance,   type, q)) return q.hit;
+            if (Match(EnumMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(ListMatcher.          Instance,   config, type, q)) return q.hit;
+            if (Match(DictionaryMatcher.    Instance,   config, type, q)) return q.hit;
+            if (Match(ClassMatcher.         Instance,   config, type, q)) return q.hit;
 
             return null;
         }
@@ -105,15 +84,15 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
-        private bool MatchMappers(List<ITypeMatcher> mappers, Type type, Query query) {
+        private bool MatchMappers(List<ITypeMatcher> mappers,  StoreConfig config, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
-                if (Match(mappers[i], type, query))
+                if (Match(mappers[i], config, type, query))
                     return true;
             }
             return false;
         }
 
-        private bool Match(ITypeMatcher matcher, Type type, Query query) {
+        private bool Match(ITypeMatcher matcher, StoreConfig config, Type type, Query query) {
             if (query.mode == Mode.Search) {
                 query.hit = matcher.MatchTypeMapper(type, config);
                 return query.hit != null;
@@ -144,7 +123,7 @@ namespace Friflo.Json.Mapper.Map
             var query = new Query(Mode.Enumerate) {
                 matchers = matcherList
             };
-            QueryTypeMapper(null, query);
+            QueryTypeMapper(null, null, query);
         }
 
 

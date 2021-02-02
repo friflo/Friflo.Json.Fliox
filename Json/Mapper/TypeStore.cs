@@ -13,6 +13,20 @@ using Friflo.Json.Mapper.Map;
 namespace Friflo.Json.Mapper
 {
     /// <summary>
+    /// An immutable configuration class for settings which are used by the lifetime of a <see cref="TypeStore"/>  
+    /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class StoreConfig {
+        public readonly bool useIL;
+
+        public StoreConfig(bool useIL) {
+            this.useIL = useIL;
+        }
+    }
+    
+    /// <summary>
     /// Thread safe store containing the required <see cref="Type"/> information for marshalling and unmarshalling.
     /// Can be shared across threads by <see cref="JsonReader"/> and <see cref="JsonWriter"/> instances.
     /// </summary>
@@ -21,25 +35,37 @@ namespace Friflo.Json.Mapper
 #endif
     public class TypeStore : IDisposable
     {
-        private     readonly    Dictionary <Type,  TypeMapper> typeMap=        new Dictionary <Type,  TypeMapper >();
+        private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();
         //
-        internal    readonly    Dictionary <Bytes, TypeMapper> nameToType=     new Dictionary <Bytes, TypeMapper >();
-        internal    readonly    Dictionary <Type,  Bytes>      typeToName =    new Dictionary <Type,  Bytes >();
+        internal    readonly    Dictionary <Bytes, TypeMapper>  nameToType=     new Dictionary <Bytes, TypeMapper >();
+        internal    readonly    Dictionary <Type,  Bytes>       typeToName =    new Dictionary <Type,  Bytes >();
         
-        private     readonly    List<TypeMapper>               newTypes =      new List<TypeMapper>();
-
-
-        internal    readonly    ITypeResolver                   typeResolver;
+        private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
+        private     readonly    ITypeResolver                   typeResolver;
+        public      readonly    StoreConfig                     config;
+        
 
         public                  int                             typeCreationCount;
         public                  int                             storeLookupCount;
 
         public TypeStore() {
             typeResolver = new DefaultTypeResolver();
+            config = new StoreConfig(useIL: false);
+        }
+        
+        public TypeStore(StoreConfig config) {
+            typeResolver = new DefaultTypeResolver();
+            this.config = config;
         }
         
         public TypeStore(ITypeResolver resolver) {
             typeResolver = resolver;
+            this.config = new StoreConfig(useIL: false);
+        }
+        
+        public TypeStore(ITypeResolver resolver, StoreConfig config) {
+            this.typeResolver = resolver;
+            this.config = config;
         }
             
         public void Dispose() {
@@ -78,7 +104,7 @@ namespace Friflo.Json.Mapper
                 return mapper;
             
             typeCreationCount++;
-            mapper = typeResolver.CreateTypeMapper(type);
+            mapper = typeResolver.CreateTypeMapper(config, type);
             if (mapper == null)
                 mapper = TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Found no TypeMapper in TypeStore");
 

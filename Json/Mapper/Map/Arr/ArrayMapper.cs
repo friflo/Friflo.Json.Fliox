@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Arr
     public class ArrayMatcher : ITypeMatcher {
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
-        public TypeMapper MatchTypeMapper(Type type, ResolverConfig config) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type. IsArray) {
                 Type elementType = type.GetElementType();
                 int rank = type.GetArrayRank();

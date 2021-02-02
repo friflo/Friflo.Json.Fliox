@@ -170,9 +170,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void ReadWriteBoxed() {
             string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
-            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (Bytes        json        = new Bytes(payloadTrimmed))
@@ -234,9 +233,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void WriteJson() {
             string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
-            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
             
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var sample = new SampleIL();
@@ -248,9 +246,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadJson() {
-            var resolver = new DefaultTypeResolver(new ResolverConfig(true));
-            
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (Bytes        json        = new Bytes(payloadStr))
             {
@@ -280,9 +276,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void NoAllocWriteClass () {
 
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
 
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var obj = new SampleIL();
@@ -298,9 +293,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocReadClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
-            
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (Bytes        json        = new Bytes(payloadStr))
             {
@@ -318,9 +312,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadWriteStruct () {
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
-            
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
@@ -336,9 +328,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocListClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
@@ -358,9 +349,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocListStruct () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
-            
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
@@ -380,9 +370,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocArrayClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
@@ -402,9 +391,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocArrayStruct () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            var resolver    = new DefaultTypeResolver(new ResolverConfig(true));
             
-            using (TypeStore    typeStore   = new TypeStore(resolver))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(true)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
