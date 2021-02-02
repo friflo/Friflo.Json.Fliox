@@ -44,16 +44,16 @@ namespace Friflo.Json.Mapper.Map.Utils
             throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
         }
         
-        public static T GetEnumValueFromIntegral<T>(long value, Type underlyingEnumType) {
-            if (underlyingEnumType == typeof(long))     { return (T) (object) (long)    value; }
-            if (underlyingEnumType == typeof(int))      { return (T) (object) (int)     value; }
-            if (underlyingEnumType == typeof(short))    { return (T) (object) (short)   value; }
-            if (underlyingEnumType == typeof(byte))     { return (T) (object) (byte)    value; }
-            if (underlyingEnumType == typeof(uint))     { return (T) (object) (uint)    value; }
-            if (underlyingEnumType == typeof(ushort))   { return (T) (object) (ushort)  value; }
-            if (underlyingEnumType == typeof(sbyte))    { return (T) (object) (sbyte)   value; }
+        public static long GetIntegralFromEnumValue<T>(T enumConstant, Type underlyingEnumType) {
+            if (underlyingEnumType == typeof(long))    return (long)    (object)enumConstant;
+            if (underlyingEnumType == typeof(int))     return (int)     (object)enumConstant;
+            if (underlyingEnumType == typeof(short))   return (short)   (object)enumConstant;
+            if (underlyingEnumType == typeof(byte))    return (byte)    (object)enumConstant;
+            if (underlyingEnumType == typeof(uint))    return (uint)    (object)enumConstant;
+            if (underlyingEnumType == typeof(ushort))  return (ushort)  (object)enumConstant;
+            if (underlyingEnumType == typeof(sbyte))   return (sbyte)   (object)enumConstant;
 
-            throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + underlyingEnumType);
+            throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + typeof(T));
         }
     }
 }

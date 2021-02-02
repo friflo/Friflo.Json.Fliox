@@ -18,7 +18,9 @@ namespace Friflo.Json.Mapper.MapIL.Val
     {
         private   readonly  Type                            underlyingEnumType;
         private   readonly  Dictionary<BytesString, long>   stringToIntegral = new Dictionary<BytesString, long>();
+        private   readonly  Dictionary<BytesString, object> stringToEnum     = new Dictionary<BytesString, object>();
         private   readonly  Dictionary<long, BytesString>   integralToString = new Dictionary<long, BytesString>();
+        private   readonly  Dictionary<long, object>        integralToEnum   = new Dictionary<long, object>();
         
         public override string DataTypeName() { return "enum"; }
         
@@ -38,33 +40,50 @@ namespace Friflo.Json.Mapper.MapIL.Val
                     long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, typeof(T));
                     var     name            = new BytesString(enumName);
                     stringToIntegral.Add    (name, enumIntegral);
+                    stringToEnum.Add        (name, enumValue);
                     integralToString.TryAdd (enumIntegral, name);
+                    integralToEnum.TryAdd   (enumIntegral, enumValue);
                 }
             }
         }
         
-
+        // ----------------------------------------- Write / Read ----------------------------------------- 
         public override void Write(JsonWriter writer, T slot) {
-            throw new NotImplementedException();
+            if (IsNull(ref slot)) {
+                WriteUtils.AppendNull(writer);
+                return;
+            }
+            long integralValue = TypeUtils.GetIntegralFromEnumValue(slot, underlyingEnumType);
+            if (!integralToString.TryGetValue(integralValue, out BytesString enumName))
+                throw new InvalidOperationException($"invalid integral enum value: {integralValue} for enum type: {typeof(T)}" );
+            writer.bytes.AppendChar('\"');
+            writer.bytes.AppendBytes(ref enumName.value);
+            writer.bytes.AppendChar('\"');
         }
 
         public override T Read(JsonReader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
-                if (!stringToIntegral.TryGetValue(reader.keyRef, out long enumValue))
+                if (!stringToEnum.TryGetValue(reader.keyRef, out object enumValue))
                     return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, ref parser, out success);
                 success = true;
-                return TypeUtils.GetEnumValueFromIntegral<T>(enumValue, underlyingEnumType);
+                return (T)enumValue;
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out success);
                 if (!success)
                     return default;
-                return TypeUtils.GetEnumValueFromIntegral<T>(integralValue, underlyingEnumType);
+                if (integralToEnum.TryGetValue(integralValue, out object enumValue)) {
+                    success = true;
+                    return (T)enumValue;
+                }
+                return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, ref parser, out success);
             }
             return ValueUtils.CheckElse(reader, this, out success);
         }
+
+        // ------------------------------------- WriteValueIL / ReadValueIL ------------------------------------- 
 
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
             long? integralValue = mirror.LoadLongNull(primPos);
