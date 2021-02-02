@@ -22,21 +22,22 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         internal            Bytes           nameBytes;          // dont mutate
         //
         internal readonly   FieldInfo       field;
-        private  readonly   PropertyInfo    getter;
-        private  readonly   PropertyInfo    setter;
+        private  readonly   MethodInfo      getMethod;
+        private  readonly   MethodInfo      setMethod;
+        private  readonly   object[]        setMethodParams = new object[1];
 
-        internal PropField (String name, TypeMapper fieldType, Type type, FieldInfo field, PropertyInfo getter, PropertyInfo setter,
+        internal PropField (String name, TypeMapper fieldType, Type type, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex)
         {
-            this.name               = name;
-            this.fieldType          = fieldType;
-            this.nameBytes          = new Bytes(name);
+            this.name       = name;
+            this.fieldType  = fieldType;
+            this.nameBytes  = new Bytes(name);
             //
-            this.field              = field;
-            this.getter             = getter;
-            this.setter             = setter;
-            this.primIndex          = primIndex;
-            this.objIndex           = objIndex;
+            this.field      = field;
+            this.getMethod  = property != null ? property.GetGetMethod() : null;
+            this.setMethod  = property != null ? property.GetSetMethod() : null;
+            this.primIndex  = primIndex;
+            this.objIndex   = objIndex;
         }
 
         public void Dispose() {
@@ -58,7 +59,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 else
                     field.SetValue(obj, value);
             } else {
-                getter.SetValue(obj, value);
+                setMethodParams[0] = value;
+                setMethod.Invoke(obj, setMethodParams);
             }
         }
         
@@ -70,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     return field.GetValueDirect(__makeref(obj));
                 return field.GetValue (obj);
             }
-            return setter.GetValue(obj);
+            return getMethod.Invoke(obj, null);
         }
     }
 }
