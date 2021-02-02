@@ -59,10 +59,8 @@ namespace Friflo.Json.Mapper
         }
         
         public TypeStore(ITypeResolver resolver, StoreConfig config) {
-            // ReSharper disable once MergeConditionalExpression
-            this.typeResolver   = resolver != null ? resolver : new DefaultTypeResolver();
-            // ReSharper disable once MergeConditionalExpression
-            this.config         = config   != null ? config   : new StoreConfig(TypeAccess.Reflection);
+            this.typeResolver   = resolver ?? new DefaultTypeResolver();
+            this.config         = config ?? new StoreConfig(TypeAccess.Reflection);
         }
             
         public void Dispose() {

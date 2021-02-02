@@ -183,8 +183,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         public PropField    field;
 
         public override string ToString() {
-            // ReSharper disable once MergeConditionalExpression
-            object valueStr = value == null ? "null" : value;
+            object valueStr = value ?? "null";
             return $"{index}  '{name}':  {valueStr}";
         }
     }
