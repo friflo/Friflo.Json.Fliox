@@ -40,15 +40,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
             Type        ut          = Nullable.GetUnderlyingType(memberType);
             bool isNullablePrimitive = memberType.IsValueType && ut != null && ut.IsPrimitive;
+            bool isNullableEnum      = memberType.IsValueType && ut != null && ut.IsEnum;
             
             if (addMembers) {
-                PropField pf = mapper.isValueType || isNullablePrimitive
-                    ? new PropField(fieldName, mapper, memberType, field, getter, setter, primCount, -1)
-                    : new PropField(fieldName, mapper, memberType, field, getter, setter, -1, objCount);
+                PropField pf;
+                if (mapper.isValueType || isNullablePrimitive || isNullableEnum)
+                    pf = new PropField(fieldName, mapper, memberType, field, getter, setter, primCount, -1);
+                else
+                    pf = new PropField(fieldName, mapper, memberType, field, getter, setter, -1, objCount);
                 fieldList.Add(pf);
             }
             
-            if (mapper.type.IsPrimitive || isNullablePrimitive) {
+            if (memberType.IsPrimitive || isNullablePrimitive || memberType.IsEnum || isNullableEnum) {
                 primCount++;
             } else if (mapper.isValueType) {
                 // struct itself must not be incremented only its members. Their position need to be counted 

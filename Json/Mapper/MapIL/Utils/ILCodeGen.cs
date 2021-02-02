@@ -125,7 +125,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
                         var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);         // ref long dstElement = ref dst[arrayIndex];
                         dstAssign       = Exp.Assign(dstElement, longVal);              // dstElement = longVal;
-                    } else if (fieldType.IsEnum) {
+                    } else if (fieldType.IsEnum || ut != null && ut.IsEnum) {
                         // var underlyingEnumType = Enum.GetUnderlyingType(fieldType);
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));  
                         var dstElement  = Exp.ArrayAccess(ctx.dst, arrayIndex);
@@ -249,7 +249,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                             throw new InvalidOperationException("Unexpected primitive type: " + fieldType);
 
                         dstAssign       = Exp.Assign(dstMember, srcTyped);              // dstMember = srcTyped;
-                    } else if (fieldType.IsEnum) {
+                    } else if (fieldType.IsEnum || ut != null && ut.IsEnum) {
                         var arrayIndex  = Exp.Constant(ctx.primIndex++, typeof(int));   // int arrayIndex = primIndex;
                         var srcElement  = Exp.ArrayAccess(ctx.src, arrayIndex);         // ref long srcElement = ref src[arrayIndex];
                         var srcTyped    = Exp.Convert(srcElement, fieldType); 
