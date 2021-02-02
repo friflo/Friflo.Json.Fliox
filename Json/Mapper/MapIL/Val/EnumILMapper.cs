@@ -16,8 +16,9 @@ namespace Friflo.Json.Mapper.MapIL.Val
 {
     public class EnumILMapper<T> : TypeMapper<T>
     {
-        private   readonly Dictionary<BytesString, long>   stringToIntegral = new Dictionary<BytesString, long>();
-        private   readonly Dictionary<long, BytesString>   integralToString = new Dictionary<long, BytesString>();
+        private   readonly  Type                            underlyingEnumType;
+        private   readonly  Dictionary<BytesString, long>   stringToIntegral = new Dictionary<BytesString, long>();
+        private   readonly  Dictionary<long, BytesString>   integralToString = new Dictionary<long, BytesString>();
         
         public override string DataTypeName() { return "enum"; }
         
@@ -25,6 +26,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
             base(typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
         {
             Type enumType = isNullable ? underlyingType : type;
+            underlyingEnumType = Enum.GetUnderlyingType(enumType);
             // ReSharper disable once PossibleNullReferenceException
             FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {
@@ -40,14 +42,28 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 }
             }
         }
-
+        
 
         public override void Write(JsonWriter writer, T slot) {
             throw new NotImplementedException();
         }
 
         public override T Read(JsonReader reader, T slot, out bool success) {
-            throw new NotImplementedException();
+            ref var parser = ref reader.parser;
+            if (parser.Event == JsonEvent.ValueString) {
+                reader.keyRef.value = parser.value;
+                if (!stringToIntegral.TryGetValue(reader.keyRef, out long enumValue))
+                    return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, ref parser, out success);
+                success = true;
+                return TypeUtils.GetEnumValueFromIntegral<T>(enumValue, underlyingEnumType);
+            }
+            if (parser.Event == JsonEvent.ValueNumber) {
+                long integralValue = parser.ValueAsLong(out success);
+                if (!success)
+                    return default;
+                return TypeUtils.GetEnumValueFromIntegral<T>(integralValue, underlyingEnumType);
+            }
+            return ValueUtils.CheckElse(reader, this, out success);
         }
 
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {

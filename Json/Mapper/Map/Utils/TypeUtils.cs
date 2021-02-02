@@ -43,5 +43,17 @@ namespace Friflo.Json.Mapper.Map.Utils
 
             throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + type);
         }
+        
+        public static T GetEnumValueFromIntegral<T>(long value, Type underlyingEnumType) {
+            if (underlyingEnumType == typeof(long))     { return (T) (object) (long)    value; }
+            if (underlyingEnumType == typeof(int))      { return (T) (object) (int)     value; }
+            if (underlyingEnumType == typeof(short))    { return (T) (object) (short)   value; }
+            if (underlyingEnumType == typeof(byte))     { return (T) (object) (byte)    value; }
+            if (underlyingEnumType == typeof(uint))     { return (T) (object) (uint)    value; }
+            if (underlyingEnumType == typeof(ushort))   { return (T) (object) (ushort)  value; }
+            if (underlyingEnumType == typeof(sbyte))    { return (T) (object) (sbyte)   value; }
+
+            throw new InvalidOperationException("UnderlyingType of Enum not supported. Enum: " + underlyingEnumType);
+        }
     }
 }
