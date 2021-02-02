@@ -14,13 +14,23 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.MapIL.Val
 {
+    public struct EnumString {
+        public  BytesString name;
+        public  object      value;
+    }
+    
+    public struct EnumIntegral {
+        public  long    integral;
+        public  object  value;
+    }
+    
+   
     public class EnumILMapper<T> : TypeMapper<T>
     {
-        private   readonly  Type                            underlyingEnumType;
-        private   readonly  Dictionary<BytesString, long>   stringToIntegral = new Dictionary<BytesString, long>();
-        private   readonly  Dictionary<BytesString, object> stringToEnum     = new Dictionary<BytesString, object>();
-        private   readonly  Dictionary<long, BytesString>   integralToString = new Dictionary<long, BytesString>();
-        private   readonly  Dictionary<long, object>        integralToEnum   = new Dictionary<long, object>();
+        private   readonly  Type                                    underlyingEnumType;
+        private   readonly  Dictionary<BytesString, EnumIntegral>   stringToIntegral = new Dictionary<BytesString,  EnumIntegral>();
+        private   readonly  Dictionary<long,        EnumString>     integralToString = new Dictionary<long,         EnumString>();
+
         
         public override string DataTypeName() { return "enum"; }
         
@@ -39,10 +49,10 @@ namespace Friflo.Json.Mapper.MapIL.Val
                     object  enumConst       = enumField.GetRawConstantValue();
                     long    enumIntegral    = TypeUtils.GetIntegralValue(enumConst, typeof(T));
                     var     name            = new BytesString(enumName);
-                    stringToIntegral.Add    (name, enumIntegral);
-                    stringToEnum.Add        (name, enumValue);
-                    integralToString.TryAdd (enumIntegral, name);
-                    integralToEnum.TryAdd   (enumIntegral, enumValue);
+                    var enumIntegralValue = new EnumIntegral() {integral = enumIntegral, value = enumValue};
+                    stringToIntegral.Add    (name, enumIntegralValue);
+                    var enumString = new EnumString {name = name, value = enumValue};
+                    integralToString.TryAdd (enumIntegral, enumString);
                 }
             }
         }
@@ -54,10 +64,10 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 return;
             }
             long integralValue = TypeUtils.GetIntegralFromEnumValue(slot, underlyingEnumType);
-            if (!integralToString.TryGetValue(integralValue, out BytesString enumName))
+            if (!integralToString.TryGetValue(integralValue, out EnumString enumName))
                 throw new InvalidOperationException($"invalid integral enum value: {integralValue} for enum type: {typeof(T)}" );
             writer.bytes.AppendChar('\"');
-            writer.bytes.AppendBytes(ref enumName.value);
+            writer.bytes.AppendBytes(ref enumName.name.value);
             writer.bytes.AppendChar('\"');
         }
 
@@ -65,18 +75,18 @@ namespace Friflo.Json.Mapper.MapIL.Val
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
-                if (!stringToEnum.TryGetValue(reader.keyRef, out object enumValue))
+                if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
                     return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, ref parser, out success);
                 success = true;
-                return (T)enumValue;
+                return (T)enumValue.value;
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out success);
                 if (!success)
                     return default;
-                if (integralToEnum.TryGetValue(integralValue, out object enumValue)) {
+                if (integralToString.TryGetValue(integralValue, out EnumString enumValue)) {
                     success = true;
-                    return (T)enumValue;
+                    return (T)enumValue.value;
                 }
                 return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, ref parser, out success);
             }
@@ -91,10 +101,10 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 WriteUtils.AppendNull(writer);
                 return;
             }
-            if (!integralToString.TryGetValue((long)integralValue, out BytesString enumName))
+            if (!integralToString.TryGetValue((long)integralValue, out EnumString enumName))
                 throw new InvalidOperationException($"invalid integral enum value: {integralValue} for enum type: {typeof(T)}" );
             writer.bytes.AppendChar('\"');
-            writer.bytes.AppendBytes(ref enumName.value);
+            writer.bytes.AppendBytes(ref enumName.name.value);
             writer.bytes.AppendChar('\"');
         }
 
@@ -103,9 +113,9 @@ namespace Friflo.Json.Mapper.MapIL.Val
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
-                if (!stringToIntegral.TryGetValue(reader.keyRef, out long enumValue))
+                if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
                     return ReadUtils.ErrorIncompatible<bool>(reader, "enum value. Value unknown", this, ref parser, out success);
-                mirror.StoreLongNull(primPos, enumValue);
+                mirror.StoreLongNull(primPos, enumValue.integral);
                 return true;
             }
             ValueUtils.CheckElse(reader, this, out success);
