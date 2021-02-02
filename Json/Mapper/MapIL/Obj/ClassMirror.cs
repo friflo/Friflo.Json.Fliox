@@ -99,63 +99,63 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
         
         // ----------------------------------
-        public void StoreDblNulL(int idx, double? value) {
+        public void StoreDblNull(int idx, double? value) {
             primitives.array[idx] = value.HasValue ? BitConverter.DoubleToInt64Bits((double) value) : default;
         }
-        public double? LoadDblNulL(int idx) {
+        public double? LoadDblNull(int idx) {
             var value = primitives.array[idx];
             return value.HasValue ? (double?)BitConverter.Int64BitsToDouble((long) value) : default;
         }
 
-        public void StoreFltNulL(int idx, float? value) {
+        public void StoreFltNull(int idx, float? value) {
             primitives.array[idx] = value.HasValue ? BitConverter.SingleToInt32Bits((float)value) : default;
         }
-        public float?    LoadFltNulL     (int idx) {
+        public float?    LoadFltNull     (int idx) {
             var value = primitives.array[idx];
             // ReSharper disable once PossibleInvalidOperationException
             return value.HasValue ? (float?)BitConverter.Int32BitsToSingle((int)(long) primitives.array[idx]) : default;
         }
 
-        public void StoreLongNulL(int idx, long? value) {
+        public void StoreLongNull(int idx, long? value) {
             primitives.array[idx] = value;
         }
         
-        public long? LoadLongNulL(int idx) {
+        public long? LoadLongNull(int idx) {
             return primitives.array[idx];
         }
 
-        public void StoreIntNulL(int idx, int? value) {
+        public void StoreIntNull(int idx, int? value) {
             primitives.array[idx] = value;
         }
 
-        public int? LoadIntNulL(int idx) {
+        public int? LoadIntNull(int idx) {
             var value = primitives.array[idx];
             return value.HasValue ? (int?)value : default;
         }
 
-        public void StoreShortNulL(int idx, short? value) {
+        public void StoreShortNull(int idx, short? value) {
             primitives.array[idx] = value;
         }
 
-        public short? LoadShortNulL(int idx) {
+        public short? LoadShortNull(int idx) {
             var value = primitives.array[idx];
             return value.HasValue ? (short?)value : default;
         }
 
-        public void StoreByteNulL(int idx, byte? value) {
+        public void StoreByteNull(int idx, byte? value) {
             primitives.array[idx] = value;
         }
 
-        public byte? LoadByteNulL(int idx) {
+        public byte? LoadByteNull(int idx) {
             var value = primitives.array[idx];
             return value.HasValue ? (byte?)value : default;
         }
 
-        public void StoreBoolNulL(int idx, bool? value) {
+        public void StoreBoolNull(int idx, bool? value) {
             primitives.array[idx] = value.HasValue ? (bool)value ? 1 : 0 : default;
         }
 
-        public bool? LoadBoolNulL(int idx) {
+        public bool? LoadBoolNull(int idx) {
             var value = primitives.array[idx];
             return value.HasValue ? (bool?)(primitives.array[idx] != 0) : default;
         }

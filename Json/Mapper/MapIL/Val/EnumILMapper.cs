@@ -51,7 +51,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
         }
 
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
-            long? integralValue = mirror.LoadLongNulL(primPos);
+            long? integralValue = mirror.LoadLongNull(primPos);
             if (integralValue == null) {
                 WriteUtils.AppendNull(writer);
                 return;
@@ -70,7 +70,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 reader.keyRef.value = parser.value;
                 if (!stringToIntegral.TryGetValue(reader.keyRef, out long enumValue))
                     return ReadUtils.ErrorIncompatible<bool>(reader, "enum value. Value unknown", this, ref parser, out success);
-                mirror.StoreLongNulL(primPos, enumValue);
+                mirror.StoreLongNull(primPos, enumValue);
                 return true;
             }
             ValueUtils.CheckElse(reader, this, out success);
