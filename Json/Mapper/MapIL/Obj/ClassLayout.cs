@@ -23,15 +23,12 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
     public class ClassLayout<T> : ClassLayout
     {
-        private Action<long?[], object[], T> loadObjectToPayload;
-        private Action<T, long?[], object[]> storePayloadToObject;
+        private readonly Action<long?[], object[], T> loadObjectToPayload;
+        private readonly Action<T, long?[], object[]> storePayloadToObject;
         
-        internal ClassLayout(PropertyFields propFields) : base(propFields) {
+        internal ClassLayout(PropertyFields propFields, ResolverConfig config) : base(propFields) {
             loadObjectToPayload = null;
             storePayloadToObject = null;
-        }
-
-        internal void InitClassLayout(PropertyFields propFields, ResolverConfig config) {
 
             // create load/store instance expression
             Action<long?[], object[], T> load = null;

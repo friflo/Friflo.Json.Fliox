@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
             TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
-            Type        ut          = Nullable.GetUnderlyingType(memberType);
+            Type        ut          = mapper.underlyingType;
             bool isNullablePrimitive = memberType.IsValueType && ut != null && ut.IsPrimitive;
             bool isNullableEnum      = memberType.IsValueType && ut != null && ut.IsEnum;
             

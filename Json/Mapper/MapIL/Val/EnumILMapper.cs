@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
         public EnumILMapper(Type type) :
             base(typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
         {
-            Type enumType = isNullable ? Nullable.GetUnderlyingType(type): type;
+            Type enumType = isNullable ? underlyingType : type;
             // ReSharper disable once PossibleNullReferenceException
             FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {
