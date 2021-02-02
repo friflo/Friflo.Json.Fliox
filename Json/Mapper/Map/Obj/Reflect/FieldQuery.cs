@@ -63,9 +63,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         private void TraverseMembers(Type type, bool addMembers) {
             Type nullableStruct = TypeUtils.GetNullableStruct(type);
             if (nullableStruct != null) {
+                type = nullableStruct;
                 primCount++;  // require array element to represent if Nullable<struct> is null or set (1) 
-                TraverseMembers(nullableStruct, addMembers);
-                return;
             }
             PropertyInfo[] properties = ReflectUtils.GetProperties(type);
             for (int n = 0; n < properties.Length; n++) {
