@@ -70,9 +70,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         private void AssertUnicodeToByte (ref Bytes dst, string src) {
             dst.Clear();
-            int c = char.ConvertToUtf32 (src, 0);
-            Utf8Utils.AppendUnicodeToBytes(ref dst, c);
-            AreEqual(src, dst.ToString());
+            JsonSerializer.AppendEscString(ref dst, ref src);
+            AreEqual("\""+ src + "\"", dst.ToString());
         }
 
         [Test]

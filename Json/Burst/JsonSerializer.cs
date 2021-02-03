@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
@@ -162,7 +163,10 @@ namespace Friflo.Json.Burst
 #if !JSON_BURST
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, ref Str32 src) {
-            dst.AppendChar('"');
+            int maxByteLen = Encoding.UTF8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
+            dst.EnsureCapacityAbs(dst.end + maxByteLen);
+            
+            dst.buffer.array[dst.end++] = (byte)'"';
             
             ReadOnlySpan<char> span = src;
             int end = src.Length;
@@ -218,7 +222,7 @@ namespace Friflo.Json.Burst
                         break;
                 }
             }
-            dst.AppendChar('"');
+            dst.buffer.array[dst.end++] = (byte)'"';
         }
 #endif
 
