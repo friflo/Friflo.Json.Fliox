@@ -14,8 +14,8 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static void WriteKey(JsonWriter writer, PropField field) {
             ref Bytes bytes = ref writer.bytes;
             bytes.AppendChar('\"');
-            field.AppendName(ref bytes);
-            bytes.AppendString("\":");
+            bytes.AppendBytes(ref field.nameBytes);
+            bytes.AppendChar2('\"', ':');
         }
 
         public static void WriteString(JsonWriter writer, String str) {

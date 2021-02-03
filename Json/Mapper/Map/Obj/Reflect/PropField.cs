@@ -20,6 +20,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         internal            Bytes           nameBytes;          // dont mutate
+        public              Bytes           firstMember;        // dont mutate
+        public              Bytes           subSeqMember;       // dont mutate
         //
         internal readonly   FieldInfo       field;
         private  readonly   MethodInfo      getMethod;
@@ -32,6 +34,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             this.name       = name;
             this.fieldType  = fieldType;
             this.nameBytes  = new Bytes(name);
+            firstMember     = new Bytes($"{{\"{name}\":");
+            subSeqMember    = new Bytes($",\"{name}\":");
             //
             this.field      = field;
             this.getMethod  = property != null ? property.GetGetMethod() : null;
@@ -41,12 +45,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         }
 
         public void Dispose() {
+            subSeqMember.Dispose();
+            firstMember.Dispose();
             nameBytes.Dispose();
-        }
-
-        public void AppendName(ref Bytes bb)
-        {
-            bb.AppendBytes(ref nameBytes);
         }
         
         private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
