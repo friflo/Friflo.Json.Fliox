@@ -55,12 +55,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             bool firstMember = true;
             bytes.AppendChar('{');
             
-            Type objType = typeof(T);
-            // Check for polymorphic type only if it is not a value type because Type.GetType() allocates memory
-            if (!objType.IsValueType) // value types have no discriminator
-                objType = obj.GetType();
-            
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
+
+            Type objType = obj.GetType(); // GetType() cost performance. May use a pre-check with isPolymorphic
             if (type != objType) {
                 firstMember = false;
                 bytes.AppendBytes(ref writer.discriminator);
