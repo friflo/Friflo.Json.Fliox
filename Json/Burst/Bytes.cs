@@ -550,13 +550,9 @@ namespace Friflo.Json.Burst
         /*
          * Must not by called from Burst. Burst cant handle managed types
          */
-        public void FromString(String str) {
-            if (str == null) {
-                start   = 0; 
-                end = -1;
-                hc  = BytesConst.notHashed;
-                return;
-            }
+        public void FromString(string str) {
+            if (str == null)
+                throw new NullReferenceException("FromString() - string parameter must not be null");
             int maxByteLen = Encoding.UTF8.GetMaxByteCount(str.Length);
             EnsureCapacity(maxByteLen);
 
