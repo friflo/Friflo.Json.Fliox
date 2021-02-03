@@ -166,72 +166,77 @@ namespace Friflo.Json.Burst
         public static void AppendEscString(ref Bytes dst, ref Str32 src) {
             int maxByteLen = Encoding.UTF8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
-            
-            ref var array = ref dst.buffer.array;
-            array[dst.end++] = (byte)'"';
-            
             ReadOnlySpan<char> span = src;
             int end = src.Length;
+            
+            ref var dstArr = ref dst.buffer.array;
+            var srcSpan = span;
+            
+            // --- bounds checks degrade performance => used managed arrays
+            // fixed (byte* dstArr = &dst.buffer.array[0])
+            // fixed (char* srcSpan = &span[0])
+            {
+                dstArr[dst.end++] = (byte) '"';
 
-            for (int index = 0; index < end; index++) {
-                int utf8 = span[index];
-                int surrogate = utf8 - HighSurrogateStart;
-                // Is surrogate?
-                if (0 <= surrogate && surrogate < SurrogateEnd - HighSurrogateStart)  {
-                    // found surrogate
-                    if (surrogate < HighSurrogateLimit) {
-                        // found high surrogate.
-                        if (index < end - 1)  {
-                            int lowSurrogate = span[++index] - LowSurrogateStart;
-                            if (0 <= lowSurrogate  && lowSurrogate < HighSurrogateLimit) {
-                                // found low surrogate.
-                                utf8 = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
+                for (int index = 0; index < end; index++) {
+                    int utf8 = srcSpan[index];
+                    int surrogate = utf8 - HighSurrogateStart;
+                    // Is surrogate?
+                    if (0 <= surrogate && surrogate < SurrogateEnd - HighSurrogateStart) {
+                        // found surrogate
+                        if (surrogate < HighSurrogateLimit) {
+                            // found high surrogate.
+                            if (index < end - 1) {
+                                int lowSurrogate = srcSpan[++index] - LowSurrogateStart;
+                                if (0 <= lowSurrogate && lowSurrogate < HighSurrogateLimit) {
+                                    // found low surrogate.
+                                    utf8 = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
+                                } else {
+                                    throw new ArgumentException("Invalid high surrogate. " + src);
+                                }
                             } else {
-                                throw new ArgumentException("Invalid high surrogate. " + src);
+                                throw new ArgumentException("Unexpected high surrogate at string end. " + src);
                             }
                         } else {
-                            throw new ArgumentException("Unexpected high surrogate at string end. " + src);
+                            throw new ArgumentException("Unexpected low surrogate at index: " + index);
                         }
-                    } else  {
-                        throw new ArgumentException("Unexpected low surrogate at index: " + index);
+                    }
+                    switch (utf8) {
+                        case '"':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) '\"';
+                            break;
+                        case '\\':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) '\\';
+                            break;
+                        case '\b':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) 'b';
+                            break;
+                        case '\f':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) 'f';
+                            break;
+                        case '\r':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) 'r';
+                            break;
+                        case '\n':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) 'n';
+                            break;
+                        case '\t':
+                            dstArr[dst.end++] = (byte) '\\';
+                            dstArr[dst.end++] = (byte) 't';
+                            break;
+                        default:
+                            Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
+                            break;
                     }
                 }
-
-                switch (utf8) {
-                    case '"':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) '\"';
-                        break;
-                    case '\\':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) '\\';
-                        break;
-                    case '\b':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) 'b';
-                        break;
-                    case '\f':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) 'f';
-                        break;
-                    case '\r':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) 'r';
-                        break;
-                    case '\n':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) 'n';
-                        break;
-                    case '\t':
-                        array[dst.end++] = (byte) '\\';
-                        array[dst.end++] = (byte) 't';
-                        break;
-                    default:
-                        Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
-                        break;
-                }
+                dstArr[dst.end++] = (byte) '"';
             }
-            array[dst.end++] = (byte)'"';
         }
 #endif
 
