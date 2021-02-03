@@ -12,12 +12,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         public bool javaReference = false;
 
-        struct ParseDblCx
+        class ParseDblCx : IDisposable
         {
             public bool         success;
             public Bytes        parseError;
-            public Bytes        bytes;
+            public Bytes        bytes = new Bytes(32);
             public ValueParser  parser;
+
+            public void Dispose() {
+                bytes.Dispose();
+            }
         }
         
         [Test]
@@ -48,10 +52,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(    0.0                            , Double. Parse(  "4.9e-325"));
             }
 
-            using (Bytes bytes = new Bytes(32)) {
-                ParseDblCx parseCx = new ParseDblCx {
-                    bytes = bytes
-                };
+            using  (var parseDblCx = new ParseDblCx())
+            {
+                var parseCx = parseDblCx;
                 parseCx.parser.InitValueParser();
                 AreEqual(     0.0,        ParseDbl(           "0",      ref parseCx)); 
                 AreEqual(   1234567890.0, ParseDbl(  "1234567890",      ref parseCx));
@@ -90,7 +93,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(      0.0      , ParseDbl(           "",       ref parseCx)); IsTrue (!parseCx.success); 
                 AreEqual(      0.0      , ParseDbl(           "1e",     ref parseCx)); IsTrue (!parseCx.success); 
                 AreEqual(      0.0      , ParseDbl(           "1e+",    ref parseCx)); IsTrue (!parseCx.success);
-                parseCx.parser.Dispose();
             }
         }
 

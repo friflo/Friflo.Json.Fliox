@@ -557,18 +557,20 @@ namespace Friflo.Json.Burst
                 hc  = BytesConst.notHashed;
                 return;
             }
-            int byteLen = Encoding.UTF8.GetByteCount(str);
-            EnsureCapacity(byteLen);
+            int maxByteLen = Encoding.UTF8.GetMaxByteCount(str.Length);
+            EnsureCapacity(maxByteLen);
+
 #if JSON_BURST
+            int byteLen = 0;
             unsafe {
                 byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(buffer.array);
                 fixed (char* strPtr = str) {
                     if (arrPtr != null)
-                        Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
+                        byteLen = Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
                 }
             }
 #else
-            Encoding.UTF8.GetBytes(str, 0, str.Length, buffer.array, start);
+            int byteLen = Encoding.UTF8.GetBytes(str, 0, str.Length, buffer.array, start);
 #endif
             end += byteLen;
             hc = BytesConst.notHashed;
