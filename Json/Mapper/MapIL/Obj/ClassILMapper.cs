@@ -57,12 +57,13 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
 
-            Type objType = obj.GetType(); // GetType() cost performance. May use a pre-check with isPolymorphic
-            if (type != objType) {
-                firstMember = false;
-                bytes.AppendBytes(ref writer.discriminator);
-                writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
-                bytes.AppendChar('\"');
+            if (!isValueType) {
+                if (this != classMapper) {
+                    firstMember = false;
+                    bytes.AppendBytes(ref writer.discriminator);
+                    writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
+                    bytes.AppendChar('\"');
+                }
             }
 
             PropField[] fields = classMapper.GetPropFields().fields;

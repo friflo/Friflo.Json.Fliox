@@ -130,13 +130,15 @@ namespace Friflo.Json.Mapper.Map.Obj
             bool firstMember = true;
             bytes.AppendChar('{');
 
-            Type objType = obj.GetType(); // GetType() cost performance. May use a pre-check with isPolymorphic  
-            if (type != objType) {
-                classMapper = writer.typeCache.GetTypeMapper(objType);
-                firstMember = false;
-                bytes.AppendBytes(ref writer.discriminator);
-                writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
-                bytes.AppendChar('\"');
+            if (!isValueType) {
+                Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
+                if (type != objType) {
+                    classMapper = writer.typeCache.GetTypeMapper(objType);
+                    firstMember = false;
+                    bytes.AppendBytes(ref writer.discriminator);
+                    writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
+                    bytes.AppendChar('\"');
+                }
             }
 
             PropField[] fields = classMapper.GetPropFields().fields;
