@@ -30,7 +30,7 @@ namespace Friflo.Json.Burst
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct Bytes : IDisposable, IMapKey<Bytes>
+    public partial struct Bytes : IDisposable, IMapKey<Bytes>
     {
 
         public  int             hc; //      = notHashed;
@@ -696,19 +696,35 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
         
-        public void AppendBytes(ref Bytes ca)
+        public void AppendBytes(ref Bytes src)
         {
+#if JSON_BURST
             int     curEnd = end;
-            int     caLen = ca.Len;
+            int     caLen = src.Len;
             int     newEnd = curEnd + caLen;
             ref var buf = ref buffer.array;
             EnsureCapacity(caLen);
-            int     n2 = ca.StartPos;
-            ref var str2 = ref ca.buffer.array;
+            int     n2 = src.StartPos;
+            ref var str2 = ref src.buffer.array;
             for (int n = curEnd; n < newEnd; n++)
                 buf[n] = str2[n2++];
             end = newEnd;
             hc = BytesConst.notHashed;
+#else
+            int len = src.end - src.start;
+            EnsureCapacityAbs(end + len);
+            switch (len) {
+                case 0: return;
+                case  6: AppendBytes6 (ref src); return;
+                case  9: AppendBytes9 (ref src); return;
+                case 12: AppendBytes12(ref src); return;
+                default:
+                    Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, end, len);
+                    end += len;
+                    hc = BytesConst.notHashed;
+                    return;
+            }
+#endif
         }
 
         public void AppendChar(char c, int count)
