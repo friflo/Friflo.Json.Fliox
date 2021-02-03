@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
     [assembly: CLSCompliant(true)]
@@ -45,7 +46,7 @@ namespace Friflo.Json.Mapper
         private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();
         //
         internal    readonly    Dictionary <Bytes, TypeMapper>  nameToType=     new Dictionary <Bytes, TypeMapper >();
-        internal    readonly    Dictionary <Type,  Bytes>       typeToName =    new Dictionary <Type,  Bytes >();
+        internal    readonly    Dictionary <Type,  BytesString> typeToName =    new Dictionary <Type,  BytesString >();
         
         private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
         private     readonly    ITypeResolver                   typeResolver;
@@ -70,7 +71,7 @@ namespace Friflo.Json.Mapper
                 foreach (var item in typeMap.Values)
                     item.Dispose();
                 foreach (var item in typeToName.Values)
-                    item.Dispose();
+                    item.value.Dispose();
             }
         }
 
@@ -128,9 +129,10 @@ namespace Friflo.Json.Mapper
                         return;
                     }
                     mapper = GetTypeMapper(type);
-                    Bytes discriminator = new Bytes(name);
+                    BytesString discriminator = new BytesString(name);
                     typeToName.Add(mapper.type, discriminator);
-                    nameToType.Add(discriminator, mapper);
+                    nameToType.Add(discriminator.value, mapper);
+                    // discriminator.value.EnsureCapacityAbs(20); // provoke error in DebugUtils: "untrack expect the resource was previously tracked"
                 }
             }
         }

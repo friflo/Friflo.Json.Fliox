@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
             using (var writer = new JsonWriter(typeStore))
             {
                 writer.Write(bookShelf);
-                for (int n = 0; n < 10; n++) {
+                for (int n = 0; n < 20; n++) {
                     int start = TimeUtil.GetMs();
                     writer.Write(bookShelf);
                     /* using (var reader = new JsonReader(typeStore))

@@ -63,7 +63,7 @@ namespace Friflo.Json.Burst
     public static class DebugUtils
     {
         public  static readonly Dictionary<Allocation, Allocation>  Allocations = new Dictionary<Allocation, Allocation>();
-        private static readonly Allocation                          SearchKey = new Allocation (null, null);
+        private static readonly Allocation                          SearchKey   = new Allocation (null, null);
         
         private static bool _enableLeakDetection;
         

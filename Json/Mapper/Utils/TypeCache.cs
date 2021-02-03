@@ -83,12 +83,10 @@ namespace Friflo.Json.Mapper.Utils
                 typeToName.TryGetValue(nativeType, out Bytes name);
                 if (!name.buffer.IsCreated()) {
                     lock (typeStore) {
-                        typeStore.typeToName.TryGetValue(nativeType, out Bytes storeName);
-                        name = storeName;
+                        if (!typeStore.typeToName.TryGetValue(nativeType, out BytesString storeName))
+                            throw new InvalidOperationException("no discriminator registered for type: " + nativeType);
+                        name = storeName.value;
                     }
-                    if (!name.buffer.IsCreated())
-                        throw new InvalidOperationException("no discriminator registered for type: " + nativeType);
-                    
                     Bytes newName = new Bytes(ref name);
                     typeToName.Add(nativeType, newName);
                 }
