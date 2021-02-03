@@ -45,7 +45,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 else
                     bytes.AppendChar(',');
                 PropField field = fields[n];
-                WriteUtils.WriteKey(writer, field);
+                WriteUtils.WriteKey(writer, field);  // todo replace firstMember & subSeqMember
                 
                 field.fieldType.WriteValueIL(writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
             }

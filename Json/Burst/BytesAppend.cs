@@ -22,12 +22,12 @@ namespace Friflo.Json.Burst
             int curEnd = end;
             hc = BytesConst.notHashed;
             // ensure both buffer's are large enough when accessing the byte array's via unsafe (long*)
-            // src.EnsureCapacityAbs(src.end + 8);
+            src.EnsureCapacityAbs(src.end + 8);
             int len = src.end - src.start;
             EnsureCapacityAbs(end + len + 8);
             
             end += len;
-            /*
+
             fixed (byte* srcPtr = &src.buffer.array[src.start])
             fixed (byte* destPtr =&    buffer.array[curEnd])
             {
@@ -91,7 +91,7 @@ namespace Friflo.Json.Burst
                     *(long*)(destPtr + 56) = *(long*)(srcPtr + 56);
                     return;
                 }
-            } */
+            }
             Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
         }

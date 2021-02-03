@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Utils
             private readonly    Dictionary <Type,  TypeMapper>  typeMap =      new Dictionary <Type,  TypeMapper >();
             //
             private readonly    Dictionary <Bytes, TypeMapper>  nameToType =   new Dictionary <Bytes, TypeMapper >();
-            private readonly    Dictionary <Type,  Bytes>       typeToName =   new Dictionary <Type,  Bytes >();
+            private readonly    Dictionary <Type,  BytesString> typeToName =   new Dictionary <Type,  BytesString >();
             
             private readonly    TypeStore                       typeStore;
             private             int                             lookupCount;
@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Utils
                 foreach (var item in nameToType.Keys)
                     item.Dispose();
                 foreach (var item in typeToName.Values)
-                    item.Dispose();
+                    item.value.Dispose();
             }
             
             public TypeMapper GetTypeMapper (Type type) {
@@ -80,17 +80,16 @@ namespace Friflo.Json.Mapper.Utils
             /// </summary>
             public void AppendDiscriminator(ref Bytes dst, TypeMapper type) {
                 Type nativeType = type.type;
-                typeToName.TryGetValue(nativeType, out Bytes name);
-                if (!name.buffer.IsCreated()) {
+                if (!typeToName.TryGetValue(nativeType, out BytesString name)) {
                     lock (typeStore) {
                         if (!typeStore.typeToName.TryGetValue(nativeType, out BytesString storeName))
                             throw new InvalidOperationException("no discriminator registered for type: " + nativeType);
-                        name = storeName.value;
+                        name = storeName;
                     }
-                    Bytes newName = new Bytes(ref name);
+                    BytesString newName = new BytesString(ref name.value);
                     typeToName.Add(nativeType, newName);
                 }
-                dst.AppendBytes(ref name);
+                dst.AppendBytes(ref name.value);
             }
         }
 }

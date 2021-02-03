@@ -15,6 +15,10 @@ namespace Friflo.Json.Mapper.Utils
         
         public BytesString() {
         }
+        
+        public BytesString(ref Bytes str) {
+            value = new Bytes(ref str);
+        }
 
         public BytesString(string str) {
             value = new Bytes(str);

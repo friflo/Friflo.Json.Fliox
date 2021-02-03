@@ -148,7 +148,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 else
                     bytes.AppendChar(',');
                 PropField field = fields[n];
-                WriteUtils.WriteKey(writer, field);
+                WriteUtils.WriteKey(writer, field); // todo replace firstMember & subSeqMember 
                 
                 object elemVar = field.GetField(obj);
                 if (elemVar == null) {
