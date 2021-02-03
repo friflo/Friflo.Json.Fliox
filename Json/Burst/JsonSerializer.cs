@@ -148,17 +148,50 @@ namespace Friflo.Json.Burst
                 dst.Dispose();
             format.Dispose();
         }
+        
+        // [UTF-16 - Wikipedia] https://en.wikipedia.org/wiki/UTF-16
+        private const int SupplementaryPlanesStart  = 0x10000;
+        
+        private const char HighSurrogateStart       = '\ud800';
+        private const char LowSurrogateStart        = '\udc00';
+        private const char SurrogateEnd             = '\ue000';
+        
+        private const int  HighSurrogateLimit  = LowSurrogateStart - HighSurrogateStart;
+
+        
 #if !JSON_BURST
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, ref Str32 src) {
+            dst.AppendChar('"');
+            
+            ReadOnlySpan<char> span = src;
             int end = src.Length;
-            var srcArr = src; 
-            for (int n = 0; n < end; n++) {
-                int c = char.ConvertToUtf32 (srcArr, n);
-                if (char.IsSurrogatePair(srcArr, n))
-                    n++;
-                
-                switch (c) {
+
+            for (int index = 0; index < end; index++) {
+                int utf8 = span[index];
+                int surrogate = utf8 - HighSurrogateStart;
+                // Is surrogate?
+                if (0 <= surrogate && surrogate < SurrogateEnd - HighSurrogateStart)  {
+                    // found surrogate
+                    if (surrogate < HighSurrogateLimit) {
+                        // found high surrogate.
+                        if (index < end - 1)  {
+                            int lowSurrogate = span[++index] - LowSurrogateStart;
+                            if (0 <= lowSurrogate  && lowSurrogate < HighSurrogateLimit) {
+                                // found low surrogate.
+                                utf8 = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
+                            } else {
+                                throw new ArgumentException("Invalid high surrogate. " + src);
+                            }
+                        } else {
+                            throw new ArgumentException("Unexpected high surrogate at string end. " + src);
+                        }
+                    } else  {
+                        throw new ArgumentException("Unexpected low surrogate at index: " + index);
+                    }
+                }
+
+                switch (utf8) {
                     case '"':
                         dst.AppendChar2('\\', '\"');
                         break;
@@ -181,10 +214,11 @@ namespace Friflo.Json.Burst
                         dst.AppendChar2('\\', 't');
                         break;
                     default:
-                        Utf8Utils.AppendUnicodeToBytes(ref dst, c);
+                        Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
                         break;
                 }
             }
+            dst.AppendChar('"');
         }
 #endif
 
@@ -225,9 +259,8 @@ namespace Friflo.Json.Burst
         public void MemberArrayStartRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             SetStartGuard();
             ArrayStart();
         }
@@ -236,23 +269,20 @@ namespace Friflo.Json.Burst
         public void MemberObjectStartRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             SetStartGuard();
             ObjectStart();
         }
 
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
+        // todo add ASCII version - to avoid escaping
         public void MemberStrRef(ref Str32 key, ref Bytes value) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
-            dst.AppendChar('"');
+            AppendEscString(ref dst, ref key); // should be asc
+            dst.AppendChar(':');
             AppendEscString(ref dst, ref value);
-            dst.AppendChar('"');
         }
 
         /// <summary>
@@ -268,21 +298,17 @@ namespace Friflo.Json.Burst
         public void MemberStrRef(ref string key, ref string value) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
-            dst.AppendChar('"');
+            dst.AppendChar(':');
             AppendEscString(ref dst, ref value);
-            dst.AppendChar('"');
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDblRef(ref Str32 key, double value) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             format.AppendDbl(ref dst, value);
         }
         
@@ -290,9 +316,8 @@ namespace Friflo.Json.Burst
         public void MemberDblRef(ref Str32 key, long value) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             format.AppendLong(ref dst, value);
         }
         
@@ -300,9 +325,8 @@ namespace Friflo.Json.Burst
         public void MemberBlnRef(ref Str32 key, bool value) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             format.AppendBool(ref dst, value);
         }
         
@@ -310,9 +334,8 @@ namespace Friflo.Json.Burst
         public void MemberNulRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref key);
-            dst.AppendChar2('\"', ':');
+            dst.AppendChar(':');
             dst.AppendStr32Ref(ref @null);
         }
         
@@ -401,12 +424,11 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Write an array element of type "string"</summary>
+        // todo add ASCII version - to avoid escaping
         public void ElementStr(ref Bytes value) {
             AssertElement();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
-            dst.AppendChar('"');
         }
         
 #if JSON_BURST
@@ -415,18 +437,14 @@ namespace Friflo.Json.Burst
             strBuf.AppendStr128(ref value);
             AssertElement();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref strBuf);
-            dst.AppendChar('"');
         }
 #else
         /// <summary>Write an array element of type <see cref="string"/></summary>
         public void ElementStr(string value) {
             AssertElement();
             AddSeparator();
-            dst.AppendChar('"');
             AppendEscString(ref dst, ref value);
-            dst.AppendChar('"');
         }
 #endif
         /// <summary>Write an array element of type <see cref="double"/></summary>
@@ -474,9 +492,8 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
-                        dst.AppendChar('"');
                         AppendEscString(ref dst, ref p.key);
-                        dst.AppendChar2('\"', ':');
+                        dst.AppendChar(':');
                         /*
                         // Conversion to long or double is expensive and not required 
                         if (p.isFloat)

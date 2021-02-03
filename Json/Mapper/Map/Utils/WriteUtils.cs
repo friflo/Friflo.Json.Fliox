@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         public static void WriteString(JsonWriter writer, String str) {
             ref Bytes bytes = ref writer.bytes;
-            bytes.AppendChar('\"');
+
 #if JSON_BURST
             ref Bytes strBuf = ref writer.strBuf;
             strBuf.Clear();
@@ -29,7 +29,6 @@ namespace Friflo.Json.Mapper.Map.Utils
 #else
             JsonSerializer.AppendEscString(ref bytes, ref str);
 #endif
-            bytes.AppendChar('\"');
         }
 
         public static void AppendNull(JsonWriter writer) {

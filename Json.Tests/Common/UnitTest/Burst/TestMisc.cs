@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 Str32 src = "a©€😎🌍";
                 dst.Clear();
                 JsonSerializer.AppendEscString(ref dst, ref src);
-                AreEqual(src, dst.ToString());
+                AreEqual("\"" + src + "\"", dst.ToString());
             }
         }
 
