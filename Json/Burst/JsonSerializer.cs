@@ -161,12 +161,14 @@ namespace Friflo.Json.Burst
 
         
 #if !JSON_BURST
+        //         Tight loop! Avoid calling any trivial method
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscString(ref Bytes dst, ref Str32 src) {
             int maxByteLen = Encoding.UTF8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
             
-            dst.buffer.array[dst.end++] = (byte)'"';
+            ref var array = ref dst.buffer.array;
+            array[dst.end++] = (byte)'"';
             
             ReadOnlySpan<char> span = src;
             int end = src.Length;
@@ -197,32 +199,39 @@ namespace Friflo.Json.Burst
 
                 switch (utf8) {
                     case '"':
-                        dst.AppendChar2('\\', '\"');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) '\"';
                         break;
                     case '\\':
-                        dst.AppendChar2('\\', '\\');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) '\\';
                         break;
                     case '\b':
-                        dst.AppendChar2('\\', 'b');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) 'b';
                         break;
                     case '\f':
-                        dst.AppendChar2('\\', 'f');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) 'f';
                         break;
                     case '\r':
-                        dst.AppendChar2('\\', 'r');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) 'r';
                         break;
                     case '\n':
-                        dst.AppendChar2('\\', 'n');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) 'n';
                         break;
                     case '\t':
-                        dst.AppendChar2('\\', 't');
+                        array[dst.end++] = (byte) '\\';
+                        array[dst.end++] = (byte) 't';
                         break;
                     default:
                         Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
                         break;
                 }
             }
-            dst.buffer.array[dst.end++] = (byte)'"';
+            array[dst.end++] = (byte)'"';
         }
 #endif
 
