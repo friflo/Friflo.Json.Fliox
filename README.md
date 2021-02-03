@@ -188,7 +188,7 @@ The current result of the unit test are available as **CI tests** at
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
-dotnet test -c Release -l "console;verbosity=detailed"
+dotnet test -c Release -l "console;verbosity=detailed" --filter FullyQualifiedName~Friflo.Json.Tests.Common
 ```
 The unit tests can be executed also within various IDEs. [Visual Studio](https://visualstudio.microsoft.com/),
 [Rider](https://www.jetbrains.com/rider/) and [Visual Studio Code](https://visualstudio.microsoft.com/).

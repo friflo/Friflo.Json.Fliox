@@ -13,15 +13,10 @@ namespace Friflo.Json.Tests.Perf.Mapper
     {
         [Test]
         public void TestBookShelf() {
-            Fail("check");
-
             BookShelf bookShelf = new BookShelf();
             bookShelf.Books = new List<Book>();
-            for (int n = 0; n < 1_00_000; n++) {
-                var book = new Book();
-                book.Id = n;
-                book.Title = $"Book {n}";
-                book.BookData = new byte[0];
+            for (int n = 0; n < 1_000_000; n++) {
+                var book = new Book {Id = n, Title = $"Book {n}", BookData = new byte[0]};
                 bookShelf.Books.Add(book);
             }
 

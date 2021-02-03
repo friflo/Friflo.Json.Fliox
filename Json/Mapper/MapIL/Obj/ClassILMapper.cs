@@ -57,13 +57,11 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
 
-            if (!isValueType) {
-                if (this != classMapper) {
-                    firstMember = false;
-                    bytes.AppendBytes(ref writer.discriminator);
-                    writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
-                    bytes.AppendChar('\"');
-                }
+            if (this != classMapper) {
+                firstMember = false;
+                bytes.AppendBytes(ref writer.discriminator);
+                writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
+                bytes.AppendChar('\"');
             }
 
             PropField[] fields = classMapper.GetPropFields().fields;
