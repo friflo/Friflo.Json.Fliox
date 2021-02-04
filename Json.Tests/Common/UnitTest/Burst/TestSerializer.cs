@@ -49,13 +49,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 s.InitSerializer();
                 s.ObjectStart();
-                    s.MemberStr ("string", "World");
-                    s.MemberDbl ("double", 10.5);
-                    s.MemberLng ("long", 42);
-                    s.MemberBln ("bool", true);
-                    s.MemberNul ("null");
+                    s.MemberStr ("string 👋", "World 🌎");
+                    s.MemberDbl ("double 👋", 10.5);
+                    s.MemberLng ("long 👋", 42);
+                    s.MemberBln ("bool 👋", true);
+                    s.MemberNul ("null 👋");
                 s.ObjectEnd();
-                AreEqual("{\"string\":\"World\",\"double\":10.5,\"long\":42,\"bool\":true,\"null\":null}", s.dst.ToString());
+                AreEqual("{\"string 👋\":\"World 🌎\",\"double 👋\":10.5,\"long 👋\":42,\"bool 👋\":true,\"null 👋\":null}", s.dst.ToString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
