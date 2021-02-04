@@ -26,77 +26,56 @@ namespace Friflo.Json.Burst
         
 #if JSON_BURST
         public static void AppendEscString(ref Bytes dst, ref Unity.Collections.FixedString32 src) {
-            dst.AppendChar('"');
+            dst.EnsureCapacityAbs(dst.end + 2 * src.Length);
             int end = src.Length;
-            var srcArr = src; 
+            ref var dstArr = ref dst.buffer.array;
+            var srcArr = src;
+            
+            dstArr[dst.end++] = (byte)'"';
             for (int n = 0; n < end; n++) {
-                char c = (char) srcArr[n];
+                byte c =  srcArr[n];
+
                 switch (c) {
-                    case '"':
-                        dst.AppendChar2('\\', '\"');
-                        break;
-                    case '\\':
-                        dst.AppendChar2('\\', '\\');
-                        break;
-                    case '\b':
-                        dst.AppendChar2('\\', 'b');
-                        break;
-                    case '\f':
-                        dst.AppendChar2('\\', 'f');
-                        break;
-                    case '\r':
-                        dst.AppendChar2('\\', 'r');
-                        break;
-                    case '\n':
-                        dst.AppendChar2('\\', 'n');
-                        break;
-                    case '\t':
-                        dst.AppendChar2('\\', 't');
-                        break;
+                    case (byte) '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
+                    case (byte) '\\': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\\'; break;
+                    case (byte) '\b': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'b'; break;
+                    case (byte) '\f': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'f'; break;
+                    case (byte) '\r': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'r'; break;
+                    case (byte) '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
+                    case (byte) '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
                     default:
-                        dst.AppendChar(c);
+                        dstArr[dst.end++] = c;
                         break;
                 }
             }
-            dst.AppendChar('"');
+            dstArr[dst.end++] = (byte)'"';
         }
 #endif
         // --- comment to enable source alignment in WinMerge
         public static void AppendEscStringBytes(ref Bytes dst, ref Bytes src) {
-            dst.AppendChar('"');
+            dst.EnsureCapacityAbs(dst.end + 2 * src.Len);
             int end = src.end;
+            ref var dstArr = ref dst.buffer.array;
             var srcArr = src.buffer.array; 
+            
+            dstArr[dst.end++] = (byte)'"';
             for (int n = src.start; n < end; n++) {
-                char c = (char) srcArr[n];
+                byte c =  srcArr[n];
 
                 switch (c) {
-                    case '"':
-                        dst.AppendChar2('\\', '\"');
-                        break;
-                    case '\\':
-                        dst.AppendChar2('\\', '\\');
-                        break;
-                    case '\b':
-                        dst.AppendChar2('\\', 'b');
-                        break;
-                    case '\f':
-                        dst.AppendChar2('\\', 'f');
-                        break;
-                    case '\r':
-                        dst.AppendChar2('\\', 'r');
-                        break;
-                    case '\n':
-                        dst.AppendChar2('\\', 'n');
-                        break;
-                    case '\t':
-                        dst.AppendChar2('\\', 't');
-                        break;
+                    case (byte) '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
+                    case (byte) '\\': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\\'; break;
+                    case (byte) '\b': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'b'; break;
+                    case (byte) '\f': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'f'; break;
+                    case (byte) '\r': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'r'; break;
+                    case (byte) '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
+                    case (byte) '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
                     default:
-                        dst.AppendChar(c);
+                        dstArr[dst.end++] = c;
                         break;
                 }
             }
-            dst.AppendChar('"');
+            dstArr[dst.end++] = (byte)'"';
         }
 
 

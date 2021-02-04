@@ -206,34 +206,13 @@ namespace Friflo.Json.Burst
                         }
                     }
                     switch (utf8) {
-                        case '"':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) '\"';
-                            break;
-                        case '\\':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) '\\';
-                            break;
-                        case '\b':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) 'b';
-                            break;
-                        case '\f':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) 'f';
-                            break;
-                        case '\r':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) 'r';
-                            break;
-                        case '\n':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) 'n';
-                            break;
-                        case '\t':
-                            dstArr[dst.end++] = (byte) '\\';
-                            dstArr[dst.end++] = (byte) 't';
-                            break;
+                        case '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
+                        case '\\': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\\'; break;
+                        case '\b': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'b'; break;
+                        case '\f': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'f'; break;
+                        case '\r': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'r'; break;
+                        case '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
+                        case '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
                         default:
                             Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
                             break;
