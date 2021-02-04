@@ -37,19 +37,14 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             ref var bytes = ref writer.bytes;
             PropField[] fields = GetPropFields().fields;
             bool firstMember = true;
-            bytes.AppendChar('{');
 
             for (int n = 0; n < fields.Length; n++) {
-                if (firstMember)
-                    firstMember = false;
-                else
-                    bytes.AppendChar(',');
                 PropField field = fields[n];
-                WriteUtils.WriteKey(writer, field);  // todo replace firstMember & subSeqMember
+                WriteUtils.WriteMemberKey(writer, field, ref firstMember);
                 
                 field.fieldType.WriteValueIL(writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
             }
-            bytes.AppendChar('}');
+            WriteUtils.WriteObjectEnd(writer, firstMember);
             WriteUtils.DecLevel(writer, startLevel);
         }
         

@@ -128,13 +128,13 @@ namespace Friflo.Json.Mapper.Map.Obj
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
-            bytes.AppendChar('{');
 
             if (!isValueType) {
                 Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
                     firstMember = false;
+                    bytes.AppendChar('{');
                     bytes.AppendBytes(ref writer.discriminator);
                     writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
                     bytes.AppendChar('\"');
@@ -143,12 +143,8 @@ namespace Friflo.Json.Mapper.Map.Obj
 
             PropField[] fields = classMapper.GetPropFields().fields;
             for (int n = 0; n < fields.Length; n++) {
-                if (firstMember)
-                    firstMember = false;
-                else
-                    bytes.AppendChar(',');
                 PropField field = fields[n];
-                WriteUtils.WriteKey(writer, field); // todo replace firstMember & subSeqMember 
+                WriteUtils.WriteMemberKey(writer, field, ref firstMember); 
                 
                 object elemVar = field.GetField(obj);
                 if (elemVar == null) {
@@ -158,7 +154,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     fieldType.WriteObject(writer, elemVar);
                 }
             }
-            bytes.AppendChar('}');
+            WriteUtils.WriteObjectEnd(writer, firstMember);
             WriteUtils.DecLevel(writer, startLevel);
         }
 

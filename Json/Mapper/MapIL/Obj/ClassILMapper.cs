@@ -58,6 +58,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
             if (this != classMapper) {
                 firstMember = false;
+                bytes.AppendChar('{');
                 bytes.AppendBytes(ref writer.discriminator);
                 writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
                 bytes.AppendChar('\"');
@@ -66,11 +67,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             PropField[] fields = classMapper.GetPropFields().fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                if (firstMember)
-                    bytes.AppendBytes(ref field.firstMember);
-                else
-                    bytes.AppendBytes(ref field.subSeqMember);
-                firstMember = false;
+                WriteUtils.WriteMemberKey(writer, field, ref firstMember);
 
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 if (field.fieldType.isValueType) {
@@ -81,10 +78,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 }
             }
             writer.InstancePop();
-            if (fields.Length == 0)
-                bytes.AppendChar2('{', '}');
-            else
-                bytes.AppendChar('}');
+            WriteUtils.WriteObjectEnd(writer, firstMember);
+
             WriteUtils.DecLevel(writer, startLevel);
         }
 

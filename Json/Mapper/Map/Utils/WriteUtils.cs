@@ -12,11 +12,21 @@ namespace Friflo.Json.Mapper.Map.Utils
 #endif
     public static class WriteUtils
     {
-        public static void WriteKey(JsonWriter writer, PropField field) {
-            ref Bytes bytes = ref writer.bytes;
-            bytes.AppendChar('\"');
-            bytes.AppendBytes(ref field.nameBytes);
-            bytes.AppendChar2('\"', ':');
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteMemberKey(JsonWriter writer, PropField field, ref bool firstMember) {
+            if (firstMember)
+                writer.bytes.AppendBytes(ref field.firstMember);
+            else
+                writer.bytes.AppendBytes(ref field.subSeqMember);
+            firstMember = false;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteObjectEnd(JsonWriter writer, bool emptyObject) {
+            if (emptyObject)
+                writer.bytes.AppendChar2('{', '}');
+            else
+                writer.bytes.AppendChar('}');
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -41,6 +51,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             if (writer.level-- != expectedLevel)
                 throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {writer.level + 1}");
         }
-        
+
+
     }
 }
