@@ -11,36 +11,58 @@ namespace Friflo.Json.Tests.Perf.Mapper
 {
     public class PerfMapper
     {
-        [Test]
-        public void TestBookShelf() {
+        private BookShelf createBookShelf(int count) {
             BookShelf bookShelf = new BookShelf();
             bookShelf.Books = new List<Book>();
-            for (int n = 0; n < 1_000_000; n++) {
+            for (int n = 0; n < count; n++) {
                 var book = new Book {Id = n, Title = $"Book {n}", BookData = new byte[0]};
                 bookShelf.Books.Add(book);
             }
+            return bookShelf;
+        }
+
+        
+        [Test]
+        public void TestWriteBookShelf() {
+            BookShelf bookShelf = createBookShelf(1_000_000);
+
+            using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (var writer = new JsonWriter(typeStore))
+            {
+                for (int n = 0; n < 20; n++) {
+                    int start = TimeUtil.GetMs();
+                    writer.Write(bookShelf);
+                    int end = TimeUtil.GetMs();
+                    Console.WriteLine(end - start);
+                }
+            }
+        }
+        
+        [Test]
+        public void TestReadBookShelf() {
+            BookShelf bookShelf = createBookShelf(1_000_000);
 
             using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (var writer = new JsonWriter(typeStore))
             {
                 writer.Write(bookShelf);
-                for (int n = 0; n < 20; n++) {
+                for (int n = 0; n < 5; n++) {
                     int start = TimeUtil.GetMs();
                     writer.Write(bookShelf);
-                    /* using (var reader = new JsonReader(typeStore))
-                    using (var parser = new JsonParser()) {
+                    using (var reader = new JsonReader(typeStore))
+                    // using (var parser = new JsonParser())
+                    {
                         // parser.InitParser(writer.bytes);
                         // while (parser.NextEvent() != JsonEvent.EOF) { }
-
-                        // reader.Read<BookShelf>(writer.bytes);
-                    } */
+                        reader.Read<BookShelf>(writer.bytes);
+                    }
                     int end = TimeUtil.GetMs();
                     Console.WriteLine(end - start);
                 }
             }
-
         }
     }
+    
     
     public class BookShelf
     {
