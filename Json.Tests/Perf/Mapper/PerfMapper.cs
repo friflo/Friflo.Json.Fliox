@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -10,13 +11,13 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Perf.Mapper
 {
-    public class PerfMapper
+    public class PerfMapper: LeakTestsFixture
     {
         private BookShelf   bookShelf;
         private Bytes       bookShelfJson;
 
         [TearDown]
-        public void TearDown() {
+        public new void TearDown() {
             bookShelfJson.Dispose();
         }
 
@@ -61,7 +62,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
         [Test]
         public void TestParseBookShelf() {
             Bytes json = CreateBookShelfJson();
-            for (int n = 0; n < 4; n++) {
+            for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
                 using (var parser = new JsonParser()) {
                     parser.InitParser(json);
