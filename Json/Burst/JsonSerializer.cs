@@ -183,8 +183,8 @@ namespace Friflo.Json.Burst
                 dstArr[dst.end++] = (byte) '"';
 
                 for (int index = 0; index < end; index++) {
-                    int utf8 = srcSpan[index];
-                    int surrogate = utf8 - HighSurrogateStart;
+                    int uni = srcSpan[index];
+                    int surrogate = uni - HighSurrogateStart;
                     // Is surrogate?
                     if (0 <= surrogate && surrogate < SurrogateEnd - HighSurrogateStart) {
                         // found surrogate
@@ -194,7 +194,7 @@ namespace Friflo.Json.Burst
                                 int lowSurrogate = srcSpan[++index] - LowSurrogateStart;
                                 if (0 <= lowSurrogate && lowSurrogate < HighSurrogateLimit) {
                                     // found low surrogate.
-                                    utf8 = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
+                                    uni = surrogate * 0x400 + lowSurrogate + SupplementaryPlanesStart;
                                 } else {
                                     throw new ArgumentException("Invalid high surrogate. " + src);
                                 }
@@ -205,7 +205,7 @@ namespace Friflo.Json.Burst
                             throw new ArgumentException("Unexpected low surrogate at index: " + index);
                         }
                     }
-                    switch (utf8) {
+                    switch (uni) {
                         case '"':  dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\"'; break;
                         case '\\': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) '\\'; break;
                         case '\b': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'b'; break;
@@ -214,7 +214,7 @@ namespace Friflo.Json.Burst
                         case '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
                         case '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
                         default:
-                            Utf8Utils.AppendUnicodeToBytes(ref dst, utf8);
+                            Utf8Utils.AppendUnicodeToBytes(ref dst, uni);
                             break;
                     }
                 }
