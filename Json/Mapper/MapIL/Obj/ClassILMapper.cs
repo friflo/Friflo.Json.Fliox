@@ -49,7 +49,6 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         // ----------------------------------- Write / Read -----------------------------------
         public override void Write(JsonWriter writer, T slot) {
             int startLevel = WriteUtils.IncLevel(writer);
-            ref var bytes = ref writer.bytes;
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
@@ -57,13 +56,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
 
             if (this != classMapper) {
+                WriteUtils.WriteDiscriminator(writer, classMapper);
                 firstMember = false;
-                bytes.AppendChar('{');
-                bytes.AppendBytes(ref writer.discriminator);
-                writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
-                bytes.AppendChar('\"');
             }
-
             PropField[] fields = classMapper.GetPropFields().fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];

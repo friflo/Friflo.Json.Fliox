@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         public override void Write(JsonWriter writer, T slot) {
             int startLevel = WriteUtils.IncLevel(writer);
-            ref var bytes = ref writer.bytes;
+
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
@@ -133,11 +133,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
+                    WriteUtils.WriteDiscriminator(writer, classMapper);
                     firstMember = false;
-                    bytes.AppendChar('{');
-                    bytes.AppendBytes(ref writer.discriminator);
-                    writer.typeCache.AppendDiscriminator(ref bytes, classMapper);
-                    bytes.AppendChar('\"');
                 }
             }
 

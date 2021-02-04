@@ -12,6 +12,15 @@ namespace Friflo.Json.Mapper.Map.Utils
 #endif
     public static class WriteUtils
     {
+
+        public static void WriteDiscriminator(JsonWriter writer, TypeMapper mapper) {
+            ref var bytes = ref writer.bytes;
+            bytes.AppendChar('{');
+            bytes.AppendBytes(ref writer.discriminator);
+            writer.typeCache.AppendDiscriminator(ref bytes, mapper);
+            bytes.AppendChar('\"');
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteMemberKey(JsonWriter writer, PropField field, ref bool firstMember) {
             if (firstMember)
