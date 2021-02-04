@@ -1,5 +1,9 @@
 ﻿using System;
 
+#if JSON_BURST
+    using Unity.Collections.LowLevel.Unsafe;
+#endif
+
 namespace Friflo.Json.Burst
 {
     public partial struct Bytes
@@ -97,11 +101,7 @@ namespace Friflo.Json.Burst
                 }
             }
 #if JSON_BURST
-            // AddRangeNoResize() append from its Length position.
-            // EnsureCapacityAbs() change Length - so reset to initial one
-            buffer.array.Length = curEnd;
-            // sufficient size is already ensured via EnsureCapacityAbs() above
-            buffer.array.AddRangeNoResize(srcPtr, len);
+            UnsafeUtility.MemCpy(destPtr, srcPtr, len);
 #else
             Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
