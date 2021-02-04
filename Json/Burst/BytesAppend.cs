@@ -6,7 +6,7 @@ namespace Friflo.Json.Burst
     {
         public unsafe void AppendBytes(ref Bytes src)
         {
-#if JSON_BURST
+/*
             int     curEnd = end;
             int     caLen = src.Len;
             int     newEnd = curEnd + caLen;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Burst
                 buf[n] = str2[n2++];
             end = newEnd;
             hc = BytesConst.notHashed;
-#else
+*/
             int curEnd = end;
             hc = BytesConst.notHashed;
             // ensure both buffer's are large enough when accessing the byte array's via unsafe (long*)
@@ -27,9 +27,13 @@ namespace Friflo.Json.Burst
             EnsureCapacityAbs(end + len + 8);
             
             end += len;
-
-            fixed (byte* srcPtr = &src.buffer.array[src.start])
-            fixed (byte* destPtr =&    buffer.array[curEnd])
+#if JSON_BURST
+            byte*  srcPtr =  &((byte*)src.buffer.array.GetUnsafeList()->Ptr) [src.start];
+            byte*  destPtr = &((byte*)buffer.array.GetUnsafeList()->Ptr)     [curEnd];
+#else
+            fixed (byte* srcPtr =     &src.buffer.array                      [src.start])
+            fixed (byte* destPtr =    &buffer.array                          [curEnd])
+#endif
             {
                 if (len <= 8) {
                     *(long*)(destPtr +  0) = *(long*)(srcPtr +  0);
@@ -92,6 +96,13 @@ namespace Friflo.Json.Burst
                     return;
                 }
             }
+#if JSON_BURST
+            // AddRangeNoResize() append from its Length position.
+            // EnsureCapacityAbs() change Length - so reset to initial one
+            buffer.array.Length = curEnd;
+            // sufficient size is already ensured via EnsureCapacityAbs() above
+            buffer.array.AddRangeNoResize(srcPtr, len);
+#else
             Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
         }
