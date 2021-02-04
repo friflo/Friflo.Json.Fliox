@@ -214,7 +214,34 @@ namespace Friflo.Json.Burst
                         case '\n': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 'n'; break;
                         case '\t': dstArr[dst.end++] = (byte) '\\'; dstArr[dst.end++] = (byte) 't'; break;
                         default:
-                            Utf8Utils.AppendUnicodeToBytes(ref dst, uni);
+                            // copied 1:1 from Utf8Utils.AppendUnicodeToBytes()
+                            int i = dst.end;
+                            if (uni < 0x80)
+                            {
+                                dstArr[i] =    (byte)uni;
+                                dst.end = i + 1;
+                                return;
+                            }
+                            if (uni < 0x800)
+                            {
+                                dstArr[i]   =  (byte)(m_11oooooo | (uni >> 6));
+                                dstArr[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
+                                dst.end = i + 2;
+                                return;
+                            }
+                            if (uni < 0x10000)
+                            {
+                                dstArr[i]   =  (byte)(m_111ooooo |  (uni >> 12));
+                                dstArr[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                                dstArr[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                                dst.end = i + 3;
+                                return;
+                            }
+                            dstArr[i]   =      (byte)(m_1111oooo |  (uni >> 18));
+                            dstArr[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
+                            dstArr[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                            dstArr[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                            dst.end = i + 4;
                             break;
                     }
                 }
@@ -222,6 +249,15 @@ namespace Friflo.Json.Burst
             }
         }
 
+        private static readonly int     m_1ooooooo = 0x80;
+        private static readonly int     m_11oooooo = 0xc0;
+        private static readonly int     m_111ooooo = 0xe0;
+        private static readonly int     m_1111oooo = 0xf0;
+    
+        private static readonly int     m_ooooo111 = 0x07;
+        private static readonly int     m_oooo1111 = 0x0f;
+        private static readonly int     m_ooo11111 = 0x1f;
+        private static readonly int     m_oo111111 = 0x3f;
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {
