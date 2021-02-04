@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         private  readonly   MethodInfo      setMethod;
         private  readonly   object[]        setMethodParams = new object[1];
 
-        internal PropField (String name, TypeMapper fieldType, Type type, FieldInfo field, PropertyInfo property,
+        internal PropField (String name, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex)
         {
             this.name       = name;

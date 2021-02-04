@@ -20,7 +20,7 @@ namespace Friflo.Json.Burst
     /// 
     /// To add a JSON object use <see cref="ObjectStart()"/>.
     /// Afterwards arbitrary object members can be added via the Member...() methods.<br/>
-    /// E.g by <see cref="MemberDblRef(ref string,long)"/> to add a key/value pair using an integer as value type
+    /// E.g by <see cref="MemberLng"/> to add a key/value pair using an integer as value type
     /// like { "count": 11 }<br/>
     /// After all object members are serialized <see cref="ObjectEnd()"/> closes the previous started JSON object.<br/>
     ///
