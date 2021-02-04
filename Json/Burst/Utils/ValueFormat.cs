@@ -53,27 +53,27 @@ namespace Friflo.Json.Burst.Utils
 
         public void AppendInt (ref Bytes dst, int val)
         {
+            ref var dstArr = ref dst.buffer.array;
+            dst.EnsureCapacity (dst.end + 12); //  -2147483648 - 11 bytes + 1 for safety :)
             if (val == 0) {
-                dst.AppendChar('0');
+                dstArr[dst.end++] = (byte)'0'; 
                 return;
             }
 
-            if (val < 0)
-            {
-                dst.AppendChar('-');
+            if (val < 0) {
+                dstArr[dst.end++] = (byte)'-'; 
                 val = -val;
             }
             int i = val;
             int len = 0;
-            while (i > 0)
-            {
-                digit.array[len++] = i % 10;
+            ref var digits = ref digit.array;
+            while (i > 0) {
+                digits[len++] = i % 10;
                 i /= 10;                
             }
-            dst.EnsureCapacity (len);
             int last = dst.end + len - 1;
             for (int n = 0; n < len; n++)
-                dst.buffer.array[last - n] = (byte)('0' + digit.array [n]);
+                dstArr[last - n] = (byte)('0' + digits[n]);
             dst.end += len;
             dst.hc = BytesConst.notHashed;
         }
