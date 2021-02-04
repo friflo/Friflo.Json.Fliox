@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
@@ -18,29 +19,24 @@ namespace Friflo.Json.Mapper.Map.Utils
             bytes.AppendChar2('\"', ':');
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteString(JsonWriter writer, String str) {
-            ref Bytes bytes = ref writer.bytes;
-
-#if JSON_BURST
-            ref Bytes strBuf = ref writer.strBuf;
-            strBuf.Clear();
-            strBuf.FromString(str);
-            JsonSerializer.AppendEscStringBytes(ref bytes, ref strBuf);
-#else
-            JsonSerializer.AppendEscString(ref bytes, ref str);
-#endif
+            JsonSerializer.AppendEscString(ref writer.bytes, ref str);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AppendNull(JsonWriter writer) {
             writer.bytes.AppendBytes(ref writer.@null);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IncLevel(JsonWriter writer) {
             if (writer.level++ < writer.maxDepth)
                 return writer.level;
             throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {writer.maxDepth}");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DecLevel(JsonWriter writer, int expectedLevel) {
             if (writer.level-- != expectedLevel)
                 throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {writer.level + 1}");

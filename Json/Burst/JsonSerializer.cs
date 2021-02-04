@@ -160,13 +160,17 @@ namespace Friflo.Json.Burst
         private const int  HighSurrogateLimit  = LowSurrogateStart - HighSurrogateStart;
 
         
-#if !JSON_BURST
+
         //         Tight loop! Avoid calling any trivial method
         // --- comment to enable source alignment in WinMerge
-        public static void AppendEscString(ref Bytes dst, ref Str32 src) {
+        public static void AppendEscString(ref Bytes dst, ref string src) {
             int maxByteLen = Encoding.UTF8.GetMaxByteCount(src.Length) + 2; // + 2 * '"'
             dst.EnsureCapacityAbs(dst.end + maxByteLen);
+#if JSON_BURST
+            var span = src;
+#else
             ReadOnlySpan<char> span = src;
+#endif
             int end = src.Length;
             
             ref var dstArr = ref dst.buffer.array;
@@ -238,7 +242,7 @@ namespace Friflo.Json.Burst
                 dstArr[dst.end++] = (byte) '"';
             }
         }
-#endif
+
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {
