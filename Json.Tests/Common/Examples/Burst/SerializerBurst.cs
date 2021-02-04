@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         private static void WriteBuddy(ref JsonSerializer s, ref Keys k, ref Buddy buddy) {
             s.ObjectStart();
             s.MemberStrRef (ref k.firstName,   ref buddy.firstName);
-            s.MemberDblRef (ref k.age,         buddy.age);
+            s.MemberLngRef (ref k.age,         buddy.age);
             s.MemberArrayStartRef(ref k.hobbies);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, ref k, ref buddy.hobbies.ElementAt(n));

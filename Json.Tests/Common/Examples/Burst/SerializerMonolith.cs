@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             try {
                 s.ObjectStart();
                     s.MemberStr ("firstName",   buddy.firstName);
-                    s.MemberDbl ("age",         buddy.age);
+                    s.MemberLng ("age",         buddy.age);
                     s.MemberArrayStart ("hobbies");
                     for (int n = 0; n < buddy.hobbies.Count; n++) {
                         s.ObjectStart();

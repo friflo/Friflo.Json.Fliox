@@ -331,7 +331,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberDblRef(ref Str32 key, long value) {
+        public void MemberLngRef(ref Str32 key, long value) {
             AssertMember();
             AddSeparator();
             AppendEscString(ref dst, ref key);
@@ -400,8 +400,8 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
 #endif
-        public void MemberDbl (Str32 key, long value) {
-            MemberDblRef(ref key, value);
+        public void MemberLng (Str32 key, long value) {
+            MemberLngRef(ref key, value);
         }
         
 #if JSON_BURST

@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.ObjectStart();
                     s.MemberStr ("string", "World");
                     s.MemberDbl ("double", 10.5);
-                    s.MemberDbl ("long", 42);
+                    s.MemberLng ("long", 42);
                     s.MemberBln ("bool", true);
                     s.MemberNul ("null");
                 s.ObjectEnd();
