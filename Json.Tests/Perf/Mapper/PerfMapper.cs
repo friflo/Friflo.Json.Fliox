@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -11,27 +12,46 @@ namespace Friflo.Json.Tests.Perf.Mapper
 {
     public class PerfMapper
     {
-        private BookShelf createBookShelf(int count) {
-            BookShelf bookShelf = new BookShelf();
-            bookShelf.Books = new List<Book>();
-            for (int n = 0; n < count; n++) {
+        private BookShelf   bookShelf;
+        private Bytes       bookShelfJson;
+
+        [TearDown]
+        public void TearDown() {
+            bookShelfJson.Dispose();
+        }
+
+        private BookShelf CreateBookShelf() {
+            if (bookShelf != null)
+                return bookShelf;
+            bookShelf = new BookShelf { Books = new List<Book>() };
+            for (int n = 0; n < 1_000_000; n++) {
                 var book = new Book {Id = n, Title = $"Book {n}", BookData = new byte[0]};
                 bookShelf.Books.Add(book);
             }
             return bookShelf;
         }
+        
+        private Bytes CreateBookShelfJson() {
+            if (bookShelfJson.buffer.IsCreated())
+                return bookShelfJson;
+            var shelf = CreateBookShelf();
+            using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (var writer = new JsonWriter(typeStore)) {
+                writer.Write(shelf);
+                return bookShelfJson = writer.Output.SwapWithDefault();
+            }
+        }
 
         
         [Test]
         public void TestWriteBookShelf() {
-            BookShelf bookShelf = createBookShelf(1_000_000);
-
+            BookShelf shelf = CreateBookShelf();
             using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (var writer = new JsonWriter(typeStore))
             {
                 for (int n = 0; n < 20; n++) {
                     int start = TimeUtil.GetMs();
-                    writer.Write(bookShelf);
+                    writer.Write(shelf);
                     int end = TimeUtil.GetMs();
                     Console.WriteLine(end - start);
                 }
@@ -39,26 +59,37 @@ namespace Friflo.Json.Tests.Perf.Mapper
         }
         
         [Test]
-        public void TestReadBookShelf() {
-            BookShelf bookShelf = createBookShelf(1_000_000);
-
-            using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (var writer = new JsonWriter(typeStore))
-            {
-                writer.Write(bookShelf);
-                for (int n = 0; n < 5; n++) {
-                    int start = TimeUtil.GetMs();
-                    writer.Write(bookShelf);
-                    using (var reader = new JsonReader(typeStore))
-                    // using (var parser = new JsonParser())
-                    {
-                        // parser.InitParser(writer.bytes);
-                        // while (parser.NextEvent() != JsonEvent.EOF) { }
-                        reader.Read<BookShelf>(writer.bytes);
+        public void TestParseBookShelf() {
+            Bytes json = CreateBookShelfJson();
+            for (int n = 0; n < 4; n++) {
+                int start = TimeUtil.GetMs();
+                using (var parser = new JsonParser()) {
+                    parser.InitParser(json);
+                    while (parser.NextEvent() != JsonEvent.EOF) {
+                        if (parser.error.ErrSet)
+                            Fail(parser.error.msg.ToString());
                     }
-                    int end = TimeUtil.GetMs();
-                    Console.WriteLine(end - start);
+                    IsTrue(parser.ProcessedBytes > 49_000_000);
                 }
+                int end = TimeUtil.GetMs();
+                Console.WriteLine(end - start);
+            }
+        }
+        
+        [Test]
+        public void TestReadToBookShelf() {
+            var shelf = CreateBookShelf();
+            Bytes json = CreateBookShelfJson();
+            for (int n = 0; n < 4; n++) {
+                int start = TimeUtil.GetMs();
+                using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+                using (var reader = new JsonReader(typeStore))
+                {
+                    reader.ReadTo(json, shelf, out bool success);
+                    IsTrue(success);
+                }
+                int end = TimeUtil.GetMs();
+                Console.WriteLine(end - start);
             }
         }
     }
