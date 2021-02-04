@@ -91,6 +91,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("\"" + src + "\"", dst.ToString());
             }
         }
+        
+        [Test]
+        public void TestUnicodeToBytesFull() {
+            using (var destination = new Bytes("")) {
+                var dst = destination;
+                dst.EnsureCapacityAbs(dst.end + 4);
+                // Test only near borders to speedup test
+                AssertUnicodeRange(ref dst,        0,  0x000100, 256); // test border:    0x80
+                AssertUnicodeRange(ref dst, 0x007f0,   0x000810,  32); // test border:   0x800
+                AssertUnicodeRange(ref dst, 0x00d7f0,  0x00d800,  16);
+                // exclude surrogates:      0x00d800 - 0x00dfff
+                AssertUnicodeRange(ref dst, 0x00e000,  0x00e010,  16);
+                AssertUnicodeRange(ref dst, 0x00fff0,  0x010010,  32); // test border: 0x10000
+                AssertUnicodeRange(ref dst, 0x10fff0,  0x110000,  16);
+            }
+        }
+
+        private void AssertUnicodeRange(ref Bytes dst, int from, int to, int count) {
+            AreEqual(to - from, count);
+            for (int codePoint = from; codePoint < to; codePoint++) {
+                dst.Clear();
+                string str = char.ConvertFromUtf32 (codePoint);
+                Utf8Utils.AppendUnicodeToBytes(ref dst, codePoint);
+                AreEqual(str, dst.ToString());
+            }
+        }
 
         [Test]
         public void TestBurstStringInterpolation() {
