@@ -300,7 +300,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             AppendEscString(ref dst, ref key); // should be asc
             dst.AppendChar(':');
-            AppendEscString(ref dst, ref value);
+            AppendEscStringBytes(ref dst, ref value);
         }
 
         /// <summary>
@@ -446,7 +446,7 @@ namespace Friflo.Json.Burst
         public void ElementStr(ref Bytes value) {
             AssertElement();
             AddSeparator();
-            AppendEscString(ref dst, ref value);
+            AppendEscStringBytes(ref dst, ref value);
         }
         
 #if JSON_BURST
@@ -455,7 +455,7 @@ namespace Friflo.Json.Burst
             strBuf.AppendStr128(ref value);
             AssertElement();
             AddSeparator();
-            AppendEscString(ref dst, ref strBuf);
+            AppendEscStringBytes(ref dst, ref strBuf);
         }
 #else
         /// <summary>Write an array element of type <see cref="string"/></summary>
@@ -510,7 +510,7 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
-                        AppendEscString(ref dst, ref p.key);
+                        AppendEscStringBytes(ref dst, ref p.key);
                         dst.AppendChar(':');
                         /*
                         // Conversion to long or double is expensive and not required 

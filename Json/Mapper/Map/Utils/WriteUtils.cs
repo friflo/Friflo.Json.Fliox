@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             ref Bytes strBuf = ref writer.strBuf;
             strBuf.Clear();
             strBuf.FromString(str);
-            JsonSerializer.AppendEscString(ref bytes, ref strBuf);
+            JsonSerializer.AppendEscStringBytes(ref bytes, ref strBuf);
 #else
             JsonSerializer.AppendEscString(ref bytes, ref str);
 #endif

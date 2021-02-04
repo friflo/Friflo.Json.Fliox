@@ -77,9 +77,9 @@ namespace Friflo.Json.Burst.Utils
                     |  (bytes[n++]      & m_oo111111);
         }
 
-        /// NOTE!: Caller need to ensure dst buffer has sufficient capacity
+        /// NOTE!: Caller need to ensure dst buffer has sufficient capacity -> 4 bytes
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void AppendUnicodeToBytes(ref Bytes dst, int uni) {
+        public static void AppendUnicodeToBytes(ref Bytes dst, int uni) {
             // UTF-8 Encoding
 #if DEBUG
             if (dst.Len + 4 > dst.buffer.Count)
