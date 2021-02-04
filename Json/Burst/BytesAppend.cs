@@ -99,12 +99,13 @@ namespace Friflo.Json.Burst
                     *(long*)(destPtr + 56) = *(long*)(srcPtr + 56);
                     return;
                 }
-            }
 #if JSON_BURST
-            UnsafeUtility.MemCpy(destPtr, srcPtr, len);
+                UnsafeUtility.MemCpy(destPtr, srcPtr, len);
 #else
-            Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
+                Buffer.MemoryCopy(srcPtr, destPtr, buffer.array.Length - curEnd, len);
+                // Buffer.BlockCopy(src.buffer.array, src.start, buffer.array, curEnd, len);
 #endif
+            }
         }
     }
 }
