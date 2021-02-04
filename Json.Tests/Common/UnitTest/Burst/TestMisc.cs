@@ -92,22 +92,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        [Test]
-        public void TestUnicodeToBytesFull() {
-            using (var destination = new Bytes("")) {
-                var dst = destination;
-                dst.EnsureCapacityAbs(dst.end + 4);
-                // Test only near borders to speedup test
-                AssertUnicodeRange(ref dst,        0,  0x000100, 256); // test border:    0x80
-                AssertUnicodeRange(ref dst, 0x007f0,   0x000810,  32); // test border:   0x800
-                AssertUnicodeRange(ref dst, 0x00d7f0,  0x00d800,  16);
-                // exclude surrogates:      0x00d800 - 0x00dfff
-                AssertUnicodeRange(ref dst, 0x00e000,  0x00e010,  16);
-                AssertUnicodeRange(ref dst, 0x00fff0,  0x010010,  32); // test border: 0x10000
-                AssertUnicodeRange(ref dst, 0x10fff0,  0x110000,  16);
-            }
-        }
-
         private void AssertUnicodeRange(ref Bytes dst, int from, int to, int count) {
             AreEqual(to - from, count);
             for (int codePoint = from; codePoint < to; codePoint++) {
@@ -117,6 +101,65 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(str, dst.ToString());
             }
         }
+        
+        [Test]
+        public void TestUnicodeToBytesFull() {
+            using (var destination = new Bytes("")) {
+                var dst = destination;
+                dst.EnsureCapacityAbs(dst.end + 4);
+                // Test only near borders to speedup test
+                AssertUnicodeRange(ref dst,        0,  0x000100, 256); // test border:    0x80
+                AssertUnicodeRange(ref dst, 0x0007f0,  0x000810,  32); // test border:   0x800
+                AssertUnicodeRange(ref dst, 0x00d7f0,  0x00d800,  16);
+                // exclude surrogates:      0x00d800 - 0x00dfff
+                AssertUnicodeRange(ref dst, 0x00e000,  0x00e010,  16);
+                AssertUnicodeRange(ref dst, 0x00fff0,  0x010010,  32); // test border: 0x10000
+                AssertUnicodeRange(ref dst, 0x10fff0,  0x110000,  16);
+            }
+        }
+        
+        [Test]
+        public void TestAppendEscString() {
+            using (var destination = new Bytes("")) {
+                var dst = destination;
+                
+
+                // Test only near borders to speedup test
+                AssertAppendEscStringRange(ref dst,       35,        92,  57); // exclude escape characters  
+                AssertAppendEscStringRange(ref dst, 0x0007f0,  0x000810,  32); // test border:   0x800
+                AssertAppendEscStringRange(ref dst, 0x00d7f0,  0x00d800,  16);
+                // exclude surrogates:      0x00d800 - 0x00dfff
+                AssertAppendEscStringRange(ref dst, 0x00e000,  0x00e010,  16);
+                AssertAppendEscStringRange(ref dst, 0x00fff0,  0x010010,  32); // test border: 0x10000
+                AssertAppendEscStringRange(ref dst, 0x10fff0,  0x110000,  16);
+
+                AssertAppendEscStringChar(ref dst, '\b', "b");
+                AssertAppendEscStringChar(ref dst, '\f', "f");
+                AssertAppendEscStringChar(ref dst, '\n', "n");
+                AssertAppendEscStringChar(ref dst, '\r', "r");
+                AssertAppendEscStringChar(ref dst, '\t', "t");
+                AssertAppendEscStringChar(ref dst, '"',  "\"");
+                AssertAppendEscStringChar(ref dst, '\\', "\\");
+            }
+        }
+        
+        private void AssertAppendEscStringRange(ref Bytes dst, int from, int to, int count) {
+            AreEqual(to - from, count);
+            for (int codePoint = from; codePoint < to; codePoint++) {
+                dst.Clear();
+                string str = char.ConvertFromUtf32 (codePoint);
+                JsonSerializer.AppendEscString(ref dst, ref str);
+                AreEqual($"\"{str}\"", dst.ToString());
+            }
+        }
+        
+        private void AssertAppendEscStringChar(ref Bytes dst, char escChar, string expect) {
+            dst.Clear();
+            string str = char.ConvertFromUtf32 (escChar);
+            JsonSerializer.AppendEscString(ref dst, ref str);
+            AreEqual($"\"\\{expect}\"", dst.ToString());
+        }
+
 
         [Test]
         public void TestBurstStringInterpolation() {
