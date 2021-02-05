@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
@@ -661,7 +662,8 @@ namespace Friflo.Json.Burst
                             pos = p;
                             if (!Read())
                                 return SetErrorFalse("unexpected EOF while reading string");
-                            p = 0;
+                            p   = pos;
+                            end = bufEnd;
                         }
                         c = b[p];
                         switch (c)
@@ -675,11 +677,16 @@ namespace Friflo.Json.Burst
                         case 'n':   token.AppendChar('\n'); break;
                         case 't':   token.AppendChar('\t'); break;                  
                         case 'u':
-                            pos = p;
+                            pos = p + 1;
                             if (!ReadUnicode(ref token))
                                 return false;
-                            p = pos;
-                            break;
+                            if (pos >= bufEnd) {
+                                if (!Read())
+                                    return SetErrorFalse("unexpected EOF while reading string");
+                            }
+                            p   = pos - 1;
+                            end = bufEnd;
+                            continue;
                         }
                     }
                 }
@@ -693,57 +700,63 @@ namespace Friflo.Json.Burst
     
         private bool ReadUnicode (ref Bytes token)
         {
-            while (true)
-            {
-                pos += 4;
-                if (pos >= bufEnd) {
-                    if (Read())
-                        continue;
-                    
+            if (pos >= bufEnd) {
+                if (!Read())
                     return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
-                }
+            }
+            int d1 = Digit2Int(buf.buffer.array[pos++]);
+            if (pos >= bufEnd) {
+                if (!Read())
+                    return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
+            }
+            int d2 = Digit2Int(buf.buffer.array[pos++]);
+            if (pos >= bufEnd) {
+                if (!Read())
+                    return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
+            }
+            int d3 = Digit2Int(buf.buffer.array[pos++]);
+            if (pos >= bufEnd) {
+                if (!Read())
+                    return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
+            }
+            int d4 = Digit2Int(buf.buffer.array[pos++]);
 
-                int d1 = Digit2Int(buf.buffer.array[pos - 3]);
-                int d2 = Digit2Int(buf.buffer.array[pos - 2]);
-                int d3 = Digit2Int(buf.buffer.array[pos - 1]);
-                int d4 = Digit2Int(buf.buffer.array[pos - 0]);
-                if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
-                    return SetErrorFalse("Invalid hex digits after '\\u' in value");
+            if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
+                return SetErrorFalse("Invalid hex digits after '\\u' in value");
 
-                int uni = d1 << 12 | d2 << 8 | d3 << 4 | d4;
-            
-                // UTF-8 Encoding
-                token.EnsureCapacity(4);
-                ref var str = ref token.buffer.array;
-                int i = token.EndPos;
-                if (uni < 0x80)
-                {
-                    str[i] =    (byte)uni;
-                    token.SetEnd(i + 1);
-                    return true;
-                }
-                if (uni < 0x800)
-                {
-                    str[i]   =  (byte)(m_11oooooo | (uni >> 6));
-                    str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
-                    token.SetEnd(i + 2);
-                    return true;
-                }
-                if (uni < 0x10000)
-                {
-                    str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
-                    str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
-                    str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
-                    token.SetEnd(i + 3);
-                    return true;
-                }
-                str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
-                str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
-                str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
-                str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
-                token.SetEnd(i + 4);
+            int uni = d1 << 12 | d2 << 8 | d3 << 4 | d4;
+        
+            // UTF-8 Encoding
+            token.EnsureCapacity(4);
+            ref var str = ref token.buffer.array;
+            int i = token.EndPos;
+            if (uni < 0x80)
+            {
+                str[i] =    (byte)uni;
+                token.SetEnd(i + 1);
                 return true;
             }
+            if (uni < 0x800)
+            {
+                str[i]   =  (byte)(m_11oooooo | (uni >> 6));
+                str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
+                token.SetEnd(i + 2);
+                return true;
+            }
+            if (uni < 0x10000)
+            {
+                str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
+                str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                token.SetEnd(i + 3);
+                return true;
+            }
+            str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
+            str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
+            str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+            str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
+            token.SetEnd(i + 4);
+            return true;
         }
     
         private static readonly int     m_1ooooooo = 0x80;
@@ -753,6 +766,7 @@ namespace Friflo.Json.Burst
     
         private static readonly int     m_oo111111 = 0x3f;
     
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int Digit2Int (int c)
         {
             if ('0' <= c && c <= '9')
