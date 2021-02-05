@@ -70,6 +70,9 @@ namespace Friflo.Json.Burst
             return false;
         }
         
+// Using byte[] in Unity is in general possible. But removed for now as a Burst Job cannot be compiled when using
+// a struct containing a managed type (byte[] inputByteArray)
+#if !JSON_BURST
         /// <summary>
         /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
         /// </summary>
@@ -84,7 +87,6 @@ namespace Friflo.Json.Burst
             Start();
         }
         
-#if !JSON_BURST
         private bool ReadByteArray() {
             if (inputArrayPos == inputArrayEnd)
                 return false;
