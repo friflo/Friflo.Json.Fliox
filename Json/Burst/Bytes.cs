@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 
@@ -129,6 +130,7 @@ namespace Friflo.Json.Burst
             return buffer.array[start + idx];
         }
     
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             this.start  = 0; 
@@ -586,6 +588,7 @@ namespace Friflo.Json.Burst
 #endif          
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacityAbs(int size) {
             if (size <= buffer. Count)
                 return;
@@ -679,6 +682,7 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendChar(char c)
         {
             EnsureCapacityAbs(end + 1);
@@ -686,6 +690,7 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendChar2(char c0, char c1)
         {
             EnsureCapacityAbs(end + 2);

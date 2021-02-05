@@ -573,12 +573,11 @@ namespace Friflo.Json.Burst
         {
             // using locals improved performance
             while (true) {
-                ref var b   = ref buf.buffer.array;
                 int p       = pos;
                 int end     = bufEnd;
                 for (; p < end;)
                 {
-                    int c = b[p++];
+                    int c = buf.buffer.array[p++];
                     if (c > ' ') {
                         pos = p;
                         return c;
@@ -645,13 +644,12 @@ namespace Friflo.Json.Burst
             while (true)
             {
                 // using locals improved performance
-                ref var b   = ref buf.buffer.array;
                 int p       = pos;
                 int end     = bufEnd;
                 
                 for (; p < end; p++)
                 {
-                    int c = b[p];
+                    int c = buf.buffer.array[p];
                     if (c == '\"')
                     {
                         pos = p + 1;
@@ -669,7 +667,7 @@ namespace Friflo.Json.Burst
                             p   = pos;
                             end = bufEnd;
                         }
-                        c = b[p];
+                        c = buf.buffer.array[p];
                         switch (c)
                         {
                         case '"':   token.AppendChar('"');  break;
@@ -789,11 +787,10 @@ namespace Friflo.Json.Burst
             int keyWordPos = 1;
             
             while (true) {
-                ref var b = ref buf.buffer.array;
                 
                 for (; pos < bufEnd; pos++)
                 {
-                    int c = b[pos];
+                    int c = buf.buffer.array[pos];
                     value.AppendChar((char)c);
                     if (c == keyword[keyWordPos++]) {
                         if (keyWordPos != keyword.Length)
