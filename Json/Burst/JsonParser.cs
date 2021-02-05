@@ -357,6 +357,7 @@ namespace Friflo.Json.Burst
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
             arrIndex = new ValueList<int>  (initSize, AllocType.Persistent); arrIndex.Resize(initSize);
             buf.InitBytes(BufSize);
+            buf.buffer.Resize(BufSize);
             error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);

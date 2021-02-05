@@ -78,7 +78,7 @@ namespace Friflo.Json.Burst
         /// <param name="len">The length of bytes inside <see cref="bytes"/> which are intended to parse.</param>
         public void InitParser(byte[] bytes, int start, int len) {
             inputType       = InputType.ByteArray;
-            inputByteArray      = bytes;
+            inputByteArray  = bytes;
             inputArrayPos   = start;
             inputArrayEnd   = start + len;
             Start();
