@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                         if (parser.error.ErrSet)
                             Fail(parser.error.msg.ToString());
                     }
-                    IsTrue(parser.ProcessedBytes > 49_000_000);
+                    IsTrue(parser.InputPos > 49_000_000);
                 }
                 int end = TimeUtil.GetMs();
                 Console.WriteLine(end - start);

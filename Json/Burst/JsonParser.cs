@@ -282,7 +282,7 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <returns>The current JSON path and position</returns>
         public override string ToString() {
-            return $"{{ path: \"{GetPath()}\", pos: {pos} }}";
+            return $"{{ path: \"{GetPath()}\", pos: {bufferCount + pos} }}";
         }
         
         /// <summary>
