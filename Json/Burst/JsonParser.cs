@@ -77,9 +77,9 @@ namespace Friflo.Json.Burst
         private     int                 startPos;
     
         private     State               preErrorState;
-        private     ValueList<State>   state;
-        private     ValueList<int>     pathPos; // used for current path
-        private     ValueList<int>     arrIndex; // used for current path
+        private     ValueList<State>    state;
+        private     ValueList<int>      pathPos; // used for current path
+        private     ValueList<int>      arrIndex; // used for current path
 
         public      JsonError           error;
 
@@ -124,7 +124,18 @@ namespace Friflo.Json.Burst
         public      SkipInfo            skipInfo;
 
         private     int                 previousBytes;
-        public      int                 ProcessedBytes => previousBytes + pos;
+        public      int                 ProcessedBytes => previousBytes + bufferCount + pos;
+        
+        private     int                 bufferCount;
+        public      int                 InputPos => bufferCount + pos;
+        
+        // --- input array, stream, string, ... used in InitParser() methods
+        private const int   BufSize = 4096;
+        private InputType   inputType;
+        //
+        private byte[]      inputArray;
+        private int         inputArrayPos;
+        private int         inputArrayEnd;
 
 
         enum State {
@@ -160,7 +171,7 @@ namespace Friflo.Json.Burst
             if (error.ErrSet)
                 throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
             
-            int position = pos - startPos;
+            int position = bufferCount + pos - startPos;
             // Note 1:  Creating error messages complete avoid creating string on the heap to ensure no allocation
             //          in case of errors. Using string interpolation like $"...{}..." create objects on the heap
             // Note 2:  Even cascaded string interpolation does not work in Unity Burst. So using appenders make sense too.
@@ -343,6 +354,7 @@ namespace Friflo.Json.Burst
             state =    new ValueList<State>(initSize, AllocType.Persistent); state.   Resize(initSize);
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);
             arrIndex = new ValueList<int>  (initSize, AllocType.Persistent); arrIndex.Resize(initSize);
+            buf.InitBytes(BufSize);
             error.InitJsonError(128);
             key.InitBytes(32);
             path.InitBytes(32);
@@ -377,20 +389,16 @@ namespace Friflo.Json.Burst
             if (state.IsCreated())      state.Dispose();
         }
 
-        /// <summary>
-        /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
-        /// </summary>
-        /// <param name="bytes">The JSON document to parse</param>
-        /// <param name="start">The start position in bytes inside <see cref="bytes"/> where parsing starts.</param>
-        /// <param name="len">The length of bytes inside <see cref="bytes"/> which are intended to parse.</param>
         private void Start() {
             InitContainers();
             stateLevel = 0;
             state.array[0] = State.ExpectRoot;
 
-            this.previousBytes += pos - startPos; // for statistics
-            this.pos = 0;
-            this.startPos = 0;
+            previousBytes += bufferCount + pos - startPos; // for statistics
+            bufferCount = 0;
+            pos = 0;
+            startPos = 0;
+            bufEnd = 0;
             skipInfo = default(SkipInfo);
             error.Clear();
         }
@@ -531,21 +539,21 @@ namespace Friflo.Json.Burst
                 case '0':   case '1':   case '2':   case '3':   case '4':
                 case '5':   case '6':   case '7':   case '8':   case '9':
                 case '-':   case '+':   case '.':
-                    if (ReadNumber())
+                    if (ReadNumber(c))
                         return lastEvent = JsonEvent.ValueNumber;
                     return JsonEvent.Error;
                 case 't':
-                    if (!ReadKeyword(ref @true ))
+                    if (!ReadKeyword('t', ref @true ))
                         return JsonEvent.Error;
                     boolValue= true;
                     return lastEvent = JsonEvent.ValueBool;
                 case 'f':
-                    if (!ReadKeyword(ref @false))
+                    if (!ReadKeyword('f', ref @false))
                         return JsonEvent.Error;
                     boolValue= false;
                     return lastEvent = JsonEvent.ValueBool;
                 case 'n':
-                    if (!ReadKeyword(ref @null))
+                    if (!ReadKeyword('n', ref @null))
                         return JsonEvent.Error;
                     return lastEvent = JsonEvent.ValueNull;
                 case  -1:
@@ -559,157 +567,181 @@ namespace Friflo.Json.Burst
         private int ReadWhiteSpace()
         {
             // using locals improved performance
-            ref var b = ref buf.buffer.array;
-            int p = pos;
-            int end = bufEnd;
-            for (; p < end; )
-            {
-                int c = b[p++];
-                if (c > ' ') {
-                    pos = p;
-                    return c;
+            while (true) {
+                ref var b   = ref buf.buffer.array;
+                int p       = pos;
+                int end     = bufEnd;
+                for (; p < end;)
+                {
+                    int c = b[p++];
+                    if (c > ' ') {
+                        pos = p;
+                        return c;
+                    }
+                    if (c != ' ' &&
+                        c != '\t' &&
+                        c != '\n' &&
+                        c != '\r') {
+                        pos = p;
+                        return c;
+                    }
                 }
-                if (c != ' '    &&
-                    c != '\t'   &&
-                    c != '\n'   &&
-                    c != '\r') {
-                    pos = p;
-                    return c;
-                }
+                pos = p;
+                if (Read())
+                    continue;
+                return -1;
             }
-            pos = p;
-            return -1;
         }
     
-        private bool ReadNumber ()
+        private bool ReadNumber (int firstChar)
         {
-            isFloat = false;
-            int start = pos - 1;
-            for (; pos < bufEnd; pos++)
-            {
-                int c = buf.buffer.array[pos];
-                switch (c)
-                {
-                case '0':   case '1':   case '2':   case '3':   case '4':
-                case '5':   case '6':   case '7':   case '8':   case '9':
-                case '-':   case '+':
-                    continue;
-                case '.':   case 'e':   case 'E':
-                    isFloat = true;
-                    continue;
-                }
-                switch (c) {
-                    case ',': case '}': case ']':
-                    case ' ': case '\r': case '\n': case '\t':
-                        value.Clear();
-                        value.AppendArray(ref buf.buffer, start, pos);
-                        return true;
-                }
-                SetErrorChar("unexpected character while reading number. Found : ", (char)c);
-                return false;
-            }
-            if (state.array[stateLevel] != State.ExpectEof) 
-                return SetErrorFalse("unexpected EOF while reading number");
             value.Clear();
-            value.AppendArray(ref buf.buffer, start, pos);
-            return true;
+            value.AppendChar((char)firstChar);
+            isFloat = false;
+            
+            while (true) {
+                for (; pos < bufEnd; pos++)
+                {
+                    int c = buf.buffer.array[pos];
+                    switch (c)
+                    {
+                        case '0':   case '1':   case '2':   case '3':   case '4':
+                        case '5':   case '6':   case '7':   case '8':   case '9':
+                        case '-':   case '+':
+                            value.AppendChar((char)c);
+                            continue;
+                        case '.':   case 'e':   case 'E':
+                            value.AppendChar((char)c);
+                            isFloat = true;
+                            continue;
+                    }
+                    switch (c) {
+                        case ',': case '}': case ']':
+                        case ' ': case '\r': case '\n': case '\t':
+                            return true;
+                    }
+                    SetErrorChar("unexpected character while reading number. Found : ", (char)c);
+                    return false;
+                }
+                if (state.array[stateLevel] == State.ExpectEof)
+                    return true;
+                
+                if (Read())
+                    continue;
+                
+                return SetErrorFalse("unexpected EOF while reading number");
+            }
         }
     
         private bool ReadString(ref Bytes token)
         {
-            // using locals improved performance
-            ref var b = ref buf.buffer.array;
-            int p = pos;
-            int end = bufEnd;
             token.Clear();
-            int start = p;
-            for (; p < end; p++)
+            while (true)
             {
-                int c = b[p];
-                if (c == '\"')
+                // using locals improved performance
+                ref var b   = ref buf.buffer.array;
+                int p       = pos;
+                int end     = bufEnd;
+                int start   = p;
+                
+                for (; p < end; p++)
                 {
-                    token.AppendArray(ref buf.buffer, start, p++);
-                    pos = p;
-                    return true;
-                }
-                if (c == '\r' || c == '\n')
-                    return SetErrorFalse("unexpected line feed while reading string");
-                if (c == '\\')
-                {
-                    token.AppendArray(ref buf.buffer, start, p);
-                    if (++p >= end)
-                        break;
-                    c = b[p];
-                    switch (c)
+                    int c = b[p];
+                    if (c == '\"')
                     {
-                    case '"':   token.AppendChar('"');  break;
-                    case '\\':  token.AppendChar('\\'); break;
-                    case '/':   token.AppendChar('/');  break;
-                    case 'b':   token.AppendChar('\b'); break;
-                    case 'f':   token.AppendChar('\f'); break;
-                    case 'r':   token.AppendChar('\r'); break;
-                    case 'n':   token.AppendChar('\n'); break;
-                    case 't':   token.AppendChar('\t'); break;                  
-                    case 'u':
+                        token.AppendArray(ref buf.buffer, start, p++);  // todo remove - add chars as they arrive
                         pos = p;
-                        if (!ReadUnicode(ref token))
-                            return false;
-                        p = pos;
-                        break;
+                        return true;
                     }
-                    start = p + 1;
+                    if (c == '\r' || c == '\n')
+                        return SetErrorFalse("unexpected line feed while reading string");
+                    if (c == '\\')
+                    {
+                        token.AppendArray(ref buf.buffer, start, p);  // todo remove - add chars as they arrive
+                        if (++p >= end)
+                            break;
+                        c = b[p];
+                        switch (c)
+                        {
+                        case '"':   token.AppendChar('"');  break;
+                        case '\\':  token.AppendChar('\\'); break;
+                        case '/':   token.AppendChar('/');  break;
+                        case 'b':   token.AppendChar('\b'); break;
+                        case 'f':   token.AppendChar('\f'); break;
+                        case 'r':   token.AppendChar('\r'); break;
+                        case 'n':   token.AppendChar('\n'); break;
+                        case 't':   token.AppendChar('\t'); break;                  
+                        case 'u':
+                            pos = p;
+                            if (!ReadUnicode(ref token))
+                                return false;
+                            p = pos;
+                            break;
+                        }
+                        start = p + 1;
+                    }
                 }
+                pos = p;
+                if (Read())
+                    continue;
+                
+                return SetErrorFalse("unexpected EOF while reading string");
             }
-            pos = p;
-            return SetErrorFalse("unexpected EOF while reading string");
         }
     
         private bool ReadUnicode (ref Bytes tokenBuffer) {
             ref Bytes token = ref tokenBuffer;
-            pos += 4;
-            if (pos >= bufEnd)
-                return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
+            while (true)
+            {
+                pos += 4;
+                if (pos >= bufEnd) {
+                    if (Read())
+                        continue;
+                    
+                    return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
+                }
 
-            int d1 = Digit2Int(buf.buffer.array[pos - 3]);
-            int d2 = Digit2Int(buf.buffer.array[pos - 2]);
-            int d3 = Digit2Int(buf.buffer.array[pos - 1]);
-            int d4 = Digit2Int(buf.buffer.array[pos - 0]);
-            if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
-                return SetErrorFalse("Invalid hex digits after '\\u' in value");
+                int d1 = Digit2Int(buf.buffer.array[pos - 3]);
+                int d2 = Digit2Int(buf.buffer.array[pos - 2]);
+                int d3 = Digit2Int(buf.buffer.array[pos - 1]);
+                int d4 = Digit2Int(buf.buffer.array[pos - 0]);
+                if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
+                    return SetErrorFalse("Invalid hex digits after '\\u' in value");
 
-            int uni = d1 << 12 | d2 << 8 | d3 << 4 | d4;
-        
-            // UTF-8 Encoding
-            tokenBuffer.EnsureCapacity(4);
-            ref var str = ref token.buffer.array;
-            int i = token.EndPos;
-            if (uni < 0x80)
-            {
-                str[i] =    (byte)uni;
-                token.SetEnd(i + 1);
+                int uni = d1 << 12 | d2 << 8 | d3 << 4 | d4;
+            
+                // UTF-8 Encoding
+                tokenBuffer.EnsureCapacity(4);
+                ref var str = ref token.buffer.array;
+                int i = token.EndPos;
+                if (uni < 0x80)
+                {
+                    str[i] =    (byte)uni;
+                    token.SetEnd(i + 1);
+                    return true;
+                }
+                if (uni < 0x800)
+                {
+                    str[i]   =  (byte)(m_11oooooo | (uni >> 6));
+                    str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
+                    token.SetEnd(i + 2);
+                    return true;
+                }
+                if (uni < 0x10000)
+                {
+                    str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
+                    str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                    str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                    token.SetEnd(i + 3);
+                    return true;
+                }
+                str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
+                str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
+                str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
+                str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
+                token.SetEnd(i + 4);
                 return true;
             }
-            if (uni < 0x800)
-            {
-                str[i]   =  (byte)(m_11oooooo | (uni >> 6));
-                str[i+1] =  (byte)(m_1ooooooo | (uni         & m_oo111111));
-                token.SetEnd(i + 2);
-                return true;
-            }
-            if (uni < 0x10000)
-            {
-                str[i]   =  (byte)(m_111ooooo |  (uni >> 12));
-                str[i+1] =  (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
-                str[i+2] =  (byte)(m_1ooooooo |  (uni        & m_oo111111));
-                token.SetEnd(i + 3);
-                return true;
-            }
-            str[i]   =      (byte)(m_1111oooo |  (uni >> 18));
-            str[i+1] =      (byte)(m_1ooooooo | ((uni >> 12) & m_oo111111));
-            str[i+2] =      (byte)(m_1ooooooo | ((uni >> 6)  & m_oo111111));
-            str[i+3] =      (byte)(m_1ooooooo |  (uni        & m_oo111111));
-            token.SetEnd(i + 4);
-            return true;
         }
     
         private static readonly int     m_1ooooooo = 0x80;
@@ -730,34 +762,33 @@ namespace Friflo.Json.Burst
             return -1;
         }
     
-        private bool ReadKeyword (ref Str32 keyword)
+        private bool ReadKeyword (char firstChar, ref Str32 keyword)
         {
-            int start = pos - 1;
-            ref var b = ref buf.buffer.array;
-            for (; pos < bufEnd; pos++)
-            {
-                int c = b[pos];
-                if ('a' <= c && c <= 'z')
-                    continue;
-                break;
-            }
-            int len = pos - start;
-            int keyLen = keyword.Length;
-            if (len != keyLen) {
-                value.Clear();
-                value.AppendArray(ref buf.buffer, start, pos);
-                return SetErrorValue("invalid value: ", ref value);
-            }
-
-            for (int n = 1; n < len; n++)
-            {
-                if (keyword[n] != b[start + n]) {
-                    value.Clear();
-                    value.AppendArray(ref buf.buffer, start, pos);
+            value.Clear();
+            value.AppendChar(firstChar);
+            int keyWordPos = 1;
+            
+            while (true) {
+                ref var b = ref buf.buffer.array;
+                
+                for (; pos < bufEnd; pos++)
+                {
+                    int c = b[pos];
+                    value.AppendChar((char)c);
+                    if (c == keyword[keyWordPos++]) {
+                        if (keyWordPos != keyword.Length)
+                            continue;
+                        pos++;
+                        return true;
+                    }
+                    pos++;
                     return SetErrorValue("invalid value: ", ref value);
                 }
+                if (Read())
+                    continue;
+                
+                return SetErrorFalse("Unexpected EOF while keyword");
             }
-            return true;
         }
 
         /// <summary>
