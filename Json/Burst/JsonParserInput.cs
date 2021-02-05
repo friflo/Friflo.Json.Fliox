@@ -97,7 +97,15 @@ namespace Friflo.Json.Burst
                 inputArrayPos = inputArrayEnd;
             
             int len = inputArrayPos - curPos;
+// #if JSON_BURST
+//             fixed (byte* srcPtr = &inputByteArray[curPos])
+//             {
+//                 byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
+//                 UnsafeUtility.MemCpy(destPtr, srcPtr, len);
+//             }
+// #else
             Buffer.BlockCopy(inputByteArray, curPos, buf.buffer.array, 0, len);
+// #endif
             bufEnd = len;
             return true;
         }
