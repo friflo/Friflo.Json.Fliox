@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper
         }
         
         private void InitJsonReader(ref ByteList bytes, int offset, int len) {
-            parser.InitParser(bytes, offset, len);
+            parser.InitParser(bytes.array, offset, len);
             parser.SetMaxDepth(maxDepth);
             InitMirrorStack();
         }

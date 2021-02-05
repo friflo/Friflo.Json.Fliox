@@ -70,7 +70,7 @@ namespace Friflo.Json.Burst
     public partial struct JsonParser : IDisposable
     {
         private     int                 pos;
-        private     ByteList            buf;
+        private     Bytes               buf;
         private     int                 bufEnd;
         private     int                 stateLevel;
         private     int                 maxDepth;
@@ -371,6 +371,7 @@ namespace Friflo.Json.Burst
             path.Dispose();
             key.Dispose();
             error.Dispose();
+            buf.Dispose();
             if (arrIndex.IsCreated())   arrIndex.Dispose();
             if (pathPos.IsCreated())    pathPos.Dispose();
             if (state.IsCreated())      state.Dispose();
@@ -380,26 +381,16 @@ namespace Friflo.Json.Burst
         /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
         /// </summary>
         /// <param name="bytes">The JSON document to parse</param>
-        public void InitParser(Bytes bytes) {
-            InitParser (bytes.buffer, bytes.StartPos, bytes.Len);
-        }
-
-        /// <summary>
-        /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
-        /// </summary>
-        /// <param name="bytes">The JSON document to parse</param>
         /// <param name="start">The start position in bytes inside <see cref="bytes"/> where parsing starts.</param>
         /// <param name="len">The length of bytes inside <see cref="bytes"/> which are intended to parse.</param>
-        public void InitParser(ByteList bytes, int start, int len) {
+        private void Start() {
             InitContainers();
             stateLevel = 0;
             state.array[0] = State.ExpectRoot;
 
             this.previousBytes += pos - startPos; // for statistics
-            this.pos = start;
-            this.startPos = start;
-            this.buf = bytes;
-            this.bufEnd = start + len;
+            this.pos = 0;
+            this.startPos = 0;
             skipInfo = default(SkipInfo);
             error.Clear();
         }
@@ -568,7 +559,7 @@ namespace Friflo.Json.Burst
         private int ReadWhiteSpace()
         {
             // using locals improved performance
-            ref var b = ref buf.array;
+            ref var b = ref buf.buffer.array;
             int p = pos;
             int end = bufEnd;
             for (; p < end; )
@@ -596,7 +587,7 @@ namespace Friflo.Json.Burst
             int start = pos - 1;
             for (; pos < bufEnd; pos++)
             {
-                int c = buf.array[pos];
+                int c = buf.buffer.array[pos];
                 switch (c)
                 {
                 case '0':   case '1':   case '2':   case '3':   case '4':
@@ -611,7 +602,7 @@ namespace Friflo.Json.Burst
                     case ',': case '}': case ']':
                     case ' ': case '\r': case '\n': case '\t':
                         value.Clear();
-                        value.AppendArray(ref buf, start, pos);
+                        value.AppendArray(ref buf.buffer, start, pos);
                         return true;
                 }
                 SetErrorChar("unexpected character while reading number. Found : ", (char)c);
@@ -620,14 +611,14 @@ namespace Friflo.Json.Burst
             if (state.array[stateLevel] != State.ExpectEof) 
                 return SetErrorFalse("unexpected EOF while reading number");
             value.Clear();
-            value.AppendArray(ref buf, start, pos);
+            value.AppendArray(ref buf.buffer, start, pos);
             return true;
         }
     
         private bool ReadString(ref Bytes token)
         {
             // using locals improved performance
-            ref var b = ref buf.array;
+            ref var b = ref buf.buffer.array;
             int p = pos;
             int end = bufEnd;
             token.Clear();
@@ -637,7 +628,7 @@ namespace Friflo.Json.Burst
                 int c = b[p];
                 if (c == '\"')
                 {
-                    token.AppendArray(ref buf, start, p++);
+                    token.AppendArray(ref buf.buffer, start, p++);
                     pos = p;
                     return true;
                 }
@@ -645,7 +636,7 @@ namespace Friflo.Json.Burst
                     return SetErrorFalse("unexpected line feed while reading string");
                 if (c == '\\')
                 {
-                    token.AppendArray(ref buf, start, p);
+                    token.AppendArray(ref buf.buffer, start, p);
                     if (++p >= end)
                         break;
                     c = b[p];
@@ -679,10 +670,10 @@ namespace Friflo.Json.Burst
             if (pos >= bufEnd)
                 return SetErrorFalse("Expect 4 hex digits after '\\u' in value");
 
-            int d1 = Digit2Int(buf.array[pos - 3]);
-            int d2 = Digit2Int(buf.array[pos - 2]);
-            int d3 = Digit2Int(buf.array[pos - 1]);
-            int d4 = Digit2Int(buf.array[pos - 0]);
+            int d1 = Digit2Int(buf.buffer.array[pos - 3]);
+            int d2 = Digit2Int(buf.buffer.array[pos - 2]);
+            int d3 = Digit2Int(buf.buffer.array[pos - 1]);
+            int d4 = Digit2Int(buf.buffer.array[pos - 0]);
             if (d1 == -1 || d2 == -1 || d3 == -1 || d4 == -1)
                 return SetErrorFalse("Invalid hex digits after '\\u' in value");
 
@@ -742,7 +733,7 @@ namespace Friflo.Json.Burst
         private bool ReadKeyword (ref Str32 keyword)
         {
             int start = pos - 1;
-            ref var b = ref buf.array;
+            ref var b = ref buf.buffer.array;
             for (; pos < bufEnd; pos++)
             {
                 int c = b[pos];
@@ -754,7 +745,7 @@ namespace Friflo.Json.Burst
             int keyLen = keyword.Length;
             if (len != keyLen) {
                 value.Clear();
-                value.AppendArray(ref buf, start, pos);
+                value.AppendArray(ref buf.buffer, start, pos);
                 return SetErrorValue("invalid value: ", ref value);
             }
 
@@ -762,7 +753,7 @@ namespace Friflo.Json.Burst
             {
                 if (keyword[n] != b[start + n]) {
                     value.Clear();
-                    value.AppendArray(ref buf, start, pos);
+                    value.AppendArray(ref buf.buffer, start, pos);
                     return SetErrorValue("invalid value: ", ref value);
                 }
             }
