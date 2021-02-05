@@ -134,7 +134,8 @@ namespace Friflo.Json.Burst
         private const int   BufSize = 4096; // Test with 1 to find edge cases
         private InputType   inputType;
         //
-        private byte[]      inputArray;
+        private byte[]      inputByteArray;
+        private ByteList    inputByteList;
         private int         inputArrayPos;
         private int         inputArrayEnd;
 
