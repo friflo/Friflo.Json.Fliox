@@ -24,7 +24,10 @@ namespace Friflo.Json.Burst
                     builder.Append((char) buf.buffer.array[n]);
                 }
                 if (pos == bufEnd)
-                    builder.Append(" => <end of buffer>");
+                    builder.Append(" => ");
+                
+                if (end == bufEnd)
+                    builder.Append("<buffer end>");
                 
                 return $"pos: ({pos})  {builder}";
             }

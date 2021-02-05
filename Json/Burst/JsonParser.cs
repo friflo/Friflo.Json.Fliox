@@ -642,22 +642,20 @@ namespace Friflo.Json.Burst
                 ref var b   = ref buf.buffer.array;
                 int p       = pos;
                 int end     = bufEnd;
-                int start   = p;
                 
                 for (; p < end; p++)
                 {
                     int c = b[p];
                     if (c == '\"')
                     {
-                        token.AppendArray(ref buf.buffer, start, p++);  // todo remove - add chars as they arrive
-                        pos = p;
+                        pos = p + 1;
                         return true;
                     }
                     if (c == '\r' || c == '\n')
                         return SetErrorFalse("unexpected line feed while reading string");
-                    if (c == '\\')
-                    {
-                        token.AppendArray(ref buf.buffer, start, p);  // todo remove - add chars as they arrive
+                    if (c != '\\') {
+                        token.AppendChar((char)c);
+                    } else {
                         if (++p >= end)
                             break;
                         c = b[p];
@@ -678,7 +676,6 @@ namespace Friflo.Json.Burst
                             p = pos;
                             break;
                         }
-                        start = p + 1;
                     }
                 }
                 pos = p;
@@ -689,8 +686,8 @@ namespace Friflo.Json.Burst
             }
         }
     
-        private bool ReadUnicode (ref Bytes tokenBuffer) {
-            ref Bytes token = ref tokenBuffer;
+        private bool ReadUnicode (ref Bytes token)
+        {
             while (true)
             {
                 pos += 4;
@@ -711,7 +708,7 @@ namespace Friflo.Json.Burst
                 int uni = d1 << 12 | d2 << 8 | d3 << 4 | d4;
             
                 // UTF-8 Encoding
-                tokenBuffer.EnsureCapacity(4);
+                token.EnsureCapacity(4);
                 ref var str = ref token.buffer.array;
                 int i = token.EndPos;
                 if (uni < 0x80)
