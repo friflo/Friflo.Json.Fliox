@@ -20,11 +20,11 @@ namespace Friflo.Json.Burst
                 int n = start;
                 for (; n < end; n++) {
                     if (n == pos)
-                        builder.Append(" => ");
+                        builder.Append(" =>");
                     builder.Append((char) buf.buffer.array[n]);
                 }
                 if (pos == bufEnd)
-                    builder.Append(" => ");
+                    builder.Append(" =>");
                 
                 if (end == bufEnd)
                     builder.Append("<buffer end>");

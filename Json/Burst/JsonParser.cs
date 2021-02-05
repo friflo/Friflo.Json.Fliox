@@ -130,7 +130,7 @@ namespace Friflo.Json.Burst
         public      int                 InputPos => bufferCount + pos;
         
         // --- input array, stream, string, ... used in InitParser() methods
-        private const int   BufSize = 4096;
+        private const int   BufSize = 4096; // Test with 1 to find edge cases
         private InputType   inputType;
         //
         private byte[]      inputArray;
@@ -194,7 +194,7 @@ namespace Friflo.Json.Burst
             errMsg.AppendStr32 ("' at position: ");
             format.AppendInt(ref errMsg, position);
 #pragma warning restore 618
-            error.Error(pos);
+            error.Error(position);
         }
         
         /// <summary>
@@ -623,11 +623,12 @@ namespace Friflo.Json.Burst
                     SetErrorChar("unexpected character while reading number. Found : ", (char)c);
                     return false;
                 }
-                if (state.array[stateLevel] == State.ExpectEof)
-                    return true;
-                
+
                 if (Read())
                     continue;
+                
+                if (state.array[stateLevel] == State.ExpectEof)
+                    return true;
                 
                 return SetErrorFalse("unexpected EOF while reading number");
             }
@@ -656,8 +657,12 @@ namespace Friflo.Json.Burst
                     if (c != '\\') {
                         token.AppendChar((char)c);
                     } else {
-                        if (++p >= end)
-                            break;
+                        if (++p >= end) {
+                            pos = p;
+                            if (!Read())
+                                return SetErrorFalse("unexpected EOF while reading string");
+                            p = 0;
+                        }
                         c = b[p];
                         switch (c)
                         {
