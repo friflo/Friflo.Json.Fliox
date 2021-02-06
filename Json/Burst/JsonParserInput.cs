@@ -12,9 +12,8 @@ namespace Friflo.Json.Burst
     public partial struct JsonParser
     {
         enum InputType {
-            ByteArray,
             ByteList,
-            InputStream,
+            ByteReader,
         }
         
         public string DebugString { get {
@@ -49,111 +48,53 @@ namespace Friflo.Json.Burst
             if (pos != bufEnd)
                 throw new InvalidOperationException("expect pos != bufEnd in Read() pos: " + pos);
 
-            bool success;
+            if (!inputStreamOpen)
+                return false;
+
+            int readBytes;
             
             switch (inputType) {
                 case InputType.ByteList:
-                    success = ReadByteList();
+                    readBytes = ReadByteList();
                     break;
 #if !JSON_BURST
-                case InputType.ByteArray:
-                    success = ReadByteArray();
-                    break;
-                case InputType.InputStream:
-                    success = ReadInputStream();
+                case InputType.ByteReader:
+                    readBytes = bytesReader.Read(ref buf.buffer, BufSize);
                     break;
 #endif
                 default:
                     throw new NotImplementedException("inputType: " + inputType);
             }
 
-            if (success) {
+            if (readBytes != 0) {
+                bufEnd = readBytes;
                 bufferCount += pos;
                 pos = 0;
                 return true;
             }
+            inputStreamOpen = false;
             return false;
         }
         
 #if !JSON_BURST
-        private bool ReadInputStream() {
-            if (!inputStreamOpen)
-                return false;
-
-            bufEnd = inputStream.Read(buf.buffer.array, 0, BufSize);
-            inputStreamOpen = bufEnd != 0; 
-            return inputStreamOpen;
+        public void InitParser(StreamBytesReader reader) {
+            inputType       = InputType.ByteReader;
+            bytesReader     = reader;
+            Start();
         }
         
         public void InitParser(Stream stream) {
-            inputType       = InputType.InputStream;
-            inputStream     = stream;
-            inputStreamOpen = true;
+            inputType       = InputType.ByteReader;
+            bytesReader     = new StreamBytesReader(stream);
             Start();
         }
         
-// Note!
-// Using byte[] in Unity is in general possible. But removed for now as a Burst Job cannot be compiled when using
-// a struct containing a managed type (byte[] inputByteArray)
-
-        /// <summary>
-        /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
-        /// </summary>
-        /// <param name="bytes">The JSON document to parse</param>
-        /// <param name="start">The start position in bytes inside <see cref="bytes"/> where parsing starts.</param>
-        /// <param name="len">The length of bytes inside <see cref="bytes"/> which are intended to parse.</param>
-        public void InitParser(byte[] bytes, int start, int len) {
-            inputType       = InputType.ByteArray;
-            inputByteArray  = bytes;
-            inputArrayPos   = start;
-            inputArrayEnd   = start + len;
+        public void InitParser(byte[] array, int start, int count) {
+            inputType       = InputType.ByteReader;
+            bytesReader     = new ByteArrayReader(array, start, count);
             Start();
         }
-        
-        private bool ReadByteArray() {
-            if (inputArrayPos == inputArrayEnd)
-                return false;
-            
-            int curPos = inputArrayPos;
-            inputArrayPos += BufSize;
-            if (inputArrayPos > inputArrayEnd)
-                inputArrayPos = inputArrayEnd;
-            
-            int len = inputArrayPos - curPos;
-// #if JSON_BURST
-//             fixed (byte* srcPtr = &inputByteArray[curPos])
-//             {
-//                 byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
-//                 UnsafeUtility.MemCpy(destPtr, srcPtr, len);
-//             }
-// #else
-            Buffer.BlockCopy(inputByteArray, curPos, buf.buffer.array, 0, len);
-// #endif
-            bufEnd = len;
-            return true;
-        }
 #endif
-        
-        private unsafe bool ReadByteList() {
-            if (inputArrayPos == inputArrayEnd)
-                return false;
-            
-            int curPos = inputArrayPos;
-            inputArrayPos += BufSize;
-            if (inputArrayPos > inputArrayEnd)
-                inputArrayPos = inputArrayEnd;
-            
-            int len = inputArrayPos - curPos;
-#if JSON_BURST
-            byte*  srcPtr =  &((byte*)inputByteList.array.GetUnsafeList()->Ptr) [curPos];
-            byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
-            UnsafeUtility.MemCpy(destPtr, srcPtr, len);
-#else
-            Buffer.BlockCopy(inputByteList.array, curPos, buf.buffer.array, 0, len);
-#endif
-            bufEnd = len;
-            return true;
-        }
         
         public void InitParser(ByteList bytes, int start, int len) {
             inputType       = InputType.ByteList;
@@ -162,6 +103,27 @@ namespace Friflo.Json.Burst
             inputArrayEnd   = start + len;
             Start();
         }
+        
+        private unsafe int ReadByteList() {
+            int curPos = inputArrayPos;
+            inputArrayPos += BufSize;
+            if (inputArrayPos > inputArrayEnd)
+                inputArrayPos = inputArrayEnd;
+            
+            int len = inputArrayPos - curPos;
+            if (len == 0)
+                return 0;
+#if JSON_BURST
+            byte*  srcPtr =  &((byte*)inputByteList.array.GetUnsafeList()->Ptr) [curPos];
+            byte*  destPtr = &((byte*)buf.buffer.array.GetUnsafeList()->Ptr)    [0];
+            UnsafeUtility.MemCpy(destPtr, srcPtr, len);
+#else
+            Buffer.BlockCopy(inputByteList.array, curPos, buf.buffer.array, 0, len);
+#endif
+            return len;
+        }
+        
+
 
     }
 }

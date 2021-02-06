@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
@@ -66,6 +67,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 int start = TimeUtil.GetMs();
                 using (var parser = new JsonParser()) {
                     parser.InitParser(json);
+                    // parser.InitParser(new MemoryStream(json.buffer.array, json.start, json.Len));
                     while (parser.NextEvent() != JsonEvent.EOF) {
                         if (parser.error.ErrSet)
                             Fail(parser.error.msg.ToString());
