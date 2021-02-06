@@ -136,7 +136,9 @@ namespace Friflo.Json.Burst
         private InputType   inputType;
         private bool        inputStreamOpen;
         //
-#if !JSON_BURST
+#if JSON_BURST
+        private int         readerHandle;
+#else
         private BytesReader bytesReader;
 #endif
         private ByteList    inputByteList;
