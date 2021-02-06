@@ -109,5 +109,5 @@ namespace Friflo.Json.Burst
 
  
 #if UNITY_2020_1_OR_NEWER && !JSON_BURST
-#error Burst mode disabled. If disabled this library cannot be used in Burst Jobs. Remove this line or enable Burst Jobs by adding directive JSON_BURST to: Edit > Project Settings... > Player > Other Settings > Configuration > Scripting Define Symbols  
+#error Burst mode disabled. If disabled this library cannot be used in Burst Jobs. Comment this line or enable Burst Jobs by adding C# preprocessor directive JSON_BURST to: Edit > Project Settings... > Player > Other Settings > Configuration > Scripting Define Symbols  
 #endif
