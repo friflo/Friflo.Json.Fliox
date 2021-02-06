@@ -95,6 +95,25 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 Console.WriteLine(end - start);
             }
         }
+
+        
+        [Test]
+        public void TestCreateBookShelf() {
+            List<string> titles = new List<string>(1000_000);
+            for (int n = 0; n < 1_000_000; n++) {
+                titles.Add( $"Book {n}");
+            }
+            for (int i = 0; i < 30; i++) {
+                int start = TimeUtil.GetMs();
+                bookShelf = new BookShelf { Books = new List<Book>(1000_000) };
+                for (int n = 0; n < 1_000_000; n++) {
+                    var book = new Book {Id = n, Title = new string(titles[n]), BookData = new byte[0]};
+                    bookShelf.Books.Add(book);
+                }
+                int end = TimeUtil.GetMs();
+                Console.WriteLine(end - start);
+            }
+        }
     }
     
     

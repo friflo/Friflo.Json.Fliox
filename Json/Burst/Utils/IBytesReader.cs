@@ -5,6 +5,7 @@ using System.IO;
     using Unity.Collections.LowLevel.Unsafe;
 #endif
 
+// ReSharper disable RedundantUnsafeContext
 namespace Friflo.Json.Burst.Utils
 {
     public interface IBytesReader
@@ -40,9 +41,9 @@ namespace Friflo.Json.Burst.Utils
     }
     
     public class ByteArrayReader: IBytesReader {
-        private byte[]      array;
-        private int         pos;
-        private int         end;
+        private readonly    byte[]  array;
+        private             int     pos;
+        private readonly    int     end;
         
         public ByteArrayReader(byte[] array) {
             this.array = array;

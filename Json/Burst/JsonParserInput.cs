@@ -122,6 +122,7 @@ namespace Friflo.Json.Burst
             Start();
         }
         
+        // ReSharper disable once RedundantUnsafeContext
         private unsafe int ReadByteList() {
             int curPos = inputArrayPos;
             inputArrayPos += BufSize;
