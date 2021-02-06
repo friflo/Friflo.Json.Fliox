@@ -16,10 +16,13 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public abstract class TypeMapper : IDisposable
     {
-        public  readonly    Type    type;
-        public  readonly    bool    isNullable;
-        public  readonly    bool    isValueType;
-        public  readonly    Type    underlyingType;
+        public  readonly    Type        type;
+        public  readonly    bool        isNullable;
+        public  readonly    bool        isValueType;
+        public  readonly    Type        underlyingType;
+        
+        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
+        public  readonly PropertyFields propFields;
 
 
         protected TypeMapper(Type type, bool isNullable, bool isValueType) {
@@ -39,8 +42,6 @@ namespace Friflo.Json.Mapper.Map
         
         public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
         public abstract bool            ReadValueIL (JsonReader reader, ClassMirror mirror, int primPos, int objPos);
-
-        public abstract PropertyFields  GetPropFields();
 
         public virtual ClassLayout      GetClassLayout() { throw new NotImplementedException(); }
 
@@ -87,10 +88,6 @@ namespace Friflo.Json.Mapper.Map
             if (slot != null)
                 return Read(reader, (TVal) slot, out success);
             return Read(reader, default, out success);
-        }
-
-        public override PropertyFields GetPropFields() {
-            throw new InvalidOperationException("method not applicable");
         }
 
         public override      void    Dispose() { }

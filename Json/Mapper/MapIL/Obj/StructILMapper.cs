@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             }
             int startLevel = WriteUtils.IncLevel(writer);
             
-            PropField[] fields = GetPropFields().fields;
+            PropField[] fields = propFields.fields;
             bool firstMember = true;
 
             for (int n = 0; n < fields.Length; n++) {

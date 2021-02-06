@@ -59,7 +59,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 WriteUtils.WriteDiscriminator(writer, classMapper);
                 firstMember = false;
             }
-            PropField[] fields = classMapper.GetPropFields().fields;
+            PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
                 WriteUtils.WriteMemberKey(writer, field, ref firstMember);

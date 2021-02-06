@@ -64,8 +64,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
         
         public static PropField GetField(JsonReader reader, TypeMapper classType) {
-            var fields = classType.GetPropFields();
-            PropField field = fields.GetField(ref reader.parser.key);
+            PropField field = classType.propFields.GetField(ref reader.parser.key);
             if (field != null)
                 return field;
             reader.parser.SkipEvent();

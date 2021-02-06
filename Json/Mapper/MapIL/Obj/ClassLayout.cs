@@ -16,7 +16,6 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         internal readonly int   objCount;
         
         internal ClassLayout(TypeMapper mapper) {
-            PropertyFields propFields = mapper.GetPropFields();
             primCount       = propFields.primCount;
             objCount        = propFields.objCount;
         }

@@ -51,7 +51,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         private static readonly MethodInfo SingleToInt32Bits = typeof(BitConverter).GetMethod(nameof(BitConverter.SingleToInt32Bits));
 
         private static void AddLoadMembers (LoadContext ctx, TypeMapper mapper, Expression srcTyped) {
-            PropertyFields propFields = mapper.GetPropFields();
+            PropertyFields propFields = mapper.propFields;
             Type nullableStruct = TypeUtils.GetNullableStruct(srcTyped.Type);
             if (nullableStruct != null) {
                 var value    = Exp.Field(srcTyped, "value");     // type of struct
@@ -170,7 +170,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         private static readonly MethodInfo Int32BitsToSingle = typeof(BitConverter).GetMethod(nameof(BitConverter.Int32BitsToSingle));
 
         private static void AddStoreMembers (StoreContext ctx, TypeMapper mapper, Expression dstTyped) {
-            PropertyFields propFields = mapper.GetPropFields();
+            PropertyFields propFields = mapper.propFields;
             Type nullableStruct = TypeUtils.GetNullableStruct(dstTyped.Type);
             if (nullableStruct != null) {
                 var value       = Exp.Field(dstTyped, "value");    // type of struct

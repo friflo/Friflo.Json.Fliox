@@ -50,9 +50,6 @@ namespace Friflo.Json.Mapper.Map.Obj
     [CLSCompliant(true)]
 #endif
     public class ClassMapper<T> : TypeMapper<T> {
-
-        // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
-        protected readonly PropertyFields                 propFields;
         private   readonly ConstructorInfo                constructor;
 
         public override string DataTypeName() { return "class"; }
@@ -71,7 +68,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         public override void InitTypeMapper(TypeStore typeStore) {
             var fields = new PropertyFields(type, typeStore);
-            FieldInfo fieldInfo = typeof(ClassMapper<T>).GetField(nameof(propFields), BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);
         }
@@ -92,11 +89,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
             return ReflectUtils.CreateInstance(constructor);
         }
-
-        public override PropertyFields GetPropFields() {
-            return propFields;
-        }
-        
         
         // ----------------------------------- Write / Read -----------------------------------
         
@@ -116,7 +108,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             }
 
-            PropField[] fields = classMapper.GetPropFields().fields;
+            PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
                 WriteUtils.WriteMemberKey(writer, field, ref firstMember); 
