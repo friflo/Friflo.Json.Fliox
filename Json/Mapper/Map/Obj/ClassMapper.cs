@@ -110,8 +110,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             // Note: its likely that hashcode ist not set properly. So calculate anyway
             fieldName.UpdateHashCode();
             PropField pf = fieldMap.Get(ref fieldName);
-            if (pf == null)
-                Console.Write("");
             return pf;
         }
         
