@@ -122,13 +122,6 @@ namespace Friflo.Json.Burst
             this.end    = end;
             this.hc     = BytesConst.notHashed;
         }
-        
-        public byte Get (int idx)
-        {
-            if (idx < 0 || idx >= Len)
-                throw new IndexOutOfRangeException();
-            return buffer.array[start + idx];
-        }
     
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
@@ -155,122 +148,6 @@ namespace Friflo.Json.Burst
             Set (ref src, src.start, src.end);
         }
         
-        public void Trim ()
-        {
-            ref var str = ref buffer.array;
-            int n = start;
-            for (; n < end; n++)
-            {
-                int c = str[n];
-                if (c != ' ' && c != '\t')
-                    break;
-            }
-            start = n;
-            n = end - 1;
-            for (; n >= start; n--)
-            {
-                int c = str[n];
-                if (c != ' ' && c != '\t')
-                    break;
-            }
-            end = n;
-            this.hc = BytesConst.notHashed;
-        }
-        
-        public void TrimFence (char c)
-        {
-            if (Len < 2)
-                throw new InvalidOperationException("Expected len >= 2");
-            ref var str = ref buffer.array;
-            if (str[start] != c || str[end - 1] != c)
-                throw new InvalidOperationException("Expected fence char not on start or end");
-            start++;
-            end--;
-            this.hc = BytesConst.notHashed;
-        }
-    
-        public void ToLowerCase()
-        {
-            ref var str = ref buffer.array;
-            for (int i = start; i < end; i++)
-            {
-                int c = str[i];
-                if ('A' <= c && c <= 'Z')
-                    str[i] = (byte) (c + upper2Lower);
-            }
-            this.hc = BytesConst.notHashed;
-        }
-    
-        public void ToUpperCase()
-        {
-            ref var str = ref buffer.array;
-            for (int i = start; i < end; i++)
-            {
-                int c = str[i];
-                if ('a' <= c && c <= 'z')
-                    str[i] = (byte) (c - upper2Lower);
-            }       
-            this.hc = BytesConst.notHashed;
-        }
-
-        public bool StartsWith(Bytes value)
-        {
-            if (Len < value.Len)
-                return false;
-            ref var str     = ref buffer.array;
-            ref var str2    = ref value.buffer.array;
-            int     valEnd  = start + value.Len;
-            int     i2 = value.start;
-            for (int i = start; i < valEnd; i++ )
-            {
-                if (str[i] != str2[i2++])
-                    return false;
-            }
-            return true;
-        }
-
-        public bool EndsWith(Bytes value)
-        {
-            if (Len < value.Len)
-                return false;
-            ref var str     = ref buffer.array;
-            ref var str2    = ref value.buffer.array;
-            int     valEnd     = value.end;
-            int     i       = this.end - value.Len;
-            for (int i2 = value.start; i2 < valEnd; i2++ )
-            {
-                if (str[i++] != str2[i2])
-                    return false;
-            }
-            return true;
-        }
-
-        public int LastIndexOf (byte c, int start)
-        {       
-            if (start >= this.end)
-                start = this.end - 1;
-            ref var str = ref buffer.array;
-            for (int n = start; n >= 0; n--)
-            {
-                if (str[n] == c)
-                    return n;
-            }
-            return -1;
-        }
-        
-        public int IndexOf (int c, int start)
-        {       
-            if (start < this.start)
-                start = this.start;
-            ref var str = ref buffer.array;
-            for (int n = start; n < end; n++)
-            {
-                if (str[n] == c)
-                    return n;
-            }
-            return -1;
-        }
-
         public int IndexOf (Bytes subStr, int start)
         {
             if (start < this.start)
@@ -293,22 +170,6 @@ namespace Friflo.Json.Burst
                     return n;           
             }
             return -1;
-        }
-
-        public int CompareTo(Bytes path)
-        {
-            ref var str = ref buffer.array;
-            int     len2 = path.Len;
-            int     minLen = Len <= len2 ? Len : len2;
-            ref var str2 = ref path.buffer.array;
-            int start2 = path.start;
-            for (int n = 0; n < minLen; n++)
-            {
-                int dif = str[start + n] - str2[start2 + n];
-                if (dif != 0)
-                    return dif;
-            }
-            return Len - len2;
         }
 
 #if JSON_BURST
@@ -366,87 +227,8 @@ namespace Friflo.Json.Burst
             return true;
         }
 
-        public bool IsEqualManagedArray (byte[] bytes, int start, int length)
-        {
-            int len = Len;
-            if (len != length - start)
-                return false;
-            ref var str     = ref buffer.array;
-            int bytesEnd    = start + len;
-            for (int i = start; i < bytesEnd; i++ )
-            {
-                if (str[i] != bytes[start++])
-                    return false;
-            }
-            return true;
-        }
-
         public bool IsEqualString (String str) {
             return Utf8Utils.IsStringEqualUtf8Ref(str, ref this);
-        }
-/*
-#if JSON_BURST
-        private bool IsEqualNativeArray(String str, int end, ref ByteList temp) {
-
-            unsafe {
-                byte* arrPtr = (byte*) Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(temp.array);
-                fixed (char* strPtr = str) {
-                    Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, temp.array.Length);
-                }
-                var tempArr = temp.array;
-                var bufArr = buffer.array;
-                for (int i = 0; i < end; i++) {
-                    if (tempArr[i] != bufArr[i])
-                        return false;
-                }
-            }
-            return true;
-        }
-#endif 
-        
-        // Expensive! Allocates memory on the heap. Use IsEqualString(String, ref Bytes) instead
-        public bool IsEqualString (String str) {
-            if (str == null)
-                return false;
-            int byteLen = Encoding.UTF8.GetByteCount(str);
-            if (Len != byteLen)
-                return false;
-            Bytes temp = new Bytes(byteLen); // expensive! Allocates memory on the heap
-#if JSON_BURST
-            bool ret = IsEqualNativeArray(str, byteLen, ref temp.buffer);
-#else
-            Encoding.UTF8.GetBytes(str, 0, str.Length, temp.buffer.array, 0);
-            bool ret = IsEqualManagedArray(temp.buffer.array, 0, byteLen);
-#endif
-            temp.Dispose();
-            return ret;
-        }
-        
-        public bool IsEqualString(String str, ref Bytes temp) {
-            if (str == null)
-                return false;
-            int byteLen = Encoding.UTF8.GetByteCount(str);
-            if (Len != byteLen)
-                return false;
-            temp.Clear();
-            temp.EnsureCapacityAbs(byteLen);
-#if JSON_BURST
-            return IsEqualNativeArray(str, byteLen, ref temp.buffer);
-#else
-            Encoding.UTF8.GetBytes(str, 0, str.Length, temp.buffer.array, 0);
-            return IsEqualManagedArray(temp.buffer.array, 0, byteLen);
-#endif
-        } */
-
-        public int LastIndexOf (int c)
-        {
-            ref var str = ref buffer.array;
-            for (int n = end - 1; n >= start; n--)
-            {
-                if (str[n] == c)
-                    return n;
-            }
-            return -1;      
         }
 
         public override bool Equals (Object obj) {
@@ -478,26 +260,6 @@ namespace Friflo.Json.Burst
             return hc = UpdateHashCode();
         }
 
-        public int Split (char separator, params Bytes [] param)
-        {
-            int     count   = 0;
-            ref var str         = ref buffer.array;
-            int     lclStart    = this.start;
-            int     lclEnd      = this.end;
-            for (int i = lclStart; i < lclEnd; i++)
-            {
-                if (str[i] == separator)
-                {
-                    if (count++ >= param. Length)
-                        continue;
-                    param[count-1].Set(ref this, lclStart, i);
-                    lclStart = i + 1;
-                }
-            }
-            if (lclStart < lclEnd && count++ < param. Length)
-                param[count-1].Set(ref this, lclStart, lclEnd);
-            return count;       
-        }
 #if JSON_BURST
         public Str32 ToStr32() {
             var ret = new Unity.Collections.FixedString32();
@@ -574,19 +336,6 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
 
-        public static void CopyBytes (ByteList src, int srcPos, ByteList dst, int dstPos, int length)
-        {
-#if JSON_BURST
-            /* unsafe {
-                byte* srcPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(src.array);
-                byte* dstPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(dst.array);
-                Buffer.MemoryCopy(srcPtr + srcPos, dstPtr + dstPos, dst.Length, length);
-            } */
-            Unity.Collections.NativeArray<byte>.Copy(src.array, srcPos, dst.array, dstPos, length);
-#else
-            Buffer.BlockCopy (src.array, srcPos, dst.array, dstPos, length);
-#endif          
-        }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCapacityAbs(int size) {
@@ -697,38 +446,6 @@ namespace Friflo.Json.Burst
             buffer.array[end++] = (byte)c0;
             buffer.array[end++] = (byte)c1;
             hc = BytesConst.notHashed;
-        }
-        
-        public void AppendChar(char c, int count)
-        {
-            int newEnd = Len + count;
-            ref var buf = ref buffer.array;
-            EnsureCapacity(count);
-            for (int n = end; n < newEnd; n++)
-                buf[n] = (byte)c;
-            end = newEnd;
-            hc = BytesConst.notHashed;
-        }
-
-        public void AppendReplace (Bytes src, Bytes target, Bytes replacement)
-        {
-            EnsureCapacity(src.Len);
-            int             strStart = src.StartPos;
-            ref ByteList    srcBuf = ref src.buffer;
-            while (true)
-            {
-                int idx = src.IndexOf(target, strStart);
-                if (idx != -1)
-                {
-                    AppendArray (ref srcBuf, strStart, idx);
-                    AppendBytes (ref replacement);              
-                    strStart = idx + target.Len;
-                    continue;
-                }
-                AppendArray (ref srcBuf, strStart, src.EndPos);
-                hc = BytesConst.notHashed;
-                return;
-            }       
         }
     }
 }
