@@ -16,8 +16,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         internal readonly int   objCount;
         
         internal ClassLayout(TypeMapper mapper) {
-            primCount       = propFields.primCount;
-            objCount        = propFields.objCount;
+            primCount       = mapper.propFields.primCount;
+            objCount        = mapper.propFields.objCount;
         }
 
         internal abstract void LoadObjectToMirror(long?[] dstPrim, object[] dstObj, object src);
