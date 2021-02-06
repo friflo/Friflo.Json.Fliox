@@ -13,9 +13,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
     // only used for IL
     public class StructILMapper<T> : ClassILMapper<T>
     {
-        private     ClassLayout<T>                    layout;
 
-        public override ClassLayout GetClassLayout() { return layout; }
 
         public StructILMapper(Type type, ConstructorInfo constructor, bool isValueType) :
             base(type, constructor, isValueType)

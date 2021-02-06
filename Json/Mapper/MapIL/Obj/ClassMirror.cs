@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         public void LoadInstance<T>(TypeCache typeCache, ref TypeMapper classType, T obj) {
             if (typeof(T) != typeof(object)) {
                 classTypeDbg = classType;
-                layout = classType.GetClassLayout();
+                layout = classType.layout;
                 primitives.Resize(layout.primCount);
                 objects.   Resize(layout.objCount);
                 ClassLayout<T> l = (ClassLayout<T>) layout;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             } else {
                 classType = typeCache.GetTypeMapper(obj.GetType());
                 classTypeDbg = classType;
-                layout = classTypeDbg.GetClassLayout();
+                layout = classTypeDbg.layout;
                 primitives.Resize(layout.primCount);
                 objects.   Resize(layout.objCount);
                 layout.LoadObjectToMirror(primitives.array, objects.array, obj);

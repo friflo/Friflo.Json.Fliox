@@ -23,6 +23,7 @@ namespace Friflo.Json.Mapper.Map
         
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly PropertyFields propFields;
+        public              ClassLayout layout;  // todo make readonly
 
 
         protected TypeMapper(Type type, bool isNullable, bool isValueType) {
@@ -42,9 +43,6 @@ namespace Friflo.Json.Mapper.Map
         
         public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
         public abstract bool            ReadValueIL (JsonReader reader, ClassMirror mirror, int primPos, int objPos);
-
-        public virtual ClassLayout      GetClassLayout() { throw new NotImplementedException(); }
-
 
 
         public abstract object          CreateInstance();
