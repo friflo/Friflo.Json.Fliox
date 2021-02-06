@@ -139,7 +139,7 @@ namespace Friflo.Json.Burst
 #if JSON_BURST
         private int         readerHandle;
 #else
-        private BytesReader bytesReader;
+        private IBytesReader bytesReader;
 #endif
         private ByteList    inputByteList;
         private int         inputArrayPos;

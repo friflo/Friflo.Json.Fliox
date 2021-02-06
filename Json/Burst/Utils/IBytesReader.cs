@@ -7,12 +7,12 @@ using System.IO;
 
 namespace Friflo.Json.Burst.Utils
 {
-    public interface BytesReader
+    public interface IBytesReader
     {
         int Read(ref ByteList dst, int count);
     }
     
-    public class StreamBytesReader: BytesReader {
+    public class StreamBytesReader: IBytesReader {
         private readonly Stream stream;
 #if JSON_BURST
         private readonly byte[] buffer = new byte[4096];
@@ -39,7 +39,7 @@ namespace Friflo.Json.Burst.Utils
         }
     }
     
-    public class ByteArrayReader: BytesReader {
+    public class ByteArrayReader: IBytesReader {
         private byte[]      array;
         private int         pos;
         private int         end;

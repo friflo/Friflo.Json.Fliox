@@ -4,6 +4,7 @@ using System.Text;
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
+    using Unity.Burst;
     using System.Collections.Generic;
     using Unity.Collections.LowLevel.Unsafe;
 #endif
@@ -60,8 +61,8 @@ namespace Friflo.Json.Burst
                     break;
                 case InputType.ByteReader:
 #if JSON_BURST
-                    var reader = JsonReaders[readerHandle];
-                    readBytes = reader.Read(ref buf.buffer, BufSize);
+                    readBytes = 0;
+                    NonBurstReader.ReadNonBurst(readerHandle, ref buf.buffer, ref readBytes, BufSize);
 #else
                     readBytes = bytesReader.Read(ref buf.buffer, BufSize);
 #endif
@@ -83,7 +84,7 @@ namespace Friflo.Json.Burst
         public void InitParser(StreamBytesReader reader) {
             inputType       = InputType.ByteReader;
 #if JSON_BURST
-            readerHandle = AddReader(reader);
+            readerHandle = NonBurstReader.AddReader(reader);
 #else
             bytesReader     = reader;
 #endif
@@ -92,9 +93,9 @@ namespace Friflo.Json.Burst
         
         public void InitParser(Stream stream) {
             inputType           = InputType.ByteReader;
-            BytesReader reader  = new StreamBytesReader(stream);
+            IBytesReader reader  = new StreamBytesReader(stream);
 #if JSON_BURST
-            readerHandle = AddReader(reader);
+            readerHandle = NonBurstReader.AddReader(reader);
 #else
             bytesReader = reader;
 #endif
@@ -103,9 +104,9 @@ namespace Friflo.Json.Burst
         
         public void InitParser(byte[] array, int start, int count) {
             inputType           = InputType.ByteReader;
-            BytesReader reader  = new ByteArrayReader(array, start, count);
+            IBytesReader reader  = new ByteArrayReader(array, start, count);
 #if JSON_BURST
-            readerHandle = AddReader(reader);
+            readerHandle = NonBurstReader.AddReader(reader);
 #else
             bytesReader = reader;
 #endif
@@ -139,18 +140,26 @@ namespace Friflo.Json.Burst
 #endif
             return len;
         }
-        
+    }
+    
 #if JSON_BURST
-        private static int readerHandleCounter = 0;
-        private static readonly Dictionary<int, BytesReader> JsonReaders = new Dictionary<int, BytesReader>();
+    static class NonBurstReader
+    {
+        private static          int                             readerHandleCounter;
+        private static readonly Dictionary<int, IBytesReader>   JsonReaders = new Dictionary<int, IBytesReader>();
 
-        private static int AddReader(BytesReader reader) {
+        public static int AddReader(IBytesReader reader) {
             JsonReaders.Add(++readerHandleCounter, reader);
             return readerHandleCounter;
         }
-#endif
 
+        [BurstDiscard]
+        public static void ReadNonBurst(int readerHandle, ref ByteList dst, ref int readBytes, int count) {
+            var reader = JsonReaders[readerHandle];
+            readBytes = reader.Read(ref dst, count);
+        }
     }
+#endif
 }
 
 
