@@ -44,9 +44,6 @@ namespace Friflo.Json.Burst
         public  int             StartPos => start;
         public  int             EndPos => end;
 
-
-        private static readonly int     upper2Lower = 'a' - 'A';  // 97 - 65 = 32
-
         public void InitBytes(int capacity) {
             if (!buffer.IsCreated())
                 buffer = new ByteList(capacity, AllocType.Persistent);
