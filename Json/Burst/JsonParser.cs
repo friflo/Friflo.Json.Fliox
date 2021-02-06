@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst.Utils;
 
@@ -135,6 +136,8 @@ namespace Friflo.Json.Burst
         private InputType   inputType;
         //
 #if !JSON_BURST
+        private Stream      inputStream;
+        private bool        inputStreamOpen;
         private byte[]      inputByteArray;
 #endif
         private ByteList    inputByteList;

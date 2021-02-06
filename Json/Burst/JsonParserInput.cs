@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using Friflo.Json.Burst.Utils;
 
@@ -13,6 +14,7 @@ namespace Friflo.Json.Burst
         enum InputType {
             ByteArray,
             ByteList,
+            InputStream,
         }
         
         public string DebugString { get {
@@ -50,14 +52,17 @@ namespace Friflo.Json.Burst
             bool success;
             
             switch (inputType) {
+                case InputType.ByteList:
+                    success = ReadByteList();
+                    break;
 #if !JSON_BURST
                 case InputType.ByteArray:
                     success = ReadByteArray();
                     break;
-#endif
-                case InputType.ByteList:
-                    success = ReadByteList();
+                case InputType.InputStream:
+                    success = ReadInputStream();
                     break;
+#endif
                 default:
                     throw new NotImplementedException("inputType: " + inputType);
             }
@@ -70,9 +75,27 @@ namespace Friflo.Json.Burst
             return false;
         }
         
+#if !JSON_BURST
+        private bool ReadInputStream() {
+            if (!inputStreamOpen)
+                return false;
+
+            bufEnd = inputStream.Read(buf.buffer.array, 0, BufSize);
+            inputStreamOpen = bufEnd != 0; 
+            return inputStreamOpen;
+        }
+        
+        public void InitParser(Stream stream) {
+            inputType       = InputType.InputStream;
+            inputStream     = stream;
+            inputStreamOpen = true;
+            Start();
+        }
+        
+// Note!
 // Using byte[] in Unity is in general possible. But removed for now as a Burst Job cannot be compiled when using
 // a struct containing a managed type (byte[] inputByteArray)
-#if !JSON_BURST
+
         /// <summary>
         /// Before starting iterating a JSON document the parser need be initialized with the document to parse.
         /// </summary>
