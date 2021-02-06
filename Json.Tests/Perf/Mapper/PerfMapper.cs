@@ -96,6 +96,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
             }
         }
 
+#if !UNITY_5_3_OR_NEWER
         
         [Test]
         public void TestCreateBookShelf() {
@@ -114,6 +115,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 Console.WriteLine(end - start);
             }
         }
+#endif
     }
     
     
