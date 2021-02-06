@@ -50,28 +50,23 @@ namespace Friflo.Json.Mapper.Map.Obj
     [CLSCompliant(true)]
 #endif
     public class ClassMapper<T> : TypeMapper<T> {
-        private   readonly Dictionary <string, PropField> strMap      = new Dictionary <string, PropField>(13);
-        private   readonly HashMapOpen<Bytes,  PropField> fieldMap;
+
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         protected readonly PropertyFields                 propFields;
         private   readonly ConstructorInfo                constructor;
-        private   readonly Bytes                          removedKey;
-        
+
         public override string DataTypeName() { return "class"; }
 
        
         protected ClassMapper (Type type, ConstructorInfo constructor, bool isValueType) :
             base (type, IsNullable(type), isValueType)
         {
-            removedKey = new Bytes("__REMOVED");
-            fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
             this.constructor = constructor;
         }
         
         public override void Dispose() {
             base.Dispose();
             propFields.Dispose();
-            removedKey.Dispose();
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -79,14 +74,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             FieldInfo fieldInfo = typeof(ClassMapper<T>).GetField(nameof(propFields), BindingFlags.NonPublic | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);
-            
-            for (int n = 0; n < propFields.num; n++) {
-                PropField   field = propFields.fields[n];
-                if (strMap.ContainsKey(field.name))
-                    throw new InvalidOperationException("assert field is accessible via string lookup");
-                strMap.Add(field.name, field);
-                fieldMap.Put(ref field.nameBytes, field);
-            }
         }
         
         private static bool IsNullable(Type type) {
@@ -106,13 +93,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             return ReflectUtils.CreateInstance(constructor);
         }
 
-        public override PropField GetField (ref Bytes fieldName) {
-            // Note: its likely that hashcode ist not set properly. So calculate anyway
-            fieldName.UpdateHashCode();
-            PropField pf = fieldMap.Get(ref fieldName);
-            return pf;
-        }
-        
         public override PropertyFields GetPropFields() {
             return propFields;
         }

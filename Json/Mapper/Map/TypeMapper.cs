@@ -40,8 +40,6 @@ namespace Friflo.Json.Mapper.Map
         public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
         public abstract bool            ReadValueIL (JsonReader reader, ClassMirror mirror, int primPos, int objPos);
 
-        
-        public abstract PropField       GetField(ref Bytes fieldName);
         public abstract PropertyFields  GetPropFields();
 
         public virtual ClassLayout      GetClassLayout() { throw new NotImplementedException(); }
@@ -91,10 +89,6 @@ namespace Friflo.Json.Mapper.Map
             return Read(reader, default, out success);
         }
 
-        public override PropField GetField(ref Bytes fieldName) {
-            throw new InvalidOperationException("method not applicable");
-        }
-        
         public override PropertyFields GetPropFields() {
             throw new InvalidOperationException("method not applicable");
         }
