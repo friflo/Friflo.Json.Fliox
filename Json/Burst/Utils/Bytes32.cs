@@ -30,28 +30,28 @@ namespace Friflo.Json.Burst.Utils
             fixed (ulong* destPtr = &byte00)
             {
                 if (len <= 8) {
-                    *(destPtr + 0) = *(ulong*)(srcPtr +  0) & Mask >> ((8 - len) << 2);
+                    *(destPtr + 0) = *(ulong*)(srcPtr +  0) & Mask >> ((8 - len) << 3);
                     *(destPtr + 1) = Zero;
                     *(destPtr + 2) = Zero;
                     *(destPtr + 3) = Zero;
                 }
                 else if (len <= 16) {
                     *(destPtr + 0) = *(ulong*)(srcPtr +  0);
-                    *(destPtr + 1) = *(ulong*)(srcPtr +  8) & Mask >> ((16 - len) << 2);
+                    *(destPtr + 1) = *(ulong*)(srcPtr +  8) & Mask >> ((16 - len) << 3);
                     *(destPtr + 2) = Zero;
                     *(destPtr + 3) = Zero;
                 }
                 else if (len <= 24) {
                     *(destPtr + 0) = *(ulong*)(srcPtr +  0);
                     *(destPtr + 1) = *(ulong*)(srcPtr +  8);
-                    *(destPtr + 2) = *(ulong*)(srcPtr + 16) & Mask >> ((24 - len) << 2);
+                    *(destPtr + 2) = *(ulong*)(srcPtr + 16) & Mask >> ((24 - len) << 3);
                     *(destPtr + 3) = Zero;
                 }
                 else if (len <= 32) {
                     *(destPtr + 0) = *(ulong*)(srcPtr +  0);
                     *(destPtr + 1) = *(ulong*)(srcPtr +  8);
                     *(destPtr + 2) = *(ulong*)(srcPtr + 16);
-                    *(destPtr + 3) = *(ulong*)(srcPtr + 24) & Mask >> ((32 - len) << 2);
+                    *(destPtr + 3) = *(ulong*)(srcPtr + 24) & Mask >> ((32 - len) << 3);
                 }
                 else {
                     len = 32;

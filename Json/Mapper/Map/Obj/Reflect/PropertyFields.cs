@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj.Reflect
@@ -15,6 +16,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
     public sealed class PropertyFields : IDisposable
     {
         public  readonly    PropField []                    fields;
+        public  readonly    Bytes32 []                      names32;
         public  readonly    int                             num;
         public  readonly    int                             primCount;
         public  readonly    int                             objCount;
@@ -39,6 +41,8 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
             
             fields = new PropField [num];
+            names32 = new Bytes32[num];
+            
             for (int n = 0; n < num; n++) {
                 fields[n] = fieldList[n];
                 var field = fields[n];
@@ -46,6 +50,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     throw new InvalidOperationException("assert field is accessible via string lookup");
                 strMap.Add(field.name, field);
                 fieldMap.Put(ref field.nameBytes, field);
+                names32[n].FromBytes(ref field.nameBytes);
             }
             fieldList. Clear();
         }
@@ -55,6 +60,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             fieldName.UpdateHashCode();
             PropField pf = fieldMap.Get(ref fieldName);
             return pf;
+        }
+        
+        public PropField GetField32 (JsonReader reader, ref Bytes fieldName) {
+            reader.searchKey.FromBytes(ref fieldName);
+            for (int n = 0; n < num; n++) {
+                if (reader.searchKey.IsEqual(ref names32[n]))
+                    return fields[n];
+            }
+            return null;
         }
         
         public void Dispose() {

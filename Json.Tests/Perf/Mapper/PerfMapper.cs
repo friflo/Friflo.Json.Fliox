@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
         public void TestReadToBookShelf() {
             var shelf = CreateBookShelf();
             Bytes json = CreateBookShelfJson();
-            for (int n = 0; n < 4; n++) {
+            for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
                 using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
