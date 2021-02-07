@@ -95,6 +95,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         internal static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
             ref var parser = ref reader.parser;
             JsonEvent ev = parser.Event;
+            var propFields = classType.propFields;
 
             while (true) {
                 bool success;
@@ -103,7 +104,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         PropField field;
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         if (fieldType.isValueType) {
@@ -122,7 +123,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                         }
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable) {
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
@@ -135,7 +136,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         fieldType = field.fieldType;
                         if (fieldType.isValueType) {

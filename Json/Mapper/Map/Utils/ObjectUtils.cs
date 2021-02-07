@@ -71,5 +71,15 @@ namespace Friflo.Json.Mapper.Map.Utils
             return null;
         }
         
+        public static PropField GetField32(JsonReader reader, PropertyFields propFields) {
+            reader.searchKey.FromBytes(ref reader.parser.key);
+            for (int n = 0; n < propFields.num; n++) {
+                if (reader.searchKey.IsEqual(ref propFields.names32[n]))
+                    return propFields.fields[n];
+            }
+            reader.parser.SkipEvent();
+            return null;
+        }
+        
     }
 }

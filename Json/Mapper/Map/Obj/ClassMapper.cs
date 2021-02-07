@@ -156,6 +156,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             
             ref var parser = ref reader.parser;
             JsonEvent ev = parser.Event;
+            var propFields = classType.propFields;
 
             while (true) {
                 object elemVar;
@@ -164,7 +165,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         PropField field;
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         elemVar = fieldType.ReadObject(reader, null, out success);
@@ -173,7 +174,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         field.SetField(obj, elemVar); // set also to null in error case
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable) {
                             ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
@@ -183,7 +184,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        if ((field = ObjectUtils.GetField(reader, classType)) == null)
+                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         fieldType = field.fieldType;
                         elemVar = field.GetField(obj);

@@ -62,15 +62,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             return pf;
         }
         
-        public PropField GetField32 (JsonReader reader, ref Bytes fieldName) {
-            reader.searchKey.FromBytes(ref fieldName);
-            for (int n = 0; n < num; n++) {
-                if (reader.searchKey.IsEqual(ref names32[n]))
-                    return fields[n];
-            }
-            return null;
-        }
-        
         public void Dispose() {
             for (int i = 0; i < fields.Length; i++)
                 fields[i].Dispose();
