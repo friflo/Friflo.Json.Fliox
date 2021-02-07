@@ -41,6 +41,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 builder.Append((char)('@' + n));
             }
             
+            src.Clear();
+            // for (int n = 0; n <= 50_000_000; n++)
+            //     bytes32.FromBytes(ref src);
+            
+            // for (int n = 0; n <= 300_000_000; n++)
+            //     bytes32.IsEqual(ref bytes32);
+            
+            
             src.Dispose();
             dst.Dispose();
         }

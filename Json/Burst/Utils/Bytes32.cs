@@ -88,5 +88,9 @@ namespace Friflo.Json.Burst.Utils
             ToBytes(ref str);
             return str.ToString();
         }
+
+        public bool IsEqual(ref Bytes32 other) {
+            return byte00 == other.byte00 && byte08 == other.byte08 && byte16 == other.byte16 && byte24 == other.byte24;
+        }
     }
 }
