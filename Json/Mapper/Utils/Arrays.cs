@@ -11,24 +11,6 @@ namespace Friflo.Json.Mapper.Utils
 #endif
     public static class Arrays
     {
-        public static T[] CopyOf <T> (T[] src, int length)
-        {
-            T[] dst = new T[length];
-            if (src != null) {
-                int min = Math.Min(length, src.Length);
-                Array.Copy(src, dst, min);
-            }
-            return dst;
-        }
-
-        public static Array CopyOfType (Type type, Array src, int length)
-        {
-            Array dst = Array.CreateInstance(type, length);
-            int min = Math.Min (length, src. Length);
-            Array.Copy(src, dst, min);
-            return dst;
-        }
-
         public static Array CreateInstance (Type componentType, int length)
         {
             return Array. CreateInstance (componentType, length);

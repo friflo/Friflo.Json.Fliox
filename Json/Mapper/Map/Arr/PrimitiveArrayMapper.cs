@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (!success)
                             return default;
                         if (index >= len)
-                            array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = ReadUtils.Inc(len));
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return default;
                         }
                         if (index >= len)
-                            array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = ReadUtils.Inc(len));
                         array[index++] = default;
                         break;
                     case JsonEvent.ArrayStart:
@@ -131,12 +131,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (!success)
                             return default;
                         if (index >= len)
-                            array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = ReadUtils.Inc(len));
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
-                            array = Arrays.CopyOf(array, index);
+                            array = CopyArray(array, index);
                         success = true;
                         return array;
                     case JsonEvent.Error:
