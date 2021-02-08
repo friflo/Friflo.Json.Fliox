@@ -95,11 +95,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             ref var parser = ref reader.parser;
             T[] array = slot;
-            if (array == null)
-                array = new T[ReadUtils.minLen];
+
             bool nullable = elementType.isNullable;
 
-            int len = array.Length;
+            int len = array?.Length ?? 0;
             int index = 0;
             while (true) {
                 T elemVar;
@@ -121,6 +120,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                             ReadUtils.ErrorIncompatible<T[]>(reader, "array element", elementType, ref parser, out success);
                             return default;
                         }
+                        if (index >= len)
+                            array = Arrays.CopyOf(array, len = ReadUtils.Inc(len));
                         array[index++] = default;
                         break;
                     case JsonEvent.ArrayStart:

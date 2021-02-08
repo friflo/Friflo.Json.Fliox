@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
@@ -50,7 +50,8 @@ namespace Friflo.Json.Mapper.Map.Obj
     [CLSCompliant(true)]
 #endif
     public class ClassMapper<T> : TypeMapper<T> {
-        private   readonly ConstructorInfo                constructor;
+        private readonly ConstructorInfo    constructor;
+        private readonly Func<T>            createInstance;
 
         public override string DataTypeName() { return "class"; }
 
@@ -59,11 +60,18 @@ namespace Friflo.Json.Mapper.Map.Obj
             base (type, IsNullable(type), isValueType)
         {
             this.constructor = constructor;
+            var lambda = CreateInstanceExpression();
+            createInstance = lambda.Compile();
         }
         
         public override void Dispose() {
             base.Dispose();
             propFields.Dispose();
+        }
+
+        private static Expression<Func<T>> CreateInstanceExpression () {
+            Expression create = Expression.New(typeof(T));
+            return Expression.Lambda<Func<T>> (create);
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -79,8 +87,10 @@ namespace Friflo.Json.Mapper.Map.Obj
             return TypeUtils.GetNullableStruct (type) != null;
         }
         
-        public override object CreateInstance()
-        {
+        public override object CreateInstance() {
+            if (createInstance != null)
+                return createInstance();
+            
             if (constructor == null) {
                 // Is it a struct?
                 if (type.IsValueType)
