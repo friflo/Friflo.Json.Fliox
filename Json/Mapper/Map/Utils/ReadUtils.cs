@@ -12,10 +12,10 @@ namespace Friflo.Json.Mapper.Map.Utils
     public static class ReadUtils
     {
     
-        public static readonly int minLen = 8;
+        public static readonly int minLen = 1;
 
         public static int Inc(int len) {
-            return len < 5 ? minLen : 2 * len;
+            return 2 * len;
         }
         
         public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, TypeMapper expectType, ref JsonParser parser, out bool success) {
