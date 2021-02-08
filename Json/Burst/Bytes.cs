@@ -318,6 +318,11 @@ namespace Friflo.Json.Burst
                 dst = new char[maxCharCount];
 
             int writtenChars = utf8.GetChars(buffer.array, start, Len, dst, 0);
+            /* unsafe {
+                fixed (char* chars = dst) {
+                    return new string(chars, 0, writtenChars);
+                }
+            } */
             return new string(dst, 0, writtenChars);
 #endif
         }
