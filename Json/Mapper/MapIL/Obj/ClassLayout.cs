@@ -5,7 +5,6 @@
 
 using System;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.MapIL.Utils;
 
 namespace Friflo.Json.Mapper.MapIL.Obj
@@ -20,21 +19,21 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             objCount        = mapper.propFields.objCount;
         }
 
-        internal abstract void LoadObjectToMirror(long?[] dstPrim, object[] dstObj, object src);
+        internal abstract void LoadObjectToMirror  (long?[] dstPrim, object[] dstObj, object src);
         internal abstract void StoreMirrorToPayload(object dst, long?[] srcPrim, object[] srcObj);
     }
 
     public class ClassLayout<T> : ClassLayout
     {
-        private readonly Action<long?[], object[], T> loadObjectToPayload;
-        private readonly Action<T, long?[], object[]> storePayloadToObject;
+        private readonly Action<long?[], object[], T> loadObjectToMirror;
+        private readonly Action<T, long?[], object[]> storeMirrorToObject;
         
         internal ClassLayout(TypeMapper mapper, StoreConfig config) : base(mapper) {
-            loadObjectToPayload = null;
-            storePayloadToObject = null;
+            loadObjectToMirror = null;
+            storeMirrorToObject = null;
 
             // create load/store instance expression
-            Action<long?[], object[], T> load = null;
+            Action<long?[], object[], T> load  = null;
             Action<T, long?[], object[]> store = null;
             if (config.useIL) {
                 var loadLambda = ILCodeGen.LoadInstanceExpression<T>(mapper);
@@ -44,24 +43,24 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 store = storeLambda.Compile();
             }
 
-            loadObjectToPayload = load;
-            storePayloadToObject = store;
+            loadObjectToMirror  = load;
+            storeMirrorToObject = store;
         }
 
         internal void LoadObjectToMirror(long?[] dstPrim, object[] dstObj, T src) {
-            loadObjectToPayload(dstPrim, dstObj, src);
+            loadObjectToMirror(dstPrim, dstObj, src);
         }
 
         internal void StoreMirrorToPayload(T dst, long?[] srcPrim, object[] srcObj) {
-            storePayloadToObject(dst, srcPrim, srcObj);
+            storeMirrorToObject(dst, srcPrim, srcObj);
         }
 
         internal override void LoadObjectToMirror(long?[] dstPrim, object[] dstObj, object src) {
-            loadObjectToPayload(dstPrim, dstObj, (T)src);
+            loadObjectToMirror(dstPrim, dstObj, (T)src);
         }
 
         internal override void StoreMirrorToPayload(object dst, long?[] srcPrim, object[] srcObj) {
-            storePayloadToObject((T)dst, srcPrim, srcObj);
+            storeMirrorToObject((T)dst, srcPrim, srcObj);
         }
     }
 }
