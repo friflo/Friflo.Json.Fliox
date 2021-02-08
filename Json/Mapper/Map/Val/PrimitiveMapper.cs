@@ -36,9 +36,9 @@ namespace Friflo.Json.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return ValueUtils.CheckElse(reader, this, out success);
             success = true;
-            if (slot != null && reader.parser.value.IsEqualString(slot))
-                return slot;
-            return reader.parser.value.ToString();
+            return reader.parser.value.GetString(ref reader.charBuf);
+            // return reader.parser.value.ToString();
+            // return null;
         }
     }
     

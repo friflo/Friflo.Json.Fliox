@@ -25,6 +25,7 @@ namespace Friflo.Json.Mapper
         /// without creating a string on the heap.</summary>
         public              Bytes               strBuf          = new Bytes(0);
         public              Bytes32             searchKey       = new Bytes32();
+        public              char[]              charBuf         = new char[128];
         /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef          = new BytesString();

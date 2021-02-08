@@ -307,6 +307,22 @@ namespace Friflo.Json.Burst
             return Encoding.UTF8.GetString(data.array, pos, size);
 #endif
         }
+        
+        public string GetString (ref char[] dst)
+        {
+#if JSON_BURST
+            return ToString();
+#else
+            int maxCharCount = utf8.GetMaxCharCount(Len);
+            if (maxCharCount > dst.Length)
+                dst = new char[maxCharCount];
+
+            int writtenChars = utf8.GetChars(buffer.array, start, Len, dst, 0);
+            return new string(dst, 0, writtenChars);
+#endif
+        }
+        
+        private static readonly UTF8Encoding utf8 = new UTF8Encoding(false);
 
         /*
          * Must not by called from Burst. Burst cant handle managed types
@@ -314,7 +330,7 @@ namespace Friflo.Json.Burst
         public void FromString(string str) {
             if (str == null)
                 throw new NullReferenceException("FromString() - string parameter must not be null");
-            int maxByteLen = Encoding.UTF8.GetMaxByteCount(str.Length);
+            int maxByteLen = utf8.GetMaxByteCount(str.Length);
             EnsureCapacity(maxByteLen);
 
 #if JSON_BURST
@@ -327,7 +343,7 @@ namespace Friflo.Json.Burst
                 }
             }
 #else
-            int byteLen = Encoding.UTF8.GetBytes(str, 0, str.Length, buffer.array, start);
+            int byteLen = utf8.GetBytes(str, 0, str.Length, buffer.array, start);
 #endif
             end += byteLen;
             hc = BytesConst.notHashed;
