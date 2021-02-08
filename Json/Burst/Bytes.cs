@@ -323,6 +323,8 @@ namespace Friflo.Json.Burst
                     return new string(chars, 0, writtenChars);
                 }
             } */
+            /* ReadOnlySpan<char> span = new ReadOnlySpan<char>(dst, 0, writtenChars);
+               return new string(span); */
             return new string(dst, 0, writtenChars);
 #endif
         }

@@ -89,7 +89,8 @@ namespace Friflo.Json.Tests.Perf.Mapper
         public void TestReadTo() {
             var shelf = CreateBookShelf();
             Bytes json = CreateBookShelfJson();
-            for (int n = 0; n < 10; n++) {
+            for (int n = 0; n < 20; n++) {
+                GC.Collect();
                 int start = TimeUtil.GetMs();
                 using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
@@ -105,7 +106,8 @@ namespace Friflo.Json.Tests.Perf.Mapper
         [Test]
         public void TestRead() {
             Bytes json = CreateBookShelfJson();
-            for (int n = 0; n < 10; n++) {
+            for (int n = 0; n < 20; n++) {
+                GC.Collect();
                 int start = TimeUtil.GetMs();
                 using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
@@ -125,7 +127,8 @@ namespace Friflo.Json.Tests.Perf.Mapper
             for (int n = 0; n < 1_000_000; n++) {
                 titles.Add( $"Book {n}");
             }
-            for (int i = 0; i < 30; i++) {
+            for (int i = 0; i < 20; i++) {
+                GC.Collect();
                 int start = TimeUtil.GetMs();
                 bookShelf = new BookShelf { Books = new List<Book>(1000_000) };
                 for (int n = 0; n < 1_000_000; n++) {
