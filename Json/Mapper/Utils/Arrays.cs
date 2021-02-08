@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Utils
     {
         public static T[] CopyOf <T> (T[] src, int length)
         {
-            T[] dst = (T[])Array.CreateInstance(typeof (T), length);
+            T[] dst = new T[length];
             int min = Math.Min (length, src. Length);
             Array.Copy(src, dst, min);
             return dst;
