@@ -121,13 +121,14 @@ namespace Friflo.Json.Mapper.Map.Arr
             int startLen = list.Count;
             int index = 0;
             while (true) {
-                T elemVar;
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        elemVar = default;
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
+                        T elemVar = default;
                         elemVar = elementType.Read(reader, elemVar, out success);
                         if (!success)
                             return default;
@@ -139,14 +140,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                             return default;
                         }
                         PrimitiveList.AddListItemNull(list, index++, startLen);
-                        break;
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
-                        if (!success)
-                            return default;
-                        PrimitiveList.AddListItem(list, elemVar, index++, startLen);
                         break;
                     case JsonEvent.ArrayEnd:
                         if (startLen - index > 0)
