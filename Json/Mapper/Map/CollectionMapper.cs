@@ -21,11 +21,12 @@ namespace Friflo.Json.Mapper.Map
         private  readonly   Type                keyType;
 
         internal CollectionMapper (
+            StoreConfig         config,
             Type                type,
             Type                elementType,
             int                 rank,
             Type                keyType,
-            ConstructorInfo     constructor) : base (type, true, false)
+            ConstructorInfo     constructor) : base (config, type, true, false)
         {
             this.keyType        = keyType;
             elementTypeNative   = elementType;

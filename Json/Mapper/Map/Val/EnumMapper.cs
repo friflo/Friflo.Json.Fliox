@@ -17,14 +17,15 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (!IsEnum(type, out bool _))
                 return null;
+            object[] constructorParams = {config, type};
 #if !UNITY_5_3_OR_NEWER
             if (config.useIL) {
-                object[] constructorParams = {type};
-                // new EnumILMapper<T>(type);
+                // new EnumILMapper<T>(config, type);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EnumILMapper<>), new[] {type}, constructorParams);
             }
 #endif
-            var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}); // new EnumMapper<T> ()
+            // new EnumMapper<T> (config, type)
+            var enumMapper = TypeMapperUtils.CreateGenericInstance(typeof(EnumMapper<>), new[] {type}, constructorParams);
             return (TypeMapper)enumMapper;
         }
         
@@ -66,8 +67,8 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public override string DataTypeName() { return "enum"; }
         
-        public EnumMapper() :
-            base (typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
+        public EnumMapper(StoreConfig config, Type type) :
+            base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
         {
             Type enumType = isNullable ? underlyingType : type;
             // ReSharper disable once PossibleNullReferenceException

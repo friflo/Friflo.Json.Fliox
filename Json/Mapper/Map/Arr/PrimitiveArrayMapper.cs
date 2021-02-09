@@ -15,17 +15,19 @@ namespace Friflo.Json.Mapper.Map.Arr
                 int rank = type.GetArrayRank();
                 if (rank > 1)
                     return null; // todo implement multi dimensional array support
-                return Find(type);
+                return Find(config, type);
             }
             return null;
         }
 
         class Query {
-            public  TypeMapper hit;
+            public TypeMapper   hit;
+            public StoreConfig  config;
         }
 
-        TypeMapper Find(Type type) {
+        TypeMapper Find(StoreConfig  config, Type type) {
             Query query = new Query();
+            query.config = config;
             if (Match<double>   (type, query)) return query.hit;
             if (Match<float>    (type, query)) return query.hit;
             if (Match<long>     (type, query)) return query.hit;
@@ -52,7 +54,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 return false;
             
             // new PrimitiveArrayMapper<T>(type);
-            object[] constructorParams = {type };
+            object[] constructorParams = {query.config, type };
             query.hit = (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveArrayMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
@@ -65,8 +67,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     {
         public override string DataTypeName() { return "array"; }
         
-        public PrimitiveArrayMapper(Type type) :
-            base(type, typeof(T), 1, typeof(string), null) {
+        public PrimitiveArrayMapper(StoreConfig config, Type type) :
+            base(config, type, typeof(T), 1, typeof(string), null) {
         }
 
         public override void Write(JsonWriter writer, T[] slot) {

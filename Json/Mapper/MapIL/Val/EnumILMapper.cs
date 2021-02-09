@@ -34,8 +34,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
         
         public override string DataTypeName() { return "enum"; }
         
-        public EnumILMapper(Type type) :
-            base(typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
+        public EnumILMapper(StoreConfig config, Type type) :
+            base(config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
         {
             Type enumType = isNullable ? underlyingType : type;
             underlyingEnumType = Enum.GetUnderlyingType(enumType);

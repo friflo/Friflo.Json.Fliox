@@ -23,8 +23,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (constructor == null)
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
-                object[] constructorParams = {type, elementType, constructor};
-                // new ListMapper<IList<TElm>,TElm>  (type, elementType, constructor);
+                object[] constructorParams = {config, type, elementType, constructor};
+                // new ListMapper<IList<TElm>,TElm>  (config, type, elementType, constructor);
                 var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
@@ -39,8 +39,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     {
         public override string DataTypeName() { return "List"; }
         
-        public ListMapper(Type type, Type elementType, ConstructorInfo constructor) :
-            base(type, elementType, 1, typeof(string), constructor) {
+        public ListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
+            base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
         public override void Write(JsonWriter writer, TCol slot) {

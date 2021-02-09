@@ -22,8 +22,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (ReflectUtils.IsAssignableFrom(typeof(Object), elementType)) {
                     ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                     // ReSharper disable once ExpressionIsAlwaysNull
-                    object[] constructorParams = {type, elementType, constructor};
-                    // new ArrayMapper<T>(type, elementType, constructor);
+                    object[] constructorParams = {config, type, elementType, constructor};
+                    // new ArrayMapper<T>(config, type, elementType, constructor);
                     var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ArrayMapper<>), new[] {elementType}, constructorParams);
                     return (TypeMapper) newInstance;
                 }
@@ -40,8 +40,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     {
         public override string DataTypeName() { return "array"; }
 
-        public ArrayMapper(Type type, Type elementType, ConstructorInfo constructor) :
-            base(type, elementType, 1, typeof(string), constructor) {
+        public ArrayMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
+            base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
         public override void Write(JsonWriter writer, TElm[] slot) {

@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(DateTime))
                 return null;
-            return new DateTimeMapper (type);
+            return new DateTimeMapper (config, type);
         }
     }
     
@@ -25,8 +25,8 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public override string DataTypeName() { return "DateTime"; }
         
-        public DateTimeMapper(Type type) :
-            base (type, TypeUtils.IsPrimitiveNullable(type), false) {
+        public DateTimeMapper(StoreConfig config, Type type) :
+            base (config, type, TypeUtils.IsPrimitiveNullable(type), false) {
         }
 
         public override void Write(JsonWriter writer, DateTime value) {

@@ -15,8 +15,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
     {
 
 
-        public StructILMapper(Type type, ConstructorInfo constructor, bool isValueType) :
-            base(type, constructor, isValueType)
+        public StructILMapper(StoreConfig config, Type type, ConstructorInfo constructor, bool isValueType) :
+            base(config, type, constructor, isValueType)
         {
         }
         

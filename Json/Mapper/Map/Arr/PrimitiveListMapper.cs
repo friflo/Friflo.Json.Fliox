@@ -36,17 +36,19 @@ namespace Friflo.Json.Mapper.Map.Arr
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( List<>) );
             if (args != null) {
                 Type elementType = args[0];
-                return Find(type, elementType);
+                return Find(config, type, elementType);
             }
             return null;
         }
         
          class Query {
-            public  TypeMapper hit;
-        }
+            public TypeMapper   hit;
+            public StoreConfig  config;
+         }
 
-         TypeMapper Find(Type type, Type elementType) {
+         TypeMapper Find(StoreConfig config, Type type, Type elementType) {
             Query query = new Query();
+            query.config = config;
             if (Match<double>   (type, elementType, query)) return query.hit;
             if (Match<float>    (type, elementType, query)) return query.hit;
             if (Match<long>     (type, elementType, query)) return query.hit;
@@ -72,8 +74,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (constructor == null)
                 constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-            //  new PrimitiveListMapper<T> (type, constructor);
-            object[] constructorParams = { type, constructor };
+            //  new PrimitiveListMapper<T> (config, type, constructor);
+            object[] constructorParams = { query.config, type, constructor };
             query.hit = (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PrimitiveListMapper<>), new[] {elementType}, constructorParams);
             return true;
         }
@@ -86,8 +88,8 @@ namespace Friflo.Json.Mapper.Map.Arr
     {
         public override string DataTypeName() { return "List"; }
         
-        public PrimitiveListMapper(Type type, ConstructorInfo constructor) :
-            base(type, typeof(T), 1, typeof(string), constructor) {
+        public PrimitiveListMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
+            base(config, type, typeof(T), 1, typeof(string), constructor) {
         }
 
         public override void Write(JsonWriter writer, List<T> slot) {

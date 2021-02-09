@@ -9,12 +9,12 @@ namespace Friflo.Json.Mapper.Map
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            return CreateTypeNotSupported(type, "");
+            return CreateTypeNotSupported(config, type, "");
         }
 
-        public static TypeMapper CreateTypeNotSupported(Type type, string msg) {
-            //  new TypeNotSupportedMapper (type, "Type not supported. Type: " + type);
-            object[] constructorParams = {type, $"Type not supported. {msg} Type: " + type};
+        public static TypeMapper CreateTypeNotSupported(StoreConfig config, Type type, string msg) {
+            //  new TypeNotSupportedMapper (config, type, "Type not supported. Type: " + type);
+            object[] constructorParams = {config, type, $"Type not supported. {msg} Type: " + type};
             var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(TypeNotSupportedMapper<>), new[] {type}, constructorParams);
             return (TypeMapper) newInstance;
         }
@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Map
         
         public override string DataTypeName() { return "unsupported type"; }
 
-        public TypeNotSupportedMapper(Type type, string msg) : base(type, true, false) {
+        public TypeNotSupportedMapper(StoreConfig config, Type type, string msg) : base(config, type, true, false) {
             this.msg = msg;
         }
 

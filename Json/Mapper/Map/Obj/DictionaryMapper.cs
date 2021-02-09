@@ -20,13 +20,13 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (args != null) {
                 Type keyType = args[0];
                 if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                    return TypeNotSupportedMatcher.CreateTypeNotSupported(type, "Dictionary only support string as key type");
+                    return TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Dictionary only support string as key type");
                 Type elementType = args[1];
                 ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
                 if (constructor == null)
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
-                object[] constructorParams = {type, constructor};
-                // return new DictionaryMapper<object>  (type, constructor);
+                object[] constructorParams = {config, type, constructor};
+                // return new DictionaryMapper<TElm>  (config, type, constructor);
                 var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<>), new[] {elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
@@ -41,8 +41,8 @@ namespace Friflo.Json.Mapper.Map.Obj
     {
         public override string DataTypeName() { return "Dictionary"; }
         
-        public DictionaryMapper(Type type, ConstructorInfo constructor) :
-            base(type, typeof(TElm), 1, typeof(string), constructor) {
+        public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
+            base(config, type, typeof(TElm), 1, typeof(string), constructor) {
         }
 
         public override void Write(JsonWriter writer, Dictionary<string, TElm> slot) {

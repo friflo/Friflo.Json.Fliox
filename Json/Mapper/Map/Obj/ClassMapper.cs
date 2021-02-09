@@ -27,19 +27,18 @@ namespace Friflo.Json.Mapper.Map.Obj
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (type.IsClass || type.IsValueType) {
-                object[] constructorParams = {type, constructor, type.IsValueType};
+                object[] constructorParams = {config, type, constructor, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
                     if (type.IsValueType) {
-                        // new StructMapper<T>(type, constructor);
-                        return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>),
-                            new[] {type}, constructorParams);
+                        // new StructMapper<T>(config, type, constructor);
+                        return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(StructILMapper<>), new[] {type}, constructorParams);
                     }
-                    // new ClassILMapper<T>(type, constructor);
+                    // new ClassILMapper<T>(config, type, constructor);
                     return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassILMapper<>), new[] {type}, constructorParams);
                 }
 #endif
-                // new ClassMapper<T>(type, constructor);
+                // new ClassMapper<T>(config, type, constructor);
                 return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(ClassMapper<>), new[] {type}, constructorParams);
             }
             return null;
@@ -56,8 +55,8 @@ namespace Friflo.Json.Mapper.Map.Obj
         public override string DataTypeName() { return "class"; }
 
        
-        protected ClassMapper (Type type, ConstructorInfo constructor, bool isValueType) :
-            base (type, IsNullable(type), isValueType)
+        protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, bool isValueType) :
+            base (config, type, IsNullable(type), isValueType)
         {
             this.constructor = constructor;
             var lambda = CreateInstanceExpression();

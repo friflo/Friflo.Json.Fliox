@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(string))
                 return null;
-            return new StringMapper(type);
+            return new StringMapper(config, type);
         }
     }
     
@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public override string DataTypeName() { return "string"; }
         
-        public StringMapper(Type type) : base (type, true, false) { }
+        public StringMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
         public override void Write(JsonWriter writer, string slot) {
             WriteUtils.WriteString(writer, (slot));
@@ -48,16 +48,16 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(double))
-                return config.useIL ? new DoubleFieldMapper(type) : new DoubleMapper (type);
+                return config.useIL ? new DoubleFieldMapper(config, type) : new DoubleMapper (config, type);
             if (type == typeof(double?))
-                return config.useIL ? new NullableDoubleFieldMapper(type) : new NullableDoubleMapper (type);
+                return config.useIL ? new NullableDoubleFieldMapper(config, type) : new NullableDoubleMapper (config, type);
             return null;
         }
     }
     public class DoubleMapper : TypeMapper<double> {
         public override string DataTypeName() { return "double"; }
         
-        public DoubleMapper(Type type) : base (type, false, true) { }
+        public DoubleMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
         public override void Write(JsonWriter writer, double slot) {
             writer.format.AppendDbl(ref writer.bytes, slot);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableDoubleMapper : TypeMapper<double?> {
         public override string DataTypeName() { return "double?"; }
         
-        public NullableDoubleMapper(Type type) : base (type, true, true) { }
+        public NullableDoubleMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
         public override void Write(JsonWriter writer, double? slot) {
             writer.format.AppendDbl(ref writer.bytes, (double)slot);
@@ -89,16 +89,16 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(float))
-                return config.useIL ? new FloatFieldMapper(type) : new FloatMapper (type); 
+                return config.useIL ? new FloatFieldMapper(config, type) : new FloatMapper (config, type); 
             if (type == typeof(float?))
-                return config.useIL ? new NullableFloatFieldMapper(type) : new NullableFloatMapper (type); 
+                return config.useIL ? new NullableFloatFieldMapper(config, type) : new NullableFloatMapper (config, type); 
             return null;
         }
     }
     public class FloatMapper : TypeMapper<float> {
         public override string DataTypeName() { return "float"; }
 
-        public FloatMapper(Type type) : base (type, false, true) { }
+        public FloatMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
         public override void Write(JsonWriter writer, float slot) {
             writer.format.AppendFlt(ref writer.bytes, slot);
@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableFloatMapper : TypeMapper<float?> {
         public override string DataTypeName() { return "float?"; }
 
-        public NullableFloatMapper(Type type) : base (type, true, true) { }
+        public NullableFloatMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
         public override void Write(JsonWriter writer, float? slot) {
             writer.format.AppendFlt(ref writer.bytes, (float)slot);
@@ -130,16 +130,16 @@ namespace Friflo.Json.Mapper.Map.Val
                 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(long))
-                return config.useIL ? new LongFieldMapper(type) : new LongMapper (type);
+                return config.useIL ? new LongFieldMapper(config, type) : new LongMapper (config, type);
             if (type == typeof(long?))
-                return config.useIL ? new NullableLongFieldMapper(type) : new NullableLongMapper (type);
+                return config.useIL ? new NullableLongFieldMapper(config, type) : new NullableLongMapper (config, type);
             return null;
         }
     }
     public class LongMapper : TypeMapper<long> {
         public override string DataTypeName() { return "long"; }
 
-        public LongMapper(Type type) : base (type, false, true) { }
+        public LongMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
         public override void Write(JsonWriter writer, long slot) {
             writer.format.AppendLong(ref writer.bytes, slot);
@@ -154,7 +154,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableLongMapper : TypeMapper<long?> {
         public override string DataTypeName() { return "long?"; }
 
-        public NullableLongMapper(Type type) : base (type, true, true) { }
+        public NullableLongMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
         public override void Write(JsonWriter writer, long? slot) {
             writer.format.AppendLong(ref writer.bytes, (long)slot);
@@ -172,16 +172,16 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(int))
-                return config.useIL ? new IntFieldMapper(type) : new IntMapper (type); 
+                return config.useIL ? new IntFieldMapper(config, type) : new IntMapper (config, type); 
             if (type == typeof(int?))
-                return config.useIL ? new NullableIntFieldMapper(type) : new NullableIntMapper(type);
+                return config.useIL ? new NullableIntFieldMapper(config, type) : new NullableIntMapper(config, type);
             return null;
         }
     }
     public class IntMapper : TypeMapper<int> {
         public override string DataTypeName() { return "int"; }
 
-        public IntMapper(Type type) : base (type, false, true) { }
+        public IntMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
         public override void Write(JsonWriter writer, int slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
@@ -195,7 +195,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableIntMapper : TypeMapper<int?> {
         public override string DataTypeName() { return "int?"; }
 
-        public NullableIntMapper(Type type) : base (type, true, true) { }
+        public NullableIntMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
         public override void Write(JsonWriter writer, int? slot) {
             writer.format.AppendInt(ref writer.bytes, (int)slot);
@@ -213,16 +213,16 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(short))
-                return config.useIL ? new ShortFieldMapper(type) : new ShortMapper (type);
+                return config.useIL ? new ShortFieldMapper(config, type) : new ShortMapper (config, type);
             if (type == typeof(short?))
-                return config.useIL ? new NullableShortFieldMapper(type) : new NullableShortMapper (type);
+                return config.useIL ? new NullableShortFieldMapper(config, type) : new NullableShortMapper (config, type);
             return null;
         }
     }
     public class ShortMapper : TypeMapper<short> {
         public override string DataTypeName() { return "short"; }
         
-        public ShortMapper(Type type) : base (type, false, true) { }
+        public ShortMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
         public override void Write(JsonWriter writer, short slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
@@ -237,7 +237,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableShortMapper : TypeMapper<short?> {
         public override string DataTypeName() { return "short?"; }
         
-        public NullableShortMapper(Type type) : base (type, true, true) { }
+        public NullableShortMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
         public override void Write(JsonWriter writer, short? slot) {
             writer.format.AppendInt(ref writer.bytes, (short)slot);
@@ -257,16 +257,16 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(byte))
-                return config.useIL ? new ByteFieldMapper(type) : new ByteMapper (type); 
+                return config.useIL ? new ByteFieldMapper(config, type) : new ByteMapper (config, type); 
             if (type == typeof(byte?))
-                return config.useIL ? new NullableByteFieldMapper(type) : new NullableByteMapper(type);
+                return config.useIL ? new NullableByteFieldMapper(config, type) : new NullableByteMapper(config, type);
             return null;
         }
     }
     public class ByteMapper : TypeMapper<byte> {
         public override string DataTypeName() { return "byte"; }
 
-        public ByteMapper(Type type) : base (type, false, true) { }
+        public ByteMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
         public override void Write(JsonWriter writer, byte slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
@@ -281,7 +281,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableByteMapper : TypeMapper<byte?> {
         public override string DataTypeName() { return "byte?"; }
 
-        public NullableByteMapper(Type type) : base (type, true, true) { }
+        public NullableByteMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
         public override void Write(JsonWriter writer, byte? slot) {
             writer.format.AppendInt(ref writer.bytes, (byte)slot);
@@ -300,9 +300,9 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type == typeof(bool))
-                return config.useIL ? new BoolFieldMapper(type) : new BoolMapper (type);
+                return config.useIL ? new BoolFieldMapper(config, type) : new BoolMapper (config, type);
             if (type == typeof(bool?))
-                return config.useIL ? new NullableBoolFieldMapper(type) : new NullableBoolMapper (type);
+                return config.useIL ? new NullableBoolFieldMapper(config, type) : new NullableBoolMapper (config, type);
             return null;
         }
     }
@@ -310,7 +310,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class BoolMapper : TypeMapper<bool> {
         public override string DataTypeName() { return "bool"; }
         
-        public BoolMapper(Type type) : base (type, false, true) { }
+        public BoolMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
         public override void Write(JsonWriter writer, bool slot) {
             writer.format.AppendBool(ref writer.bytes, slot);
@@ -325,7 +325,7 @@ namespace Friflo.Json.Mapper.Map.Val
     public class NullableBoolMapper : TypeMapper<bool?> {
         public override string DataTypeName() { return "bool?"; }
         
-        public NullableBoolMapper(Type type) : base (type, true, true) { }
+        public NullableBoolMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
         public override void Write(JsonWriter writer, bool? slot) {
             writer.format.AppendBool(ref writer.bytes, (bool)slot);

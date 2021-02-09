@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(BigInteger))
                 return null;
-            return new BigIntMapper (type);
+            return new BigIntMapper (config, type);
         }
     }
     
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public override string DataTypeName() { return "BigInteger"; }
 
-        public BigIntMapper(Type type) : base (type, true, false) { }
+        public BigIntMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
         public override void Write(JsonWriter writer, BigInteger value) {
             WriteUtils.WriteString(writer, value.ToString());

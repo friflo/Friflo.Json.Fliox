@@ -25,7 +25,9 @@ namespace Friflo.Json.Mapper.Map
         public              ClassLayout layout;  // todo make readonly
 
 
-        protected TypeMapper(Type type, bool isNullable, bool isValueType) {
+        protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
+            if (config == null)
+                throw new InvalidOperationException("Expect config != null");
             this.type           = type;
             this.isNullable     = isNullable;
             this.isValueType    = isValueType;
@@ -58,8 +60,8 @@ namespace Friflo.Json.Mapper.Map
     
     public abstract class TypeMapper<TVal> : TypeMapper
     {
-        protected TypeMapper(Type type, bool isNullable, bool isValueType) :
-            base(type, isNullable, isValueType) {
+        protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) :
+            base(config, type, isNullable, isValueType) {
         }
 
         public abstract void    Write       (JsonWriter writer, TVal slot);
@@ -118,10 +120,11 @@ namespace Friflo.Json.Mapper.Map
     }
     
     public static class TypeMapperUtils {
+        /*
         public static object CreateGenericInstance(Type genericType, Type[] genericArgs) {
             var genericTypeArgs = genericType.MakeGenericType(genericArgs);
             return Activator.CreateInstance(genericTypeArgs);
-        }
+        } */
         
         public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams) {
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
