@@ -66,7 +66,8 @@ namespace Friflo.Json.Mapper
         }
         
         public void Write<T>(T value) {
-            var mapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            var m = typeCache.GetTypeMapper(typeof(T));
+            var mapper = (TypeMapper<T>) m;
             
             WriteStart(mapper, value);
         }

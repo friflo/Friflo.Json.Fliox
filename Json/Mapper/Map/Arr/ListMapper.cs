@@ -77,36 +77,15 @@ namespace Friflo.Json.Mapper.Map.Arr
             int index = 0;
 
             while (true) {
-                TElm elemVar;
+
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
-                        if (!success)
-                            return null;
-                        if (index < startLen)
-                            list[index] = elemVar;
-                        else
-                            list.Add(elemVar);
-                        index++;
-                        break;
-                    case JsonEvent.ValueNull:
-                        if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<List<TElm>>(reader, "List element", elementType, ref parser, out success);
-                            return null;
-                        }
-
-                        if (index < startLen)
-                            list[index] = default;
-                        else
-                            list.Add(default);
-                        index++;
-                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                        TElm elemVar;
                         if (index < startLen) {
                             elemVar = list[index];
                             elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
@@ -120,6 +99,17 @@ namespace Friflo.Json.Mapper.Map.Arr
                                 return null;
                             list.Add(elemVar);
                         }
+                        index++;
+                        break;
+                    case JsonEvent.ValueNull:
+                        if (!elementType.isNullable) {
+                            ReadUtils.ErrorIncompatible<List<TElm>>(reader, "List element", elementType, ref parser, out success);
+                            return null;
+                        }
+                        if (index < startLen)
+                            list[index] = default;
+                        else
+                            list.Add(default);
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:

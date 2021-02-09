@@ -88,20 +88,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
-                        // array of string, bool, int, long, float, double, short, byte are handled via primitive array codecs
-                        ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
-                        return default;
-                    case JsonEvent.ValueNull:
-                        if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
-                        if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
-                            return default;
-                        }
-                        if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
-                        array[index++] = default;
-                        break;
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         TElm elemVar;
@@ -121,6 +107,17 @@ namespace Friflo.Json.Mapper.Map.Arr
                             array[index] = elemVar;
                         }
                         index++;
+                        break;
+                    case JsonEvent.ValueNull:
+                        if (index >= len)
+                            array = CopyArray(array, len = ReadUtils.Inc(len));
+                        if (!elementType.isNullable) {
+                            ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
+                            return default;
+                        }
+                        if (index >= len)
+                            array = CopyArray(array, len = ReadUtils.Inc(len));
+                        array[index++] = default;
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
