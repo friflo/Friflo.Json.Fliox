@@ -102,10 +102,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<List<TElm>>(reader, "List element", elementType, ref parser, out success);
+                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
                             return null;
-                        }
                         if (index < startLen)
                             list[index] = default;
                         else

@@ -109,12 +109,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ValueNull:
-                        if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
-                        if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<TElm[]>(reader, "array element", elementType, ref parser, out success);
+                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
                             return default;
-                        }
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));
                         array[index++] = default;

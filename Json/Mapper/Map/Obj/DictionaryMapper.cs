@@ -85,11 +85,11 @@ namespace Friflo.Json.Mapper.Map.Obj
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueNull:
-                        String key = parser.key.ToString();
                         if (!elementType.isNullable) {
                             ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, ref parser, out success);
                             return default;
                         }
+                        String key = parser.key.ToString();
                         map[key] = default;
                         break;
                     case JsonEvent.ObjectStart:

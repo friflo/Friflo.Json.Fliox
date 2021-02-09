@@ -95,8 +95,6 @@ namespace Friflo.Json.Mapper.Map.Arr
             ref var parser = ref reader.parser;
             T[] array = slot;
 
-            bool nullable = elementType.isNullable;
-
             int len = array?.Length ?? 0;
             int index = 0;
             while (true) {
@@ -116,10 +114,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!nullable) {
-                            ReadUtils.ErrorIncompatible<T[]>(reader, "array element", elementType, ref parser, out success);
+                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
                             return default;
-                        }
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));
                         array[index++] = default;

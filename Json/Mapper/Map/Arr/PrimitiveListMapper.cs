@@ -135,10 +135,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         PrimitiveList.AddListItem(list, elemVar, index++, startLen);
                         break;
                     case JsonEvent.ValueNull:
-                        if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<List<T>>(reader, "List element", elementType, ref parser, out success);
+                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
                             return default;
-                        }
                         PrimitiveList.AddListItemNull(list, index++, startLen);
                         break;
                     case JsonEvent.ArrayEnd:
