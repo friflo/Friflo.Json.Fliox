@@ -164,8 +164,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (!success)
                 return default;
             
-            ref var parser = ref reader.parser;
-            JsonEvent ev = parser.Event;
+            JsonEvent ev = reader.parser.Event;
             var propFields = classType.propFields;
 
             while (true) {
@@ -185,20 +184,18 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (!success)
                             return default;
                         //
-                        if (!fieldType.isNullable && fieldVal == null) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                            return default;
-                        }
+                        if (!fieldType.isNullable && fieldVal == null)
+                            return ObjectUtils.ErrorIncompatible<T>(reader, this, field, out success);
+                        
                         if (curFieldVal != fieldVal)
                             field.SetField(obj, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
-                        if (!field.fieldType.isNullable) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
-                            return default;
-                        }
+                        if (!field.fieldType.isNullable)
+                            return ObjectUtils.ErrorIncompatible<T>(reader, this, field, out success);
+                        
                         field.SetField(obj, null);
                         break;
 
@@ -211,7 +208,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     default:
                         return ReadUtils.ErrorMsg<T>(reader, "unexpected state: ", ev, out success);
                 }
-                ev = parser.NextEvent();
+                ev = reader.parser.NextEvent();
             }
         }
     }

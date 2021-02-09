@@ -93,8 +93,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
 
         internal static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
-            ref var parser = ref reader.parser;
-            JsonEvent ev = parser.Event;
+            JsonEvent ev = reader.parser.Event;
             var propFields = classType.propFields;
 
             while (true) {
@@ -118,19 +117,16 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             if (!success)
                                 return false;
                             mirror.StoreObj(field.objIndex, fieldVal);
-                            if (!fieldType.isNullable && fieldVal == null) {
-                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return false;
-                            }
+                            if (!fieldType.isNullable && fieldVal == null)
+                                return ObjectUtils.ErrorIncompatible<bool>(reader, classType, field, out success);
                         }
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
-                        if (!field.fieldType.isNullable) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, field.fieldType, ref parser, out success);
-                            return default;
-                        }
+                        if (!field.fieldType.isNullable)
+                            return ObjectUtils.ErrorIncompatible<bool>(reader, classType, field, out success);
+                        
                         if (field.fieldType.isValueType)
                             mirror.StorePrimitiveNull(field.primIndex);
                         else
@@ -143,7 +139,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     default:
                         return ReadUtils.ErrorMsg<bool>(reader, "unexpected state: ", ev, out success);
                 }
-                ev = parser.NextEvent();
+                ev = reader.parser.NextEvent();
             }
         }
 

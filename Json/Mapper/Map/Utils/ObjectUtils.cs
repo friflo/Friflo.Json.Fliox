@@ -62,7 +62,12 @@ namespace Friflo.Json.Mapper.Map.Utils
             mapper.Write(writer, value);
             
         }
-        
+
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, TypeMapper objectMapper, PropField field, out bool success) {
+            ReadUtils.ErrorIncompatible<bool>(reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, ref reader.parser, out success);
+            return default;
+        }
+      
         public static PropField GetField(JsonReader reader, PropertyFields propFields) {
             PropField field = propFields.GetField(ref reader.parser.key);
             if (field != null)
