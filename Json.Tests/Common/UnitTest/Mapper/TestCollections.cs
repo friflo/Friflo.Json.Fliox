@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestCollections
     {
-        [Test] [Ignore("enable after adding GenericIListMapper")]
+        [Test]
         public void TestIList() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore))

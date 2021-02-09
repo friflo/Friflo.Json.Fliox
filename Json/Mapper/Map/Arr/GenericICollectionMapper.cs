@@ -10,13 +10,13 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
-    public class ListMatcher : ITypeMatcher {
-        public static readonly ListMatcher Instance = new ListMatcher();
+    public class GenericICollectionMatcher : ITypeMatcher {
+        public static readonly GenericICollectionMatcher Instance = new GenericICollectionMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( List<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );
             if (args != null) {
                 Type elementType = args[0];
                 ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
@@ -24,8 +24,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
                 object[] constructorParams = {config, type, elementType, constructor};
-                // new ListMapper<List<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
+                // new GenericICollectionMapper<IList<TElm>,TElm>  (config, type, elementType, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericICollectionMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
             return null;
@@ -35,15 +35,15 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper<TElm> : CollectionMapper<List<TElm>, TElm>
+    public class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
     {
-        public override string DataTypeName() { return "List"; }
+        public override string DataTypeName() { return "ICollection"; }
         
-        public ListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
+        public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, List<TElm> slot) {
+        public override void Write(JsonWriter writer, TCol slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             var list = slot;
             writer.bytes.AppendChar('[');
@@ -63,14 +63,14 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override List<TElm> Read(JsonReader reader, List<TElm> slot, out bool success) {
+        public override TCol Read(JsonReader reader, TCol slot, out bool success) {
             if (!ArrayUtils.StartArray(reader, this, out success))
                 return default;
             
             var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (List<TElm>) CreateInstance();
+                list = (TCol) CreateInstance();
             else
                 startLen = list.Count;
             
@@ -111,8 +111,11 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
-                        if (startLen - index > 0)
-                            list.RemoveRange(index, startLen - index);
+                        if (startLen - index > 0) {
+                            // list.RemoveRange(index, startLen - index);
+                            for (int n = startLen - 1; n >= index; n--)
+                                list.RemoveAt(n); // todo check O(n)
+                        }
                         success = true;
                         return list;
                     case JsonEvent.Error:
