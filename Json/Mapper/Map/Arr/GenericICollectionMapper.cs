@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
                 object[] constructorParams = {config, type, elementType, constructor};
-                // new GenericICollectionMapper<IList<TElm>,TElm>  (config, type, elementType, constructor);
+                // new GenericICollectionMapper<ICollection<TElm>,TElm>  (config, type, elementType, constructor);
                 var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericICollectionMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
