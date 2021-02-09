@@ -103,6 +103,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
                         PropField field;
                         if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
@@ -111,12 +113,12 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return default;
                         } else {
-                            object sub = mirror.LoadObj(field.objIndex);
-                            sub = fieldType.ReadObject(reader, sub, out success);
+                            object fieldVal = mirror.LoadObj(field.objIndex);
+                            fieldVal = fieldType.ReadObject(reader, fieldVal, out success);
                             if (!success)
                                 return false;
-                            mirror.StoreObj(field.objIndex, sub);
-                            if (!fieldType.isNullable && sub == null) {
+                            mirror.StoreObj(field.objIndex, fieldVal);
+                            if (!fieldType.isNullable && fieldVal == null) {
                                 ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
                                 return false;
                             }
@@ -133,26 +135,6 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             mirror.StorePrimitiveNull(field.primIndex);
                         else
                             mirror.StoreObj(field.objIndex, null);
-                        break;
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
-                            break;
-                        fieldType = field.fieldType;
-                        if (fieldType.isValueType) {
-                            if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
-                                return false;
-                        } else {
-                            object sub = mirror.LoadObj(field.objIndex);
-                            object subRet = fieldType.ReadObject(reader, sub, out success);
-                            if (!success)
-                                return false;
-                            if (!fieldType.isNullable && subRet == null) {
-                                ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                                return false;
-                            }
-                            mirror.StoreObj(field.objIndex, subRet);
-                        }
                         break;
                     case JsonEvent.ObjectEnd:
                         return true;

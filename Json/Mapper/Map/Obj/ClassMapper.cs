@@ -169,19 +169,28 @@ namespace Friflo.Json.Mapper.Map.Obj
             var propFields = classType.propFields;
 
             while (true) {
-                object elemVar;
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
                         PropField field;
                         if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
-                        elemVar = fieldType.ReadObject(reader, null, out success);
+                        object fieldVal = field.GetField(obj);
+                        object curFieldVal = fieldVal;
+                        fieldVal = fieldType.ReadObject(reader, fieldVal, out success);
                         if (!success)
                             return default;
-                        field.SetField(obj, elemVar); // set also to null in error case
+                        //
+                        if (!fieldType.isNullable && fieldVal == null) {
+                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
+                            return default;
+                        }
+                        if (curFieldVal != fieldVal)
+                            field.SetField(obj, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
@@ -192,25 +201,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         }
                         field.SetField(obj, null);
                         break;
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
-                            break;
-                        fieldType = field.fieldType;
-                        elemVar = field.GetField(obj);
-                        object sub = elemVar;
-                        elemVar = fieldType.ReadObject(reader, elemVar, out success);
-                        if (!success)
-                            return default;
-                        //
-                        object subRet = elemVar;
-                        if (!fieldType.isNullable && subRet == null) {
-                            ReadUtils.ErrorIncompatible<T>(reader, "class field: ", field.name, fieldType, ref parser, out success);
-                            return default;
-                        }
-                        if (sub != subRet)
-                            field.SetField(obj, elemVar);
-                        break;
+
                     case JsonEvent.ObjectEnd:
                         success = true;
                         return obj;
