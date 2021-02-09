@@ -40,12 +40,12 @@ namespace Friflo.Json.Burst
         /// </summary>
         ValueBool,
         /// <summary>
-        /// Found an object member { "spouse": null } with a null value in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element [null] in case the previous event was <see cref="ArrayStart"/>.<br/>
-        /// Additional data is not available as the only value is null.<br/>
+        /// Found an object member "employee": [ ... ] with an array in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [ [...] ] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// Additional data is not available for this event. To access embedded array elements use <see cref="JsonParser.NextEvent()"/><br/>
         /// In case of an object member <see cref="JsonParser.key"/> is set.
         /// </summary>
-        ValueNull,
+        ArrayStart,
         /// <summary>
         /// Found an object member "employee": { ... } with an object in case the previous event was <see cref="ObjectStart"/>
         /// or an array element [{ ... }] in case the previous event was <see cref="ArrayStart"/>.<br/>
@@ -53,18 +53,20 @@ namespace Friflo.Json.Burst
         /// In case of an object member <see cref="JsonParser.key"/> is set.
         /// </summary>
         ObjectStart,
+        
+        // -------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Found an object member { "spouse": null } with a null value in case the previous event was <see cref="ObjectStart"/>
+        /// or an array element [null] in case the previous event was <see cref="ArrayStart"/>.<br/>
+        /// Additional data is not available as the only value is null.<br/>
+        /// In case of an object member <see cref="JsonParser.key"/> is set.
+        /// </summary>
+        ValueNull,
         /// <summary>
         /// Found the end of an JSON object previously started with <see cref="ObjectStart"/><br/>
         /// Additional data is not available for this event. To access embedded object members use <see cref="JsonParser.NextEvent()"/><br/>
         /// </summary>
         ObjectEnd,
-        /// <summary>
-        /// Found an object member "employee": [ ... ] with an array in case the previous event was <see cref="ObjectStart"/>
-        /// or an array element [ [...] ] in case the previous event was <see cref="ArrayStart"/>.<br/>
-        /// Additional data is not available for this event. To access embedded array elements use <see cref="JsonParser.NextEvent()"/><br/>
-        /// In case of an object member <see cref="JsonParser.key"/> is set.
-        /// </summary>
-        ArrayStart,
         /// Found the end of an JSON array previously started with <see cref="ArrayStart"/><br/>
         /// Additional data is not available for this event. To access embedded object members use <see cref="JsonParser.NextEvent()"/><br/>
         ArrayEnd,
