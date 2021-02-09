@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
-            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IList<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( List<>) );
             if (args != null) {
                 Type elementType = args[0];
                 return Find(type, elementType);

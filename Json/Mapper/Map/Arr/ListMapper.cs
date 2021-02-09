@@ -24,8 +24,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
                 object[] constructorParams = {type, elementType, constructor};
-                // new ListMapper<object>  (type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
+                // new ListMapper<IList<TElm>,TElm>  (type, elementType, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
             return null;
@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper<TElm> : CollectionMapper<List<TElm>, TElm>
+    public class ListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
     {
         public override string DataTypeName() { return "List"; }
         
@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(type, elementType, 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, List<TElm> slot) {
+        public override void Write(JsonWriter writer, TCol slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             var list = slot;
             writer.bytes.AppendChar('[');
@@ -63,14 +63,14 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override List<TElm> Read(JsonReader reader, List<TElm> slot, out bool success) {
+        public override TCol Read(JsonReader reader, TCol slot, out bool success) {
             if (!ArrayUtils.StartArray(reader, this, out success))
-                return null;
+                return default;
             
             var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (List<TElm>) CreateInstance();
+                list = (TCol) CreateInstance();
             else
                 startLen = list.Count;
             
@@ -90,20 +90,20 @@ namespace Friflo.Json.Mapper.Map.Arr
                             elemVar = list[index];
                             elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
-                                return null;
+                                return default;
                             list[index] = elemVar;
                         } else {
                             elemVar = default;
                             elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                             if (!success)
-                                return null;
+                                return default;
                             list.Add(elemVar);
                         }
                         index++;
                         break;
                     case JsonEvent.ValueNull:
                         if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
-                            return null;
+                            return default;
                         if (index < startLen)
                             list[index] = default;
                         else
@@ -111,16 +111,19 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
-                        if (startLen - index > 0)
-                            list.RemoveRange(index, startLen - index);
+                        if (startLen - index > 0) {
+                            // list.RemoveRange(index, startLen - index);
+                            for (int n = startLen - 1; n >= index; n--)
+                                list.RemoveAt(n); // todo check O(n)
+                        }
                         success = true;
                         return list;
                     case JsonEvent.Error:
                         success = false;
-                        return null;
+                        return default;
                     default:
                         ReadUtils.ErrorMsg<List<TElm>>(reader, "unexpected state: ", ev, out success);
-                        return null;
+                        return default;
                 }
             }
         }
