@@ -92,13 +92,12 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (!ArrayUtils.StartArray(reader, this, out success))
                 return default;
             
-            ref var parser = ref reader.parser;
             T[] array = slot;
 
             int len = array?.Length ?? 0;
             int index = 0;
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:

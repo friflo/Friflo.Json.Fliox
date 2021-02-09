@@ -67,7 +67,6 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (!ArrayUtils.StartArray(reader, this, out success))
                 return null;
             
-            ref var parser = ref reader.parser;
             var list = slot;
             int startLen = 0;
             if (list == null)
@@ -79,7 +78,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 
             while (true) {
 
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
