@@ -24,8 +24,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                     constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
                  
                 object[] constructorParams = {config, type, elementType, constructor};
-                // new ListMapper<IList<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<,>), new[] {type, elementType}, constructorParams);
+                // new ListMapper<List<TElm>,TElm>  (config, type, elementType, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
             return null;
@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
+    public class ListMapper<TElm> : CollectionMapper<List<TElm>, TElm>
     {
         public override string DataTypeName() { return "List"; }
         
@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, TCol slot) {
+        public override void Write(JsonWriter writer, List<TElm> slot) {
             int startLevel = WriteUtils.IncLevel(writer);
             var list = slot;
             writer.bytes.AppendChar('[');
@@ -63,14 +63,14 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override TCol Read(JsonReader reader, TCol slot, out bool success) {
+        public override List<TElm> Read(JsonReader reader, List<TElm> slot, out bool success) {
             if (!ArrayUtils.StartArray(reader, this, out success))
                 return default;
             
             var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (TCol) CreateInstance();
+                list = (List<TElm>) CreateInstance();
             else
                 startLen = list.Count;
             
@@ -111,11 +111,8 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:
-                        if (startLen - index > 0) {
-                            // list.RemoveRange(index, startLen - index);
-                            for (int n = startLen - 1; n >= index; n--)
-                                list.RemoveAt(n); // todo check O(n)
-                        }
+                        if (startLen - index > 0)
+                            list.RemoveRange(index, startLen - index);
                         success = true;
                         return list;
                     case JsonEvent.Error:

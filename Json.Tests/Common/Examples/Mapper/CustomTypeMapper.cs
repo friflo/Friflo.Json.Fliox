@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(StringTokens))
                 return null;
-            return new StringTokenMapper (type);
+            return new StringTokenMapper (config, type);
         }
     }
     
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     {
         public override string DataTypeName() { return "tokens"; }
         
-        public StringTokenMapper(Type type) : base (type, true, false) { }
+        public StringTokenMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
         public override void Write(JsonWriter writer, StringTokens value) {
             WriteUtils.WriteString(writer, string.Join(" ", value.tokens));

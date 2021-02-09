@@ -1,5 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Friflo.Json.Burst;
+using Friflo.Json.Mapper;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -8,9 +12,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestCollections
     {
+        [Test] [Ignore("enable after adding GenericIListMapper")]
+        public void TestIList() {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var collection = new Collection<int>(new[] {1, 2, 3});
+                writer.Write(collection);
+                var result = reader.Read<Collection<int>>(writer.Output);
+                AreEqual(collection, result);
+            }
+        }
 
         [Test]
-        public void Run() {
+        public void CheckInterfaces() {
             AreEqual(1,1 );
             // IList<int> iList = null;
             // ISet<int> iSet = null;
