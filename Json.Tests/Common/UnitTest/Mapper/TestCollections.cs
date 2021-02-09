@@ -18,10 +18,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
-                var collection = new Collection<int>(new[] {1, 2, 3});
-                writer.Write(collection);
-                var result = reader.Read<Collection<int>>(writer.Output);
-                AreEqual(collection, result);
+                // --- IList<>
+                {
+                    var collection = new Collection<int>(new[] {1, 2, 3});
+                    writer.Write(collection);
+                    var result = reader.Read<Collection<int>>(writer.Output);
+                    AreEqual(collection, result);
+                }
+                
+                // --- ICollection<>
+                {
+                    var linkedList = new LinkedList<int>(new[] {1, 2, 3});
+                    writer.Write(linkedList);
+                    var result = reader.Read<Collection<int>>(writer.Output);
+                    AreEqual(linkedList, result);
+                }
             }
         }
 
