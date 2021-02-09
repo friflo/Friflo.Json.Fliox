@@ -10,8 +10,8 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {
-    public class GenericICollectionMatcher : ITypeMatcher {
-        public static readonly GenericICollectionMatcher Instance = new GenericICollectionMatcher();
+    public class GenericIListMatcher : ITypeMatcher {
+        public static readonly GenericIListMatcher Instance = new GenericIListMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                  
                 object[] constructorParams = {config, type, elementType, constructor};
                 // new GenericICollectionMapper<IList<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericICollectionMapper<,>), new[] {type, elementType}, constructorParams);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericIListMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
             return null;
@@ -35,11 +35,11 @@ namespace Friflo.Json.Mapper.Map.Arr
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
+    public class GenericIListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
     {
         public override string DataTypeName() { return "ICollection"; }
         
-        public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
+        public GenericIListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
