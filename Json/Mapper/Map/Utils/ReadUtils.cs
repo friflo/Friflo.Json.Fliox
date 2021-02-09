@@ -26,8 +26,14 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper expectType, ref JsonParser parser, out bool success) {
             ref Bytes strBuf = ref reader.strBuf;
-            
-            // Error format: $"Cannot assign {evType} to {msg}. Expect: {expectType.type.Name}, got: {value}";
+
+#pragma warning disable 162
+            // ReSharper disable HeuristicUnreachableCode
+            if (false) { // similar error message by string interpolation for illustration
+                var _ = $"Cannot assign {parser.Event} to {msg}. Expect: {expectType.type}, got: {parser.value}";
+            }
+#pragma warning restore 162
+
             strBuf.Clear();
             strBuf.AppendString("Cannot assign ");
             switch (parser.Event) {
