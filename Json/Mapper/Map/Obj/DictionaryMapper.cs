@@ -81,34 +81,27 @@ namespace Friflo.Json.Mapper.Map.Obj
             ref var parser = ref reader.parser;
 
             while (true) {
-                TElm elemVar;
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
+                    case JsonEvent.ValueString:
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
+                        string key = parser.key.ToString();
+                        TElm elemVar = default;
+                        elemVar = elementType.Read(reader, elemVar, out success);
+                        if (!success)
+                            return default;
+                        map[key] = elemVar;
+                        break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
                             ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, ref parser, out success);
                             return default;
                         }
-                        String key = parser.key.ToString();
+                        key = parser.key.ToString();
                         map[key] = default;
-                        break;
-                    case JsonEvent.ObjectStart:
-                        key = parser.key.ToString();
-                        elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
-                        if (!success)
-                            return default;
-                        map[key] = elemVar;
-                        break;
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                        key = parser.key.ToString();
-                        elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
-                        if (!success)
-                            return default;
-                        map[key] = elemVar;
                         break;
                     case JsonEvent.ObjectEnd:
                         success = true;
