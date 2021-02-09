@@ -19,12 +19,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 // --- IList<>
+                /* {
+                    var roCollection = new ReadOnlyCollection<int>(new[] {1, 2, 3});
+                    IList<int> list = roCollection;
+                    writer.Write(roCollection);
+                    var result = reader.Read<ReadOnlyCollection<int>>(writer.Output);
+                    AreEqual(roCollection, result);
+                } */
                 {
                     var collection = new Collection<int>(new[] {1, 2, 3});
                     writer.Write(collection);
                     var result = reader.Read<Collection<int>>(writer.Output);
                     AreEqual(collection, result);
                 }
+                /* {
+                    var arraySegment = new ArraySegment<int>(new[] {1, 2, 3});
+                    writer.Write(arraySegment);
+                    var result = reader.Read<ArraySegment<int>>(writer.Output);
+                    AreEqual(arraySegment, result);
+                } */
                 
                 // --- ICollection<>
                 {
@@ -32,7 +45,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(linkedList);
                     var result = reader.Read<Collection<int>>(writer.Output);
                     AreEqual(linkedList, result);
+                } {
+                    var linkedList = new HashSet<int>(new[] {1, 2, 3});
+                    writer.Write(linkedList);
+                    var result = reader.Read<HashSet<int>>(writer.Output);
+                    AreEqual(linkedList, result);
                 }
+                // --- ICollection
+                /* {
+                    var stack = new Stack<int>(new[] {1, 2, 3});
+                    writer.Write(stack);
+                    var result = reader.Read<Stack<int>>(writer.Output);
+                    AreEqual(stack, result);
+                } */
             }
         }
 
