@@ -51,9 +51,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             for (int n = 0; n < arr.Length; n++) {
                 if (n > 0)
                     writer.bytes.AppendChar(',');
-                // elemVar.Set(arr.GetValue(n), elementType.varType, elementType.isNullable);
+                
                 var elemVar = arr[n];
-                // if (elemVar.IsNull)
                 if (elementType.IsNull(ref elemVar))
                     WriteUtils.AppendNull(writer);
                 else
@@ -71,7 +70,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             int startLen;
             int len;
             TElm[] array = default;
-            // if (slot.Obj == null) {
+
             if (EqualityComparer<TElm[]>.Default.Equals(slot, default)) {
                 startLen = 0;
                 len = ReadUtils.minLen;

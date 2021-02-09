@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (n > 0)
                     writer.bytes.AppendChar(',');
                 var elemVar = list[n];
-                // if (elemVar.IsNull)
+
                 if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default))
                     WriteUtils.AppendNull(writer);
                 else

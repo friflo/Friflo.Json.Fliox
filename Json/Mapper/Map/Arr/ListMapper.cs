@@ -52,6 +52,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 if (n > 0)
                     writer.bytes.AppendChar(',');
                 TElm item = list[n];
+                
                 if (!elementType.IsNull(ref item)) {
                     ObjectUtils.Write(writer, elementType, ref item);
                 } else
