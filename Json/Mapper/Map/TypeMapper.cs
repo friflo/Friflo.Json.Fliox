@@ -19,6 +19,7 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    bool        isNullable;
         public  readonly    bool        isValueType;
         public  readonly    Type        underlyingType;
+        public  readonly    bool        useIL;
         
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly PropertyFields propFields;
@@ -32,6 +33,7 @@ namespace Friflo.Json.Mapper.Map
             this.isNullable     = isNullable;
             this.isValueType    = isValueType;
             this.underlyingType = Nullable.GetUnderlyingType(type);
+            this.useIL          = config.useIL && isValueType && !type.IsPrimitive;
         }
 
         public abstract void            Dispose();

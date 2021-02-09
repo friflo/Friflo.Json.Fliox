@@ -44,9 +44,9 @@ namespace Friflo.Json.Mapper
 #if !JSON_BURST
             parser.error.errorHandler = this;
 #endif
-#if !UNITY_5_3_OR_NEWER
-            useIL = typeStore.config.useIL;
-#endif 
+// #if !UNITY_5_3_OR_NEWER
+//             useIL = typeStore.config.useIL;
+// #endif 
         }
         
         private void InitJsonReader(ref ByteList bytes, int offset, int len) {

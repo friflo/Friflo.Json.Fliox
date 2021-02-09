@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
     partial class JsonWriter
     {
-        internal readonly   bool                    useIL;
+        // internal readonly   bool                 useIL;
 #if !UNITY_5_3_OR_NEWER
         private             int                     classLevel;
         private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);

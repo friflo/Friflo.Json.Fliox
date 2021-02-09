@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
         private             int                     classLevel;
         private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);
-        internal readonly   bool                    useIL;
+        // internal readonly   bool                 useIL;
 
         private void InitMirrorStack() {
             classLevel = 0;

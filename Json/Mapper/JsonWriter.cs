@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper
             typeCache = new TypeCache(typeStore);
             discriminator = new Bytes($"\"{typeStore.config.discriminator}\":\"");
             maxDepth = 100;
-            useIL = typeStore.config.useIL;
+            // useIL = typeStore.config.useIL;
         }
         
         public void Dispose() {
