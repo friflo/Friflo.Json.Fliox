@@ -8,21 +8,21 @@ using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.Mapper.MapIL.Val
 {
-    class DoubleFieldMapper : DoubleMapper  { public DoubleFieldMapper  (Type type) : base(type) { } }
-    class FloatFieldMapper  : FloatMapper   { public FloatFieldMapper   (Type type) : base(type) { } }
-    class LongFieldMapper   : LongMapper    { public LongFieldMapper    (Type type) : base(type) { } }
-    class IntFieldMapper    : IntMapper     { public IntFieldMapper     (Type type) : base(type) { } }
-    class ShortFieldMapper  : ShortMapper   { public ShortFieldMapper   (Type type) : base(type) { } }
-    class ByteFieldMapper   : ByteMapper    { public ByteFieldMapper    (Type type) : base(type) { } }
-    class BoolFieldMapper   : BoolMapper    { public BoolFieldMapper    (Type type) : base(type) { } }
+    class DoubleFieldMapper : DoubleMapper  { public DoubleFieldMapper  (StoreConfig config, Type type) : base(config, type) { } }
+    class FloatFieldMapper  : FloatMapper   { public FloatFieldMapper   (StoreConfig config, Type type) : base(config, type) { } }
+    class LongFieldMapper   : LongMapper    { public LongFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
+    class IntFieldMapper    : IntMapper     { public IntFieldMapper     (StoreConfig config, Type type) : base(config, type) { } }
+    class ShortFieldMapper  : ShortMapper   { public ShortFieldMapper   (StoreConfig config, Type type) : base(config, type) { } }
+    class ByteFieldMapper   : ByteMapper    { public ByteFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
+    class BoolFieldMapper   : BoolMapper    { public BoolFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
     //
-    class NullableDoubleFieldMapper : NullableDoubleMapper  { public NullableDoubleFieldMapper  (Type type) : base(type) { } }
-    class NullableFloatFieldMapper  : NullableFloatMapper   { public NullableFloatFieldMapper   (Type type) : base(type) { } }
-    class NullableLongFieldMapper   : NullableLongMapper    { public NullableLongFieldMapper    (Type type) : base(type) { } }
-    class NullableIntFieldMapper    : NullableIntMapper     { public NullableIntFieldMapper     (Type type) : base(type) { } }
-    class NullableShortFieldMapper  : NullableShortMapper   { public NullableShortFieldMapper   (Type type) : base(type) { } }
-    class NullableByteFieldMapper   : NullableByteMapper    { public NullableByteFieldMapper    (Type type) : base(type) { } }
-    class NullableBoolFieldMapper   : NullableBoolMapper    { public NullableBoolFieldMapper    (Type type) : base(type) { } }
+    class NullableDoubleFieldMapper : NullableDoubleMapper  { public NullableDoubleFieldMapper  (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableFloatFieldMapper  : NullableFloatMapper   { public NullableFloatFieldMapper   (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableLongFieldMapper   : NullableLongMapper    { public NullableLongFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableIntFieldMapper    : NullableIntMapper     { public NullableIntFieldMapper     (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableShortFieldMapper  : NullableShortMapper   { public NullableShortFieldMapper   (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableByteFieldMapper   : NullableByteMapper    { public NullableByteFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
+    class NullableBoolFieldMapper   : NullableBoolMapper    { public NullableBoolFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
 }
 
 namespace Friflo.Json.Mapper.MapIL.Obj
