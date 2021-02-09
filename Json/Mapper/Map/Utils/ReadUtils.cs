@@ -18,14 +18,15 @@ namespace Friflo.Json.Mapper.Map.Utils
             return len == 0 ? 1 : 2 * len;
         }
         
-        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, TypeMapper expectType, ref JsonParser parser, out bool success) {
-            ErrorIncompatible<TVal>(reader, msg, "", expectType, ref parser, out success);
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, TypeMapper expectType, out bool success) {
+            ErrorIncompatible<TVal>(reader, msg, "", expectType, out success);
             success = false;
             return default;
         }
 
-        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper expectType, ref JsonParser parser, out bool success) {
+        public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper expectType, out bool success) {
             ref Bytes strBuf = ref reader.strBuf;
+            ref var parser = ref reader.parser;
 
 #pragma warning disable 162
             // ReSharper disable HeuristicUnreachableCode

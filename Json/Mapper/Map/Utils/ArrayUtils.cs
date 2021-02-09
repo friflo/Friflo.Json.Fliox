@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map.Utils
     public static class ArrayUtils {
         public static bool IsNullable(JsonReader reader, TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
             if (!elementType.isNullable) {
-                ReadUtils.ErrorIncompatible<bool>(reader, arrayMapper.DataTypeName(), " element", elementType, ref reader.parser, out success);
+                ReadUtils.ErrorIncompatible<bool>(reader, arrayMapper.DataTypeName(), " element", elementType, out success);
                 return false;
             }
             success = false;
@@ -27,14 +27,14 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, out success);
                     return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, out success);
                     return false;
             }
         }

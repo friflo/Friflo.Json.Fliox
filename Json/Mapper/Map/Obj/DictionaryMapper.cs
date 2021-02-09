@@ -45,20 +45,17 @@ namespace Friflo.Json.Mapper.Map.Obj
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, Dictionary<string, TElm> slot) {
+        public override void Write(JsonWriter writer, Dictionary<string, TElm> map) {
             int startLevel = WriteUtils.IncLevel(writer);
-            
-            var map = slot;
 
-            ref var bytes = ref writer.bytes;
-            bytes.AppendChar('{');
+            writer.bytes.AppendChar('{');
             int n = 0;
 
             foreach (var entry in map) {
                 if (n++ > 0)
-                    bytes.AppendChar(',');
+                    writer.bytes.AppendChar(',');
                 WriteUtils.WriteString(writer, entry.Key);
-                bytes.AppendChar(':');
+                writer.bytes.AppendChar(':');
                 
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
@@ -66,28 +63,26 @@ namespace Friflo.Json.Mapper.Map.Obj
                 else
                     elementType.Write(writer, elemVar);
             }
-            bytes.AppendChar('}');
+            writer.bytes.AppendChar('}');
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override Dictionary<string, TElm> Read(JsonReader reader, Dictionary<string, TElm> slot, out bool success) {
+        public override Dictionary<string, TElm> Read(JsonReader reader, Dictionary<string, TElm> map, out bool success) {
             if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
 
-            if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(slot, default))
-                slot = (Dictionary<string, TElm>) CreateInstance();
-            var map = slot;
-            ref var parser = ref reader.parser;
+            if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(map, default))
+                map = (Dictionary<string, TElm>) CreateInstance();
 
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
-                        string key = parser.key.ToString();
+                        string key = reader.parser.key.ToString();
                         TElm elemVar = default;
                         elemVar = elementType.Read(reader, elemVar, out success);
                         if (!success)
@@ -96,10 +91,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, ref parser, out success);
+                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, out success);
                             return default;
                         }
-                        key = parser.key.ToString();
+                        key = reader.parser.key.ToString();
                         map[key] = default;
                         break;
                     case JsonEvent.ObjectEnd:

@@ -126,7 +126,7 @@ namespace Friflo.Json.Mapper
                         finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, ref parser, out success);
+                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, out success);
                         success = true;
                         return default;
                     case JsonEvent.Error:
@@ -155,7 +155,7 @@ namespace Friflo.Json.Mapper
                         finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, ref parser, out success);
+                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, out success);
                         success = true;
                         return default;
                     case JsonEvent.Error:

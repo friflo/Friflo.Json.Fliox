@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, out success);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, ref reader.parser, out success);
+                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, out success);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         public static TVal ErrorIncompatible<TVal>(JsonReader reader, TypeMapper objectMapper, PropField field, out bool success) {
-            ReadUtils.ErrorIncompatible<bool>(reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, ref reader.parser, out success);
+            ReadUtils.ErrorIncompatible<bool>(reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
             return default;
         }
       

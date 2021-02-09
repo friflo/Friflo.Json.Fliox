@@ -12,8 +12,7 @@ namespace Friflo.Json.Mapper.Map.Utils
     public static class ValueUtils
     {
         public static TVal CheckElse<TVal>(JsonReader reader, TypeMapper<TVal> mapper, out bool success) {
-            ref JsonParser parser = ref reader.parser;
-            switch (parser.Event) {
+            switch (reader.parser.Event) {
                 case JsonEvent.ValueNull:
                     const string msg = "requirement: null value must be handled by owner. Add missing JsonEvent.ValueNull case to its Mapper";
                     throw new InvalidOperationException(msg);
@@ -28,7 +27,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     throw new InvalidOperationException(msg2);
                     // return null;
                 default:
-                    return ReadUtils.ErrorIncompatible<TVal>(reader, mapper.DataTypeName(), mapper, ref parser, out success);
+                    return ReadUtils.ErrorIncompatible<TVal>(reader, mapper.DataTypeName(), mapper, out success);
             }
         }
     }
