@@ -21,7 +21,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // --- IList<>
                 /* {
                     var roCollection = new ReadOnlyCollection<int>(new[] {1, 2, 3});
-                    IList<int> list = roCollection;
                     writer.Write(roCollection);
                     var result = reader.Read<ReadOnlyCollection<int>>(writer.Output);
                     AreEqual(roCollection, result);
