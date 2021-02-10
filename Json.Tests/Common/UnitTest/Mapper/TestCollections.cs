@@ -13,10 +13,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         [Test]
         public void TestIList() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            {
+            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader reader = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
                 // --- IList<>
                 /* {
                     var roCollection = new ReadOnlyCollection<int>(new[] {1, 2, 3});
@@ -29,6 +28,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(collection);
                     var result = reader.Read<Collection<int>>(writer.Output);
                     AreEqual(collection, result);
+                } {
+                    IList<int> collection = new List<int>(new[] {1, 2, 3});
+                    writer.Write(collection);
+                    var result = reader.Read<IList<int>>(writer.Output);
+                    AreEqual(collection, result);
                 }
                 /* {
                     var arraySegment = new ArraySegment<int>(new[] {1, 2, 3});
@@ -36,23 +40,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var result = reader.Read<ArraySegment<int>>(writer.Output);
                     AreEqual(arraySegment, result);
                 } */
-                
+            }
+        }
+
+        [Test]
+        public void TestICollection() {
+            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader reader = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
                 // --- ICollection<>
                 {
+                    ICollection<int> collection = new List<int>(new[] {1, 2, 3});
+                    writer.Write(collection);
+                    var result = reader.Read<ICollection<int>>(writer.Output);
+                    AreEqual(collection, result);
+                } {
                     var linkedList = new LinkedList<int>(new[] {1, 2, 3});
                     writer.Write(linkedList);
-                    var result = reader.Read<Collection<int>>(writer.Output);
+                    var result = reader.Read<LinkedList<int>>(writer.Output);
                     AreEqual(linkedList, result);
                 } {
                     var linkedList = new HashSet<int>(new[] {1, 2, 3});
                     writer.Write(linkedList);
                     var result = reader.Read<HashSet<int>>(writer.Output);
                     AreEqual(linkedList, result);
-                }
-                {
+                } {
                     var sortedSet = new SortedSet<int>(new[] {1, 2, 3});
                     writer.Write(sortedSet);
-                    var result = reader.Read<HashSet<int>>(writer.Output);
+                    var result = reader.Read<SortedSet<int>>(writer.Output);
                     AreEqual(sortedSet, result);
                 }
                 // --- ICollection
@@ -66,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void TestMap() {
+        public void TestIDictionary() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore))
             using (JsonWriter writer = new JsonWriter(typeStore)) {
@@ -76,7 +91,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(dictionary);
                     var result = reader.Read<Dictionary<string, int>>(writer.Output);
                     AreEqual(dictionary, result);
-                }  {
+                } {
+                    IDictionary<string, int> dictionary = new Dictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
+                    writer.Write(dictionary);
+                    var result = reader.Read<IDictionary<string, int>>(writer.Output);
+                    AreEqual(dictionary, result);
+                } {
                     var sortedDictionary = new SortedDictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
                     writer.Write(sortedDictionary);
                     var result = reader.Read<Dictionary<string, int>>(writer.Output);
