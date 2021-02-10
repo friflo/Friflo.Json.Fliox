@@ -66,15 +66,16 @@ namespace Friflo.Json.Mapper.Map
             if (Match(ArrayMatcher.         Instance,   config, type, q)) return q.hit;
             //
             //
-            if (Match(EnumMatcher.              Instance,   config, type, q)) return q.hit;
-            if (Match(ListMatcher.              Instance,   config, type, q)) return q.hit;
-            if (Match(StackMatcher.             Instance,   config, type, q)) return q.hit;
-            if (Match(QueueMatcher.             Instance,   config, type, q)) return q.hit;
-            if (Match(GenericIListMatcher.      Instance,   config, type, q)) return q.hit;
-            if (Match(DictionaryMatcher.        Instance,   config, type, q)) return q.hit;
-            if (Match(GenericICollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after DictionaryMatcher & GenericIListMatcher
-            if (Match(GenericIEnumerableMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
-            if (Match(ClassMatcher.             Instance,   config, type, q)) return q.hit;
+            if (Match(EnumMatcher.                      Instance,   config, type, q)) return q.hit;
+            if (Match(ListMatcher.                      Instance,   config, type, q)) return q.hit;
+            if (Match(StackMatcher.                     Instance,   config, type, q)) return q.hit;
+            if (Match(QueueMatcher.                     Instance,   config, type, q)) return q.hit;
+            if (Match(GenericIListMatcher.              Instance,   config, type, q)) return q.hit;
+            if (Match(DictionaryMatcher.                Instance,   config, type, q)) return q.hit;
+            if (Match(GenericICollectionMatcher.        Instance,   config, type, q)) return q.hit; // need to be after DictionaryMatcher, GenericIListMatcher
+            if (Match(GenericIReadOnlyCollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
+            if (Match(GenericIEnumerableMatcher.        Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
+            if (Match(ClassMatcher.                     Instance,   config, type, q)) return q.hit;
 
             return null;
         }

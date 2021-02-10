@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Friflo.Json.Mapper.Utils
@@ -119,8 +120,14 @@ namespace Friflo.Json.Mapper.Utils
             return (T)ci.Invoke (DefConstructorArgs);
         }
 
-        public static Object CreateInstance(ConstructorInfo constructor) {
+        public static object CreateInstance(ConstructorInfo constructor) {
             return constructor. Invoke (DefConstructorArgs);
+        }
+        
+        public static object CreateInstanceCopy<T>(ConstructorInfo constructor, IEnumerable<T> src) {
+            object[] args = new Object[1];
+            args[0] = src;
+            return constructor. Invoke (args);
         }
 
         public static ConstructorInfo GetDefaultConstructor (Type type) {
@@ -134,6 +141,18 @@ namespace Friflo.Json.Mapper.Utils
                     return ci;
             return null;
 
+        }
+        
+        public static ConstructorInfo GetCopyConstructor (Type type) {
+            foreach (ConstructorInfo ci in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)) {
+                var param = ci.GetParameters();
+                if (param.Length == 1) {
+                    var paramType = param[0].ParameterType;  
+                    if (paramType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                        return ci;
+                }
+            }
+            return null;
         }
 
         // IsAssignableFrom

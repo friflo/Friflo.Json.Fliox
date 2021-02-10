@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Friflo.Json.Mapper;
@@ -84,12 +85,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 }
             }
         }
+        
+        [Test]
+        public void TestReadOnlyCollection() {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore))
+            {
+                {
+                    var queue = new ConcurrentQueue<int>(new[] {1, 2, 3});
+                    writer.Write(queue);
+                    var result = reader.Read<ConcurrentQueue<int>>(writer.Output);
+                    AreEqual(queue, result);
+                } {
+                    var stack = new ConcurrentStack<int>(new[] {1, 2, 3});
+                    writer.Write(stack);
+                    var result = reader.Read<ConcurrentStack<int>>(writer.Output);
+                    AreEqual(stack, result);
+                } {
+                    var stack = new ConcurrentBag<int>(new[] {1, 2, 3});
+                    writer.Write(stack);
+                    var result = reader.Read<ConcurrentBag<int>>(writer.Output);
+                    CollectionAssert.AreEquivalent(stack, result);
+                }
+            } 
+        }
 
         [Test]
         public void TestStack() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (JsonWriter writer = new JsonWriter(typeStore))
+            {
                 var stack = new Stack<int>(new[] {1, 2, 3});
                 writer.Write(stack);
                 var result = reader.Read<Stack<int>>(writer.Output);
