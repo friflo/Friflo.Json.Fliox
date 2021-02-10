@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Friflo.Json.Mapper;
@@ -76,7 +75,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void TestIEnumerable() {
             using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader reader = new JsonReader(typeStore))
             using (JsonWriter writer = new JsonWriter(typeStore)) {
                 // --- IEnumerable<>
                 {

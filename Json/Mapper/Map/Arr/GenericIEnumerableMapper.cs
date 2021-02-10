@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         public override TCol Read(JsonReader reader, TCol slot, out bool success) {
-            throw new InvalidOperationException("IEnumerable<> cannot be used for Read. type: " + type);
+            throw new InvalidOperationException("IEnumerable<> cannot be used for Read(). type: " + type);
         }
     }
 }
