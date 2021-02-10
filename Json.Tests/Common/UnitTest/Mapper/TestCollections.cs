@@ -70,16 +70,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var result = reader.Read<SortedSet<int>>(writer.Output);
                     AreEqual(sortedSet, result);
                 }
-                // --- ICollection
-                /* {
-                    var stack = new Stack<int>(new[] {1, 2, 3});
-                    writer.Write(stack);
-                    var result = reader.Read<Stack<int>>(writer.Output);
-                    AreEqual(stack, result);
-                } */
             }
         }
-        
+
+        [Test]
+        public void TestStack() {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
+                var stack = new Stack<int>(new[] {1, 2, 3});
+                writer.Write(stack);
+                var result = reader.Read<Stack<int>>(writer.Output);
+                AreEqual(stack, result);
+            }
+        }
+
         [Test]
         public void TestIDictionary() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
