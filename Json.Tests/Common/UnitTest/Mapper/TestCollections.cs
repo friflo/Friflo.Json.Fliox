@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Friflo.Json.Mapper;
@@ -60,6 +61,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(stack);
                     var result = reader.Read<Stack<int>>(writer.Output);
                     AreEqual(stack, result);
+                } */
+            }
+        }
+        
+        [Test]
+        public void TestMap() {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
+                // --- IDictionary<>
+                {
+                    var dictionary = new Dictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
+                    writer.Write(dictionary);
+                    var result = reader.Read<Dictionary<string, int>>(writer.Output);
+                    AreEqual(dictionary, result);
+                }  {
+                    var sortedDictionary = new SortedDictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
+                    writer.Write(sortedDictionary);
+                    var result = reader.Read<Dictionary<string, int>>(writer.Output);
+                    AreEqual(sortedDictionary, result);
+                } {
+                    var sortedList = new SortedList<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
+                    writer.Write(sortedList);
+                    var result = reader.Read<Dictionary<string, int>>(writer.Output);
+                    AreEqual(sortedList, result);
+                } /* {
+                    var dictionary = new ConcurrentDictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
+                    writer.Write(dictionary);
+                    var result = reader.Read<ConcurrentDictionary<string, int>>(writer.Output);
+                    AreEqual(dictionary, result);
                 } */
             }
         }

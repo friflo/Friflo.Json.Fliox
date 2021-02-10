@@ -23,11 +23,15 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Dictionary only support string as key type");
                 Type elementType = args[1];
                 ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-                if (constructor == null)
-                    constructor = ReflectUtils.GetDefaultConstructor( typeof(Dictionary<,>).MakeGenericType(keyType, elementType) );
+                if (constructor == null) {
+                    if (type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                        constructor = ReflectUtils.GetDefaultConstructor(typeof(Dictionary<,>).MakeGenericType(keyType, elementType));
+                    else
+                        throw new NotSupportedException("not default constructor for type: " + type);
+                }
                 object[] constructorParams = {config, type, constructor};
                 // return new DictionaryMapper<TElm>  (config, type, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<>), new[] {elementType}, constructorParams);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<,>), new[] {type, elementType}, constructorParams);
                 return (TypeMapper) newInstance;
             }
             return null;
@@ -37,7 +41,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DictionaryMapper<TElm> : CollectionMapper<Dictionary<string, TElm>, TElm>
+    public class DictionaryMapper<TMap, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<string, TElm>
     {
         public override string DataTypeName() { return "Dictionary"; }
         
@@ -45,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, Dictionary<string, TElm> map) {
+        public override void Write(JsonWriter writer, TMap map) {
             int startLevel = WriteUtils.IncLevel(writer);
 
             writer.bytes.AppendChar('{');
@@ -67,12 +71,12 @@ namespace Friflo.Json.Mapper.Map.Obj
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override Dictionary<string, TElm> Read(JsonReader reader, Dictionary<string, TElm> map, out bool success) {
+        public override TMap Read(JsonReader reader, TMap map, out bool success) {
             if (!ObjectUtils.StartObject(reader, this, out success))
                 return default;
 
-            if (EqualityComparer<Dictionary<string, TElm>>.Default.Equals(map, default))
-                map = (Dictionary<string, TElm>) CreateInstance();
+            if (EqualityComparer<TMap>.Default.Equals(map, default))
+                map = (TMap) CreateInstance();
 
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -104,7 +108,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<Dictionary<string, TElm>>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<TMap>(reader, "unexpected state: ", ev, out success);
                 }
             }
         }
