@@ -84,6 +84,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(stack, result);
             }
         }
+        
+        [Test]
+        public void TestQueue() {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
+                var stack = new Queue<int>(new[] {1, 2, 3});
+                writer.Write(stack);
+                var result = reader.Read<Queue<int>>(writer.Output);
+                AreEqual(stack, result);
+            }
+        }
 
         [Test]
         public void TestIDictionary() {
