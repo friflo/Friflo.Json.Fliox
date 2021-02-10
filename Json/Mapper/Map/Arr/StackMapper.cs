@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
@@ -50,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             writer.bytes.AppendChar('[');
             
             int n = 0;
-            foreach (var currentItem in stack.Reverse()) {
+            foreach (var currentItem in stack) {
                 var item = currentItem; // capture to use by ref
                 if (n++ > 0)
                     writer.bytes.AppendChar(',');
@@ -74,7 +73,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                 stack = (TCol) CreateInstance();
             else
                 stack.Clear();
-            List<TElm> list = new List<TElm>();
 
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
@@ -89,17 +87,15 @@ namespace Friflo.Json.Mapper.Map.Arr
                         elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
                         if (!success)
                             return default;
-                        list.Add(elemVar);
+                        stack.Push(elemVar);
                         break;
                     case JsonEvent.ValueNull:
                         if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
                             return default;
-                        list.Add(default);
+                        stack.Push(default);
                         break;
                     case JsonEvent.ArrayEnd:
                         success = true;
-                        for (int n = 0; n < list.Count; n++)
-                            stack.Push(list[n]);
                         return stack;
                     case JsonEvent.Error:
                         success = false;

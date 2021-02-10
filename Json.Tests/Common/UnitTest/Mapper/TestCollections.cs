@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
 
@@ -17,12 +18,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonReader reader = new JsonReader(typeStore))
             using (JsonWriter writer = new JsonWriter(typeStore)) {
                 // --- IList<>
-                /* {
-                    var roCollection = new ReadOnlyCollection<int>(new[] {1, 2, 3});
-                    writer.Write(roCollection);
-                    var result = reader.Read<ReadOnlyCollection<int>>(writer.Output);
-                    AreEqual(roCollection, result);
-                } */
                 {
                     var collection = new Collection<int>(new[] {1, 2, 3});
                     writer.Write(collection);
@@ -101,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var stack = new ConcurrentStack<int>(new[] {1, 2, 3});
                     writer.Write(stack);
                     var result = reader.Read<ConcurrentStack<int>>(writer.Output);
-                    AreEqual(stack, result);
+                    AreEqual(stack.Reverse(), result);
                 } {
                     var stack = new ConcurrentBag<int>(new[] {1, 2, 3});
                     writer.Write(stack);
@@ -120,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var stack = new Stack<int>(new[] {1, 2, 3});
                 writer.Write(stack);
                 var result = reader.Read<Stack<int>>(writer.Output);
-                AreEqual(stack, result);
+                AreEqual(stack.Reverse(), result);
             }
         }
         

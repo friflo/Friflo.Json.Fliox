@@ -2,9 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Utils;
@@ -51,11 +49,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             writer.bytes.AppendChar('[');
             
             int n = 0;
-            IEnumerator<TElm> iter = col.GetEnumerator();
-            if (type.GetGenericTypeDefinition() == typeof(ConcurrentStack<>))
-                iter = col.Reverse().GetEnumerator();
-            while (iter.MoveNext()) {
-                var item = iter.Current; // capture to use by ref
+            foreach (var curItem in col) {
+                var item = curItem; // capture to use by ref
                 if (n++ > 0)
                     writer.bytes.AppendChar(',');
                 
@@ -64,7 +59,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                 } else
                     WriteUtils.AppendNull(writer);
             }
-            iter.Dispose();
             writer.bytes.AppendChar(']');
             WriteUtils.DecLevel(writer, startLevel);
         }
