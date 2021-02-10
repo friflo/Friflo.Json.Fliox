@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
 
@@ -49,6 +47,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(linkedList);
                     var result = reader.Read<HashSet<int>>(writer.Output);
                     AreEqual(linkedList, result);
+                }
+                {
+                    var sortedSet = new SortedSet<int>(new[] {1, 2, 3});
+                    writer.Write(sortedSet);
+                    var result = reader.Read<HashSet<int>>(writer.Output);
+                    AreEqual(sortedSet, result);
                 }
                 // --- ICollection
                 /* {
