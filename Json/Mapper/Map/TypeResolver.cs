@@ -73,6 +73,7 @@ namespace Friflo.Json.Mapper.Map
             if (Match(GenericIListMatcher.      Instance,   config, type, q)) return q.hit;
             if (Match(DictionaryMatcher.        Instance,   config, type, q)) return q.hit;
             if (Match(GenericICollectionMatcher.Instance,   config, type, q)) return q.hit; // need to be after DictionaryMatcher & GenericIListMatcher
+            if (Match(GenericIEnumerableMatcher.Instance,   config, type, q)) return q.hit; // need to be after GenericICollectionMatcher
             if (Match(ClassMatcher.             Instance,   config, type, q)) return q.hit;
 
             return null;

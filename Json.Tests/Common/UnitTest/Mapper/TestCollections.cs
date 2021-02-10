@@ -72,6 +72,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 }
             }
         }
+        
+        [Test]
+        public void TestIEnumerable() {
+            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader reader = new JsonReader(typeStore))
+            using (JsonWriter writer = new JsonWriter(typeStore)) {
+                // --- IEnumerable<>
+                {
+                    IEnumerable<int> collection = new List<int>(new[] {1, 2, 3});
+                    writer.Write(collection);
+                    AreEqual("[1,2,3]", writer.Output.ToString());
+                }
+            }
+        }
 
         [Test]
         public void TestStack() {
