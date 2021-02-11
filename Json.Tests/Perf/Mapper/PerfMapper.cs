@@ -95,8 +95,8 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
                 {
-                    reader.ReadTo(json, shelf, out bool success);
-                    IsTrue(success);
+                    reader.ReadTo(json, shelf);
+                    IsTrue(reader.Success);
                 }
                 int end = TimeUtil.GetMs();
                 Console.WriteLine(end - start);

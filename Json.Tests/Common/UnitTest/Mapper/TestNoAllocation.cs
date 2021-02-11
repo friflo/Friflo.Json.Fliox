@@ -118,36 +118,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     
                     // --------------------------------- primitives -------------------------------
-                    AreEqual(12.5d,   enc.Read<double>  (@double, out bool _)); 
-                    AreEqual(12.5,    enc.Read<float>   (@double, out bool _)); 
+                    AreEqual(12.5d,   enc.Read<double>  (@double)); 
+                    AreEqual(12.5,    enc.Read<float>   (@double)); 
                     
-                    AreEqual(42,      enc.Read<long>    (@long,   out bool _)); 
-                    AreEqual(42,      enc.Read<int>     (@long,   out bool _)); 
-                    AreEqual(42,      enc.Read<short>   (@long,   out bool _)); 
-                    AreEqual(42,      enc.Read<byte>    (@long,   out bool _)); 
+                    AreEqual(42,      enc.Read<long>    (@long  )); 
+                    AreEqual(42,      enc.Read<int>     (@long  )); 
+                    AreEqual(42,      enc.Read<short>   (@long  )); 
+                    AreEqual(42,      enc.Read<byte>    (@long  )); 
                     
-                    AreEqual(true,    enc.Read<bool>    (@true,   out bool _)); 
+                    AreEqual(true,    enc.Read<bool>    (@true  )); 
 
-                    AreEqual(null,    enc.Read<object>  (@null,   out bool _)); 
+                    AreEqual(null,    enc.Read<object>  (@null  )); 
 
                     // --------------------------------- array -----------------------------------
-                    AreEqual(null,    enc.Read<string[]>(@null,   out bool _));  // no alloc only, if not containing string
+                    AreEqual(null,    enc.Read<string[]>(@null));  // no alloc only, if not containing string
    
-                    AreEqual(null,    enc.Read<double[]>(@null,   out bool _));
-                    AreEqual(null,    enc.Read<float[]> (@null,   out bool _));
-                    AreEqual(null,    enc.Read<long[]>  (@null,   out bool _));
-                    AreEqual(null,    enc.Read<int[]>   (@null,   out bool _));
-                    AreEqual(null,    enc.Read<short[]> (@null,   out bool _));
-                    AreEqual(null,    enc.Read<byte[]>  (@null,   out bool _));
-                    AreEqual(null,    enc.Read<bool[]>  (@null,   out bool _));
+                    AreEqual(null,    enc.Read<double[]>(@null));
+                    AreEqual(null,    enc.Read<float[]> (@null));
+                    AreEqual(null,    enc.Read<long[]>  (@null));
+                    AreEqual(null,    enc.Read<int[]>   (@null));
+                    AreEqual(null,    enc.Read<short[]> (@null));
+                    AreEqual(null,    enc.Read<byte[]>  (@null));
+                    AreEqual(null,    enc.Read<bool[]>  (@null));
                     
-                    NotNull(enc.ReadTo(arrFlt, reusedArrDbl,   out bool _));             AreEqual(11.5d, reusedArrDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedArrFlt,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedArrLng,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedArrInt,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedArrShort, out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedArrByte,  out bool _));
-                    NotNull(enc.ReadTo(arrBln, reusedArrBool,  out bool _));
+                    NotNull(enc.ReadTo(arrFlt, reusedArrDbl  ));             AreEqual(11.5d, reusedArrDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedArrFlt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedArrLng  ));
+                    NotNull(enc.ReadTo(arrNum, reusedArrInt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedArrShort));
+                    NotNull(enc.ReadTo(arrNum, reusedArrByte ));
+                    NotNull(enc.ReadTo(arrBln, reusedArrBool ));
 
                     // --------------------------------- enum -----------------------------------
                     {
@@ -155,27 +155,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         SomeEnum? res = enc.Read<SomeEnum?>(@null);         AreEqual(null, res);
                     } {
-                        enc.Read<SomeEnum>(hello, out bool  result);        IsTrue(enc.Error.ErrSet);
+                        enc.Read<SomeEnum>(hello);        IsTrue(enc.Error.ErrSet);
                     }
 
                     // --------------------------------- List<> ---------------------------------
                     // non nullable elements
-                    NotNull(enc.ReadTo(arrFlt, reusedListDbl,   out bool _));              AreEqual(11.5d, reusedListDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedListFlt,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListLng,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListInt,   out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListShort, out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListByte,  out bool _));
-                    NotNull(enc.ReadTo(arrBln, reusedListBool,  out bool _));
+                    NotNull(enc.ReadTo(arrFlt, reusedListDbl  ));              AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListFlt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListLng  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListInt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListShort));
+                    NotNull(enc.ReadTo(arrNum, reusedListByte ));
+                    NotNull(enc.ReadTo(arrBln, reusedListBool ));
                     
                     // nullable elements
-                    NotNull(enc.ReadTo(arrFlt, reusedListNulDbl,    out bool _));           AreEqual(11.5d, reusedListDbl[0]);
-                    NotNull(enc.ReadTo(arrNum, reusedListNulFlt,    out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulLng,    out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulInt,    out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulShort, out bool _));
-                    NotNull(enc.ReadTo(arrNum, reusedListNulByte,  out bool _));
-                    NotNull(enc.ReadTo(arrBln, reusedListNulBool,  out bool _));
+                    NotNull(enc.ReadTo(arrFlt, reusedListNulDbl  ));           AreEqual(11.5d, reusedListDbl[0]);
+                    NotNull(enc.ReadTo(arrNum, reusedListNulFlt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulLng  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulInt  ));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulShort));
+                    NotNull(enc.ReadTo(arrNum, reusedListNulByte ));
+                    NotNull(enc.ReadTo(arrBln, reusedListNulBool ));
 
                     // --------------------------------- class ---------------------------------
                 //    NotNull(enc.ReadTo(testClass, reusedClass,  out bool _));  // todo

@@ -281,7 +281,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(new [] {"A","B","C"},    Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.parser.Event);
                     {
                         var reused = new string[1];
-                        AreEqual(new[] {"A","B","C"}, ReadTo(arrStr, reused, out bool _));
+                        AreEqual(new[] {"A","B","C"}, ReadTo(arrStr, reused));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     // --- array non nullable
@@ -362,23 +362,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     } {
                         List<int> expect = new List<int> {1, 2, 3};
                         List<int> reused = new List<int> (expect);
-                        AreEqual(expect, ReadTo (arrNum, reused, out bool _));
+                        AreEqual(expect, ReadTo (arrNum, reused));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<bool> expect = new List<bool> {true, false};
                         List<bool> reused = new List<bool> (expect);
-                        AreEqual(expect, ReadTo (arrBln, reused, out bool _));
+                        AreEqual(expect, ReadTo (arrBln, reused));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         List<string> expect = new List<string> {"A", "B", "C"};
                         List<string> reused = new List<string> {"1", "2", "3", "4", "5"};
-                        AreEqual(expect, ReadTo (arrStr, reused, out bool _));
+                        AreEqual(expect, ReadTo (arrStr, reused));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     } {
                         var big = BigInteger.Parse("1234567890123456789012345678901234567890");
                         List<BigInteger> expect = new List<BigInteger> {new BigInteger(1), new BigInteger(2), big};
                         List<BigInteger> reused = new List<BigInteger> {new BigInteger(10), new BigInteger(11), new BigInteger(12), new BigInteger(13)};
-                        AreEqual(expect, ReadTo (arrBigInt, reused, out bool _));
+                        AreEqual(expect, ReadTo (arrBigInt, reused));
                         AreEqual(JsonEvent.EOF, enc.parser.Event);
                     }
                     
@@ -522,8 +522,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private T Read<T>(Bytes bytes) {
             // return reader.Read<T>(bytes);
 
-            var result = reader.Read<T>(bytes, out bool success);
-            if (!success)
+            var result = reader.Read<T>(bytes);
+            if (!reader.Success)
                 return result;
             
             cmpWrite.Write(result);
@@ -533,11 +533,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return result;
         }
         
-        private T ReadTo<T>(Bytes bytes, T value, out bool success) where T : class {
+        private T ReadTo<T>(Bytes bytes, T value) where T : class {
             // return reader.ReadTo<T>(bytes, value);
 
-            T result = reader.ReadTo(bytes, value, out success);
-            if (!success)
+            T result = reader.ReadTo(bytes, value);
+            if (!reader.Success)
                 return default;
             
             cmpWrite.Write(value);

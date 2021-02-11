@@ -19,15 +19,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var arr1 = new Bytes("[1]"))
             {
                 // --- Read ---
-                // 1. a
+                // 1.
                 AreEqual(1, read.Read<int>(num1));                      // generic
                 
-                // 1. b
-                AreEqual(1, read.Read<int>(num1, out bool success));    // generic
-                IsTrue(success);
-
                 // 2.
-                AreEqual(1, read.ReadObject(num1, typeof(int), out bool _));  // non generic
+                AreEqual(1, read.ReadObject(num1, typeof(int)));        // non generic
                 
                 
                 // --- Write ---
@@ -43,11 +39,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
-                int[] result = read.ReadTo(arr1, reuse, out bool _);            // generic
+                int[] result = read.ReadTo(arr1, reuse);                // generic
                 AreEqual(expect, result);   
                 IsTrue(reuse == result); // same reference - size dit not change
                 
-                object resultObj = read.ReadObjectTo(arr1, reuse, out bool _);  // non generic
+                object resultObj = read.ReadObjectTo(arr1, reuse);      // non generic
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
                 

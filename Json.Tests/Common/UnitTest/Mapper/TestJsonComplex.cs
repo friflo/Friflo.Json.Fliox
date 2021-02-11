@@ -50,17 +50,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private bool EncodeJsonTo<T>(Bytes json, T obj, TypeStore typeStore) {
-            bool success = false;
             using (JsonReader enc = new JsonReader(typeStore)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
-                    enc.ReadTo(json, obj, out success);
-                    if (!success)
+                    enc.ReadTo(json, obj);
+                    if (!enc.Success)
                         throw new InvalidOperationException(enc.Error.msg.ToString());
                 }
                 AreEqual(0, enc.SkipInfo.Sum); // 2 => discriminator: "$type" is skipped, there is simply no field for a discriminator
                 // FFLog.log("EncodeJsonTo: " + json + " : " + stopwatch.Time());
-                return success;
+                return enc.Success;
             }
         }
         

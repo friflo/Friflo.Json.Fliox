@@ -301,7 +301,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    reader.ReadTo(json, obj, out bool _);
+                    reader.ReadTo(json, obj);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -337,7 +337,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list);
-                    reader.ReadTo(writer.Output, list, out bool _);
+                    reader.ReadTo(writer.Output, list);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -358,7 +358,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list);
-                    reader.ReadTo(writer.Output, list, out bool _);
+                    reader.ReadTo(writer.Output, list);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -379,7 +379,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr);
-                    reader.ReadTo(writer.Output, arr, out bool _);
+                    reader.ReadTo(writer.Output, arr);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -400,7 +400,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr);
-                    reader.ReadTo(writer.Output, arr, out bool _);
+                    reader.ReadTo(writer.Output, arr);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
