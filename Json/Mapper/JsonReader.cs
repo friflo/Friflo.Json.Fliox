@@ -137,30 +137,30 @@ namespace Friflo.Json.Mapper
         
         // --------------- Bytes ---------------
         // --- Read()
-        public T Read<T>(Bytes bytes) {
-            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
+        public T Read<T>(Bytes utf8Bytes) {
+            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
             T result =  ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
-        public object ReadObject(Bytes bytes, Type type) {
-            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
+        public object ReadObject(Bytes utf8Bytes, Type type) {
+            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
             object result = ReadStart(type, null);
             JsonBurstError();
             return result;
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Bytes bytes, T obj)  {
-            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
+        public T ReadTo<T>(Bytes utf8Bytes, T obj)  {
+            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(Bytes bytes, object obj)  {
-            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
+        public object ReadToObject(Bytes utf8Bytes, object obj)  {
+            InitJsonReaderBytes(ref utf8Bytes.buffer, utf8Bytes.StartPos, utf8Bytes.Len);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;
@@ -168,30 +168,30 @@ namespace Friflo.Json.Mapper
         
         // --------------- Stream ---------------
         // --- Read()
-        public T Read<T>(Stream stream) {
-            InitJsonReaderStream(stream);
+        public T Read<T>(Stream utf8Stream) {
+            InitJsonReaderStream(utf8Stream);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
-        public object ReadObject(Stream stream, Type type) {
-            InitJsonReaderStream(stream);
+        public object ReadObject(Stream utf8Stream, Type type) {
+            InitJsonReaderStream(utf8Stream);
             object result = ReadStart(type, null);
             JsonBurstError();
             return result;
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Stream stream, T obj)  {
-            InitJsonReaderStream(stream);
+        public T ReadTo<T>(Stream utf8Stream, T obj)  {
+            InitJsonReaderStream(utf8Stream);
             T result = ReadToStart(obj);
             JsonBurstError();
             return result;
         }
 
-        public object ReadToObject(Stream stream, object obj)  {
-            InitJsonReaderStream(stream);
+        public object ReadToObject(Stream utf8Stream, object obj)  {
+            InitJsonReaderStream(utf8Stream);
             object result = ReadToStart(obj);
             JsonBurstError();
             return result;

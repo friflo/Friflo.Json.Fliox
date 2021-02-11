@@ -11,48 +11,48 @@ namespace Friflo.Json.Mapper
         
         // --------------- Bytes ---------------
         // --- Read()
-        public static T Read<T>(Bytes bytes) {
+        public static T Read<T>(Bytes utf8Bytes) {
             var reader = new JsonReader(TypeStore);
-            return reader.Read<T>(bytes);
+            return reader.Read<T>(utf8Bytes);
         }
         
-        public static object ReadObject(Bytes bytes, Type type) {
+        public static object ReadObject(Bytes utf8Bytes, Type type) {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadObject(bytes, type);
+            return reader.ReadObject(utf8Bytes, type);
         }
 
         // --- ReadTo()
-        public static T ReadTo<T>(Bytes bytes, T obj)  {
+        public static T ReadTo<T>(Bytes utf8Bytes, T obj)  {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadTo(bytes, obj);
+            return reader.ReadTo(utf8Bytes, obj);
         }
 
-        public static object ReadToObject(Bytes bytes, object obj)  {
+        public static object ReadToObject(Bytes utf8Bytes, object obj)  {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadToObject(bytes, obj);
+            return reader.ReadToObject(utf8Bytes, obj);
         }
         
         // --------------- Stream ---------------
         // --- Read()
-        public static T Read<T>(Stream stream) {
+        public static T Read<T>(Stream utf8Stream) {
             var reader = new JsonReader(TypeStore);
-            return reader.Read<T>(stream);
+            return reader.Read<T>(utf8Stream);
         }
         
-        public static object ReadObject(Stream stream, Type type) {
+        public static object ReadObject(Stream utf8Stream, Type type) {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadObject(stream, type);
+            return reader.ReadObject(utf8Stream, type);
         }
 
         // --- ReadTo()
-        public static T ReadTo<T>(Stream stream, T obj)  {
+        public static T ReadTo<T>(Stream utf8Stream, T obj)  {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadTo(stream, obj);
+            return reader.ReadTo(utf8Stream, obj);
         }
 
-        public static object ReadToObject(Stream stream, object obj)  {
+        public static object ReadToObject(Stream utf8Stream, object obj)  {
             var reader = new JsonReader(TypeStore);
-            return reader.ReadToObject(stream, obj);
+            return reader.ReadToObject(utf8Stream, obj);
         }
         
         // --------------- string ---------------
