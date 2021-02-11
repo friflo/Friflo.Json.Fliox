@@ -49,9 +49,11 @@ namespace Friflo.Json.Mapper
         // ReSharper disable once InconsistentNaming
         internal            ReaderIntern        intern;
 
+        public              JsonEvent           JsonEvent => parser.Event;
         public              JsonError           Error => parser.error;
         public              bool                Success => !parser.error.ErrSet;
         public              SkipInfo            SkipInfo => parser.skipInfo;
+        
 
         private readonly    IErrorHandler       errorHandler;
 

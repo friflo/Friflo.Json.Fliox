@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         }
 
         public override StringTokens Read(JsonReader reader, StringTokens slot, out bool success) {
-            if (reader.parser.Event != JsonEvent.ValueString)
+            if (reader.JsonEvent != JsonEvent.ValueString)
                 return ValueUtils.CheckElse(reader, this, out success);    
             string value =  reader.parser.value.ToString();
             if (value.Contains(","))

@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // --- JsonReader
                 enc.maxDepth = 1;
                 var result = enc.Read<RecursiveClass>(recDepth1);
-                AreEqual(JsonEvent.EOF, enc.parser.Event);
+                AreEqual(JsonEvent.EOF, enc.JsonEvent);
                 IsNull(result.recField);
 
                 enc.Read<RecursiveClass>(recDepth2);
