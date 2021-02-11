@@ -85,10 +85,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             if (!success)
                 return default;
             
-            ClassMirror mirror = reader.InstanceLoad(ref classType, obj);
+            ClassMirror mirror = reader.intern.InstanceLoad(ref classType, obj);
             if (!ReadClassMirror(reader, mirror, classType, 0, 0))
                 return default;
-            reader.InstanceStore(mirror, obj);
+            reader.intern.InstanceStore(mirror, obj);
             return obj;
         }
 

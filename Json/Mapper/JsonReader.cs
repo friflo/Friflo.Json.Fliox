@@ -2,18 +2,20 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
 
-    public struct ReaderIntern : IDisposable {
+    public partial struct ReaderIntern : IDisposable {
         internal readonly   Bytes               discriminator;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
@@ -33,6 +35,8 @@ namespace Friflo.Json.Mapper
             searchKey       = new Bytes32();
             charBuf         = new char[128];
             keyRef          = new BytesString();
+            mirrorStack     = new List<ClassMirror>(16);
+            classLevel      = 0;
         }
 
         public void Dispose() {
@@ -44,7 +48,7 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial class JsonReader : IDisposable, IErrorHandler
+    public class JsonReader : IDisposable, IErrorHandler
     {
         public              JsonParser          parser;
         private             int                 maxDepth;
@@ -83,19 +87,19 @@ namespace Friflo.Json.Mapper
         private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
             parser.InitParser(bytes, offset, len);
             parser.SetMaxDepth(maxDepth);
-            InitMirrorStack();
+            intern.InitMirrorStack();
         }
         
         private void InitJsonReaderStream(Stream stream) {
             parser.InitParser(stream);
             parser.SetMaxDepth(maxDepth);
-            InitMirrorStack();
+            intern.InitMirrorStack();
         }
 
         public void Dispose() {
             intern.         Dispose();
             parser.         Dispose();
-            DisposeMirrorStack();
+            intern.DisposeMirrorStack();
         }
         
         public void HandleError(int pos, ref Bytes message) {
@@ -193,7 +197,7 @@ namespace Friflo.Json.Mapper
                                 parser.NextEvent(); // EOF
                             return result;
                         }
-                        finally { ClearMirrorStack(); }
+                        finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, out bool _);
@@ -224,7 +228,7 @@ namespace Friflo.Json.Mapper
                                 parser.NextEvent(); // EOF
                             return result;
                         }
-                        finally { ClearMirrorStack(); }
+                        finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
                             return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, out _);
@@ -252,7 +256,7 @@ namespace Friflo.Json.Mapper
                                 parser.NextEvent(); // EOF
                             return result;
                         }
-                        finally { ClearMirrorStack(); }
+                        finally { intern.ClearMirrorStack(); }
                     case JsonEvent.Error:
                         return default;
                     default:
@@ -274,7 +278,7 @@ namespace Friflo.Json.Mapper
                                 parser.NextEvent(); // EOF
                             return result;
                         }
-                        finally { ClearMirrorStack(); }
+                        finally { intern.ClearMirrorStack(); }
                     case JsonEvent.Error:
                         return default;
                     default:

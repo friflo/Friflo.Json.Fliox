@@ -9,23 +9,23 @@ using Friflo.Json.Mapper.MapIL.Obj;
 namespace Friflo.Json.Mapper
 {
     // This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe.
-    partial class JsonReader
+    partial struct ReaderIntern
     {
 #if !UNITY_5_3_OR_NEWER
         private             int                     classLevel;
-        private  readonly   List<ClassMirror>       mirrorStack = new List<ClassMirror>(16);
+        private  readonly   List<ClassMirror>       mirrorStack;
         // internal readonly   bool                 useIL;
 
-        private void InitMirrorStack() {
+        internal void InitMirrorStack() {
             classLevel = 0;
         }
 
-        private void DisposeMirrorStack() {
+        internal void DisposeMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].Dispose();
         }
 
-        private void ClearMirrorStack() {
+        internal void ClearMirrorStack() {
             for (int n = 0; n < mirrorStack.Count; n++)
                 mirrorStack[n].ClearObjectReferences();
         }
@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper
             if (classLevel >= mirrorStack.Count)
                 mirrorStack.Add(new ClassMirror());
             var mirror = mirrorStack[classLevel++];
-            mirror.LoadInstance(intern.typeCache, ref classType, obj);
+            mirror.LoadInstance(typeCache, ref classType, obj);
             return mirror;
         }
 
