@@ -9,10 +9,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestApi
     {
         [Test]
-        public void Run() {
+        public void ReadWrite() {
             // Ensure existence of basic API methods
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore))
+            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             
             using (var num1 = new Bytes("1"))
@@ -46,7 +46,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 object resultObj = read.ReadObjectTo(arr1, reuse);      // non generic
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
-                
+            }
+        }
+        
+        [Test]
+        public void ReaderException() {
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader read = new JsonReader(typeStore))
+            using (var invalid = new Bytes("invalid"))
+            {
+                var e = Throws<JsonReaderException>(() => read.Read<string>(invalid));
+                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", e.Message);
+                AreEqual(1, e.position);
+            }
+        }
+        
+        [Test]
+        public void ReaderError() {
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var invalid = new Bytes("invalid"))
+            {
+                read.Read<string>(invalid);
+                IsFalse(read.Success);
+                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", read.Error.msg.ToString());
+                AreEqual(1, read.Error.Pos);
             }
         }
     }

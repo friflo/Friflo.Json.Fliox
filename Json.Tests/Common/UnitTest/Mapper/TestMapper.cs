@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual(EnumClass.Value1, EnumClass.Value3);
 
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader enc = new JsonReader(typeStore))
+            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             using (var value1 = new Bytes("\"Value1\""))
             using (var value2 = new Bytes("\"Value2\""))
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             const string bigIntStr = "1234567890123456789012345678901234567890";
             var bigIntNum = BigInteger.Parse(bigIntStr);
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader enc = new JsonReader(typeStore))
+            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var bigInt = new Bytes($"\"{bigIntStr}\"")) {
                 AreEqual(bigIntNum, enc.Read<BigInteger>(bigInt));
             }
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void TestMaxDepth() {
             using (TypeStore typeStore =    new TypeStore())
-            using (JsonReader enc =         new JsonReader(typeStore))
+            using (JsonReader enc =         new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter writer =      new JsonWriter(typeStore))
             using (var recDepth1 = new Bytes("{\"recField\":null}"))
             using (var recDepth2 = new Bytes("{\"recField\":{\"recField\":null}}"))
@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestDerivedClass() {
             using (var typeStore = new TypeStore())
             using (var derivedJson = new Bytes("{\"derivedField\":22,\"baseField\":11}"))
-            using (var reader = new JsonReader(typeStore))
+            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
                 var result = reader.Read<Derived>(derivedJson);

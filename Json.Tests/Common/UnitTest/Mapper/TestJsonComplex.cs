@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private T EncodeJson<T>(Bytes json, TypeStore typeStore) {
             T ret = default;
-            using (var enc = new JsonReader(typeStore)) {
+            using (var enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.Read<T>(json);
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private bool EncodeJsonTo<T>(Bytes json, T obj, TypeStore typeStore) {
-            using (JsonReader enc = new JsonReader(typeStore)) {
+            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     enc.ReadTo(json, obj);
@@ -211,7 +211,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 using (JsonWriter writer = new JsonWriter(typeStore)) {
                     writer.Write(obj);
 
-                    using (JsonReader enc = new JsonReader(typeStore)) {
+                    using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
                         JsonComplex res = enc.Read<JsonComplex>(writer.Output);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());

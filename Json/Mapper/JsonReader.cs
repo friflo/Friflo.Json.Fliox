@@ -34,14 +34,14 @@ namespace Friflo.Json.Mapper
         public              bool                Success => !parser.error.ErrSet;
         public              SkipInfo            SkipInfo => parser.skipInfo;
 
-        public              bool                throwException;
-        public              IErrorHandler       errorHandler = null;
+        private readonly    IErrorHandler       errorHandler;
 
-        public JsonReader(TypeStore typeStore) {
+        public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             typeCache   = new TypeCache(typeStore);
             discriminator = new Bytes(typeStore.config.discriminator);
             parser = new JsonParser();
             maxDepth    = 100;
+            this.errorHandler = errorHandler; 
 #if !JSON_BURST
             parser.error.errorHandler = this;
 #endif
@@ -67,15 +67,11 @@ namespace Friflo.Json.Mapper
         public void HandleError(int pos, ref Bytes message) {
             if (errorHandler != null)
                 errorHandler.HandleError(pos, ref message);
-            if (throwException)
-                throw new InvalidOperationException(parser.error.msg.ToString());
+            else
+                throw new JsonReaderException(parser.error.msg.ToString(), pos);
         }
         
         // --- Read()
-        /// <summary>
-        /// Dont throw exceptions in error case, if not enabled by <see cref="throwException"/>
-        /// In error case this information is available via <see cref="Error"/> 
-        /// </summary>
         public T Read<T>(Bytes bytes) {
             var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
@@ -212,6 +208,21 @@ namespace Friflo.Json.Mapper
                         return ReadUtils.ErrorMsg<object>(this, "ReadTo() can only used on an JSON object or array", ev, out success);
                 }
             }
+        }
+
+        public static readonly NoThrowHandler NoThrow = new NoThrowHandler();
+    }
+    
+    public class NoThrowHandler : IErrorHandler
+    {
+        public void HandleError(int pos, ref Bytes message) { }
+    }
+    
+    public class JsonReaderException : Exception {
+        public readonly int position;
+        
+        internal JsonReaderException(string message, int position) : base(message) {
+            this.position = position;
         }
     }
 }

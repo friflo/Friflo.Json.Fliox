@@ -171,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
             
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (Bytes        json        = new Bytes(payloadTrimmed))
             {
@@ -246,7 +246,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void ReadJson() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (Bytes        json        = new Bytes(payloadStr))
             {
                 var result = reader.Read<SampleIL>(json);
@@ -294,7 +294,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (Bytes        json        = new Bytes(payloadStr))
             {
                 var obj = new SampleIL();
@@ -312,7 +312,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void ReadWriteStruct () {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var obj = new StructIL();
@@ -329,7 +329,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var list = new List<SampleIL>() { new SampleIL() };
@@ -350,7 +350,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var list = new List<StructIL>() { new StructIL() };
@@ -371,7 +371,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var arr = new [] { new SampleIL() };
@@ -392,7 +392,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
             
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 var arr = new [] { new StructIL() };

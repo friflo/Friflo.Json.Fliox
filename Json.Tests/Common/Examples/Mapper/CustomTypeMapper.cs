@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             var typeStore = new TypeStore(resolver, null);
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
-            JsonReader reader = new JsonReader(typeStore);
+            JsonReader reader = new JsonReader(typeStore, JsonReader.NoThrow);
             StringTokens result = reader.Read<StringTokens>(new Bytes(json));
             AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
             

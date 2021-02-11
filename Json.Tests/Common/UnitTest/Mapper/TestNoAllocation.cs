@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedListNulBool =    new List<bool?>();
             
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader enc = new JsonReader(typeStore))
+            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
                 
             using (var hello =      new Bytes ("\"hello\""))

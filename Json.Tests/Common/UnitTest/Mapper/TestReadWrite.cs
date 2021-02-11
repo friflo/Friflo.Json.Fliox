@@ -95,10 +95,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""unknownNull"":null
 }}";
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader enc = new JsonReader(typeStore))
+            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             //
-            using (JsonReader read2 = new JsonReader(typeStore))
+            using (JsonReader read2 = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write2 = new JsonWriter(typeStore))
                 
             using (var hello =      new Bytes ("\"hello\""))
@@ -145,14 +145,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     enc.Read<double>(@null);
                     StringAssert.Contains("JsonReader/error: Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
-#if !UNITY_EDITOR
-                    {
-                        enc.throwException = true;
-                        var e = Throws<InvalidOperationException>(() => enc.Read<double>(@null));
-                        StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", e.Message);
-                        enc.throwException = false;
-                    }
-#endif
+
+                    enc.Read<double>(@null);
+                    StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
+
                     // error cases
                     enc.Read<double>(@true);
                     StringAssert.Contains("Cannot assign bool to double. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.ToString());
