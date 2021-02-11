@@ -73,52 +73,30 @@ namespace Friflo.Json.Mapper
         
         // --- Read()
         public T Read<T>(Bytes bytes) {
-            var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
-            
-            T result = ReadStart(mapper, default, out bool success);
-            if (!success)
-                return default;
-            parser.NextEvent(); // EOF
-            return result;
+            return ReadStart<T>(default);
         }
         
         public object ReadObject(Bytes bytes, Type type) {
-            TypeMapper  mapper  = typeCache.GetTypeMapper(type);
             InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
-            
-            object result = ReadStart(mapper, null, out bool success);
-            if (!success)
-                return null;
-            parser.NextEvent(); // EOF
-            return result;
+            return ReadStart(type, null);
         }
 
         // --- ReadTo()
         public T ReadTo<T>(Bytes bytes, T obj)  {
-            var     mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(obj.GetType());
             InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
-            
-            T result = ReadToStart(mapper, obj, out bool success);
-            if (!success)
-                return default;
-            parser.NextEvent(); // EOF
-            return result;
+            return ReadToStart(obj);
         }
 
         public object ReadObjectTo(Bytes bytes, object obj)  {
-            var     mapper  = typeCache.GetTypeMapper(obj.GetType());
             InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
-            
-            object result = ReadToStart(mapper, obj, out bool success);
-            if (!success)
-                return default;
-            parser.NextEvent(); // EOF
-            return result;
+            return ReadToStart(obj);
         }
         
         // --------------------------------------- private --------------------------------------- 
-        private object ReadStart(TypeMapper mapper, object value, out bool success) {
+        private object ReadStart(Type type, object value) {
+            TypeMapper  mapper  = typeCache.GetTypeMapper(type);
+
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -128,24 +106,28 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         try {
-                            return mapper.ReadObject(this, value, out success);
+                            object result = mapper.ReadObject(this, value, out bool success);
+                            if (success)
+                                parser.NextEvent(); // EOF
+                            return result;
                         }
                         finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, out success);
-                        success = true;
+                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, out bool _);
+                        
+                        parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
-                        success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(this, "unexpected state in Read() : ", ev, out success);
+                        return ReadUtils.ErrorMsg<object>(this, "unexpected state in Read() : ", ev, out bool _);
                 }
             }
         }
 
-        private T ReadStart<T>(TypeMapper<T> mapper, T value, out bool success) {
+        private T ReadStart<T>(T value) {
+            TypeMapper<T>  mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -155,57 +137,66 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         try {
-                            return mapper.Read(this, value, out success);
+                            T result = mapper.Read(this, value, out bool success);
+                            if (success)
+                                parser.NextEvent(); // EOF
+                            return result;
                         }
                         finally { ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, out success);
-                        success = true;
+                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, out _);
+                        
+                        parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
-                        success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(this, "unexpected state in Read() : ", ev, out success);
+                        return ReadUtils.ErrorMsg<T>(this, "unexpected state in Read() : ", ev, out _);
                 }
             }
         }
         
-        private T ReadToStart<T>(TypeMapper<T> mapper, T value, out bool success) {
+        private T ReadToStart<T>(T value) {
+            TypeMapper<T> mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(value.GetType());
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         try {
-                            return mapper.Read(this, value, out success);
+                            T result = mapper.Read(this, value, out bool success);
+                            if (success)
+                                parser.NextEvent(); // EOF
+                            return result;
                         }
                         finally { ClearMirrorStack(); }
                     case JsonEvent.Error:
-                        success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(this, "ReadTo() can only used on an JSON object or array", ev, out success);
+                        return ReadUtils.ErrorMsg<T>(this, "ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }
 
-        private object ReadToStart(TypeMapper mapper, object value, out bool success) {
+        private object ReadToStart(object value) {
+            TypeMapper mapper  = typeCache.GetTypeMapper(value.GetType());
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         try {
-                            return mapper.ReadObject(this, value, out success);
+                            object result = mapper.ReadObject(this, value, out bool success);
+                            if (success)
+                                parser.NextEvent(); // EOF
+                            return result;
                         }
                         finally { ClearMirrorStack(); }
                     case JsonEvent.Error:
-                        success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(this, "ReadTo() can only used on an JSON object or array", ev, out success);
+                        return ReadUtils.ErrorMsg<object>(this, "ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }
