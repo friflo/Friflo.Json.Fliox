@@ -132,7 +132,8 @@ namespace Friflo.Json.Mapper
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {
-            intern.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
+            if (intern.parser.error.ErrSet)
+                intern.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
         }
         
         // --------------- Bytes ---------------

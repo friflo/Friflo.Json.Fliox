@@ -7,32 +7,29 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
+    // Ensure existence of basic API methods
     public class TestApi
     {
+        // ------------------------------------ JsonReader / JsonWriter ------------------------------------
         [Test]
         public void ReadWriteBytes() {
-            // Ensure existence of basic API methods
             using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonReader read = new JsonReader(typeStore))
             using (JsonWriter write = new JsonWriter(typeStore))
             
             using (var num1 = new Bytes("1"))
             using (var arr1 = new Bytes("[1]"))
             {
                 // --- Read ---
-                // 1.
                 AreEqual(1, read.Read<int>(num1));                      // generic
                 
-                // 2.
                 AreEqual(1, read.ReadObject(num1, typeof(int)));        // non generic
                 
                 
                 // --- Write ---
-                // 1.
                 write.Write(1);                                         // generic
                 AreEqual("1", write.bytes.ToString());
                 
-                // 2.
                 write.WriteObject(1);                                   // non generic 
                 AreEqual("1", write.bytes.ToString());
                 
@@ -52,15 +49,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadWriteStream() {
-            // Ensure existence of basic API methods
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
             {
                 // --- Read ---
-                // 1.
                 AreEqual(1, read.Read<int>(StreamFromString("1")));                     // generic
                 
-                // 2.
                 AreEqual(1, read.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
                 
                 // --- ReadTo ---
@@ -78,15 +72,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadWriteString() {
-            // Ensure existence of basic API methods
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
             {
                 // --- Read ---
-                // 1.
                 AreEqual(1, read.Read<int>("1"));                       // generic
                 
-                // 2.
                 AreEqual(1, read.ReadObject("1", typeof(int)));         // non generic
                 
                 // --- ReadTo ---
@@ -100,6 +91,77 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
             }
+        }
+        
+        // --------------------------------------- JSON ---------------------------------------
+        [Test]
+        public void JsonBytes() {
+            using (var num1 = new Bytes("1"))
+            using (var arr1 = new Bytes("[1]"))
+            {
+                // --- Read ---
+                AreEqual(1, JSON.Read<int>(num1));                      // generic
+                
+                AreEqual(1, JSON.ReadObject(num1, typeof(int)));        // non generic
+                
+                /*
+                // --- Write ---
+                write.Write(1);                                         // generic
+                AreEqual("1", write.bytes.ToString());
+                
+                write.WriteObject(1);                                   // non generic 
+                AreEqual("1", write.bytes.ToString());
+                */
+
+                // --- ReadTo ---
+                int[] reuse  = new int[1];
+                int[] expect = { 1 };
+                int[] result = JSON.ReadTo(arr1, reuse);                // generic
+                AreEqual(expect, result);   
+                IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = JSON.ReadToObject(arr1, reuse);      // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
+        [Test]
+        public void JsonStream() {
+            // --- Read ---
+            AreEqual(1, JSON.Read<int>(StreamFromString("1")));                     // generic
+            
+            AreEqual(1, JSON.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
+            
+            // --- ReadTo ---
+            int[] reuse  = new int[1];
+            int[] expect = { 1 };
+            int[] result = JSON.ReadTo(StreamFromString("[1]"), reuse);             // generic
+            AreEqual(expect, result);   
+            IsTrue(reuse == result); // same reference - size dit not change
+            
+            object resultObj = JSON.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
+            AreEqual(expect, resultObj);
+            IsTrue(reuse == resultObj); // same reference - size dit not change
+        }
+        
+        [Test]
+        public void JsonString() {
+            // --- Read ---
+            AreEqual(1, JSON.Read<int>("1"));                       // generic
+            
+            AreEqual(1, JSON.ReadObject("1", typeof(int)));         // non generic
+            
+            // --- ReadTo ---
+            int[] reuse  = new int[1];
+            int[] expect = { 1 };
+            int[] result = JSON.ReadTo("[1]", reuse);               // generic
+            AreEqual(expect, result);   
+            IsTrue(reuse == result); // same reference - size dit not change
+            
+            object resultObj = JSON.ReadToObject("[1]", reuse);     // non generic
+            AreEqual(expect, resultObj);
+            IsTrue(reuse == resultObj); // same reference - size dit not change
         }
         
         private static Stream StreamFromString(string s)
