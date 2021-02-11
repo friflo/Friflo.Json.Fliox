@@ -141,7 +141,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 
             // Is first member is discriminator - "$type": "<typeName>" ?
             if (ev == JsonEvent.ValueString && reader.intern.discriminator.IsEqualBytes(ref parser.key)) {
-                classType = reader.typeCache.GetTypeByName(ref parser.value);
+                classType = reader.intern.typeCache.GetTypeByName(ref parser.value);
                 if (classType == null)
                     return ReadUtils.ErrorMsg<TypeMapper>(reader, $"Object with discriminator {reader.intern.discriminator} not found: ", ref parser.value, out success);
                 parser.NextEvent();

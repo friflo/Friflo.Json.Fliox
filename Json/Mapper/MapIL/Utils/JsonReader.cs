@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper
             if (classLevel >= mirrorStack.Count)
                 mirrorStack.Add(new ClassMirror());
             var mirror = mirrorStack[classLevel++];
-            mirror.LoadInstance(typeCache, ref classType, obj);
+            mirror.LoadInstance(intern.typeCache, ref classType, obj);
             return mirror;
         }
 

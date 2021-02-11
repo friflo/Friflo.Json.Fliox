@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var recDepth2 = new Bytes("{\"recField\":{\"recField\":null}}"))
             {
                 // --- JsonReader
-                enc.maxDepth = 1;
+                enc.MaxDepth = 1;
                 var result = enc.Read<RecursiveClass>(recDepth1);
                 AreEqual(JsonEvent.EOF, enc.JsonEvent);
                 IsNull(result.recField);

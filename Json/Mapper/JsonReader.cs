@@ -23,9 +23,12 @@ namespace Friflo.Json.Mapper
         /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
+        public readonly     TypeCache           typeCache;
 
-        public ReaderIntern(StoreConfig config) {
-            discriminator   = new Bytes(config.discriminator);
+
+        public ReaderIntern(TypeStore typeStore) {
+            typeCache       = new TypeCache(typeStore);
+            discriminator   = new Bytes(typeStore.config.discriminator);
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();
             charBuf         = new char[128];
@@ -35,6 +38,7 @@ namespace Friflo.Json.Mapper
         public void Dispose() {
             strBuf.         Dispose();
             discriminator.Dispose();
+            typeCache.Dispose();
         }
     }
 #if !UNITY_5_3_OR_NEWER
@@ -43,9 +47,8 @@ namespace Friflo.Json.Mapper
     public partial class JsonReader : IDisposable, IErrorHandler
     {
         public              JsonParser          parser;
-        public              int                 maxDepth;
+        private             int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
-        public   readonly   TypeCache           typeCache;
         // ReSharper disable once InconsistentNaming
         internal            ReaderIntern        intern;
 
@@ -53,13 +56,19 @@ namespace Friflo.Json.Mapper
         public              JsonError           Error => parser.error;
         public              bool                Success => !parser.error.ErrSet;
         public              SkipInfo            SkipInfo => parser.skipInfo;
-        
+        public              TypeCache           TypeCache => intern.typeCache; 
+
+        public              int                 MaxDepth {
+            get => maxDepth;
+            set => maxDepth = value;
+        }
+
 
         private readonly    IErrorHandler       errorHandler;
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
-            typeCache   = new TypeCache(typeStore);
-            intern = new ReaderIntern ( typeStore.config );
+
+            intern = new ReaderIntern ( typeStore );
             parser = new JsonParser();
             maxDepth    = 100;
             this.errorHandler = errorHandler; 
@@ -84,7 +93,6 @@ namespace Friflo.Json.Mapper
         }
 
         public void Dispose() {
-            typeCache.      Dispose();
             intern.         Dispose();
             parser.         Dispose();
             DisposeMirrorStack();
@@ -169,7 +177,7 @@ namespace Friflo.Json.Mapper
         
         // --------------------------------------- private --------------------------------------- 
         private object ReadStart(Type type, object value) {
-            TypeMapper  mapper  = typeCache.GetTypeMapper(type);
+            TypeMapper  mapper  = intern.typeCache.GetTypeMapper(type);
 
             while (true) {
                 JsonEvent ev = parser.NextEvent();
@@ -201,7 +209,7 @@ namespace Friflo.Json.Mapper
         }
 
         private T ReadStart<T>(T value) {
-            TypeMapper<T>  mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            TypeMapper<T>  mapper  = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -232,7 +240,7 @@ namespace Friflo.Json.Mapper
         }
         
         private T ReadToStart<T>(T value) {
-            TypeMapper<T> mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(value.GetType());
+            TypeMapper<T> mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(value.GetType());
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -254,7 +262,7 @@ namespace Friflo.Json.Mapper
         }
 
         private object ReadToStart(object value) {
-            TypeMapper mapper  = typeCache.GetTypeMapper(value.GetType());
+            TypeMapper mapper  = intern.typeCache.GetTypeMapper(value.GetType());
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
