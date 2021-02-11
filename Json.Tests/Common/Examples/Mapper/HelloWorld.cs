@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void HelloWorldReader() {
             var r = new JsonReader(new TypeStore());
-            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
+            var msg = r.Read<Message>(@"{""say"": ""Hello 👋"", ""to"": ""World""}");
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
         }

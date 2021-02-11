@@ -81,37 +81,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var reusedListNulShort =   new List<short?>();
             var reusedListNulByte =    new List<byte?>();
             var reusedListNulBool =    new List<bool?>();
+ 
+            var hello =         "\"hello\"";
+            var @double =       "12.5";
+            var @long =         "42";
+            var @true =         "true";
+            var @null =         "null";
+            var value1 =        "\"Value1\"";
+
+             // --- arrays
+            var arrFlt =        "[11.5,12.5,13.5]";
+            var arrNum =        "[1,2,3]";
+            var arrBln =        "[true, false]";
+
+             // --- class/map
+            var testClass =     testClassJson; 
             
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
-                
-            using (var hello =      new Bytes ("\"hello\""))
-            using (var @double =    new Bytes ("12.5"))
-            using (var @long =      new Bytes ("42"))
-            using (var @true =      new Bytes ("true"))
-            using (var @null =      new Bytes ("null"))
-            using (var value1 =     new Bytes ("\"Value1\""))
-            using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
-                // --- arrays
-            using (var arrFlt =     new Bytes ("[11.5,12.5,13.5]"))
-            using (var arrNum =     new Bytes ("[1,2,3]"))
-            using (var arrStr =     new Bytes ("[\"hello\"]"))
-            using (var arrBln =     new Bytes ("[true, false]"))
-            using (var arrObj =     new Bytes ("[{\"key\":42}]"))
-            using (var arrNull =    new Bytes ("[null]"))
-            using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
-            using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
-                // --- class/map
-            using (var testClass =  new Bytes (testClassJson)) 
-            using (var mapNull =    new Bytes ("{\"key\":null}"))
-            using (var mapNum =     new Bytes ("{\"key\":42}"))
-            using (var mapBool =    new Bytes ("{\"key\":true}"))
-            using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
-            using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
-            using (var mapNum2 =    new Bytes ("{\"str\":44}"))
-            using (var invalid =    new Bytes ("invalid")) {
-
+            {
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();

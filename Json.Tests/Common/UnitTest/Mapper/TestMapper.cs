@@ -22,16 +22,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestEnumMapper() {
             // C#/.NET behavior in case of duplicate enum v
             AreEqual(EnumClass.Value1, EnumClass.Value3);
+            var value1 = "\"Value1\"";
+            var value2 = "\"Value2\"";
+            var value3 = "\"Value3\"";
+            var hello =  "\"hello\"";
+            var num11 =  "11";
+            var num999 = "999";
 
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
-            using (var value1 = new Bytes("\"Value1\""))
-            using (var value2 = new Bytes("\"Value2\""))
-            using (var value3 = new Bytes("\"Value3\""))
-            using (var hello =  new Bytes("\"hello\""))
-            using (var num11 =  new Bytes("11"))
-            using (var num999 = new Bytes("999"))
             {
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));
                 AreEqual(EnumClass.Value2, enc.Read<EnumClass>(value2));

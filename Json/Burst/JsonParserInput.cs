@@ -113,7 +113,6 @@ namespace Friflo.Json.Burst
             Start();
         }
 
-        
         public void InitParser(ByteList bytes, int start, int len) {
             inputType       = InputType.ByteList;
             inputByteList   = bytes;

@@ -75,6 +75,7 @@ namespace Friflo.Json.Mapper
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         // ReSharper disable once InconsistentNaming
         private             Reader              intern;
+        private             Bytes               inputStringBuf = new Bytes(0);
 
         public              JsonEvent           JsonEvent       => intern.parser.Event;
         public              JsonError           Error           => intern.parser.error;
@@ -99,8 +100,10 @@ namespace Friflo.Json.Mapper
 // #endif 
         }
         
-        private void InitJsonReaderBytes(Bytes bytes) {
-            intern.parser.InitParser(bytes.buffer, bytes.start, bytes.Len);
+        private void InitJsonReaderString(string json) {
+            inputStringBuf.Clear();
+            inputStringBuf.Set(json);
+            intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
             intern.InitMirrorStack();
         }
@@ -119,8 +122,8 @@ namespace Friflo.Json.Mapper
 
         public void Dispose() {
             intern.         Dispose();
-            intern.parser.         Dispose();
             intern.DisposeMirrorStack();
+            inputStringBuf.Dispose();
         }
         
 
@@ -197,40 +200,33 @@ namespace Friflo.Json.Mapper
         // --------------- string ---------------
         // --- Read()
         public T Read<T>(string json) {
-            using (var bytes = new Bytes(json)) {
-                InitJsonReaderBytes(bytes);
-                T result = ReadStart<T>(default);
-                JsonBurstError();
-                return result;
-            }
+            InitJsonReaderString(json);
+            T result = ReadStart<T>(default);
+            JsonBurstError();
+            return result;
         }
         
         public object ReadObject(string json, Type type) {
-            using (var bytes = new Bytes(json)) {
-                InitJsonReaderBytes(bytes);
-                object result = ReadStart(type, null);
-                JsonBurstError();
-                return result;
-            }
+            InitJsonReaderString(json);
+            object result = ReadStart(type, null);
+            JsonBurstError();
+            return result;
         }
 
         // --- ReadTo()
         public T ReadTo<T>(string json, T obj)  {
-            using (var bytes = new Bytes(json)) {
-                InitJsonReaderBytes(bytes);
-                T result = ReadToStart(obj);
-                JsonBurstError();
-                return result;
-            }
+            InitJsonReaderString(json);
+            T result = ReadToStart(obj);
+            JsonBurstError();
+            return result;
+
         }
 
         public object ReadToObject(string json, object obj)  {
-            using (var bytes = new Bytes(json)) {
-                InitJsonReaderBytes(bytes);
-                object result = ReadToStart(obj);
-                JsonBurstError();
-                return result;
-            }
+            InitJsonReaderString(json);
+            object result = ReadToStart(obj);
+            JsonBurstError();
+            return result;
         }
 
         

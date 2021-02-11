@@ -247,9 +247,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void ReadJson() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (Bytes        json        = new Bytes(payloadStr))
             {
-                var result = reader.Read<SampleIL>(json);
+                var result = reader.Read<SampleIL>(payloadStr);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 

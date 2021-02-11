@@ -94,42 +94,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""unknownBool"":true,
     ""unknownNull"":null
 }}";
+            var hello =      "\"hello\"";
+            var @double =    "12.5";
+            var @long =      "42";
+            var @true =      "true";
+            var @null =      "null";
+            var bigInt =     BigInt;
+            var dblOverflow= "1.7976931348623157E+999";
+            var bigIntStr =  $"\"{BigInt}\"";
+            var bigIntStrN = $"\"{BigInt}n\"";
+            var dateTime =   "2021-01-14T09:59:40.101Z";
+            var dateTimeStr= "\"2021-01-14T09:59:40.101Z\"";
+             // --- arrays
+            var arrNum =     "[1,2,3]";
+            var arrBigInt=   "[\"1\",\"2\",\"1234567890123456789012345678901234567890\"]";
+            var arrStr =     "[\"A\",\"B\",\"C\"]";
+            var arrBln =     "[true, false]";
+            var arrObj =     "[{\"key\":42}]";
+            var arrNull =    "[null]";
+            var arrArrNum =  "[[1,2,3]]";
+            var arrArrObj =  "[[{\"key\":42}]]";
+             // --- class/map
+            var testClass =  testClassJson;
+            var mapNull =    "{\"key\":null}";
+            var mapNum =     "{\"key\":42}";
+            var mapBool =    "{\"key\":true}";
+            var mapStr =     "{\"key\":\"value\"}";
+            var mapMapNum =  "{\"key\":{\"key\":42}}";
+            var mapNum2 =    "{\"str\":44}";
+            var invalid =    "invalid";
+                
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             //
             using (JsonReader read2 = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write2 = new JsonWriter(typeStore))
-                
-            using (var hello =      new Bytes ("\"hello\""))
-            using (var @double =    new Bytes ("12.5"))
-            using (var @long =      new Bytes ("42"))
-            using (var @true =      new Bytes ("true"))
-            using (var @null =      new Bytes ("null"))
-            using (var bigInt =     new Bytes (BigInt))
-            using (var dblOverflow= new Bytes ("1.7976931348623157E+999"))
-            using (var bigIntStr =  new Bytes ($"\"{BigInt}\""))
-            using (var bigIntStrN = new Bytes ($"\"{BigInt}n\""))
-            using (var dateTime =   new Bytes ("2021-01-14T09:59:40.101Z"))
-            using (var dateTimeStr= new Bytes ("\"2021-01-14T09:59:40.101Z\""))
-                // --- arrays
-            using (var arrNum =     new Bytes ("[1,2,3]"))
-            using (var arrBigInt=   new Bytes ("[\"1\",\"2\",\"1234567890123456789012345678901234567890\"]"))
-            using (var arrStr =     new Bytes ("[\"A\",\"B\",\"C\"]"))
-            using (var arrBln =     new Bytes ("[true, false]"))
-            using (var arrObj =     new Bytes ("[{\"key\":42}]"))
-            using (var arrNull =    new Bytes ("[null]"))
-            using (var arrArrNum =  new Bytes ("[[1,2,3]]"))
-            using (var arrArrObj =  new Bytes ("[[{\"key\":42}]]"))
-                // --- class/map
-            using (var testClass =  new Bytes (testClassJson)) 
-            using (var mapNull =    new Bytes ("{\"key\":null}"))
-            using (var mapNum =     new Bytes ("{\"key\":42}"))
-            using (var mapBool =    new Bytes ("{\"key\":true}"))
-            using (var mapStr =     new Bytes ("{\"key\":\"value\"}"))
-            using (var mapMapNum =  new Bytes ("{\"key\":{\"key\":42}}"))
-            using (var mapNum2 =    new Bytes ("{\"str\":44}"))
-            using (var invalid =    new Bytes ("invalid")) {
+            {
                 reader = enc;
                 cmpRead = read2; 
                 cmpWrite = write2; 
@@ -218,7 +219,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     
                     // ------------------------------------- class -------------------------------------
                     {
-                        BigInteger bigIntVal = BigInteger.Parse(bigInt.ToString());
+                        BigInteger bigIntVal = BigInteger.Parse(bigInt);
                         var expect = new TestMapperClass {
                             key = 42, bigInt = bigIntVal,
                             dblPrp = 100, fltPrp = 101, lngPrp = 102, intPrp = 103, srtPrp = 104, bytPrp = 105, blnPrp = true,
@@ -239,7 +240,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     write.Write(root);
                     {
-                        var result = Read<TestMapperClass>(write.Output);
+                        var result = Read<TestMapperClass>(write.Output.ToString());
                         if (JsonEvent.Error == enc.JsonEvent)
                             Fail(enc.Error.msg.ToString());
                         AreEqual(root, result);
@@ -513,10 +514,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private JsonReader cmpRead;
         private JsonWriter cmpWrite;
 
-        private T Read<T>(Bytes bytes) {
+        private T Read<T>(string json) {
             // return reader.Read<T>(bytes);
 
-            var result = reader.Read<T>(bytes);
+            var result = reader.Read<T>(json);
             if (!reader.Success)
                 return result;
             
@@ -527,10 +528,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return result;
         }
         
-        private T ReadTo<T>(Bytes bytes, T value) where T : class {
+        private T ReadTo<T>(string json, T value) where T : class {
             // return reader.ReadTo<T>(bytes, value);
 
-            T result = reader.ReadTo(bytes, value);
+            T result = reader.ReadTo(json, value);
             if (!reader.Success)
                 return default;
             
