@@ -33,7 +33,6 @@ namespace Friflo.Json.Mapper
         private  readonly   List<ClassMirror>   mirrorStack;
 #endif
 
-
         public Reader(TypeStore typeStore) {
             parser = new JsonParser();
 
@@ -62,13 +61,14 @@ namespace Friflo.Json.Mapper
         private             int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         // ReSharper disable once InconsistentNaming
-        public              Reader          intern;
+        private             Reader              intern;
 
-        public              JsonEvent           JsonEvent   => intern.parser.Event;
-        public              JsonError           Error       => intern.parser.error;
-        public              bool                Success     =>!intern.parser.error.ErrSet;
-        public              SkipInfo            SkipInfo    => intern.parser.skipInfo;
-        public              TypeCache           TypeCache   => intern.typeCache; 
+        public              JsonEvent           JsonEvent       => intern.parser.Event;
+        public              JsonError           Error           => intern.parser.error;
+        public              bool                Success         =>!intern.parser.error.ErrSet;
+        public              SkipInfo            SkipInfo        => intern.parser.skipInfo;
+        public              long                ProcessedBytes  => intern.parser.ProcessedBytes;
+        public              TypeCache           TypeCache       => intern.typeCache; 
 
         public              int                 MaxDepth {
             get => maxDepth;
