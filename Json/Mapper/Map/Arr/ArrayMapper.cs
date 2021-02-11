@@ -62,8 +62,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             WriteUtils.DecLevel(writer, startLevel);
         }
 
-        public override TElm[] Read(JsonReader reader, TElm[] slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, this, out success))
+        public override TElm[] Read(ref Reader reader, TElm[] slot, out bool success) {
+            if (!ArrayUtils.StartArray(ref reader, this, out success))
                 return default;
             
             int startLen;
@@ -91,13 +91,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                         TElm elemVar;
                         if (index < startLen) {
                             elemVar = array[index];
-                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
+                            elemVar = ObjectUtils.Read(ref reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             array[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = ObjectUtils.Read(reader, elementType, ref elemVar, out success);
+                            elemVar = ObjectUtils.Read(ref reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             if (index >= len)
@@ -107,7 +107,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
+                        if (!ArrayUtils.IsNullable(ref reader, this, elementType, out success))
                             return default;
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));
@@ -122,7 +122,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<TElm[]>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<TElm[]>(ref reader, "unexpected state: ", ev, out success);
                 }
             }
         }

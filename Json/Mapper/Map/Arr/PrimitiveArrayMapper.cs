@@ -90,8 +90,8 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
 
-        public override T[] Read(JsonReader reader, T[] slot, out bool success) {
-            if (!ArrayUtils.StartArray(reader, this, out success))
+        public override T[] Read(ref Reader reader, T[] slot, out bool success) {
+            if (!ArrayUtils.StartArray(ref reader, this, out success))
                 return default;
             
             T[] array = slot;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         T elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
+                        elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)
                             return default;
                         if (index >= len)
@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!ArrayUtils.IsNullable(reader, this, elementType, out success))
+                        if (!ArrayUtils.IsNullable(ref reader, this, elementType, out success))
                             return default;
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));
@@ -130,7 +130,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T[]>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<T[]>(ref reader, "unexpected state: ", ev, out success);
                 }
             }
         }

@@ -32,8 +32,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadDbl(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreDbl(primPos, value);
             return success;
         }
@@ -46,8 +46,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreDblNull(primPos, value);
             return success;
         }
@@ -61,8 +61,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadFlt(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreFlt(primPos, value);
             return success;
         }
@@ -75,8 +75,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreFltNull(primPos, value);
             return success;
         }
@@ -90,8 +90,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadLong(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreLong(primPos, value);
             return success;
         }
@@ -104,8 +104,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreLongNull(primPos, value);
             return success;
         }
@@ -119,8 +119,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadInt(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreInt(primPos, value);
             return success;
         }
@@ -134,8 +134,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreIntNull(primPos, value);
             return success;
         }
@@ -149,8 +149,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadShort(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreShort(primPos, value);
             return success;
         }
@@ -163,8 +163,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreShortNull(primPos, value);
             return success;
         }
@@ -179,8 +179,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadByte(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreByte(primPos, value);
             return success;
         }
@@ -193,8 +193,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, 0, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, 0, out bool success);
             mirror.StoreByteNull(primPos, value);
             return success;
         }
@@ -208,8 +208,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             Write(writer, mirror.LoadBool(primPos));
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader, false, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader, false, out bool success);
             mirror.StoreBool(primPos, value);
             return success;
         }
@@ -222,8 +222,8 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (!NullableMapper.WriteNull(writer, value))
                 Write(writer, value);
         }
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
-            var value = Read(reader,false, out bool success);
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            var value = Read(ref reader,false, out bool success);
             mirror.StoreBoolNull(primPos, value);
             return success;
         }

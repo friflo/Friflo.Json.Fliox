@@ -71,8 +71,8 @@ namespace Friflo.Json.Mapper.Map.Obj
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override TMap Read(JsonReader reader, TMap map, out bool success) {
-            if (!ObjectUtils.StartObject(reader, this, out success))
+        public override TMap Read(ref Reader reader, TMap map, out bool success) {
+            if (!ObjectUtils.StartObject(ref reader, this, out success))
                 return default;
 
             if (EqualityComparer<TMap>.Default.Equals(map, default))
@@ -88,14 +88,14 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ObjectStart:
                         string key = reader.parser.key.ToString();
                         TElm elemVar = default;
-                        elemVar = elementType.Read(reader, elemVar, out success);
+                        elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)
                             return default;
                         map[key] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(reader, "Dictionary value", elementType, out success);
+                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(ref reader, "Dictionary value", elementType, out success);
                             return default;
                         }
                         key = reader.parser.key.ToString();
@@ -108,7 +108,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<TMap>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<TMap>(ref reader, "unexpected state: ", ev, out success);
                 }
             }
         }

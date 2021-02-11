@@ -194,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(267000,   enc.parser.ProcessedBytes);
+                AreEqual(267000,   enc.intern.parser.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }

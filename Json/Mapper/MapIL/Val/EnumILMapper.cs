@@ -71,12 +71,12 @@ namespace Friflo.Json.Mapper.MapIL.Val
             writer.bytes.AppendChar('\"');
         }
 
-        public override T Read(JsonReader reader, T slot, out bool success) {
+        public override T Read(ref Reader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.intern.keyRef.value = parser.value;
-                if (!stringToIntegral.TryGetValue(reader.intern.keyRef, out EnumIntegral enumValue))
-                    return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, out success);
+                reader.keyRef.value = parser.value;
+                if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
+                    return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
                 success = true;
                 return (T)enumValue.value;
             }
@@ -88,9 +88,9 @@ namespace Friflo.Json.Mapper.MapIL.Val
                     success = true;
                     return (T)enumValue.value;
                 }
-                return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, out success);
+                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
             }
-            return ValueUtils.CheckElse(reader, this, out success);
+            return ValueUtils.CheckElse(ref reader, this, out success);
         }
 
         // ------------------------------------- WriteValueIL / ReadValueIL ------------------------------------- 
@@ -108,16 +108,16 @@ namespace Friflo.Json.Mapper.MapIL.Val
             writer.bytes.AppendChar('\"');
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             bool success;
             if (reader.parser.Event == JsonEvent.ValueString) {
-                reader.intern.keyRef.value = reader.parser.value;
-                if (!stringToIntegral.TryGetValue(reader.intern.keyRef, out EnumIntegral enumValue))
-                    return ReadUtils.ErrorIncompatible<bool>(reader, "enum value. Value unknown", this, out success);
+                reader.keyRef.value = reader.parser.value;
+                if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
+                    return ReadUtils.ErrorIncompatible<bool>(ref reader, "enum value. Value unknown", this, out success);
                 mirror.StoreLongNull(primPos, enumValue.integral);
                 return true;
             }
-            ValueUtils.CheckElse(reader, this, out success);
+            ValueUtils.CheckElse(ref reader, this, out success);
             return success;
         }
     }

@@ -10,16 +10,16 @@ namespace Friflo.Json.Mapper.Map.Utils
     [CLSCompliant(true)]
 #endif
     public static class ArrayUtils {
-        public static bool IsNullable(JsonReader reader, TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
+        public static bool IsNullable(ref Reader reader, TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
             if (!elementType.isNullable) {
-                ReadUtils.ErrorIncompatible<bool>(reader, arrayMapper.DataTypeName(), " element", elementType, out success);
+                ReadUtils.ErrorIncompatible<bool>(ref reader, arrayMapper.DataTypeName(), " element", elementType, out success);
                 return false;
             }
             success = false;
             return true;
         }
         
-        public static bool StartArray<TVal, TElm>(JsonReader reader, CollectionMapper<TVal, TElm> map, out bool success) {
+        public static bool StartArray<TVal, TElm>(ref Reader reader, CollectionMapper<TVal, TElm> map, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
@@ -27,14 +27,14 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(ref reader, map.DataTypeName(), map, out success);
                     return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<TVal>(reader, map.DataTypeName(), map, out success);
+                    ReadUtils.ErrorIncompatible<TVal>(ref reader, map.DataTypeName(), map, out success);
                     return false;
             }
         }

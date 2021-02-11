@@ -42,10 +42,10 @@ namespace Friflo.Json.Mapper.Map
         public abstract void            InitTypeMapper(TypeStore typeStore);
         
         public abstract void            WriteObject (JsonWriter writer,   object slot);
-        public abstract object          ReadObject  (JsonReader reader,   object slot, out bool success);
+        public abstract object ReadObject(ref Reader reader, object slot, out bool success);
         
         public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
-        public abstract bool            ReadValueIL (JsonReader reader, ClassMirror mirror, int primPos, int objPos);
+        public abstract bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
 
 
         public abstract object          CreateInstance();
@@ -67,14 +67,14 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public abstract void    Write       (JsonWriter writer, TVal slot);
-        public abstract TVal    Read        (JsonReader reader, TVal slot, out bool success);
+        public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
 
         
         public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
@@ -85,10 +85,10 @@ namespace Friflo.Json.Mapper.Map
                 WriteUtils.AppendNull(writer);
         }
 
-        public override object ReadObject(JsonReader reader, object slot, out bool success) {
+        public override object ReadObject(ref Reader reader, object slot, out bool success) {
             if (slot != null)
-                return Read(reader, (TVal) slot, out success);
-            return Read(reader, default, out success);
+                return Read(ref reader, (TVal) slot, out success);
+            return Read(ref reader, default, out success);
         }
 
         public override      void    Dispose() { }

@@ -46,9 +46,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             WriteUtils.DecLevel(writer, startLevel);
         }
         
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             reader.parser.NextEvent();
-            return ClassILMapper<T>.ReadClassMirror(reader, mirror, this, primPos, objPos);
+            return ClassILMapper<T>.ReadClassMirror(ref reader, mirror, this, primPos, objPos);
         }
     }
 }

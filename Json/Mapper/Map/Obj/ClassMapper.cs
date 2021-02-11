@@ -135,15 +135,15 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
 
-        protected static TypeMapper GetPolymorphType(JsonReader reader, TypeMapper classType, ref T obj, out bool success) {
+        protected static TypeMapper GetPolymorphType(ref Reader reader, TypeMapper classType, ref T obj, out bool success) {
             ref var parser = ref reader.parser;
             var ev = parser.NextEvent();
 
             // Is first member is discriminator - "$type": "<typeName>" ?
-            if (ev == JsonEvent.ValueString && reader.intern.discriminator.IsEqualBytes(ref parser.key)) {
-                classType = reader.intern.typeCache.GetTypeByName(ref parser.value);
+            if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
+                classType = reader.typeCache.GetTypeByName(ref parser.value);
                 if (classType == null)
-                    return ReadUtils.ErrorMsg<TypeMapper>(reader, $"Object with discriminator {reader.intern.discriminator} not found: ", ref parser.value, out success);
+                    return ReadUtils.ErrorMsg<TypeMapper>(ref reader, $"Object with discriminator {reader.discriminator} not found: ", ref parser.value, out success);
                 parser.NextEvent();
             }
             if (classType.IsNull(ref obj))
@@ -152,14 +152,14 @@ namespace Friflo.Json.Mapper.Map.Obj
             return classType;
         }
 
-        public override T Read(JsonReader reader, T slot, out bool success) {
+        public override T Read(ref Reader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(reader, this, out success))
+            if (!ObjectUtils.StartObject(ref reader, this, out success))
                 return default;
                 
             T obj = slot;
             TypeMapper classType = this;
-            classType = GetPolymorphType(reader, classType, ref obj, out success);
+            classType = GetPolymorphType(ref reader, classType, ref obj, out success);
             if (!success)
                 return default;
             
@@ -174,26 +174,26 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         PropField field;
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
+                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         object fieldVal = field.GetField(obj);
                         object curFieldVal = fieldVal;
-                        fieldVal = fieldType.ReadObject(reader, fieldVal, out success);
+                        fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
                         if (!success)
                             return default;
                         //
                         if (!fieldType.isNullable && fieldVal == null)
-                            return ObjectUtils.ErrorIncompatible<T>(reader, this, field, out success);
+                            return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
                         
                         if (curFieldVal != fieldVal)
                             field.SetField(obj, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
+                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable)
-                            return ObjectUtils.ErrorIncompatible<T>(reader, this, field, out success);
+                            return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
                         
                         field.SetField(obj, null);
                         break;
@@ -205,7 +205,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<T>(ref reader, "unexpected state: ", ev, out success);
                 }
                 ev = reader.parser.NextEvent();
             }

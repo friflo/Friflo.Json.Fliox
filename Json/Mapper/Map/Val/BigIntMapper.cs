@@ -31,23 +31,23 @@ namespace Friflo.Json.Mapper.Map.Val
             WriteUtils.WriteString(writer, value.ToString());
         }
 
-        public override BigInteger Read(JsonReader reader, BigInteger slot, out bool success) {
+        public override BigInteger Read(ref Reader reader, BigInteger slot, out bool success) {
             ref var value = ref reader.parser.value;
             switch (reader.parser.Event) {
                 case JsonEvent.ValueString:
                     if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
                         value.end--;
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return ReadUtils.ErrorMsg<BigInteger>(reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                        return ReadUtils.ErrorMsg<BigInteger>(ref reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
                     success = true;
                     return ret;
                 case  JsonEvent.ValueNumber:
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return ReadUtils.ErrorMsg<BigInteger>(reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                        return ReadUtils.ErrorMsg<BigInteger>(ref reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
                     success = true;
                     return ret2;
                 default:
-                    return ValueUtils.CheckElse(reader, this, out success);
+                    return ValueUtils.CheckElse(ref reader, this, out success);
             }
         }
     }

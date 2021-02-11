@@ -34,12 +34,12 @@ namespace Friflo.Json.Mapper.Map.Val
         }
 
         // ReSharper disable once RedundantAssignment
-        public override DateTime Read(JsonReader reader, DateTime slot, out bool success) {
+        public override DateTime Read(ref Reader reader, DateTime slot, out bool success) {
             ref var value = ref reader.parser.value;
             if (reader.parser.Event != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             if (!DateTime.TryParse(value.ToString(), out slot))     
-                return ReadUtils.ErrorMsg<DateTime>(reader, "Failed parsing DateTime. value: ", value.ToString(), out success);
+                return ReadUtils.ErrorMsg<DateTime>(ref reader, "Failed parsing DateTime. value: ", value.ToString(), out success);
             success = true;
             return slot;
         }

@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper.Map
             this.msg = msg;
         }
 
-        public override T Read(JsonReader reader, T slot, out bool success) {
+        public override T Read(ref Reader reader, T slot, out bool success) {
             throw new NotSupportedException(msg);
         }
 

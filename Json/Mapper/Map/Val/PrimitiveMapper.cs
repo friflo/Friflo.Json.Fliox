@@ -32,11 +32,11 @@ namespace Friflo.Json.Mapper.Map.Val
             WriteUtils.WriteString(writer, (slot));
         }
 
-        public override string Read(JsonReader reader, string slot, out bool success) {
+        public override string Read(ref Reader reader, string slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             success = true;
-            return reader.parser.value.GetString(ref reader.intern.charBuf);
+            return reader.parser.value.GetString(ref reader.charBuf);
             // return reader.parser.value.ToString();
             // return null;
         }
@@ -62,9 +62,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, double slot) {
             writer.format.AppendDbl(ref writer.bytes, slot);
         }
-        public override double Read(JsonReader reader, double slot, out bool success) {
+        public override double Read(ref Reader reader, double slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
@@ -76,9 +76,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, double? slot) {
             writer.format.AppendDbl(ref writer.bytes, (double)slot);
         }
-        public override double? Read(JsonReader reader, double? slot, out bool success) {
+        public override double? Read(ref Reader reader, double? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
@@ -103,9 +103,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, float slot) {
             writer.format.AppendFlt(ref writer.bytes, slot);
         }
-        public override float Read(JsonReader reader, float slot, out bool success) {
+        public override float Read(ref Reader reader, float slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
@@ -117,9 +117,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, float? slot) {
             writer.format.AppendFlt(ref writer.bytes, (float)slot);
         }
-        public override float? Read(JsonReader reader, float? slot, out bool success) {
+        public override float? Read(ref Reader reader, float? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
@@ -145,9 +145,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendLong(ref writer.bytes, slot);
         }
 
-        public override long Read(JsonReader reader, long slot, out bool success) {
+        public override long Read(ref Reader reader, long slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsLong(out success);
         }
     }
@@ -159,9 +159,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, long? slot) {
             writer.format.AppendLong(ref writer.bytes, (long)slot);
         }
-        public override long? Read(JsonReader reader, long? slot, out bool success) {
+        public override long? Read(ref Reader reader, long? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsLong(out success);
         }
     }
@@ -186,9 +186,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, int slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
-        public override int Read(JsonReader reader, int slot, out bool success) {
+        public override int Read(ref Reader reader, int slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsInt(out success);
         }
     }
@@ -200,9 +200,9 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void Write(JsonWriter writer, int? slot) {
             writer.format.AppendInt(ref writer.bytes, (int)slot);
         }
-        public override int? Read(JsonReader reader, int? slot, out bool success) {
+        public override int? Read(ref Reader reader, int? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsInt(out success);
         }
     }
@@ -228,9 +228,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendInt(ref writer.bytes, slot);
         }
 
-        public override short Read(JsonReader reader, short slot, out bool success) {
+        public override short Read(ref Reader reader, short slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsShort(out success);
         }
     }
@@ -243,9 +243,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendInt(ref writer.bytes, (short)slot);
         }
 
-        public override short? Read(JsonReader reader, short? slot, out bool success) {
+        public override short? Read(ref Reader reader, short? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsShort(out success);
         }
     }
@@ -272,9 +272,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendInt(ref writer.bytes, slot);
         }
 
-        public override byte Read(JsonReader reader, byte slot, out bool success) {
+        public override byte Read(ref Reader reader, byte slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsByte(out success);
         }
     }
@@ -287,9 +287,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendInt(ref writer.bytes, (byte)slot);
         }
 
-        public override byte? Read(JsonReader reader, byte? slot, out bool success) {
+        public override byte? Read(ref Reader reader, byte? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsByte(out success);
         }
     }
@@ -316,9 +316,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendBool(ref writer.bytes, slot);
         }
 
-        public override bool Read(JsonReader reader, bool slot, out bool success) {
+        public override bool Read(ref Reader reader, bool slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsBool(out success);
         }
     }
@@ -331,9 +331,9 @@ namespace Friflo.Json.Mapper.Map.Val
             writer.format.AppendBool(ref writer.bytes, (bool)slot);
         }
 
-        public override bool? Read(JsonReader reader, bool? slot, out bool success) {
+        public override bool? Read(ref Reader reader, bool? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(reader, this, out success);
+                return ValueUtils.CheckElse(ref reader, this, out success);
             return reader.parser.ValueAsBool(out success);
         }
     }

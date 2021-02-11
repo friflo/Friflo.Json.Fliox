@@ -118,15 +118,15 @@ namespace Friflo.Json.Mapper.Map.Val
             }
         }
 
-        public override T Read(JsonReader reader, T slot, out bool success) {
+        public override T Read(ref Reader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.intern.keyRef.value = parser.value;
-                if (stringToEnum.TryGetValue(reader.intern.keyRef, out object enumValue)) {
+                reader.keyRef.value = parser.value;
+                if (stringToEnum.TryGetValue(reader.keyRef, out object enumValue)) {
                     success = true;
                     return (T)enumValue;
                 }
-                return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, out success);
+                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out success);
@@ -136,9 +136,9 @@ namespace Friflo.Json.Mapper.Map.Val
                     success = true;
                     return (T)enumValue;
                 }
-                return ReadUtils.ErrorIncompatible<T>(reader, "enum value. Value unknown", this, out success);
+                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
             }
-            return ValueUtils.CheckElse(reader, this, out success);
+            return ValueUtils.CheckElse(ref reader, this, out success);
         }
     }
 }

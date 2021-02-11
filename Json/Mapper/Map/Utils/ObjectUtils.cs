@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 #endif
     public static class ObjectUtils
     {
-        public static bool StartObject<T>(JsonReader reader, TypeMapper<T> mapper, out bool success) {
+        public static bool StartObject<T>(ref Reader reader, TypeMapper<T> mapper, out bool success) {
             var ev = reader.parser.Event;
             switch (ev) {
                 case JsonEvent.ValueNull:
@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, out success);
+                    ReadUtils.ErrorIncompatible<T>(ref reader, mapper.DataTypeName(), mapper, out success);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -29,25 +29,25 @@ namespace Friflo.Json.Mapper.Map.Utils
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<T>(reader, mapper.DataTypeName(), mapper, out success);
+                    ReadUtils.ErrorIncompatible<T>(ref reader, mapper.DataTypeName(), mapper, out success);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }
         }
 
-        public static T Read<T>(JsonReader reader, TypeMapper<T> mapper, ref T value, out bool success) {
+        public static T Read<T>(ref Reader reader, TypeMapper<T> mapper, ref T value, out bool success) {
 #if !UNITY_5_3_OR_NEWER
             if (mapper.useIL) {
                 TypeMapper typeMapper = mapper;
-                ClassMirror mirror = reader.intern.InstanceLoad(ref typeMapper, value);
-                success = mapper.ReadValueIL(reader, mirror, 0, 0);  
+                ClassMirror mirror = reader.InstanceLoad(ref typeMapper, value);
+                success = mapper.ReadValueIL(ref reader, mirror, 0, 0);  
                 if (!success)
                     return default;
-                reader.intern.InstanceStore(mirror, value);
+                reader.InstanceStore(mirror, value);
                 return value;
             }
 #endif
-            return mapper.Read(reader, value, out success);
+            return mapper.Read(ref reader, value, out success);
         }
         
         public static void Write<T>(JsonWriter writer, TypeMapper<T> mapper, ref T value) {
@@ -63,12 +63,12 @@ namespace Friflo.Json.Mapper.Map.Utils
             
         }
 
-        public static TVal ErrorIncompatible<TVal>(JsonReader reader, TypeMapper objectMapper, PropField field, out bool success) {
-            ReadUtils.ErrorIncompatible<bool>(reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
+        public static TVal ErrorIncompatible<TVal>(ref Reader reader, TypeMapper objectMapper, PropField field, out bool success) {
+            ReadUtils.ErrorIncompatible<bool>(ref reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
             return default;
         }
       
-        public static PropField GetField(JsonReader reader, PropertyFields propFields) {
+        public static PropField GetField(ref Reader reader, PropertyFields propFields) {
             PropField field = propFields.GetField(ref reader.parser.key);
             if (field != null)
                 return field;
@@ -76,10 +76,10 @@ namespace Friflo.Json.Mapper.Map.Utils
             return null;
         }
         
-        public static PropField GetField32(JsonReader reader, PropertyFields propFields) {
-            reader.intern.searchKey.FromBytes(ref reader.parser.key);
+        public static PropField GetField32(ref Reader reader, PropertyFields propFields) {
+            reader.searchKey.FromBytes(ref reader.parser.key);
             for (int n = 0; n < propFields.num; n++) {
-                if (reader.intern.searchKey.IsEqual(ref propFields.names32[n]))
+                if (reader.searchKey.IsEqual(ref propFields.names32[n]))
                     return propFields.fields[n];
             }
             reader.parser.SkipEvent();

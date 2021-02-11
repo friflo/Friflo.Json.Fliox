@@ -15,7 +15,8 @@ using Friflo.Json.Mapper.Utils;
 namespace Friflo.Json.Mapper
 {
 
-    public partial struct ReaderIntern : IDisposable {
+    public partial struct Reader : IDisposable {
+        public              JsonParser          parser;
         internal readonly   Bytes               discriminator;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
@@ -26,9 +27,16 @@ namespace Friflo.Json.Mapper
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
+        
+#if !UNITY_5_3_OR_NEWER
+        private             int                 classLevel;
+        private  readonly   List<ClassMirror>   mirrorStack;
+#endif
 
 
-        public ReaderIntern(TypeStore typeStore) {
+        public Reader(TypeStore typeStore) {
+            parser = new JsonParser();
+
             typeCache       = new TypeCache(typeStore);
             discriminator   = new Bytes(typeStore.config.discriminator);
             strBuf          = new Bytes(0);
@@ -43,6 +51,7 @@ namespace Friflo.Json.Mapper
             strBuf.         Dispose();
             discriminator.Dispose();
             typeCache.Dispose();
+            parser.Dispose();
         }
     }
 #if !UNITY_5_3_OR_NEWER
@@ -50,17 +59,16 @@ namespace Friflo.Json.Mapper
 #endif
     public class JsonReader : IDisposable, IErrorHandler
     {
-        public              JsonParser          parser;
         private             int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         // ReSharper disable once InconsistentNaming
-        internal            ReaderIntern        intern;
+        public              Reader          intern;
 
-        public              JsonEvent           JsonEvent => parser.Event;
-        public              JsonError           Error => parser.error;
-        public              bool                Success => !parser.error.ErrSet;
-        public              SkipInfo            SkipInfo => parser.skipInfo;
-        public              TypeCache           TypeCache => intern.typeCache; 
+        public              JsonEvent           JsonEvent   => intern.parser.Event;
+        public              JsonError           Error       => intern.parser.error;
+        public              bool                Success     =>!intern.parser.error.ErrSet;
+        public              SkipInfo            SkipInfo    => intern.parser.skipInfo;
+        public              TypeCache           TypeCache   => intern.typeCache; 
 
         public              int                 MaxDepth {
             get => maxDepth;
@@ -72,12 +80,11 @@ namespace Friflo.Json.Mapper
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
 
-            intern = new ReaderIntern ( typeStore );
-            parser = new JsonParser();
+            intern = new Reader ( typeStore );
             maxDepth    = 100;
             this.errorHandler = errorHandler; 
 #if !JSON_BURST
-            parser.error.errorHandler = this;
+            intern.parser.error.errorHandler = this;
 #endif
 // #if !UNITY_5_3_OR_NEWER
 //             useIL = typeStore.config.useIL;
@@ -85,20 +92,20 @@ namespace Friflo.Json.Mapper
         }
         
         private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
-            parser.InitParser(bytes, offset, len);
-            parser.SetMaxDepth(maxDepth);
+            intern.parser.InitParser(bytes, offset, len);
+            intern.parser.SetMaxDepth(maxDepth);
             intern.InitMirrorStack();
         }
         
         private void InitJsonReaderStream(Stream stream) {
-            parser.InitParser(stream);
-            parser.SetMaxDepth(maxDepth);
+            intern.parser.InitParser(stream);
+            intern.parser.SetMaxDepth(maxDepth);
             intern.InitMirrorStack();
         }
 
         public void Dispose() {
             intern.         Dispose();
-            parser.         Dispose();
+            intern.parser.         Dispose();
             intern.DisposeMirrorStack();
         }
         
@@ -106,14 +113,14 @@ namespace Friflo.Json.Mapper
             if (errorHandler != null)
                 errorHandler.HandleError(pos, ref message);
             else
-                throw new JsonReaderException(parser.error.msg.ToString(), pos);
+                throw new JsonReaderException(intern.parser.error.msg.ToString(), pos);
         }
         
         /// <summary> <see cref="JsonError.Error"/> dont call <see cref="JsonError.errorHandler"/> in
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {
-            HandleError(parser.error.Pos, ref parser.error.msg);
+            HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
         }
         
         // --------------- Bytes ---------------
@@ -184,7 +191,7 @@ namespace Friflo.Json.Mapper
             TypeMapper  mapper  = intern.typeCache.GetTypeMapper(type);
 
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = intern.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
@@ -192,22 +199,22 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         try {
-                            object result = mapper.ReadObject(this, value, out bool success);
+                            object result = mapper.ReadObject(ref intern, value, out bool success);
                             if (success)
-                                parser.NextEvent(); // EOF
+                                intern.parser.NextEvent(); // EOF
                             return result;
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<object>(this, mapper.DataTypeName(), mapper, out bool _);
+                            return ReadUtils.ErrorIncompatible<object>(ref intern, mapper.DataTypeName(), mapper, out bool _);
                         
-                        parser.NextEvent(); // EOF
+                        intern.parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(this, "unexpected state in Read() : ", ev, out bool _);
+                        return ReadUtils.ErrorMsg<object>(ref intern, "unexpected state in Read() : ", ev, out bool _);
                 }
             }
         }
@@ -215,7 +222,7 @@ namespace Friflo.Json.Mapper
         private T ReadStart<T>(T value) {
             TypeMapper<T>  mapper  = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = intern.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
@@ -223,22 +230,22 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                         try {
-                            T result = mapper.Read(this, value, out bool success);
+                            T result = mapper.Read(ref intern, value, out bool success);
                             if (success)
-                                parser.NextEvent(); // EOF
+                                intern.parser.NextEvent(); // EOF
                             return result;
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<T>(this, mapper.DataTypeName(), mapper, out _);
+                            return ReadUtils.ErrorIncompatible<T>(ref intern, mapper.DataTypeName(), mapper, out _);
                         
-                        parser.NextEvent(); // EOF
+                        intern.parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(this, "unexpected state in Read() : ", ev, out _);
+                        return ReadUtils.ErrorMsg<T>(ref intern, "unexpected state in Read() : ", ev, out _);
                 }
             }
         }
@@ -246,21 +253,21 @@ namespace Friflo.Json.Mapper
         private T ReadToStart<T>(T value) {
             TypeMapper<T> mapper  = (TypeMapper<T>) intern.typeCache.GetTypeMapper(value.GetType());
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = intern.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         try {
-                            T result = mapper.Read(this, value, out bool success);
+                            T result = mapper.Read(ref intern, value, out bool success);
                             if (success)
-                                parser.NextEvent(); // EOF
+                                intern.parser.NextEvent(); // EOF
                             return result;
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(this, "ReadTo() can only used on an JSON object or array", ev, out _);
+                        return ReadUtils.ErrorMsg<T>(ref intern, "ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }
@@ -268,21 +275,21 @@ namespace Friflo.Json.Mapper
         private object ReadToStart(object value) {
             TypeMapper mapper  = intern.typeCache.GetTypeMapper(value.GetType());
             while (true) {
-                JsonEvent ev = parser.NextEvent();
+                JsonEvent ev = intern.parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ArrayStart:
                         try {
-                            object result = mapper.ReadObject(this, value, out bool success);
+                            object result = mapper.ReadObject(ref intern, value, out bool success);
                             if (success)
-                                parser.NextEvent(); // EOF
+                                intern.parser.NextEvent(); // EOF
                             return result;
                         }
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(this, "ReadTo() can only used on an JSON object or array", ev, out _);
+                        return ReadUtils.ErrorMsg<object>(ref intern, "ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }

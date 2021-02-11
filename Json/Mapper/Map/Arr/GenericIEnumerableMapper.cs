@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             WriteUtils.DecLevel(writer, startLevel);
         }
 
-        public override TCol Read(JsonReader reader, TCol slot, out bool success) {
+        public override TCol Read(ref Reader reader, TCol slot, out bool success) {
             throw new InvalidOperationException("IEnumerable<> cannot be used for Read(). type: " + type);
         }
     }

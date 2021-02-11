@@ -35,9 +35,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 Write(writer, (T) obj);
         }
 
-        public override bool ReadValueIL(JsonReader reader, ClassMirror mirror, int primPos, int objPos) {
+        public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             T src = (T) mirror.LoadObj(objPos);
-            T value = Read(reader, src, out bool success);
+            T value = Read(ref reader, src, out bool success);
             mirror.StoreObj(objPos, value);
             return success;
         }
@@ -74,25 +74,25 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             WriteUtils.DecLevel(writer, startLevel);
         }
 
-        public override T Read(JsonReader reader, T slot, out bool success) {
+        public override T Read(ref Reader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(reader, this, out success))
+            if (!ObjectUtils.StartObject(ref reader, this, out success))
                 return default;
 
             T obj = slot;
             TypeMapper classType = this;
-            classType = GetPolymorphType(reader, classType, ref obj, out success);
+            classType = GetPolymorphType(ref reader, classType, ref obj, out success);
             if (!success)
                 return default;
             
-            ClassMirror mirror = reader.intern.InstanceLoad(ref classType, obj);
-            if (!ReadClassMirror(reader, mirror, classType, 0, 0))
+            ClassMirror mirror = reader.InstanceLoad(ref classType, obj);
+            if (!ReadClassMirror(ref reader, mirror, classType, 0, 0))
                 return default;
-            reader.intern.InstanceStore(mirror, obj);
+            reader.InstanceStore(mirror, obj);
             return obj;
         }
 
-        internal static bool ReadClassMirror(JsonReader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
+        internal static bool ReadClassMirror(ref Reader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
             JsonEvent ev = reader.parser.Event;
             var propFields = classType.propFields;
 
@@ -105,27 +105,27 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         PropField field;
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
+                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         if (fieldType.isValueType) {
-                            if (!fieldType.ReadValueIL(reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
+                            if (!fieldType.ReadValueIL(ref reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return default;
                         } else {
                             object fieldVal = mirror.LoadObj(field.objIndex);
-                            fieldVal = fieldType.ReadObject(reader, fieldVal, out success);
+                            fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
                             if (!success)
                                 return false;
                             mirror.StoreObj(field.objIndex, fieldVal);
                             if (!fieldType.isNullable && fieldVal == null)
-                                return ObjectUtils.ErrorIncompatible<bool>(reader, classType, field, out success);
+                                return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
                         }
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField32(reader, propFields)) == null)
+                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable)
-                            return ObjectUtils.ErrorIncompatible<bool>(reader, classType, field, out success);
+                            return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
                         
                         if (field.fieldType.isValueType)
                             mirror.StorePrimitiveNull(field.primIndex);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ReadUtils.ErrorMsg<bool>(reader, "unexpected state: ", ev, out success);
+                        return ReadUtils.ErrorMsg<bool>(ref reader, "unexpected state: ", ev, out success);
                 }
                 ev = reader.parser.NextEvent();
             }

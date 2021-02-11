@@ -36,12 +36,12 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             WriteUtils.WriteString(writer, string.Join(" ", value.tokens));
         }
 
-        public override StringTokens Read(JsonReader reader, StringTokens slot, out bool success) {
-            if (reader.JsonEvent != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(reader, this, out success);    
+        public override StringTokens Read(ref Reader reader, StringTokens slot, out bool success) {
+            if (reader.parser.Event != JsonEvent.ValueString)
+                return ValueUtils.CheckElse(ref reader, this, out success);    
             string value =  reader.parser.value.ToString();
             if (value.Contains(","))
-                return ReadUtils.ErrorMsg<StringTokens>(reader, "Invalid separator in token value", value, out success);
+                return ReadUtils.ErrorMsg<StringTokens>(ref reader, "Invalid separator in token value", value, out success);
             success = true;
             return new StringTokens { tokens = value.Split(' ')};
         }
