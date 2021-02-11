@@ -16,7 +16,7 @@ namespace Friflo.Json.Mapper.Utils
 #if !UNITY_5_3_OR_NEWER
         [CLSCompliant(true)]
 #endif
-        public class TypeCache : IDisposable
+        public class TypeCache
         {
             private readonly    Dictionary <Type,  TypeMapper>  typeMap =      new Dictionary <Type,  TypeMapper >();
             //
@@ -31,18 +31,18 @@ namespace Friflo.Json.Mapper.Utils
             public              int     TypeCreationCount   =>  typeStore.typeCreationCount;
 
             
-            public TypeCache (TypeStore typeStore) {
+            internal TypeCache (TypeStore typeStore) {
                 this.typeStore = typeStore;
             }
             
-            public void Dispose() {
+            internal void Dispose() {
                 foreach (var item in nameToType.Keys)
                     item.Dispose();
                 foreach (var item in typeToName.Values)
                     item.value.Dispose();
             }
             
-            public TypeMapper GetTypeMapper (Type type) {
+            internal TypeMapper GetTypeMapper (Type type) {
                 lookupCount++;
                 if (!typeMap.TryGetValue(type, out TypeMapper propType)) {
                     propType = typeStore.GetTypeMapper(type);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Utils
             /// <summary>
             /// Lookup by Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
             /// </summary>
-            public TypeMapper GetTypeByName(ref Bytes name) {
+            internal TypeMapper GetTypeByName(ref Bytes name) {
                 if (!nameToType.TryGetValue(name, out TypeMapper propType)) {
                     lock (typeStore) {
                         typeStore.nameToType.TryGetValue(name, out TypeMapper storeType);
@@ -78,7 +78,7 @@ namespace Friflo.Json.Mapper.Utils
             /// <summary>
             /// Append the Type discriminator registered initially with <see cref="TypeStore.RegisterType"/>  
             /// </summary>
-            public void AppendDiscriminator(ref Bytes dst, TypeMapper type) {
+            internal void AppendDiscriminator(ref Bytes dst, TypeMapper type) {
                 Type nativeType = type.type;
                 if (!typeToName.TryGetValue(nativeType, out BytesString name)) {
                     lock (typeStore) {
