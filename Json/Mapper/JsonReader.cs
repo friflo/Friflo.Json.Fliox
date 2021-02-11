@@ -15,7 +15,7 @@ using Friflo.Json.Mapper.Utils;
 namespace Friflo.Json.Mapper
 {
 
-    public partial struct Reader : IDisposable {
+    public partial struct Reader : IErrorHandler, IDisposable {
         public              JsonParser          parser;
         internal readonly   Bytes               discriminator;
         public              Bytes               strBuf;
@@ -27,14 +27,15 @@ namespace Friflo.Json.Mapper
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
-        
+        private readonly    IErrorHandler       errorHandler;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
 #endif
 
-        public Reader(TypeStore typeStore) {
+        public Reader(TypeStore typeStore, IErrorHandler errorHandler) {
             parser = new JsonParser();
+            this.errorHandler = errorHandler;
 
             typeCache       = new TypeCache(typeStore);
             discriminator   = new Bytes(typeStore.config.discriminator);
@@ -46,6 +47,16 @@ namespace Friflo.Json.Mapper
             mirrorStack     = new List<ClassMirror>(16);
             classLevel      = 0;
 #endif
+#if !JSON_BURST
+            parser.error.errorHandler = this;
+#endif
+        }
+        
+        public void HandleError(int pos, ref Bytes message) {
+            if (errorHandler != null)
+                errorHandler.HandleError(pos, ref message);
+            else
+                throw new JsonReaderException(message.ToString(), pos);
         }
 
         public void Dispose() {
@@ -58,7 +69,7 @@ namespace Friflo.Json.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonReader : IDisposable, IErrorHandler
+    public class JsonReader : IDisposable
     {
         private             int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
@@ -78,16 +89,11 @@ namespace Friflo.Json.Mapper
         }
 
 
-        private readonly    IErrorHandler       errorHandler;
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
 
-            intern = new Reader ( typeStore );
+            intern = new Reader (typeStore, errorHandler);
             maxDepth    = 100;
-            this.errorHandler = errorHandler; 
-#if !JSON_BURST
-            intern.parser.error.errorHandler = this;
-#endif
 // #if !UNITY_5_3_OR_NEWER
 //             useIL = typeStore.config.useIL;
 // #endif 
@@ -111,18 +117,13 @@ namespace Friflo.Json.Mapper
             intern.DisposeMirrorStack();
         }
         
-        public void HandleError(int pos, ref Bytes message) {
-            if (errorHandler != null)
-                errorHandler.HandleError(pos, ref message);
-            else
-                throw new JsonReaderException(intern.parser.error.msg.ToString(), pos);
-        }
+
         
         /// <summary> <see cref="JsonError.Error"/> dont call <see cref="JsonError.errorHandler"/> in
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {
-            HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
+            intern.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
         }
         
         // --------------- Bytes ---------------
