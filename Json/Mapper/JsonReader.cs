@@ -75,12 +75,10 @@ namespace Friflo.Json.Mapper
         /// In error case this information is available via <see cref="Error"/> 
         /// </summary>
         public T Read<T>(Bytes bytes) {
-            T       value   = default;
-            int     start   = bytes.StartPos;
-            int     len     = bytes.Len;
             var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
             
-            T result = ReadStart(bytes.buffer, start, len, mapper, value, out bool success);
+            T result = ReadStart(mapper, default, out bool success);
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
@@ -88,30 +86,26 @@ namespace Friflo.Json.Mapper
         }
         
         public T Read<T>(Bytes bytes, out bool success) {
-            T       value   = default;
-            int     start   = bytes.StartPos;
-            int     len     = bytes.Len;
             var     mapper  = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
-            
-            T result  = ReadStart(bytes.buffer, start, len, mapper, value, out success);
+            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+
+            T result  = ReadStart(mapper, default, out success);
             parser.NextEvent(); // EOF
             return result;
         }
         
         public object ReadObject(Bytes bytes, Type type, out bool success) {
-            int         start   = bytes.StartPos;
-            int         len     = bytes.Len;
             TypeMapper  mapper  = typeCache.GetTypeMapper(type);
-            object result = ReadStart(bytes.buffer, start, len, mapper, null, out success);
+            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+            
+            object result = ReadStart(mapper, null, out success);
             if (!success)
                 return null;
             parser.NextEvent(); // EOF
             return result;
         }
         
-        private object ReadStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
-            InitJsonReader(ref bytes, offset, len);
-            
+        private object ReadStart(TypeMapper mapper, object value, out bool success) {
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -138,9 +132,7 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        private T ReadStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
-            InitJsonReader(ref bytes, offset, len);
-            
+        private T ReadStart<T>(TypeMapper<T> mapper, T value, out bool success) {
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -168,20 +160,17 @@ namespace Friflo.Json.Mapper
         }
 
         public T ReadTo<T>(Bytes bytes, T obj, out bool success)  {
-            int     start   = bytes.StartPos;
-            int     len     = bytes.Len;
             var     mapper  = (TypeMapper<T>) typeCache.GetTypeMapper(obj.GetType());
+            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
             
-            T result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
+            T result = ReadToStart(mapper, obj, out success);
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
             return result;
         }
 
-        private T ReadToStart<T>(ByteList bytes, int offset, int len, TypeMapper<T> mapper, T value, out bool success) {
-            InitJsonReader(ref bytes, offset, len);
-            
+        private T ReadToStart<T>(TypeMapper<T> mapper, T value, out bool success) {
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
@@ -201,20 +190,17 @@ namespace Friflo.Json.Mapper
         }
         
         public object ReadObjectTo(Bytes bytes, object obj, out bool success)  {
-            int     start   = bytes.StartPos;
-            int     len     = bytes.Len;
             var     mapper  = typeCache.GetTypeMapper(obj.GetType());
+            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
             
-            object result = ReadToStart(bytes.buffer, start, len, mapper, obj, out success);
+            object result = ReadToStart(mapper, obj, out success);
             if (!success)
                 return default;
             parser.NextEvent(); // EOF
             return result;
         }
 
-        private object ReadToStart(ByteList bytes, int offset, int len, TypeMapper mapper, object value, out bool success) {
-            InitJsonReader(ref bytes, offset, len);
-            
+        private object ReadToStart(TypeMapper mapper, object value, out bool success) {
             while (true) {
                 JsonEvent ev = parser.NextEvent();
                 switch (ev) {
