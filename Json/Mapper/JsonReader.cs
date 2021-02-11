@@ -42,8 +42,10 @@ namespace Friflo.Json.Mapper
             searchKey       = new Bytes32();
             charBuf         = new char[128];
             keyRef          = new BytesString();
+#if !UNITY_5_3_OR_NEWER
             mirrorStack     = new List<ClassMirror>(16);
             classLevel      = 0;
+#endif
         }
 
         public void Dispose() {
