@@ -98,11 +98,11 @@ namespace Friflo.Json.Mapper
 //             useIL = typeStore.config.useIL;
 // #endif 
         }
-        private void InitJsonReaderString(string json) {
-            var bytes = new Bytes(json);
-            InitJsonReaderBytes(ref bytes.buffer, bytes.start, bytes.end);
-            bytes.Dispose();
-            
+        
+        private void InitJsonReaderBytes(Bytes bytes) {
+            intern.parser.InitParser(bytes.buffer, bytes.start, bytes.Len);
+            intern.parser.SetMaxDepth(maxDepth);
+            intern.InitMirrorStack();
         }
 
         private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
@@ -197,32 +197,40 @@ namespace Friflo.Json.Mapper
         // --------------- string ---------------
         // --- Read()
         public T Read<T>(string json) {
-            InitJsonReaderString(json);
-            T result = ReadStart<T>(default);
-            JsonBurstError();
-            return result;
+            using (var bytes = new Bytes(json)) {
+                InitJsonReaderBytes(bytes);
+                T result = ReadStart<T>(default);
+                JsonBurstError();
+                return result;
+            }
         }
         
         public object ReadObject(string json, Type type) {
-            InitJsonReaderString(json);
-            object result = ReadStart(type, null);
-            JsonBurstError();
-            return result;
+            using (var bytes = new Bytes(json)) {
+                InitJsonReaderBytes(bytes);
+                object result = ReadStart(type, null);
+                JsonBurstError();
+                return result;
+            }
         }
 
         // --- ReadTo()
         public T ReadTo<T>(string json, T obj)  {
-            InitJsonReaderString(json);
-            T result = ReadToStart(obj);
-            JsonBurstError();
-            return result;
+            using (var bytes = new Bytes(json)) {
+                InitJsonReaderBytes(bytes);
+                T result = ReadToStart(obj);
+                JsonBurstError();
+                return result;
+            }
         }
 
         public object ReadToObject(string json, object obj)  {
-            InitJsonReaderString(json);
-            object result = ReadToStart(obj);
-            JsonBurstError();
-            return result;
+            using (var bytes = new Bytes(json)) {
+                InitJsonReaderBytes(bytes);
+                object result = ReadToStart(obj);
+                JsonBurstError();
+                return result;
+            }
         }
 
         
