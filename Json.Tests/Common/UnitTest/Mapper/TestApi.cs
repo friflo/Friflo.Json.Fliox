@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(expect, result);   
                 IsTrue(reuse == result); // same reference - size dit not change
                 
-                object resultObj = read.ReadObjectTo(arr1, reuse);      // non generic
+                object resultObj = read.ReadToObject(arr1, reuse);      // non generic
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
             }
@@ -58,10 +58,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 // --- Read ---
                 // 1.
-                AreEqual(1, read.Read<int>(StreamFromString("1")));                 // generic
+                AreEqual(1, read.Read<int>(StreamFromString("1")));                     // generic
                 
                 // 2.
-                AreEqual(1, read.ReadObject(StreamFromString("1"), typeof(int)));   // non generic
+                AreEqual(1, read.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
                 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
@@ -70,7 +70,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(expect, result);   
                 IsTrue(reuse == result); // same reference - size dit not change
                 
-                object resultObj = read.ReadObjectTo(StreamFromString("[1]"), reuse);   // non generic
+                object resultObj = read.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
+        [Test]
+        public void ReadWriteString() {
+            // Ensure existence of basic API methods
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            {
+                // --- Read ---
+                // 1.
+                AreEqual(1, read.Read<int>("1"));                       // generic
+                
+                // 2.
+                AreEqual(1, read.ReadObject("1", typeof(int)));         // non generic
+                
+                // --- ReadTo ---
+                int[] reuse  = new int[1];
+                int[] expect = { 1 };
+                int[] result = read.ReadTo("[1]", reuse);               // generic
+                AreEqual(expect, result);   
+                IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = read.ReadToObject("[1]", reuse);     // non generic
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
             }
