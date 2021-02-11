@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map;
@@ -50,8 +51,14 @@ namespace Friflo.Json.Mapper
 // #endif 
         }
         
-        private void InitJsonReader(ref ByteList bytes, int offset, int len) {
+        private void InitJsonReaderBytes(ref ByteList bytes, int offset, int len) {
             parser.InitParser(bytes, offset, len);
+            parser.SetMaxDepth(maxDepth);
+            InitMirrorStack();
+        }
+        
+        private void InitJsonReaderStream(Stream stream) {
+            parser.InitParser(stream);
             parser.SetMaxDepth(maxDepth);
             InitMirrorStack();
         }
@@ -71,27 +78,52 @@ namespace Friflo.Json.Mapper
                 throw new JsonReaderException(parser.error.msg.ToString(), pos);
         }
         
+        // --------------- Bytes ---------------
         // --- Read()
         public T Read<T>(Bytes bytes) {
-            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
             return ReadStart<T>(default);
         }
         
         public object ReadObject(Bytes bytes, Type type) {
-            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
             return ReadStart(type, null);
         }
 
         // --- ReadTo()
         public T ReadTo<T>(Bytes bytes, T obj)  {
-            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
             return ReadToStart(obj);
         }
 
         public object ReadObjectTo(Bytes bytes, object obj)  {
-            InitJsonReader(ref bytes.buffer, bytes.StartPos, bytes.Len);
+            InitJsonReaderBytes(ref bytes.buffer, bytes.StartPos, bytes.Len);
             return ReadToStart(obj);
         }
+        
+        // --------------- Bytes ---------------
+        // --- Read()
+        public T Read<T>(Stream stream) {
+            InitJsonReaderStream(stream);
+            return ReadStart<T>(default);
+        }
+        
+        public object ReadObject(Stream stream, Type type) {
+            InitJsonReaderStream(stream);
+            return ReadStart(type, null);
+        }
+
+        // --- ReadTo()
+        public T ReadTo<T>(Stream stream, T obj)  {
+            InitJsonReaderStream(stream);
+            return ReadToStart(obj);
+        }
+
+        public object ReadObjectTo(Stream stream, object obj)  {
+            InitJsonReaderStream(stream);
+            return ReadToStart(obj);
+        }
+
         
         // --------------------------------------- private --------------------------------------- 
         private object ReadStart(Type type, object value) {

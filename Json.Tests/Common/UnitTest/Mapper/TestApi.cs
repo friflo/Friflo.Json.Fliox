@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Burst;
+﻿using System.IO;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestApi
     {
         [Test]
-        public void ReadWrite() {
+        public void ReadWriteBytes() {
             // Ensure existence of basic API methods
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
@@ -47,6 +48,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(expect, resultObj);
                 IsTrue(reuse == resultObj); // same reference - size dit not change
             }
+        }
+        
+        [Test]
+        public void ReadWriteStream() {
+            // Ensure existence of basic API methods
+            using (TypeStore typeStore = new TypeStore())
+            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            {
+                // --- Read ---
+                // 1.
+                AreEqual(1, read.Read<int>(StreamFromString("1")));                 // generic
+                
+                // 2.
+                AreEqual(1, read.ReadObject(StreamFromString("1"), typeof(int)));   // non generic
+                
+                // --- ReadTo ---
+                int[] reuse  = new int[1];
+                int[] expect = { 1 };
+                int[] result = read.ReadTo(StreamFromString("[1]"), reuse);             // generic
+                AreEqual(expect, result);   
+                IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = read.ReadObjectTo(StreamFromString("[1]"), reuse);   // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
+        private static Stream StreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
         
         [Test]
