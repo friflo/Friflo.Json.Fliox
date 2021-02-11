@@ -12,6 +12,31 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
+
+    public struct ReaderIntern : IDisposable {
+        internal readonly   Bytes               discriminator;
+        public              Bytes               strBuf;
+        public              Bytes32             searchKey;
+        /// <summary>Can be used for custom mappers to create a temporary "string"
+        /// without creating a string on the heap.</summary>
+        public              char[]              charBuf;
+        /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
+        /// without creating a string on the heap.</summary>
+        public readonly     BytesString         keyRef;
+
+        public ReaderIntern(StoreConfig config) {
+            discriminator   = new Bytes(config.discriminator);
+            strBuf          = new Bytes(0);
+            searchKey       = new Bytes32();
+            charBuf         = new char[128];
+            keyRef          = new BytesString();
+        }
+
+        public void Dispose() {
+            strBuf.         Dispose();
+            discriminator.Dispose();
+        }
+    }
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -21,16 +46,8 @@ namespace Friflo.Json.Mapper
         public              int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public   readonly   TypeCache           typeCache;
-
-        internal readonly   Bytes               discriminator;
-        /// <summary>Can be used for custom mappers to create a temporary "string"
-        /// without creating a string on the heap.</summary>
-        public              Bytes               strBuf          = new Bytes(0);
-        public              Bytes32             searchKey       = new Bytes32();
-        public              char[]              charBuf         = new char[128];
-        /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
-        /// without creating a string on the heap.</summary>
-        public readonly     BytesString         keyRef          = new BytesString();
+        // ReSharper disable once InconsistentNaming
+        internal            ReaderIntern        intern;
 
         public              JsonError           Error => parser.error;
         public              bool                Success => !parser.error.ErrSet;
@@ -40,7 +57,7 @@ namespace Friflo.Json.Mapper
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             typeCache   = new TypeCache(typeStore);
-            discriminator = new Bytes(typeStore.config.discriminator);
+            intern = new ReaderIntern ( typeStore.config );
             parser = new JsonParser();
             maxDepth    = 100;
             this.errorHandler = errorHandler; 
@@ -66,9 +83,8 @@ namespace Friflo.Json.Mapper
 
         public void Dispose() {
             typeCache.      Dispose();
-            discriminator.  Dispose();
+            intern.         Dispose();
             parser.         Dispose();
-            strBuf.         Dispose();
             DisposeMirrorStack();
         }
         

@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         public static TVal ErrorIncompatible<TVal>(JsonReader reader, string msg, string msgParam, TypeMapper expectType, out bool success) {
-            ref Bytes strBuf = ref reader.strBuf;
+            ref Bytes strBuf = ref reader.intern.strBuf;
             ref var parser = ref reader.parser;
 
 #pragma warning disable 162
@@ -66,7 +66,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
         
         public static TVal ErrorMsg<TVal>(JsonReader reader, string msg, string value, out bool success) {
-            ref Bytes strBuf = ref reader.strBuf;
+            ref Bytes strBuf = ref reader.intern.strBuf;
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
@@ -76,10 +76,10 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         public static TVal ErrorMsg<TVal>(JsonReader reader, string msg, JsonEvent ev, out bool success) {
-            reader.strBuf.Clear();
-            reader.strBuf.AppendString(msg);
-            JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
-            reader.parser.ErrorMsg("JsonReader", ref reader.strBuf);
+            reader.intern.strBuf.Clear();
+            reader.intern.strBuf.AppendString(msg);
+            JsonEventUtils.AppendEvent(ev, ref reader.intern.strBuf);
+            reader.parser.ErrorMsg("JsonReader", ref reader.intern.strBuf);
             success = false;
             return default;
         }

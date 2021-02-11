@@ -121,8 +121,8 @@ namespace Friflo.Json.Mapper.Map.Val
         public override T Read(JsonReader reader, T slot, out bool success) {
             ref var parser = ref reader.parser;
             if (parser.Event == JsonEvent.ValueString) {
-                reader.keyRef.value = parser.value;
-                if (stringToEnum.TryGetValue(reader.keyRef, out object enumValue)) {
+                reader.intern.keyRef.value = parser.value;
+                if (stringToEnum.TryGetValue(reader.intern.keyRef, out object enumValue)) {
                     success = true;
                     return (T)enumValue;
                 }
