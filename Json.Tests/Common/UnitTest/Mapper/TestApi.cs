@@ -164,6 +164,82 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             IsTrue(reuse == resultObj); // same reference - size dit not change
         }
         
+        // --------------------------------------- Formatter ---------------------------------------
+        [Test]
+        public void FormatterBytes() {
+            using (var formatter = new Formatter())
+            using (var num1 = new Bytes("1"))
+            using (var arr1 = new Bytes("[1]"))
+            {
+                // --- Read ---
+                AreEqual(1, formatter.Read<int>(num1));                      // generic
+                
+                AreEqual(1, formatter.ReadObject(num1, typeof(int)));        // non generic
+                
+                /*
+                // --- Write ---
+                write.Write(1);                                         // generic
+                AreEqual("1", write.bytes.ToString());
+                
+                write.WriteObject(1);                                   // non generic 
+                AreEqual("1", write.bytes.ToString());
+                */
+
+                // --- ReadTo ---
+                int[] reuse  = new int[1];
+                int[] expect = { 1 };
+                int[] result = formatter.ReadTo(arr1, reuse);                // generic
+                AreEqual(expect, result);   
+                IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = formatter.ReadToObject(arr1, reuse);      // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
+        [Test]
+        public void FormatterStream() {
+            using (var formatter = new Formatter()) {
+                // --- Read ---
+                AreEqual(1, formatter.Read<int>(StreamFromString("1")));                     // generic
+                
+                AreEqual(1, formatter.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
+                
+                // --- ReadTo ---
+                int[] reuse  = new int[1];
+                int[] expect = { 1 };
+                int[] result = formatter.ReadTo(StreamFromString("[1]"), reuse);             // generic
+                AreEqual(expect, result);   
+                IsTrue(reuse == result); // same reference - size dit not change
+                
+                object resultObj = formatter.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
+        [Test]
+        public void FormatterString() {
+            using (var formatter = new Formatter()) {
+                // --- Read ---
+                AreEqual(1, formatter.Read<int>("1")); // generic
+
+                AreEqual(1, formatter.ReadObject("1", typeof(int))); // non generic
+
+                // --- ReadTo ---
+                int[] reuse = new int[1];
+                int[] expect = {1};
+                int[] result = formatter.ReadTo("[1]", reuse); // generic
+                AreEqual(expect, result);
+                IsTrue(reuse == result); // same reference - size dit not change
+
+                object resultObj = formatter.ReadToObject("[1]", reuse); // non generic
+                AreEqual(expect, resultObj);
+                IsTrue(reuse == resultObj); // same reference - size dit not change
+            }
+        }
+        
         private static Stream StreamFromString(string s)
         {
             var stream = new MemoryStream();

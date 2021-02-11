@@ -3,6 +3,7 @@ using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Mapper
 {
     public class Formatter : IDisposable
