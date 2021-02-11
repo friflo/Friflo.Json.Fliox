@@ -93,13 +93,6 @@ namespace Friflo.Json.Burst
             buffer = new ByteList(src.Len, AllocType.Persistent);
             AppendBytes(ref src);
         }
-        
-        public Bytes(ByteList array) {
-            hc = 0;
-            start = 0;
-            end = array.Count;
-            buffer = array;
-        }
 
         public void SetDim (int start, int end)
         {
