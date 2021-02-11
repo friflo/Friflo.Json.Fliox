@@ -13,6 +13,7 @@ namespace Friflo.Json.Mapper
         public readonly JsonWriter  writer;
 
         public Formatter(ITypeResolver resolver = null, StoreConfig config = null) {
+            config = config ?? new StoreConfig(TypeAccess.IL);
             typeStore = new TypeStore(resolver, config);
             reader = new JsonReader(typeStore);
             writer = new JsonWriter(typeStore);
