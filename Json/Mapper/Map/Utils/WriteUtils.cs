@@ -57,7 +57,6 @@ namespace Friflo.Json.Mapper.Map.Utils
             Flush(ref writer);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Flush(ref Writer writer) {
             switch (writer.outputType) {
                 case OutputType.ByteList:
