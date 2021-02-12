@@ -62,10 +62,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 writer.bytes.AppendChar(':');
                 
                 var elemVar = entry.Value;
-                if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
+                if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
                     WriteUtils.AppendNull(ref writer);
-                else
+                } else {
                     elementType.Write(ref writer, elemVar);
+                    WriteUtils.FlushFilledBuffer(ref writer);
+                }
             }
             writer.bytes.AppendChar('}');
             WriteUtils.DecLevel(ref writer, startLevel);

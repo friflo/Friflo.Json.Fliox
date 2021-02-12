@@ -47,6 +47,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AppendNull(ref Writer writer) {
             writer.bytes.AppendBytes(ref writer.@null);
+            FlushFilledBuffer(ref writer);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

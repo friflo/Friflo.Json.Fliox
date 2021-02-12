@@ -66,6 +66,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 } else {
                     object fieldObj = mirror.LoadObj(field.objIndex);
                     field.fieldType.WriteObject(ref writer, fieldObj);
+                    WriteUtils.FlushFilledBuffer(ref writer);
                 }
             }
             writer.InstancePop();

@@ -113,6 +113,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
                     WriteUtils.WriteDiscriminator(ref writer, classMapper);
+                    WriteUtils.FlushFilledBuffer(ref writer);
                     firstMember = false;
                 }
             }
@@ -128,6 +129,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 } else {
                     var fieldType = field.fieldType;
                     fieldType.WriteObject(ref writer, elemVar);
+                    WriteUtils.FlushFilledBuffer(ref writer);
                 }
             }
             WriteUtils.WriteObjectEnd(ref writer, firstMember);

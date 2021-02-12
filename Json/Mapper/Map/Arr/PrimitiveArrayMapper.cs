@@ -80,10 +80,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.bytes.AppendChar(',');
                 var elemVar = array[n];
 
-                if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default))
+                if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default)) {
                     WriteUtils.AppendNull(ref writer);
-                else
+                } else {
                     elementType.Write(ref writer, elemVar);
+                    WriteUtils.FlushFilledBuffer(ref writer);
+                }
             }
             writer.bytes.AppendChar(']');
             WriteUtils.DecLevel(ref writer, startLevel);
