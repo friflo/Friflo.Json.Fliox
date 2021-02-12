@@ -18,29 +18,26 @@ namespace Friflo.Json.Mapper
 #endif
     public interface IJsonReader
     {
-        // --------------- Bytes ---------------
-        // ---  Read()
-        T       Read<T>(Bytes utf8Bytes);
-        object  ReadObject(Bytes utf8Bytes, Type type);
-        // ---  ReadTo()
-        T       ReadTo<T>(Bytes utf8Bytes, T obj);
-        object  ReadToObject(Bytes utf8Bytes, object obj); 
+        // --- Bytes
+        T       Read<T>     (Bytes utf8Bytes);
+        object  ReadObject  (Bytes utf8Bytes, Type type);
+
+        T       ReadTo<T>   (Bytes utf8Bytes, T         obj);
+        object  ReadToObject(Bytes utf8Bytes, object    obj); 
         
-        // --------------- Stream ---------------
-        // --- Read()
-        T       Read<T>(Stream utf8Stream);
-        object  ReadObject(Stream utf8Stream, Type type);
-        // --- ReadTo()
-        T       ReadTo<T>(Stream utf8Stream, T obj);
-        object  ReadToObject(Stream utf8Stream, object obj);  
+        // --- Stream
+        T       Read<T>     (Stream utf8Stream);
+        object  ReadObject  (Stream utf8Stream, Type type);
+
+        T       ReadTo<T>   (Stream utf8Stream, T       obj);
+        object  ReadToObject(Stream utf8Stream, object  obj);  
         
-        // --------------- string ---------------
-        // --- Read()
-        T       Read<T>(string json);
-        object  ReadObject(string json, Type type);
-        // --- ReadTo()
-        T       ReadTo<T>(string json, T obj);
-        object  ReadToObject(string json, object obj); 
+        // --- string
+        T       Read<T>     (string json);
+        object  ReadObject  (string json, Type type);
+
+        T       ReadTo<T>   (string json, T         obj);
+        object  ReadToObject(string json, object    obj); 
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -99,9 +96,7 @@ namespace Friflo.Json.Mapper
             intern.DisposeMirrorStack();
             inputStringBuf.Dispose();
         }
-        
 
-        
         /// <summary> <see cref="JsonError.Error"/> dont call <see cref="JsonError.errorHandler"/> in
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]

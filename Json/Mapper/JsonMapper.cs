@@ -14,9 +14,9 @@ namespace Friflo.Json.Mapper
 
         public JsonMapper(ITypeResolver resolver = null, StoreConfig config = null) {
             config = config ?? new StoreConfig(TypeAccess.IL);
-            typeStore = new TypeStore(resolver, config);
-            reader = new JsonReader(typeStore);
-            writer = new JsonWriter(typeStore);
+            typeStore   = new TypeStore(resolver, config);
+            reader      = new JsonReader(typeStore);
+            writer      = new JsonWriter(typeStore);
         }
 
         public void Dispose() {

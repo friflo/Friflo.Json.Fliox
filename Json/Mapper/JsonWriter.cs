@@ -10,20 +10,21 @@ using Friflo.Json.Mapper.Map.Utils;
 
 namespace Friflo.Json.Mapper
 {
-
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public interface IJsonWriter
     {
-        // --------------- Bytes ---------------
-        void    Write<T>    (T value,       ref Bytes bytes);
-        void    WriteObject (object value,  ref Bytes bytes);
+        // --- Bytes
+        void    Write<T>    (T      value, ref Bytes bytes);
+        void    WriteObject (object value, ref Bytes bytes);
         
-        // --------------- Stream ---------------
-
-        void    Write<T>    (T value,       Stream stream);
-        void    WriteObject (object value,  Stream stream);
+        // --- Stream
+        void    Write<T>    (T      value, Stream stream);
+        void    WriteObject (object value, Stream stream);
         
-        // --------------- string ---------------
-        string  Write<T>    (T value);
+        // --- string
+        string  Write<T>    (T      value);
         string  WriteObject (object value);
     }
     
