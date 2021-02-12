@@ -27,12 +27,12 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
-        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             object obj = mirror.LoadObj(objPos);
             if (obj == null)
-                WriteUtils.AppendNull(writer);
+                WriteUtils.AppendNull(ref writer);
             else
-                Write(writer, (T) obj);
+                Write(ref writer, (T) obj);
         }
 
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
@@ -43,8 +43,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
         
         // ----------------------------------- Write / Read -----------------------------------
-        public override void Write(JsonWriter writer, T slot) {
-            int startLevel = WriteUtils.IncLevel(writer);
+        public override void Write(ref Writer writer, T slot) {
+            int startLevel = WriteUtils.IncLevel(ref writer);
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
@@ -52,26 +52,26 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, obj);
 
             if (this != classMapper) {
-                WriteUtils.WriteDiscriminator(writer, classMapper);
+                WriteUtils.WriteDiscriminator(ref writer, classMapper);
                 firstMember = false;
             }
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(writer, field, ref firstMember);
+                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember);
 
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 if (field.fieldType.isValueType) {
-                    field.fieldType.WriteValueIL(writer, mirror, field.primIndex, field.objIndex);
+                    field.fieldType.WriteValueIL(ref writer, mirror, field.primIndex, field.objIndex);
                 } else {
                     object fieldObj = mirror.LoadObj(field.objIndex);
-                    field.fieldType.WriteObject(writer, fieldObj);
+                    field.fieldType.WriteObject(ref writer, fieldObj);
                 }
             }
             writer.InstancePop();
-            WriteUtils.WriteObjectEnd(writer, firstMember);
+            WriteUtils.WriteObjectEnd(ref writer, firstMember);
 
-            WriteUtils.DecLevel(writer, startLevel);
+            WriteUtils.DecLevel(ref writer, startLevel);
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {

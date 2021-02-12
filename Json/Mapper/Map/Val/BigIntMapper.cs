@@ -27,8 +27,8 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public BigIntMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
-        public override void Write(JsonWriter writer, BigInteger value) {
-            WriteUtils.WriteString(writer, value.ToString());
+        public override void Write(ref Writer writer, BigInteger value) {
+            WriteUtils.WriteString(ref writer, value.ToString());
         }
 
         public override BigInteger Read(ref Reader reader, BigInteger slot, out bool success) {

@@ -29,8 +29,8 @@ namespace Friflo.Json.Mapper.Map.Val
             base (config, type, TypeUtils.IsPrimitiveNullable(type), false) {
         }
 
-        public override void Write(JsonWriter writer, DateTime value) {
-            WriteUtils.WriteString(writer, value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+        public override void Write(ref Writer writer, DateTime value) {
+            WriteUtils.WriteString(ref writer, value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
         }
 
         // ReSharper disable once RedundantAssignment

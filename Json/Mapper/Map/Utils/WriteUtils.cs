@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Utils
     public static class WriteUtils
     {
 
-        public static void WriteDiscriminator(JsonWriter writer, TypeMapper mapper) {
+        public static void WriteDiscriminator(ref Writer writer, TypeMapper mapper) {
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             bytes.AppendBytes(ref writer.discriminator);
@@ -22,7 +22,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteMemberKey(JsonWriter writer, PropField field, ref bool firstMember) {
+        public static void WriteMemberKey(ref Writer writer, PropField field, ref bool firstMember) {
             if (firstMember)
                 writer.bytes.AppendBytes(ref field.firstMember);
             else
@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteObjectEnd(JsonWriter writer, bool emptyObject) {
+        public static void WriteObjectEnd(ref Writer writer, bool emptyObject) {
             if (emptyObject)
                 writer.bytes.AppendChar2('{', '}');
             else
@@ -39,24 +39,24 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteString(JsonWriter writer, String str) {
+        public static void WriteString(ref Writer writer, String str) {
             JsonSerializer.AppendEscString(ref writer.bytes, ref str);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AppendNull(JsonWriter writer) {
+        public static void AppendNull(ref Writer writer) {
             writer.bytes.AppendBytes(ref writer.@null);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IncLevel(JsonWriter writer) {
+        public static int IncLevel(ref Writer writer) {
             if (writer.level++ < writer.maxDepth)
                 return writer.level;
             throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {writer.maxDepth}");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DecLevel(JsonWriter writer, int expectedLevel) {
+        public static void DecLevel(ref Writer writer, int expectedLevel) {
             if (writer.level-- != expectedLevel)
                 throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {writer.level + 1}");
         }

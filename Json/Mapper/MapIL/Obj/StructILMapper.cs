@@ -25,25 +25,25 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
-        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             // write JSON value: null, if it is a Nullable<struct>
             if (isNullable && !mirror.LoadPrimitiveHasValue(primPos)) {
-                WriteUtils.AppendNull(writer);
+                WriteUtils.AppendNull(ref writer);
                 return;
             }
-            int startLevel = WriteUtils.IncLevel(writer);
+            int startLevel = WriteUtils.IncLevel(ref writer);
             
             PropField[] fields = propFields.fields;
             bool firstMember = true;
 
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(writer, field, ref firstMember);
+                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember);
                 
-                field.fieldType.WriteValueIL(writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
+                field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
             }
-            WriteUtils.WriteObjectEnd(writer, firstMember);
-            WriteUtils.DecLevel(writer, startLevel);
+            WriteUtils.WriteObjectEnd(ref writer, firstMember);
+            WriteUtils.DecLevel(ref writer, startLevel);
         }
         
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {

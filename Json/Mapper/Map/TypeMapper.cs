@@ -41,11 +41,11 @@ namespace Friflo.Json.Mapper.Map
         public abstract string          DataTypeName();
         public abstract void            InitTypeMapper(TypeStore typeStore);
         
-        public abstract void            WriteObject (JsonWriter writer,   object slot);
-        public abstract object ReadObject(ref Reader reader, object slot, out bool success);
+        public abstract void            WriteObject(ref Writer writer, object slot);
+        public abstract object          ReadObject(ref Reader reader, object slot, out bool success);
         
-        public abstract void            WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos);
-        public abstract bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
+        public abstract void            WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos);
+        public abstract bool            ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
 
 
         public abstract object          CreateInstance();
@@ -66,11 +66,11 @@ namespace Friflo.Json.Mapper.Map
             base(config, type, isNullable, isValueType) {
         }
 
-        public abstract void    Write       (JsonWriter writer, TVal slot);
+        public abstract void    Write       (ref Writer writer, TVal slot);
         public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
 
         
-        public override void WriteValueIL(JsonWriter writer, ClassMirror mirror, int primPos, int objPos) {
+        public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
@@ -78,11 +78,11 @@ namespace Friflo.Json.Mapper.Map
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
-        public override void WriteObject(JsonWriter writer, object slot) {
+        public override void WriteObject(ref Writer writer, object slot) {
             if (slot != null)
-                Write(writer, (TVal) slot);
+                Write(ref writer, (TVal) slot);
             else
-                WriteUtils.AppendNull(writer);
+                WriteUtils.AppendNull(ref writer);
         }
 
         public override object ReadObject(ref Reader reader, object slot, out bool success) {

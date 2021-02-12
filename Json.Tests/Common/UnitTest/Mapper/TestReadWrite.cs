@@ -522,7 +522,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 return result;
             
             cmpWrite.Write(result);
-            T writeResult = cmpRead.Read<T>(cmpWrite.bytes);
+            T writeResult = cmpRead.Read<T>(cmpWrite.Output);
 
             AreEqual(result, writeResult);
             return result;
@@ -536,7 +536,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 return default;
             
             cmpWrite.Write(value);
-            T writeResult = cmpRead.Read<T>(cmpWrite.bytes);
+            T writeResult = cmpRead.Read<T>(cmpWrite.Output);
 
             AreEqual(value, writeResult);
             return result;

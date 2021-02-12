@@ -47,13 +47,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
 
                 write.Write(EnumClass.Value1);
-                AreEqual("\"Value1\"", write.bytes.ToString());
+                AreEqual("\"Value1\"", write.Output.ToString());
                 
                 write.Write(EnumClass.Value2);
-                AreEqual("\"Value2\"", write.bytes.ToString());
+                AreEqual("\"Value2\"", write.Output.ToString());
                 
                 write.Write(EnumClass.Value3);
-                AreEqual("\"Value1\"", write.bytes.ToString());
+                AreEqual("\"Value1\"", write.Output.ToString());
                 
                 // --- Nullable
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value1));
@@ -62,10 +62,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value3));
                 
                 write.Write<EnumClass?>(null);
-                AreEqual("null", write.bytes.ToString());
+                AreEqual("null", write.Output.ToString());
                 
                 write.Write<EnumClass?>(EnumClass.Value1);
-                AreEqual("\"Value1\"", write.bytes.ToString());
+                AreEqual("\"Value1\"", write.Output.ToString());
                 
             }
         }
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 // --- JsonWriter
                 // maxDepth: 1
-                writer.maxDepth = 1;
+                writer.MaxDepth = 1;
                 writer.Write(new RecursiveClass());
                 AreEqual(0, writer.Level);
                 // no exception
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(2, writer.Level);
                 
                 // maxDepth: 0
-                writer.maxDepth = 0;
+                writer.MaxDepth = 0;
                 writer.Write(1);
                 AreEqual(0, writer.Level);
                 // no exception

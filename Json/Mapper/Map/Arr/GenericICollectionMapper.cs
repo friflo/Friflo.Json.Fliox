@@ -47,8 +47,8 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, TCol slot) {
-            int startLevel = WriteUtils.IncLevel(writer);
+        public override void Write(ref Writer writer, TCol slot) {
+            int startLevel = WriteUtils.IncLevel(ref writer);
             var list = slot;
             writer.bytes.AppendChar('[');
             
@@ -59,12 +59,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.bytes.AppendChar(',');
                 
                 if (!elementType.IsNull(ref item)) {
-                    ObjectUtils.Write(writer, elementType, ref item);
+                    ObjectUtils.Write(ref writer, elementType, ref item);
                 } else
-                    WriteUtils.AppendNull(writer);
+                    WriteUtils.AppendNull(ref writer);
             }
             writer.bytes.AppendChar(']');
-            WriteUtils.DecLevel(writer, startLevel);
+            WriteUtils.DecLevel(ref writer, startLevel);
         }
         
 

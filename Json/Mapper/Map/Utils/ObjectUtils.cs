@@ -50,16 +50,16 @@ namespace Friflo.Json.Mapper.Map.Utils
             return mapper.Read(ref reader, value, out success);
         }
         
-        public static void Write<T>(JsonWriter writer, TypeMapper<T> mapper, ref T value) {
+        public static void Write<T>(ref Writer writer, TypeMapper<T> mapper, ref T value) {
 #if !UNITY_5_3_OR_NEWER
             if (mapper.useIL) {
                 TypeMapper typeMapper = mapper;
                 ClassMirror mirror = writer.InstanceLoad(ref typeMapper, value);
-                mapper.WriteValueIL(writer, mirror, 0, 0);
+                mapper.WriteValueIL(ref writer, mirror, 0, 0);
                 return;
             }
 #endif
-            mapper.Write(writer, value);
+            mapper.Write(ref writer, value);
             
         }
 

@@ -101,8 +101,8 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         
-        public override void Write(JsonWriter writer, T slot) {
-            int startLevel = WriteUtils.IncLevel(writer);
+        public override void Write(ref Writer writer, T slot) {
+            int startLevel = WriteUtils.IncLevel(ref writer);
 
             T obj = slot;
             TypeMapper classMapper = this;
@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
-                    WriteUtils.WriteDiscriminator(writer, classMapper);
+                    WriteUtils.WriteDiscriminator(ref writer, classMapper);
                     firstMember = false;
                 }
             }
@@ -120,18 +120,18 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(writer, field, ref firstMember); 
+                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember); 
                 
                 object elemVar = field.GetField(obj);
                 if (elemVar == null) {
-                    WriteUtils.AppendNull(writer);
+                    WriteUtils.AppendNull(ref writer);
                 } else {
                     var fieldType = field.fieldType;
-                    fieldType.WriteObject(writer, elemVar);
+                    fieldType.WriteObject(ref writer, elemVar);
                 }
             }
-            WriteUtils.WriteObjectEnd(writer, firstMember);
-            WriteUtils.DecLevel(writer, startLevel);
+            WriteUtils.WriteObjectEnd(ref writer, firstMember);
+            WriteUtils.DecLevel(ref writer, startLevel);
         }
 
 

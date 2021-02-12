@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         
         public StringTokenMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
-        public override void Write(JsonWriter writer, StringTokens value) {
-            WriteUtils.WriteString(writer, string.Join(" ", value.tokens));
+        public override void Write(ref Writer writer, StringTokens value) {
+            WriteUtils.WriteString(ref writer, string.Join(" ", value.tokens));
         }
 
         public override StringTokens Read(ref Reader reader, StringTokens slot, out bool success) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             
             JsonWriter writer = new JsonWriter(typeStore);
             writer.Write(result);
-            AreEqual(json, writer.bytes.ToString());
+            AreEqual(json, writer.Output.ToString());
         }
     }
 }

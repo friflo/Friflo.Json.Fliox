@@ -49,8 +49,8 @@ namespace Friflo.Json.Mapper.Map.Obj
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {
         }
 
-        public override void Write(JsonWriter writer, TMap map) {
-            int startLevel = WriteUtils.IncLevel(writer);
+        public override void Write(ref Writer writer, TMap map) {
+            int startLevel = WriteUtils.IncLevel(ref writer);
 
             writer.bytes.AppendChar('{');
             int n = 0;
@@ -58,17 +58,17 @@ namespace Friflo.Json.Mapper.Map.Obj
             foreach (var entry in map) {
                 if (n++ > 0)
                     writer.bytes.AppendChar(',');
-                WriteUtils.WriteString(writer, entry.Key);
+                WriteUtils.WriteString(ref writer, entry.Key);
                 writer.bytes.AppendChar(':');
                 
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default))
-                    WriteUtils.AppendNull(writer);
+                    WriteUtils.AppendNull(ref writer);
                 else
-                    elementType.Write(writer, elemVar);
+                    elementType.Write(ref writer, elemVar);
             }
             writer.bytes.AppendChar('}');
-            WriteUtils.DecLevel(writer, startLevel);
+            WriteUtils.DecLevel(ref writer, startLevel);
         }
         
         public override TMap Read(ref Reader reader, TMap map, out bool success) {

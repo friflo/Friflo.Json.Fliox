@@ -28,8 +28,8 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public StringMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
-        public override void Write(JsonWriter writer, string slot) {
-            WriteUtils.WriteString(writer, (slot));
+        public override void Write(ref Writer writer, string slot) {
+            WriteUtils.WriteString(ref writer, (slot));
         }
 
         public override string Read(ref Reader reader, string slot, out bool success) {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public DoubleMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
-        public override void Write(JsonWriter writer, double slot) {
+        public override void Write(ref Writer writer, double slot) {
             writer.format.AppendDbl(ref writer.bytes, slot);
         }
         public override double Read(ref Reader reader, double slot, out bool success) {
@@ -73,7 +73,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public NullableDoubleMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
-        public override void Write(JsonWriter writer, double? slot) {
+        public override void Write(ref Writer writer, double? slot) {
             writer.format.AppendDbl(ref writer.bytes, (double)slot);
         }
         public override double? Read(ref Reader reader, double? slot, out bool success) {
@@ -100,7 +100,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public FloatMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
-        public override void Write(JsonWriter writer, float slot) {
+        public override void Write(ref Writer writer, float slot) {
             writer.format.AppendFlt(ref writer.bytes, slot);
         }
         public override float Read(ref Reader reader, float slot, out bool success) {
@@ -114,7 +114,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public NullableFloatMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
-        public override void Write(JsonWriter writer, float? slot) {
+        public override void Write(ref Writer writer, float? slot) {
             writer.format.AppendFlt(ref writer.bytes, (float)slot);
         }
         public override float? Read(ref Reader reader, float? slot, out bool success) {
@@ -141,7 +141,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public LongMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
-        public override void Write(JsonWriter writer, long slot) {
+        public override void Write(ref Writer writer, long slot) {
             writer.format.AppendLong(ref writer.bytes, slot);
         }
 
@@ -156,7 +156,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public NullableLongMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
-        public override void Write(JsonWriter writer, long? slot) {
+        public override void Write(ref Writer writer, long? slot) {
             writer.format.AppendLong(ref writer.bytes, (long)slot);
         }
         public override long? Read(ref Reader reader, long? slot, out bool success) {
@@ -183,7 +183,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public IntMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
-        public override void Write(JsonWriter writer, int slot) {
+        public override void Write(ref Writer writer, int slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
         public override int Read(ref Reader reader, int slot, out bool success) {
@@ -197,7 +197,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public NullableIntMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
-        public override void Write(JsonWriter writer, int? slot) {
+        public override void Write(ref Writer writer, int? slot) {
             writer.format.AppendInt(ref writer.bytes, (int)slot);
         }
         public override int? Read(ref Reader reader, int? slot, out bool success) {
@@ -224,7 +224,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public ShortMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
-        public override void Write(JsonWriter writer, short slot) {
+        public override void Write(ref Writer writer, short slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
 
@@ -239,7 +239,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public NullableShortMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
-        public override void Write(JsonWriter writer, short? slot) {
+        public override void Write(ref Writer writer, short? slot) {
             writer.format.AppendInt(ref writer.bytes, (short)slot);
         }
 
@@ -268,7 +268,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public ByteMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
         
-        public override void Write(JsonWriter writer, byte slot) {
+        public override void Write(ref Writer writer, byte slot) {
             writer.format.AppendInt(ref writer.bytes, slot);
         }
 
@@ -283,7 +283,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public NullableByteMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
         
-        public override void Write(JsonWriter writer, byte? slot) {
+        public override void Write(ref Writer writer, byte? slot) {
             writer.format.AppendInt(ref writer.bytes, (byte)slot);
         }
 
@@ -312,7 +312,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public BoolMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
 
-        public override void Write(JsonWriter writer, bool slot) {
+        public override void Write(ref Writer writer, bool slot) {
             writer.format.AppendBool(ref writer.bytes, slot);
         }
 
@@ -327,7 +327,7 @@ namespace Friflo.Json.Mapper.Map.Val
         
         public NullableBoolMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
 
-        public override void Write(JsonWriter writer, bool? slot) {
+        public override void Write(ref Writer writer, bool? slot) {
             writer.format.AppendBool(ref writer.bytes, (bool)slot);
         }
 

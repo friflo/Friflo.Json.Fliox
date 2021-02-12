@@ -2,62 +2,91 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial class JsonWriter : IDisposable
+    public partial struct Writer : IDisposable
     {
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
-        public readonly     TypeCache   typeCache;
-        public              Bytes       bytes;
+        public readonly     TypeCache           typeCache;
+        public              Bytes               bytes;
         /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>
-        public              ValueFormat format;
+        public              ValueFormat         format;
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
-        public              Bytes       strBuf;
+        public              Bytes               strBuf;
 
-        internal            Bytes       @null = new Bytes("null");
-        internal            Bytes       discriminator;
-
-        public          ref Bytes Output => ref bytes;
-
-        internal            int         level;
-        public              int         Level => level;
-        public              int         maxDepth;
+        internal            Bytes               @null;
+        internal            Bytes               discriminator;
+        internal            int                 level;
+        public              int                 maxDepth;
         
+        private             int                 classLevel;
+        private  readonly   List<ClassMirror>   mirrorStack;
 
-        public JsonWriter(TypeStore typeStore) {
-            typeCache = new TypeCache(typeStore);
-            discriminator = new Bytes($"\"{typeStore.config.discriminator}\":\"");
-            maxDepth = 100;
-            // useIL = typeStore.config.useIL;
+        public Writer(TypeStore typeStore) {
+            bytes           = new Bytes(128);
+            strBuf          = new Bytes(128);
+            format          = new ValueFormat();
+            format. InitTokenFormat();
+            @null           = new Bytes("null");
+            discriminator   = new Bytes($"\"{typeStore.config.discriminator}\":\"");
+            typeCache       = new TypeCache(typeStore);
+            level           = 0;
+            maxDepth        = 100;
+            //
+            classLevel      = 0;
+            mirrorStack     = new List<ClassMirror>(16);
         }
         
         public void Dispose() {
             typeCache.Dispose();
-            @null.Dispose();
             discriminator.Dispose();
+            @null.Dispose();
             format.Dispose();
             strBuf.Dispose();
             bytes.Dispose();
             DisposeMirrorStack();
         }
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class JsonWriter : IDisposable
+    {
+        private     Writer      intern;
+        public  ref Bytes       Output => ref intern.bytes;
+
+        public      int         Level => intern.level;
+        public      int         MaxDepth {
+            get => intern.maxDepth;
+            set => intern.maxDepth = value;
+        }
+
+        public JsonWriter(TypeStore typeStore) {
+            intern = new Writer(typeStore);
+        }
+        
+        public void Dispose() {
+            intern.Dispose();
+        }
 
         private void InitJsonWriter() {
-            bytes.  InitBytes(128);
-            strBuf. InitBytes(128);
-            format. InitTokenFormat();
-            bytes.Clear();
-            level = 0;
-            InitMirrorStack();
+            intern.bytes.Clear();
+            intern.level = 0;
+            intern.InitMirrorStack();
         }
         
         // --------------- Bytes ---------------  todo
@@ -72,34 +101,34 @@ namespace Friflo.Json.Mapper
         // --------------------------------------- private --------------------------------------- 
         private void WriteStart(object value) {
             if (value == null) {
-                WriteUtils.AppendNull(this);
+                WriteUtils.AppendNull(ref intern);
                 return;
             }
-            TypeMapper mapper = typeCache.GetTypeMapper(value.GetType());
+            TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
             InitJsonWriter();
             try {
-                mapper.WriteObject(this, value);
+                mapper.WriteObject(ref intern, value);
             }
-            finally { ClearMirrorStack(); }
+            finally { intern.ClearMirrorStack(); }
 
-            if (level != 0)
-                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
+            if (intern.level != 0)
+                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
         }
         
         private void WriteStart<T>(T value) {
-            var mapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             InitJsonWriter();
             try {
                 if (mapper.IsNull(ref value))
-                    WriteUtils.AppendNull(this);
+                    WriteUtils.AppendNull(ref intern);
                 else
-                    mapper.Write(this, value);
+                    mapper.Write(ref intern, value);
             }
-            finally { ClearMirrorStack(); }
+            finally { intern.ClearMirrorStack(); }
             
 
-            if (level != 0)
-                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {level}");
+            if (intern.level != 0)
+                throw new InvalidOperationException($"Unexpected level after JsonWriter.Write(). Expect 0, Found: {intern.level}");
         }
     }
 }

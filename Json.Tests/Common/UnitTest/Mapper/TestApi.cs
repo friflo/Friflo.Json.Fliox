@@ -28,10 +28,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 // --- Write ---
                 write.Write(1);                                         // generic
-                AreEqual("1", write.bytes.ToString());
+                AreEqual("1", write.Output.ToString());
                 
                 write.WriteObject(1);                                   // non generic 
-                AreEqual("1", write.bytes.ToString());
+                AreEqual("1", write.Output.ToString());
                 
 
                 // --- ReadTo ---

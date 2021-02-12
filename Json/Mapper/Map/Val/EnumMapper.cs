@@ -110,7 +110,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public override void InitTypeMapper(TypeStore typeStore) {
         }
 
-        public override void Write(JsonWriter writer, T slot) {
+        public override void Write(ref Writer writer, T slot) {
             if (enumToString.TryGetValue(slot, out BytesString enumName)) {
                 writer.bytes.AppendChar('\"');
                 writer.bytes.AppendBytes(ref enumName.value);
