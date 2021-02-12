@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Map.Val;
 using Friflo.Json.Mapper.MapIL.Obj;
