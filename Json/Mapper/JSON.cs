@@ -36,6 +36,19 @@ namespace Friflo.Json.Mapper
             }
         }
         
+        // --- Write()
+        public static void Write<T>(T value, ref Bytes bytes) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                writer.Write(value, ref bytes);
+            }
+        }
+
+        public static void WriteObject(object value, ref Bytes bytes) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                writer.WriteObject(value, ref bytes);
+            }
+        }
+        
         // --------------- Stream ---------------
         // --- Read()
         public static T Read<T>(Stream utf8Stream) {
@@ -63,6 +76,19 @@ namespace Friflo.Json.Mapper
             }
         }
         
+        // --- Write()
+        public static void Write<T>(T value, Stream stream) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                writer.Write(value, stream);
+            }
+        }
+
+        public static void WriteObject(object value, Stream stream) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                writer.WriteObject(value, stream);
+            }
+        }
+        
         // --------------- string ---------------
         // --- Read()
         public static T Read<T>(string json) {
@@ -87,6 +113,19 @@ namespace Friflo.Json.Mapper
         public static object ReadToObject(string json, object obj)  {
             using (var reader = new JsonReader(TypeStore)) {
                 return reader.ReadToObject(json, obj);
+            }
+        }
+        
+        // --- Write()
+        public static string Write<T>(T value) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                return writer.Write(value);
+            }
+        }
+
+        public static string WriteObject(object value) {
+            using (var writer = new JsonWriter(TypeStore)) {
+                return writer.WriteObject(value);
             }
         }
         
