@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -13,12 +14,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // ------------------------------------ JsonReader / JsonWriter ------------------------------------
         [Test]
         public void ReadWriteBytes() {
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore))
-            using (JsonWriter write = new JsonWriter(typeStore))
+            using (TypeStore    typeStore   = new TypeStore())
+            using (JsonReader   read        = new JsonReader(typeStore))
+            using (JsonWriter   write       = new JsonWriter(typeStore))
             
             using (var num1 = new Bytes("1"))
             using (var arr1 = new Bytes("[1]"))
+            using (var dst  = new TestBytes())
             {
                 // --- Read ---
                 AreEqual(1, read.Read<int>(num1));                      // generic
@@ -27,11 +29,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 
                 // --- Write ---
-                var json1 = write.Write(1);                                         // generic
-                AreEqual("1", json1);
+                write.Write(1, ref dst.bytes);                          // generic
+                AreEqual("1", dst.bytes.ToString());
                 
-                var json2 = write.WriteObject(1);                                   // non generic 
-                AreEqual("1", json2);
+                write.WriteObject(1, ref dst.bytes);                    // non generic 
+                AreEqual("1", dst.bytes.ToString());
                 
 
                 // --- ReadTo ---
@@ -49,9 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadWriteStream() {
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter write = new JsonWriter(typeStore))
+            using (TypeStore    typeStore   = new TypeStore())
+            using (JsonReader   read        = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonWriter   write       = new JsonWriter(typeStore))
             {
                 // --- Read ---
                 AreEqual(1, read.Read<int>(StreamFromString("1")));                     // generic
@@ -84,13 +86,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReadWriteString() {
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (TypeStore    typeStore   = new TypeStore())
+            using (JsonReader   read        = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonWriter   write       = new JsonWriter(typeStore))
             {
                 // --- Read ---
                 AreEqual(1, read.Read<int>("1"));                       // generic
                 
                 AreEqual(1, read.ReadObject("1", typeof(int)));         // non generic
+                
+                
+                // --- Write ---
+                var json1 = write.Write(1);                             // generic
+                AreEqual("1", json1);
+                
+                var json2 = write.WriteObject(1);                       // non generic 
+                AreEqual("1", json2);
+
                 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];

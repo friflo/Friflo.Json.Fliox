@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper
             intern.InitMirrorStack();
         }
         
-        // --------------- Bytes ---------------  todo
+        // --------------- Bytes ---------------
         public void Write<T>(T value, ref Bytes bytes) {
             InitJsonWriterBytes();
             WriteStart(value);
