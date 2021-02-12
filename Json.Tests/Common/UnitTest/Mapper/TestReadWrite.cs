@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -238,9 +239,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         curTestClass.selfReference = new TestMapperClass();
                         curTestClass = curTestClass.selfReference;
                     }
-                    write.Write(root);
+                    var jsonResult = write.Write(root);
                     {
-                        var result = Read<TestMapperClass>(write.Output.ToString());
+                        var result = Read<TestMapperClass>(jsonResult);
                         if (JsonEvent.Error == enc.JsonEvent)
                             Fail(enc.Error.msg.ToString());
                         AreEqual(root, result);
@@ -480,8 +481,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         AreEqual(expect, Read<BigInteger>(bigInt));
                         AreEqual(JsonEvent.EOF, enc.JsonEvent);
                         
-                        write.Write(expect);
-                        AreEqual(bigIntStr.ToString(), write.Output.ToString());
+                        var result = write.Write(expect);
+                        AreEqual(bigIntStr.ToString(), result);
                     }
                     enc.Read<BigInteger>(hello);
                     StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
@@ -492,8 +493,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         DateTime value = Read<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         
-                        write.Write(expect);
-                        AreEqual(dateTimeStr.ToString(), write.Output.ToString());   
+                        var result = write.Write(expect);
+                        AreEqual(dateTimeStr.ToString(), result);   
                     }
                     enc.Read<DateTime>(hello);
                     StringAssert.Contains("Failed parsing DateTime. value:", enc.Error.msg.ToString());
@@ -520,10 +521,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var result = reader.Read<T>(json);
             if (!reader.Success)
                 return result;
-            
-            cmpWrite.Write(result);
-            T writeResult = cmpRead.Read<T>(cmpWrite.Output);
 
+            T writeResult;
+            using (var dst = new TestBytes()) {
+                cmpWrite.Write(result, ref dst.bytes);
+                writeResult = cmpRead.Read<T>(dst.bytes);
+            }
+            
             AreEqual(result, writeResult);
             return result;
         }
@@ -534,10 +538,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             T result = reader.ReadTo(json, value);
             if (!reader.Success)
                 return default;
-            
-            cmpWrite.Write(value);
-            T writeResult = cmpRead.Read<T>(cmpWrite.Output);
 
+            T writeResult;
+            using (var dst = new TestBytes()) {
+                cmpWrite.Write(value, ref dst.bytes);
+                writeResult = cmpRead.Read<T>(dst.bytes);
+            }
             AreEqual(value, writeResult);
             return result;
         }

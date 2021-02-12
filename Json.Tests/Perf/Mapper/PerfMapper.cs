@@ -45,8 +45,8 @@ namespace Friflo.Json.Tests.Perf.Mapper
             var shelf = CreateBookShelf();
             using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (var writer = new JsonWriter(typeStore)) {
-                writer.Write(shelf);
-                return bookShelfJson = writer.Output.SwapWithDefault();
+                writer.Write(shelf, ref bookShelfJson);
+                return bookShelfJson;
             }
         }
 
@@ -54,12 +54,13 @@ namespace Friflo.Json.Tests.Perf.Mapper
         [Test]
         public void TestWrite() {
             BookShelf shelf = CreateBookShelf();
-            using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (var writer = new JsonWriter(typeStore))
+            using (var      typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (var      writer      = new JsonWriter(typeStore))
+            using (var      dst         = new TestBytes())
             {
                 for (int n = 0; n < 10; n++) {
                     int start = TimeUtil.GetMs();
-                    writer.Write(shelf);
+                    writer.Write(shelf, ref dst.bytes);
                     int end = TimeUtil.GetMs();
                     Console.WriteLine(end - start);
                 }

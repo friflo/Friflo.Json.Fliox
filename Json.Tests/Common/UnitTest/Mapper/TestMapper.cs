@@ -46,14 +46,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 enc.Read<EnumClass>(num999);
                 StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
 
-                write.Write(EnumClass.Value1);
-                AreEqual("\"Value1\"", write.Output.ToString());
+                var result = write.Write(EnumClass.Value1);
+                AreEqual("\"Value1\"", result);
                 
-                write.Write(EnumClass.Value2);
-                AreEqual("\"Value2\"", write.Output.ToString());
+                result = write.Write(EnumClass.Value2);
+                AreEqual("\"Value2\"", result);
                 
-                write.Write(EnumClass.Value3);
-                AreEqual("\"Value1\"", write.Output.ToString());
+                result = write.Write(EnumClass.Value3);
+                AreEqual("\"Value1\"", result);
                 
                 // --- Nullable
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value1));
@@ -61,11 +61,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(EnumClass.Value3, enc.Read<EnumClass?>(value3));
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass?>(value3));
                 
-                write.Write<EnumClass?>(null);
-                AreEqual("null", write.Output.ToString());
+                result = write.Write<EnumClass?>(null);
+                AreEqual("null", result);
                 
-                write.Write<EnumClass?>(EnumClass.Value1);
-                AreEqual("\"Value1\"", write.Output.ToString());
+                result = write.Write<EnumClass?>(EnumClass.Value1);
+                AreEqual("\"Value1\"", result);
                 
             }
         }
@@ -146,8 +146,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(11, result.baseField);
                 AreEqual(22, result.derivedField);
                 
-                writer.Write(result);
-                AreEqual(derivedJson.ToString(), writer.Output.ToString());
+                var jsonResult = writer.Write(result);
+                AreEqual(derivedJson.ToString(), jsonResult);
             }
         }
 

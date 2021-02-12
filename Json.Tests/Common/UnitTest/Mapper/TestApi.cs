@@ -27,11 +27,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 
                 // --- Write ---
-                write.Write(1);                                         // generic
-                AreEqual("1", write.Output.ToString());
+                var json1 = write.Write(1);                                         // generic
+                AreEqual("1", json1);
                 
-                write.WriteObject(1);                                   // non generic 
-                AreEqual("1", write.Output.ToString());
+                var json2 = write.WriteObject(1);                                   // non generic 
+                AreEqual("1", json2);
                 
 
                 // --- ReadTo ---

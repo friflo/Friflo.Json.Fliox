@@ -12,6 +12,11 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public partial struct Writer : IDisposable
     {
+        public enum OutputType {
+            ByteList,
+            ByteWriter,
+        }
+        
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public readonly     TypeCache           typeCache;
         public              Bytes               bytes;
@@ -30,6 +35,13 @@ namespace Friflo.Json.Mapper.Map
         private  readonly   List<ClassMirror>   mirrorStack;
 #endif
 
+        public              OutputType          outputType;
+#if JSON_BURST
+        // private          int                 writerHandle;
+#else
+        public              IBytesWriter        bytesWriter;
+#endif
+
         public Writer(TypeStore typeStore) {
             bytes           = new Bytes(128);
             strBuf          = new Bytes(128);
@@ -40,6 +52,10 @@ namespace Friflo.Json.Mapper.Map
             typeCache       = new TypeCache(typeStore);
             level           = 0;
             maxDepth        = 100;
+            outputType      = OutputType.ByteList;
+#if !JSON_BURST
+            bytesWriter     = null;
+#endif
 #if !UNITY_5_3_OR_NEWER
             classLevel      = 0;
             mirrorStack     = new List<ClassMirror>(16);

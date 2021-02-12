@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 
@@ -14,7 +16,6 @@ namespace Friflo.Json.Mapper
     public class JsonWriter : IDisposable
     {
         private     Writer      intern;
-        public  ref Bytes       Output => ref intern.bytes;
 
         public      int         Level => intern.level;
         public      int         MaxDepth {
@@ -30,19 +31,71 @@ namespace Friflo.Json.Mapper
             intern.Dispose();
         }
 
-        private void InitJsonWriter() {
+        private void InitJsonWriterBytes() {
+            intern.outputType  = Writer.OutputType.ByteList;
+            //
+            intern.bytes.Clear();
+            intern.level = 0;
+            intern.InitMirrorStack();
+        }
+        
+#if !JSON_BURST
+        private void InitJsonWriterStream(Stream stream) {
+            intern.outputType = Writer.OutputType.ByteWriter;
+            intern.bytesWriter = new StreamBytesWriter(stream);
+            //
+            intern.bytes.Clear();
+            intern.level = 0;
+            intern.InitMirrorStack();
+        }
+#endif
+        
+        
+        private void InitJsonWriterString() {
+            intern.outputType = Writer.OutputType.ByteList;
+            //
             intern.bytes.Clear();
             intern.level = 0;
             intern.InitMirrorStack();
         }
         
         // --------------- Bytes ---------------  todo
-        public void Write<T>(T value) {
+        public void Write<T>(T value, ref Bytes bytes) {
+            InitJsonWriterBytes();
+            WriteStart(value);
+            bytes.Clear();
+            bytes.AppendBytes(ref intern.bytes);
+        }
+
+        public void WriteObject(object value, ref Bytes bytes) {
+            InitJsonWriterBytes();
+            WriteStart(value);
+            bytes.Clear();
+            bytes.AppendBytes(ref intern.bytes);
+        }
+        
+        // --------------- Stream ---------------
+        public void Write<T>(T value, Stream stream) {
+            // InitJsonWriterStream(stream);
             WriteStart(value);
         }
 
-        public void WriteObject(object value) {
+        public void WriteObject(object value, Stream stream) {
+            // InitJsonWriterStream(stream);
             WriteStart(value);
+        }
+        
+        // --------------- string ---------------
+        public string Write<T>(T value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return intern.bytes.ToString();
+        }
+
+        public string WriteObject(object value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return intern.bytes.ToString();
         }
 
         // --------------------------------------- private --------------------------------------- 
@@ -52,7 +105,6 @@ namespace Friflo.Json.Mapper
                 return;
             }
             TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
-            InitJsonWriter();
             try {
                 mapper.WriteObject(ref intern, value);
             }
@@ -64,7 +116,6 @@ namespace Friflo.Json.Mapper
         
         private void WriteStart<T>(T value) {
             var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
-            InitJsonWriter();
             try {
                 if (mapper.IsNull(ref value))
                     WriteUtils.AppendNull(ref intern);

@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
             
             JsonWriter writer = new JsonWriter(typeStore);
-            writer.Write(result);
-            AreEqual(json, writer.Output.ToString());
+            var jsonResult = writer.Write(result);
+            AreEqual(json, jsonResult);
         }
     }
 }

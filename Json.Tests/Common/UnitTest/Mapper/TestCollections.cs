@@ -4,7 +4,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -14,28 +16,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestCollections
     {
         private void AssertNull<T>(JsonReader reader, JsonWriter writer) {
-            writer.Write(default(T));
-            var result = reader.Read<T>(writer.Output);
-            AreEqual(null, result);
+            using (var dst = new TestBytes()) {
+                writer.Write(default(T), ref dst.bytes);
+                var result = reader.Read<T>(dst.bytes);
+                AreEqual(null, result);
+            }
         }
         
         [Test]
         public void TestIList() {
-            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
+            {
                 // --- IList<>
                 {
                     var collection = new Collection<int>(new[] {1, 2, 3});
-                    writer.Write(collection);
-                    var result = reader.Read<Collection<int>>(writer.Output);
+                    writer.Write(collection, ref dst.bytes);
+                    var result = reader.Read<Collection<int>>(dst.bytes);
                     AreEqual(collection, result);
                     
                     AssertNull<Collection<int>>(reader, writer);
                 } {
                     IList<int> collection = new List<int>(new[] {1, 2, 3});
-                    writer.Write(collection);
-                    var result = reader.Read<IList<int>>(writer.Output);
+                    writer.Write(collection, ref dst.bytes);
+                    var result = reader.Read<IList<int>>(dst.bytes);
                     AreEqual(collection, result);
                     
                     AssertNull<IList<int>>(reader, writer);
@@ -51,35 +57,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestICollection() {
-            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonReader reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
+            {
                 // --- ICollection<>
                 {
                     ICollection<int> collection = new List<int>(new[] {1, 2, 3});
-                    writer.Write(collection);
-                    var result = reader.Read<ICollection<int>>(writer.Output);
+                    writer.Write(collection, ref dst.bytes);
+                    var result = reader.Read<ICollection<int>>(dst.bytes);
                     AreEqual(collection, result);
                     
                     AssertNull<ICollection<int>>(reader, writer);
                 } {
                     var linkedList = new LinkedList<int>(new[] {1, 2, 3});
-                    writer.Write(linkedList);
-                    var result = reader.Read<LinkedList<int>>(writer.Output);
+                    writer.Write(linkedList, ref dst.bytes);
+                    var result = reader.Read<LinkedList<int>>(dst.bytes);
                     AreEqual(linkedList, result);
                     
                     AssertNull<LinkedList<int>>(reader, writer);
                 } {
                     var linkedList = new HashSet<int>(new[] {1, 2, 3});
-                    writer.Write(linkedList);
-                    var result = reader.Read<HashSet<int>>(writer.Output);
+                    writer.Write(linkedList, ref dst.bytes);
+                    var result = reader.Read<HashSet<int>>(dst.bytes);
                     AreEqual(linkedList, result);
                     
                     AssertNull<HashSet<int>>(reader, writer);
                 } {
                     var sortedSet = new SortedSet<int>(new[] {1, 2, 3});
-                    writer.Write(sortedSet);
-                    var result = reader.Read<SortedSet<int>>(writer.Output);
+                    writer.Write(sortedSet, ref dst.bytes);
+                    var result = reader.Read<SortedSet<int>>(dst.bytes);
                     AreEqual(sortedSet, result);
                     
                     AssertNull<SortedSet<int>>(reader, writer);
@@ -89,16 +97,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestIEnumerable() {
-            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
                 // --- IEnumerable<>
                 {
                     IEnumerable<int> collection = new List<int>(new[] {1, 2, 3});
-                    writer.Write(collection);
-                    AreEqual("[1,2,3]", writer.Output.ToString());
+                    var json1 = writer.Write(collection);
+                    AreEqual("[1,2,3]", json1);
                     
-                    writer.Write<IEnumerable<int>>(null);
-                    AreEqual("null", writer.Output.ToString());
+                    var json2 = writer.Write<IEnumerable<int>>(null);
+                    AreEqual("null", json2);
                 }
             }
         }
@@ -107,26 +116,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestReadOnlyCollection() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 {
                     var queue = new ConcurrentQueue<int>(new[] {1, 2, 3});
-                    writer.Write(queue);
-                    var result = reader.Read<ConcurrentQueue<int>>(writer.Output);
+                    writer.Write(queue, ref dst.bytes);
+                    var result = reader.Read<ConcurrentQueue<int>>(dst.bytes);
                     AreEqual(queue, result);
                     
                     AssertNull<ConcurrentQueue<int>>(reader, writer);
                 } {
                     var stack = new ConcurrentStack<int>(new[] {1, 2, 3});
-                    writer.Write(stack);
-                    var result = reader.Read<ConcurrentStack<int>>(writer.Output);
+                    writer.Write(stack, ref dst.bytes);
+                    var result = reader.Read<ConcurrentStack<int>>(dst.bytes);
                     AreEqual(stack.Reverse(), result);
                     
                     AssertNull<ConcurrentStack<int>>(reader, writer);
                 } {
                     var stack = new ConcurrentBag<int>(new[] {1, 2, 3});
-                    writer.Write(stack);
-                    var result = reader.Read<ConcurrentBag<int>>(writer.Output);
+                    writer.Write(stack, ref dst.bytes);
+                    var result = reader.Read<ConcurrentBag<int>>(dst.bytes);
                     CollectionAssert.AreEquivalent(stack, result);
                     
                     AssertNull<ConcurrentBag<int>>(reader, writer);
@@ -138,11 +148,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestStack() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var stack = new Stack<int>(new[] {1, 2, 3});
-                writer.Write(stack);
-                var result = reader.Read<Stack<int>>(writer.Output);
+                writer.Write(stack, ref dst.bytes);
+                var result = reader.Read<Stack<int>>(dst.bytes);
                 AreEqual(stack.Reverse(), result);
                 
                 AssertNull<Stack<int>>(reader, writer);
@@ -153,10 +164,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestQueue() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
+            {
                 var stack = new Queue<int>(new[] {1, 2, 3});
-                writer.Write(stack);
-                var result = reader.Read<Queue<int>>(writer.Output);
+                writer.Write(stack, ref dst.bytes);
+                var result = reader.Read<Queue<int>>(dst.bytes);
                 AreEqual(stack, result);
                 
                 AssertNull<Queue<int>>(reader, writer);
@@ -167,33 +180,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestIDictionary() {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter writer = new JsonWriter(typeStore)) {
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
+            {
                 // --- IDictionary<>
                 {
                     var dictionary = new Dictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
-                    writer.Write(dictionary);
-                    var result = reader.Read<Dictionary<string, int>>(writer.Output);
+                    writer.Write(dictionary, ref dst.bytes);
+                    var result = reader.Read<Dictionary<string, int>>(dst.bytes);
                     AreEqual(dictionary, result);
                     
                     AssertNull<Dictionary<string, int>>(reader, writer);
                 } {
                     IDictionary<string, int> dictionary = new Dictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
-                    writer.Write(dictionary);
-                    var result = reader.Read<IDictionary<string, int>>(writer.Output);
+                    writer.Write(dictionary, ref dst.bytes);
+                    var result = reader.Read<IDictionary<string, int>>(dst.bytes);
                     AreEqual(dictionary, result);
                     
                     AssertNull<IDictionary<string, int>>(reader, writer);
                 } {
                     var sortedDictionary = new SortedDictionary<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
-                    writer.Write(sortedDictionary);
-                    var result = reader.Read<SortedDictionary<string, int>>(writer.Output);
+                    writer.Write(sortedDictionary, ref dst.bytes);
+                    var result = reader.Read<SortedDictionary<string, int>>(dst.bytes);
                     AreEqual(sortedDictionary, result);
                     
                     AssertNull<SortedDictionary<string, int>>(reader, writer);
                 } {
                     var sortedList = new SortedList<string, int> { { "A", 1 }, { "B", 2 }, { "C", 3} };
-                    writer.Write(sortedList);
-                    var result = reader.Read<SortedList<string, int>>(writer.Output);
+                    writer.Write(sortedList, ref dst.bytes);
+                    var result = reader.Read<SortedList<string, int>>(dst.bytes);
                     AreEqual(sortedList, result);
                     
                     AssertNull<SortedList<string, int>>(reader, writer);

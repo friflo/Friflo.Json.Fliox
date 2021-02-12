@@ -205,14 +205,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void WriteJsonComplex()
         {
-            using (TypeStore typeStore = createStore()) {
+            using (TypeStore    typeStore   = createStore())
+            using (var          dst         = new TestBytes())
+            {
                 JsonComplex obj = new JsonComplex();
                 SetComplex(obj);
                 using (JsonWriter writer = new JsonWriter(typeStore)) {
-                    writer.Write(obj);
+                    writer.Write(obj, ref dst.bytes);
 
                     using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
-                        JsonComplex res = enc.Read<JsonComplex>(writer.Output);
+                        JsonComplex res = enc.Read<JsonComplex>(dst.bytes);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());
                         CheckJsonComplex(res);

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
@@ -46,6 +47,26 @@ namespace Friflo.Json.Mapper.Map.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void AppendNull(ref Writer writer) {
             writer.bytes.AppendBytes(ref writer.@null);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void FlushFullBuffer(ref Writer writer) {
+            if (writer.bytes.end <= 4096)
+                return;
+            Flush(ref writer);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Flush(ref Writer writer) {
+            switch (writer.outputType) {
+                case Writer.OutputType.ByteList:
+                    throw new InvalidOperationException("Cant flush in mode ByteList");
+#if !JSON_BURST
+                case Writer.OutputType.ByteWriter:
+                    writer.bytesWriter.Write(ref writer.bytes.buffer, writer.bytes.end);
+                    break;
+#endif
+            }
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

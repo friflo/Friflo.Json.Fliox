@@ -24,8 +24,8 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void HelloWorldWriter() {
             var w = new JsonWriter(new TypeStore());
-            w.Write(new Message {say = "Hello 👋", to = "World"});
-            Console.WriteLine($"Output: {w.Output}");
+            var json = w.Write(new Message {say = "Hello 👋", to = "World"});
+            Console.WriteLine($"Output: {json}");
             // Output: {"say":"Hello 👋","to":"World"}
         }
 

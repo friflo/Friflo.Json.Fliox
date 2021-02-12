@@ -178,8 +178,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var result = reader.Read<BoxedIL>(json);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
-                writer.Write(result);
-                AreEqual(payloadTrimmed, writer.Output.ToString());
+                var jsonResult = writer.Write(result);
+                AreEqual(payloadTrimmed, jsonResult);
             }
         }
         
@@ -238,8 +238,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 var sample = new SampleIL();
                 sample.Init();
-                writer.Write(sample);
-                AreEqual(payloadTrimmed, writer.Output.ToString());
+                var jsonResult = writer.Write(sample);
+                AreEqual(payloadTrimmed, jsonResult);
             }
         }
         
@@ -277,12 +277,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var obj = new SampleIL();
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    writer.Write(obj);
+                    writer.Write(obj, ref dst.bytes);
                 }
             }
             memLog.AssertNoAllocations();
@@ -313,10 +314,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var obj = new StructIL();
-                writer.Write(obj);
-                var result = reader.Read<StructIL>(writer.Output);
+                writer.Write(obj, ref dst.bytes);
+                var result = reader.Read<StructIL>(dst.bytes);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 AreEqual(obj, result);
@@ -326,17 +328,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocListClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            
+
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var list = new List<SampleIL>() { new SampleIL() };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    writer.Write(list);
-                    reader.ReadTo(writer.Output, list);
+                    writer.Write(list, ref dst.bytes);
+                    reader.ReadTo(dst.bytes, list);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -351,13 +354,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var list = new List<StructIL>() { new StructIL() };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    writer.Write(list);
-                    reader.ReadTo(writer.Output, list);
+                    writer.Write(list, ref dst.bytes);
+                    reader.ReadTo(dst.bytes, list);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -368,17 +372,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocArrayClass () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            
+
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var arr = new [] { new SampleIL() };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    writer.Write(arr);
-                    reader.ReadTo(writer.Output, arr);
+                    writer.Write(arr, ref dst.bytes);
+                    reader.ReadTo(dst.bytes, arr);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
@@ -389,17 +394,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void NoAllocArrayStruct () {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
-            
+
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var          dst         = new TestBytes())
             {
                 var arr = new [] { new StructIL() };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    writer.Write(arr);
-                    reader.ReadTo(writer.Output, arr);
+                    writer.Write(arr, ref dst.bytes);
+                    reader.ReadTo(dst.bytes, arr);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }

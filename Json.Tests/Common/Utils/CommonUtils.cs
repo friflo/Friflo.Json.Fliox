@@ -9,6 +9,15 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Tests.Common.Utils
 {
+    public class TestBytes : IDisposable
+    {
+        public Bytes bytes = new Bytes(0);
+
+        public void Dispose() {
+            bytes.Dispose();
+        }
+    }
+    
     public class CommonUtils
     {
         public static string GetBasePath() {
