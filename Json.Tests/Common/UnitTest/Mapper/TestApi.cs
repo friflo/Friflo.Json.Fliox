@@ -5,6 +5,7 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Mapper.Convert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -210,7 +211,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // --------------------------------------- Formatter ---------------------------------------
         [Test]
         public void FormatterBytes() {
-            using (var  formatter   = new Formatter())
+            using (var  formatter   = new JsonMapper())
             using (var  num1        = new Bytes("1"))
             using (var  arr1        = new Bytes("[1]"))
             using (var  dst         = new TestBytes())
@@ -244,7 +245,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void FormatterStream() {
-            using (var formatter = new Formatter()) {
+            using (var formatter = new JsonMapper()) {
                 // --- Read ---
                 AreEqual(1, formatter.Read<int>(StreamFromString("1")));                    // generic
                 
@@ -276,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void FormatterString() {
-            using (var formatter = new Formatter()) {
+            using (var formatter = new JsonMapper()) {
                 // --- Read ---
                 AreEqual(1, formatter.Read<int>("1")); // generic
 

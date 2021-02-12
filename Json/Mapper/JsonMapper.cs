@@ -6,13 +6,13 @@ using Friflo.Json.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Mapper
 {
-    public class Formatter : IDisposable
+    public class JsonMapper : IJsonReader, IJsonWriter, IDisposable
     {
         public readonly TypeStore   typeStore;
         public readonly JsonReader  reader;
         public readonly JsonWriter  writer;
 
-        public Formatter(ITypeResolver resolver = null, StoreConfig config = null) {
+        public JsonMapper(ITypeResolver resolver = null, StoreConfig config = null) {
             config = config ?? new StoreConfig(TypeAccess.IL);
             typeStore = new TypeStore(resolver, config);
             reader = new JsonReader(typeStore);

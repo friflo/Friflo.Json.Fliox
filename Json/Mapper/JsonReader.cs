@@ -12,10 +12,41 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonReader : IDisposable
+    public interface IJsonReader
+    {
+        // --------------- Bytes ---------------
+        // ---  Read()
+        T       Read<T>(Bytes utf8Bytes);
+        object  ReadObject(Bytes utf8Bytes, Type type);
+        // ---  ReadTo()
+        T       ReadTo<T>(Bytes utf8Bytes, T obj);
+        object  ReadToObject(Bytes utf8Bytes, object obj); 
+        
+        // --------------- Stream ---------------
+        // --- Read()
+        T       Read<T>(Stream utf8Stream);
+        object  ReadObject(Stream utf8Stream, Type type);
+        // --- ReadTo()
+        T       ReadTo<T>(Stream utf8Stream, T obj);
+        object  ReadToObject(Stream utf8Stream, object obj);  
+        
+        // --------------- string ---------------
+        // --- Read()
+        T       Read<T>(string json);
+        object  ReadObject(string json, Type type);
+        // --- ReadTo()
+        T       ReadTo<T>(string json, T obj);
+        object  ReadToObject(string json, object obj); 
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    public class JsonReader : IJsonReader, IDisposable
     {
         private             int                 maxDepth;
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
