@@ -54,13 +54,14 @@ namespace Friflo.Json.Tests.Perf.Mapper
         [Test]
         public void TestWrite() {
             BookShelf shelf = CreateBookShelf();
+            Stream stream = new MemoryStream();
             using (var      typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (var      writer      = new JsonWriter(typeStore))
-            using (var      dst         = new TestBytes())
             {
                 for (int n = 0; n < 10; n++) {
                     int start = TimeUtil.GetMs();
-                    writer.Write(shelf, ref dst.bytes);
+                    stream.Position = 0;
+                    writer.Write(shelf, stream);
                     int end = TimeUtil.GetMs();
                     Console.WriteLine(end - start);
                 }

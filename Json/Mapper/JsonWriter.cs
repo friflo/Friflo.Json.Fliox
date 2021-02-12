@@ -73,19 +73,22 @@ namespace Friflo.Json.Mapper
         }
         
         // --------------- Stream ---------------
-#if !JSON_BURST
+
         public void Write<T>(T value, Stream stream) {
+#if !JSON_BURST
             InitJsonWriterStream(stream);
             WriteStart(value);
             WriteUtils.Flush(ref intern);
+#endif
         }
 
         public void WriteObject(object value, Stream stream) {
+#if !JSON_BURST
             InitJsonWriterStream(stream);
             WriteStart(value);
             WriteUtils.Flush(ref intern);
-        }
 #endif
+        }
         
         // --------------- string ---------------
         public string Write<T>(T value) {

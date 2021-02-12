@@ -50,8 +50,8 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void FlushFullBuffer(ref Writer writer) {
-            if (writer.bytes.end <= 4096)
+        public static void FlushFilledBuffer(ref Writer writer) {
+            if (writer.bytes.end < 4096)
                 return;
             Flush(ref writer);
         }
@@ -64,6 +64,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 #if !JSON_BURST
                 case OutputType.ByteWriter:
                     writer.bytesWriter.Write(ref writer.bytes.buffer, writer.bytes.end);
+                    writer.bytes.Clear();
                     break;
 #endif
             }
