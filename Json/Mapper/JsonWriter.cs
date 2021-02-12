@@ -31,9 +31,10 @@ namespace Friflo.Json.Mapper
         internal            Bytes               discriminator;
         internal            int                 level;
         public              int                 maxDepth;
-        
+#if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
+#endif
 
         public Writer(TypeStore typeStore) {
             bytes           = new Bytes(128);
@@ -45,9 +46,10 @@ namespace Friflo.Json.Mapper
             typeCache       = new TypeCache(typeStore);
             level           = 0;
             maxDepth        = 100;
-            //
+#if !UNITY_5_3_OR_NEWER
             classLevel      = 0;
             mirrorStack     = new List<ClassMirror>(16);
+#endif
         }
         
         public void Dispose() {

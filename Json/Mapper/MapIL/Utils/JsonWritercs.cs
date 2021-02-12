@@ -41,9 +41,9 @@ namespace Friflo.Json.Mapper
             --classLevel;
         }
 #else
-        private     void        InitMirrorStack()       { }
+        internal    void        InitMirrorStack()       { }
         private     void        DisposeMirrorStack()    { }
-        private     void        ClearMirrorStack()      { }
+        internal    void        ClearMirrorStack()      { }
         internal    ClassMirror InstanceLoad(TypeMapper classType, object obj) { return null; }
         internal    void        InstancePop()           { }
 #endif
