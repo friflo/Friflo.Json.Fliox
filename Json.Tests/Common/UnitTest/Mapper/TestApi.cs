@@ -41,11 +41,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 int[] expect = { 1 };
                 int[] result = read.ReadTo(arr1, reuse);                // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
                 object resultObj = read.ReadToObject(arr1, reuse);      // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
@@ -76,11 +76,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 int[] expect = { 1 };
                 int[] result = read.ReadTo(StreamFromString("[1]"), reuse);             // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
                 object resultObj = read.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
@@ -109,11 +109,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 int[] expect = { 1 };
                 int[] result = read.ReadTo("[1]", reuse);               // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
                 object resultObj = read.ReadToObject("[1]", reuse);     // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
@@ -122,51 +122,63 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void JsonBytes() {
             using (var num1 = new Bytes("1"))
             using (var arr1 = new Bytes("[1]"))
+            using (var dst  = new TestBytes())
             {
                 // --- Read ---
                 AreEqual(1, JSON.Read<int>(num1));                      // generic
                 
                 AreEqual(1, JSON.ReadObject(num1, typeof(int)));        // non generic
                 
-                /*
-                // --- Write ---
-                write.Write(1);                                         // generic
-                AreEqual("1", write.bytes.ToString());
                 
-                write.WriteObject(1);                                   // non generic 
-                AreEqual("1", write.bytes.ToString());
-                */
+                // --- Write ---
+                JSON.Write(1, ref dst.bytes);                           // generic
+                AreEqual("1", dst.bytes.ToString());
+                
+                JSON.WriteObject(1, ref dst.bytes);                     // non generic 
+                AreEqual("1", dst.bytes.ToString());
 
+                
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
                 int[] result = JSON.ReadTo(arr1, reuse);                // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
                 object resultObj = JSON.ReadToObject(arr1, reuse);      // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
         [Test]
         public void JsonStream() {
             // --- Read ---
-            AreEqual(1, JSON.Read<int>(StreamFromString("1")));                     // generic
+            AreEqual(1, JSON.Read<int>(StreamFromString("1")));                    // generic
             
-            AreEqual(1, JSON.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
+            AreEqual(1, JSON.ReadObject(StreamFromString("1"), typeof(int)));      // non generic
+            
+#if !JSON_BURST
+            // --- Write ---
+            Stream stream = new MemoryStream();
+            JSON.Write(1, stream);                                                 // generic
+            AreEqual("1", StringFromStream(stream));
+
+            stream.Position = 0;
+            JSON.WriteObject(1, stream);                                           // non generic 
+            AreEqual("1", StringFromStream(stream));
+#endif
             
             // --- ReadTo ---
             int[] reuse  = new int[1];
             int[] expect = { 1 };
             int[] result = JSON.ReadTo(StreamFromString("[1]"), reuse);             // generic
             AreEqual(expect, result);   
-            IsTrue(reuse == result); // same reference - size dit not change
+            IsTrue(reuse == result); // same reference - size did not change
             
             object resultObj = JSON.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
             AreEqual(expect, resultObj);
-            IsTrue(reuse == resultObj); // same reference - size dit not change
+            IsTrue(reuse == resultObj); // same reference - size did not change
         }
         
         [Test]
@@ -176,49 +188,57 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             AreEqual(1, JSON.ReadObject("1", typeof(int)));         // non generic
             
+            // --- Write ---
+            var json1 = JSON.Write(1);                              // generic
+            AreEqual("1", json1);
+                
+            var json2 = JSON.WriteObject(1);                        // non generic 
+            AreEqual("1", json2);
+            
             // --- ReadTo ---
             int[] reuse  = new int[1];
             int[] expect = { 1 };
             int[] result = JSON.ReadTo("[1]", reuse);               // generic
             AreEqual(expect, result);   
-            IsTrue(reuse == result); // same reference - size dit not change
+            IsTrue(reuse == result); // same reference - size did not change
             
             object resultObj = JSON.ReadToObject("[1]", reuse);     // non generic
             AreEqual(expect, resultObj);
-            IsTrue(reuse == resultObj); // same reference - size dit not change
+            IsTrue(reuse == resultObj); // same reference - size did not change
         }
         
         // --------------------------------------- Formatter ---------------------------------------
         [Test]
         public void FormatterBytes() {
-            using (var formatter = new Formatter())
-            using (var num1 = new Bytes("1"))
-            using (var arr1 = new Bytes("[1]"))
+            using (var  formatter   = new Formatter())
+            using (var  num1        = new Bytes("1"))
+            using (var  arr1        = new Bytes("[1]"))
+            using (var  dst         = new TestBytes())
             {
                 // --- Read ---
-                AreEqual(1, formatter.Read<int>(num1));                      // generic
+                AreEqual(1, formatter.Read<int>(num1));                     // generic
                 
-                AreEqual(1, formatter.ReadObject(num1, typeof(int)));        // non generic
+                AreEqual(1, formatter.ReadObject(num1, typeof(int)));       // non generic
                 
-                /*
+
                 // --- Write ---
-                write.Write(1);                                         // generic
-                AreEqual("1", write.bytes.ToString());
+                formatter.Write(1, ref dst.bytes);                          // generic
+                AreEqual("1", dst.bytes.ToString());
                 
-                write.WriteObject(1);                                   // non generic 
-                AreEqual("1", write.bytes.ToString());
-                */
+                formatter.WriteObject(1, ref dst.bytes);                    // non generic 
+                AreEqual("1", dst.bytes.ToString());
+
 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
-                int[] result = formatter.ReadTo(arr1, reuse);                // generic
+                int[] result = formatter.ReadTo(arr1, reuse);               // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
-                object resultObj = formatter.ReadToObject(arr1, reuse);      // non generic
+                object resultObj = formatter.ReadToObject(arr1, reuse);     // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
@@ -226,20 +246,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void FormatterStream() {
             using (var formatter = new Formatter()) {
                 // --- Read ---
-                AreEqual(1, formatter.Read<int>(StreamFromString("1")));                     // generic
+                AreEqual(1, formatter.Read<int>(StreamFromString("1")));                    // generic
                 
-                AreEqual(1, formatter.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
+                AreEqual(1, formatter.ReadObject(StreamFromString("1"), typeof(int)));      // non generic
+                
+#if !JSON_BURST
+                // --- Write ---
+                Stream stream = new MemoryStream();
+                formatter.Write(1, stream);                                                 // generic
+                AreEqual("1", StringFromStream(stream));
+
+                stream.Position = 0;
+                formatter.WriteObject(1, stream);                                           // non generic 
+                AreEqual("1", StringFromStream(stream));
+#endif
                 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
                 int[] expect = { 1 };
-                int[] result = formatter.ReadTo(StreamFromString("[1]"), reuse);             // generic
+                int[] result = formatter.ReadTo(StreamFromString("[1]"), reuse);            // generic
                 AreEqual(expect, result);   
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
                 
-                object resultObj = formatter.ReadToObject(StreamFromString("[1]"), reuse);   // non generic
+                object resultObj = formatter.ReadToObject(StreamFromString("[1]"), reuse);  // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
@@ -250,17 +281,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(1, formatter.Read<int>("1")); // generic
 
                 AreEqual(1, formatter.ReadObject("1", typeof(int))); // non generic
+                
+                
+                // --- Write ---
+                var json1 = formatter.Write(1);                              // generic
+                AreEqual("1", json1);
+                
+                var json2 = formatter.WriteObject(1);                        // non generic 
+                AreEqual("1", json2);
 
                 // --- ReadTo ---
                 int[] reuse = new int[1];
                 int[] expect = {1};
                 int[] result = formatter.ReadTo("[1]", reuse); // generic
                 AreEqual(expect, result);
-                IsTrue(reuse == result); // same reference - size dit not change
+                IsTrue(reuse == result); // same reference - size did not change
 
                 object resultObj = formatter.ReadToObject("[1]", reuse); // non generic
                 AreEqual(expect, resultObj);
-                IsTrue(reuse == resultObj); // same reference - size dit not change
+                IsTrue(reuse == resultObj); // same reference - size did not change
             }
         }
         
