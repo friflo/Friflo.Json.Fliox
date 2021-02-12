@@ -59,10 +59,10 @@ namespace Friflo.Json.Mapper.Map.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Flush(ref Writer writer) {
             switch (writer.outputType) {
-                case Writer.OutputType.ByteList:
+                case OutputType.ByteList:
                     throw new InvalidOperationException("Cant flush in mode ByteList");
 #if !JSON_BURST
-                case Writer.OutputType.ByteWriter:
+                case OutputType.ByteWriter:
                     writer.bytesWriter.Write(ref writer.bytes.buffer, writer.bytes.end);
                     break;
 #endif

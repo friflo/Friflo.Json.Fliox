@@ -7,15 +7,17 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
+    enum OutputType {
+        ByteList,
+        ByteWriter,
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     public partial struct Writer : IDisposable
     {
-        public enum OutputType {
-            ByteList,
-            ByteWriter,
-        }
+
         
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public readonly     TypeCache           typeCache;
@@ -35,7 +37,7 @@ namespace Friflo.Json.Mapper.Map
         private  readonly   List<ClassMirror>   mirrorStack;
 #endif
 
-        public              OutputType          outputType;
+        internal            OutputType          outputType;
 #if JSON_BURST
         // private          int                 writerHandle;
 #else
