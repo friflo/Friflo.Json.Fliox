@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static void Flush(ref Writer writer) {
             switch (writer.outputType) {
                 case OutputType.ByteList:
-                    throw new InvalidOperationException("Cant flush in mode ByteList");
+                    return; // ByteList mode does not support streaming
 #if !JSON_BURST
                 case OutputType.ByteWriter:
                     writer.bytesWriter.Write(ref writer.bytes.buffer, writer.bytes.end);

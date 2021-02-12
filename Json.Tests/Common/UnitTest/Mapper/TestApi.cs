@@ -51,11 +51,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void ReadWriteStream() {
             using (TypeStore typeStore = new TypeStore())
             using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (JsonWriter write = new JsonWriter(typeStore))
             {
                 // --- Read ---
                 AreEqual(1, read.Read<int>(StreamFromString("1")));                     // generic
                 
                 AreEqual(1, read.ReadObject(StreamFromString("1"), typeof(int)));       // non generic
+                
+#if !JSON_BURST
+                // --- Write ---
+                Stream stream = new MemoryStream();
+                write.Write(1, stream);                                                 // generic
+                AreEqual("1", StringFromStream(stream));
+
+                stream.Position = 0;
+                write.WriteObject(1, stream);                                           // non generic 
+                AreEqual("1", StringFromStream(stream));
+#endif
                 
                 // --- ReadTo ---
                 int[] reuse  = new int[1];
@@ -248,6 +260,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             writer.Flush();
             stream.Position = 0;
             return stream;
+        }
+        
+        private static string StringFromStream(Stream stream)
+        {
+            stream.Position = 0;
+            StreamReader reader = new StreamReader(stream);
+            string str = reader.ReadToEnd();
+            return str;
         }
         
         [Test]
