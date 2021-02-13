@@ -3,7 +3,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Mapper.Map.Utils
@@ -45,8 +44,10 @@ namespace Friflo.Json.Mapper.Map.Utils
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDelimiter(ref Writer writer, int pos) {
-            if (pos > 0)
-                writer.bytes.AppendChar(',');
+            if (pos > 0) {
+                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)',';
+            }
             if (writer.pretty)
                 IndentBegin(ref writer);
         }
@@ -55,7 +56,8 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static void WriteArrayEnd(ref Writer writer) {
             if (writer.pretty)
                 IndentEnd(ref writer);
-            writer.bytes.AppendChar(']');
+            writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
+            writer.bytes.buffer.array[writer.bytes.end++] = (byte)']';
         }
         
         public static void IndentBegin(ref Writer writer) {
@@ -78,11 +80,15 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static void WriteObjectEnd(ref Writer writer, bool emptyObject) {
             if (writer.pretty)
                 IndentEnd(ref writer);
-            
-            if (emptyObject)
-                writer.bytes.AppendChar2('{', '}');
-            else
-                writer.bytes.AppendChar('}');
+
+            if (emptyObject) {
+                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 2);
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'{';
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'}';
+            } else {
+                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'}';
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
