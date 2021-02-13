@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestClass {
         public TestClass    selfReference; // test cyclic references
         public TestClass    testChild;
-        // public int              key;
+        public int          key;
         public int[]        intArray;
         public SomeEnum     someEnum;
 
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
              // --- class/map
             var testClass =     testClassJson; 
             
-            using (TypeStore typeStore = new TypeStore())
+            using (TypeStore typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             {
@@ -167,23 +167,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     NotNull(enc.ReadTo(arrBln, reusedListNulBool ));
 
                     // --------------------------------- class ---------------------------------
-                //    NotNull(enc.ReadTo(testClass, reusedClass,  out bool _));  // todo
-                //    AreEqual(3,               reusedClass.intArray.Length);
-                //    IsTrue(SomeEnum.Value1 == reusedClass.someEnum); // avoid boxing. AreEqual() boxes
-                //    IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum); // avoid boxing. AreEqual() boxes
-                    
-                    // AreEqual(42, reusedClass.key);
+                    enc.ReadTo(testClass, reusedClass);
+                    AreEqual(3,               reusedClass.intArray.Length);
+                    IsTrue(SomeEnum.Value1 == reusedClass.someEnum);
+                    IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum);
+                    AreEqual(42, reusedClass.key);
 
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 40, enc.TypeCache.LookupCount);
+                        AreEqual( 41, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(267000,   enc.ProcessedBytes);
+                AreEqual(587000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
