@@ -17,6 +17,8 @@ namespace Friflo.Json.Mapper.Map.Utils
         public static void WriteDiscriminator(ref Writer writer, TypeMapper mapper) {
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
+            if (writer.pretty)
+                IndentBegin(ref writer);
             bytes.AppendBytes(ref writer.discriminator);
             writer.typeCache.AppendDiscriminator(ref bytes, mapper);
             bytes.AppendChar('\"');
@@ -47,6 +49,13 @@ namespace Friflo.Json.Mapper.Map.Utils
                 writer.bytes.AppendChar(',');
             if (writer.pretty)
                 IndentBegin(ref writer);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteArrayEnd(ref Writer writer) {
+            if (writer.pretty)
+                IndentEnd(ref writer);
+            writer.bytes.AppendChar(']');
         }
         
         public static void IndentBegin(ref Writer writer) {

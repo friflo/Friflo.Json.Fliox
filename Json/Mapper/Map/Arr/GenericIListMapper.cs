@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 } else
                     WriteUtils.AppendNull(ref writer);
             }
-            writer.bytes.AppendChar(']');
+            WriteUtils.WriteArrayEnd(ref writer);
             WriteUtils.DecLevel(ref writer, startLevel);
         }
         
