@@ -11,13 +11,12 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly PrimitiveArrayMatcher Instance = new PrimitiveArrayMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type. IsArray) {
-                int rank = type.GetArrayRank();
-                if (rank > 1)
-                    return null; // todo implement multi dimensional array support
-                return Find(config, type);
-            }
-            return null;
+            if (!type.IsArray)
+                return null;
+            int rank = type.GetArrayRank();
+            if (rank > 1)
+                return null; // todo implement multi dimensional array support
+            return Find(config, type);
         }
 
         class Query {

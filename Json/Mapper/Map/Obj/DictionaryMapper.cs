@@ -17,24 +17,24 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
-            if (args != null) {
-                Type keyType = args[0];
-                if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                    return TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Dictionary only support string as key type");
-                Type elementType = args[1];
-                ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-                if (constructor == null) {
-                    if (type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
-                        constructor = ReflectUtils.GetDefaultConstructor(typeof(Dictionary<,>).MakeGenericType(keyType, elementType));
-                    else
-                        throw new NotSupportedException("not default constructor for type: " + type);
-                }
-                object[] constructorParams = {config, type, constructor};
-                // return new DictionaryMapper<TElm>  (config, type, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<,>), new[] {type, elementType}, constructorParams);
-                return (TypeMapper) newInstance;
+            if (args == null)
+                return null;
+            
+            Type keyType = args[0];
+            if (keyType != typeof(string)) // Support only Dictionary with key type: string
+                return TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Dictionary only support string as key type");
+            Type elementType = args[1];
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
+            if (constructor == null) {
+                if (type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    constructor = ReflectUtils.GetDefaultConstructor(typeof(Dictionary<,>).MakeGenericType(keyType, elementType));
+                else
+                    throw new NotSupportedException("not default constructor for type: " + type);
             }
-            return null;
+            object[] constructorParams = {config, type, constructor};
+            // return new DictionaryMapper<TElm>  (config, type, constructor);
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<,>), new[] {type, elementType}, constructorParams);
+            return (TypeMapper) newInstance;
         }
     }
     

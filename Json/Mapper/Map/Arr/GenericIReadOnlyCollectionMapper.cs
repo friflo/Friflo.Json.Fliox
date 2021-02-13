@@ -17,18 +17,17 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(IReadOnlyCollection<>) );
-            if (args != null) {
-                Type elementType = args[0];
-                ConstructorInfo constructor = ReflectUtils.GetCopyConstructor(type);
-                if (constructor == null) {
-                    throw new NotSupportedException("no copy constructor for type: " + type);
-                }
-                object[] constructorParams = {config, type, elementType, constructor};
-                // new GenericIReadOnlyCollectionMapper<IReadOnlyCollection<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericIReadOnlyCollectionMapper<,>), new[] {type, elementType}, constructorParams);
-                return (TypeMapper) newInstance;
+            if (args == null)
+                return null;
+            Type elementType = args[0];
+            ConstructorInfo constructor = ReflectUtils.GetCopyConstructor(type);
+            if (constructor == null) {
+                throw new NotSupportedException("no copy constructor for type: " + type);
             }
-            return null;
+            object[] constructorParams = {config, type, elementType, constructor};
+            // new GenericIReadOnlyCollectionMapper<IReadOnlyCollection<TElm>,TElm>  (config, type, elementType, constructor);
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericIReadOnlyCollectionMapper<,>), new[] {type, elementType}, constructorParams);
+            return (TypeMapper) newInstance;
         }        
     }
     

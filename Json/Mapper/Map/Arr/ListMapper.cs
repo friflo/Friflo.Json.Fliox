@@ -17,18 +17,17 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( List<>) );
-            if (args != null) {
-                Type elementType = args[0];
-                ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-                if (constructor == null)
-                    constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
-                 
-                object[] constructorParams = {config, type, elementType, constructor};
-                // new ListMapper<List<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
-                return (TypeMapper) newInstance;
-            }
-            return null;
+            if (args == null)
+                return null;
+            Type elementType = args[0];
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
+            if (constructor == null)
+                constructor = ReflectUtils.GetDefaultConstructor( typeof(List<>).MakeGenericType(elementType) );
+             
+            object[] constructorParams = {config, type, elementType, constructor};
+            // new ListMapper<List<TElm>,TElm>  (config, type, elementType, constructor);
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ListMapper<>), new[] {elementType}, constructorParams);
+            return (TypeMapper) newInstance;
         }        
     }
     

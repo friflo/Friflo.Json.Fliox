@@ -17,22 +17,20 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(ICollection<>) );
-            if (args != null) {
-                Type elementType = args[0];
-                ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-                if (constructor == null) {
-                    if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
-                        constructor = ReflectUtils.GetDefaultConstructor(typeof(List<>).MakeGenericType(elementType));
-                    else
-                        throw new NotSupportedException("not default constructor for type: " + type);
-                }
-
-                object[] constructorParams = {config, type, elementType, constructor};
-                // new GenericICollectionMapper<ICollection<TElm>,TElm>  (config, type, elementType, constructor);
-                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericICollectionMapper<,>), new[] {type, elementType}, constructorParams);
-                return (TypeMapper) newInstance;
+            if (args == null)
+                return null;
+            Type elementType = args[0];
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
+            if (constructor == null) {
+                if (type.GetGenericTypeDefinition() == typeof(ICollection<>))
+                    constructor = ReflectUtils.GetDefaultConstructor(typeof(List<>).MakeGenericType(elementType));
+                else
+                    throw new NotSupportedException("not default constructor for type: " + type);
             }
-            return null;
+            object[] constructorParams = {config, type, elementType, constructor};
+            // new GenericICollectionMapper<ICollection<TElm>,TElm>  (config, type, elementType, constructor);
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(GenericICollectionMapper<,>), new[] {type, elementType}, constructorParams);
+            return (TypeMapper) newInstance;
         }        
     }
     

@@ -14,19 +14,19 @@ namespace Friflo.Json.Mapper.Map.Arr
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type. IsArray) {
-                Type elementType = type.GetElementType();
-                int rank = type.GetArrayRank();
-                if (rank > 1)
-                    return null; // todo implement multi dimensional array support
-                if (ReflectUtils.IsAssignableFrom(typeof(Object), elementType)) {
-                    ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
-                    // ReSharper disable once ExpressionIsAlwaysNull
-                    object[] constructorParams = {config, type, elementType, constructor};
-                    // new ArrayMapper<T>(config, type, elementType, constructor);
-                    var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ArrayMapper<>), new[] {elementType}, constructorParams);
-                    return (TypeMapper) newInstance;
-                }
+            if (!type.IsArray)
+                return null;
+            Type elementType = type.GetElementType();
+            int rank = type.GetArrayRank();
+            if (rank > 1)
+                return null; // todo implement multi dimensional array support
+            if (ReflectUtils.IsAssignableFrom(typeof(Object), elementType)) {
+                ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
+                // ReSharper disable once ExpressionIsAlwaysNull
+                object[] constructorParams = {config, type, elementType, constructor};
+                // new ArrayMapper<T>(config, type, elementType, constructor);
+                var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(ArrayMapper<>), new[] {elementType}, constructorParams);
+                return (TypeMapper) newInstance;
             }
             return null;
         }
