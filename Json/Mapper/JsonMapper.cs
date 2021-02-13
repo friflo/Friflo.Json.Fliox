@@ -12,11 +12,23 @@ namespace Friflo.Json.Mapper
         public readonly JsonReader  reader;
         public readonly JsonWriter  writer;
 
+        private         int         maxDepth;
+        
+        public          int         MaxDepth {
+            get => maxDepth;
+            set {
+                maxDepth = value;
+                reader.MaxDepth = value;
+                writer.MaxDepth = value;
+            }
+        }
+
         public JsonMapper(ITypeResolver resolver = null, StoreConfig config = null) {
             config = config ?? new StoreConfig(TypeAccess.IL);
             typeStore   = new TypeStore(resolver, config);
             reader      = new JsonReader(typeStore);
             writer      = new JsonWriter(typeStore);
+            MaxDepth    = 100;
         }
 
         public void Dispose() {
