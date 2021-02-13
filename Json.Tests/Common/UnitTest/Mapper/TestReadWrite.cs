@@ -459,15 +459,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         var expect = new Dictionary<string, Dictionary<string, int>>() {{"key", new Dictionary<string, int> {{"key", 42 }} }};
                         AreEqual(expect, Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
                     }
-                    // --- map derivations                
-                    {
-                        // var expect = new Dictionary<string, long> {{"key", 42}};
-                        // AreEqual(expect, Read<ConcurrentDictionary<string, long>>(mapNum));  // todo
-                        // AreEqual(expect, enc.Read<ReadOnlyDictionary<string, long>>(mapNum));
-                    }
                     
                     // ---- BigInteger ---
-                    // AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum)); // todo
+                    AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
                     StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
                     {
@@ -501,9 +495,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(127, enc.TypeCache.LookupCount);
-                        AreEqual( 0, enc.TypeCache.StoreLookupCount);
-                        AreEqual( 0, enc.TypeCache.TypeCreationCount);
+                        AreEqual(128, enc.TypeCache.LookupCount);
+                        AreEqual( 0,  enc.TypeCache.StoreLookupCount);
+                        AreEqual( 0,  enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }

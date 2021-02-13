@@ -104,12 +104,12 @@ namespace Friflo.Json.Mapper.Map.Obj
         public override void Write(ref Writer writer, T slot) {
             int startLevel = WriteUtils.IncLevel(ref writer);
 
-            T obj = slot;
+            object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             TypeMapper classMapper = this;
             bool firstMember = true;
 
             if (!isValueType) {
-                Type objType = obj.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
+                Type objType = slot.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
                     WriteUtils.WriteDiscriminator(ref writer, classMapper);
@@ -123,7 +123,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 WriteUtils.WriteMemberKey(ref writer, field, ref firstMember); 
                 
-                object elemVar = field.GetField(obj);
+                object elemVar = field.GetField(objRef);
                 if (elemVar == null) {
                     WriteUtils.AppendNull(ref writer);
                 } else {
@@ -159,11 +159,11 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (!ObjectUtils.StartObject(ref reader, this, out success))
                 return default;
                 
-            T obj = slot;
             TypeMapper classType = this;
-            classType = GetPolymorphType(ref reader, classType, ref obj, out success);
+            classType = GetPolymorphType(ref reader, classType, ref slot, out success);
             if (!success)
                 return default;
+            object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             
             JsonEvent ev = reader.parser.Event;
             var propFields = classType.propFields;
@@ -179,7 +179,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
-                        object fieldVal = field.GetField(obj);
+                        object fieldVal = field.GetField(objRef);
                         object curFieldVal = fieldVal;
                         fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
                         if (!success)
@@ -189,7 +189,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
                         
                         if (curFieldVal != fieldVal)
-                            field.SetField(obj, fieldVal);
+                            field.SetField(objRef, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
                         if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
@@ -197,12 +197,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                         if (!field.fieldType.isNullable)
                             return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
                         
-                        field.SetField(obj, null);
+                        field.SetField(objRef, null);
                         break;
 
                     case JsonEvent.ObjectEnd:
                         success = true;
-                        return obj;
+                        return (T)objRef;
                     case JsonEvent.Error:
                         success = false;
                         return default;

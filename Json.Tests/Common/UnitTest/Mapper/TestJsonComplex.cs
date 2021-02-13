@@ -108,12 +108,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             CheckList (obj.listDerivedNull);
             AreEqual (      "str0", obj.listStr [0] );
             AreEqual (        101L, ((Sub)obj.listObj [0]) .i64 );
-        //  AreEqual (        42, obj.listStruct[0].val );  // todo
+            AreEqual (        42, obj.listStruct[0].val );
             CheckMap (obj.map);
             CheckMap (obj.map2);
             CheckMap (obj.map3);
             CheckMap (obj.map4);
-        //  AreEqual (         1, obj.mapStruct["key1"].val); // todo 
+            AreEqual (         1, obj.mapStruct["key1"].val);
             CheckMap (obj.mapDerived);
             CheckMap (obj.mapDerivedNull);
             AreEqual (      "str1", obj.map5 [ "key1" ]);
