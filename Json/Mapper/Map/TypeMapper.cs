@@ -101,7 +101,7 @@ namespace Friflo.Json.Mapper.Map
         /// <see cref="TypeMapper{TVal}"/> by calling <see cref="TypeStore.GetTypeMapper"/> and storing the returned
         /// reference also in the created <see cref="TypeMapper{TVal}"/> instance.<br/>
         ///
-        /// This enables deferred initialization of StubType references by their related Type to support circular type dependencies.
+        /// This enables deferred initialization of TypeMapper to support circular type dependencies.
         /// The goal is to support also type hierarchies without a 'directed acyclic graph' (DAG) of type dependencies.
         /// </summary>
         public override      void    InitTypeMapper(TypeStore typeStore) { }
