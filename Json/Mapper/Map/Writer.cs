@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Map
             discriminator   = new Bytes($"\"{typeStore.config.discriminator}\":\"");
             typeCache       = new TypeCache(typeStore);
             level           = 0;
-            maxDepth        = 100;
+            maxDepth        = JsonParser.DefaultMaxDepth;
             outputType      = OutputType.ByteList;
             pretty          = false;
 #if JSON_BURST

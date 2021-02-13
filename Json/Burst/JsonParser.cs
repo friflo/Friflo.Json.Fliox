@@ -71,6 +71,8 @@ namespace Friflo.Json.Burst
 #endif
     public partial struct JsonParser : IDisposable
     {
+        public const int DefaultMaxDepth = 100;
+        
         private     int                 pos;
         private     Bytes               buf;
         private     int                 bufEnd;
@@ -356,7 +358,7 @@ namespace Friflo.Json.Burst
         private void InitContainers() {
             if (state.IsCreated())
                 return;
-            maxDepth = 100;
+            maxDepth = DefaultMaxDepth;
             int initSize = 16;
             state =    new ValueList<State>(initSize, AllocType.Persistent); state.   Resize(initSize);
             pathPos =  new ValueList<int>  (initSize, AllocType.Persistent); pathPos. Resize(initSize);

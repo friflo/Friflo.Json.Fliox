@@ -64,7 +64,7 @@ namespace Friflo.Json.Mapper
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             intern = new Reader (typeStore, errorHandler);
-            maxDepth    = 100;
+            maxDepth    = JsonParser.DefaultMaxDepth;
         }
         
         private void InitJsonReaderString(string json) {

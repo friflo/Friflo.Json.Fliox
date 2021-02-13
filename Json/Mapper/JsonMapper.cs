@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper
             typeStore   = new TypeStore(resolver, config);
             reader      = new JsonReader(typeStore);
             writer      = new JsonWriter(typeStore);
-            MaxDepth    = 100;
+            MaxDepth    = JsonParser.DefaultMaxDepth;
         }
 
         public void Dispose() {
