@@ -222,6 +222,11 @@ namespace Friflo.Json.Burst
             }
         }
 
+        private static void AppendKeyString(ref Bytes dst, ref Str32 key) {
+            AppendEscString(ref dst, ref key);
+            dst.AppendChar(':');
+        }
+
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {
@@ -260,8 +265,7 @@ namespace Friflo.Json.Burst
         public void MemberArrayStartRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             SetStartGuard();
             ArrayStart();
         }
@@ -270,8 +274,7 @@ namespace Friflo.Json.Burst
         public void MemberObjectStartRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             SetStartGuard();
             ObjectStart();
         }
@@ -280,8 +283,7 @@ namespace Friflo.Json.Burst
         public void MemberStrRef(ref Str32 key, ref Bytes value) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key); // should be asc
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key); // should be asc
             AppendEscStringBytes(ref dst, ref value);
         }
 
@@ -298,8 +300,7 @@ namespace Friflo.Json.Burst
         public void MemberStrRef(ref string key, ref string value) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             AppendEscString(ref dst, ref value);
         }
 #endif
@@ -307,8 +308,7 @@ namespace Friflo.Json.Burst
         public void MemberDblRef(ref Str32 key, double value) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             format.AppendDbl(ref dst, value);
         }
         
@@ -316,8 +316,7 @@ namespace Friflo.Json.Burst
         public void MemberLngRef(ref Str32 key, long value) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             format.AppendLong(ref dst, value);
         }
         
@@ -325,8 +324,7 @@ namespace Friflo.Json.Burst
         public void MemberBlnRef(ref Str32 key, bool value) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             format.AppendBool(ref dst, value);
         }
         
@@ -334,8 +332,7 @@ namespace Friflo.Json.Burst
         public void MemberNulRef(ref Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyString(ref dst, ref key);
             dst.AppendStr32Ref(ref @null);
         }
         
@@ -491,8 +488,7 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
-                        AppendEscStringBytes(ref dst, ref p.key);
-                        dst.AppendChar(':');
+                        AppendKeyBytes(ref dst, ref p.key);
                         /*
                         // Conversion to long or double is expensive and not required 
                         if (p.isFloat)
