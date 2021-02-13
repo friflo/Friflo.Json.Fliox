@@ -5,6 +5,10 @@ using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
+#if JSON_BURST
+    using Friflo.Json.Burst.Utils;
+#endif
+
 namespace Friflo.Json.Mapper.Map.Utils
 {
 #if !UNITY_5_3_OR_NEWER
