@@ -128,8 +128,7 @@ namespace Friflo.Json.Burst
         public void MemberStrRef(ref Bytes key, Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
-            AppendEscStringBytes(ref dst, ref key);
-            dst.AppendChar(':');
+            AppendKeyBytes(ref dst, ref key);
             AppendEscString(ref dst, ref value);
         }
 #else
