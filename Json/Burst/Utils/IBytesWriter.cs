@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 #if JSON_BURST
+    using Unity.Burst;
     using Unity.Collections.LowLevel.Unsafe;
 #endif
 
@@ -38,6 +40,26 @@ namespace Friflo.Json.Burst.Utils
 #endif
         }
     }
+    
+#if JSON_BURST
+    // Enables IBytesWriter (and by this Stream's) support when compiling with JSON_BURST. 
+    static class NonBurstWriter
+    {
+        private static          int                             writerHandleCounter;
+        private static readonly Dictionary<int, IBytesWriter>   JsonWriters = new Dictionary<int, IBytesWriter>();
+
+        public static int AddWriter(IBytesWriter writer) {
+            JsonWriters.Add(++writerHandleCounter, writer);
+            return writerHandleCounter;
+        }
+
+        [BurstDiscard]
+        public static void WriteNonBurst(int writerHandle, ref ByteList dst, int count) {
+            var writer = JsonWriters[writerHandle];
+            writer.Write(ref dst, count);
+        }
+    }
+#endif
     
 
 }

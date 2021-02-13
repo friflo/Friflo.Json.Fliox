@@ -56,16 +56,20 @@ namespace Friflo.Json.Mapper
             intern.level = 0;
             intern.InitMirrorStack();
         }
-#if !JSON_BURST
+
         private void InitJsonWriterStream(Stream stream) {
             intern.outputType = OutputType.ByteWriter;
-            intern.bytesWriter = new StreamBytesWriter(stream);
+            IBytesWriter bytesWriter = new StreamBytesWriter(stream);
+#if JSON_BURST
+            intern.writerHandle = NonBurstWriter.AddWriter(bytesWriter);      
+#else
+            intern.bytesWriter = bytesWriter;
+#endif
             //
             intern.bytes.Clear();
             intern.level = 0;
             intern.InitMirrorStack();
         }
-#endif
         
         private void InitJsonWriterString() {
             intern.outputType = OutputType.ByteList;
@@ -93,19 +97,15 @@ namespace Friflo.Json.Mapper
         // --------------- Stream ---------------
 
         public void Write<T>(T value, Stream stream) {
-#if !JSON_BURST
             InitJsonWriterStream(stream);
             WriteStart(value);
             WriteUtils.Flush(ref intern);
-#endif
         }
 
         public void WriteObject(object value, Stream stream) {
-#if !JSON_BURST
             InitJsonWriterStream(stream);
             WriteStart(value);
             WriteUtils.Flush(ref intern);
-#endif
         }
         
         // --------------- string ---------------

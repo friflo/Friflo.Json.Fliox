@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Map
 
         internal            OutputType          outputType;
 #if JSON_BURST
-        // private          int                 writerHandle;
+        public              int                 writerHandle;
 #else
         public              IBytesWriter        bytesWriter;
 #endif
@@ -55,7 +55,9 @@ namespace Friflo.Json.Mapper.Map
             level           = 0;
             maxDepth        = 100;
             outputType      = OutputType.ByteList;
-#if !JSON_BURST
+#if JSON_BURST
+            writerHandle    = -1;
+#else
             bytesWriter     = null;
 #endif
 #if !UNITY_5_3_OR_NEWER

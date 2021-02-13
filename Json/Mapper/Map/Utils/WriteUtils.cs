@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Mapper.Map.Utils
@@ -61,12 +62,14 @@ namespace Friflo.Json.Mapper.Map.Utils
             switch (writer.outputType) {
                 case OutputType.ByteList:
                     return; // ByteList mode does not support streaming
-#if !JSON_BURST
                 case OutputType.ByteWriter:
+#if JSON_BURST
+                    NonBurstWriter.WriteNonBurst(writer.writerHandle, ref writer.bytes.buffer, writer.bytes.end);
+#else
                     writer.bytesWriter.Write(ref writer.bytes.buffer, writer.bytes.end);
+#endif                    
                     writer.bytes.Clear();
                     break;
-#endif
             }
         }
         
