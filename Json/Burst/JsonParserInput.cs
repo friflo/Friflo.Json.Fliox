@@ -4,8 +4,6 @@ using System.Text;
 using Friflo.Json.Burst.Utils;
 
 #if JSON_BURST
-    using Unity.Burst;
-    using System.Collections.Generic;
     using Unity.Collections.LowLevel.Unsafe;
 #endif
 
@@ -141,25 +139,6 @@ namespace Friflo.Json.Burst
             return len;
         }
     }
-    
-#if JSON_BURST
-    static class NonBurstReader
-    {
-        private static          int                             readerHandleCounter;
-        private static readonly Dictionary<int, IBytesReader>   JsonReaders = new Dictionary<int, IBytesReader>();
-
-        public static int AddReader(IBytesReader reader) {
-            JsonReaders.Add(++readerHandleCounter, reader);
-            return readerHandleCounter;
-        }
-
-        [BurstDiscard]
-        public static void ReadNonBurst(int readerHandle, ref ByteList dst, ref int readBytes, int count) {
-            var reader = JsonReaders[readerHandle];
-            readBytes = reader.Read(ref dst, count);
-        }
-    }
-#endif
 }
 
 
