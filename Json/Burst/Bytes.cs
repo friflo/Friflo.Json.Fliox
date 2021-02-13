@@ -78,7 +78,7 @@ namespace Friflo.Json.Burst
             buffer = new ByteList(capacity, allocType);
         }
         
-        public Bytes (String str) {
+        public Bytes (string str) {
             hc = 0;
             start = 0;
             end = 0;
@@ -183,11 +183,11 @@ namespace Friflo.Json.Burst
             return true;
         }
 #else
-        public bool IsEqual32Ref(ref String cs) {
+        public bool IsEqual32Ref(ref string cs) {
             return IsEqualString(cs);
         }
         
-        public bool IsEqual32 (String cs) {
+        public bool IsEqual32 (string cs) {
             return IsEqualString (cs);
         }
 #endif
@@ -217,7 +217,7 @@ namespace Friflo.Json.Burst
             return true;
         }
 
-        public bool IsEqualString (String str) {
+        public bool IsEqualString (string str) {
             return Utf8Utils.IsStringEqualUtf8Ref(str, ref this);
         }
 
@@ -276,26 +276,26 @@ namespace Friflo.Json.Burst
         }
 #endif
 
-        public override String ToString() {
+        public override string ToString() {
             return ToString(buffer, start, end - start);
         }
         
         /**
          * Must not by called from Burst. Burst cant handle managed types
          */
-        public static String ToString (ByteList data, int pos, int size)
+        public static string ToString (ByteList data, int pos, int size)
         {
 #if JSON_BURST
             unsafe {
                 sbyte* sbytePtr = (sbyte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(data.array);
-                return new String(sbytePtr, pos, size, Encoding.UTF8);
+                return new string(sbytePtr, pos, size, Encoding.UTF8);
             }
 #else
             /*
             sbyte[] sbyteData = (sbyte[]) (Array)data.array;
             unsafe {
                 fixed (sbyte* sbytePtr = sbyteData)
-                    return new String(sbytePtr, pos, size, Encoding.UTF8);
+                    return new string(sbytePtr, pos, size, Encoding.UTF8);
             } */
             return Encoding.UTF8.GetString(data.array, pos, size);
 #endif
@@ -365,12 +365,12 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------ Append methods ------------------------------
-        public void AppendString(String str)
+        public void AppendString(string str)
         {
             AppendString (str, 0, str. Length);
         }
 
-        public void AppendString(String str, int offset, int len)
+        public void AppendString(string str, int offset, int len)
         {
             EnsureCapacity(len);
             int pos = end;
@@ -382,7 +382,7 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
 
-        public void Set (String val)
+        public void Set (string val)
         {
             FromString(val);
         }
@@ -417,16 +417,16 @@ namespace Friflo.Json.Burst
         }
 
 #else
-        public void AppendStr128 (ref String str) {
+        public void AppendStr128 (ref string str) {
             AppendString(str);
         }
         
-        // Note: Prefer using AppendStr32 (ref String str)
-        public void AppendStr32 (String str) {
+        // Note: Prefer using AppendStr32 (ref string str)
+        public void AppendStr32 (string str) {
             AppendString(str);
         }
         
-        public void AppendStr32Ref (ref String str) {
+        public void AppendStr32Ref (ref string str) {
             AppendString(str);
         }
 #endif

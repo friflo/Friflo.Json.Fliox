@@ -277,7 +277,6 @@ namespace Friflo.Json.Burst
         }
 
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        // todo add ASCII version - to avoid escaping
         public void MemberStrRef(ref Str32 key, ref Bytes value) {
             AssertMember();
             AddSeparator();
@@ -425,7 +424,6 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Write an array element of type "string"</summary>
-        // todo add ASCII version - to avoid escaping
         public void ElementStr(ref Bytes value) {
             AssertElement();
             AddSeparator();
