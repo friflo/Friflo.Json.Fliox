@@ -1,10 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 #if JSON_BURST
     using Unity.Burst;
     using System.Collections.Generic;
     using Unity.Collections.LowLevel.Unsafe;
+#else
+    using System;
 #endif
 
 // ReSharper disable RedundantUnsafeContext
@@ -59,7 +60,7 @@ namespace Friflo.Json.Burst.Utils
             this.end = start + count;
         }
         
-        public unsafe int Read(ref ByteList dst, int count) {
+        public int Read(ref ByteList dst, int count) {
             int curPos = pos;
             pos += count;
             if (pos > end)
@@ -69,10 +70,11 @@ namespace Friflo.Json.Burst.Utils
             if (len == 0)
                 return 0;
 #if JSON_BURST
-            byte*  destPtr = &((byte*)dst.array.GetUnsafeList()->Ptr)    [0];
-            fixed (byte* srcPtr = &array[curPos])
-            {
-                UnsafeUtility.MemCpy(destPtr, srcPtr, len);
+            unsafe {
+                byte* destPtr = &((byte*) dst.array.GetUnsafeList()->Ptr)[0];
+                fixed (byte* srcPtr = &array[curPos]) {
+                    UnsafeUtility.MemCpy(destPtr, srcPtr, len);
+                }
             }
 #else
             Buffer.BlockCopy(array, curPos, dst.array, 0, len);

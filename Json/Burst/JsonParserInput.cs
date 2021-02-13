@@ -82,7 +82,7 @@ namespace Friflo.Json.Burst
         public void InitParser(StreamBytesReader reader) {
             inputType       = InputType.ByteReader;
 #if JSON_BURST
-            readerHandle = NonBurstReader.AddReader(reader);
+            readerHandle    = NonBurstReader.AddReader(reader);
 #else
             bytesReader     = reader;
 #endif
