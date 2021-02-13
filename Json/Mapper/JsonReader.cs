@@ -46,8 +46,6 @@ namespace Friflo.Json.Mapper
     public class JsonReader : IJsonReader, IDisposable
     {
         private             int                 maxDepth;
-        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
-        // ReSharper disable once InconsistentNaming
         private             Reader              intern;
         private             Bytes               inputStringBuf = new Bytes(0);
 
@@ -56,6 +54,7 @@ namespace Friflo.Json.Mapper
         public              bool                Success         =>!intern.parser.error.ErrSet;
         public              SkipInfo            SkipInfo        => intern.parser.skipInfo;
         public              long                ProcessedBytes  => intern.parser.ProcessedBytes;
+        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public              TypeCache           TypeCache       => intern.typeCache; 
 
         public              int                 MaxDepth {
@@ -66,9 +65,6 @@ namespace Friflo.Json.Mapper
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             intern = new Reader (typeStore, errorHandler);
             maxDepth    = 100;
-// #if !UNITY_5_3_OR_NEWER
-//             useIL = typeStore.config.useIL;
-// #endif 
         }
         
         private void InitJsonReaderString(string json) {

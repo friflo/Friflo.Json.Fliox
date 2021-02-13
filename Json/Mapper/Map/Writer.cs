@@ -17,17 +17,11 @@ namespace Friflo.Json.Mapper.Map
 #endif
     public partial struct Writer : IDisposable
     {
-
-        
         /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
         public readonly     TypeCache           typeCache;
         public              Bytes               bytes;
         /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>
         public              ValueFormat         format;
-        /// <summary>Can be used for custom mappers to create a temporary "string"
-        /// without creating a string on the heap.</summary>
-        public              Bytes               strBuf;
-
         internal            Bytes               @null;
         internal            Bytes               discriminator;
         internal            int                 level;
@@ -46,7 +40,6 @@ namespace Friflo.Json.Mapper.Map
 
         public Writer(TypeStore typeStore) {
             bytes           = new Bytes(128);
-            strBuf          = new Bytes(128);
             format          = new ValueFormat();
             format. InitTokenFormat();
             @null           = new Bytes("null");
@@ -71,7 +64,6 @@ namespace Friflo.Json.Mapper.Map
             discriminator.Dispose();
             @null.Dispose();
             format.Dispose();
-            strBuf.Dispose();
             bytes.Dispose();
             DisposeMirrorStack();
         }

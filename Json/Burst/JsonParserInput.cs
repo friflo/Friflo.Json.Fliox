@@ -9,13 +9,13 @@ using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Burst
 {
+    enum InputType {
+        ByteList,
+        ByteReader,
+    }
+    
     public partial struct JsonParser
     {
-        enum InputType {
-            ByteList,
-            ByteReader,
-        }
-        
         public string DebugString { get {
                 int start = pos - 20;
                 if (start < 0)

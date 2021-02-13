@@ -132,18 +132,17 @@ namespace Friflo.Json.Burst
         public      int                 InputPos => bufferCount + pos;
         
         // --- input array, stream, string, ... used in InitParser() methods
-        private const int   BufSize = 4096; // Test with 1 to find edge cases
-        private InputType   inputType;
-        private bool        inputStreamOpen;
-        //
+        private     const int           BufSize = 4096; // Test with 1 to find edge cases
+        private     InputType           inputType;
+        private     bool                inputStreamOpen;
 #if JSON_BURST
-        private int         readerHandle;
+        private     int                 readerHandle;
 #else
-        private IBytesReader bytesReader;
+        private     IBytesReader        bytesReader;
 #endif
-        private ByteList    inputByteList;
-        private int         inputArrayPos;
-        private int         inputArrayEnd;
+        private     ByteList            inputByteList;
+        private     int                 inputArrayPos;
+        private     int                 inputArrayEnd;
 
 
         enum State {
