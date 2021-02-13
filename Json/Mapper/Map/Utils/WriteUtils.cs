@@ -29,7 +29,12 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteMemberKey(ref Writer writer, PropField field, ref bool firstMember) {
-            if (writer.pretty) {
+            if (!writer.pretty) {
+                if (firstMember)
+                    writer.bytes.AppendBytes(ref field.firstMember);
+                else
+                    writer.bytes.AppendBytes(ref field.subSeqMember);
+            } else {
                 writer.bytes.AppendChar(firstMember ? '{' : ',');
                 IndentBegin(ref writer);
                 writer.bytes.AppendChar('"');
@@ -37,12 +42,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                 writer.bytes.AppendChar('"');
                 writer.bytes.AppendChar(':');
                 writer.bytes.AppendChar(' ');
-            } else {
-                if (firstMember)
-                    writer.bytes.AppendBytes(ref field.firstMember);
-                else
-                    writer.bytes.AppendBytes(ref field.subSeqMember);
-            }
+            } 
             firstMember = false;
         }
         
