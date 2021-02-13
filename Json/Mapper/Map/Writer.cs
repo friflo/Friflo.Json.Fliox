@@ -26,6 +26,7 @@ namespace Friflo.Json.Mapper.Map
         internal            Bytes               discriminator;
         internal            int                 level;
         public              int                 maxDepth;
+        public              bool                pretty;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -48,6 +49,7 @@ namespace Friflo.Json.Mapper.Map
             level           = 0;
             maxDepth        = 100;
             outputType      = OutputType.ByteList;
+            pretty          = false;
 #if JSON_BURST
             writerHandle    = -1;
 #else

@@ -203,6 +203,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
+        public void Pretty()   {
+            using (var typeStore = createStore())
+            using (var reader   = new JsonReader(typeStore))
+            using (var writer   = new JsonWriter(typeStore))
+            using (var json     = new TestBytes())
+            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
+                var complex = reader.Read<JsonComplex>(bytes);
+                writer.Pretty = true;
+                writer.Write(complex, ref json.bytes);
+                CommonUtils.ToFile("assets/output/complexPrettyReflect.json", json.bytes);
+            }
+        }
+        
+        [Test]
         public void WriteJsonComplex()
         {
             using (TypeStore    typeStore   = createStore())

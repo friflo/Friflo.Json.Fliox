@@ -40,6 +40,10 @@ namespace Friflo.Json.Mapper
             get => intern.maxDepth;
             set => intern.maxDepth = value;
         }
+        public      bool        Pretty {
+            get => intern.pretty;
+            set => intern.pretty = value;
+        }
 
         public JsonWriter(TypeStore typeStore) {
             intern = new Writer(typeStore);

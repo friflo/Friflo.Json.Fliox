@@ -50,8 +50,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             int n = 0;
             foreach (var curItem in col) {
                 var item = curItem; // capture to use by ref
-                if (n++ > 0)
-                    writer.bytes.AppendChar(',');
+                WriteUtils.WriteDelimiter(ref writer, n++);
                 
                 if (!elementType.IsNull(ref item)) {
                     ObjectUtils.Write(ref writer, elementType, ref item);

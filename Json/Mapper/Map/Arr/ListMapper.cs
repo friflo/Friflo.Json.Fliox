@@ -48,8 +48,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             writer.bytes.AppendChar('[');
 
             for (int n = 0; n < list.Count; n++) {
-                if (n > 0)
-                    writer.bytes.AppendChar(',');
+                WriteUtils.WriteDelimiter(ref writer, n);
                 TElm item = list[n];
                 
                 if (!elementType.IsNull(ref item)) {

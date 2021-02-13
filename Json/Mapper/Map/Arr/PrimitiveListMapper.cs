@@ -96,8 +96,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             var list = slot;
             writer.bytes.AppendChar('[');
             for (int n = 0; n < list.Count; n++) {
-                if (n > 0)
-                    writer.bytes.AppendChar(',');
+                WriteUtils.WriteDelimiter(ref writer, n);
                 var elemVar = list[n];
 
                 if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default)) {

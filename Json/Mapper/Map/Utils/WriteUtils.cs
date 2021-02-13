@@ -24,15 +24,52 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteMemberKey(ref Writer writer, PropField field, ref bool firstMember) {
-            if (firstMember)
-                writer.bytes.AppendBytes(ref field.firstMember);
-            else
-                writer.bytes.AppendBytes(ref field.subSeqMember);
+            if (writer.pretty) {
+                writer.bytes.AppendChar(firstMember ? '{' : ',');
+                IndentBegin(ref writer);
+                writer.bytes.AppendChar('"');
+                writer.bytes.AppendBytes(ref field.nameBytes);
+                writer.bytes.AppendChar('"');
+                writer.bytes.AppendChar(':');
+                writer.bytes.AppendChar(' ');
+            } else {
+                if (firstMember)
+                    writer.bytes.AppendBytes(ref field.firstMember);
+                else
+                    writer.bytes.AppendBytes(ref field.subSeqMember);
+            }
             firstMember = false;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteDelimiter(ref Writer writer, int pos) {
+            if (pos > 0)
+                writer.bytes.AppendChar(',');
+            if (writer.pretty)
+                IndentBegin(ref writer);
+        }
+        
+        public static void IndentBegin(ref Writer writer) {
+            int level = writer.level;
+            writer.bytes.EnsureCapacityAbs(writer.bytes.end + level + 1);
+            writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\n';
+            for (int n = 0; n < level; n++)
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\t';
+        }
+        
+        public static void IndentEnd(ref Writer writer) {
+            int level = writer.level - 1;
+            writer.bytes.EnsureCapacityAbs(writer.bytes.end + level + 1);
+            writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\n';
+            for (int n = 0; n < level; n++)
+                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\t';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteObjectEnd(ref Writer writer, bool emptyObject) {
+            if (writer.pretty)
+                IndentEnd(ref writer);
+            
             if (emptyObject)
                 writer.bytes.AppendChar2('{', '}');
             else
