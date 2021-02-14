@@ -10,6 +10,7 @@ using System.Reflection;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Mapper.MapIL.Obj;
 using Exp = System.Linq.Expressions.Expression;
     
 namespace Friflo.Json.Mapper.MapIL.Utils
@@ -32,18 +33,18 @@ namespace Friflo.Json.Mapper.MapIL.Utils
         // The idea of loading/storing all fields of a class with one method call came to this nice blog:
         // [Optimizing reflection in C# via dynamic code generation | by Sergio Pedri | Medium]
         // https://medium.com/@SergioPedri/optimizing-reflection-with-dynamic-code-generation-6e15cef4b1a2
-        internal static Expression<Action<long?[], object[], T>> LoadInstanceExpression<T> (TypeMapper mapper) {
+        internal static Expression<LoadObject<long?[], object[], T>> LoadInstanceExpression<T> (TypeMapper mapper) {
             var ctx = new LoadContext();
-            ctx.dst         = Exp.Parameter(typeof(long?[]),  "dst");     // parameter: long[]   dst;
-            ctx.dstObj      = Exp.Parameter(typeof(object[]), "dstObj");  // parameter: object[] dstObj;
+            ctx.dst         = Exp.Parameter(typeof(long?[]),            "dst");     // parameter: long[]   dst;
+            ctx.dstObj      = Exp.Parameter(typeof(object[]),           "dstObj");  // parameter: object[] dstObj;
             
-            var src         = Exp.Parameter(typeof(T),        "src");     // parameter: object   src;
+            var src         = Exp.Parameter(typeof(T).MakeByRefType(),  "src");     // parameter: object   src;
 
             AddLoadMembers(ctx, mapper, src);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
             
-            var lambda = Exp.Lambda<Action<long?[], object[], T>> (assignmentsBlock, ctx.dst, ctx.dstObj, src);
+            var lambda = Exp.Lambda<LoadObject<long?[], object[], T>> (assignmentsBlock, ctx.dst, ctx.dstObj, src);
             return lambda;
         }
 
@@ -153,16 +154,16 @@ namespace Friflo.Json.Mapper.MapIL.Utils
             internal            int                    objIndex;
         }
 
-        internal static Expression<Action<T, long?[], object[]>> StoreInstanceExpression<T> (TypeMapper mapper) {
+        internal static Expression<StoreObject<T, long?[], object[]>> StoreInstanceExpression<T> (TypeMapper mapper) {
             var ctx = new StoreContext();
-            var dst         = Exp.Parameter(typeof(T),        "dst");       // parameter: long[]   dst;
-            ctx.src         = Exp.Parameter(typeof(long?[]),  "src");       // parameter: object   src;
-            ctx.srcObj      = Exp.Parameter(typeof(object[]), "srcObj");    // parameter: object[] srcObj;
+            var dst         = Exp.Parameter(typeof(T).MakeByRefType(),  "dst");       // parameter: long[]   dst;
+            ctx.src         = Exp.Parameter(typeof(long?[]),            "src");       // parameter: object   src;
+            ctx.srcObj      = Exp.Parameter(typeof(object[]),           "srcObj");    // parameter: object[] srcObj;
             
             AddStoreMembers(ctx, mapper, dst);
             
             var assignmentsBlock= Exp.Block(ctx.assignmentList);
-            var lambda = Exp.Lambda<Action<T, long?[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
+            var lambda = Exp.Lambda<StoreObject<T, long?[], object[]>> (assignmentsBlock, dst, ctx.src, ctx.srcObj);
             return lambda;
         }
         
