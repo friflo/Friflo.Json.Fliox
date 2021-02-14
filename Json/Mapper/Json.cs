@@ -4,13 +4,13 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper
 {
-    public static class Convert
+    internal static class Convert
     {
         // ReSharper disable once InconsistentNaming
         public static readonly Json JSON = new Json();
     }
 
-    public class Json : IJsonReader, IJsonWriter
+    internal class Json : IJsonReader, IJsonWriter
     {
         public readonly TypeStore typeStore = new TypeStore();
         

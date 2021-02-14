@@ -5,7 +5,7 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Mapper.Convert;
+
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -30,6 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         // --------------------------------------- JSON ---------------------------------------
+        /*
         [Test]
         public void Json() {
             AssertReaderBytes(JSON);
@@ -40,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             AssertReaderString(JSON);
             AssertWriterString(JSON);
-        }
+        } */
         
         
         // --------------------------------------- Formatter ---------------------------------------
