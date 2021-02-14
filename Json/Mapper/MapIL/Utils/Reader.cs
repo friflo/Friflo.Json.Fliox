@@ -27,11 +27,11 @@ namespace Friflo.Json.Mapper.Map
         }
 
         /// <summary> Load the fields of a class instance into the <see cref="ClassMirror"/> arrays. </summary>
-        internal ClassMirror InstanceLoad<T>(ref TypeMapper classType, T obj) {
+        internal ClassMirror InstanceLoad<T>(ref TypeMapper classType, ref T obj) {
             if (classLevel >= mirrorStack.Count)
                 mirrorStack.Add(new ClassMirror());
             var mirror = mirrorStack[classLevel++];
-            mirror.LoadInstance(typeCache, ref classType, obj);
+            mirror.LoadInstance(typeCache, ref classType, ref obj);
             return mirror;
         }
 
@@ -39,8 +39,8 @@ namespace Friflo.Json.Mapper.Map
         /// Store the "instances fields" represented by the <see cref="ClassMirror"/> arrays to the fields
         /// of a given class instance.
         /// </summary>
-        internal void InstanceStore<T>(ClassMirror mirror, T obj) {
-            mirror.StoreInstance(obj);
+        internal void InstanceStore<T>(ClassMirror mirror, ref T obj) {
+            mirror.StoreInstance(ref obj);
             --classLevel;
         }
 #else 

@@ -39,11 +39,11 @@ namespace Friflo.Json.Mapper.Map.Utils
 #if !UNITY_5_3_OR_NEWER
             if (mapper.useIL) {
                 TypeMapper typeMapper = mapper;
-                ClassMirror mirror = reader.InstanceLoad(ref typeMapper, value);
+                ClassMirror mirror = reader.InstanceLoad(ref typeMapper, ref value);
                 success = mapper.ReadValueIL(ref reader, mirror, 0, 0);  
                 if (!success)
                     return default;
-                reader.InstanceStore(mirror, value);
+                reader.InstanceStore(mirror, ref value);
                 return value;
             }
 #endif
@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 #if !UNITY_5_3_OR_NEWER
             if (mapper.useIL) {
                 TypeMapper typeMapper = mapper;
-                ClassMirror mirror = writer.InstanceLoad(ref typeMapper, value);
+                ClassMirror mirror = writer.InstanceLoad(ref typeMapper, ref value);
                 mapper.WriteValueIL(ref writer, mirror, 0, 0);
                 return;
             }

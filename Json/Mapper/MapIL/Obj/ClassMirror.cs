@@ -29,14 +29,14 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         private     ClassLayout         layout;
         private     TypeMapper          classTypeDbg;  // only for debugging
 
-        public void LoadInstance<T>(TypeCache typeCache, ref TypeMapper classType, T obj) {
+        public void LoadInstance<T>(TypeCache typeCache, ref TypeMapper classType, ref T obj) {
             if (typeof(T) != typeof(object)) {
                 classTypeDbg = classType;
                 layout = classType.layout;
                 primitives.Resize(layout.primCount);
                 objects.   Resize(layout.objCount);
                 ClassLayout<T> l = (ClassLayout<T>) layout;
-                l.LoadObjectToMirror(primitives.array, objects.array, obj);
+                l.LoadObjectToMirror(primitives.array, objects.array, ref obj);
             } else {
                 classType = typeCache.GetTypeMapper(obj.GetType());
                 classTypeDbg = classType;
@@ -50,10 +50,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         // ReSharper disable once UnusedMember.Global
         public DbgEntry[] DebugView => GetDebugView();
         
-        public void StoreInstance<T>(T obj) {
+        public void StoreInstance<T>(ref T obj) {
             if (typeof(T) != typeof(object)) {
                 ClassLayout<T> l = (ClassLayout<T>) layout;
-                l.StoreMirrorToPayload(obj, primitives.array, objects.array);
+                l.StoreMirrorToPayload(ref obj, primitives.array, objects.array);
             } else {
                 layout.StoreMirrorToPayload(obj, primitives.array, objects.array);
             }
