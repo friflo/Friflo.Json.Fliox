@@ -1,5 +1,6 @@
 ﻿using System; // for DEBUG
 using Friflo.Json.Burst;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -208,6 +209,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("JsonSerializer exceed maxDepth: 1", e.Message);
             }
         }
-
+        
+        [Test]
+        public void Pretty () {
+            var parser = new JsonParser();
+            var ser = new JsonSerializer();
+            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json"))
+            {
+                ser.pretty = true;
+                parser.InitParser(bytes);
+                ser.InitSerializer();
+                ser.WriteTree(ref parser);
+                CommonUtils.ToFile("assets/output/complexPrettySerializer.json", ser.dst);
+            }
+        }
     }
 }

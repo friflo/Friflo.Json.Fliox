@@ -48,6 +48,7 @@ namespace Friflo.Json.Burst
         private     int                     maxDepth;
         private     Str32                   @null;
 
+        public      bool                    pretty;
         public      int                     Level => level;
         public      int                     MaxDepth => maxDepth;
         public      void                    SetMaxDepth(int size) { maxDepth= size; }
@@ -221,10 +222,29 @@ namespace Friflo.Json.Burst
                 dstArr[dst.end++] = (byte) '"';
             }
         }
+        
+        private void IndentBegin() {
+            dst.EnsureCapacityAbs(dst.end + level + 1);
+            dst.buffer.array[dst.end++] = (byte)'\n';
+            for (int n = 0; n < level; n++)
+                dst.buffer.array[dst.end++] = (byte)'\t';
+        }
+        
+        private void IndentEnd() {
+            dst.EnsureCapacityAbs(dst.end + level + 1);
+            dst.buffer.array[dst.end++] = (byte)'\n';
+            for (int n = 0; n < level; n++)
+                dst.buffer.array[dst.end++] = (byte)'\t';
+        }
 
-        private static void AppendKeyString(ref Bytes dst, ref Str32 key) {
+        private void AppendKeyString(ref Bytes dst, ref Str32 key) {
             AppendEscString(ref dst, ref key);
-            dst.AppendChar(':');
+            if (!pretty) {
+                dst.AppendChar(':');
+            } else {
+                dst.AppendChar(':');
+                dst.AppendChar(' ');
+            }
         }
 
 
@@ -232,9 +252,13 @@ namespace Friflo.Json.Burst
         private void AddSeparator() {
             if (firstEntry.array[level]) {
                 firstEntry.array[level] = false;
+                if (pretty)
+                    IndentBegin();
                 return;
             }
             dst.AppendChar(',');
+            if (pretty)
+                IndentBegin();
         }
         
         // ----------------------------- object with properties -----------------------------
@@ -256,8 +280,11 @@ namespace Friflo.Json.Burst
         /// <summary>Finished a previous started JSON object for serialization</summary>
         public void ObjectEnd() {
             AssertMember();
+            level--;
+            if (pretty)
+                IndentEnd();
             dst.AppendChar('}');
-            firstEntry.array[--level] = false;
+            firstEntry.array[level] = false;
         }
 
         // --- comment to enable source alignment in WinMerge
@@ -283,7 +310,7 @@ namespace Friflo.Json.Burst
         public void MemberStrRef(ref Str32 key, ref Bytes value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, ref key); // should be asc
+            AppendKeyString(ref dst, ref key);
             AppendEscStringBytes(ref dst, ref value);
         }
 
@@ -416,8 +443,11 @@ namespace Friflo.Json.Burst
             if (level == 0)
                 throw new InvalidOperationException("ArrayEnd...() must not be called below root level");
             AssertElement();
+            level--;
+            if (pretty)
+                IndentEnd();
             dst.AppendChar(']');
-            firstEntry.array[--level] = false;
+            firstEntry.array[level] = false;
         }
         
         /// <summary>Write an array element of type "string"</summary>
