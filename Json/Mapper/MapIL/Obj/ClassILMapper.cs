@@ -113,11 +113,11 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             if (!fieldType.ReadValueIL(ref reader, mirror, primPos + field.primIndex, objPos + field.objIndex))
                                 return default;
                         } else {
-                            object fieldVal = mirror.LoadObj(field.objIndex);
+                            object fieldVal = mirror.LoadObj(field.objIndex); // todo objPos +
                             fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
                             if (!success)
                                 return false;
-                            mirror.StoreObj(field.objIndex, fieldVal);
+                            mirror.StoreObj(field.objIndex, fieldVal);  // todo objPos +
                             if (!fieldType.isNullable && fieldVal == null)
                                 return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
                         }
@@ -129,9 +129,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
                         
                         if (field.fieldType.isValueType)
-                            mirror.StorePrimitiveNull(field.primIndex);
+                            mirror.StorePrimitiveNull(field.primIndex); // todo primPos +
                         else
-                            mirror.StoreObj(field.objIndex, null);
+                            mirror.StoreObj(field.objIndex, null); // todo objPos +
                         break;
                     case JsonEvent.ObjectEnd:
                         return true;
