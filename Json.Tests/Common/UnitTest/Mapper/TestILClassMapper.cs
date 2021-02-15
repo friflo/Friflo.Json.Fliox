@@ -43,10 +43,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public ChildStructIL?   child1;
         public ChildStructIL?   child2;
 
+        public ChildIL          childClass1;
+        public ChildIL          childClass2;
+
         public void Init() {
             structInt = 200;
             child1 = new ChildStructIL {val2 = 201};
             child2 = null;
+            childClass1 = null;
+            childClass2 = new ChildIL();
+            childClass2.val = 202;
         }
     }
     
@@ -57,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
         public ChildStructIL?childStructNull1;
         public ChildStructIL?childStructNull2;
-        
+
         public double?  nulDouble;
         public double?  nulDoubleNull;
 
@@ -84,7 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         public ChildIL  child;
         public ChildIL  childNull;
-        
+        public StructIL structIL;  // after child & childNull (to have class type before)
+
         public double   dbl;
         public float    flt;
               
@@ -138,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
             childStructNull1 = null;
             childStructNull2 = new ChildStructIL {val2 = 19};
-            
+
             nulDouble       = 20;
             nulDoubleNull   = null;
             
@@ -157,10 +164,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             nulBool         = true;
             nulBoolNull     = null;
             
-            child = new ChildIL { val = 42 };
             childStruct1.val2 = 111;
             childStruct2.val2 = 112;
+            
+            child = new ChildIL { val = 42 };
             childNull = null;
+            structIL.Init();
+            
             dbl   = 22.5d;
             flt   = 33.5f;
             
@@ -197,13 +207,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        readonly string structJson = $@"
+        static readonly string structJson = $@"
 {{
     ""structInt"": 200,
     ""child1"" : {{
         ""val2"": 201
     }},
-    ""child2"" : null
+    ""child2"" : null,
+    ""childClass1"": null,
+    ""childClass2"": {{
+        ""val"": 202
+    }}
 }}
 ";
 
@@ -225,8 +239,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private void AssertStructIL(ref StructIL structIL) {
             AreEqual(200,   structIL.structInt);
+            
             AreEqual(201,   structIL.child1.Value.val2);
             AreEqual(false, structIL.child2.HasValue);
+            
+            AreEqual(null,  structIL.childClass1);
+            AreEqual(202,   structIL.childClass2.val);
         }
         
         [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
@@ -280,6 +298,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         ""val"": 42
     }},
     ""childNull"": null,
+    ""structIL"": {structJson},
     ""dbl"":   22.5,
     ""flt"":   33.5,
 
@@ -296,6 +315,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual(null,  sample.enumIL2);
             AreEqual(false, sample.childStructNull1.HasValue);
             AreEqual(19,    sample.childStructNull2.Value.val2);
+            
 
             AreEqual(20d,   sample.nulDouble.Value);
             AreEqual(null,  sample.nulDoubleNull);
@@ -314,8 +334,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             AreEqual(111,   sample.childStruct1.val2);
             AreEqual(112,   sample.childStruct2.val2);
+            
             AreEqual(42,    sample.child.val);
             AreEqual(null,  sample.childNull);
+            AssertStructIL(ref sample.structIL);
                 
             AreEqual(22.5,  sample.dbl);
             AreEqual(33.5,  sample.flt);

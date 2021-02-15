@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             if (addMembers) {
                 PropField pf;
                 if (mapper.isValueType || isNullablePrimitive || isNullableEnum)
-                    pf = new PropField(fieldName, mapper, field, property, primCount, -1);
+                    pf = new PropField(fieldName, mapper, field, property, primCount, objCount);
                 else
                     pf = new PropField(fieldName, mapper, field, property, -1, objCount);
                 fieldList.Add(pf);
