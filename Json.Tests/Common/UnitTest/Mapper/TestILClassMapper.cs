@@ -229,6 +229,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ""bln"":   true
 }}
 ";
+        private void AssertSampleIL(SampleIL sample) {
+            // ReSharper disable once PossibleInvalidOperationException
+            AreEqual(20d,   sample.nulDouble.Value);
+            AreEqual(null,  sample.nulDoubleNull);
+                
+            AreEqual(22.5,  sample.dbl);
+            AreEqual(33.5,  sample.flt);
+                
+            AreEqual(10,    sample.int64);
+            AreEqual(11,    sample.int32);
+            AreEqual(12,    sample.int16);
+            AreEqual(13,    sample.int8);
+            AreEqual(true,  sample.bln);
+
+            AreEqual(42,    sample.child.val);
+            AreEqual(null,  sample.childNull);
+            AreEqual(111,   sample.childStruct1.val2);
+            AreEqual(112,   sample.childStruct2.val2);
+        }
 
         [Test] public void  WriteJsonReflect()   { WriteJson(TypeAccess.Reflection); }
         [Test] public void  WriteJsonIL()        { WriteJson(TypeAccess.IL); }
@@ -256,22 +275,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var result = reader.Read<SampleIL>(payloadStr);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
-                
-                AreEqual(20d,   result.nulDouble);
-                AreEqual(null,  result.nulDoubleNull);
-                
-                AreEqual(22.5,  result.dbl);
-                AreEqual(33.5,  result.flt);
-                
-                AreEqual(10,    result.int64);
-                AreEqual(11,    result.int32);
-                AreEqual(12,    result.int16);
-                AreEqual(13,    result.int8);
-                AreEqual(true,  result.bln);
-                AreEqual(42,    result.child.val);
-                AreEqual(null,  result.childNull);
-                AreEqual(111,   result.childStruct1.val2);
-                AreEqual(112,   result.childStruct2.val2);
+
+                AssertSampleIL(result);
             }
         }
         
@@ -308,12 +313,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (Bytes        json        = new Bytes(payloadStr))
             {
                 var obj = new SampleIL();
+                obj.Init();
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
-                    reader.ReadTo(json, obj);
+                    obj = reader.ReadTo(json, obj);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
+                    AssertSampleIL(obj);
                 }
             }
             if (typeAccess == TypeAccess.IL)
@@ -350,13 +357,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var          dst         = new TestBytes())
             {
                 var list = new List<SampleIL>() { new SampleIL() };
+                list[0].Init();
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
-                    reader.ReadTo(dst.bytes, list);
+                    list = reader.ReadTo(dst.bytes, list);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
+                    AssertSampleIL(list[0]);
                 }
             }
             if (typeAccess == TypeAccess.IL)
@@ -380,7 +389,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
                     list[0] = new StructIL { val2 = 999 };
-                    reader.ReadTo(dst.bytes, list);
+                    list = reader.ReadTo(dst.bytes, list);
                     AreEqual(42, list[0].val2);   // ensure List element being a struct is updated
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
@@ -402,13 +411,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var          dst         = new TestBytes())
             {
                 var arr = new [] { new SampleIL() };
+                arr[0].Init();
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr, ref dst.bytes);
-                    reader.ReadTo(dst.bytes, arr);
+                    arr = reader.ReadTo(dst.bytes, arr);
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
+                    AssertSampleIL(arr[0]);
                 }
             }
             if (typeAccess == TypeAccess.IL)
@@ -426,12 +437,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
             {
-                var arr = new [] { new StructIL() };
+                var arr = new [] { new StructIL{val2 = 42} };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr, ref dst.bytes);
-                    reader.ReadTo(dst.bytes, arr);
+                    arr[0] = new StructIL { val2 = 999 };
+                    arr = reader.ReadTo(dst.bytes, arr);
+                    AreEqual(42, arr[0].val2);   // ensure array element being a struct is updated
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
