@@ -6,7 +6,8 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
+// using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
 #if !UNITY_5_3_OR_NEWER
 
@@ -252,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 
-                AreEqual(20,    result.nulDouble);
+                AreEqual(20d,   result.nulDouble);
                 AreEqual(null,  result.nulDoubleNull);
                 
                 AreEqual(22.5,  result.dbl);
@@ -356,12 +357,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
             {
-                var list = new List<StructIL>() { new StructIL() };
+                var list = new List<StructIL>() { new StructIL{val2 = 42} };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
+                    list[0] = new StructIL { val2 = 999 };
                     reader.ReadTo(dst.bytes, list);
+                    AreEqual(42, list[0].val2);   // ensure List element being a struct is updated
                     if (reader.Error.ErrSet)
                         Fail(reader.Error.msg.ToString());
                 }
