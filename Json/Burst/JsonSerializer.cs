@@ -47,11 +47,15 @@ namespace Friflo.Json.Burst
         private     int                     level;
         private     int                     maxDepth;
         private     Str32                   @null;
-
-        public      bool                    pretty;
+        private      bool                   pretty;
+        
         public      int                     Level => level;
+        
         public      int                     MaxDepth => maxDepth;
-        public      void                    SetMaxDepth(int size) { maxDepth= size; }
+        public      void                    SetMaxDepth(int size)  { maxDepth= size; }
+        
+        public      bool                    Pretty => pretty;
+        public      void                    SetPretty(bool pretty) { this.pretty= pretty; }
         
 #pragma warning disable 649  // Field 'startGuard' is never assigned
         private     ValueList<bool>         startGuard;

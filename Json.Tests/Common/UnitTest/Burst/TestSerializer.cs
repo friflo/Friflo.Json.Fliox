@@ -1,6 +1,7 @@
 ﻿using System; // for DEBUG
 using Friflo.Json.Burst;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -8,7 +9,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
-    public class TestSerializer
+    public class TestSerializer : LeakTestsFixture
     {
         [Test]
         public void TestBasics() {
@@ -213,14 +214,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public void Pretty () {
             var parser = new JsonParser();
-            var ser = new JsonSerializer();
-            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json"))
-            {
-                ser.pretty = true;
-                parser.InitParser(bytes);
-                ser.InitSerializer();
-                ser.WriteTree(ref parser);
-                CommonUtils.ToFile("assets/output/complexPrettySerializer.json", ser.dst);
+            try {
+                using (var ser = new JsonSerializer())
+                using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
+                    ser.SetPretty(true);
+                    parser.InitParser(bytes);
+                    ser.InitSerializer();
+                    ser.WriteTree(ref parser);
+                    CommonUtils.ToFile("assets/output/complexPrettySerializer.json", ser.dst);
+                }
+            } finally {
+                parser.Dispose();
             }
         }
     }
