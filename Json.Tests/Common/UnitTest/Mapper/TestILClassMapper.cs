@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public int val;
     }
 
-    struct StructIL
+    struct ChildStructIL
     {
         public int val2;
     }
@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public EnumIL   enumIL1;
         public EnumIL?  enumIL2;
             
-        public StructIL?childStructNull1;
-        public StructIL?childStructNull2;
+        public ChildStructIL?childStructNull1;
+        public ChildStructIL?childStructNull2;
         
         public double?  nulDouble;
         public double?  nulDoubleNull;
@@ -66,8 +66,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public bool?    nulBool;
         public bool?    nulBoolNull;
         
-        public StructIL childStruct1;
-        public StructIL childStruct2;
+        public ChildStructIL childStruct1;
+        public ChildStructIL childStruct2;
         
         public ChildIL  child;
         public ChildIL  childNull;
@@ -86,8 +86,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             enumIL1 = EnumIL.one;
             enumIL2 = EnumIL.two;
                 
-            childStructNull1 = new StructIL {val2 = 68};
-            childStructNull2 = new StructIL {val2 = 69};
+            childStructNull1 = new ChildStructIL {val2 = 68};
+            childStructNull2 = new ChildStructIL {val2 = 69};
             
             nulDouble       = 70;
             nulDoubleNull   = 71;
@@ -124,7 +124,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             enumIL2          = null;
                 
             childStructNull1 = null;
-            childStructNull2 = new StructIL {val2 = 19};
+            childStructNull2 = new ChildStructIL {val2 = 19};
             
             nulDouble       = 20;
             nulDoubleNull   = null;
@@ -357,9 +357,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
             {
-                var obj = new StructIL();
+                var obj = new ChildStructIL();
                 writer.Write(obj, ref dst.bytes);
-                var result = reader.Read<StructIL>(dst.bytes);
+                var result = reader.Read<ChildStructIL>(dst.bytes);
                 if (reader.Error.ErrSet)
                     Fail(reader.Error.msg.ToString());
                 AreEqual(obj, result);
@@ -404,12 +404,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
             {
-                var list = new List<StructIL>() { new StructIL{val2 = 42} };
+                var list = new List<ChildStructIL>() { new ChildStructIL{val2 = 42} };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(list, ref dst.bytes);
-                    list[0] = new StructIL { val2 = 999 };
+                    list[0] = new ChildStructIL { val2 = 999 };
                     list = reader.ReadTo(dst.bytes, list);
                     AreEqual(42, list[0].val2);   // ensure List element being a struct is updated
                     if (reader.Error.ErrSet)
@@ -458,12 +458,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
             {
-                var arr = new [] { new StructIL{val2 = 42} };
+                var arr = new [] { new ChildStructIL{val2 = 42} };
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {
                     memLog.Snapshot();
                     writer.Write(arr, ref dst.bytes);
-                    arr[0] = new StructIL { val2 = 999 };
+                    arr[0] = new ChildStructIL { val2 = 999 };
                     arr = reader.ReadTo(dst.bytes, arr);
                     AreEqual(42, arr[0].val2);   // ensure array element being a struct is updated
                     if (reader.Error.ErrSet)

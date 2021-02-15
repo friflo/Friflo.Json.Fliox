@@ -192,7 +192,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
     }
     
-    struct Struct
+    struct StructAssign
     {
         public int val;
     }
@@ -201,9 +201,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         [Test]
         public void TestStructAssignment() {
-            Struct var1 = new Struct();
-            Struct var2 = var1; // copy as value;
-            ref Struct ref1 = ref var1; 
+            StructAssign var1 = new StructAssign();
+            StructAssign var2 = var1; // copy as value;
+            ref StructAssign ref1 = ref var1; 
             var1.val = 11;
             AreEqual(0, var2.val); // copy still unchanged
             AreEqual(11, ref1.val); // reference reflect changes
@@ -216,11 +216,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private void modifyParam(Struct param) {
+        private void modifyParam(StructAssign param) {
             param.val = 12;
         }
         
-        private void modifyRefParam(ref Struct param) {
+        private void modifyRefParam(ref StructAssign param) {
             param.val = 12;
         }
         
@@ -229,7 +229,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         // [c# 7.2 - Why would one ever use the "in" parameter modifier in C#? - Stack Overflow] https://stackoverflow.com/questions/52820372/why-would-one-ever-use-the-in-parameter-modifier-in-c
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
-        private void passByReadOnlyRef(in Struct param) {
+        private void passByReadOnlyRef(in StructAssign param) {
             // param.val = 12;  // error CS8332: Cannot assign to a member of variable 'in Struct' because it is a readonly variable
         }
     }
