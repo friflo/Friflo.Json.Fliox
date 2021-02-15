@@ -5,6 +5,7 @@ using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 // using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
@@ -182,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
     
-    public class TestILClassMapper
+    public class TestILClassMapper : LeakTestsFixture
     {
         readonly string boxedStr = $@"
 {{

@@ -56,7 +56,14 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 }
             }
         }
-        
+
+        public override void Dispose() {
+            base.Dispose();
+            foreach (var entry in stringToIntegral) {
+                entry.Key.value.Dispose();
+            }
+        }
+
         // ----------------------------------------- Write / Read ----------------------------------------- 
         public override void Write(ref Writer writer, T slot) {
             if (IsNull(ref slot)) {

@@ -15,7 +15,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
-    public class TestMisc
+    public class TestMisc // : LeakTestsFixture todo
     {
         [Test]
         public void TestUtf8() {

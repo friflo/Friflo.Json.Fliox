@@ -4,6 +4,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 // using static NUnit.Framework.Assert;
@@ -32,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
     }
 
-    public class TestNoAllocation
+    public class TestNoAllocation : LeakTestsFixture
     {
         string testClassJson = $@"
 {{

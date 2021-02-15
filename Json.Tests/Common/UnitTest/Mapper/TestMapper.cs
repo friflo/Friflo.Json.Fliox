@@ -2,6 +2,7 @@
 using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -16,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         Value3 = 11, // duplicate constant value - C#/.NET maps these enum values to the first value using same constant   
     }
 
-    public class TestMapper
+    public class TestMapper : LeakTestsFixture
     { 
         [Test]
         public void TestEnumMapper() {

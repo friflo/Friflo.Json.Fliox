@@ -4,6 +4,7 @@ using System.Numerics;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
@@ -67,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
 
-    public class TestReadWrite
+    public class TestReadWrite : LeakTestsFixture
     {
         const string BigInt = "1234567890123456789012345678901234567890";
 

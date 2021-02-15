@@ -1,12 +1,13 @@
 ﻿using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
-    public class TestParserPerformance
+    public class TestParserPerformance : LeakTestsFixture
     {
         // Add JSON samples from https://github.com/ysharplanguage/FastJsonParser
         [Test]

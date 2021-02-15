@@ -7,13 +7,14 @@ using System.Linq;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public class TestCollections
+    public class TestCollections : LeakTestsFixture
     {
         private void AssertNull<T>(JsonReader reader, JsonWriter writer) {
             using (var dst = new TestBytes()) {
