@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             //
             childStruct1.val2 = 90;
             childStruct2.val2 = 91;
-            child =     new ChildIL { val = 92 };
+            child =     null;
             childNull = new ChildIL { val = 93 };
             dbl   = 94;
             flt   = 95;
@@ -207,7 +207,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 }}
 ";
 
-
         [Test] public void  WriteStructReflect()   { WriteStruct(TypeAccess.Reflection); }
         [Test] public void  WriteStructIL()        { WriteStruct(TypeAccess.IL); }
 
@@ -225,11 +224,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private void AssertStructIL(ref StructIL structIL) {
-            AreEqual(200,   structIL.child1.Value.val2);
+            AreEqual(200,   structIL.structInt);
+            AreEqual(201,   structIL.child1.Value.val2);
             AreEqual(false, structIL.child2.HasValue);
         }
         
-        // [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
+        [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
         // [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
         
         private void        ReadStruct(TypeAccess typeAccess) {

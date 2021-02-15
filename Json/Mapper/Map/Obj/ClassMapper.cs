@@ -69,7 +69,14 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
         private static Expression<Func<T>> CreateInstanceExpression () {
-            Expression create = Expression.New(typeof(T));
+            Type nullableStruct = TypeUtils.GetNullableStruct(typeof(T));
+            Expression create;
+            if (nullableStruct != null) {
+                Expression newStruct = Expression.New(nullableStruct);
+                create = Expression.Convert(newStruct, typeof(T));
+            } else {
+                create = Expression.New(typeof(T));
+            }
             return Expression.Lambda<Func<T>> (create);
         }
         
