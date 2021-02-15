@@ -2,6 +2,7 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -15,7 +16,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
-    public class TestMisc // : LeakTestsFixture todo
+    public class TestMisc : LeakTestsFixture
     {
         [Test]
         public void TestUtf8() {
@@ -78,8 +79,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestUnicodeToBytes() {
-            using (var destination = new Bytes("")) {
-                var dst = destination;
+            var dst = new Bytes("");
+            try {
                 AssertUnicodeToByte(ref dst, "a");
                 AssertUnicodeToByte(ref dst, "©");
                 AssertUnicodeToByte(ref dst, "€");
@@ -89,6 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 dst.Clear();
                 JsonSerializer.AppendEscString(ref dst, ref src);
                 AreEqual("\"" + src + "\"", dst.ToString());
+            } finally {
+                dst.Dispose();
             }
         }
         
@@ -104,8 +107,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestUnicodeToBytesFull() {
-            using (var destination = new Bytes("")) {
-                var dst = destination;
+            var dst = new Bytes("");
+            try {
                 dst.EnsureCapacityAbs(dst.end + 4);
                 // Test only near borders to speedup test
                 AssertUnicodeRange(ref dst,        0,  0x000100, 256); // test border:    0x80
@@ -115,15 +118,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AssertUnicodeRange(ref dst, 0x00e000,  0x00e010,  16);
                 AssertUnicodeRange(ref dst, 0x00fff0,  0x010010,  32); // test border: 0x10000
                 AssertUnicodeRange(ref dst, 0x10fff0,  0x110000,  16);
+            } finally{
+                dst.Dispose();
             }
         }
         
         [Test]
         public void TestAppendEscString() {
-            using (var destination = new Bytes("")) {
-                var dst = destination;
-                
-
+            var dst = new Bytes("");
+            try {
                 // Test only near borders to speedup test
                 AssertAppendEscStringRange(ref dst,       35,        92,  57); // exclude escape characters  
                 AssertAppendEscStringRange(ref dst, 0x0007f0,  0x000810,  32); // test border:   0x800
@@ -140,6 +143,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AssertAppendEscStringChar(ref dst, '\t', "t");
                 AssertAppendEscStringChar(ref dst, '"',  "\"");
                 AssertAppendEscStringChar(ref dst, '\\', "\\");
+            } finally {
+                dst.Dispose();
             }
         }
         
