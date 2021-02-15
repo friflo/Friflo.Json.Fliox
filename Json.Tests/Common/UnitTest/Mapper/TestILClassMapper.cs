@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
-        // [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
+        [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
         
         private void        ReadStruct(TypeAccess typeAccess) {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(typeAccess)))

@@ -178,6 +178,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             primitives.array[idx] = null;
         }
         
+        public void StoreStructNonNull(int idx) {
+            primitives.array[idx] = 1;
+        }
+        
         public bool LoadPrimitiveHasValue(int idx) {
             var value = primitives.array[idx];
             return value.HasValue;
