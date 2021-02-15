@@ -37,6 +37,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public int val2;
     }
     
+    struct StructIL
+    {
+        public int              structInt;
+        public ChildStructIL?   child1;
+        public ChildStructIL?   child2;
+
+        public void Init() {
+            structInt = 200;
+            child1 = new ChildStructIL {val2 = 201};
+            child2 = null;
+        }
+    }
+    
     class SampleIL
     {
         public EnumIL   enumIL1;
@@ -183,6 +196,55 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(payloadTrimmed, jsonResult);
             }
         }
+        
+        readonly string structJson = $@"
+{{
+    ""structInt"": 200,
+    ""child1"" : {{
+        ""val2"": 201
+    }},
+    ""child2"" : null
+}}
+";
+
+
+        [Test] public void  WriteStructReflect()   { WriteStruct(TypeAccess.Reflection); }
+        [Test] public void  WriteStructIL()        { WriteStruct(TypeAccess.IL); }
+
+        private void        WriteStruct(TypeAccess typeAccess) {
+            string payloadTrimmed = string.Concat(structJson.Where(c => !char.IsWhiteSpace(c)));
+            
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            {
+                var sample = new StructIL();
+                sample.Init();
+                var jsonResult = writer.Write(sample);
+                AreEqual(payloadTrimmed, jsonResult);
+            }
+        }
+        
+        private void AssertStructIL(ref StructIL structIL) {
+            AreEqual(200,   structIL.child1.Value.val2);
+            AreEqual(false, structIL.child2.HasValue);
+        }
+        
+        // [Test] public void  ReadStructReflect()   { ReadStruct(TypeAccess.Reflection); }
+        // [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
+        
+        private void        ReadStruct(TypeAccess typeAccess) {
+            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
+            {
+                var result = reader.Read<StructIL>(structJson);
+                if (reader.Error.ErrSet)
+                    Fail(reader.Error.msg.ToString());
+
+                AssertStructIL(ref result);
+            }
+        }
+        
+        
         
         
         readonly string payloadStr = $@"
