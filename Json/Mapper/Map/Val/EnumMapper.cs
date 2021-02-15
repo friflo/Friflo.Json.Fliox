@@ -70,7 +70,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public EnumMapper(StoreConfig config, Type type) :
             base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
         {
-            Type enumType = isNullable ? underlyingType : type;
+            Type enumType = isNullable ? nullableUnderlyingType : type;
             // ReSharper disable once PossibleNullReferenceException
             FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {

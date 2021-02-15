@@ -370,10 +370,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test] public void  ReadJsonReflect()   { ReadJson(TypeAccess.Reflection); }
-        [Test] public void  ReadJsonIL()        { ReadJson(TypeAccess.IL); }
+        [Test] public void  ReadClassReflect()   { ReadClassIL(TypeAccess.Reflection); }
+        [Test] public void  ReadClassIL()        { ReadClassIL(TypeAccess.IL); }
         
-        private void        ReadJson(TypeAccess typeAccess) {
+        private void        ReadClassIL(TypeAccess typeAccess) {
             using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(typeAccess)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             {

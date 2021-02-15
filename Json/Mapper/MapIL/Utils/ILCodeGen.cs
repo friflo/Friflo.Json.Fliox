@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field         = propFields.fields[n];
                 Type fieldType          = field.fieldType.type;
-                Type ut                 = field.fieldType.underlyingType;
+                Type ut                 = field.fieldType.nullableUnderlyingType;
 
 
                 MemberExpression memberVal;
@@ -192,7 +192,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
             for (int n = 0; n < propFields.fields.Length; n++) {
                 PropField field = propFields.fields[n];
                 Type fieldType  = field.fieldType.type;
-                Type ut         = field.fieldType.underlyingType;
+                Type ut         = field.fieldType.nullableUnderlyingType;
                 
                 MemberExpression dstMember;
                 if (field.field != null)

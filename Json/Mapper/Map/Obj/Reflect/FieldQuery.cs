@@ -33,16 +33,21 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
             TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
-            Type        ut          = mapper.underlyingType;
-            bool isNullablePrimitive = memberType.IsValueType && ut != null && ut.IsPrimitive;
-            bool isNullableEnum      = memberType.IsValueType && ut != null && ut.IsEnum;
+            Type        ut          = mapper.nullableUnderlyingType;
+            bool isNullablePrimitive = ut != null && ut.IsPrimitive;
+            bool isNullableEnum      = ut != null && ut.IsEnum;
             
             if (addMembers) {
                 PropField pf;
-                if (mapper.isValueType || isNullablePrimitive || isNullableEnum)
-                    pf = new PropField(fieldName, mapper, field, property, primCount, objCount);
-                else
-                    pf = new PropField(fieldName, mapper, field, property, -1, objCount);
+                if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
+                    pf =     new PropField(fieldName, mapper, field, property, primCount,    -9999); // force index exception in case of buggy impl.
+                } else {
+                    if (mapper.isValueType)
+                        pf = new PropField(fieldName, mapper, field, property, primCount, objCount);
+                    else
+                        pf = new PropField(fieldName, mapper, field, property, -9999,     objCount); // force index exception in case of buggy impl.
+                }
+
                 fieldList.Add(pf);
             }
             
