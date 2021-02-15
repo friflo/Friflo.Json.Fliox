@@ -232,8 +232,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void AssertSampleIL(SampleIL sample) {
             // ReSharper disable PossibleInvalidOperationException
             AreEqual(null,  sample.enumIL2);
-            // AreEqual(false, sample.childStructNull1.HasValue);
-            // AreEqual(19,    sample.childStructNull2.Value.val2);
+            AreEqual(false, sample.childStructNull1.HasValue);
+            AreEqual(19,    sample.childStructNull2.Value.val2);
 
             AreEqual(20d,   sample.nulDouble.Value);
             AreEqual(null,  sample.nulDoubleNull);

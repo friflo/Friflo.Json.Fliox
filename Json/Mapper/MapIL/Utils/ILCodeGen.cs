@@ -182,7 +182,7 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                 // instantiate new struct and assign to Nullable<>, if src array element is not null
                 var newStruct   = Exp.New(nullableStruct); // , new Expression[0]);
                 var newNullable = Exp.Convert(newStruct, dstTyped.Type);
-                var newValue    = Exp.Condition(notNull, Exp.Constant(null, dstTyped.Type), newNullable, dstTyped.Type); // srcTyped = srcElement != 0;
+                var newValue    = Exp.Condition(notNull, newNullable, Exp.Constant(null, dstTyped.Type), dstTyped.Type); // srcTyped = srcElement != 0;
                 var dstAssign   = Exp.Assign(dstTyped, newValue);              // dstMember = srcTyped;
                 ctx.assignmentList.Add(dstAssign);
                 AddStoreMembers(ctx, mapper, value);
