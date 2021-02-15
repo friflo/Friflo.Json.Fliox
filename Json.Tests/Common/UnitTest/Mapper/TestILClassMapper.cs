@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public byte?    nulByte;
         public byte?    nulByteNull;
         
-        public bool     nulBool;
+        public bool?    nulBool;
         public bool?    nulBoolNull;
         
         public StructIL childStruct1;
@@ -230,9 +230,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 }}
 ";
         private void AssertSampleIL(SampleIL sample) {
-            // ReSharper disable once PossibleInvalidOperationException
+            // ReSharper disable PossibleInvalidOperationException
+            AreEqual(null,  sample.enumIL2);
+            // AreEqual(false, sample.childStructNull1.HasValue);
+            // AreEqual(19,    sample.childStructNull2.Value.val2);
+
             AreEqual(20d,   sample.nulDouble.Value);
             AreEqual(null,  sample.nulDoubleNull);
+            AreEqual(21f,   sample.nulFloat.Value);
+            AreEqual(null,  sample.nulFloatNull);
+            AreEqual(22L,   sample.nulLong.Value);
+            AreEqual(null,  sample.nulLongNull);
+            AreEqual(23,    sample.nulInt.Value);
+            AreEqual(null,  sample.nulIntNull);
+            AreEqual(24,    sample.nulShort.Value);
+            AreEqual(null,  sample.nulShortNull);
+            AreEqual(25,    sample.nulByte.Value);
+            AreEqual(null,  sample.nulByteNull);
+            AreEqual(true,  sample.nulBool.Value);
+            AreEqual(null,  sample.nulBoolNull);
+            
+            AreEqual(111,   sample.childStruct1.val2);
+            AreEqual(112,   sample.childStruct2.val2);
+            AreEqual(42,    sample.child.val);
+            AreEqual(null,  sample.childNull);
                 
             AreEqual(22.5,  sample.dbl);
             AreEqual(33.5,  sample.flt);
