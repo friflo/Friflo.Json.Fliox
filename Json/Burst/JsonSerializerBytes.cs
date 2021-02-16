@@ -79,14 +79,12 @@ namespace Friflo.Json.Burst
         }
 
         private void AppendKeyBytes(ref Bytes dst, in Bytes key) {
-            dst.EnsureCapacityAbs(dst.end + key.Len + 3);
+            AppendEscStringBytes(ref dst, in key);
             ref var dstArr = ref dst.buffer.array;
-            dstArr[dst.end++] = (byte)'"';
-            dst.AppendBytesReadOnly(in key);
-            dstArr[dst.end++] = (byte)'"';
+            dst.EnsureCapacityAbs(dst.end + 1);
             dstArr[dst.end++] = (byte)':';
             if (pretty) {
-                dst.EnsureCapacityAbs(dst.end + 1 );
+                dst.EnsureCapacityAbs(dst.end + 1);
                 dstArr[dst.end++] = (byte)' ';
             }
         }

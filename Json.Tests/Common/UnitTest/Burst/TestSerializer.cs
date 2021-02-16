@@ -61,6 +61,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 s.InitSerializer();
                 s.ObjectStart();
+                s.MemberStr ("1-\r", "World 🌎");
+                s.MemberDbl ("2-\n", 10.5);
+                s.MemberLng ("3-\t", 42);
+                s.MemberBln ("4-\"", true);
+                s.MemberNul ("5-\\");
+                s.MemberNul ("6-\b");
+                s.MemberNul ("7-\f");
+                s.ObjectEnd();
+                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.dst.ToString());
+            } {
+                s.InitSerializer();
+                s.ObjectStart();
                     s.MemberArrayStart ("array");
                     s.ArrayEnd();
                     
