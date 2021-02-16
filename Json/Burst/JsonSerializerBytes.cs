@@ -134,7 +134,7 @@ namespace Friflo.Json.Burst
             AppendEscString(ref json, in value);
         }
 #else
-        public void MemberStr(in Bytes key, string value) {
+        public void MemberStr(in Bytes key, in string value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref json, in key);
