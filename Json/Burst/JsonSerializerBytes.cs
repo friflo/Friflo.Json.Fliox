@@ -100,7 +100,7 @@ namespace Friflo.Json.Burst
         
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStartRef(in Bytes key) {
+        public void MemberArrayStart(in Bytes key) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -109,7 +109,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
-        public void MemberObjectStartRef(in Bytes key) {
+        public void MemberObjectStart(in Bytes key) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a "string"</summary>
-        public void MemberStrRef(in Bytes key, in Bytes value) {
+        public void MemberStr(in Bytes key, in Bytes value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -129,14 +129,14 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberStrRef(in Bytes key, Unity.Collections.FixedString32 value) {
+        public void MemberStr(in Bytes key, Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
             AppendEscString(ref dst, in value);
         }
 #else
-        public void MemberStrRef(in Bytes key, string value) {
+        public void MemberStr(in Bytes key, string value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Burst
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
-        public void MemberDblRef(in Bytes key, double value) {
+        public void MemberDbl(in Bytes key, double value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -152,7 +152,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberLngRef(in Bytes key, long value) {
+        public void MemberLng(in Bytes key, long value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -160,7 +160,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
-        public void MemberBlnRef(in Bytes key, bool value) {
+        public void MemberBln(in Bytes key, bool value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
@@ -168,7 +168,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
-        public void MemberNulRef(in Bytes key) {
+        public void MemberNul(in Bytes key) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);

@@ -85,9 +85,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 // - object
                 s.InitSerializer();
                 s.ObjectStart();
-                s.MemberStrRef(in str, "hello");
-                s.MemberDblRef(in dbl, 10.5);
-                s.MemberLngRef(in lng, 42);
+                s.MemberStr(in str, "hello");
+                s.MemberDbl(in dbl, 10.5);
+                s.MemberLng(in lng, 42);
                 s.ObjectEnd();
                 AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.dst.ToString());
             }
