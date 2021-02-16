@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             Keys    k = new Keys(Default.Constructor);
             s.InitSerializer();
             try {
-                WriteBuddy(ref s, ref k, ref buddy);
+                WriteBuddy(ref s, in k, in buddy);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
                 AreEqual(expect, s.json.ToString());
@@ -76,18 +76,18 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
 
-        private static void WriteBuddy(ref JsonSerializer s, ref Keys k, ref Buddy buddy) {
+        private static void WriteBuddy(ref JsonSerializer s, in Keys k, in Buddy buddy) {
             s.ObjectStart();
             s.MemberStr (in k.firstName,   in buddy.firstName);
             s.MemberLng (in k.age,         buddy.age);
             s.MemberArrayStart(in k.hobbies);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
-                WriteHobby(ref s, ref k, ref buddy.hobbies.ElementAt(n));
+                WriteHobby(ref s, in k, in buddy.hobbies.ElementAt(n));
             s.ArrayEnd();
             s.ObjectEnd();
         }
         
-        private static void WriteHobby(ref JsonSerializer s, ref Keys k, ref Hobby buddy) {
+        private static void WriteHobby(ref JsonSerializer s, in Keys k, in Hobby buddy) {
             s.ObjectStart();
             s.MemberStr(in k.name, in buddy.name);
             s.ObjectEnd();
