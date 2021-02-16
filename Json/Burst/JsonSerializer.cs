@@ -47,7 +47,7 @@ namespace Friflo.Json.Burst
         private     int                     level;
         private     int                     maxDepth;
         private     Str32                   @null;
-        private      bool                   pretty;
+        private     bool                    pretty;
         
         public      int                     Level => level;
         

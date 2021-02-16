@@ -127,7 +127,7 @@ namespace Friflo.Json.Burst
         /// Writes a key/value pair where the value is a <see cref="string"/><br/>
         /// </summary>
 #if JSON_BURST
-        public void MemberStr(in Bytes key, Unity.Collections.FixedString32 value) {
+        public void MemberStr(in Bytes key, in Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref json, in key);

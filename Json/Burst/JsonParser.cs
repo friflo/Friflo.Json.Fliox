@@ -173,7 +173,7 @@ namespace Friflo.Json.Burst
         }
 
         // ---------------------- error message creation - begin
-        void Error (Str32 module, ErrorType errorType, in Str128 msg, ref Bytes value) {
+        void Error (in Str32 module, ErrorType errorType, in Str128 msg, ref Bytes value) {
             lastEvent = JsonEvent.Error;
             preErrorState = state.array[stateLevel]; 
             state.array[stateLevel] = State.JsonError;
@@ -212,16 +212,16 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="module">Name of the module raising the error</param>
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
-        public void ErrorMsg (Str32 module, in Str128 msg) {
+        public void ErrorMsg (in Str32 module, in Str128 msg) {
             errVal.Clear();
             Error(module, ErrorType.ExternalError, in msg, ref errVal);
         }
         
-        public void ErrorMsg(Str32 module, ref Bytes msg) {
+        public void ErrorMsg(in Str32 module, ref Bytes msg) {
             Error(module, ErrorType.ExternalError, in emptyString, ref msg);
         }
         
-        public void ErrorMsgParam(Str32 module, in Str128 msg, ref Bytes value) {
+        public void ErrorMsgParam(in Str32 module, in Str128 msg, ref Bytes value) {
             Error(module, ErrorType.ExternalError, in msg, ref value);
         }
         
@@ -554,17 +554,17 @@ namespace Friflo.Json.Burst
                         return lastEvent = JsonEvent.ValueNumber;
                     return JsonEvent.Error;
                 case 't':
-                    if (!ReadKeyword('t', ref @true ))
+                    if (!ReadKeyword('t', in @true ))
                         return JsonEvent.Error;
                     boolValue= true;
                     return lastEvent = JsonEvent.ValueBool;
                 case 'f':
-                    if (!ReadKeyword('f', ref @false))
+                    if (!ReadKeyword('f', in @false))
                         return JsonEvent.Error;
                     boolValue= false;
                     return lastEvent = JsonEvent.ValueBool;
                 case 'n':
-                    if (!ReadKeyword('n', ref @null))
+                    if (!ReadKeyword('n', in @null))
                         return JsonEvent.Error;
                     return lastEvent = JsonEvent.ValueNull;
                 case  -1:
@@ -786,7 +786,7 @@ namespace Friflo.Json.Burst
             return -1;
         }
     
-        private bool ReadKeyword (char firstChar, ref Str32 keyword)
+        private bool ReadKeyword (char firstChar, in Str32 keyword)
         {
             value.Clear();
             value.AppendChar(firstChar);
