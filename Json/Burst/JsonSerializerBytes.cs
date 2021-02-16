@@ -101,7 +101,7 @@ namespace Friflo.Json.Burst
         public void MemberArrayStart(in Bytes key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
+            AppendKeyBytes(ref json, in key);
             SetStartGuard();
             ArrayStart();
         }
@@ -110,7 +110,7 @@ namespace Friflo.Json.Burst
         public void MemberObjectStart(in Bytes key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
+            AppendKeyBytes(ref json, in key);
             SetStartGuard();
             ObjectStart();
         }
@@ -119,8 +119,8 @@ namespace Friflo.Json.Burst
         public void MemberStr(in Bytes key, in Bytes value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            AppendEscStringBytes(ref dst, in value);
+            AppendKeyBytes(ref json, in key);
+            AppendEscStringBytes(ref json, in value);
         }
         
         /// <summary>
@@ -130,47 +130,47 @@ namespace Friflo.Json.Burst
         public void MemberStr(in Bytes key, Unity.Collections.FixedString32 value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            AppendEscString(ref dst, in value);
+            AppendKeyBytes(ref json, in key);
+            AppendEscString(ref json, in value);
         }
 #else
         public void MemberStr(in Bytes key, string value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            AppendEscString(ref dst, in value);
+            AppendKeyBytes(ref json, in key);
+            AppendEscString(ref json, in value);
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDbl(in Bytes key, double value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            format.AppendDbl(ref dst, value);
+            AppendKeyBytes(ref json, in key);
+            format.AppendDbl(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
         public void MemberLng(in Bytes key, long value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            format.AppendLong(ref dst, value);
+            AppendKeyBytes(ref json, in key);
+            format.AppendLong(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBln(in Bytes key, bool value) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            format.AppendBool(ref dst, value);
+            AppendKeyBytes(ref json, in key);
+            format.AppendBool(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
         public void MemberNul(in Bytes key) {
             AssertMember();
             AddSeparator();
-            AppendKeyBytes(ref dst, in key);
-            dst.AppendStr32(in @null);
+            AppendKeyBytes(ref json, in key);
+            json.AppendStr32(in @null);
         }
         
  

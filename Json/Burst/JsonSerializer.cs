@@ -31,7 +31,7 @@ namespace Friflo.Json.Burst
     /// After all array elements are serialized <see cref="ArrayEnd()"/> closes the previous started JSON array.<br/>
     ///
     /// After creating the JSON document by using the appender methods, the JSON document is available
-    /// via <exception cref="dst"></exception> 
+    /// via <exception cref="json"></exception> 
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -39,7 +39,7 @@ namespace Friflo.Json.Burst
     public partial struct JsonSerializer : IDisposable
     {
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
-        public      Bytes                   dst;
+        public      Bytes                   json;
         private     ValueFormat             format;
         private     ValueList<bool>         firstEntry;
         private     ValueList<NodeType>     nodeType;
@@ -72,9 +72,9 @@ namespace Friflo.Json.Burst
         /// create internal buffers.
         /// </summary>
         public void InitSerializer() {
-            if (!dst.buffer.IsCreated())
-                dst.InitBytes(128);
-            dst.Clear();
+            if (!json.buffer.IsCreated())
+                json.InitBytes(128);
+            json.Clear();
             format.InitTokenFormat();
             int initDepth = 16;
             maxDepth = JsonParser.DefaultMaxDepth;
@@ -150,8 +150,8 @@ namespace Friflo.Json.Burst
                 strBuf.Dispose();
             if (nodeType.IsCreated())
                 nodeType.Dispose();
-            if (dst.buffer.IsCreated())
-                dst.Dispose();
+            if (json.buffer.IsCreated())
+                json.Dispose();
             format.Dispose();
         }
         
@@ -228,17 +228,17 @@ namespace Friflo.Json.Burst
         }
         
         private void IndentBegin() {
-            dst.EnsureCapacityAbs(dst.end + level + 1);
-            dst.buffer.array[dst.end++] = (byte)'\n';
+            json.EnsureCapacityAbs(json.end + level + 1);
+            json.buffer.array[json.end++] = (byte)'\n';
             for (int n = 0; n < level; n++)
-                dst.buffer.array[dst.end++] = (byte)'\t';
+                json.buffer.array[json.end++] = (byte)'\t';
         }
         
         private void IndentEnd() {
-            dst.EnsureCapacityAbs(dst.end + level + 1);
-            dst.buffer.array[dst.end++] = (byte)'\n';
+            json.EnsureCapacityAbs(json.end + level + 1);
+            json.buffer.array[json.end++] = (byte)'\n';
             for (int n = 0; n < level; n++)
-                dst.buffer.array[dst.end++] = (byte)'\t';
+                json.buffer.array[json.end++] = (byte)'\t';
         }
 
         private void AppendKeyString(ref Bytes dst, in Str32 key) {
@@ -260,7 +260,7 @@ namespace Friflo.Json.Burst
                     IndentBegin();
                 return;
             }
-            dst.AppendChar(',');
+            json.AppendChar(',');
             if (pretty)
                 IndentBegin();
         }
@@ -271,7 +271,7 @@ namespace Friflo.Json.Burst
             AssertStart();
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
-            dst.AppendChar('{');
+            json.AppendChar('{');
             if (level >= maxDepth)
                 throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
             if (++level >= firstEntry.Count)
@@ -287,7 +287,7 @@ namespace Friflo.Json.Burst
             level--;
             if (pretty)
                 IndentEnd();
-            dst.AppendChar('}');
+            json.AppendChar('}');
             firstEntry.array[level] = false;
         }
 
@@ -296,7 +296,7 @@ namespace Friflo.Json.Burst
         public void MemberArrayStart(in Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
+            AppendKeyString(ref json, in key);
             SetStartGuard();
             ArrayStart();
         }
@@ -305,7 +305,7 @@ namespace Friflo.Json.Burst
         public void MemberObjectStart(in Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
+            AppendKeyString(ref json, in key);
             SetStartGuard();
             ObjectStart();
         }
@@ -314,8 +314,8 @@ namespace Friflo.Json.Burst
         public void MemberStr(in Str32 key, in Bytes value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            AppendEscStringBytes(ref dst, in value);
+            AppendKeyString(ref json, in key);
+            AppendEscStringBytes(ref json, in value);
         }
 
         /// <summary>
@@ -331,40 +331,40 @@ namespace Friflo.Json.Burst
         public void MemberStr(in string key, in string value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            AppendEscString(ref dst, in value);
+            AppendKeyString(ref json, in key);
+            AppendEscString(ref json, in value);
         }
 #endif
         /// <summary>Writes a key/value pair where the value is a <see cref="double"/></summary>
         public void MemberDbl(in Str32 key, double value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            format.AppendDbl(ref dst, value);
+            AppendKeyString(ref json, in key);
+            format.AppendDbl(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
         public void MemberLng(in Str32 key, long value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            format.AppendLong(ref dst, value);
+            AppendKeyString(ref json, in key);
+            format.AppendLong(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBln(in Str32 key, bool value) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            format.AppendBool(ref dst, value);
+            AppendKeyString(ref json, in key);
+            format.AppendBool(ref json, value);
         }
         
         /// <summary>Writes a key/value pair where the value is null</summary>
         public void MemberNul(in Str32 key) {
             AssertMember();
             AddSeparator();
-            AppendKeyString(ref dst, in key);
-            dst.AppendStr32(in @null);
+            AppendKeyString(ref json, in key);
+            json.AppendStr32(in @null);
         }
 
         // ----------------------------- array with elements -----------------------------
@@ -372,7 +372,7 @@ namespace Friflo.Json.Burst
             AssertStart();
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
-            dst.AppendChar('[');
+            json.AppendChar('[');
             if (level >= maxDepth)
                 throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
             if (++level >= firstEntry.Count)
@@ -389,7 +389,7 @@ namespace Friflo.Json.Burst
             level--;
             if (pretty)
                 IndentEnd();
-            dst.AppendChar(']');
+            json.AppendChar(']');
             firstEntry.array[level] = false;
         }
         
@@ -397,7 +397,7 @@ namespace Friflo.Json.Burst
         public void ElementStr(in Bytes value) {
             AssertElement();
             AddSeparator();
-            AppendEscStringBytes(ref dst, in value);
+            AppendEscStringBytes(ref json, in value);
         }
         
 #if JSON_BURST
@@ -406,42 +406,42 @@ namespace Friflo.Json.Burst
             strBuf.AppendStr128(in value);
             AssertElement();
             AddSeparator();
-            AppendEscStringBytes(ref dst, in strBuf);
+            AppendEscStringBytes(ref json, in strBuf);
         }
 #else
         /// <summary>Write an array element of type <see cref="string"/></summary>
         public void ElementStr(string value) {
             AssertElement();
             AddSeparator();
-            AppendEscString(ref dst, in value);
+            AppendEscString(ref json, in value);
         }
 #endif
         /// <summary>Write an array element of type <see cref="double"/></summary>
         public void ElementDbl(double value) {
             AssertElement();
             AddSeparator();
-            format.AppendDbl(ref dst, value);
+            format.AppendDbl(ref json, value);
         }
         
         /// <summary>Write an array element of type <see cref="long"/></summary>
         public void ElementLng(long value) {
             AssertElement();
             AddSeparator();
-            format.AppendLong(ref dst, value);
+            format.AppendLong(ref json, value);
         }
         
         /// <summary>Write an array element of type <see cref="bool"/></summary>
         public void ElementBln(bool value) {
             AssertElement();
             AddSeparator();
-            format.AppendBool(ref dst, value);
+            format.AppendBool(ref json, value);
         }
         
         /// <summary>Writes null as array element</summary>
         public void ElementNul() {
             AssertElement();
             AddSeparator();
-            dst.AppendStr32(in @null);
+            json.AppendStr32(in @null);
         }
         
         // ----------------- utilities
@@ -461,7 +461,7 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
-                        AppendKeyBytes(ref dst, in p.key);
+                        AppendKeyBytes(ref json, in p.key);
                         /*
                         // Conversion to long or double is expensive and not required 
                         if (p.isFloat)
@@ -469,7 +469,7 @@ namespace Friflo.Json.Burst
                         else
                             MemberLong(ref p.key, p.ValueAsLong(out _));
                         */
-                        dst.AppendBytes(ref p.value);
+                        json.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         MemberBln(in p.key, p.boolValue);
@@ -512,7 +512,7 @@ namespace Friflo.Json.Burst
                         break;
                     case JsonEvent.ValueNumber:
                         AddSeparator();
-                        dst.AppendBytes(ref p.value);
+                        json.AppendBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         ElementBln(p.boolValue);
@@ -551,7 +551,7 @@ namespace Friflo.Json.Burst
                     ElementStr(in p.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    dst.AppendBytes(ref p.value);
+                    json.AppendBytes(ref p.value);
                     return true;
                 case JsonEvent.ValueBool:
                     ElementBln(p.boolValue);

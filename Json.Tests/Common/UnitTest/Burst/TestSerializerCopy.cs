@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     }
                     memLog.AssertNoAllocations();
                 }
-                CommonUtils.ToFile("assets/output/writeManual.json", ser.dst);
+                CommonUtils.ToFile("assets/output/writeManual.json", ser.json);
                 if (parser.error.ErrSet)
                     Fail(parser.error.msg.ToString());
                 AreEqual(JsonEvent.EOF, parser.NextEvent());   // Important to ensure absence of application errors
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 SkipInfo srcSkipInfo = parser.skipInfo;
 
                 // validate generated JSON
-                parser.InitParser(ser.dst);
+                parser.InitParser(ser.json);
                 parser.SkipTree();
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("{}", ser.dst.ToString());
+                    AreEqual("{}", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("[]")) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("[]", ser.dst.ToString());
+                    AreEqual("[]", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("\"abc\"")) {
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("\"abc\"", ser.dst.ToString());
+                    AreEqual("\"abc\"", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("123")) {
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("123", ser.dst.ToString());
+                    AreEqual("123", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("true")) {
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("true", ser.dst.ToString());
+                    AreEqual("true", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("null")) {
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref parser));
                     AreEqual(0, parser.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual("null", ser.dst.ToString());
+                    AreEqual("null", ser.json.ToString());
                 }
 
                 // --- some error cases

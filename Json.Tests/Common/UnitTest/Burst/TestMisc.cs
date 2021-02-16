@@ -189,8 +189,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.ObjectStart();
                 s.MemberStr ("test", "a©€😎🌍");
                 s.ObjectEnd();
-                Console.WriteLine(s.dst.ToString());
-                string dst = s.dst.ToString();
+                Console.WriteLine(s.json.ToString());
+                string dst = s.json.ToString();
                 AreEqual(@"{""test"":""a©€😎🌍""}", dst);
             }
         }

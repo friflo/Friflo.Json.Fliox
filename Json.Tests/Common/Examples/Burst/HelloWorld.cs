@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 s.MemberStr ("say", "Hello");
                 s.MemberStr ("to",  "World 🌎");
             s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}");
+            Console.WriteLine($"Output: {s.json}");
             // Output: {"say":"Hello","to":"World 🌎"}
         }
 
