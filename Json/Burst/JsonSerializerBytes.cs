@@ -152,7 +152,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>Writes a key/value pair where the value is a <see cref="long"/></summary>
-        public void MemberDblRef(ref Bytes key, long value) {
+        public void MemberLngRef(ref Bytes key, long value) {
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, ref key);
