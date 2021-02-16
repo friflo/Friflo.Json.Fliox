@@ -1,18 +1,15 @@
-﻿using Friflo.Json.Burst;
-using Friflo.Json.Burst.Math;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Unity.Mathematics;
 using static NUnit.Framework.Assert;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
-    using Str128 = Unity.Collections.FixedString128;
 #else
     using Str32 = System.String;
-    using Str128 = System.String;
+
 #endif
 
-namespace Friflo.Json.Tests.Math
+namespace Friflo.Json.Burst.Math.Tests
 {
     public class TestMath
     {
@@ -74,9 +71,9 @@ namespace Friflo.Json.Tests.Math
         private static void ReadMathTypes(ref JsonParser p, ref Keys k, ref MathTypes types) {
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
-                if      (p.UseMemberArr (ref i, in k.float2))      { MathReader.Read(ref p, ref types.float2); }
-                else if (p.UseMemberArr (ref i, in k.float3))      { MathReader.Read(ref p, ref types.float3); }
-                else if (p.UseMemberArr (ref i, in k.float4))      { MathReader.Read(ref p, ref types.float4); }
+                if      (p.UseMemberArr (ref i, in k.float2))      { JsonMath.Read(ref p, ref types.float2); }
+                else if (p.UseMemberArr (ref i, in k.float3))      { JsonMath.Read(ref p, ref types.float3); }
+                else if (p.UseMemberArr (ref i, in k.float4))      { JsonMath.Read(ref p, ref types.float4); }
             }
         }
 
