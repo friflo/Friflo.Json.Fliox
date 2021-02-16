@@ -20,12 +20,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             return typeStore;
         }
 
-        String JsonSimpleObj = "{'val':5}";
+        String JsonSimpleObj = "{\"val\":5}";
         
         [Test]
         public void EncodeJsonSimple()  {
             using (TypeStore typeStore = createStore())
-            using (Bytes bytes = CommonUtils.FromString(JsonSimpleObj))
+            using (Bytes bytes = new Bytes(JsonSimpleObj))
             {
                 JsonSimple obj = EncodeJson<JsonSimple>(bytes, typeStore);
                 AreEqual(5L, obj.val);

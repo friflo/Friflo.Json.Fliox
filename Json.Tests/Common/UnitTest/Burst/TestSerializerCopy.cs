@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             var parser = new JsonParser();
             var ser = new JsonSerializer();
             try {
-                using (var bytes = CommonUtils.FromString("{}")) {
+                using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("{}", ser.dst.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("[]")) {
+                using (var bytes = new Bytes("[]")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("[]", ser.dst.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("'abc'")) {
+                using (var bytes = new Bytes("\"abc\"")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("\"abc\"", ser.dst.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("123")) {
+                using (var bytes = new Bytes("123")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("123", ser.dst.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("true")) {
+                using (var bytes = new Bytes("true")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("true", ser.dst.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("null")) {
+                using (var bytes = new Bytes("null")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsTrue(ser.WriteTree(ref parser));
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
 
                 // --- some error cases
-                using (var bytes = CommonUtils.FromString("[")) {
+                using (var bytes = new Bytes("[")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", parser.error.msg.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("{")) {
+                using (var bytes = new Bytes("{")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", parser.error.msg.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("")) {
+                using (var bytes = new Bytes("")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));
@@ -145,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
                 }
 
-                using (var bytes = CommonUtils.FromString("a")) {
+                using (var bytes = new Bytes("a")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
                     IsFalse(ser.WriteTree(ref parser));

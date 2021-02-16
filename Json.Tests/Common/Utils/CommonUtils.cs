@@ -44,16 +44,6 @@ namespace Friflo.Json.Tests.Common.Utils
             return dst;
         }
         
-        public static  Bytes FromString (String str) {
-
-            Bytes buffer = new Bytes(256);
-            str = str. Replace ('\'', '\"');
-            buffer.AppendString(str);
-            Bytes ret = buffer.SwapWithDefault();
-            buffer.Dispose();
-            return ret;
-        }
-        
         public static void ToFile (String path, Bytes bytes) {
             string baseDir = CommonUtils.GetBasePath();
             byte[] dst = new byte[bytes.Len];

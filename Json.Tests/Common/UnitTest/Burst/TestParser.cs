@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public static void BasicJsonParser() {
             JsonParser parser = new JsonParser();
             
-            using (var bytes = CommonUtils.FromString("{}")) {
+            using (var bytes = new Bytes("{}")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                 AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
             }
-            using (var bytes = CommonUtils.FromString("{'test':'hello'}")) {
+            using (var bytes = new Bytes("{\"test\":\"hello\"}")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
-            using (var bytes = CommonUtils.FromString("{'a':'b','abc':123,'x':'ab\\r\\nc'}")) {
+            using (var bytes = new Bytes("{\"a\":\"b\",\"abc\":123,\"x\":\"ab\\r\\nc\"}")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
-            using (var bytes = CommonUtils.FromString("[]")) {
+            using (var bytes = new Bytes("[]")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
                 AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
@@ -57,28 +57,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
             
             // --------------- primitives on root level --------------- 
-            using (var bytes = CommonUtils.FromString("'str'")) {
+            using (var bytes = new Bytes("\"str\"")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());
                 AreEqual("str", parser.value.ToString());
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
-            using (var bytes = CommonUtils.FromString("42")) {
+            using (var bytes = new Bytes("42")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
                 AreEqual("42", parser.value.ToString());
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
-            using (var bytes = CommonUtils.FromString("true")) {
+            using (var bytes = new Bytes("true")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ValueBool, parser.NextEvent());
                 AreEqual(true, parser.boolValue);
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 AreEqual(JsonEvent.Error, parser.NextEvent());
             }
-            using (var bytes = CommonUtils.FromString("null")) {
+            using (var bytes = new Bytes("null")) {
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.ValueNull, parser.NextEvent());
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
@@ -86,12 +86,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
             
             // --------------- invalid strings on root ---------------
-            using (var bytes = CommonUtils.FromString("")) { // empty string is not valid JSON
+            using (var bytes = new Bytes("")) { // empty string is not valid JSON
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
             }
-            using (var bytes = CommonUtils.FromString("str")) {
+            using (var bytes = new Bytes("str")) {
                 parser.InitParser(bytes);
                 AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
                 AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
@@ -99,13 +99,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
                 AreEqual(1, parser.error.Pos);              // ensuring code coverage
             }
-            using (var bytes = CommonUtils.FromString("tx")) { // start as a bool (true)
+            using (var bytes = new Bytes("tx")) { // start as a bool (true)
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
                 AreEqual(2, parser.error.Pos);
             }
-            using (var bytes = CommonUtils.FromString("1a")) { // start as a number
+            using (var bytes = new Bytes("1a")) { // start as a number
                 parser.InitParser(bytes);
                 AreEqual(JsonEvent.Error, parser.NextEvent());
                 AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
@@ -198,27 +198,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestParserPath() {
             JsonParser parser = new JsonParser();
             try {
-                using (var bytes = CommonUtils.FromString("{ err")) {
+                using (var bytes = new Bytes("{ err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
                     AreEqual("(root)", parser.GetPath());
                 }
-                using (var bytes = CommonUtils.FromString("{'m' err")) {
+                using (var bytes = new Bytes("{\"m\" err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
                     AreEqual("m", parser.GetPath());
                 }
-                using (var bytes = CommonUtils.FromString("[err")) {
+                using (var bytes = new Bytes("[err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
                     AreEqual("[0]", parser.GetPath());
                 }
-                using (var bytes = CommonUtils.FromString("[1, err")) {
+                using (var bytes = new Bytes("[1, err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
                     AreEqual("[1]", parser.GetPath());
                 }
-                using (var bytes = CommonUtils.FromString("err")) {
+                using (var bytes = new Bytes("err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
                     AreEqual("(root)", parser.GetPath());
@@ -233,13 +233,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestSkipping() {
             JsonParser parser = new JsonParser();
             try {
-                using (var bytes = CommonUtils.FromString("{}")) {
+                using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.objects);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("{'a':'A'}")) {
+                using (var bytes = new Bytes("{\"a\":\"A\"}")) {
                     parser.InitParser(bytes);
                     AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                     IsTrue(parser.SkipTree());
@@ -247,7 +247,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual(1, parser.skipInfo.strings);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("{'a':'A','b':'B'}")) {
+                using (var bytes = new Bytes("{\"a\":\"A\",\"b\":\"B\"}")) {
                     parser.InitParser(bytes);
                     AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                     AreEqual(JsonEvent.ValueString, parser.NextEvent()); // consume first property
@@ -256,31 +256,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual(1, parser.skipInfo.strings);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("[]")) {
+                using (var bytes = new Bytes("[]")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.arrays);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("'str'")) {
+                using (var bytes = new Bytes("\"str\"")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.strings);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("42")) {
+                using (var bytes = new Bytes("42")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.integers);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("true")) {
+                using (var bytes = new Bytes("true")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.booleans);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("null")) {
+                using (var bytes = new Bytes("null")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
                     AreEqual(1, parser.skipInfo.nulls);
@@ -288,34 +288,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
 
                 // --------------- skipping skipping invalid cases
-                using (var bytes = CommonUtils.FromString("[")) {
+                using (var bytes = new Bytes("[")) {
                     parser.InitParser(bytes);
                     IsFalse(parser.SkipTree());
                     AreEqual(JsonEvent.Error, parser.NextEvent());
                     IsFalse(parser.SkipTree()); // parser state is not changed
                 }
-                using (var bytes = CommonUtils.FromString("{")) {
+                using (var bytes = new Bytes("{")) {
                     parser.InitParser(bytes);
                     IsFalse(parser.SkipTree());
                     AreEqual(JsonEvent.Error, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("a")) {
+                using (var bytes = new Bytes("a")) {
                     parser.InitParser(bytes);
                     IsFalse(parser.SkipTree());
                     AreEqual(JsonEvent.Error, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("")) {
+                using (var bytes = new Bytes("")) {
                     parser.InitParser(bytes);
                     IsFalse(parser.SkipTree());
                     AreEqual(JsonEvent.Error, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("42")) {
+                using (var bytes = new Bytes("42")) {
                     parser.InitParser(bytes);
                     AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
                     IsFalse(parser.SkipTree()); // parser state is not changed
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-                using (var bytes = CommonUtils.FromString("{}")) {
+                using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
                     AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
