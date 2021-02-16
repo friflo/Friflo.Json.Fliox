@@ -8,20 +8,6 @@ namespace Friflo.Json.Burst
 {
     public partial struct Bytes
     {
-        public void AppendBytesReadOnly(in Bytes src) {
-            int curEnd = end;
-            int caLen = src.Len;
-            int newEnd = curEnd + caLen;
-            ref var buf = ref buffer.array;
-            EnsureCapacity(caLen);
-            int n2 = src.StartPos;
-            var str2 = src.buffer.array;
-            for (int n = curEnd; n < newEnd; n++)
-                buf[n] = str2[n2++];
-            end = newEnd;
-            hc = BytesConst.notHashed;
-        }
-
         public unsafe void AppendBytes(ref Bytes src)
         {
 /*

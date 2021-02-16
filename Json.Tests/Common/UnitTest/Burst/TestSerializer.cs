@@ -59,6 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.ObjectEnd();
                 AreEqual("{\"string 👋\":\"World 🌎\",\"double 👋\":10.5,\"long 👋\":42,\"bool 👋\":true,\"null 👋\":null}", s.dst.ToString());
             } {
+                // Escape string (or FixedString32 when compiling with JSON_BURST)
                 s.InitSerializer();
                 s.ObjectStart();
                 s.MemberStr ("1-\r", "World 🌎");
@@ -69,6 +70,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.MemberNul ("6-\b");
                 s.MemberNul ("7-\f");
                 s.ObjectEnd();
+                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.dst.ToString());
+            } {
+                using (var key1 = new Bytes("1-\r"))
+                using (var key2 = new Bytes("2-\n"))
+                using (var key3 = new Bytes("3-\t"))
+                using (var key4 = new Bytes("4-\""))
+                using (var key5 = new Bytes("5-\\"))
+                using (var key6 = new Bytes("6-\b"))
+                using (var key7 = new Bytes("7-\f"))
+                {
+                    s.InitSerializer();
+                    s.ObjectStart();
+                    s.MemberStr(in key1, "World 🌎");
+                    s.MemberDbl(in key2, 10.5);
+                    s.MemberLng(in key3, 42);
+                    s.MemberBln(in key4, true);
+                    s.MemberNul(in key5);
+                    s.MemberNul(in key6);
+                    s.MemberNul(in key7);
+                    s.ObjectEnd();
+                }
                 AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.dst.ToString());
             } {
                 s.InitSerializer();
