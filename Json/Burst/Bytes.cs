@@ -388,7 +388,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        public void AppendStr128 (ref Str128 str) {
+        public void AppendStr128 (in Str128 str) {
             int strLen = str.Length;
             EnsureCapacity(Len + strLen);
             int curEnd = end;
@@ -417,7 +417,7 @@ namespace Friflo.Json.Burst
         }
 
 #else
-        public void AppendStr128 (ref string str) {
+        public void AppendStr128 (in string str) {
             AppendString(str);
         }
         

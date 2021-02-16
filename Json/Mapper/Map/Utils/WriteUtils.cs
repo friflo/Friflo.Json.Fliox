@@ -97,7 +97,7 @@ namespace Friflo.Json.Mapper.Map.Utils
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteString(ref Writer writer, String str) {
-            JsonSerializer.AppendEscString(ref writer.bytes, ref str);
+            JsonSerializer.AppendEscString(ref writer.bytes, in str);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

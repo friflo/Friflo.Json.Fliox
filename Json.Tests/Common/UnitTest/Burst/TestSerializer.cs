@@ -70,33 +70,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("{\"array\":[],\"object\":{}}", s.dst.ToString());
             }
             // --- ensure coverage of methods using Bytes as parameter
-            Bytes textValue = new Bytes("textValue");
-            Bytes str = new Bytes("str");
-            Bytes dbl = new Bytes("dbl");
-            Bytes lng = new Bytes("lng");
-            try {
+            using (var textValue = new Bytes("textValue"))
+            using (var str = new Bytes("str"))
+            using (var dbl = new Bytes("dbl"))
+            using (var lng = new Bytes("lng"))
+            {
                 // - array
                 s.InitSerializer();
                 s.ArrayStart();
-                s.ElementStr(ref textValue);
+                s.ElementStr(in textValue);
                 s.ArrayEnd();
                 AreEqual("[\"textValue\"]", s.dst.ToString());
                 
                 // - object
                 s.InitSerializer();
                 s.ObjectStart();
-                s.MemberStrRef(ref str, "hello");
-                s.MemberDblRef(ref dbl, 10.5);
-                s.MemberLngRef(ref lng, 42);
+                s.MemberStrRef(in str, "hello");
+                s.MemberDblRef(in dbl, 10.5);
+                s.MemberLngRef(in lng, 42);
                 s.ObjectEnd();
                 AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.dst.ToString());
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                lng.Dispose();
-                str.Dispose();
-                dbl.Dispose();
-                textValue.Dispose();
             }
 
             // --- Primitives on root level ---

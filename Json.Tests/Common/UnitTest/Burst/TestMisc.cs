@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
                 Str32 src = "a©€😎🌍";
                 dst.Clear();
-                JsonSerializer.AppendEscString(ref dst, ref src);
+                JsonSerializer.AppendEscString(ref dst, in src);
                 AreEqual("\"" + src + "\"", dst.ToString());
             } finally {
                 dst.Dispose();
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             for (int codePoint = from; codePoint < to; codePoint++) {
                 dst.Clear();
                 string str = char.ConvertFromUtf32 (codePoint);
-                JsonSerializer.AppendEscString(ref dst, ref str);
+                JsonSerializer.AppendEscString(ref dst, in str);
                 AreEqual($"\"{str}\"", dst.ToString());
             }
         }
@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private void AssertAppendEscStringChar(ref Bytes dst, char escChar, string expect) {
             dst.Clear();
             string str = char.ConvertFromUtf32 (escChar);
-            JsonSerializer.AppendEscString(ref dst, ref str);
+            JsonSerializer.AppendEscString(ref dst, in str);
             AreEqual($"\"\\{expect}\"", dst.ToString());
         }
 

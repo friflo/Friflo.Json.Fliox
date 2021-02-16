@@ -196,7 +196,7 @@ namespace Friflo.Json.Burst
                 case ErrorType.ExternalError:       errMsg.AppendStr32 ("/error: ");         break;
             }
 
-            errMsg.AppendStr128(ref msg);
+            errMsg.AppendStr128(in msg);
             errMsg.AppendBytes(ref value);
             errMsg.AppendStr32 (" path: '");
             AppendPath(ref errMsg);
