@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>7.3</LangVersion>
+        <Title>friflo Json.Burst</Title>
+        <Authors>Ullrich Praetz</Authors>
+        <Description>JSON Parser/Serializer - C#. Compatible to .NET Standard, Unity &amp; Unity Burst Jobs</Description>
+        <Copyright>Ullrich Praetz</Copyright>
+        <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Burst</PackageProjectUrl>
+        <RepositoryUrl>git@github.com:friflo/Friflo.Json.Burst.git</RepositoryUrl>
+        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Burst/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageIconUrl>https://github.com/friflo/Friflo.Json.Burst/blob/main/docs/images/Friflo.Json.Burst-128.png?raw=true</PackageIconUrl>
+        <PackageVersion>0.1.0</PackageVersion>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>.bin\Debug\</OutputPath>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>.bin\Release\</OutputPath>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+	
+    <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <ProjectReference Include="..\..\Unity.Mathematics\src\Unity.Mathematics\Unity.Mathematics.csproj" />
+      <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
+    </ItemGroup>
+
+</Project>

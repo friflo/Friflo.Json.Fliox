@@ -1,0 +1,17 @@
+{
+    "name": "Friflo.Json.Burst.Math",
+    "references": [
+        "Unity.Mathematics",
+		"Unity.Collections",
+        "Friflo.Json"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
