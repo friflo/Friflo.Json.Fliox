@@ -8,11 +8,12 @@ namespace Friflo.Json.Burst.Math.Tests
     {
         [Test]
         public void WriteMath() {
-            var s = new JsonSerializer();
-            MathKeys    keys = new MathKeys(Default.Constructor);
+            var types   = new MathTypes();
+            var s       = new JsonSerializer();
+            var keys    = new MathKeys(Default.Constructor);
+            
             s.InitSerializer();
             try {
-                var types = new MathTypes();
                 types.InitSample();
                 WriteMathTypes(ref s, in keys, types);
 

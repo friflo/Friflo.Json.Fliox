@@ -16,11 +16,11 @@ namespace Friflo.Json.Burst.Math.Tests
 
         [Test]
         public void ReadMath() {
-            var   types = new MathTypes();
-            MathKeys    keys = new MathKeys(Default.Constructor);
+            var types   = new MathTypes();
+            var keys    = new MathKeys(Default.Constructor);
+            var p       = new JsonParser();
+            var json    = new Bytes(jsonString);
             
-            JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString);
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
