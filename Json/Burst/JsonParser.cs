@@ -189,7 +189,7 @@ namespace Friflo.Json.Burst
 #pragma warning disable 618 // Performance degradation
             ref Bytes errMsg = ref error.msg;
             errMsg.Clear();
-            errMsg.AppendStr32Ref(ref module);
+            errMsg.AppendStr32(in module);
             switch (errorType) {
                 case ErrorType.JsonError:           errMsg.AppendStr32 ("/JSON error: ");    break;
                 case ErrorType.Assertion:           errMsg.AppendStr32 ("/assertion: ");     break;
@@ -330,7 +330,7 @@ namespace Friflo.Json.Burst
                             str.AppendChar(']');
                         }
                         else
-                            str.AppendStr32Ref(ref emptyArray);
+                            str.AppendStr32(in emptyArray);
                         break;
                 }
                 // Limit path "string" to reasonable size. Otherwise DDoS may abuse unlimited error messages.

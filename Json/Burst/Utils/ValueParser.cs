@@ -294,9 +294,9 @@ namespace Friflo.Json.Burst.Utils
         public bool ParseBoolean(ref Bytes bytes, ref Bytes valueError, out bool success) {
             success = true;
             valueError.Clear();
-            if (bytes.IsEqual32Ref(ref @true)   || bytes.IsEqual32Ref(ref _1))
+            if (bytes.IsEqual32(in @true)   || bytes.IsEqual32(in _1))
                 return true;
-            if (bytes.IsEqual32Ref(ref @false)  || bytes.IsEqual32Ref(ref _0))
+            if (bytes.IsEqual32(in @false)  || bytes.IsEqual32(in _0))
                 return false;
             success = false;
             SetErrorFalse("Invalid boolean. Expected true/false but found: ", ref bytes, ref valueError);

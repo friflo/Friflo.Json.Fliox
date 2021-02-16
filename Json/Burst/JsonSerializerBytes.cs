@@ -170,7 +170,7 @@ namespace Friflo.Json.Burst
             AssertMember();
             AddSeparator();
             AppendKeyBytes(ref dst, in key);
-            dst.AppendStr32Ref(ref @null);
+            dst.AppendStr32(in @null);
         }
         
  

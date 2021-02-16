@@ -34,109 +34,49 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseMember...() method only within an object");
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberObj (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberObj(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberObjRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32Ref(ref name))
+            if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(in name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberArr (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberArr(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberArrRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32Ref(ref name))
+            if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(in name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberNum (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberNum(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberNumRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32Ref(ref name))
+            if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(in name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberStr (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberStr(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberStrRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32Ref(ref name))
+            if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(in name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberBln (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberBln(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberBlnRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32Ref(ref name))
+            if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(in name))
                 return false;
             iterator.usedMember = true;
             return true;
         }
         
-#if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-#endif
-        public bool UseMemberNul (ref ObjectIterator iterator, Str32 name) {
+        public bool UseMemberNul(ref ObjectIterator iterator, in Str32 name) {
             UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32 (name))
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        public bool UseMemberNulRef(ref ObjectIterator iterator, ref Str32 name) {
-            UseMember(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32Ref(ref name)) 
+            if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(in name)) 
                 return false;
             iterator.usedMember = true;
             return true;

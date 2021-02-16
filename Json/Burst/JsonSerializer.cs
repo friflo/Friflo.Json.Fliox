@@ -364,7 +364,7 @@ namespace Friflo.Json.Burst
             AssertMember();
             AddSeparator();
             AppendKeyString(ref dst, in key);
-            dst.AppendStr32Ref(ref @null);
+            dst.AppendStr32(in @null);
         }
 
         // ----------------------------- array with elements -----------------------------
@@ -441,7 +441,7 @@ namespace Friflo.Json.Burst
         public void ElementNul() {
             AssertElement();
             AddSeparator();
-            dst.AppendStr32Ref(ref @null);
+            dst.AppendStr32(in @null);
         }
         
         // ----------------- utilities

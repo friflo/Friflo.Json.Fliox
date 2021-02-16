@@ -163,12 +163,7 @@ namespace Friflo.Json.Burst
         }
 
 #if JSON_BURST
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public bool IsEqual32 (Str32 value) {
-            return IsEqual32Ref(ref value);
-        }
-
-        public bool IsEqual32Ref(ref Str32 value) {
+        public bool IsEqual32(in Str32 value) {
             int len = Len;
             if (len != value.Length)
                 return false;
@@ -183,11 +178,7 @@ namespace Friflo.Json.Burst
             return true;
         }
 #else
-        public bool IsEqual32Ref(ref string cs) {
-            return IsEqualString(cs);
-        }
-        
-        public bool IsEqual32 (string cs) {
+        public bool IsEqual32 (in string cs) {
             return IsEqualString (cs);
         }
 #endif
@@ -218,7 +209,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool IsEqualString (string str) {
-            return Utf8Utils.IsStringEqualUtf8Ref(str, ref this);
+            return Utf8Utils.IsStringEqualUtf8(str, in this);
         }
 
         public override bool Equals (Object obj) {
@@ -399,13 +390,7 @@ namespace Friflo.Json.Burst
             hc = BytesConst.notHashed;
         }
 
-        // Note: Prefer using AppendStr32 (ref Str32 str)
-        [Obsolete("Performance degradation by string copy > to avoid use the (ref FixedString32) version", false)]
-        public void AppendStr32 (Str32 str) {
-            AppendStr32Ref(ref str);
-        }
-
-        public void AppendStr32Ref (ref Str32 str) {
+        public void AppendStr32 (in Str32 str) {
             int strLen = str.Length;
             EnsureCapacity(Len + strLen);
             int curEnd = end;
@@ -422,11 +407,7 @@ namespace Friflo.Json.Burst
         }
         
         // Note: Prefer using AppendStr32 (ref string str)
-        public void AppendStr32 (string str) {
-            AppendString(str);
-        }
-        
-        public void AppendStr32Ref (ref string str) {
+        public void AppendStr32 (in string str) {
             AppendString(str);
         }
 #endif
