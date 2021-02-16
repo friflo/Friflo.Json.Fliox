@@ -2,8 +2,6 @@
 using Unity.Mathematics;
 using static NUnit.Framework.Assert;
 
-
-
 namespace Friflo.Json.Burst.Math.Tests
 {
     public class TestRead
@@ -19,14 +17,14 @@ namespace Friflo.Json.Burst.Math.Tests
         [Test]
         public void ReadMath() {
             var   types = new MathTypes();
-            MathKeys    k = new MathKeys(Default.Constructor);
+            MathKeys    keys = new MathKeys(Default.Constructor);
             
             JsonParser p = new JsonParser();
             Bytes json = new Bytes(jsonString);
             try {
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadMathTypes(ref p, ref k, ref types);
+                ReadMathTypes(ref p, in keys, ref types);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -44,7 +42,7 @@ namespace Friflo.Json.Burst.Math.Tests
             }
         }
         
-        private static void ReadMathTypes(ref JsonParser p, ref MathKeys k, ref MathTypes types) {
+        private static void ReadMathTypes(ref JsonParser p, in MathKeys k, ref MathTypes types) {
             var i = p.GetObjectIterator();
             while (p.NextObjectMember(ref i)) {
                 if      (p.UseMemberArr (ref i, in k.float2))      { JsonMath.Read(ref p, ref types.float2); }
