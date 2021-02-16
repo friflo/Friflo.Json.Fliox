@@ -44,7 +44,7 @@ namespace Friflo.Json.Burst.Utils
         public void Dispose() {
         }
         
-        private static void SetErrorFalse (Str128 msg, ref Bytes value, ref Bytes dst) {
+        private static void SetErrorFalse (in Str128 msg, ref Bytes value, ref Bytes dst) {
             if (dst.buffer.IsCreated()) {
                 dst.Clear();
                 dst.AppendStr128(in msg);

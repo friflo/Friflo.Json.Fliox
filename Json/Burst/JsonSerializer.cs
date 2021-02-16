@@ -401,7 +401,7 @@ namespace Friflo.Json.Burst
         }
         
 #if JSON_BURST
-        public void ElementStr(Unity.Collections.FixedString128 value) {
+        public void ElementStr(in Unity.Collections.FixedString128 value) {
             strBuf.Clear();
             strBuf.AppendStr128(in value);
             AssertElement();
@@ -410,7 +410,7 @@ namespace Friflo.Json.Burst
         }
 #else
         /// <summary>Write an array element of type <see cref="string"/></summary>
-        public void ElementStr(string value) {
+        public void ElementStr(in string value) {
             AssertElement();
             AddSeparator();
             AppendEscString(ref json, in value);

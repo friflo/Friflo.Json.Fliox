@@ -8,7 +8,7 @@ namespace Friflo.Json.Burst.Utils
     public struct String128 {
         public Unity.Collections.FixedString128 value;
         
-        public String128 (Unity.Collections.FixedString128 src) {
+        public String128 (in Unity.Collections.FixedString128 src) {
             value = src;
         }
         
@@ -18,7 +18,7 @@ namespace Friflo.Json.Burst.Utils
     public struct String128 {
         public String value;
         
-        public String128 (String src) {
+        public String128 (in string src) {
             value = src;
         }
 

@@ -173,7 +173,7 @@ namespace Friflo.Json.Burst
         }
 
         // ---------------------- error message creation - begin
-        void Error (Str32 module, ErrorType errorType, ref Str128 msg, ref Bytes value) {
+        void Error (Str32 module, ErrorType errorType, in Str128 msg, ref Bytes value) {
             lastEvent = JsonEvent.Error;
             preErrorState = state.array[stateLevel]; 
             state.array[stateLevel] = State.JsonError;
@@ -212,62 +212,62 @@ namespace Friflo.Json.Burst
         /// </summary>
         /// <param name="module">Name of the module raising the error</param>
         /// <param name="msg">The message info of the error. Should be a sting literal to enable searching it the the source code</param>
-        public void ErrorMsg (Str32 module, Str128 msg) {
+        public void ErrorMsg (Str32 module, in Str128 msg) {
             errVal.Clear();
-            Error(module, ErrorType.ExternalError, ref msg, ref errVal);
+            Error(module, ErrorType.ExternalError, in msg, ref errVal);
         }
         
         public void ErrorMsg(Str32 module, ref Bytes msg) {
-            Error(module, ErrorType.ExternalError, ref emptyString, ref msg);
+            Error(module, ErrorType.ExternalError, in emptyString, ref msg);
         }
         
-        public void ErrorMsgParam(Str32 module, Str128 msg, ref Bytes value) {
-            Error(module, ErrorType.ExternalError, ref msg, ref value);
+        public void ErrorMsgParam(Str32 module, in Str128 msg, ref Bytes value) {
+            Error(module, ErrorType.ExternalError, in msg, ref value);
         }
         
-        private JsonEvent SetError (Str128 msg) {
+        private JsonEvent SetError (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
             return JsonEvent.Error;
         }
         
-        private JsonEvent SetErrorChar (Str128 msg, char c) {
+        private JsonEvent SetErrorChar (in Str128 msg, char c) {
             errVal.Clear();
             errVal.AppendChar(c);
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
             return JsonEvent.Error;
         }
         
-        private JsonEvent SetErrorInt (Str128 msg, int value) {
+        private JsonEvent SetErrorInt (in Str128 msg, int value) {
             errVal.Clear();
             format.AppendInt(ref errVal, value);
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
             return JsonEvent.Error;
         }
         
-        private bool SetErrorValue (Str128 msg, ref Bytes value) {
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref value);
+        private bool SetErrorValue (in Str128 msg, ref Bytes value) {
+            Error("JsonParser", ErrorType.JsonError, in msg, ref value);
             return false;
         }
 
-        private bool SetErrorFalse (Str128 msg) {
+        private bool SetErrorFalse (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
             return false;
         }
         
         // ReSharper disable once UnusedMember.Local
-        private bool SetApplicationError (Str128 msg) {
+        private bool SetApplicationError (in Str128 msg) {
             errVal.Clear();
-            Error("JsonParser", ErrorType.Assertion, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.Assertion, in msg, ref errVal);
             return false;
         }
         
-        private bool SetErrorEvent (Str128 msg, JsonEvent ev)
+        private bool SetErrorEvent (in Str128 msg, JsonEvent ev)
         {
             errVal.Clear();
             JsonEventUtils.AppendEvent(ev, ref errVal);
-            Error("JsonParser", ErrorType.JsonError, ref msg, ref errVal);
+            Error("JsonParser", ErrorType.JsonError, in msg, ref errVal);
             return false;
         }
         // ---------------------- error message creation - end
