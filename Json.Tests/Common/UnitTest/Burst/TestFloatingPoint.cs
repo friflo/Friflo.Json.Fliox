@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     long l2 = BitConverter.DoubleToInt64Bits (ret);
                     if (l1 != l2)
                     {
-                        long dif = Math. Abs (l1 - l2);
+                        long dif = System.Math.Abs (l1 - l2);
                         if (dif > 11)
                             Fail("Conversion failed of double: " + val);
                     }
@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     long l2 = BitConverter.DoubleToInt64Bits (ret) >> (52-23);
                     if (l1 != l2)
                     {
-                        long dif = Math. Abs (l1 - l2);
+                        long dif = System.Math.Abs (l1 - l2);
                         // Java: exact; C# dif: 1
                         if (dif > 1)
                             Fail("Conversion failed of double: " + val);

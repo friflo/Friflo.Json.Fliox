@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (Bytes bytes = CommonUtils.FromFile(path)) {
                 int impliedThroughput = CommonUtils.IsUnityEditor() ? 500_000 : 2_000_000; // MB/sec
                 int iterations = impliedThroughput / bytes.Len;
-                iterations = Math.Max(1, iterations); 
+                iterations = System.Math.Max(1, iterations);
                 long start = TimeUtil.GetMicro();
                 using (JsonParser parser = new JsonParser()) {
                     int count = 0;
