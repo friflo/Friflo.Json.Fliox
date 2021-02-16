@@ -2,7 +2,7 @@
 
 namespace Friflo.Json.Burst.Math
 {
-    public static class JsonMath
+    public static partial class JsonMath
     {
         public static void Read(ref JsonParser p, ref float2 value) {
             int index = 0;
