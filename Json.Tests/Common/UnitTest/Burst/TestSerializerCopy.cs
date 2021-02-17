@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 1000, memoryLog);
             var ser = new JsonSerializer();
+            ser.SetPretty(true);
             var parser = new JsonParser();
             try
             {
