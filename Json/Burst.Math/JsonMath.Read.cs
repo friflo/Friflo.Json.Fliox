@@ -8,6 +8,7 @@ using Unity.Mathematics;
     using Str32 = System.String;
 #endif
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Burst.Math
 {
     public static partial class JsonMath
@@ -37,7 +38,7 @@ namespace Friflo.Json.Burst.Math
         }
 
         
-        public static void ReadFloat2(ref JsonParser p, ref float2 value) {
+        private static void ReadFloat2(ref JsonParser p, ref float2 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -49,7 +50,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        public static void ReadFloat3(ref JsonParser p, ref float3 value) {
+        private static void ReadFloat3(ref JsonParser p, ref float3 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -61,7 +62,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        public static void ReadFloat4(ref JsonParser p, ref float4 value) {
+        private static void ReadFloat4(ref JsonParser p, ref float4 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -71,6 +72,27 @@ namespace Friflo.Json.Burst.Math
                 } else 
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
+        }
+        
+        // ---
+        private static void ReadFloat4x4(ref JsonParser p, ref float4x4 value) {
+            int index = 0;
+            var i = p.GetArrayIterator();
+            while (p.NextArrayElement(ref i)) {
+                if (p.UseElementArr(ref i)) {
+                    if (index < 4)
+                        ReadFloat4(ref p, ref value[index++]);
+                } else 
+                    p.ErrorMsg("Json.Burst.Math", "expect JSON number");
+            }
+        }
+        
+        public static bool UseMemberFloat4x4(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float4x4 value) {
+            if (p.UseMemberArr(ref iterator, in key)) {
+                ReadFloat4x4(ref p, ref value);
+                return true;
+            }
+            return false;
         }
     }
 }
