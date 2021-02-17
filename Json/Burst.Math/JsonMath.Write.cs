@@ -8,6 +8,7 @@ using Unity.Mathematics;
     using Str32 = System.String;
 #endif
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Burst.Math
 {
     public static partial class JsonMath
@@ -65,5 +66,16 @@ namespace Friflo.Json.Burst.Math
             s.ElementDbl(value.z);
             s.ElementDbl(value.w);
         }
+        
+        // ----------------------
+        public static void MemberFloat4x4(this ref JsonSerializer s, in Str32 key, in float4x4 value) {
+            s.MemberArrayStart(key, true);
+            ArrayFloat4(ref s, in value.c0);
+            ArrayFloat4(ref s, in value.c1);
+            ArrayFloat4(ref s, in value.c2);
+            ArrayFloat4(ref s, in value.c3);
+            s.ArrayEnd();
+        }
+        
     }
 }
