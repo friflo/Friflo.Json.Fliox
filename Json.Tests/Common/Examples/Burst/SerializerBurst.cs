@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             s.ObjectStart();
             s.MemberStr (in k.firstName,   in buddy.firstName);
             s.MemberLng (in k.age,         buddy.age);
-            s.MemberArrayStart(in k.hobbies);
+            s.MemberArrayStart(in k.hobbies, true);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, in k, in buddy.hobbies.ElementAt(n));
             s.ArrayEnd();

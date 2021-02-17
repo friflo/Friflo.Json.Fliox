@@ -310,7 +310,7 @@ namespace Friflo.Json.Burst
 
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStart(in Str32 key, bool wrapItems = true) {
+        public void MemberArrayStart(in Str32 key, bool wrapItems) {
             AssertMember();
             AddSeparator();
             AppendKeyString(ref json, in key);
@@ -385,7 +385,7 @@ namespace Friflo.Json.Burst
         }
 
         // ----------------------------- array with elements -----------------------------
-        public void ArrayStart(bool wrapItems = true) {
+        public void ArrayStart(bool wrapItems) {
             AssertStart();
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
@@ -517,7 +517,7 @@ namespace Friflo.Json.Burst
             while (NextArrayElement(ref p)) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
-                        ArrayStart();
+                        ArrayStart(true);
                         WriteArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
@@ -562,7 +562,7 @@ namespace Friflo.Json.Burst
                     ObjectStart();
                     return WriteObject(ref p);
                 case JsonEvent.ArrayStart:
-                    ArrayStart();
+                    ArrayStart(true);
                     return WriteArray(ref p);
                 case JsonEvent.ValueString:
                     ElementStr(in p.value);

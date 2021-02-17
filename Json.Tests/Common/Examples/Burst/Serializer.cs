@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             s.ObjectStart();
             s.MemberStr ("firstName",   buddy.firstName);
             s.MemberLng ("age",         buddy.age);
-            s.MemberArrayStart ("hobbies");
+            s.MemberArrayStart ("hobbies", true);
             for (int n = 0; n < buddy.hobbies.Count; n++) 
                 WriteHobby(ref s, buddy.hobbies[n]);
             s.ArrayEnd();

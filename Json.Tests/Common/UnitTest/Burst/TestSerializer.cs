@@ -31,13 +31,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(0, s.Level);
             } {
                 s.InitSerializer();
-                s.ArrayStart();
+                s.ArrayStart(true);
                 s.ArrayEnd();
                 AreEqual("[]", s.json.ToString());
             } {
                 s.InitSerializer();
-                s.ArrayStart();
-                    s.ArrayStart();
+                s.ArrayStart(true);
+                    s.ArrayStart(true);
                     s.ArrayEnd();
                     s.ObjectStart();
                     s.ObjectEnd();
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 s.InitSerializer();
                 s.ObjectStart();
-                    s.MemberArrayStart ("array");
+                    s.MemberArrayStart ("array", true);
                     s.ArrayEnd();
                     
                     s.MemberObjectStart ("object");
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             {
                 // - array
                 s.InitSerializer();
-                s.ArrayStart();
+                s.ArrayStart(true);
                 s.ElementStr(in textValue);
                 s.ArrayEnd();
                 AreEqual("[\"textValue\"]", s.json.ToString());
@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
                     ser.ObjectStart();
-                    ser.ArrayStart(); // array can only start in an object via MemberArrayStart();
+                    ser.ArrayStart(true); // array can only start in an object via MemberArrayStart();
                 });
                 AreEqual("ObjectStart() and ArrayStart() requires a previous call to a ...Start() method", e.Message);
             } {
@@ -176,7 +176,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 var e = Throws<InvalidOperationException>(()=> {
                     ser.InitSerializer();
-                    ser.ArrayStart();
+                    ser.ArrayStart(true);
                     ser.MemberBln ("Test", true); // member not in array
                 });
                 AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
@@ -197,7 +197,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             } {
                 var e = Throws<InvalidOperationException>(() => {
                     ser.InitSerializer();
-                    ser.ArrayStart();
+                    ser.ArrayStart(true);
                     ser.ObjectEnd();
                 });
                 AreEqual("Member...() methods and ObjectEnd() must be called only within an object", e.Message);
@@ -226,14 +226,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 ser.SetMaxDepth(1);
                 
                 // case OK
-                ser.ArrayStart();
+                ser.ArrayStart(true);
                 ser.ArrayEnd();
                 AreEqual(0, ser.Level);
                 AreEqual("[]", ser.json.ToString());
                 
                 // case exception
-                ser.ArrayStart();
-                var e = Throws<InvalidOperationException>(() => ser.ArrayStart()); // add second array
+                ser.ArrayStart(true);
+                var e = Throws<InvalidOperationException>(() => ser.ArrayStart(true)); // add second array
                 AreEqual("JsonSerializer exceed maxDepth: 1", e.Message);
             }
         }

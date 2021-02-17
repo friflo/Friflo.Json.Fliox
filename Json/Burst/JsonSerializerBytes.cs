@@ -103,7 +103,7 @@ namespace Friflo.Json.Burst
             AddSeparator();
             AppendKeyBytes(ref json, in key);
             SetStartGuard();
-            ArrayStart();
+            ArrayStart(true);
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>

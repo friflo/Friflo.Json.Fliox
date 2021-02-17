@@ -31,19 +31,19 @@ namespace Friflo.Json.Burst.Math
         }
         
         public static void ArrayFloat2(this ref JsonSerializer s, in float2 value) {
-            s.ArrayStart();
+            s.ArrayStart(false);
             WriteFloat2(ref s, in value);
             s.ArrayEnd();
         }
         
         public static void ArrayFloat3(this ref JsonSerializer s, in float3 value) {
-            s.ArrayStart();
+            s.ArrayStart(false);
             WriteFloat3(ref s, in value);
             s.ArrayEnd();
         }
         
         public static void ArrayFloat4(this ref JsonSerializer s, in float4 value) {
-            s.ArrayStart();
+            s.ArrayStart(false);
             WriteFloat4(ref s, in value);
             s.ArrayEnd();
         }
