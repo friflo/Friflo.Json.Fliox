@@ -18,15 +18,13 @@ namespace Friflo.Json.Burst.Math.Tests
                 types.InitSample();
                 WriteMathTypes(ref s, in keys, types);
 
-                var expect = @"
-{
-    ""float2"": [1.0,2.0],
-    ""float3"": [1.0,2.0,3.0],
-    ""float4"": [1.0,2.0,3.0,4.0]
+                var expect = @"{
+    ""float2"": [1.0, 2.0],
+    ""float3"": [1.0, 2.0, 3.0],
+    ""float4"": [1.0, 2.0, 3.0, 4.0]
 }";
-                string expectTrimmed = string.Concat(expect.Where(c => !char.IsWhiteSpace(c)));
-                string jsonTrimmed = string.Concat(s.json.ToString().Where(c => !char.IsWhiteSpace(c)));
-                AreEqual(expectTrimmed.Trim(), jsonTrimmed);
+                expect = expect.Replace("\r\n", "\n"); // CR LF -> LF
+                AreEqual(expect.Trim(), s.json.ToString());
             }
             finally {
                 s.Dispose();
