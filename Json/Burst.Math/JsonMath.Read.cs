@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst.Math
     {
         public static bool UseMemberFloat2(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float2 value) {
             if (p.UseMemberArr(ref iterator, in key)) {
-                ReadFloat2(ref p, ref value);
+                ArrayFloat2(ref p, ref value);
                 return true;
             }
             return false;
@@ -23,7 +23,7 @@ namespace Friflo.Json.Burst.Math
         
         public static bool UseMemberFloat3(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float3 value) {
             if (p.UseMemberArr(ref iterator, in key)) {
-                ReadFloat3(ref p, ref value);
+                ArrayFloat3(ref p, ref value);
                 return true;
             }
             return false;
@@ -31,14 +31,14 @@ namespace Friflo.Json.Burst.Math
         
         public static bool UseMemberFloat4(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float4 value) {
             if (p.UseMemberArr(ref iterator, in key)) {
-                ReadFloat4(ref p, ref value);
+                ArrayFloat4(ref p, ref value);
                 return true;
             }
             return false;
         }
 
         
-        private static void ReadFloat2(ref JsonParser p, ref float2 value) {
+        private static void ArrayFloat2(ref JsonParser p, ref float2 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -50,7 +50,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        private static void ReadFloat3(ref JsonParser p, ref float3 value) {
+        private static void ArrayFloat3(ref JsonParser p, ref float3 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        private static void ReadFloat4(ref JsonParser p, ref float4 value) {
+        private static void ArrayFloat4(ref JsonParser p, ref float4 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
@@ -75,13 +75,13 @@ namespace Friflo.Json.Burst.Math
         }
         
         // ---
-        private static void ReadFloat4x4(ref JsonParser p, ref float4x4 value) {
+        private static void ArrayFloat4x4(ref JsonParser p, ref float4x4 value) {
             int index = 0;
             var i = p.GetArrayIterator();
             while (p.NextArrayElement(ref i)) {
                 if (p.UseElementArr(ref i)) {
                     if (index < 4)
-                        ReadFloat4(ref p, ref value[index++]);
+                        ArrayFloat4(ref p, ref value[index++]);
                 } else 
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Burst.Math
         
         public static bool UseMemberFloat4x4(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float4x4 value) {
             if (p.UseMemberArr(ref iterator, in key)) {
-                ReadFloat4x4(ref p, ref value);
+                ArrayFloat4x4(ref p, ref value);
                 return true;
             }
             return false;
