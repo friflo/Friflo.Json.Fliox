@@ -242,19 +242,24 @@ namespace Friflo.Json.Burst
                 json.buffer.array[json.end++] = (byte) ' ';
                 return;
             }
-            json.EnsureCapacityAbs(json.end + level + 1);
-            json.buffer.array[json.end++] = (byte) '\n';
-            for (int n = 0; n < level; n++)
-                json.buffer.array[json.end++] = (byte) '\t';
+            IndentJsonNode(ref json, level);
         }
-        
+
         private void IndentEnd() {
             if ((nodeFlags.array[level + 1] & NodeFlags.WrapItems) == 0)
                 return;
-            json.EnsureCapacityAbs(json.end + level + 1);
+            IndentJsonNode(ref json, level);
+        }
+        
+        public static void IndentJsonNode(ref Bytes json, int level) {
+            json.EnsureCapacityAbs(json.end + 1 + 4 * level); // LF + level * four spaces
             json.buffer.array[json.end++] = (byte)'\n';
-            for (int n = 0; n < level; n++)
-                json.buffer.array[json.end++] = (byte)'\t';
+            for (int n = 0; n < level; n++) {
+                json.buffer.array[json.end++] = (byte) ' ';
+                json.buffer.array[json.end++] = (byte) ' ';
+                json.buffer.array[json.end++] = (byte) ' ';
+                json.buffer.array[json.end++] = (byte) ' ';
+            }
         }
 
         private void AppendKeyString(ref Bytes dst, in Str32 key) {

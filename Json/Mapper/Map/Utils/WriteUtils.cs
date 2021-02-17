@@ -66,18 +66,12 @@ namespace Friflo.Json.Mapper.Map.Utils
         
         public static void IndentBegin(ref Writer writer) {
             int level = writer.level;
-            writer.bytes.EnsureCapacityAbs(writer.bytes.end + level + 1);
-            writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\n';
-            for (int n = 0; n < level; n++)
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\t';
+            JsonSerializer.IndentJsonNode(ref writer.bytes, level);
         }
         
         public static void IndentEnd(ref Writer writer) {
             int level = writer.level - 1;
-            writer.bytes.EnsureCapacityAbs(writer.bytes.end + level + 1);
-            writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\n';
-            for (int n = 0; n < level; n++)
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'\t';
+            JsonSerializer.IndentJsonNode(ref writer.bytes, level);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
