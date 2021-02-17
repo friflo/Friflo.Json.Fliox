@@ -24,7 +24,7 @@ namespace Friflo.Json.Burst
     /// like { "count": 11 }<br/>
     /// After all object members are serialized <see cref="ObjectEnd()"/> closes the previous started JSON object.<br/>
     ///
-    /// To add a JSON array use <see cref="ArrayStart()"/>
+    /// To add a JSON array use <see cref="ArrayStart"/>
     /// Afterwards arbitrary array elements can be added via the Element...() methods.<br/>
     /// E.g by <see cref="ElementLng"/> to add an element with an integer as value type
     /// like [ 11 ]<br/>
@@ -41,7 +41,7 @@ namespace Friflo.Json.Burst
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
         public      Bytes                   json;
         private     ValueFormat             format;
-        private     ValueList<bool>         firstEntry;
+        private     ValueList<NodeFlags>    nodeFlags;
         private     ValueList<NodeType>     nodeType;
         private     Bytes                   strBuf;
         private     int                     level;
@@ -66,6 +66,13 @@ namespace Friflo.Json.Burst
             Object,
             Array
         }
+        
+        [Flags]
+        enum NodeFlags {
+            None = 0,
+            First = 1,
+            WrapItems = 2,
+        }
 
         /// <summary>
         /// Before starting serializing a JSON document the serializer need to be initialized with this method to
@@ -78,8 +85,8 @@ namespace Friflo.Json.Burst
             format.InitTokenFormat();
             int initDepth = 16;
             maxDepth = JsonParser.DefaultMaxDepth;
-            if (!firstEntry.IsCreated())
-                firstEntry = new ValueList<bool>  (initDepth, AllocType.Persistent); firstEntry.Resize(initDepth);
+            if (!nodeFlags.IsCreated())
+                nodeFlags = new ValueList<NodeFlags>  (initDepth, AllocType.Persistent); nodeFlags.Resize(initDepth);
 #if DEBUG
             if (!startGuard.IsCreated())
                 startGuard = new ValueList<bool>  (initDepth, AllocType.Persistent); startGuard.Resize(initDepth);
@@ -90,14 +97,14 @@ namespace Friflo.Json.Burst
                 strBuf.InitBytes(128);
             @null = "null"; 
             level = 0;
-            firstEntry.array[0] = true;
+            nodeFlags.array[0] = NodeFlags.First | NodeFlags.WrapItems;
             nodeType.array[0] = NodeType.Undefined;
         }
 
         private void ResizeDepthBuffers(int size) {
             // resizing to size is enough, but allocate more in advance
             size *= 2;
-            firstEntry.Resize(size);
+            nodeFlags.Resize(size);
             startGuard.Resize(size);
             nodeType.Resize(size);
         }
@@ -144,8 +151,8 @@ namespace Friflo.Json.Burst
             if (startGuard.IsCreated())
                 startGuard.Dispose();
 #endif            
-            if (firstEntry.IsCreated())
-                firstEntry.Dispose();
+            if (nodeFlags.IsCreated())
+                nodeFlags.Dispose();
             if (strBuf.buffer.IsCreated())
                 strBuf.Dispose();
             if (nodeType.IsCreated())
@@ -227,14 +234,23 @@ namespace Friflo.Json.Burst
             }
         }
         
-        private void IndentBegin() {
+        private void IndentBegin(NodeFlags flags) {
+            if ((flags & NodeFlags.WrapItems) == 0) {
+                if ((flags & NodeFlags.First) != 0)
+                    return;
+                json.EnsureCapacityAbs(json.end + 1);
+                json.buffer.array[json.end++] = (byte) ' ';
+                return;
+            }
             json.EnsureCapacityAbs(json.end + level + 1);
-            json.buffer.array[json.end++] = (byte)'\n';
+            json.buffer.array[json.end++] = (byte) '\n';
             for (int n = 0; n < level; n++)
-                json.buffer.array[json.end++] = (byte)'\t';
+                json.buffer.array[json.end++] = (byte) '\t';
         }
         
         private void IndentEnd() {
+            if ((nodeFlags.array[level + 1] & NodeFlags.WrapItems) == 0)
+                return;
             json.EnsureCapacityAbs(json.end + level + 1);
             json.buffer.array[json.end++] = (byte)'\n';
             for (int n = 0; n < level; n++)
@@ -254,15 +270,16 @@ namespace Friflo.Json.Burst
 
         // Is called from ObjectStart() & ArrayStart() only, if (elementType[level] == ElementType.Array)
         private void AddSeparator() {
-            if (firstEntry.array[level]) {
-                firstEntry.array[level] = false;
+            var flags = nodeFlags.array[level];
+            if ((flags & NodeFlags.First) != 0) {
+                nodeFlags.array[level] = flags & ~NodeFlags.First;
                 if (pretty)
-                    IndentBegin();
+                    IndentBegin(flags);
                 return;
             }
             json.AppendChar(',');
             if (pretty)
-                IndentBegin();
+                IndentBegin(flags);
         }
         
         // ----------------------------- object with properties -----------------------------
@@ -274,9 +291,9 @@ namespace Friflo.Json.Burst
             json.AppendChar('{');
             if (level >= maxDepth)
                 throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
-            if (++level >= firstEntry.Count)
+            if (++level >= nodeFlags.Count)
                 ResizeDepthBuffers(level + 1);
-            firstEntry.array[level] = true;
+            nodeFlags.array[level] = NodeFlags.First | NodeFlags.WrapItems;
             nodeType.array[level] = NodeType.Object;
             ClearStartGuard();
         }
@@ -288,17 +305,17 @@ namespace Friflo.Json.Burst
             if (pretty)
                 IndentEnd();
             json.AppendChar('}');
-            firstEntry.array[level] = false;
+            nodeFlags.array[level] &= ~NodeFlags.First;
         }
 
         // --- comment to enable source alignment in WinMerge
         /// <summary>Writes the key of key/value pair where the value will be an array</summary>
-        public void MemberArrayStart(in Str32 key) {
+        public void MemberArrayStart(in Str32 key, bool wrapItems = true) {
             AssertMember();
             AddSeparator();
             AppendKeyString(ref json, in key);
             SetStartGuard();
-            ArrayStart();
+            ArrayStart(wrapItems);
         }
         
         /// <summary>Writes the key of key/value pair where the value will be an object</summary>
@@ -368,16 +385,16 @@ namespace Friflo.Json.Burst
         }
 
         // ----------------------------- array with elements -----------------------------
-        public void ArrayStart() {
+        public void ArrayStart(bool wrapItems = true) {
             AssertStart();
             if (nodeType.array[level] == NodeType.Array)
                 AddSeparator();
             json.AppendChar('[');
             if (level >= maxDepth)
                 throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
-            if (++level >= firstEntry.Count)
+            if (++level >= nodeFlags.Count)
                 ResizeDepthBuffers(level + 1);
-            firstEntry.array[level] = true;
+            nodeFlags.array[level] = wrapItems ? NodeFlags.WrapItems | NodeFlags.First : NodeFlags.First;
             nodeType.array[level] = NodeType.Array;
             SetStartGuard();
         }
@@ -390,7 +407,7 @@ namespace Friflo.Json.Burst
             if (pretty)
                 IndentEnd();
             json.AppendChar(']');
-            firstEntry.array[level] = false;
+            nodeFlags.array[level] &= ~NodeFlags.First;
         }
         
         /// <summary>Write an array element of type "string"</summary>

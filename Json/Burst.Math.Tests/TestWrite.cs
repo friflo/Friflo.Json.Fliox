@@ -12,6 +12,7 @@ namespace Friflo.Json.Burst.Math.Tests
             var s       = new JsonSerializer();
             var keys    = new MathKeys(Default.Constructor);
             
+            s.SetPretty(true);
             s.InitSerializer();
             try {
                 types.InitSample();
@@ -24,7 +25,8 @@ namespace Friflo.Json.Burst.Math.Tests
     ""float4"": [1.0,2.0,3.0,4.0]
 }";
                 string expectTrimmed = string.Concat(expect.Where(c => !char.IsWhiteSpace(c)));
-                AreEqual(expectTrimmed.Trim(), s.json.ToString());
+                string jsonTrimmed = string.Concat(s.json.ToString().Where(c => !char.IsWhiteSpace(c)));
+                AreEqual(expectTrimmed.Trim(), jsonTrimmed);
             }
             finally {
                 s.Dispose();
