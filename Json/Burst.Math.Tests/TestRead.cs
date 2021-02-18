@@ -56,10 +56,10 @@ namespace Friflo.Json.Burst.Math.Tests
         
         private static void ReadMathTypes(ref JsonParser p, ref JObj i, in MathKeys k, ref MathTypes types) {
             while (i.NextObjectMember(ref p)) {
-                if      (p.UseMemberFloat2  (ref i, in k.float2,    ref types.float2))     { }
-                else if (p.UseMemberFloat3  (ref i, in k.float3,    ref types.float3))     { }
-                else if (p.UseMemberFloat4  (ref i, in k.float4,    ref types.float4))     { }
-                else if (p.UseMemberFloat4x4(ref i, in k.float4x4,  ref types.float4x4))   { }
+                if      (i.UseMemberFloat2  (ref p, in k.float2,    ref types.float2))     { }
+                else if (i.UseMemberFloat3  (ref p, in k.float3,    ref types.float3))     { }
+                else if (i.UseMemberFloat4  (ref p, in k.float4,    ref types.float4))     { }
+                else if (i.UseMemberFloat4x4(ref p, in k.float4x4,  ref types.float4x4))   { }
             }
         }
 
