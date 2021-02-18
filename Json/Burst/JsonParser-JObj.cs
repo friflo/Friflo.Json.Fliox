@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-
-using System; // Required for [Obsolete] 
+using System; 
 using System.Diagnostics; 
 
 #if JSON_BURST
@@ -15,21 +14,6 @@ using static Friflo.Json.Burst.JsonParser;
 
 namespace Friflo.Json.Burst
 {
-    public partial struct JsonParser
-    {
-        public bool IsRootObject(out JObj obj) {
-            if (stateLevel != 1)
-                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            if (lastEvent != JsonEvent.ObjectStart) {
-                obj = new JObj(-1);
-                return false;
-            }
-            obj = new JObj(stateLevel);
-            return true;
-        }
-    }
-
-    // ------------------------------------------------------------------------------------------------
     public ref struct JObj
     {
         private readonly   int     expectedLevel;  // todo exclude in RELEASE

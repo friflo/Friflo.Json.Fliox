@@ -1,15 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-
-using System; // Required for [Obsolete] 
+using System; 
 using System.Diagnostics; 
-
-#if JSON_BURST
-    using Str32 = Unity.Collections.FixedString32;
-#else
-    using Str32 = System.String;
-    // ReSharper disable InconsistentNaming
-#endif
 
 using static Friflo.Json.Burst.JsonParser;
 
@@ -19,22 +11,7 @@ namespace Friflo.Json.Burst
         No,
         Auto
     }
-    
-    public partial struct JsonParser
-    {
-        public bool IsRootArray(out JArr arr) {
-            if (stateLevel != 1)
-                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            if (lastEvent != JsonEvent.ArrayStart) {
-                arr = new JArr(-1);
-                return false;
-            }
-            arr = new JArr(stateLevel);
-            return true;
-        }
-    }
    
-    // ------------------------------------------------------------------------------------------------
     public ref struct JArr {
         private readonly   int     expectedLevel;  // todo exclude in RELEASE
         private            bool    hasIterated;

@@ -1082,7 +1082,28 @@ namespace Friflo.Json.Burst
             success = true;
             return boolValue;
         }
-
-
+        
+        // --------------------------------- JObj / JArr ---------------------------------
+        public bool IsRootObject(out JObj obj) {
+            if (stateLevel != 1)
+                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
+            if (lastEvent != JsonEvent.ObjectStart) {
+                obj = new JObj(-1);
+                return false;
+            }
+            obj = new JObj(stateLevel);
+            return true;
+        }
+        
+        public bool IsRootArray(out JArr arr) {
+            if (stateLevel != 1)
+                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
+            if (lastEvent != JsonEvent.ArrayStart) {
+                arr = new JArr(-1);
+                return false;
+            }
+            arr = new JArr(stateLevel);
+            return true;
+        }
     }
 }
