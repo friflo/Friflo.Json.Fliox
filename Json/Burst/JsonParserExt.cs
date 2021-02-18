@@ -23,15 +23,6 @@ namespace Friflo.Json.Burst
     
     public partial struct JsonParser
     {
-
-
-
-        
-        // ------------------------------------------------------------------------------------------------
-
-        
-
-
         public JObj GetObjectIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ObjectStart)
@@ -47,6 +38,7 @@ namespace Friflo.Json.Burst
         }
     }
 
+    // ------------------------------------------------------------------------------------------------
     public ref struct JObj
     {
         internal readonly   int     expectedLevel;  // todo exclude in RELEASE
@@ -173,6 +165,7 @@ namespace Friflo.Json.Burst
 
     }
     
+    // ------------------------------------------------------------------------------------------------
     public ref struct JArr {
         internal readonly   int     expectedLevel;  // todo exclude in RELEASE
         internal            bool    hasIterated;
