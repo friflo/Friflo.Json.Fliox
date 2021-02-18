@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             int index = 0;
             var i = p.GetArrayIterator();
             while (i.NextArrayElement(ref p, Skip.Auto)) {
-                if (p.UseElementNum(ref i))                      { this[index++] = p.ValueAsInt(out _); }
+                if (i.UseElementNum(ref p))                      { this[index++] = p.ValueAsInt(out _); }
             }
         }
     }
@@ -255,7 +255,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             void ReadListStrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
-                    if      (p.UseElementStr(ref i))                { strElement.Set( ref p.value); }
+                    if      (i.UseElementStr(ref p))                { strElement.Set( ref p.value); }
                 }
             }
             
@@ -269,7 +269,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             void ReadArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
-                    if      (p.UseElementNul(ref i))                { foundNullElement = true; }
+                    if      (i.UseElementNul(ref p))                { foundNullElement = true; }
                 }
             }
 
@@ -283,7 +283,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             void ReadBoolArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
-                    if      (p.UseElementBln(ref i))                { trueElement = p.boolValue; }
+                    if      (i.UseElementBln(ref p))                { trueElement = p.boolValue; }
                 }
             }
             

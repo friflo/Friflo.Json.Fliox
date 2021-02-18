@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                         if (i.UseMemberArr(ref parser, "Books")) {
                             var i2 = parser.GetArrayIterator();
                             while (i2.NextArrayElement(ref parser)) {
-                                if (parser.UseElementObj(ref i2)) {
+                                if (i2.UseElementObj(ref parser)) {
                                     var i3 = parser.GetObjectIterator();
                                     bookCount++;
                                     while (i3.NextObjectMember(ref parser)) {

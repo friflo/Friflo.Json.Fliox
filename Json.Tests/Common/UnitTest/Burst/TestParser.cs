@@ -459,7 +459,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         var arr = p.instance.GetArrayIterator();
                         arr.NextArrayElement(ref p.instance, Skip.Auto);
                         AreEqual(JsonEvent.ObjectStart, p.instance.Event);
-                        AreEqual(true, p.instance.UseElementObj(ref arr)); // used object without skipping
+                        AreEqual(true, arr.UseElementObj(ref p.instance)); // used object without skipping
                         IsFalse(arr.NextArrayElement(ref p.instance, Skip.Auto));
                     });
                     AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);

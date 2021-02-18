@@ -25,66 +25,7 @@ namespace Friflo.Json.Burst
     {
 
 
-        // ----------- array element checks -----------
-        [Conditional("DEBUG")]
-        private void UseElement(ref JArr iterator) {
-            int level = stateLevel;
-            if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
-                level--;
-            if (level != iterator.expectedLevel)
-                throw new InvalidOperationException("Unexpected iterator level in UseElement...() method");
-            State curState = state.array[level];
-            if (curState != State.ExpectElement)
-                throw new InvalidOperationException("Must call UseElement...() method on within an array");
-        }
-        
-        public bool UseElementObj(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ObjectStart)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        
-        public bool UseElementArr(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ArrayStart)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        
-        public bool UseElementNum(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ValueNumber)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        
-        public bool UseElementStr(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ValueString)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        
-        public bool UseElementBln(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ValueBool)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
-        
-        public bool UseElementNul(ref JArr iterator) {
-            UseElement(ref iterator);
-            if (lastEvent != JsonEvent.ValueNull)
-                return false;
-            iterator.usedMember = true;
-            return true;
-        }
+
         
         // ------------------------------------------------------------------------------------------------
 
@@ -294,6 +235,67 @@ namespace Friflo.Json.Burst
                     throw new InvalidOperationException("unexpected ObjectEnd in NextArrayElement()");
             }
             return false;
+        }
+        
+                // ----------- array element checks -----------
+        [Conditional("DEBUG")]
+        private void UseElement(ref JsonParser p) {
+            int level = p.stateLevel;
+            if (p.lastEvent == JsonEvent.ObjectStart || p.lastEvent == JsonEvent.ArrayStart)
+                level--;
+            if (level != expectedLevel)
+                throw new InvalidOperationException("Unexpected iterator level in UseElement...() method");
+            State curState = p.state.array[level];
+            if (curState != State.ExpectElement)
+                throw new InvalidOperationException("Must call UseElement...() method on within an array");
+        }
+        
+        public bool UseElementObj(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ObjectStart)
+                return false;
+            usedMember = true;
+            return true;
+        }
+        
+        public bool UseElementArr(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ArrayStart)
+                return false;
+            usedMember = true;
+            return true;
+        }
+        
+        public bool UseElementNum(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ValueNumber)
+                return false;
+            usedMember = true;
+            return true;
+        }
+        
+        public bool UseElementStr(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ValueString)
+                return false;
+            usedMember = true;
+            return true;
+        }
+        
+        public bool UseElementBln(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ValueBool)
+                return false;
+            usedMember = true;
+            return true;
+        }
+        
+        public bool UseElementNul(ref JsonParser p) {
+            UseElement(ref p);
+            if (p.lastEvent != JsonEvent.ValueNull)
+                return false;
+            usedMember = true;
+            return true;
         }
     }
 }

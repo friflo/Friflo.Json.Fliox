@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                     else if (i1.UseMemberArr (ref p, "hobbies")) {
                         var i2 = p.GetArrayIterator();
                         while (i2.NextArrayElement(ref p)) {
-                            if (p.UseElementObj(ref i2)) {
+                            if (i2.UseElementObj(ref p)) {
                                 var hobby = new Hobby();
                                 var i3 = p.GetObjectIterator();
                                 while (i3.NextObjectMember(ref p)) {
