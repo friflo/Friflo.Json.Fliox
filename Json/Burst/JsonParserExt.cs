@@ -123,11 +123,14 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberArr(ref JsonParser p, in Str32 name) {
+        public bool UseMemberArr(ref JsonParser p, in Str32 name, out JArr arr) {
             UseMember(ref p);
-            if (p.lastEvent != JsonEvent.ArrayStart || !p.key.IsEqual32(in name))
+            if (p.lastEvent != JsonEvent.ArrayStart || !p.key.IsEqual32(in name)) {
+                arr = new JArr();
                 return false;
+            }
             usedMember = true;
+            arr = p.GetArrayIterator();
             return true;
         }
         

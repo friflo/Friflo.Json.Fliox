@@ -51,9 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        public void ReadAuto (ref JsonParser p) {
+        public void ReadAuto (ref JsonParser p, ref JArr i) {
             int index = 0;
-            var i = p.GetArrayIterator();
             while (i.NextArrayElement(ref p, Skip.Auto)) {
                 if (i.UseElementNum(ref p))                      { this[index++] = p.ValueAsInt(out _); }
             }
@@ -231,10 +230,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 while (i.NextObjectMember(ref p, Skip.Auto)) {
                     if      (i.UseMemberObj(ref p, in nm.map))       { p.SkipTree(); }
                     else if (i.UseMemberObj(ref p, in nm.map2))      { p.SkipTree(); }
-                    else if (i.UseMemberArr(ref p, in nm.listStr))   { ReadListStrAuto(ref p); }
-                    else if (i.UseMemberArr(ref p, in nm.arr))       { ReadArrAuto(ref p); }
-                    else if (i.UseMemberArr(ref p, in nm.boolArr))   { ReadBoolArrAuto(ref p); }
-                    else if (i.UseMemberArr(ref p, in nm.i64Arr))    { int3.ReadAuto(ref p); }
+                    else if (i.UseMemberArr(ref p, in nm.listStr, out JArr arr1))   { ReadListStrAuto(ref p, ref arr1); }
+                    else if (i.UseMemberArr(ref p, in nm.arr,     out JArr arr2))   { ReadArrAuto(ref p, ref arr2); }
+                    else if (i.UseMemberArr(ref p, in nm.boolArr, out JArr arr3))   { ReadBoolArrAuto(ref p, ref arr3); }
+                    else if (i.UseMemberArr(ref p, in nm.i64Arr,  out JArr arr4))   { int3.ReadAuto(ref p, ref arr4); }
                     else if (i.UseMemberNum(ref p, in nm.i64))       { i64 = p.ValueAsLong(out _); }
                     else if (i.UseMemberNum(ref p, in nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
                     else if (i.UseMemberStr(ref p, in nm.str))       { str.Set(ref p.value); }
@@ -252,8 +251,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            void ReadListStrAuto(ref JsonParser p) {
-                var i = p.GetArrayIterator();
+            void ReadListStrAuto(ref JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (i.UseElementStr(ref p))                { strElement.Set( ref p.value); }
                 }
@@ -266,8 +264,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            void ReadArrAuto(ref JsonParser p) {
-                var i = p.GetArrayIterator();
+            void ReadArrAuto(ref JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (i.UseElementNul(ref p))                { foundNullElement = true; }
                 }
@@ -280,8 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            void ReadBoolArrAuto(ref JsonParser p) {
-                var i = p.GetArrayIterator();
+            void ReadBoolArrAuto(ref JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (i.UseElementBln(ref p))                { trueElement = p.boolValue; }
                 }

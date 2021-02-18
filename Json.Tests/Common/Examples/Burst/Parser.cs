@@ -68,16 +68,15 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
             var i = p.GetObjectIterator();
             while (i.NextObjectMember(ref p)) {
-                if      (i.UseMemberStr (ref p, "firstName"))    { buddy.firstName = p.value.ToString(); }
-                else if (i.UseMemberNum (ref p, "age"))          { buddy.age = p.ValueAsInt(out _); }
-                else if (i.UseMemberArr (ref p, "hobbies"))      { ReadHobbyList(ref p, ref buddy.hobbies); }
+                if      (i.UseMemberStr (ref p, "firstName"))               { buddy.firstName = p.value.ToString(); }
+                else if (i.UseMemberNum (ref p, "age"))                     { buddy.age = p.ValueAsInt(out _); }
+                else if (i.UseMemberArr (ref p, "hobbies", out JArr arr))   { ReadHobbyList(ref p, ref arr, ref buddy.hobbies); }
             }
         }
         
-        private static void ReadHobbyList(ref JsonParser p, ref List<Hobby> hobbyList) {
-            var i = p.GetArrayIterator();
-            while (i.NextArrayElement(ref p)) {
-                if (i.UseElementObj(ref p)) {
+        private static void ReadHobbyList(ref JsonParser p, ref JArr arr, ref List<Hobby> hobbyList) {
+            while (arr.NextArrayElement(ref p)) {
+                if (arr.UseElementObj(ref p)) {
                     var hobby = new Hobby();
                     ReadHobby(ref p, ref hobby);
                     hobbyList.Add(hobby);
