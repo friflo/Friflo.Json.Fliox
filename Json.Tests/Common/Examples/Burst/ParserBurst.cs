@@ -69,8 +69,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             using (var parser = new Local<JsonParser>())
             using (var buddy = new Local<Buddy>())
             {
-                ref var p = ref parser.instance;
-                ref var b = ref buddy.instance;
+                ref var p = ref parser.value;
+                ref var b = ref buddy.value;
                 b.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart

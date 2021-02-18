@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             using (var json = new Bytes(jsonString))
             using (var parser = new Local<JsonParser>())
             {
-                ref var p = ref parser.instance;
+                ref var p = ref parser.value;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
                 p.IsRootObject(out JObj i);

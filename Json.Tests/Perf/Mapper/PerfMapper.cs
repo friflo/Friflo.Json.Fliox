@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 int start = TimeUtil.GetMs();
                 int bookCount = 0;
                 using (var p = new Local<JsonParser>()) {
-                    ref var parser = ref p.instance;
+                    ref var parser = ref p.value;
                     parser.InitParser(bookShelfJson);
                     parser.NextEvent();
                     parser.IsRootObject(out JObj i);

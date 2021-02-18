@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             var memLog = new MemoryLogger(100, 100, memoryLog);
             using (var p = new Local<JsonParser>())
             {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
                 if (skipMode == SkipMode.Manual) {
                     using (ParseManual manual = new ParseManual(Default.Constructor)) {
                         memLog.Reset();

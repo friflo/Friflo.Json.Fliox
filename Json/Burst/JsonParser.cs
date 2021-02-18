@@ -51,15 +51,15 @@ namespace Friflo.Json.Burst
         }
     }
     
-    public class Local<TDisposable> : IDisposable where TDisposable : IDisposable
+    public class Local<TDisposable> : IDisposable where TDisposable : struct, IDisposable 
     {
-        public TDisposable instance;
+        public TDisposable value;
         
         public Local()                      { }
-        public Local(TDisposable instance)  { this.instance = instance; }
+        public Local(TDisposable instance)  { this.value = instance; }
 
         public void Dispose() {
-            instance.Dispose();
+            value.Dispose();
         }
     }
 

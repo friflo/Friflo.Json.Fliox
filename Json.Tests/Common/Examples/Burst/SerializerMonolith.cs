@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             Buddy buddy = CreateBuddy();
             using (var serial = new Local<JsonSerializer>())
             {
-                ref var s = ref serial.instance;
+                ref var s = ref serial.value;
                 s.InitSerializer();
 
                 s.ObjectStart();

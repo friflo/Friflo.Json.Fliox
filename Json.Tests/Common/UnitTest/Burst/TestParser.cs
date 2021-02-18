@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public static void BasicJsonParser() {
             using (var p = new Local<JsonParser>())
             {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
             
                 using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public static void TestNextEvent(Bytes bytes) {
             using (var p = new Local<JsonParser>())
             {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
                 parser.InitParser (bytes);                                  CheckPath(ref parser, "(root)");
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "(root)");
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());        CheckPath(ref parser, "eur");
@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestParserPath() {
             using (var p = new Local<JsonParser>())
             {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
                 using (var bytes = new Bytes("{ err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
@@ -232,7 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestSkipping() {
             using (var p = new Local<JsonParser>())
             {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
                 using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
@@ -361,7 +361,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public void TestAutoSkip() {
             using (var p = new Local<JsonParser>()) {
-                ref var parser = ref p.instance;
+                ref var parser = ref p.value;
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();

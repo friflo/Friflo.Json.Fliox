@@ -63,9 +63,9 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             using (var serial = new Local<JsonSerializer>())
             using (var buddy = new Local<Buddy>(CreateBuddy()))
             {
-                ref var s = ref serial.instance;
+                ref var s = ref serial.value;
                 s.InitSerializer();
-                WriteBuddy(ref s, in k, in buddy.instance);
+                WriteBuddy(ref s, in k, in buddy.value);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
                 AreEqual(expect, s.json.ToString());

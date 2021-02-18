@@ -28,8 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var p = new Local<JsonParser>())
             using (var s = new Local<JsonSerializer>())
             {
-                ref var parser = ref p.instance;
-                ref var ser = ref s.instance;
+                ref var parser = ref p.value;
+                ref var ser = ref s.value;
                 ser.SetPretty(true);
 
                 {
@@ -66,8 +66,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             using (var p = new Local<JsonParser>())
             using (var s = new Local<JsonSerializer>())
             {
-                ref var parser = ref p.instance;
-                ref var ser = ref s.instance;
+                ref var parser = ref p.value;
+                ref var ser = ref s.value;
                 
                 using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
