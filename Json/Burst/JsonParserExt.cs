@@ -115,10 +115,13 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseMember...() method only within an object");
         }
         
-        public bool UseMemberObj(ref JsonParser p, in Str32 name) {
+        public bool UseMemberObj(ref JsonParser p, in Str32 name, out JObj obj) {
             UseMember(ref p);
-            if (p.lastEvent != JsonEvent.ObjectStart || !p.key.IsEqual32(in name))
+            if (p.lastEvent != JsonEvent.ObjectStart || !p.key.IsEqual32(in name)) {
+                obj = new JObj();
                 return false;
+            }
+            obj = p.GetObjectIterator();
             usedMember = true;
             return true;
         }
@@ -246,19 +249,25 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
         }
         
-        public bool UseElementObj(ref JsonParser p) {
+        public bool UseElementObj(ref JsonParser p, out JObj obj) {
             UseElement(ref p);
-            if (p.lastEvent != JsonEvent.ObjectStart)
+            if (p.lastEvent != JsonEvent.ObjectStart) {
+                obj = new JObj();
                 return false;
+            }
             usedMember = true;
+            obj = p.GetObjectIterator();
             return true;
         }
         
-        public bool UseElementArr(ref JsonParser p) {
+        public bool UseElementArr(ref JsonParser p, out JArr arr) {
             UseElement(ref p);
-            if (p.lastEvent != JsonEvent.ArrayStart)
+            if (p.lastEvent != JsonEvent.ArrayStart) {
+                arr = new JArr();
                 return false;
+            }
             usedMember = true;
+            arr = p.GetArrayIterator();
             return true;
         }
         

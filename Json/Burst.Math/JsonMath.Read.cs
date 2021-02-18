@@ -75,8 +75,7 @@ namespace Friflo.Json.Burst.Math
         private static void ArrayFloat4x4(ref JsonParser p, ref JArr i, ref float4x4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementArr(ref p)) {
-                    var arr = p.GetArrayIterator(); // todo remove
+                if (i.UseElementArr(ref p, out JArr arr)) {
                     if (index < 4)
                         ArrayFloat4(ref p, ref arr, ref value[index++]);
                 } else 
