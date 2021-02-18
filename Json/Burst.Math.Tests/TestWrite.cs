@@ -9,12 +9,14 @@ namespace Friflo.Json.Burst.Math.Tests
         [Test]
         public void WriteMath() {
             var types   = new MathTypes();
-            var s       = new JsonSerializer();
             var keys    = new MathKeys(Default.Constructor);
-            
-            s.SetPretty(true);
-            s.InitSerializer();
-            try {
+
+            using (var serializer = new Local<JsonSerializer>())
+            {
+                ref var s = ref serializer.value;
+
+                s.SetPretty(true);
+                s.InitSerializer();
                 types.InitSample();
                 WriteMathTypes(ref s, in keys, types);
 
@@ -32,10 +34,6 @@ namespace Friflo.Json.Burst.Math.Tests
                 expect = expect.Replace("\r\n", "\n"); // CR LF -> LF
                 AreEqual(expect.Trim(), s.json.ToString());
             }
-            finally {
-                s.Dispose();
-            }
-
         }
         
         private static void WriteMathTypes(ref JsonSerializer s, in MathKeys k, in MathTypes types) {

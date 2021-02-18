@@ -24,10 +24,10 @@ namespace Friflo.Json.Burst.Math.Tests
         public void ReadMath() {
             var types   = new MathTypes();
             var keys    = new MathKeys(Default.Constructor);
-            var p       = new JsonParser();
-            var json    = new Bytes(jsonString);
-            
-            try {
+            using (var parser   = new Local<JsonParser>())
+            using (var json     = new Bytes(jsonString))
+            {
+                ref var p = ref parser.value;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
 
@@ -46,11 +46,6 @@ namespace Friflo.Json.Burst.Math.Tests
                 AreEqual(expect.float3,       types.float3);
                 AreEqual(expect.float4,       types.float4);
                 AreEqual(expect.float4x4,     types.float4x4);
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                json.Dispose();
-                p.Dispose();
             }
         }
         
