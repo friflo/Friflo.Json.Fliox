@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
         }
         
         [Test]
-        public void TestParse() {
+        public void TestNextEvent() {
             CreateBookShelfJson(ref bookShelfJson);
             for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
@@ -81,6 +81,38 @@ namespace Friflo.Json.Tests.Perf.Mapper
                             Fail(parser.error.msg.ToString());
                     }
                     IsTrue(parser.InputPos > 49_000_000);
+                }
+                int end = TimeUtil.GetMs();
+                Console.WriteLine(end - start);
+            }
+        }
+        
+        [Test]
+        public void TestParser() {
+            CreateBookShelfJson(ref bookShelfJson);
+            for (int n = 0; n < 10; n++) {
+                int start = TimeUtil.GetMs();
+                int bookCount = 0;
+                using (var parser = new JsonParser()) {
+                    parser.InitParser(bookShelfJson);
+                    parser.NextEvent();
+                    var i = parser.GetObjectIterator();
+                    while (parser.NextObjectMember(ref i)) {
+                        if (parser.UseMemberArr(ref i, "Books")) {
+                            var i2 = parser.GetArrayIterator();
+                            while (parser.NextArrayElement(ref i2)) {
+                                if (parser.UseElementObj(ref i2)) {
+                                    var i3 = parser.GetObjectIterator();
+                                    bookCount++;
+                                    while (parser.NextObjectMember(ref i3)) {
+                                        if      (parser.UseMemberStr(ref i3, "Title")) { }
+                                        else if (parser.UseMemberNum(ref i3, "Id")) { }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    AreEqual(CreateBookShelf().Books.Count, bookCount);
                 }
                 int end = TimeUtil.GetMs();
                 Console.WriteLine(end - start);
