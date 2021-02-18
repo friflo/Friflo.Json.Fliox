@@ -32,7 +32,7 @@ namespace Friflo.Json.Burst.Math.Tests
                 p.NextEvent(); // ObjectStart
 
                 p.IsRootObject(out JObj i);
-                ReadMathTypes(ref p, ref i, in keys, ref types);
+                ReadMathTypes(ref i, ref p, in keys, ref types);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -54,7 +54,7 @@ namespace Friflo.Json.Burst.Math.Tests
             }
         }
         
-        private static void ReadMathTypes(ref JsonParser p, ref JObj i, in MathKeys k, ref MathTypes types) {
+        private static void ReadMathTypes(ref JObj i, ref JsonParser p, in MathKeys k, ref MathTypes types) {
             while (i.NextObjectMember(ref p)) {
                 if      (i.UseMemberFloat2  (ref p, in k.float2,    ref types.float2))     { }
                 else if (i.UseMemberFloat3  (ref p, in k.float3,    ref types.float3))     { }
