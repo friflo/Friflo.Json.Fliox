@@ -39,10 +39,10 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         [Test]
         public void ReadJson() {
             Buddy buddy = new Buddy();
-            
-            JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString);
-            try {
+            using (var parser = new Local<JsonParser>())
+            using (var json = new Bytes(jsonString))
+            {
+                ref var p = ref parser.instance;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
                 var i1 = p.GetObjectIterator();
@@ -71,11 +71,6 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 AreEqual(2,             buddy.hobbies.Count);
                 AreEqual("Gaming",      buddy.hobbies[0].name);
                 AreEqual("STAR WARS",   buddy.hobbies[1].name);
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                json.Dispose(); 
-                p.Dispose();
             }
         }
     }

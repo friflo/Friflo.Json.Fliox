@@ -64,31 +64,26 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         /// </summary>
         [Test]
         public void ReadJson() {
-            Buddy   buddy = new Buddy();
-            buddy.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
             Keys    k = new Keys(Default.Constructor);
-            
-            JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString);
-            try {
+            using (var json = new Bytes(jsonString))
+            using (var parser = new Local<JsonParser>())
+            using (var buddy = new Local<Buddy>())
+            {
+                ref var p = ref parser.instance;
+                ref var b = ref buddy.instance;
+                b.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadBuddy(ref p, in k, ref buddy);
+                ReadBuddy(ref p, in k, ref b);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
                 AreEqual(JsonEvent.EOF, p.NextEvent()); // Important to ensure absence of application errors
-                AreEqual("John",        buddy.firstName);
-                AreEqual(24,            buddy.age);
-                AreEqual(2,             buddy.hobbies.Count);
-                AreEqual("Gaming",      buddy.hobbies.array[0].name);
-                AreEqual("STAR WARS",   buddy.hobbies.array[1].name);
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                json.Dispose();
-                p.Dispose();
-                buddy.Dispose();
+                AreEqual("John",        b.firstName);
+                AreEqual(24,            b.age);
+                AreEqual(2,             b.hobbies.Count);
+                AreEqual("Gaming",      b.hobbies.array[0].name);
+                AreEqual("STAR WARS",   b.hobbies.array[1].name);
             }
         }
         

@@ -37,17 +37,14 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         [Test]
         public void WriteJson() {
             Buddy buddy = CreateBuddy();
-            var s = new JsonSerializer();
-            s.InitSerializer();
-            try {
+            using (var serial = new Local<JsonSerializer>())
+            {
+                ref var s = ref serial.instance;
+                s.InitSerializer();
                 WriteBuddy(ref s, buddy);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
                 AreEqual(expect, s.json.ToString());
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                s.Dispose();
             }
         }
 

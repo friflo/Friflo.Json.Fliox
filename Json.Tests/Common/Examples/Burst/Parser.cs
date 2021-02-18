@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 // ReSharper disable InconsistentNaming
@@ -7,7 +8,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
-    public class Parser
+    public class Parser : LeakTestsFixture
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
@@ -44,12 +45,14 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         public void ReadJson() {
             Buddy buddy = new Buddy();
             
-            JsonParser p = new JsonParser();
-            Bytes json = new Bytes(jsonString);
-            try {
+            using (var json = new Bytes(jsonString))
+            using (var parser = new Local<JsonParser>())
+            {
+                ref var p = ref parser.instance;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
                 ReadBuddy(ref p, ref buddy);
+                //hub.parser = new JsonParser();
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -59,11 +62,6 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 AreEqual(2,             buddy.hobbies.Count);
                 AreEqual("Gaming",      buddy.hobbies[0].name);
                 AreEqual("STAR WARS",   buddy.hobbies[1].name);
-            }
-            finally {
-                // only required for Unity/JSON_BURST
-                json.Dispose();
-                p.Dispose();
             }
         }
         

@@ -11,113 +11,116 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public struct TestParserImpl
     {
         public static void BasicJsonParser() {
-            JsonParser parser = new JsonParser();
+            using (var p = new Local<JsonParser>())
+            {
+                ref var parser = ref p.instance;
             
-            using (var bytes = new Bytes("{}")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.Level);
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
+                using (var bytes = new Bytes("{}")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+                    AreEqual(0, parser.Level);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
+                }
+                using (var bytes = new Bytes("{\"test\":\"hello\"}")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
+                    AreEqual("test", parser.key.ToString());
+                    AreEqual("hello", parser.value.ToString());
+                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+                    AreEqual(0, parser.Level);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                using (var bytes = new Bytes("{\"a\":\"b\",\"abc\":123,\"x\":\"ab\\r\\nc\"}")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
+                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
+                    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
+                    AreEqual("abc", parser.key.ToString());
+                    AreEqual("123", parser.value.ToString());
+                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
+                    AreEqual("ab\r\nc", parser.value.ToString());
+                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
+                    AreEqual(0, parser.Level);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                using (var bytes = new Bytes("[]")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
+                    AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
+                    AreEqual(0, parser.Level);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                
+                // --------------- primitives on root level --------------- 
+                using (var bytes = new Bytes("\"str\"")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
+                    AreEqual("str", parser.value.ToString());
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                using (var bytes = new Bytes("42")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
+                    AreEqual("42", parser.value.ToString());
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                using (var bytes = new Bytes("true")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueBool, parser.NextEvent());
+                    AreEqual(true, parser.boolValue);
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                using (var bytes = new Bytes("null")) {
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueNull, parser.NextEvent());
+                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
+                
+                // --------------- invalid strings on root ---------------
+                using (var bytes = new Bytes("")) { // empty string is not valid JSON
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
+                }
+                using (var bytes = new Bytes("str")) {
+                    parser.InitParser(bytes);
+                    AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
+                    AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
+                    AreEqual(1, parser.error.Pos);              // ensuring code coverage
+                }
+                using (var bytes = new Bytes("tx")) { // start as a bool (true)
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
+                    AreEqual(2, parser.error.Pos);
+                }
+                using (var bytes = new Bytes("1a")) { // start as a number
+                    parser.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
+                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                }
             }
-            using (var bytes = new Bytes("{\"test\":\"hello\"}")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                AreEqual("test", parser.key.ToString());
-                AreEqual("hello", parser.value.ToString());
-                AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.Level);
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            using (var bytes = new Bytes("{\"a\":\"b\",\"abc\":123,\"x\":\"ab\\r\\nc\"}")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
-                AreEqual("abc", parser.key.ToString());
-                AreEqual("123", parser.value.ToString());
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                AreEqual("ab\r\nc", parser.value.ToString());
-                AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                AreEqual(0, parser.Level);
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            using (var bytes = new Bytes("[]")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
-                AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
-                AreEqual(0, parser.Level);
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            
-            // --------------- primitives on root level --------------- 
-            using (var bytes = new Bytes("\"str\"")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                AreEqual("str", parser.value.ToString());
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            using (var bytes = new Bytes("42")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
-                AreEqual("42", parser.value.ToString());
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            using (var bytes = new Bytes("true")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ValueBool, parser.NextEvent());
-                AreEqual(true, parser.boolValue);
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            using (var bytes = new Bytes("null")) {
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.ValueNull, parser.NextEvent());
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            
-            // --------------- invalid strings on root ---------------
-            using (var bytes = new Bytes("")) { // empty string is not valid JSON
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
-            }
-            using (var bytes = new Bytes("str")) {
-                parser.InitParser(bytes);
-                AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
-                AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
-                AreEqual(1, parser.error.Pos);              // ensuring code coverage
-            }
-            using (var bytes = new Bytes("tx")) { // start as a bool (true)
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
-                AreEqual(2, parser.error.Pos);
-            }
-            using (var bytes = new Bytes("1a")) { // start as a number
-                parser.InitParser(bytes);
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-                AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
-                AreEqual(JsonEvent.Error, parser.NextEvent());
-            }
-            parser.Dispose();
         }
 
 
         public static void TestNextEvent(Bytes bytes) {
-            JsonParser parser = new JsonParser();
-            try {
+            using (var p = new Local<JsonParser>())
+            {
+                ref var parser = ref p.instance;
                 parser.InitParser (bytes);                                  CheckPath(ref parser, "(root)");
                 AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "(root)");
                 AreEqual(JsonEvent.ValueString, parser.NextEvent());        CheckPath(ref parser, "eur");
@@ -177,8 +180,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 for (int n = 0; n < 32; n++)
                     parser.NextEvent();
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
-            } finally {
-                parser.Dispose();
             }
         }
         
@@ -196,8 +197,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestParserPath() {
-            JsonParser parser = new JsonParser();
-            try {
+            using (var p = new Local<JsonParser>())
+            {
+                ref var parser = ref p.instance;
                 using (var bytes = new Bytes("{ err")) {
                     parser.InitParser(bytes);
                     parser.SkipTree();
@@ -224,15 +226,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual("(root)", parser.GetPath());
                 }
             }
-            finally {
-                parser.Dispose();
-            }
         }
         
         [Test]
         public void TestSkipping() {
-            JsonParser parser = new JsonParser();
-            try {
+            using (var p = new Local<JsonParser>())
+            {
+                ref var parser = ref p.instance;
                 using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     IsTrue(parser.SkipTree());
@@ -322,9 +322,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsFalse(parser.SkipTree()); // parser state is not changed
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
                 }
-            }
-            finally {
-                parser.Dispose();    
             }
         }
 

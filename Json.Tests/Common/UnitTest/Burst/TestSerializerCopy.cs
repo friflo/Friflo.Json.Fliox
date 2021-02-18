@@ -24,11 +24,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 1000, memoryLog);
-            var ser = new JsonSerializer();
-            ser.SetPretty(true);
-            var parser = new JsonParser();
-            try
+            
+            using (var p = new Local<JsonParser>())
+            using (var s = new Local<JsonSerializer>())
             {
+                ref var parser = ref p.instance;
+                ref var ser = ref s.instance;
+                ser.SetPretty(true);
+
                 {
                     memLog.Reset();
                     for (int i = 0; i < iterations; i++) {
@@ -56,17 +59,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(JsonEvent.EOF, parser.NextEvent());
                 IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
             }
-            finally {
-                parser.Dispose();
-                ser.Dispose();
-            }
         }
         
         [Test]
         public void TestCopyTree() {
-            var parser = new JsonParser();
-            var ser = new JsonSerializer();
-            try {
+            using (var p = new Local<JsonParser>())
+            using (var s = new Local<JsonSerializer>())
+            {
+                ref var parser = ref p.instance;
+                ref var ser = ref s.instance;
+                
                 using (var bytes = new Bytes("{}")) {
                     parser.InitParser(bytes);
                     ser.InitSerializer();
@@ -153,10 +155,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual(JsonEvent.Error, parser.NextEvent());
                     AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", parser.error.msg.ToString());
                 }
-            }
-            finally {
-                parser.Dispose();
-                ser.Dispose();
             }
         }
     }

@@ -51,6 +51,18 @@ namespace Friflo.Json.Burst
             return ToStr128().ToString();
         }
     }
+    
+    public class Local<TDisposable> : IDisposable where TDisposable : IDisposable
+    {
+        public TDisposable instance;
+        
+        public Local()                      { }
+        public Local(TDisposable instance)  { this.instance = instance; }
+
+        public void Dispose() {
+            instance.Dispose();
+        }
+    }
 
     /// <summary>
     /// The basic JSON Parser API required to parse a JSON document.

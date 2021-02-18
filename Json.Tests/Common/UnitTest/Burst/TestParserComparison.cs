@@ -102,8 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         private void RunParser(Bytes bytes, SkipMode skipMode, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
-            var parser = new JsonParser();
-            try {
+            using (var p = new Local<JsonParser>())
+            {
+                ref var parser = ref p.instance;
                 if (skipMode == SkipMode.Manual) {
                     using (ParseManual manual = new ParseManual(Default.Constructor)) {
                         memLog.Reset();
@@ -129,9 +130,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         memLog.AssertNoAllocations();
                     }
                 }
-            }
-            finally {
-                parser.Dispose();
             }
         }
 
