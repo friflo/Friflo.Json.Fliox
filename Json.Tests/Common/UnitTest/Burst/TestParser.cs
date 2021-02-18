@@ -403,76 +403,76 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 #if DEBUG
                 using (var json = new Bytes("[]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
                                         
-                        p.instance.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.instance, Skip.Auto);
+                        p.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref p.value, Skip.Auto);
                     });
                     AreEqual("NextObjectMember() - expect initial iteration with an object (ObjectStart)", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
-                        p.instance.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.instance, Skip.Auto);
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
+                        p.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref p.value, Skip.Auto);
                     });
                     AreEqual("NextArrayElement() - expect initial iteration with an array (ArrayStart)", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
 
-                        p.instance.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.instance, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, p.instance.Event);
+                        p.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref p.value, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, p.value.Event);
 
                         // call to NextObjectMember() would return false
-                        AreEqual(JsonEvent.ObjectEnd, p.instance.NextEvent());
-                        IsFalse(obj.NextObjectMember(ref p.instance, Skip.Auto));
+                        AreEqual(JsonEvent.ObjectEnd, p.value.NextEvent());
+                        IsFalse(obj.NextObjectMember(ref p.value, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("[42]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
 
-                        p.instance.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.instance, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, p.instance.Event);
+                        p.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref p.value, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, p.value.Event);
 
                         // call to NextArrayElement() would return false
-                        AreEqual(JsonEvent.ArrayEnd, p.instance.NextEvent());
-                        IsFalse(arr.NextArrayElement(ref p.instance, Skip.Auto));
+                        AreEqual(JsonEvent.ArrayEnd, p.value.NextEvent());
+                        IsFalse(arr.NextArrayElement(ref p.value, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("[{}]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
 
-                        p.instance.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.instance, Skip.Auto);
-                        AreEqual(JsonEvent.ObjectStart, p.instance.Event);
-                        AreEqual(true, arr.UseElementObj(ref p.instance, out JObj _)); // used object without skipping
-                        IsFalse(arr.NextArrayElement(ref p.instance, Skip.Auto));
+                        p.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref p.value, Skip.Auto);
+                        AreEqual(JsonEvent.ObjectStart, p.value.Event);
+                        AreEqual(true, arr.UseElementObj(ref p.value, out JObj _)); // used object without skipping
+                        IsFalse(arr.NextArrayElement(ref p.value, Skip.Auto));
                     });
                     AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("{\"arr\":[]}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.instance.InitParser(json);
-                        p.instance.NextEvent();
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
 
-                        p.instance.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.instance, Skip.Auto);
-                        AreEqual(JsonEvent.ArrayStart, p.instance.Event);
-                        AreEqual(true, obj.UseMemberArr (ref p.instance, "arr", out JArr _)); // used array without skipping
-                        IsFalse(obj.NextObjectMember(ref p.instance, Skip.Auto));
+                        p.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref p.value, Skip.Auto);
+                        AreEqual(JsonEvent.ArrayStart, p.value.Event);
+                        AreEqual(true, obj.UseMemberArr (ref p.value, "arr", out JArr _)); // used array without skipping
+                        IsFalse(obj.NextObjectMember(ref p.value, Skip.Auto));
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
                 }
