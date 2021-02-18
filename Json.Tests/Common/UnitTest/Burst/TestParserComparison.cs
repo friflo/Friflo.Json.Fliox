@@ -101,32 +101,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         private void RunParser(Bytes bytes, SkipMode skipMode, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
                 if (skipMode == SkipMode.Manual) {
                     using (ParseManual manual = new ParseManual(Default.Constructor)) {
                         memLog.Reset();
                         for (int i = 0; i < iterations; i++) {
-                            parser.InitParser(bytes);
-                            parser.NextEvent(); // ObjectStart
-                            manual.RootManualSkip(ref parser);
+                            p.InitParser(bytes);
+                            p.NextEvent(); // ObjectStart
+                            manual.RootManualSkip(ref p);
                             memLog.Snapshot();
                         }
-                        manual.AssertParseResult(ref parser);
+                        manual.AssertParseResult(ref p);
                         memLog.AssertNoAllocations();
                     }
                 } else {
                     using (ParseManual manual = new ParseManual(Default.Constructor)) {
                         memLog.Reset();
                         for (int i = 0; i < iterations; i++) {
-                            parser.InitParser(bytes);
-                            parser.NextEvent(); // ObjectStart
-                            parser.IsRootObject(out JObj obj);
-                            manual.RootAutoSkip(ref parser, ref obj);
+                            p.InitParser(bytes);
+                            p.NextEvent(); // ObjectStart
+                            p.IsRootObject(out JObj obj);
+                            manual.RootAutoSkip(ref p, ref obj);
                             memLog.Snapshot();
                         }
-                        manual.AssertParseResult(ref parser);
+                        manual.AssertParseResult(ref p);
                         memLog.AssertNoAllocations();
                     }
                 }

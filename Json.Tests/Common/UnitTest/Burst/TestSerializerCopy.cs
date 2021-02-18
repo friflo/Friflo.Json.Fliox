@@ -25,135 +25,135 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 1000, memoryLog);
             
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             using (var s = new Local<JsonSerializer>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
                 ref var ser = ref s.value;
                 ser.SetPretty(true);
 
                 {
                     memLog.Reset();
                     for (int i = 0; i < iterations; i++) {
-                        parser.InitParser(bytes);
+                        p.InitParser(bytes);
                         ser.InitSerializer();
-                        parser.NextEvent(); // ObjectStart
+                        p.NextEvent(); // ObjectStart
                         ser.ObjectStart();
-                        ser.WriteObject(ref parser);
+                        ser.WriteObject(ref p);
                         memLog.Snapshot();
                     }
                     memLog.AssertNoAllocations();
                 }
                 CommonUtils.ToFile("assets/output/writeManual.json", ser.json);
-                if (parser.error.ErrSet)
-                    Fail(parser.error.msg.ToString());
-                AreEqual(JsonEvent.EOF, parser.NextEvent());   // Important to ensure absence of application errors
+                if (p.error.ErrSet)
+                    Fail(p.error.msg.ToString());
+                AreEqual(JsonEvent.EOF, p.NextEvent());   // Important to ensure absence of application errors
                 
-                parser.InitParser(bytes);
-                parser.SkipTree();
-                SkipInfo srcSkipInfo = parser.skipInfo;
+                p.InitParser(bytes);
+                p.SkipTree();
+                SkipInfo srcSkipInfo = p.skipInfo;
 
                 // validate generated JSON
-                parser.InitParser(ser.json);
-                parser.SkipTree();
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
-                IsTrue(parser.skipInfo.IsEqual(srcSkipInfo));
+                p.InitParser(ser.json);
+                p.SkipTree();
+                AreEqual(JsonEvent.EOF, p.NextEvent());
+                IsTrue(p.skipInfo.IsEqual(srcSkipInfo));
             }
         }
         
         [Test]
         public void TestCopyTree() {
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             using (var s = new Local<JsonSerializer>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
                 ref var ser = ref s.value;
                 
                 using (var bytes = new Bytes("{}")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("{}", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("[]")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("[]", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("\"abc\"")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("\"abc\"", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("123")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("123", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("true")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("true", ser.json.ToString());
                 }
 
                 using (var bytes = new Bytes("null")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsTrue(ser.WriteTree(ref parser));
-                    AreEqual(0, parser.skipInfo.Sum);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    IsTrue(ser.WriteTree(ref p));
+                    AreEqual(0, p.skipInfo.Sum);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual("null", ser.json.ToString());
                 }
 
                 // --- some error cases
                 using (var bytes = new Bytes("[")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsFalse(ser.WriteTree(ref parser));
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", parser.error.msg.ToString());
+                    IsFalse(ser.WriteTree(ref p));
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", p.error.msg.ToString());
                 }
 
                 using (var bytes = new Bytes("{")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsFalse(ser.WriteTree(ref parser));
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", parser.error.msg.ToString());
+                    IsFalse(ser.WriteTree(ref p));
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", p.error.msg.ToString());
                 }
 
                 using (var bytes = new Bytes("")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsFalse(ser.WriteTree(ref parser));
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
+                    IsFalse(ser.WriteTree(ref p));
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.ToString());
                 }
 
                 using (var bytes = new Bytes("a")) {
-                    parser.InitParser(bytes);
+                    p.InitParser(bytes);
                     ser.InitSerializer();
-                    IsFalse(ser.WriteTree(ref parser));
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", parser.error.msg.ToString());
+                    IsFalse(ser.WriteTree(ref p));
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", p.error.msg.ToString());
                 }
             }
         }

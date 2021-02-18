@@ -73,14 +73,14 @@ namespace Friflo.Json.Tests.Perf.Mapper
             CreateBookShelfJson(ref bookShelfJson);
             for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
-                using (var parser = new JsonParser()) {
-                    parser.InitParser(bookShelfJson);
+                using (var p = new JsonParser()) {
+                    p.InitParser(bookShelfJson);
                     // parser.InitParser(new MemoryStream(json.buffer.array, json.start, json.Len));
-                    while (parser.NextEvent() != JsonEvent.EOF) {
-                        if (parser.error.ErrSet)
-                            Fail(parser.error.msg.ToString());
+                    while (p.NextEvent() != JsonEvent.EOF) {
+                        if (p.error.ErrSet)
+                            Fail(p.error.msg.ToString());
                     }
-                    IsTrue(parser.InputPos > 49_000_000);
+                    IsTrue(p.InputPos > 49_000_000);
                 }
                 int end = TimeUtil.GetMs();
                 Console.WriteLine(end - start);
@@ -93,19 +93,19 @@ namespace Friflo.Json.Tests.Perf.Mapper
             for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
                 int bookCount = 0;
-                using (var p = new Local<JsonParser>()) {
-                    ref var parser = ref p.value;
-                    parser.InitParser(bookShelfJson);
-                    parser.NextEvent();
-                    parser.IsRootObject(out JObj i);
-                    while (i.NextObjectMember(ref parser)) {
-                        if (i.UseMemberArr(ref parser, "Books", out JArr i2)) {
-                            while (i2.NextArrayElement(ref parser)) {
-                                if (i2.UseElementObj(ref parser, out JObj i3)) {
+                using (var parser = new Local<JsonParser>()) {
+                    ref var p = ref parser.value;
+                    p.InitParser(bookShelfJson);
+                    p.NextEvent();
+                    p.IsRootObject(out JObj i);
+                    while (i.NextObjectMember(ref p)) {
+                        if (i.UseMemberArr(ref p, "Books", out JArr i2)) {
+                            while (i2.NextArrayElement(ref p)) {
+                                if (i2.UseElementObj(ref p, out JObj i3)) {
                                     bookCount++;
-                                    while (i3.NextObjectMember(ref parser)) {
-                                        if      (i3.UseMemberStr(ref parser, "Title")) { }
-                                        else if (i3.UseMemberNum(ref parser, "Id")) { }
+                                    while (i3.NextObjectMember(ref p)) {
+                                        if      (i3.UseMemberStr(ref p, "Title")) { }
+                                        else if (i3.UseMemberNum(ref p, "Id")) { }
                                     }
                                 }
                             }

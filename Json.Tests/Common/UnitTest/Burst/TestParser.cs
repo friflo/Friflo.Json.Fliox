@@ -11,175 +11,175 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public struct TestParserImpl
     {
         public static void BasicJsonParser() {
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
             
                 using (var bytes = new Bytes("{}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                    AreEqual(0, parser.Level);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", parser.error.msg.ToString());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
+                    AreEqual(0, p.Level);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", p.error.msg.ToString());
                 }
                 using (var bytes = new Bytes("{\"test\":\"hello\"}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                    AreEqual("test", parser.key.ToString());
-                    AreEqual("hello", parser.value.ToString());
-                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                    AreEqual(0, parser.Level);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    AreEqual(JsonEvent.ValueString, p.NextEvent());
+                    AreEqual("test", p.key.ToString());
+                    AreEqual("hello", p.value.ToString());
+                    AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
+                    AreEqual(0, p.Level);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("{\"a\":\"b\",\"abc\":123,\"x\":\"ab\\r\\nc\"}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
-                    AreEqual("abc", parser.key.ToString());
-                    AreEqual("123", parser.value.ToString());
-                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                    AreEqual("ab\r\nc", parser.value.ToString());
-                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                    AreEqual(0, parser.Level);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    AreEqual(JsonEvent.ValueString, p.NextEvent());
+                    AreEqual(JsonEvent.ValueNumber, p.NextEvent());
+                    AreEqual("abc", p.key.ToString());
+                    AreEqual("123", p.value.ToString());
+                    AreEqual(JsonEvent.ValueString, p.NextEvent());
+                    AreEqual("ab\r\nc", p.value.ToString());
+                    AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
+                    AreEqual(0, p.Level);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("[]")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ArrayStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
-                    AreEqual(0, parser.Level);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ArrayStart, p.NextEvent());
+                    AreEqual(JsonEvent.ArrayEnd, p.NextEvent());
+                    AreEqual(0, p.Level);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 
                 // --------------- primitives on root level --------------- 
                 using (var bytes = new Bytes("\"str\"")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ValueString, parser.NextEvent());
-                    AreEqual("str", parser.value.ToString());
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueString, p.NextEvent());
+                    AreEqual("str", p.value.ToString());
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("42")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
-                    AreEqual("42", parser.value.ToString());
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueNumber, p.NextEvent());
+                    AreEqual("42", p.value.ToString());
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("true")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ValueBool, parser.NextEvent());
-                    AreEqual(true, parser.boolValue);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueBool, p.NextEvent());
+                    AreEqual(true, p.boolValue);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("null")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ValueNull, parser.NextEvent());
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueNull, p.NextEvent());
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 
                 // --------------- invalid strings on root ---------------
                 using (var bytes = new Bytes("")) { // empty string is not valid JSON
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", parser.error.msg.ToString());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.ToString());
                 }
                 using (var bytes = new Bytes("str")) {
-                    parser.InitParser(bytes);
-                    AreEqual(false, parser.error.ErrSet);       // ensure error is cleared
-                    AreEqual("", parser.error.msg.ToString());  // ensure error message is cleared
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", parser.error.msg.ToString());
-                    AreEqual(1, parser.error.Pos);              // ensuring code coverage
+                    p.InitParser(bytes);
+                    AreEqual(false, p.error.ErrSet);       // ensure error is cleared
+                    AreEqual("", p.error.msg.ToString());  // ensure error message is cleared
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual(1, p.error.Pos);              // ensuring code coverage
                 }
                 using (var bytes = new Bytes("tx")) { // start as a bool (true)
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", parser.error.msg.ToString());
-                    AreEqual(2, parser.error.Pos);
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", p.error.msg.ToString());
+                    AreEqual(2, p.error.Pos);
                 }
                 using (var bytes = new Bytes("1a")) { // start as a number
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", parser.error.msg.ToString());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
             }
         }
 
 
         public static void TestNextEvent(Bytes bytes) {
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             {
-                ref var parser = ref p.value;
-                parser.InitParser (bytes);                                  CheckPath(ref parser, "(root)");
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "(root)");
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());        CheckPath(ref parser, "eur");
-                AreEqual(">€<",                 parser.value.ToString());
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());        CheckPath(ref parser, "eur2");
-                AreEqual("[€]",                 parser.value.ToString());   
+                ref var p = ref parser.value;
+                p.InitParser (bytes);                                  CheckPath(ref p, "(root)");
+                AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "(root)");
+                AreEqual(JsonEvent.ValueString, p.NextEvent());        CheckPath(ref p, "eur");
+                AreEqual(">€<",                 p.value.ToString());
+                AreEqual(JsonEvent.ValueString, p.NextEvent());        CheckPath(ref p, "eur2");
+                AreEqual("[€]",                 p.value.ToString());   
                 
-                AreEqual(JsonEvent.ValueNull,   parser.NextEvent());        CheckPath(ref parser, "null");
-                AreEqual(JsonEvent.ValueBool,   parser.NextEvent());        CheckPath(ref parser, "true");
-                AreEqual(true,                  parser.boolValue);
-                AreEqual(JsonEvent.ValueBool,   parser.NextEvent());        CheckPath(ref parser, "false");
-                AreEqual(false,                 parser.boolValue);
+                AreEqual(JsonEvent.ValueNull,   p.NextEvent());        CheckPath(ref p, "null");
+                AreEqual(JsonEvent.ValueBool,   p.NextEvent());        CheckPath(ref p, "true");
+                AreEqual(true,                  p.boolValue);
+                AreEqual(JsonEvent.ValueBool,   p.NextEvent());        CheckPath(ref p, "false");
+                AreEqual(false,                 p.boolValue);
                 
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "empty");
-                AreEqual("empty",               parser.key.ToString());
-                AreEqual(JsonEvent.ObjectEnd,   parser.NextEvent());        CheckPath(ref parser, "empty");
+                AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "empty");
+                AreEqual("empty",               p.key.ToString());
+                AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "empty");
                 
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "obj");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "obj.val");
+                AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "obj");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "obj.val");
             //  AreEqual(11,                    parser.number.ParseInt(parseCx));
-                AreEqual(JsonEvent.ObjectEnd,   parser.NextEvent());        CheckPath(ref parser, "obj");
+                AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "obj");
                 
-                AreEqual(JsonEvent.ArrayStart,  parser.NextEvent());        CheckPath(ref parser, "arr0[]");
-                AreEqual("arr0",                parser.key.ToString());
-                AreEqual(JsonEvent.ArrayEnd,    parser.NextEvent());        CheckPath(ref parser, "arr0");
+                AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr0[]");
+                AreEqual("arr0",                p.key.ToString());
+                AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr0");
                 
-                AreEqual(JsonEvent.ArrayStart,  parser.NextEvent());        CheckPath(ref parser, "arr1[]");
-                AreEqual("arr1",                parser.key.ToString());
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "arr1[0]");
-                AreEqual(JsonEvent.ArrayEnd,    parser.NextEvent());        CheckPath(ref parser, "arr1");
+                AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr1[]");
+                AreEqual("arr1",                p.key.ToString());
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr1[0]");
+                AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr1");
                 
-                AreEqual(JsonEvent.ArrayStart,  parser.NextEvent());        CheckPath(ref parser, "arr2[]");
-                AreEqual("arr2",                parser.key.ToString());
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "arr2[0]");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "arr2[1]");
-                AreEqual(JsonEvent.ArrayEnd,    parser.NextEvent());        CheckPath(ref parser, "arr2");
+                AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr2[]");
+                AreEqual("arr2",                p.key.ToString());
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr2[0]");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr2[1]");
+                AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr2");
                 
-                AreEqual(JsonEvent.ArrayStart,  parser.NextEvent());        CheckPath(ref parser, "arr3[]");
-                AreEqual("arr3",                parser.key.ToString());
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "arr3[0]");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "arr3[0].val");
-                AreEqual(JsonEvent.ObjectEnd,   parser.NextEvent());        CheckPath(ref parser, "arr3[0]");       
-                AreEqual(JsonEvent.ObjectStart, parser.NextEvent());        CheckPath(ref parser, "arr3[1]");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "arr3[1].val");
-                AreEqual(JsonEvent.ObjectEnd,   parser.NextEvent());        CheckPath(ref parser, "arr3[1]");
-                AreEqual(JsonEvent.ArrayEnd,    parser.NextEvent());        CheckPath(ref parser, "arr3");
+                AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr3[]");
+                AreEqual("arr3",                p.key.ToString());
+                AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "arr3[0]");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr3[0].val");
+                AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "arr3[0]");       
+                AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "arr3[1]");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr3[1].val");
+                AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "arr3[1]");
+                AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr3");
                 
-                AreEqual(JsonEvent.ValueString, parser.NextEvent());        CheckPath(ref parser, "str");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "int32");
-                AreEqual(JsonEvent.ValueNumber, parser.NextEvent());        CheckPath(ref parser, "dbl");
+                AreEqual(JsonEvent.ValueString, p.NextEvent());        CheckPath(ref p, "str");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "int32");
+                AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "dbl");
                 
-                AreEqual(JsonEvent.ObjectEnd,   parser.NextEvent());        CheckPath(ref parser, "(root)");
-                AreEqual(JsonEvent.EOF,         parser.NextEvent());        CheckPath(ref parser, "(root)");
-                AreEqual(JsonEvent.Error,       parser.NextEvent());        CheckPath(ref parser, "(root)");
+                AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "(root)");
+                AreEqual(JsonEvent.EOF,         p.NextEvent());        CheckPath(ref p, "(root)");
+                AreEqual(JsonEvent.Error,       p.NextEvent());        CheckPath(ref p, "(root)");
             
-                parser.InitParser(bytes);
+                p.InitParser(bytes);
                 for (int n = 0; n < 32; n++)
-                    parser.NextEvent();
-                AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.NextEvent();
+                AreEqual(JsonEvent.EOF, p.NextEvent());
             }
         }
         
@@ -197,130 +197,130 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestParserPath() {
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
                 using (var bytes = new Bytes("{ err")) {
-                    parser.InitParser(bytes);
-                    parser.SkipTree();
-                    AreEqual("(root)", parser.GetPath());
+                    p.InitParser(bytes);
+                    p.SkipTree();
+                    AreEqual("(root)", p.GetPath());
                 }
                 using (var bytes = new Bytes("{\"m\" err")) {
-                    parser.InitParser(bytes);
-                    parser.SkipTree();
-                    AreEqual("m", parser.GetPath());
+                    p.InitParser(bytes);
+                    p.SkipTree();
+                    AreEqual("m", p.GetPath());
                 }
                 using (var bytes = new Bytes("[err")) {
-                    parser.InitParser(bytes);
-                    parser.SkipTree();
-                    AreEqual("[0]", parser.GetPath());
+                    p.InitParser(bytes);
+                    p.SkipTree();
+                    AreEqual("[0]", p.GetPath());
                 }
                 using (var bytes = new Bytes("[1, err")) {
-                    parser.InitParser(bytes);
-                    parser.SkipTree();
-                    AreEqual("[1]", parser.GetPath());
+                    p.InitParser(bytes);
+                    p.SkipTree();
+                    AreEqual("[1]", p.GetPath());
                 }
                 using (var bytes = new Bytes("err")) {
-                    parser.InitParser(bytes);
-                    parser.SkipTree();
-                    AreEqual("(root)", parser.GetPath());
+                    p.InitParser(bytes);
+                    p.SkipTree();
+                    AreEqual("(root)", p.GetPath());
                 }
             }
         }
         
         [Test]
         public void TestSkipping() {
-            using (var p = new Local<JsonParser>())
+            using (var parser = new Local<JsonParser>())
             {
-                ref var parser = ref p.value;
+                ref var p = ref parser.value;
                 using (var bytes = new Bytes("{}")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.objects);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.objects);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("{\"a\":\"A\"}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.objects);
-                    AreEqual(1, parser.skipInfo.strings);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.objects);
+                    AreEqual(1, p.skipInfo.strings);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("{\"a\":\"A\",\"b\":\"B\"}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ValueString, parser.NextEvent()); // consume first property
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.objects);
-                    AreEqual(1, parser.skipInfo.strings);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    AreEqual(JsonEvent.ValueString, p.NextEvent()); // consume first property
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.objects);
+                    AreEqual(1, p.skipInfo.strings);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("[]")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.arrays);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.arrays);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("\"str\"")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.strings);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.strings);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("42")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.integers);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.integers);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("true")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.booleans);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.booleans);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("null")) {
-                    parser.InitParser(bytes);
-                    IsTrue(parser.SkipTree());
-                    AreEqual(1, parser.skipInfo.nulls);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsTrue(p.SkipTree());
+                    AreEqual(1, p.skipInfo.nulls);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
 
                 // --------------- skipping skipping invalid cases
                 using (var bytes = new Bytes("[")) {
-                    parser.InitParser(bytes);
-                    IsFalse(parser.SkipTree());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
-                    IsFalse(parser.SkipTree()); // parser state is not changed
+                    p.InitParser(bytes);
+                    IsFalse(p.SkipTree());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
+                    IsFalse(p.SkipTree()); // parser state is not changed
                 }
                 using (var bytes = new Bytes("{")) {
-                    parser.InitParser(bytes);
-                    IsFalse(parser.SkipTree());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsFalse(p.SkipTree());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("a")) {
-                    parser.InitParser(bytes);
-                    IsFalse(parser.SkipTree());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsFalse(p.SkipTree());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("")) {
-                    parser.InitParser(bytes);
-                    IsFalse(parser.SkipTree());
-                    AreEqual(JsonEvent.Error, parser.NextEvent());
+                    p.InitParser(bytes);
+                    IsFalse(p.SkipTree());
+                    AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("42")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ValueNumber, parser.NextEvent());
-                    IsFalse(parser.SkipTree()); // parser state is not changed
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ValueNumber, p.NextEvent());
+                    IsFalse(p.SkipTree()); // parser state is not changed
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var bytes = new Bytes("{}")) {
-                    parser.InitParser(bytes);
-                    AreEqual(JsonEvent.ObjectStart, parser.NextEvent());
-                    AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                    IsFalse(parser.SkipTree()); // parser state is not changed
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    p.InitParser(bytes);
+                    AreEqual(JsonEvent.ObjectStart, p.NextEvent());
+                    AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
+                    IsFalse(p.SkipTree()); // parser state is not changed
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
             }
         }
@@ -342,13 +342,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private void ParseJson(Bytes json) {
             var memLog = new MemoryLogger(100, 1000, MemoryLog.Enabled);
             // 170 ms - 20000, Release | Any CPU, target framework: net5.0, complex.json: 1134 bytes => 133 MB/sec
-            using (JsonParser parser = new JsonParser()) {
+            using (JsonParser p = new JsonParser()) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < 20000; n++) {
                     memLog.Snapshot();
-                    parser.InitParser(json);
-                    parser.SkipTree();
-                    if (parser.NextEvent() != JsonEvent.EOF)
+                    p.InitParser(json);
+                    p.SkipTree();
+                    if (p.NextEvent() != JsonEvent.EOF)
                         Fail("Expected EOF");
                 }
             }
@@ -360,139 +360,139 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 #pragma warning disable 618 // Performance degradation by string copy
         [Test]
         public void TestAutoSkip() {
-            using (var p = new Local<JsonParser>()) {
-                ref var parser = ref p.value;
+            using (var parser = new Local<JsonParser>()) {
+                ref var p = ref parser.value;
                 using (var json = new Bytes("{}")) {
-                    parser.InitParser(json);
-                    parser.NextEvent();
-                    parser.IsRootObject(out JObj obj);
-                    while (obj.NextObjectMember(ref parser, Skip.Auto)) {
+                    p.InitParser(json);
+                    p.NextEvent();
+                    p.IsRootObject(out JObj obj);
+                    while (obj.NextObjectMember(ref p, Skip.Auto)) {
                         Fail("Expect no members in empty object");
                     }
-                    AreEqual(JsonEvent.ObjectEnd, parser.Event);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.ObjectEnd, p.Event);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 using (var json = new Bytes("{\"arr\":[]}")) {
-                    parser.InitParser(json);
-                    parser.NextEvent();
+                    p.InitParser(json);
+                    p.NextEvent();
                     int arrCount = 0;
-                    parser.IsRootObject(out JObj obj);
-                    while (obj.NextObjectMember(ref parser, Skip.Auto)) {
-                        if (obj.UseMemberArr (ref parser, "arr", out JArr arr)) {
+                    p.IsRootObject(out JObj obj);
+                    while (obj.NextObjectMember(ref p, Skip.Auto)) {
+                        if (obj.UseMemberArr (ref p, "arr", out JArr arr)) {
                             arrCount++;
-                            while (arr.NextArrayElement(ref parser, Skip.Auto))
+                            while (arr.NextArrayElement(ref p, Skip.Auto))
                                 Fail("Expect no array elements");
                         }
                     }
-                    AreEqual(JsonEvent.ObjectEnd, parser.Event);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.ObjectEnd, p.Event);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual(1, arrCount);
                 }
                 using (var json = new Bytes("[]")) {
-                    parser.InitParser(json);
-                    parser.NextEvent();
+                    p.InitParser(json);
+                    p.NextEvent();
 
-                    parser.IsRootArray(out JArr arr);
-                    while (arr.NextArrayElement(ref parser, Skip.Auto))
+                    p.IsRootArray(out JArr arr);
+                    while (arr.NextArrayElement(ref p, Skip.Auto))
                         Fail("Expect no elements in empty array");
-                    AreEqual(JsonEvent.ArrayEnd, parser.Event);
-                    AreEqual(JsonEvent.EOF, parser.NextEvent());
+                    AreEqual(JsonEvent.ArrayEnd, p.Event);
+                    AreEqual(JsonEvent.EOF, p.NextEvent());
                 }
                 
                 // -------------------- test application exceptions -----------------------
 #if DEBUG
                 using (var json = new Bytes("[]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
                                         
-                        p.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.value, Skip.Auto);
+                        parser.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref parser.value, Skip.Auto);
                     });
                     AreEqual("NextObjectMember() - expect initial iteration with an object (ObjectStart)", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
-                        p.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.value, Skip.Auto);
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
+                        parser.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref parser.value, Skip.Auto);
                     });
                     AreEqual("NextArrayElement() - expect initial iteration with an array (ArrayStart)", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.value, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, p.value.Event);
+                        parser.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref parser.value, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
                         // call to NextObjectMember() would return false
-                        AreEqual(JsonEvent.ObjectEnd, p.value.NextEvent());
-                        IsFalse(obj.NextObjectMember(ref p.value, Skip.Auto));
+                        AreEqual(JsonEvent.ObjectEnd, parser.value.NextEvent());
+                        IsFalse(obj.NextObjectMember(ref parser.value, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("[42]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.value, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, p.value.Event);
+                        parser.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref parser.value, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
                         // call to NextArrayElement() would return false
-                        AreEqual(JsonEvent.ArrayEnd, p.value.NextEvent());
-                        IsFalse(arr.NextArrayElement(ref p.value, Skip.Auto));
+                        AreEqual(JsonEvent.ArrayEnd, parser.value.NextEvent());
+                        IsFalse(arr.NextArrayElement(ref parser.value, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("[{}]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref p.value, Skip.Auto);
-                        AreEqual(JsonEvent.ObjectStart, p.value.Event);
-                        AreEqual(true, arr.UseElementObj(ref p.value, out JObj _)); // used object without skipping
-                        IsFalse(arr.NextArrayElement(ref p.value, Skip.Auto));
+                        parser.value.IsRootArray(out JArr arr);
+                        arr.NextArrayElement(ref parser.value, Skip.Auto);
+                        AreEqual(JsonEvent.ObjectStart, parser.value.Event);
+                        AreEqual(true, arr.UseElementObj(ref parser.value, out JObj _)); // used object without skipping
+                        IsFalse(arr.NextArrayElement(ref parser.value, Skip.Auto));
                     });
                     AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("{\"arr\":[]}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref p.value, Skip.Auto);
-                        AreEqual(JsonEvent.ArrayStart, p.value.Event);
-                        AreEqual(true, obj.UseMemberArr (ref p.value, "arr", out JArr _)); // used array without skipping
-                        IsFalse(obj.NextObjectMember(ref p.value, Skip.Auto));
+                        parser.value.IsRootObject(out JObj obj);
+                        obj.NextObjectMember(ref parser.value, Skip.Auto);
+                        AreEqual(JsonEvent.ArrayStart, parser.value.Event);
+                        AreEqual(true, obj.UseMemberArr (ref parser.value, "arr", out JArr _)); // used array without skipping
+                        IsFalse(obj.NextObjectMember(ref parser.value, Skip.Auto));
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootObject(out JObj obj);
-                        obj.UseMemberObj(ref p.value, "test", out JObj _);
+                        parser.value.IsRootObject(out JObj obj);
+                        obj.UseMemberObj(ref parser.value, "test", out JObj _);
                     });
                     AreEqual("Must call UseMember...() only after NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("[]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        p.value.InitParser(json);
-                        p.value.NextEvent();
+                        parser.value.InitParser(json);
+                        parser.value.NextEvent();
 
-                        p.value.IsRootArray(out JArr arr);
-                        arr.UseElementObj(ref p.value, out JObj _);
+                        parser.value.IsRootArray(out JArr arr);
+                        arr.UseElementObj(ref parser.value, out JObj _);
                     });
                     AreEqual("Must call UseElement...() only after NextArrayElement()", e.Message);
                 }
@@ -502,25 +502,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestMaxDepth() {
-            using (JsonParser parser = new JsonParser())
+            using (JsonParser p = new JsonParser())
             using (var jsonDepth1 = new Bytes("[]"))
             using (var jsonDepth2 = new Bytes("[[]]"))
             {
-                parser.InitParser(jsonDepth1);
-                parser.SetMaxDepth (1);
+                p.InitParser(jsonDepth1);
+                p.SetMaxDepth (1);
                 while (true) {
-                    var ev = parser.NextEvent();
+                    var ev = p.NextEvent();
                     if (ev == JsonEvent.EOF) 
                         break; // expected
                     if (ev == JsonEvent.Error)
-                        Fail(parser.error.msg.ToString());
+                        Fail(p.error.msg.ToString());
                 }
-                parser.InitParser(jsonDepth2);
-                parser.SetMaxDepth (1);
+                p.InitParser(jsonDepth2);
+                p.SetMaxDepth (1);
                 while (true) {
-                    var ev = parser.NextEvent();
+                    var ev = p.NextEvent();
                     if (ev == JsonEvent.Error) {
-                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: '[0]' at position: 2", parser.error.msg.ToString());
+                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: '[0]' at position: 2", p.error.msg.ToString());
                         break;
                     }
                 }
