@@ -101,7 +101,7 @@ namespace Friflo.Json.Burst
 
         /// <summary>
         /// Contains the <see cref="JsonEvent"/> set by the last call to <see cref="NextEvent()"/>,
-        /// <see cref="NextObjectMember(ref Friflo.Json.Burst.ObjectIterator)"/> and <see cref="NextArrayElement(ref Friflo.Json.Burst.ArrayIterator)"/>
+        /// <see cref="NextObjectMember(ref JObj)"/> and <see cref="NextArrayElement(ref JArr)"/>
         /// </summary>
         public      JsonEvent           Event => lastEvent;
         private     JsonEvent           lastEvent;

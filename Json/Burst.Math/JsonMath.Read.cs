@@ -13,24 +13,24 @@ namespace Friflo.Json.Burst.Math
 {
     public static partial class JsonMath
     {
-        public static bool UseMemberFloat2(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float2 value) {
-            if (p.UseMemberArr(ref iterator, in key)) {
+        public static bool UseMemberFloat2(this ref JsonParser p, ref JObj obj, in Str32 key, ref float2 value) {
+            if (p.UseMemberArr(ref obj, in key)) {
                 ArrayFloat2(ref p, ref value);
                 return true;
             }
             return false;
         }
         
-        public static bool UseMemberFloat3(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float3 value) {
-            if (p.UseMemberArr(ref iterator, in key)) {
+        public static bool UseMemberFloat3(this ref JsonParser p, ref JObj obj, in Str32 key, ref float3 value) {
+            if (p.UseMemberArr(ref obj, in key)) {
                 ArrayFloat3(ref p, ref value);
                 return true;
             }
             return false;
         }
         
-        public static bool UseMemberFloat4(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float4 value) {
-            if (p.UseMemberArr(ref iterator, in key)) {
+        public static bool UseMemberFloat4(this ref JsonParser p, ref JObj obj, in Str32 key, ref float4 value) {
+            if (p.UseMemberArr(ref obj, in key)) {
                 ArrayFloat4(ref p, ref value);
                 return true;
             }
@@ -87,7 +87,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        public static bool UseMemberFloat4x4(this ref JsonParser p, ref ObjectIterator iterator, in Str32 key, ref float4x4 value) {
+        public static bool UseMemberFloat4x4(this ref JsonParser p, ref JObj iterator, in Str32 key, ref float4x4 value) {
             if (p.UseMemberArr(ref iterator, in key)) {
                 ArrayFloat4x4(ref p, ref value);
                 return true;

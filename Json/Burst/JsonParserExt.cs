@@ -23,7 +23,7 @@ namespace Friflo.Json.Burst
     {
         // ----------- object member checks -----------
         [Conditional("DEBUG")]
-        private void UseMember(ref ObjectIterator iterator) {
+        private void UseMember(ref JObj iterator) {
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseMember...() method only within an object");
         }
         
-        public bool UseMemberObj(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberObj(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ObjectStart || !key.IsEqual32(in name))
                 return false;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberArr(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberArr(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ArrayStart || !key.IsEqual32(in name))
                 return false;
@@ -50,7 +50,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberNum(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberNum(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ValueNumber || !key.IsEqual32(in name))
                 return false;
@@ -58,7 +58,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberStr(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberStr(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ValueString || !key.IsEqual32(in name))
                 return false;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberBln(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberBln(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ValueBool || !key.IsEqual32(in name))
                 return false;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberNul(ref ObjectIterator iterator, in Str32 name) {
+        public bool UseMemberNul(ref JObj iterator, in Str32 name) {
             UseMember(ref iterator);
             if (lastEvent != JsonEvent.ValueNull || !key.IsEqual32(in name)) 
                 return false;
@@ -84,7 +84,7 @@ namespace Friflo.Json.Burst
 
         // ----------- array element checks -----------
         [Conditional("DEBUG")]
-        private void UseElement(ref ArrayIterator iterator) {
+        private void UseElement(ref JArr iterator) {
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
@@ -95,7 +95,7 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
         }
         
-        public bool UseElementObj(ref ArrayIterator iterator) {
+        public bool UseElementObj(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ObjectStart)
                 return false;
@@ -103,7 +103,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementArr(ref ArrayIterator iterator) {
+        public bool UseElementArr(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ArrayStart)
                 return false;
@@ -111,7 +111,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementNum(ref ArrayIterator iterator) {
+        public bool UseElementNum(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ValueNumber)
                 return false;
@@ -119,7 +119,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementStr(ref ArrayIterator iterator) {
+        public bool UseElementStr(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ValueString)
                 return false;
@@ -127,7 +127,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementBln(ref ArrayIterator iterator) {
+        public bool UseElementBln(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ValueBool)
                 return false;
@@ -135,7 +135,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementNul(ref ArrayIterator iterator) {
+        public bool UseElementNul(ref JArr iterator) {
             UseElement(ref iterator);
             if (lastEvent != JsonEvent.ValueNull)
                 return false;
@@ -144,11 +144,11 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------------------------------------------------------------------------
-        public bool NextObjectMember(ref ObjectIterator iterator) {
+        public bool NextObjectMember(ref JObj iterator) {
             return NextObjectMember(ref iterator, Skip.Auto);
         }
 
-        public bool NextObjectMember (ref ObjectIterator iterator, Skip skip) {
+        public bool NextObjectMember (ref JObj iterator, Skip skip) {
             if (lastEvent == JsonEvent.Error)
                 return false;
             
@@ -194,11 +194,11 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool NextArrayElement(ref ArrayIterator iterator) {
+        public bool NextArrayElement(ref JArr iterator) {
             return NextArrayElement(ref iterator, Skip.Auto);
         }
         
-        public bool NextArrayElement (ref ArrayIterator iterator, Skip skip) {
+        public bool NextArrayElement (ref JArr iterator, Skip skip) {
             if (lastEvent == JsonEvent.Error)
                 return false;
             
@@ -246,24 +246,24 @@ namespace Friflo.Json.Burst
             return false;
         }
 
-        public ObjectIterator GetObjectIterator() {
+        public JObj GetObjectIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ObjectStart)
                 throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
-            return new ObjectIterator(stateLevel);
+            return new JObj(stateLevel);
         }
 
-        public ArrayIterator GetArrayIterator() {
+        public JArr GetArrayIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ArrayStart)
                 throw new InvalidOperationException("Expect ArrayStart in GetArrayIterator()");
-            return new ArrayIterator(stateLevel);
+            return new JArr(stateLevel);
         }
     }
 
-    public ref struct ObjectIterator
+    public ref struct JObj
     {
-        internal ObjectIterator(int level) {
+        internal JObj(int level) {
 
             this.level = level;
             hasIterated = false;
@@ -274,8 +274,8 @@ namespace Friflo.Json.Burst
         internal            bool    usedMember;
     }
     
-    public ref struct ArrayIterator {
-        internal ArrayIterator(int level) {
+    public ref struct JArr {
+        internal JArr(int level) {
 
             this.level = level;
             hasIterated = false;
