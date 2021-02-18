@@ -106,6 +106,11 @@ namespace Friflo.Json.Tests.Perf.Mapper
                                     while (i3.NextObjectMember(ref p)) {
                                         if      (i3.UseMemberStr(ref p, "Title")) { }
                                         else if (i3.UseMemberNum(ref p, "Id")) { }
+                                        else if (i3.UseMemberArr(ref p, "BookData", out JArr i4)) {
+                                            while (i4.NextArrayElement(ref p)) {
+                                                if (i4.UseElementNum(ref p)) { }
+                                            }
+                                        }
                                     }
                                 }
                             }
