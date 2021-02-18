@@ -49,9 +49,9 @@ namespace Friflo.Json.Burst
     // ------------------------------------------------------------------------------------------------
     public ref struct JObj
     {
-        internal readonly   int     expectedLevel;  // todo exclude in RELEASE
-        internal            bool    hasIterated;
-        internal            bool    usedMember;
+        private readonly   int     expectedLevel;  // todo exclude in RELEASE
+        private            bool    hasIterated;
+        private            bool    usedMember;
         
         internal JObj(int level) {
 
@@ -181,9 +181,9 @@ namespace Friflo.Json.Burst
     
     // ------------------------------------------------------------------------------------------------
     public ref struct JArr {
-        internal readonly   int     expectedLevel;  // todo exclude in RELEASE
-        internal            bool    hasIterated;
-        internal            bool    usedMember;
+        private readonly   int     expectedLevel;  // todo exclude in RELEASE
+        private            bool    hasIterated;
+        private            bool    usedMember;
         
         internal JArr(int level) {
 
