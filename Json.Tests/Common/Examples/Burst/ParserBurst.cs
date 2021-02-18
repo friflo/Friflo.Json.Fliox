@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 b.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                p.UseRootObject(out JObj i);
+                p.IsRootObject(out JObj i);
                 ReadBuddy(ref p, ref i, in k, ref b);
 
                 if (p.error.ErrSet)

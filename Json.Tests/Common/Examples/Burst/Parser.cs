@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 ref var p = ref parser.instance;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                p.UseRootObject(out JObj i);
+                p.IsRootObject(out JObj i);
                 ReadBuddy(ref p, ref i, ref buddy);
 
                 if (p.error.ErrSet)

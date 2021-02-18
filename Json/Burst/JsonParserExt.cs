@@ -23,20 +23,26 @@ namespace Friflo.Json.Burst
     
     public partial struct JsonParser
     {
-        public void UseRootObject(out JObj obj) {
+        public bool IsRootObject(out JObj obj) {
             if (stateLevel != 1)
                 throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            if (lastEvent != JsonEvent.ObjectStart)
-                throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
+            if (lastEvent != JsonEvent.ObjectStart) {
+                obj = new JObj(-1);
+                return false;
+            }
             obj = new JObj(stateLevel);
+            return true;
         }
         
-        public void UseRootArray(out JArr arr) {
+        public bool IsRootArray(out JArr arr) {
             if (stateLevel != 1)
                 throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            if (lastEvent != JsonEvent.ArrayStart)
-                throw new InvalidOperationException("Expect ArrayStart in GetArrayIterator()");
+            if (lastEvent != JsonEvent.ArrayStart) {
+                arr = new JArr(-1);
+                return false;
+            }
             arr = new JArr(stateLevel);
+            return true;
         }
     }
 

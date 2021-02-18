@@ -31,7 +31,7 @@ namespace Friflo.Json.Burst.Math.Tests
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
 
-                p.UseRootObject(out JObj i);
+                p.IsRootObject(out JObj i);
                 ReadMathTypes(ref p, ref i, in keys, ref types);
 
                 if (p.error.ErrSet)

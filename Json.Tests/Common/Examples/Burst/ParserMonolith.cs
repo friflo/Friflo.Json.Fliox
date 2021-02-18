@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 ref var p = ref parser.instance;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                p.UseRootObject(out JObj i1);
+                p.IsRootObject(out JObj i1);
                 while (i1.NextObjectMember(ref p)) {
                     if      (i1.UseMemberStr (ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
                     else if (i1.UseMemberNum (ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
