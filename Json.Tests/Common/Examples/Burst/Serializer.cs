@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 #pragma warning disable 618
@@ -8,7 +9,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
-    public class Serializer
+    public class Serializer : LeakTestsFixture
     {
         static Buddy CreateBuddy() {
             Buddy buddy = new Buddy();

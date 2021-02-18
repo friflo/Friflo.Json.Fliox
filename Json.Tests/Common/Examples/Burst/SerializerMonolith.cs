@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 // ReSharper disable InconsistentNaming
@@ -7,7 +8,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
-    public class SerializerMonolith
+    public class SerializerMonolith : LeakTestsFixture
     {
         static Buddy CreateBuddy() {
             Buddy buddy = new Buddy();

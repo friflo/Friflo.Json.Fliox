@@ -1,6 +1,7 @@
 ﻿using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -15,7 +16,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.Examples.Burst
 {
-    public class ParserBurst
+    public class ParserBurst : LeakTestsFixture
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
         static readonly string jsonString = @"
