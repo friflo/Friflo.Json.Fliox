@@ -41,7 +41,7 @@ namespace Friflo.Json.Burst.Math
         private static void ArrayFloat2(ref JsonParser p, ref float2 value) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (i.NextArrayElement(ref p)) {
                 if (p.UseElementNum(ref i)) {
                     if (index < 2)
                         value[index++] = p.ValueAsFloat(out bool _);
@@ -53,7 +53,7 @@ namespace Friflo.Json.Burst.Math
         private static void ArrayFloat3(ref JsonParser p, ref float3 value) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (i.NextArrayElement(ref p)) {
                 if (p.UseElementNum(ref i)) {
                     if (index < 3)
                         value[index++] = p.ValueAsFloat(out bool _);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Burst.Math
         private static void ArrayFloat4(ref JsonParser p, ref float4 value) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (i.NextArrayElement(ref p)) {
                 if (p.UseElementNum(ref i)) {
                     if (index < 4)
                         value[index++] = p.ValueAsFloat(out bool _);
@@ -78,7 +78,7 @@ namespace Friflo.Json.Burst.Math
         private static void ArrayFloat4x4(ref JsonParser p, ref float4x4 value) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (i.NextArrayElement(ref p)) {
                 if (p.UseElementArr(ref i)) {
                     if (index < 4)
                         ArrayFloat4(ref p, ref value[index++]);

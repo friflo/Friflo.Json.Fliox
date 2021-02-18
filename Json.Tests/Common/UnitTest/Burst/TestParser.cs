@@ -360,7 +360,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 #pragma warning disable 618 // Performance degradation by string copy
         [Test]
         public void TestAutoSkip() {
-            using (JsonParser parser = new JsonParser()) {
+            using (var p = new Local<JsonParser>()) {
+                ref var parser = ref p.instance;
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
@@ -380,7 +381,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         if (parser.UseMemberArr (ref obj, "arr")) {
                             arrCount++;
                             var arr = parser.GetArrayIterator();
-                            while (parser.NextArrayElement(ref arr, Skip.Auto))
+                            while (arr.NextArrayElement(ref parser, Skip.Auto))
                                 Fail("Expect no array elements");
                         }
                     }
@@ -393,7 +394,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     parser.NextEvent();
                     
                     var arr = parser.GetArrayIterator();
-                    while (parser.NextArrayElement(ref arr, Skip.Auto))
+                    while (arr.NextArrayElement(ref parser, Skip.Auto))
                         Fail("Expect no elements in empty array");
                     AreEqual(JsonEvent.ArrayEnd, parser.Event);
                     AreEqual(JsonEvent.EOF, parser.NextEvent());
@@ -403,76 +404,76 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 #if DEBUG
                 using (var json = new Bytes("[]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
                                         
-                        var obj = parser.GetObjectIterator ();
-                        parser.NextObjectMember(ref obj, Skip.Auto);
+                        var obj = p.instance.GetObjectIterator ();
+                        p.instance.NextObjectMember(ref obj, Skip.Auto);
                     });
                     AreEqual("Expect ObjectStart in GetObjectIterator()", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
-                        var arr = parser.GetArrayIterator();
-                        parser.NextArrayElement(ref arr, Skip.Auto);
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
+                        var arr = p.instance.GetArrayIterator();
+                        arr.NextArrayElement(ref p.instance, Skip.Auto);
                     });
                     AreEqual("Expect ArrayStart in GetArrayIterator()", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
 
-                        var obj = parser.GetObjectIterator();
-                        parser.NextObjectMember(ref obj, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+                        var obj = p.instance.GetObjectIterator();
+                        p.instance.NextObjectMember(ref obj, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, p.instance.Event);
 
                         // call to NextObjectMember() would return false
-                        AreEqual(JsonEvent.ObjectEnd, parser.NextEvent());
-                        IsFalse(parser.NextObjectMember(ref obj, Skip.Auto));
+                        AreEqual(JsonEvent.ObjectEnd, p.instance.NextEvent());
+                        IsFalse(p.instance.NextObjectMember(ref obj, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextObjectMember()", e.Message);
                 }
                 using (var json = new Bytes("[42]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
 
-                        var arr = parser.GetArrayIterator();
-                        parser.NextArrayElement(ref arr, Skip.Auto);
-                        AreEqual(JsonEvent.ValueNumber, parser.Event);
+                        var arr = p.instance.GetArrayIterator();
+                        arr.NextArrayElement(ref p.instance, Skip.Auto);
+                        AreEqual(JsonEvent.ValueNumber, p.instance.Event);
 
                         // call to NextArrayElement() would return false
-                        AreEqual(JsonEvent.ArrayEnd, parser.NextEvent());
-                        IsFalse(parser.NextArrayElement(ref arr, Skip.Auto));
+                        AreEqual(JsonEvent.ArrayEnd, p.instance.NextEvent());
+                        IsFalse(arr.NextArrayElement(ref p.instance, Skip.Auto));
                     });
                     AreEqual("Unexpected iterator level in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("[{}]")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
 
-                        var arr = parser.GetArrayIterator();
-                        parser.NextArrayElement(ref arr, Skip.Auto);
-                        AreEqual(JsonEvent.ObjectStart, parser.Event);
-                        AreEqual(true, parser.UseElementObj(ref arr)); // used object without skipping
-                        IsFalse(parser.NextArrayElement(ref arr, Skip.Auto));
+                        var arr = p.instance.GetArrayIterator();
+                        arr.NextArrayElement(ref p.instance, Skip.Auto);
+                        AreEqual(JsonEvent.ObjectStart, p.instance.Event);
+                        AreEqual(true, p.instance.UseElementObj(ref arr)); // used object without skipping
+                        IsFalse(arr.NextArrayElement(ref p.instance, Skip.Auto));
                     });
                     AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);
                 }
                 using (var json = new Bytes("{\"arr\":[]}")) {
                     var e = Throws<InvalidOperationException>(() => {
-                        parser.InitParser(json);
-                        parser.NextEvent();
+                        p.instance.InitParser(json);
+                        p.instance.NextEvent();
 
-                        var obj = parser.GetObjectIterator();
-                        parser.NextObjectMember(ref obj, Skip.Auto);
-                        AreEqual(JsonEvent.ArrayStart, parser.Event);
-                        AreEqual(true, parser.UseMemberArr (ref obj, "arr")); // used array without skipping
-                        IsFalse(parser.NextObjectMember(ref obj, Skip.Auto));
+                        var obj = p.instance.GetObjectIterator();
+                        p.instance.NextObjectMember(ref obj, Skip.Auto);
+                        AreEqual(JsonEvent.ArrayStart, p.instance.Event);
+                        AreEqual(true, p.instance.UseMemberArr (ref obj, "arr")); // used array without skipping
+                        IsFalse(p.instance.NextObjectMember(ref obj, Skip.Auto));
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
                 }

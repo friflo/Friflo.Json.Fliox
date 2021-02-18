@@ -88,12 +88,12 @@ namespace Friflo.Json.Burst
         private     int                 pos;
         private     Bytes               buf;
         private     int                 bufEnd;
-        private     int                 stateLevel;
+        internal    int                 stateLevel;
         private     int                 maxDepth;
         private     int                 startPos;
     
         private     State               preErrorState;
-        private     ValueList<State>    state;
+        internal    ValueList<State>    state;
         private     ValueList<int>      pathPos; // used for current path
         private     ValueList<int>      arrIndex; // used for current path
 
@@ -104,7 +104,7 @@ namespace Friflo.Json.Burst
         /// <see cref="NextObjectMember(ref JObj)"/> and <see cref="NextArrayElement(ref JArr)"/>
         /// </summary>
         public      JsonEvent           Event => lastEvent;
-        private     JsonEvent           lastEvent;
+        internal    JsonEvent           lastEvent;
 
         /// <summary>Contains the boolean value of an object member or an array element after <see cref="NextEvent()"/>
         /// returned <see cref="JsonEvent.ValueBool"/></summary>
@@ -159,7 +159,7 @@ namespace Friflo.Json.Burst
         private     int                 inputArrayEnd;
 
 
-        enum State {
+        internal enum State {
             ExpectMember        = 0,
             ExpectMemberFirst   = 1,
 

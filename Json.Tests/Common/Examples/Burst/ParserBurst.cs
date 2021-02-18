@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         
         private static void ReadHobbyList(ref JsonParser p, in Keys k, ref ValueList<Hobby> hobbyList) {
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i)) {
+            while (i.NextArrayElement(ref p)) {
                 if (p.UseElementObj(ref i)) {        
                     var hobby = new Hobby();
                     ReadHobby(ref p, in k, ref hobby);

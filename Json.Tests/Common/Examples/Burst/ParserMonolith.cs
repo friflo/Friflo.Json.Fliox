@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                     else if (p.UseMemberNum (ref i1, "age"))         { buddy.age = p.ValueAsInt(out _); }
                     else if (p.UseMemberArr (ref i1, "hobbies")) {
                         var i2 = p.GetArrayIterator();
-                        while (p.NextArrayElement(ref i2)) {
+                        while (i2.NextArrayElement(ref p)) {
                             if (p.UseElementObj(ref i2)) {
                                 var hobby = new Hobby();
                                 var i3 = p.GetObjectIterator();

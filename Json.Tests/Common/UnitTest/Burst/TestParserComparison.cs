@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void ReadAuto (ref JsonParser p) {
             int index = 0;
             var i = p.GetArrayIterator();
-            while (p.NextArrayElement(ref i, Skip.Auto)) {
+            while (i.NextArrayElement(ref p, Skip.Auto)) {
                 if (p.UseElementNum(ref i))                      { this[index++] = p.ValueAsInt(out _); }
             }
         }
@@ -254,7 +254,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             void ReadListStrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i, Skip.Auto)) {
+                while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (p.UseElementStr(ref i))                { strElement.Set( ref p.value); }
                 }
             }
@@ -268,7 +268,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             void ReadArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i, Skip.Auto)) {
+                while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (p.UseElementNul(ref i))                { foundNullElement = true; }
                 }
             }
@@ -282,7 +282,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             void ReadBoolArrAuto(ref JsonParser p) {
                 var i = p.GetArrayIterator();
-                while (p.NextArrayElement(ref i, Skip.Auto)) {
+                while (i.NextArrayElement(ref p, Skip.Auto)) {
                     if      (p.UseElementBln(ref i))                { trueElement = p.boolValue; }
                 }
             }

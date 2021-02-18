@@ -11,6 +11,8 @@ using System.Diagnostics;
     // ReSharper disable InconsistentNaming
 #endif
 
+using static Friflo.Json.Burst.JsonParser;
+
 namespace Friflo.Json.Burst
 {
     
@@ -88,7 +90,7 @@ namespace Friflo.Json.Burst
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
-            if (level != iterator.level)
+            if (level != iterator.expectedLevel)
                 throw new InvalidOperationException("Unexpected iterator level in UseElement...() method");
             State curState = state.array[level];
             if (curState != State.ExpectElement)
@@ -194,57 +196,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool NextArrayElement(ref JArr iterator) {
-            return NextArrayElement(ref iterator, Skip.Auto);
-        }
-        
-        public bool NextArrayElement (ref JArr iterator, Skip skip) {
-            if (lastEvent == JsonEvent.Error)
-                return false;
-            
-            if (iterator.hasIterated) {
-#if DEBUG
-                int level = stateLevel;
-                if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
-                    level--;
-                if (level != iterator.level)
-                    throw new InvalidOperationException("Unexpected iterator level in NextArrayElement()");
-                State curState = state.array[level];
-                if (curState != State.ExpectElement) 
-                    throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");
-#endif
-                if (skip == Skip.Auto) {
-                    if (iterator.usedMember) {
-                        iterator.usedMember = false; // clear found flag for next iteration
-                    }
-                    else {
-                        if (!SkipEvent())
-                            return false;
-                    }
-                }
-            } else {
-                // assertion is cheap -> throw exception also in DEBUG & RELEASE
-                if (lastEvent != JsonEvent.ArrayStart)
-                    throw new InvalidOperationException("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
-                iterator.hasIterated = true;
-            }
-            JsonEvent ev = NextEvent();
-            switch (ev) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                case JsonEvent.ObjectStart:
-                case JsonEvent.ArrayStart:
-                    return true;
-                case JsonEvent.ArrayEnd:
-                    break;
-                case JsonEvent.ObjectEnd:
-                    // assertion is cheap -> throw exception also in DEBUG & RELEASE
-                    throw new InvalidOperationException("unexpected ObjectEnd in NextArrayElement()");
-            }
-            return false;
-        }
+
 
         public JObj GetObjectIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
@@ -275,14 +227,67 @@ namespace Friflo.Json.Burst
     }
     
     public ref struct JArr {
+        internal readonly   int     expectedLevel;  // todo exclude in RELEASE
+        internal            bool    hasIterated;
+        internal            bool    usedMember;
+        
         internal JArr(int level) {
 
-            this.level = level;
+            this.expectedLevel = level;
             hasIterated = false;
             usedMember = false;
         }
-        internal readonly   int     level;  // todo exclude in RELEASE
-        internal            bool    hasIterated;
-        internal            bool    usedMember;
+
+        public bool NextArrayElement(ref JsonParser p) {
+            return NextArrayElement(ref p, Skip.Auto);
+        }
+        
+        public bool NextArrayElement (ref JsonParser p, Skip skip) {
+            if (p.lastEvent == JsonEvent.Error)
+                return false;
+            
+            if (hasIterated) {
+#if DEBUG
+                int level = p.stateLevel;
+                if (p.lastEvent == JsonEvent.ObjectStart || p.lastEvent == JsonEvent.ArrayStart)
+                    level--;
+                if (level != expectedLevel)
+                    throw new InvalidOperationException("Unexpected iterator level in NextArrayElement()");
+                State curState = p.state.array[level];
+                if (curState != State.ExpectElement) 
+                    throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");
+#endif
+                if (skip == Skip.Auto) {
+                    if (usedMember) {
+                        usedMember = false; // clear found flag for next iteration
+                    }
+                    else {
+                        if (!p.SkipEvent())
+                            return false;
+                    }
+                }
+            } else {
+                // assertion is cheap -> throw exception also in DEBUG & RELEASE
+                if (p.lastEvent != JsonEvent.ArrayStart)
+                    throw new InvalidOperationException("NextArrayElement() - expect initial iteration with an array (ArrayStart)");
+                hasIterated = true;
+            }
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    break;
+                case JsonEvent.ObjectEnd:
+                    // assertion is cheap -> throw exception also in DEBUG & RELEASE
+                    throw new InvalidOperationException("unexpected ObjectEnd in NextArrayElement()");
+            }
+            return false;
+        }
     }
 }
