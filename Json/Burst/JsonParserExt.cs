@@ -29,7 +29,7 @@ namespace Friflo.Json.Burst
             int level = stateLevel;
             if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
                 level--;
-            if (level != iterator.level)
+            if (level != iterator.expectedLevel)
                 throw new InvalidOperationException("Unexpected level in UseMember...() method");
             State curState = state.array[level];
             if (curState != State.ExpectMember)
@@ -146,55 +146,7 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------------------------------------------------------------------------
-        public bool NextObjectMember(ref JObj iterator) {
-            return NextObjectMember(ref iterator, Skip.Auto);
-        }
 
-        public bool NextObjectMember (ref JObj iterator, Skip skip) {
-            if (lastEvent == JsonEvent.Error)
-                return false;
-            
-            if (iterator.hasIterated)  {
-#if DEBUG
-                int level = stateLevel;
-                if (lastEvent == JsonEvent.ObjectStart || lastEvent == JsonEvent.ArrayStart)
-                    level--;
-                if (level != iterator.level)
-                    throw new InvalidOperationException("Unexpected iterator level in NextObjectMember()");
-                State curState = state.array[level];
-                if (curState != State.ExpectMember)
-                    throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
-#endif
-                if (skip == Skip.Auto) {
-                    if (iterator.usedMember) {
-                        iterator.usedMember = false; // clear found flag for next iteration
-                    } else {
-                        if (!SkipEvent())
-                            return false;
-                    }
-                }
-            } else {
-                // assertion is cheap -> throw exception also in DEBUG & RELEASE
-                if (lastEvent != JsonEvent.ObjectStart)
-                    throw new InvalidOperationException("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
-                iterator.hasIterated = true;
-            }
-            JsonEvent ev = NextEvent();
-            switch (ev) {
-                case JsonEvent.ValueString:
-                case JsonEvent.ValueNumber:
-                case JsonEvent.ValueBool:
-                case JsonEvent.ValueNull:
-                case JsonEvent.ObjectStart:
-                case JsonEvent.ArrayStart:
-                    return true;
-                case JsonEvent.ArrayEnd:
-                    throw new InvalidOperationException ("unexpected ArrayEnd in NextObjectMember()");
-                case JsonEvent.ObjectEnd:
-                    break;
-            }
-            return false;
-        }
         
 
 
@@ -215,15 +167,67 @@ namespace Friflo.Json.Burst
 
     public ref struct JObj
     {
-        internal JObj(int level) {
-
-            this.level = level;
-            hasIterated = false;
-            usedMember = false;
-        }
-        internal readonly   int     level;  // todo exclude in RELEASE
+        internal readonly   int     expectedLevel;  // todo exclude in RELEASE
         internal            bool    hasIterated;
         internal            bool    usedMember;
+        
+        internal JObj(int level) {
+
+            expectedLevel   = level;
+            hasIterated     = false;
+            usedMember      = false;
+        }
+        
+        public bool NextObjectMember(ref JsonParser p) {
+            return NextObjectMember(ref p, Skip.Auto);
+        }
+
+        public bool NextObjectMember (ref JsonParser p, Skip skip) {
+            if (p.lastEvent == JsonEvent.Error)
+                return false;
+            
+            if (hasIterated)  {
+#if DEBUG
+                int level = p.stateLevel;
+                if (p.lastEvent == JsonEvent.ObjectStart || p.lastEvent == JsonEvent.ArrayStart)
+                    level--;
+                if (level != expectedLevel)
+                    throw new InvalidOperationException("Unexpected iterator level in NextObjectMember()");
+                State curState = p.state.array[level];
+                if (curState != State.ExpectMember)
+                    throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
+#endif
+                if (skip == Skip.Auto) {
+                    if (usedMember) {
+                        usedMember = false; // clear found flag for next iteration
+                    } else {
+                        if (!p.SkipEvent())
+                            return false;
+                    }
+                }
+            } else {
+                // assertion is cheap -> throw exception also in DEBUG & RELEASE
+                if (p.lastEvent != JsonEvent.ObjectStart)
+                    throw new InvalidOperationException("NextObjectMember() - expect initial iteration with an object (ObjectStart)");
+                hasIterated = true;
+            }
+            JsonEvent ev = p.NextEvent();
+            switch (ev) {
+                case JsonEvent.ValueString:
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueBool:
+                case JsonEvent.ValueNull:
+                case JsonEvent.ObjectStart:
+                case JsonEvent.ArrayStart:
+                    return true;
+                case JsonEvent.ArrayEnd:
+                    throw new InvalidOperationException ("unexpected ArrayEnd in NextObjectMember()");
+                case JsonEvent.ObjectEnd:
+                    break;
+            }
+            return false;
+        }
+
     }
     
     public ref struct JArr {

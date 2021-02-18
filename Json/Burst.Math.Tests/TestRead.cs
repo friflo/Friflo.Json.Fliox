@@ -54,7 +54,7 @@ namespace Friflo.Json.Burst.Math.Tests
         
         private static void ReadMathTypes(ref JsonParser p, in MathKeys k, ref MathTypes types) {
             var i = p.GetObjectIterator();
-            while (p.NextObjectMember(ref i)) {
+            while (i.NextObjectMember(ref p)) {
                 if      (p.UseMemberFloat2  (ref i, in k.float2,    ref types.float2))     { }
                 else if (p.UseMemberFloat3  (ref i, in k.float3,    ref types.float3))     { }
                 else if (p.UseMemberFloat4  (ref i, in k.float4,    ref types.float4))     { }

@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             public void RootAutoSkip(ref JsonParser p) {
                 var i = p.GetObjectIterator();
-                while (p.NextObjectMember(ref i, Skip.Auto)) {
+                while (i.NextObjectMember(ref p, Skip.Auto)) {
                     if      (p.UseMemberObj(ref i, in nm.map))       { p.SkipTree(); }
                     else if (p.UseMemberObj(ref i, in nm.map2))      { p.SkipTree(); }
                     else if (p.UseMemberArr(ref i, in nm.listStr))   { ReadListStrAuto(ref p); }

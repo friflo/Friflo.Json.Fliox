@@ -98,14 +98,14 @@ namespace Friflo.Json.Tests.Perf.Mapper
                     parser.InitParser(bookShelfJson);
                     parser.NextEvent();
                     var i = parser.GetObjectIterator();
-                    while (parser.NextObjectMember(ref i)) {
+                    while (i.NextObjectMember(ref parser)) {
                         if (parser.UseMemberArr(ref i, "Books")) {
                             var i2 = parser.GetArrayIterator();
                             while (i2.NextArrayElement(ref parser)) {
                                 if (parser.UseElementObj(ref i2)) {
                                     var i3 = parser.GetObjectIterator();
                                     bookCount++;
-                                    while (parser.NextObjectMember(ref i3)) {
+                                    while (i3.NextObjectMember(ref parser)) {
                                         if      (parser.UseMemberStr(ref i3, "Title")) { }
                                         else if (parser.UseMemberNum(ref i3, "Id")) { }
                                     }
