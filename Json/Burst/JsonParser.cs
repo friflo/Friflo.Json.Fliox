@@ -56,7 +56,7 @@ namespace Friflo.Json.Burst
         public TDisposable value;
         
         public Local()                      { }
-        public Local(TDisposable instance)  { this.value = instance; }
+        public Local(TDisposable value)  { this.value = value; }
 
         public void Dispose() {
             value.Dispose();
