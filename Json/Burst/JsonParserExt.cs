@@ -269,7 +269,7 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal readonly   int     level;
+        internal readonly   int     level;  // todo exclude in RELEASE
         internal            bool    hasIterated;
         internal            bool    usedMember;
     }
@@ -281,7 +281,7 @@ namespace Friflo.Json.Burst
             hasIterated = false;
             usedMember = false;
         }
-        internal readonly   int     level;
+        internal readonly   int     level;  // todo exclude in RELEASE
         internal            bool    hasIterated;
         internal            bool    usedMember;
     }
