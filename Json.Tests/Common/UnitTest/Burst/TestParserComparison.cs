@@ -229,19 +229,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             public void RootAutoSkip(ref JsonParser p) {
                 var i = p.GetObjectIterator();
                 while (i.NextObjectMember(ref p, Skip.Auto)) {
-                    if      (p.UseMemberObj(ref i, in nm.map))       { p.SkipTree(); }
-                    else if (p.UseMemberObj(ref i, in nm.map2))      { p.SkipTree(); }
-                    else if (p.UseMemberArr(ref i, in nm.listStr))   { ReadListStrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, in nm.arr))       { ReadArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, in nm.boolArr))   { ReadBoolArrAuto(ref p); }
-                    else if (p.UseMemberArr(ref i, in nm.i64Arr))    { int3.ReadAuto(ref p); }
-                    else if (p.UseMemberNum(ref i, in nm.i64))       { i64 = p.ValueAsLong(out _); }
-                    else if (p.UseMemberNum(ref i, in nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
-                    else if (p.UseMemberStr(ref i, in nm.str))       { str.Set(ref p.value); }
-                    else if (p.UseMemberBln(ref i, in nm.t))         { t = p.boolValue; }
-                    else if (p.UseMemberNul(ref i, in nm.n))         { foundNull = true; }
-                    else if (p.UseMemberNum(ref i, in nm.dbl))       { dbl = p.ValueAsDouble(out _); }
-                    else if (p.UseMemberNum(ref i, in nm.flt))       { flt = p.ValueAsFloat(out _); }
+                    if      (i.UseMemberObj(ref p, in nm.map))       { p.SkipTree(); }
+                    else if (i.UseMemberObj(ref p, in nm.map2))      { p.SkipTree(); }
+                    else if (i.UseMemberArr(ref p, in nm.listStr))   { ReadListStrAuto(ref p); }
+                    else if (i.UseMemberArr(ref p, in nm.arr))       { ReadArrAuto(ref p); }
+                    else if (i.UseMemberArr(ref p, in nm.boolArr))   { ReadBoolArrAuto(ref p); }
+                    else if (i.UseMemberArr(ref p, in nm.i64Arr))    { int3.ReadAuto(ref p); }
+                    else if (i.UseMemberNum(ref p, in nm.i64))       { i64 = p.ValueAsLong(out _); }
+                    else if (i.UseMemberNum(ref p, in nm.i64Neg))    { i64Neg = p.ValueAsLong(out _); }
+                    else if (i.UseMemberStr(ref p, in nm.str))       { str.Set(ref p.value); }
+                    else if (i.UseMemberBln(ref p, in nm.t))         { t = p.boolValue; }
+                    else if (i.UseMemberNul(ref p, in nm.n))         { foundNull = true; }
+                    else if (i.UseMemberNum(ref p, in nm.dbl))       { dbl = p.ValueAsDouble(out _); }
+                    else if (i.UseMemberNum(ref p, in nm.flt))       { flt = p.ValueAsFloat(out _); }
                 }
             }
             

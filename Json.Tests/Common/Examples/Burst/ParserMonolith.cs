@@ -47,16 +47,16 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 p.NextEvent(); // ObjectStart
                 var i1 = p.GetObjectIterator();
                 while (i1.NextObjectMember(ref p)) {
-                    if      (p.UseMemberStr (ref i1, "firstName"))   { buddy.firstName = p.value.ToString(); }
-                    else if (p.UseMemberNum (ref i1, "age"))         { buddy.age = p.ValueAsInt(out _); }
-                    else if (p.UseMemberArr (ref i1, "hobbies")) {
+                    if      (i1.UseMemberStr (ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
+                    else if (i1.UseMemberNum (ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
+                    else if (i1.UseMemberArr (ref p, "hobbies")) {
                         var i2 = p.GetArrayIterator();
                         while (i2.NextArrayElement(ref p)) {
                             if (p.UseElementObj(ref i2)) {
                                 var hobby = new Hobby();
                                 var i3 = p.GetObjectIterator();
                                 while (i3.NextObjectMember(ref p)) {
-                                    if (p.UseMemberStr (ref i3, "name")) { hobby.name = p.value.ToString(); }
+                                    if (i3.UseMemberStr (ref p, "name")) { hobby.name = p.value.ToString(); }
                                 }
                                 buddy.hobbies.Add(hobby);
                             }

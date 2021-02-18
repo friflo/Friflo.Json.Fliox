@@ -99,15 +99,15 @@ namespace Friflo.Json.Tests.Perf.Mapper
                     parser.NextEvent();
                     var i = parser.GetObjectIterator();
                     while (i.NextObjectMember(ref parser)) {
-                        if (parser.UseMemberArr(ref i, "Books")) {
+                        if (i.UseMemberArr(ref parser, "Books")) {
                             var i2 = parser.GetArrayIterator();
                             while (i2.NextArrayElement(ref parser)) {
                                 if (parser.UseElementObj(ref i2)) {
                                     var i3 = parser.GetObjectIterator();
                                     bookCount++;
                                     while (i3.NextObjectMember(ref parser)) {
-                                        if      (parser.UseMemberStr(ref i3, "Title")) { }
-                                        else if (parser.UseMemberNum(ref i3, "Id")) { }
+                                        if      (i3.UseMemberStr(ref parser, "Title")) { }
+                                        else if (i3.UseMemberNum(ref parser, "Id")) { }
                                     }
                                 }
                             }

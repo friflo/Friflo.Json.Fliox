@@ -16,8 +16,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             p.NextEvent();
             var i = p.GetObjectIterator();
             while (i.NextObjectMember(ref p)) {
-                if (p.UseMemberStr (ref i, "say"))  { say = p.value.ToString(); }
-                if (p.UseMemberStr (ref i, "to"))   { to =  p.value.ToString(); }
+                if (i.UseMemberStr (ref p, "say"))  { say = p.value.ToString(); }
+                if (i.UseMemberStr (ref p, "to"))   { to =  p.value.ToString(); }
             }
             Console.WriteLine($"Output: {say}, {to}");
             // Output: Hello, World 🌎
