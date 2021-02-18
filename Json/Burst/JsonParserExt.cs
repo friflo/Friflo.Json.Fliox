@@ -113,6 +113,9 @@ namespace Friflo.Json.Burst
                 // ----------- object member checks -----------
         [Conditional("DEBUG")]
         private void UseMember(ref JsonParser p) {
+            if (!hasIterated)
+                throw new InvalidOperationException("Must call UseMember...() only after NextObjectMember()");
+                
             int level = p.stateLevel;
             if (p.lastEvent == JsonEvent.ObjectStart || p.lastEvent == JsonEvent.ArrayStart)
                 level--;
@@ -247,6 +250,9 @@ namespace Friflo.Json.Burst
                 // ----------- array element checks -----------
         [Conditional("DEBUG")]
         private void UseElement(ref JsonParser p) {
+            if (!hasIterated)
+                throw new InvalidOperationException("Must call UseElement...() only after NextArrayElement()");
+
             int level = p.stateLevel;
             if (p.lastEvent == JsonEvent.ObjectStart || p.lastEvent == JsonEvent.ArrayStart)
                 level--;

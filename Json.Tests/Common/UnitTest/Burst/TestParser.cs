@@ -476,6 +476,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
                 }
+                using (var json = new Bytes("{}")) {
+                    var e = Throws<InvalidOperationException>(() => {
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
+
+                        p.value.IsRootObject(out JObj obj);
+                        obj.UseMemberObj(ref p.value, "test", out JObj _);
+                    });
+                    AreEqual("Must call UseMember...() only after NextObjectMember()", e.Message);
+                }
+                using (var json = new Bytes("[]")) {
+                    var e = Throws<InvalidOperationException>(() => {
+                        p.value.InitParser(json);
+                        p.value.NextEvent();
+
+                        p.value.IsRootArray(out JArr arr);
+                        arr.UseElementObj(ref p.value, out JObj _);
+                    });
+                    AreEqual("Must call UseElement...() only after NextArrayElement()", e.Message);
+                }
 #endif
             }
         }
