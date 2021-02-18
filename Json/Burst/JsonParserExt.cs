@@ -26,27 +26,17 @@ namespace Friflo.Json.Burst
         public void UseRootObject(out JObj obj) {
             if (stateLevel != 1)
                 throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            obj = GetObjectIterator();
+            if (lastEvent != JsonEvent.ObjectStart)
+                throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
+            obj = new JObj(stateLevel);
         }
         
         public void UseRootArray(out JArr arr) {
             if (stateLevel != 1)
                 throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
-            arr = GetArrayIterator();
-        }
-        
-        internal JObj GetObjectIterator() {
-            // assertion is cheap -> throw exception also in DEBUG & RELEASE
-            if (lastEvent != JsonEvent.ObjectStart)
-                throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
-            return new JObj(stateLevel);
-        }
-
-        internal JArr GetArrayIterator() {
-            // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ArrayStart)
                 throw new InvalidOperationException("Expect ArrayStart in GetArrayIterator()");
-            return new JArr(stateLevel);
+            arr = new JArr(stateLevel);
         }
     }
 
@@ -133,7 +123,7 @@ namespace Friflo.Json.Burst
                 obj = new JObj(-1);
                 return false;
             }
-            obj = p.GetObjectIterator();
+            obj = new JObj(p.stateLevel);
             usedMember = true;
             return true;
         }
@@ -145,7 +135,7 @@ namespace Friflo.Json.Burst
                 return false;
             }
             usedMember = true;
-            arr = p.GetArrayIterator();
+            arr = new JArr(p.stateLevel);
             return true;
         }
         
@@ -268,7 +258,7 @@ namespace Friflo.Json.Burst
                 return false;
             }
             usedMember = true;
-            obj = p.GetObjectIterator();
+            obj = new JObj(p.stateLevel);
             return true;
         }
         
@@ -279,7 +269,7 @@ namespace Friflo.Json.Burst
                 return false;
             }
             usedMember = true;
-            arr = p.GetArrayIterator();
+            arr = new JArr(p.stateLevel);
             return true;
         }
         
