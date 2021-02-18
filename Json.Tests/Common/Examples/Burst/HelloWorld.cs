@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             var p = new JsonParser();
             p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
             p.NextEvent();
-            var i = p.GetObjectIterator();
+            p.UseRootObject(out JObj i);
             while (i.NextObjectMember(ref p)) {
                 if (i.UseMemberStr (ref p, "say"))  { say = p.value.ToString(); }
                 if (i.UseMemberStr (ref p, "to"))   { to =  p.value.ToString(); }

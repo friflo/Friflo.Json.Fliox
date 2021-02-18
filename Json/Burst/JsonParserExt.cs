@@ -23,14 +23,26 @@ namespace Friflo.Json.Burst
     
     public partial struct JsonParser
     {
-        public JObj GetObjectIterator() {
+        public void UseRootObject(out JObj obj) {
+            if (stateLevel != 1)
+                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
+            obj = GetObjectIterator();
+        }
+        
+        public void UseRootArray(out JArr arr) {
+            if (stateLevel != 1)
+                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
+            arr = GetArrayIterator();
+        }
+        
+        internal JObj GetObjectIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ObjectStart)
                 throw new InvalidOperationException("Expect ObjectStart in GetObjectIterator()");
             return new JObj(stateLevel);
         }
 
-        public JArr GetArrayIterator() {
+        internal JArr GetArrayIterator() {
             // assertion is cheap -> throw exception also in DEBUG & RELEASE
             if (lastEvent != JsonEvent.ArrayStart)
                 throw new InvalidOperationException("Expect ArrayStart in GetArrayIterator()");
@@ -118,7 +130,7 @@ namespace Friflo.Json.Burst
         public bool UseMemberObj(ref JsonParser p, in Str32 name, out JObj obj) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ObjectStart || !p.key.IsEqual32(in name)) {
-                obj = new JObj();
+                obj = new JObj(-1);
                 return false;
             }
             obj = p.GetObjectIterator();
@@ -129,7 +141,7 @@ namespace Friflo.Json.Burst
         public bool UseMemberArr(ref JsonParser p, in Str32 name, out JArr arr) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ArrayStart || !p.key.IsEqual32(in name)) {
-                arr = new JArr();
+                arr = new JArr(-1);
                 return false;
             }
             usedMember = true;
@@ -252,7 +264,7 @@ namespace Friflo.Json.Burst
         public bool UseElementObj(ref JsonParser p, out JObj obj) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ObjectStart) {
-                obj = new JObj();
+                obj = new JObj(-1);
                 return false;
             }
             usedMember = true;
@@ -263,7 +275,7 @@ namespace Friflo.Json.Burst
         public bool UseElementArr(ref JsonParser p, out JArr arr) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ArrayStart) {
-                arr = new JArr();
+                arr = new JArr(-1);
                 return false;
             }
             usedMember = true;

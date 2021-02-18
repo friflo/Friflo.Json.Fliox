@@ -365,7 +365,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var json = new Bytes("{}")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    var obj = parser.GetObjectIterator ();
+                    parser.UseRootObject(out JObj obj);
                     while (obj.NextObjectMember(ref parser, Skip.Auto)) {
                         Fail("Expect no members in empty object");
                     }
@@ -376,7 +376,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     parser.InitParser(json);
                     parser.NextEvent();
                     int arrCount = 0;
-                    var obj = parser.GetObjectIterator ();
+                    parser.UseRootObject(out JObj obj);
                     while (obj.NextObjectMember(ref parser, Skip.Auto)) {
                         if (obj.UseMemberArr (ref parser, "arr", out JArr arr)) {
                             arrCount++;
@@ -391,8 +391,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var json = new Bytes("[]")) {
                     parser.InitParser(json);
                     parser.NextEvent();
-                    
-                    var arr = parser.GetArrayIterator();
+
+                    parser.UseRootArray(out JArr arr);
                     while (arr.NextArrayElement(ref parser, Skip.Auto))
                         Fail("Expect no elements in empty array");
                     AreEqual(JsonEvent.ArrayEnd, parser.Event);
@@ -406,7 +406,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
                                         
-                        var obj = p.instance.GetObjectIterator ();
+                        p.instance.UseRootObject(out JObj obj);
                         obj.NextObjectMember(ref p.instance, Skip.Auto);
                     });
                     AreEqual("Expect ObjectStart in GetObjectIterator()", e.Message);
@@ -415,7 +415,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     var e = Throws<InvalidOperationException>(() => {
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
-                        var arr = p.instance.GetArrayIterator();
+                        p.instance.UseRootArray(out JArr arr);
                         arr.NextArrayElement(ref p.instance, Skip.Auto);
                     });
                     AreEqual("Expect ArrayStart in GetArrayIterator()", e.Message);
@@ -425,7 +425,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
 
-                        var obj = p.instance.GetObjectIterator();
+                        p.instance.UseRootObject(out JObj obj);
                         obj.NextObjectMember(ref p.instance, Skip.Auto);
                         AreEqual(JsonEvent.ValueNumber, p.instance.Event);
 
@@ -440,7 +440,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
 
-                        var arr = p.instance.GetArrayIterator();
+                        p.instance.UseRootArray(out JArr arr);
                         arr.NextArrayElement(ref p.instance, Skip.Auto);
                         AreEqual(JsonEvent.ValueNumber, p.instance.Event);
 
@@ -455,7 +455,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
 
-                        var arr = p.instance.GetArrayIterator();
+                        p.instance.UseRootArray(out JArr arr);
                         arr.NextArrayElement(ref p.instance, Skip.Auto);
                         AreEqual(JsonEvent.ObjectStart, p.instance.Event);
                         AreEqual(true, arr.UseElementObj(ref p.instance, out JObj _)); // used object without skipping
@@ -468,7 +468,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         p.instance.InitParser(json);
                         p.instance.NextEvent();
 
-                        var obj = p.instance.GetObjectIterator();
+                        p.instance.UseRootObject(out JObj obj);
                         obj.NextObjectMember(ref p.instance, Skip.Auto);
                         AreEqual(JsonEvent.ArrayStart, p.instance.Event);
                         AreEqual(true, obj.UseMemberArr (ref p.instance, "arr", out JArr _)); // used array without skipping

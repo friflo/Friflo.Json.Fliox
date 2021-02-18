@@ -51,8 +51,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 ref var p = ref parser.instance;
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadBuddy(ref p, ref buddy);
-                //hub.parser = new JsonParser();
+                p.UseRootObject(out JObj i);
+                ReadBuddy(ref p, ref i, ref buddy);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -65,8 +65,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
         
-        private static void ReadBuddy(ref JsonParser p, ref Buddy buddy) {
-            var i = p.GetObjectIterator();
+        private static void ReadBuddy(ref JsonParser p, ref JObj i, ref Buddy buddy) {
             while (i.NextObjectMember(ref p)) {
                 if      (i.UseMemberStr (ref p, "firstName"))               { buddy.firstName = p.value.ToString(); }
                 else if (i.UseMemberNum (ref p, "age"))                     { buddy.age = p.ValueAsInt(out _); }

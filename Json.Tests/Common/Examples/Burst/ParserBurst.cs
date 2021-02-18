@@ -74,7 +74,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 b.hobbies = new ValueList<Hobby>(0, AllocType.Persistent);
                 p.InitParser(json);
                 p.NextEvent(); // ObjectStart
-                ReadBuddy(ref p, in k, ref b);
+                p.UseRootObject(out JObj i);
+                ReadBuddy(ref p, ref i, in k, ref b);
 
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
@@ -87,8 +88,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
         
-        private static void ReadBuddy(ref JsonParser p, in Keys k, ref Buddy buddy) {
-            var i = p.GetObjectIterator();
+        private static void ReadBuddy(ref JsonParser p, ref JObj i, in Keys k, ref Buddy buddy) {
             while (i.NextObjectMember(ref p)) {
                 if      (i.UseMemberStr (ref p, in k.firstName))                { buddy.firstName = p.value.ToString(); }
                 else if (i.UseMemberNum (ref p, in k.age))                      { buddy.age = p.ValueAsInt(out _); }

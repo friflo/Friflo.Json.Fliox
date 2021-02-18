@@ -122,7 +122,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         for (int i = 0; i < iterations; i++) {
                             parser.InitParser(bytes);
                             parser.NextEvent(); // ObjectStart
-                            manual.RootAutoSkip(ref parser);
+                            parser.UseRootObject(out JObj obj);
+                            manual.RootAutoSkip(ref parser, ref obj);
                             memLog.Snapshot();
                         }
                         manual.AssertParseResult(ref parser);
@@ -225,8 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            public void RootAutoSkip(ref JsonParser p) {
-                var i = p.GetObjectIterator();
+            public void RootAutoSkip(ref JsonParser p, ref JObj i) {
                 while (i.NextObjectMember(ref p, Skip.Auto)) {
                     if      (i.UseMemberObj(ref p, in nm.map,     out JObj _))      { p.SkipTree(); }
                     else if (i.UseMemberObj(ref p, in nm.map2,    out JObj _))      { p.SkipTree(); }
