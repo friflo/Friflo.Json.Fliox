@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst.Utils;
 
@@ -42,7 +41,7 @@ namespace Friflo.Json.Burst
                    nulls == si.nulls && objects == si.objects && strings == si.strings;
         }
 
-        public Str128 ToStr128() {
+        private Str128 ToStr128() {
             return $"[ arrays={arrays}, booleans= {booleans}, floats= {floats}, integers= {integers}, nulls= {nulls}, objects= {objects}, strings= {strings} ]";
         }
         
@@ -101,7 +100,6 @@ namespace Friflo.Json.Burst
 
         /// <summary>
         /// Contains the <see cref="JsonEvent"/> set by the last call to <see cref="NextEvent()"/>,
-        /// <see cref="NextObjectMember(ref JObj)"/> and <see cref="NextArrayElement(ref JArr)"/>
         /// </summary>
         public      JsonEvent           Event => lastEvent;
         internal    JsonEvent           lastEvent;
@@ -308,7 +306,7 @@ namespace Friflo.Json.Burst
         /// Add the current JSON path to the given <see cref="str"/> buffer. E.g. "map.key1"
         /// </summary>
         /// <param name="str">The destination the current JSON path is added to</param>
-        public void AppendPath(ref Bytes str) {
+        private void AppendPath(ref Bytes str) {
             int initialEnd = str.end;
             int lastPos = 0;
             int level = stateLevel;
