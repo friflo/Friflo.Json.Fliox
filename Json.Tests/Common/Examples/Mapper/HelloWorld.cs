@@ -15,16 +15,16 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         
         [Test]
         public void HelloWorldReader() {
-            var r = new JsonReader(new TypeStore());
-            var msg = r.Read<Message>(@"{""say"": ""Hello 👋"", ""to"": ""World""}");
+            var m = new JsonMapper();
+            var msg = m.Read<Message>(@"{""say"": ""Hello 👋"", ""to"": ""World""}");
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
         }
         
         [Test]
         public void HelloWorldWriter() {
-            var w = new JsonWriter(new TypeStore());
-            var json = w.Write(new Message {say = "Hello 👋", to = "World"});
+            var m = new JsonMapper();
+            var json = m.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {json}");
             // Output: {"say":"Hello 👋","to":"World"}
         }

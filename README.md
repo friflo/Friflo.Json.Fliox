@@ -218,11 +218,10 @@ A minimal *Hello world* example showing how to parse a given JSON string via the
             string say = "", to = "";
             var p = new JsonParser();
             p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
-            p.NextEvent();
-            var i = p.GetObjectIterator();
-            while (p.NextObjectMember(ref i)) {
-                if (p.UseMemberStr(ref i, "say"))  { say = p.value.ToString(); }
-                if (p.UseMemberStr(ref i, "to"))   { to =  p.value.ToString(); }
+            p.ExpectRootObject(out JObj i);
+            while (i.NextObjectMember(ref p)) {
+                if (i.UseMemberStr (ref p, "say"))  { say = p.value.ToString(); }
+                if (i.UseMemberStr (ref p, "to"))   { to =  p.value.ToString(); }
             }
             Console.WriteLine($"Output: {say}, {to}");
             // Output: Hello, World 🌎
@@ -236,17 +235,17 @@ A minimal *Hello world* using the serializer to create JSON via the `JsonSeriali
             var s = new JsonSerializer();
             s.InitSerializer();
             s.ObjectStart();
-                s.MemberStr("say", "Hello");
-                s.MemberStr("to",  "World 🌎");
+                s.MemberStr ("say", "Hello");
+                s.MemberStr ("to",  "World 🌎");
             s.ObjectEnd();
-            Console.WriteLine($"Output: {s.dst}");
+            Console.WriteLine($"Output: {s.json}");
             // Output: {"say":"Hello","to":"World 🌎"}
         }
 ```
 
 ## **Object Mapper - Reader & Writer**
 
-An ObjectMapper maps a class to a JSON string and vise vera. Given the following class:
+An Object Mapper maps a class to a JSON string and vise vera. Given the following class:
 
 ```csharp
         class Message {
@@ -255,24 +254,24 @@ An ObjectMapper maps a class to a JSON string and vise vera. Given the following
         }
 ```
 
-Use the `JsonReader` to deserialize / unmarshal a JSON string to a class instance.
+Use `JsonMapper` to deserialize / unmarshal a JSON string to a class instance.
 
 ```csharp
         public void HelloWorldReader() {
-            var r = new JsonReader(new TypeStore());
-            var msg = r.Read<Message>(new Bytes (@"{""say"": ""Hello 👋"", ""to"": ""World""}"));
+            var m = new JsonMapper();
+            var msg = m.Read<Message>(@"{""say"": ""Hello 👋"", ""to"": ""World""}");
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
         }
 ```
 
-Use the `JsonWriter` to serialize / marshal a class instance to a JSON string.
+Use `JsonMapper` to serialize / marshal a class instance to a JSON string.
 
 ```csharp
         public void HelloWorldWriter() {
-            var r = new JsonWriter(new TypeStore());
-            r.Write(new Message {say = "Hello 👋", to = "World"});
-            Console.WriteLine($"Output: {r.Output}");
+            var m = new JsonMapper();
+            var json = m.Write(new Message {say = "Hello 👋", to = "World"});
+            Console.WriteLine($"Output: {json}");
             // Output: {"say":"Hello 👋","to":"World"}
         }
 ```
