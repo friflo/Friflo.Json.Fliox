@@ -5,7 +5,6 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
-#pragma warning disable 618
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {

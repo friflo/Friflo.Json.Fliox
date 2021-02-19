@@ -12,7 +12,6 @@ using static NUnit.Framework.Assert;
     using Str32 = System.String;
 #endif
 
-#pragma warning disable 618 // Performance degradation by string copy
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {

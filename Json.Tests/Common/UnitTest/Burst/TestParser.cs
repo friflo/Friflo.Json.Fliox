@@ -357,7 +357,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             // FFLog.log("ParseJson: " + json + " : " + stopwatch.Time());
         }
 
-#pragma warning disable 618 // Performance degradation by string copy
         [Test]
         public void TestAutoSkip() {
             using (var parser = new Local<JsonParser>()) {
