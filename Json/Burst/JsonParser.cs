@@ -1078,16 +1078,17 @@ namespace Friflo.Json.Burst
         }
         
         // --------------- JObj ---------------
-        public void ExpectRootObject(out JObj obj) {
+        public bool ExpectRootObject(out JObj obj) {
             if (stateLevel != 0)
                 throw new InvalidOperationException("ExpectRootObject() must be called directly after InitParser()");
             var ev = NextEvent();
             if (ev != JsonEvent.ObjectStart) {
                 SetError("ExpectRootObject() expect object on JSON root");
                 obj = new JObj(-1);
-                return;
+                return false;
             }
             obj = new JObj(stateLevel);
+            return true;
         }
         
         public void ReadRootObject(out JObj obj) {
@@ -1099,16 +1100,17 @@ namespace Friflo.Json.Burst
         }
         
         // --------------- JArr ---------------
-        public void ExpectRootArray(out JArr obj) {
+        public bool ExpectRootArray(out JArr obj) {
             if (stateLevel != 0)
                 throw new InvalidOperationException("ExpectRootArray() must be called directly after InitParser()");
             var ev = NextEvent();
             if (ev != JsonEvent.ArrayStart) {
                 SetError("ExpectRootArray() expect array on JSON root");
                 obj = new JArr(-1);
-                return;
+                return false;
             }
             obj = new JArr(stateLevel);
+            return true;
         }
         
         public void ReadRootArray(out JArr arr) {
