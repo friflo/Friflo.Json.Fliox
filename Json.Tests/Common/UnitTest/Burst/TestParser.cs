@@ -364,7 +364,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var json = new Bytes("{}")) {
                     p.InitParser(json);
                     p.NextEvent();
-                    p.IsRootObject(out JObj obj);
+                    p.ReadRootObject(out JObj obj);
                     while (obj.NextObjectMember(ref p)) {
                         Fail("Expect no members in empty object");
                     }
@@ -375,7 +375,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.InitParser(json);
                     p.NextEvent();
                     int arrCount = 0;
-                    p.IsRootObject(out JObj obj);
+                    p.ReadRootObject(out JObj obj);
                     while (obj.NextObjectMember(ref p)) {
                         if (obj.UseMemberArr (ref p, "arr", out JArr arr)) {
                             arrCount++;
@@ -398,31 +398,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 
                 // -------------------- test application exceptions -----------------------
 #if DEBUG
+                using (var json = new Bytes("{}")) {
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.value.InitParser(json);
+                        parser.value.ReadRootObject(out JObj _);
+                    });
+                    AreEqual("ReadRootObject() must be called after JsonParser.NextEvent()", e.Message);
+                }
+                using (var json = new Bytes("[]")) {
+                    var e = Throws<InvalidOperationException>(() => {
+                        parser.value.InitParser(json);
+                        parser.value.ReadRootArray(out JArr _);
+                    });
+                    AreEqual("ReadRootArray() must be called after JsonParser.NextEvent()", e.Message);
+                }
                 using (var json = new Bytes("[]")) {
                     var e = Throws<InvalidOperationException>(() => {
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
                                         
-                        parser.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref parser.value);
+                        parser.value.ReadRootObject(out JObj _);
                     });
-                    AreEqual("NextObjectMember() - expect initial iteration with an object (ObjectStart)", e.Message);
+                    AreEqual("ReadRootObject() expect JsonParser.Event == ObjectStart", e.Message);
                 }
                 using (var json = new Bytes("{}")) {
                     var e = Throws<InvalidOperationException>(() => {
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
-                        parser.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref parser.value);
+                        parser.value.ReadRootArray(out JArr _);
                     });
-                    AreEqual("NextArrayElement() - expect initial iteration with an array (ArrayStart)", e.Message);
+                    AreEqual("ReadRootArray() expect JsonParser.Event == ArrayStart", e.Message);
                 }
                 using (var json = new Bytes("{\"key\":42}")) {
                     var e = Throws<InvalidOperationException>(() => {
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootObject(out JObj obj);
+                        parser.value.ReadRootObject(out JObj obj);
                         obj.NextObjectMember(ref parser.value);
                         AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
@@ -437,7 +449,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootArray(out JArr arr);
+                        parser.value.ReadRootArray(out JArr arr);
                         arr.NextArrayElement(ref parser.value);
                         AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
@@ -452,7 +464,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootArray(out JArr arr);
+                        parser.value.ReadRootArray(out JArr arr);
                         arr.NextArrayElement(ref parser.value);
                         AreEqual(JsonEvent.ObjectStart, parser.value.Event);
                         AreEqual(true, arr.UseElementObj(ref parser.value, out JObj _)); // used object without skipping
@@ -465,7 +477,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootObject(out JObj obj);
+                        parser.value.ReadRootObject(out JObj obj);
                         obj.NextObjectMember(ref parser.value);
                         AreEqual(JsonEvent.ArrayStart, parser.value.Event);
                         AreEqual(true, obj.UseMemberArr (ref parser.value, "arr", out JArr _)); // used array without skipping
@@ -478,7 +490,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootObject(out JObj obj);
+                        parser.value.ReadRootObject(out JObj obj);
                         obj.UseMemberObj(ref parser.value, "test", out JObj _);
                     });
                     AreEqual("Must call UseMember...() only after NextObjectMember()", e.Message);
@@ -488,7 +500,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
 
-                        parser.value.IsRootArray(out JArr arr);
+                        parser.value.ReadRootArray(out JArr arr);
                         arr.UseElementObj(ref parser.value, out JObj _);
                     });
                     AreEqual("Must call UseElement...() only after NextArrayElement()", e.Message);

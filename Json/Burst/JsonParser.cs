@@ -1090,15 +1090,12 @@ namespace Friflo.Json.Burst
             obj = new JObj(stateLevel);
         }
         
-        public bool IsRootObject(out JObj obj) {
-            if (lastEvent != JsonEvent.ObjectStart) {
-                obj = new JObj(-1);
-                return false;
-            }
+        public void ReadRootObject(out JObj obj) {
             if (stateLevel != 1)
-                throw new InvalidOperationException("IsRootObject() is only applicable at JSON root");
+                throw new InvalidOperationException("ReadRootObject() must be called after JsonParser.NextEvent()");
+            if (lastEvent != JsonEvent.ObjectStart)
+                throw new InvalidOperationException("ReadRootObject() expect JsonParser.Event == ObjectStart");
             obj = new JObj(stateLevel);
-            return true;
         }
         
         // --------------- JArr ---------------
@@ -1114,15 +1111,12 @@ namespace Friflo.Json.Burst
             obj = new JArr(stateLevel);
         }
         
-        public bool IsRootArray(out JArr arr) {
-            if (lastEvent != JsonEvent.ArrayStart) {
-                arr = new JArr(-1);
-                return false;
-            }
+        public void ReadRootArray(out JArr arr) {
             if (stateLevel != 1)
-                throw new InvalidOperationException("IsRootArray() is only applicable at JSON root");
+                throw new InvalidOperationException("ReadRootArray() must be called after JsonParser.NextEvent()");
+            if (lastEvent != JsonEvent.ArrayStart)
+                throw new InvalidOperationException("ReadRootArray() expect JsonParser.Event == ArrayStart");
             arr = new JArr(stateLevel);
-            return true;
         }
     }
 }

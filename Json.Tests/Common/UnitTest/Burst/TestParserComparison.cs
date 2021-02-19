@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         for (int i = 0; i < iterations; i++) {
                             p.InitParser(bytes);
                             p.NextEvent(); // ObjectStart
-                            p.IsRootObject(out JObj obj);
+                            p.ReadRootObject(out JObj obj);
                             manual.RootAutoSkip(ref p, ref obj);
                             memLog.Snapshot();
                         }
