@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System;
 using System.Diagnostics;
 using System.Text;
 using Friflo.Json.Burst.Utils;
