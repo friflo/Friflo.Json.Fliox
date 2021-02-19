@@ -15,3 +15,5 @@ riderModule.iml
 # E.g as MonoBehavior scripts with are attached to game objects in regular Unity projects
 # ignores: *.user.meta, *.cs.meta, *.asmdef.meta, *.meta (folders), ...
 *.meta
+
+Unity.Mathematics
