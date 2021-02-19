@@ -1077,25 +1077,50 @@ namespace Friflo.Json.Burst
             return boolValue;
         }
         
-        // --------------------------------- JObj / JArr ---------------------------------
+        // --------------- JObj ---------------
+        public void ExpectRootObject(out JObj obj) {
+            if (stateLevel != 0)
+                throw new InvalidOperationException("ExpectRootObject() must be called directly after InitParser()");
+            var ev = NextEvent();
+            if (ev != JsonEvent.ObjectStart) {
+                SetError("ExpectRootObject() expect object on JSON root");
+                obj = new JObj(-1);
+                return;
+            }
+            obj = new JObj(stateLevel);
+        }
+        
         public bool IsRootObject(out JObj obj) {
-            if (stateLevel != 1)
-                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
             if (lastEvent != JsonEvent.ObjectStart) {
                 obj = new JObj(-1);
                 return false;
             }
+            if (stateLevel != 1)
+                throw new InvalidOperationException("IsRootObject() is only applicable at JSON root");
             obj = new JObj(stateLevel);
             return true;
         }
         
+        // --------------- JArr ---------------
+        public void ExpectRootArray(out JArr obj) {
+            if (stateLevel != 0)
+                throw new InvalidOperationException("ExpectRootArray() must be called directly after InitParser()");
+            var ev = NextEvent();
+            if (ev != JsonEvent.ArrayStart) {
+                SetError("ExpectRootArray() expect array on JSON root");
+                obj = new JArr(-1);
+                return;
+            }
+            obj = new JArr(stateLevel);
+        }
+        
         public bool IsRootArray(out JArr arr) {
-            if (stateLevel != 1)
-                throw new InvalidOperationException("UseRootObject() is only applicable to JSON root");
             if (lastEvent != JsonEvent.ArrayStart) {
                 arr = new JArr(-1);
                 return false;
             }
+            if (stateLevel != 1)
+                throw new InvalidOperationException("IsRootArray() is only applicable at JSON root");
             arr = new JArr(stateLevel);
             return true;
         }

@@ -389,9 +389,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
                 using (var json = new Bytes("[]")) {
                     p.InitParser(json);
-                    p.NextEvent();
-
-                    p.IsRootArray(out JArr arr);
+                    p.ExpectRootArray(out JArr arr);
                     while (arr.NextArrayElement(ref p))
                         Fail("Expect no elements in empty array");
                     AreEqual(JsonEvent.ArrayEnd, p.Event);

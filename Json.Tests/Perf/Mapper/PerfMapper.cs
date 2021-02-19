@@ -96,8 +96,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 using (var parser = new Local<JsonParser>()) {
                     ref var p = ref parser.value;
                     p.InitParser(bookShelfJson);
-                    p.NextEvent();
-                    p.IsRootObject(out JObj i);
+                    p.ExpectRootObject(out JObj i);
                     while (i.NextObjectMember(ref p)) {
                         if (i.UseMemberArr(ref p, "Books", out JArr i2)) {
                             while (i2.NextArrayElement(ref p)) {
