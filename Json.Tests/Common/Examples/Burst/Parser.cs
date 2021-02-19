@@ -10,7 +10,16 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
     public class Parser : LeakTestsFixture
     {
         // Note: new properties can be added to the JSON anywhere without changing compatibility
-        static readonly string jsonString = @"123";
+        static readonly string jsonString = @"
+{
+    ""firstName"":  ""John"",
+    ""age"":        24,
+    ""hobbies"":    [
+        {""name"":  ""Gaming"" },
+        {""name"":  ""STAR WARS""}
+    ],
+    ""unknownMember"": { ""anotherUnknown"": 42}
+}";
         public class Buddy {
             public  string       firstName;
             public  int          age;
