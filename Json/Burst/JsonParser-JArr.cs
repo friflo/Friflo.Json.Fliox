@@ -2,15 +2,14 @@
 // See LICENSE file in the project root for full license information.
 using System; 
 using System.Diagnostics; 
-
 using static Friflo.Json.Burst.JsonParser;
 
 namespace Friflo.Json.Burst
 {
-    public enum Skip {
+    /* public enum Skip {
         No,
         Auto
-    }
+    } */
    
     public ref struct JArr {
         private readonly   int     expectedLevel;  // todo exclude in RELEASE
@@ -24,11 +23,7 @@ namespace Friflo.Json.Burst
             usedMember = false;
         }
 
-        public bool NextArrayElement(ref JsonParser p) {
-            return NextArrayElement(ref p, Skip.Auto);
-        }
-        
-        public bool NextArrayElement (ref JsonParser p, Skip skip) {
+        public bool NextArrayElement (ref JsonParser p) { // , Skip skip)
             if (p.lastEvent == JsonEvent.Error)
                 return false;
             
@@ -43,15 +38,15 @@ namespace Friflo.Json.Burst
                 if (curState != State.ExpectElement) 
                     throw new InvalidOperationException("NextArrayElement() - expect subsequent iteration being inside an array");
 #endif
-                if (skip == Skip.Auto) {
-                    if (usedMember) {
-                        usedMember = false; // clear found flag for next iteration
-                    }
-                    else {
-                        if (!p.SkipEvent())
-                            return false;
-                    }
+                // if (skip == Skip.Auto) {
+                if (usedMember) {
+                    usedMember = false; // clear found flag for next iteration
                 }
+                else {
+                    if (!p.SkipEvent())
+                        return false;
+                }
+                // }
             } else {
                 // assertion is cheap -> throw exception also in DEBUG & RELEASE
                 if (p.lastEvent != JsonEvent.ArrayStart)

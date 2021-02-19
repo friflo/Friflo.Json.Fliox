@@ -366,7 +366,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.InitParser(json);
                     p.NextEvent();
                     p.IsRootObject(out JObj obj);
-                    while (obj.NextObjectMember(ref p, Skip.Auto)) {
+                    while (obj.NextObjectMember(ref p)) {
                         Fail("Expect no members in empty object");
                     }
                     AreEqual(JsonEvent.ObjectEnd, p.Event);
@@ -377,10 +377,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
                     int arrCount = 0;
                     p.IsRootObject(out JObj obj);
-                    while (obj.NextObjectMember(ref p, Skip.Auto)) {
+                    while (obj.NextObjectMember(ref p)) {
                         if (obj.UseMemberArr (ref p, "arr", out JArr arr)) {
                             arrCount++;
-                            while (arr.NextArrayElement(ref p, Skip.Auto))
+                            while (arr.NextArrayElement(ref p))
                                 Fail("Expect no array elements");
                         }
                     }
@@ -393,7 +393,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
 
                     p.IsRootArray(out JArr arr);
-                    while (arr.NextArrayElement(ref p, Skip.Auto))
+                    while (arr.NextArrayElement(ref p))
                         Fail("Expect no elements in empty array");
                     AreEqual(JsonEvent.ArrayEnd, p.Event);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -407,7 +407,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.NextEvent();
                                         
                         parser.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref parser.value, Skip.Auto);
+                        obj.NextObjectMember(ref parser.value);
                     });
                     AreEqual("NextObjectMember() - expect initial iteration with an object (ObjectStart)", e.Message);
                 }
@@ -416,7 +416,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.InitParser(json);
                         parser.value.NextEvent();
                         parser.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref parser.value, Skip.Auto);
+                        arr.NextArrayElement(ref parser.value);
                     });
                     AreEqual("NextArrayElement() - expect initial iteration with an array (ArrayStart)", e.Message);
                 }
@@ -426,12 +426,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.NextEvent();
 
                         parser.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref parser.value, Skip.Auto);
+                        obj.NextObjectMember(ref parser.value);
                         AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
                         // call to NextObjectMember() would return false
                         AreEqual(JsonEvent.ObjectEnd, parser.value.NextEvent());
-                        IsFalse(obj.NextObjectMember(ref parser.value, Skip.Auto));
+                        IsFalse(obj.NextObjectMember(ref parser.value));
                     });
                     AreEqual("Unexpected iterator level in NextObjectMember()", e.Message);
                 }
@@ -441,12 +441,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.NextEvent();
 
                         parser.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref parser.value, Skip.Auto);
+                        arr.NextArrayElement(ref parser.value);
                         AreEqual(JsonEvent.ValueNumber, parser.value.Event);
 
                         // call to NextArrayElement() would return false
                         AreEqual(JsonEvent.ArrayEnd, parser.value.NextEvent());
-                        IsFalse(arr.NextArrayElement(ref parser.value, Skip.Auto));
+                        IsFalse(arr.NextArrayElement(ref parser.value));
                     });
                     AreEqual("Unexpected iterator level in NextArrayElement()", e.Message);
                 }
@@ -456,10 +456,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.NextEvent();
 
                         parser.value.IsRootArray(out JArr arr);
-                        arr.NextArrayElement(ref parser.value, Skip.Auto);
+                        arr.NextArrayElement(ref parser.value);
                         AreEqual(JsonEvent.ObjectStart, parser.value.Event);
                         AreEqual(true, arr.UseElementObj(ref parser.value, out JObj _)); // used object without skipping
-                        IsFalse(arr.NextArrayElement(ref parser.value, Skip.Auto));
+                        IsFalse(arr.NextArrayElement(ref parser.value));
                     });
                     AreEqual("unexpected ObjectEnd in NextArrayElement()", e.Message);
                 }
@@ -469,10 +469,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                         parser.value.NextEvent();
 
                         parser.value.IsRootObject(out JObj obj);
-                        obj.NextObjectMember(ref parser.value, Skip.Auto);
+                        obj.NextObjectMember(ref parser.value);
                         AreEqual(JsonEvent.ArrayStart, parser.value.Event);
                         AreEqual(true, obj.UseMemberArr (ref parser.value, "arr", out JArr _)); // used array without skipping
-                        IsFalse(obj.NextObjectMember(ref parser.value, Skip.Auto));
+                        IsFalse(obj.NextObjectMember(ref parser.value));
                     });
                     AreEqual("unexpected ArrayEnd in NextObjectMember()", e.Message);
                 }

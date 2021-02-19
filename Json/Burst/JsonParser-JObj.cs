@@ -2,16 +2,15 @@
 // See LICENSE file in the project root for full license information.
 using System; 
 using System.Diagnostics; 
+using static Friflo.Json.Burst.JsonParser;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
 #else
     using Str32 = System.String;
-    // ReSharper disable InconsistentNaming
 #endif
 
-using static Friflo.Json.Burst.JsonParser;
-
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Burst
 {
     public ref struct JObj
@@ -27,11 +26,7 @@ namespace Friflo.Json.Burst
             usedMember      = false;
         }
         
-        public bool NextObjectMember(ref JsonParser p) {
-            return NextObjectMember(ref p, Skip.Auto);
-        }
-
-        public bool NextObjectMember (ref JsonParser p, Skip skip) {
+        public bool NextObjectMember (ref JsonParser p) { // , Skip skip
             if (p.lastEvent == JsonEvent.Error)
                 return false;
             
@@ -46,14 +41,14 @@ namespace Friflo.Json.Burst
                 if (curState != State.ExpectMember)
                     throw new InvalidOperationException("NextObjectMember() - expect subsequent iteration being inside an object");
 #endif
-                if (skip == Skip.Auto) {
-                    if (usedMember) {
-                        usedMember = false; // clear found flag for next iteration
-                    } else {
-                        if (!p.SkipEvent())
-                            return false;
-                    }
+                // if (skip == Skip.Auto) {
+                if (usedMember) {
+                    usedMember = false; // clear found flag for next iteration
+                } else {
+                    if (!p.SkipEvent())
+                        return false;
                 }
+                // }
             } else {
                 // assertion is cheap -> throw exception also in DEBUG & RELEASE
                 if (p.lastEvent != JsonEvent.ObjectStart)
