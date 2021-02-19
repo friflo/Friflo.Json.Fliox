@@ -80,23 +80,25 @@ namespace Friflo.Json.Burst
         /// Notify a JSON error while parsing.<br/>
         /// Calling <see cref="JsonParser.NextEvent()"/> after <see cref="EOF"/> returned once it always returns <see cref="Error"/>
         /// </summary>
-        Error
+        Error,
+        Initialized,
     }
 
     public struct JsonEventUtils
     {
         public static void AppendEvent(JsonEvent ev, ref Bytes bytes) {
             switch (ev) {
-                case JsonEvent.ValueString: bytes.AppendStr32 ("ValueString");   break; 
-                case JsonEvent.ValueNumber: bytes.AppendStr32 ("ValueNumber");   break; 
-                case JsonEvent.ValueBool:   bytes.AppendStr32 ("ValueBool");     break; 
-                case JsonEvent.ValueNull:   bytes.AppendStr32 ("ValueNull");     break; 
-                case JsonEvent.ObjectStart: bytes.AppendStr32 ("ObjectStart");   break; 
-                case JsonEvent.ObjectEnd:   bytes.AppendStr32 ("ObjectEnd");     break; 
-                case JsonEvent.ArrayStart:  bytes.AppendStr32 ("ArrayStart");    break; 
-                case JsonEvent.ArrayEnd:    bytes.AppendStr32 ("ArrayEnd");      break; 
-                case JsonEvent.EOF:         bytes.AppendStr32 ("EOF");           break; 
-                case JsonEvent.Error:       bytes.AppendStr32 ("Error");         break; 
+                case JsonEvent.ValueString: bytes.AppendStr32 ("ValueString");   break;
+                case JsonEvent.ValueNumber: bytes.AppendStr32 ("ValueNumber");   break;
+                case JsonEvent.ValueBool:   bytes.AppendStr32 ("ValueBool");     break;
+                case JsonEvent.ValueNull:   bytes.AppendStr32 ("ValueNull");     break;
+                case JsonEvent.ObjectStart: bytes.AppendStr32 ("ObjectStart");   break;
+                case JsonEvent.ObjectEnd:   bytes.AppendStr32 ("ObjectEnd");     break;
+                case JsonEvent.ArrayStart:  bytes.AppendStr32 ("ArrayStart");    break;
+                case JsonEvent.ArrayEnd:    bytes.AppendStr32 ("ArrayEnd");      break;
+                case JsonEvent.EOF:         bytes.AppendStr32 ("EOF");           break;
+                case JsonEvent.Error:       bytes.AppendStr32 ("Error");         break;
+                case JsonEvent.Initialized: bytes.AppendStr32 ("Initialized");   break;
             }
         }
     }

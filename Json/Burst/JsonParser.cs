@@ -184,11 +184,12 @@ namespace Friflo.Json.Burst
 
         // ---------------------- error message creation - begin
         void Error (in Str32 module, ErrorType errorType, in Str128 msg, ref Bytes value) {
+            if (lastEvent == JsonEvent.Error)
+                return; // Skip storing error, if already in error state.
+            
             lastEvent = JsonEvent.Error;
             preErrorState = state.array[stateLevel]; 
             state.array[stateLevel] = State.JsonError;
-            if (error.ErrSet)
-                throw new InvalidOperationException("JSON Error already set"); // If setting error again the relevant previous error would be overwritten.
             
             int position = bufferCount + pos - startPos;
             // Note 1:  Creating error messages complete avoid creating string on the heap to ensure no allocation
@@ -416,6 +417,7 @@ namespace Friflo.Json.Burst
             skipInfo = default(SkipInfo);
             inputStreamOpen = true;
             error.Clear();
+            lastEvent = JsonEvent.Initialized;
         }
 
         /// <summary>
