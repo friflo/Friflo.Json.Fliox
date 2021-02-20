@@ -9,9 +9,9 @@ using Unity.Mathematics;
 #endif
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.Burst.Math
+namespace Friflo.Json.Burst.Math.Tests
 {
-    public static partial class JsonMath
+    public static partial class JsonMathTest
     {
         public static bool UseMemberFloat2Temp(this ref JObj i, ref JsonParser p, in Str32 key, ref float2 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
