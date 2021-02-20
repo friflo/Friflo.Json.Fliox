@@ -7,18 +7,18 @@ namespace Friflo.Json.Burst.Math.CodeGen
     class Program
     {
         private static void Main(string[] args) {
-            GenerateType("bool",    "Bln");
-            GenerateType("float",   "Num");
-            GenerateType("double",  "Num");
-            GenerateType("int",     "Lng");
+            GenerateType("bool",    "Bln", "Bln");
+            GenerateType("float",   "Num", "Flt");
+            GenerateType("double",  "Num", "Dbl");
+            GenerateType("int",     "Lng", "Lng");
             // GenerateType("uint",    "Lng");
         }
 
-        private static void GenerateType(string type, string suffix) {
+        private static void GenerateType(string type, string readSuffix, string writeSuffix) {
             var read = new StringBuilder();
             var write = new StringBuilder();
             
-            RenderType(read, write, type, suffix);
+            RenderType(read, write, type, readSuffix, writeSuffix);
             
             WriteFile(read,  type + ".read.gen.cs");
             WriteFile(write, type + ".write.gen.cs");
@@ -33,7 +33,7 @@ namespace Friflo.Json.Burst.Math.CodeGen
             }
         }
 
-        private static void RenderType(StringBuilder read, StringBuilder write, string name, string suffix)
+        private static void RenderType(StringBuilder read, StringBuilder write, string name, string readSuffix, string writeSuffix)
         {
             var header = $@"// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
@@ -53,9 +53,9 @@ namespace Friflo.Json.Burst.Math
             read.Append(header);
             write.Append(header);
 
-            RenderTypeDim1(read, write, name, 2, "Num");
-            RenderTypeDim1(read, write, name, 3, "Num");
-            RenderTypeDim1(read, write, name, 4, "Num");
+            RenderTypeDim1(read, write, name, 2, readSuffix, writeSuffix);
+            RenderTypeDim1(read, write, name, 3, readSuffix, writeSuffix);
+            RenderTypeDim1(read, write, name, 4, readSuffix, writeSuffix);
             
             // 2x2, 2x3, 2x4, 3x2, 3x3, 3x4, 4x2, 4x3, 4x4
             RenderTypeDim2(read, write, name, 2, 2);
@@ -81,10 +81,12 @@ namespace Friflo.Json.Burst.Math
             return type[0].ToString().ToUpper() + type.Substring(1);
         }
 
-        private static void RenderTypeDim1(StringBuilder read, StringBuilder write, string type, int size, string suffix)
+        private static void RenderTypeDim1(StringBuilder read, StringBuilder write, string type, int size, string readSuffix, string writeSuffix)
         {
             var pascal = GetPascalCase(type);
-            var str = $@"
+            
+            // --- Reader
+            var reader = $@"
         public static bool UseMember{pascal}{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{size}(ref arr, ref p, ref value);
@@ -96,7 +98,7 @@ namespace Friflo.Json.Burst.Math
         private static void Read{pascal}{size}(ref JArr i, ref JsonParser p, ref {type}{size} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
-                if (i.UseElement{suffix}(ref p)) {{
+                if (i.UseElement{readSuffix}(ref p)) {{
                     if (index < {size})
                         value[index++] = p.ValueAs{pascal}(out bool _);
                 }} else 
@@ -104,7 +106,25 @@ namespace Friflo.Json.Burst.Math
             }}
         }}
 ";
-            read.Append(str);
+            read.Append(reader);
+            
+            // --- Writer
+            var components = new StringBuilder();
+            for (int i = 0; i < size; i++)
+                components.Append($@"
+                s.Element{writeSuffix}(value.x);");
+
+            var writer = $@"
+            public static void Member{pascal}{size}(this ref JsonSerializer s, in Str32 key, in {type}{size} value) {{
+                s.MemberArrayStart(key, false);
+                Write{pascal}{size}(ref s, in value);
+                s.ArrayEnd();
+            }}
+
+            private static void Write{pascal}{size}(ref JsonSerializer s, in {type}{size} value) {{{components}
+            }}
+";
+            write.Append(writer);
         }
         
         private static void RenderTypeDim2(StringBuilder read, StringBuilder write, string type, int size1, int size2)

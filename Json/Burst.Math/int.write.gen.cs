@@ -12,5 +12,41 @@ using Unity.Mathematics;
 namespace Friflo.Json.Burst.Math
 {
     public static partial class Json
-    {    }
+    {
+            public static void MemberInt2(this ref JsonSerializer s, in Str32 key, in int2 value) {
+                s.MemberArrayStart(key, false);
+                WriteInt2(ref s, in value);
+                s.ArrayEnd();
+            }
+
+            private static void WriteInt2(ref JsonSerializer s, in int2 value) {
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+            }
+
+            public static void MemberInt3(this ref JsonSerializer s, in Str32 key, in int3 value) {
+                s.MemberArrayStart(key, false);
+                WriteInt3(ref s, in value);
+                s.ArrayEnd();
+            }
+
+            private static void WriteInt3(ref JsonSerializer s, in int3 value) {
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+            }
+
+            public static void MemberInt4(this ref JsonSerializer s, in Str32 key, in int4 value) {
+                s.MemberArrayStart(key, false);
+                WriteInt4(ref s, in value);
+                s.ArrayEnd();
+            }
+
+            private static void WriteInt4(ref JsonSerializer s, in int4 value) {
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+                s.ElementLng(value.x);
+            }
+    }
 }

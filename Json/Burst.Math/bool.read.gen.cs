@@ -24,7 +24,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadBool2(ref JArr i, ref JsonParser p, ref bool2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementNum(ref p)) {
+                if (i.UseElementBln(ref p)) {
                     if (index < 2)
                         value[index++] = p.ValueAsBool(out bool _);
                 } else 
@@ -43,7 +43,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadBool3(ref JArr i, ref JsonParser p, ref bool3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementNum(ref p)) {
+                if (i.UseElementBln(ref p)) {
                     if (index < 3)
                         value[index++] = p.ValueAsBool(out bool _);
                 } else 
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadBool4(ref JArr i, ref JsonParser p, ref bool4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementNum(ref p)) {
+                if (i.UseElementBln(ref p)) {
                     if (index < 4)
                         value[index++] = p.ValueAsBool(out bool _);
                 } else 
