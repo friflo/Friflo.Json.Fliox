@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
 namespace Friflo.Json.Burst.Math.CodeGen
 {
-    class Program
+    static class Program
     {
-        private static void Main(string[] args) {
+        private static void Main() {
             GenerateType("bool", "Bln", "Bln");
             GenerateType("float", "Num", "Dbl");
             GenerateType("double", "Num", "Dbl");

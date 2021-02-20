@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Burst.Math.Tests

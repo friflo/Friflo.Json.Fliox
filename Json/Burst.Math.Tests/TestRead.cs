@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Unity.Mathematics;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Burst.Math.Tests
