@@ -13,7 +13,7 @@ namespace Friflo.Json.Burst.Math
 {
     public static partial class JsonMath
     {
-        public static bool UseMemberFloat2(this ref JObj i, ref JsonParser p, in Str32 key, ref float2 value) {
+        public static bool UseMemberFloat2Temp(this ref JObj i, ref JsonParser p, in Str32 key, ref float2 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat2(ref arr, ref p, ref value);
                 return true;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
         
-        public static bool UseMemberFloat3(this ref JObj i, ref JsonParser p, in Str32 key, ref float3 value) {
+        public static bool UseMemberFloat3Temp(this ref JObj i, ref JsonParser p, in Str32 key, ref float3 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat3(ref arr, ref p, ref value);
                 return true;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
         
-        public static bool UseMemberFloat4(this ref JObj i, ref JsonParser p, in Str32 key, ref float4 value) {
+        public static bool UseMemberFloat4Temp(this ref JObj i, ref JsonParser p, in Str32 key, ref float4 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat4(ref arr, ref p, ref value);
                 return true;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
         
-        public static bool UseMemberFloat4x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x4 value) {
+        public static bool UseMemberFloat4x4Temp(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat4x4(ref arr, ref p, ref value);
                 return true;

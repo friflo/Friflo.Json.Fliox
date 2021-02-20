@@ -77,7 +77,7 @@ namespace Friflo.Json.Burst.Math
         {
             var pascal = GetPascalCase(type);
             var str = $@"
-        public static bool UseMember{pascal}X{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
+        public static bool UseMember{pascal}{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{size}(ref arr, ref p, ref value);
                 return true;
@@ -115,7 +115,7 @@ namespace Friflo.Json.Burst.Math
             }}
         }}
         
-        public static bool UseMember{pascal}X{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
+        public static bool UseMember{pascal}{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{dim}(ref arr, ref p, ref value);
                 return true;

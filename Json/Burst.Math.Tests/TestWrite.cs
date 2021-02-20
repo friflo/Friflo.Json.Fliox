@@ -39,10 +39,10 @@ namespace Friflo.Json.Burst.Math.Tests
         private static void WriteMathTypes(ref JsonSerializer s, in MathKeys k, in MathTypes types) {
             s.ObjectStart();
             
-            s.MemberFloat2  (k.float2,    types.float2);
-            s.MemberFloat3  (k.float3,    types.float3);
-            s.MemberFloat4  (k.float4,    types.float4);
-            s.MemberFloat4x4(k.float4x4,  types.float4x4);
+            s.MemberFloat2Temp  (k.float2,    types.float2);
+            s.MemberFloat3Temp  (k.float3,    types.float3);
+            s.MemberFloat4Temp  (k.float4,    types.float4);
+            s.MemberFloat4x4Temp(k.float4x4,  types.float4x4);
             
             s.ObjectEnd();
         }
