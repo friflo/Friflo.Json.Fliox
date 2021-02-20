@@ -43,6 +43,18 @@ namespace Friflo.Json.Burst.Math
             RenderTypeDim1(sb, name, 2);
             RenderTypeDim1(sb, name, 3);
             RenderTypeDim1(sb, name, 4);
+            /*
+            RenderTypeDim2(sb, name, 2, 2);
+            RenderTypeDim2(sb, name, 2, 3);
+            RenderTypeDim2(sb, name, 2, 4);
+            
+            RenderTypeDim2(sb, name, 3, 2);
+            RenderTypeDim2(sb, name, 3, 3);
+            RenderTypeDim2(sb, name, 3, 4);
+
+            RenderTypeDim2(sb, name, 4, 2);
+            RenderTypeDim2(sb, name, 4, 3); */
+            RenderTypeDim2(sb, name, 4, 4);
 
             var footer = $@"    }}
 }}
@@ -50,10 +62,10 @@ namespace Friflo.Json.Burst.Math
             sb.Append(footer);
         }
 
-        private static void RenderTypeDim1(StringBuilder sb, string name, int size) {
-        
-        var str = $@"
-        public static bool UseMemberFloatX{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref float{size} value) {{
+        private static void RenderTypeDim1(StringBuilder sb, string type, int size)
+        {
+            var str = $@"
+        public static bool UseMemberFloatX{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {{
                 ReadFloat{size}(ref arr, ref p, ref value);
                 return true;
@@ -61,7 +73,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }}
 
-        private static void ReadFloat{size}(ref JArr i, ref JsonParser p, ref float{size} value) {{
+        private static void ReadFloat{size}(ref JArr i, ref JsonParser p, ref {type}{size} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
                 if (i.UseElementNum(ref p)) {{
@@ -72,7 +84,33 @@ namespace Friflo.Json.Burst.Math
             }}
         }}
 ";
-        sb.Append(str);
+            sb.Append(str);
+        }
+        
+        private static void RenderTypeDim2(StringBuilder sb, string type, int size1, int size2)
+        {
+            var dim = $"{size1}x{size2}";
+            var str = $@"
+        private static void ReadFloat{dim}(ref JArr i, ref JsonParser p, ref {type}{dim} value) {{
+            int index = 0;
+            while (i.NextArrayElement(ref p)) {{
+                if (i.UseElementArr(ref p, out JArr arr)) {{
+                    if (index < {size1})
+                        ReadFloat{size2}(ref arr, ref p, ref value[index++]);
+                }} else 
+                    p.ErrorMsg(""Json.Burst.Math"", ""expect JSON number"");
+            }}
+        }}
+        
+        public static bool UseMemberFloatX{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
+            if (obj.UseMemberArr(ref p, in key, out JArr arr)) {{
+                ReadFloat{dim}(ref arr, ref p, ref value);
+                return true;
+            }}
+            return false;
+        }}
+";
+            sb.Append(str);
         }
     }
 }

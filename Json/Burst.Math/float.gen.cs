@@ -69,5 +69,24 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
+
+        private static void ReadFloat4x4(ref JArr i, ref JsonParser p, ref float4x4 value) {
+            int index = 0;
+            while (i.NextArrayElement(ref p)) {
+                if (i.UseElementArr(ref p, out JArr arr)) {
+                    if (index < 4)
+                        ReadFloat4(ref arr, ref p, ref value[index++]);
+                } else 
+                    p.ErrorMsg("Json.Burst.Math", "expect JSON number");
+            }
+        }
+        
+        public static bool UseMemberFloatX4x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x4 value) {
+            if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
+                ReadFloat4x4(ref arr, ref p, ref value);
+                return true;
+            }
+            return false;
+        }
     }
 }
