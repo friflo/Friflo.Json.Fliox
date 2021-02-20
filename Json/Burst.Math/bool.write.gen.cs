@@ -21,7 +21,7 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteBool2(ref JsonSerializer s, in bool2 value) {
                 s.ElementBln(value.x);
-                s.ElementBln(value.x);
+                s.ElementBln(value.y);
             }
 
             public static void MemberBool3(this ref JsonSerializer s, in Str32 key, in bool3 value) {
@@ -32,8 +32,8 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteBool3(ref JsonSerializer s, in bool3 value) {
                 s.ElementBln(value.x);
-                s.ElementBln(value.x);
-                s.ElementBln(value.x);
+                s.ElementBln(value.y);
+                s.ElementBln(value.z);
             }
 
             public static void MemberBool4(this ref JsonSerializer s, in Str32 key, in bool4 value) {
@@ -44,9 +44,9 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteBool4(ref JsonSerializer s, in bool4 value) {
                 s.ElementBln(value.x);
-                s.ElementBln(value.x);
-                s.ElementBln(value.x);
-                s.ElementBln(value.x);
+                s.ElementBln(value.y);
+                s.ElementBln(value.z);
+                s.ElementBln(value.w);
             }
     }
 }

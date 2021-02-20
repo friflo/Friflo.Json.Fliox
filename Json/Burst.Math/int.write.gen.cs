@@ -21,7 +21,7 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteInt2(ref JsonSerializer s, in int2 value) {
                 s.ElementLng(value.x);
-                s.ElementLng(value.x);
+                s.ElementLng(value.y);
             }
 
             public static void MemberInt3(this ref JsonSerializer s, in Str32 key, in int3 value) {
@@ -32,8 +32,8 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteInt3(ref JsonSerializer s, in int3 value) {
                 s.ElementLng(value.x);
-                s.ElementLng(value.x);
-                s.ElementLng(value.x);
+                s.ElementLng(value.y);
+                s.ElementLng(value.z);
             }
 
             public static void MemberInt4(this ref JsonSerializer s, in Str32 key, in int4 value) {
@@ -44,9 +44,9 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteInt4(ref JsonSerializer s, in int4 value) {
                 s.ElementLng(value.x);
-                s.ElementLng(value.x);
-                s.ElementLng(value.x);
-                s.ElementLng(value.x);
+                s.ElementLng(value.y);
+                s.ElementLng(value.z);
+                s.ElementLng(value.w);
             }
     }
 }

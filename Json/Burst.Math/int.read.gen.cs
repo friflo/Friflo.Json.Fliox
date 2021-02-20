@@ -24,7 +24,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadInt2(ref JArr i, ref JsonParser p, ref int2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementLng(ref p)) {
+                if (i.UseElementNum(ref p)) {
                     if (index < 2)
                         value[index++] = p.ValueAsInt(out bool _);
                 } else 
@@ -43,7 +43,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadInt3(ref JArr i, ref JsonParser p, ref int3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementLng(ref p)) {
+                if (i.UseElementNum(ref p)) {
                     if (index < 3)
                         value[index++] = p.ValueAsInt(out bool _);
                 } else 
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst.Math
         private static void ReadInt4(ref JArr i, ref JsonParser p, ref int4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
-                if (i.UseElementLng(ref p)) {
+                if (i.UseElementNum(ref p)) {
                     if (index < 4)
                         value[index++] = p.ValueAsInt(out bool _);
                 } else 

@@ -7,23 +7,23 @@ namespace Friflo.Json.Burst.Math.CodeGen
     class Program
     {
         private static void Main(string[] args) {
-            GenerateType("bool",    "Bln", "Bln");
-            GenerateType("float",   "Num", "Flt");
-            GenerateType("double",  "Num", "Dbl");
-            GenerateType("int",     "Lng", "Lng");
+            GenerateType("bool", "Bln", "Bln");
+            GenerateType("float", "Num", "Dbl");
+            GenerateType("double", "Num", "Dbl");
+            GenerateType("int", "Num", "Lng");
             // GenerateType("uint",    "Lng");
         }
 
         private static void GenerateType(string type, string readSuffix, string writeSuffix) {
             var read = new StringBuilder();
             var write = new StringBuilder();
-            
+
             RenderType(read, write, type, readSuffix, writeSuffix);
-            
-            WriteFile(read,  type + ".read.gen.cs");
+
+            WriteFile(read, type + ".read.gen.cs");
             WriteFile(write, type + ".write.gen.cs");
         }
-        
+
         private static void WriteFile(StringBuilder read, string fileName) {
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../Burst.Math/";
             baseDir = Path.GetFullPath(baseDir);
@@ -33,8 +33,8 @@ namespace Friflo.Json.Burst.Math.CodeGen
             }
         }
 
-        private static void RenderType(StringBuilder read, StringBuilder write, string name, string readSuffix, string writeSuffix)
-        {
+        private static void RenderType(StringBuilder read, StringBuilder write, string name, string readSuffix,
+            string writeSuffix) {
             var header = $@"// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using Unity.Mathematics;
@@ -56,12 +56,12 @@ namespace Friflo.Json.Burst.Math
             RenderTypeDim1(read, write, name, 2, readSuffix, writeSuffix);
             RenderTypeDim1(read, write, name, 3, readSuffix, writeSuffix);
             RenderTypeDim1(read, write, name, 4, readSuffix, writeSuffix);
-            
+
             // 2x2, 2x3, 2x4, 3x2, 3x3, 3x4, 4x2, 4x3, 4x4
             RenderTypeDim2(read, write, name, 2, 2);
             RenderTypeDim2(read, write, name, 2, 3);
             RenderTypeDim2(read, write, name, 2, 4);
-            
+
             RenderTypeDim2(read, write, name, 3, 2);
             RenderTypeDim2(read, write, name, 3, 3);
             RenderTypeDim2(read, write, name, 3, 4);
@@ -81,10 +81,10 @@ namespace Friflo.Json.Burst.Math
             return type[0].ToString().ToUpper() + type.Substring(1);
         }
 
-        private static void RenderTypeDim1(StringBuilder read, StringBuilder write, string type, int size, string readSuffix, string writeSuffix)
-        {
+        private static void RenderTypeDim1(StringBuilder read, StringBuilder write, string type, int size,
+            string readSuffix, string writeSuffix) {
             var pascal = GetPascalCase(type);
-            
+
             // --- Reader
             var reader = $@"
         public static bool UseMember{pascal}{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
@@ -107,12 +107,12 @@ namespace Friflo.Json.Burst.Math
         }}
 ";
             read.Append(reader);
-            
+
             // --- Writer
             var components = new StringBuilder();
             for (int i = 0; i < size; i++)
                 components.Append($@"
-                s.Element{writeSuffix}(value.x);");
+                s.Element{writeSuffix}(value.{coordinate[i]});");
 
             var writer = $@"
             public static void Member{pascal}{size}(this ref JsonSerializer s, in Str32 key, in {type}{size} value) {{
@@ -126,7 +126,9 @@ namespace Friflo.Json.Burst.Math
 ";
             write.Append(writer);
         }
-        
+
+        private static readonly char[] coordinate =  { 'x', 'y', 'z', 'w' };
+
         private static void RenderTypeDim2(StringBuilder read, StringBuilder write, string type, int size1, int size2)
         {
             var pascal = GetPascalCase(type);

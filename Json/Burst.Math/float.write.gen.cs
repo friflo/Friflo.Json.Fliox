@@ -20,8 +20,8 @@ namespace Friflo.Json.Burst.Math
             }
 
             private static void WriteFloat2(ref JsonSerializer s, in float2 value) {
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
+                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
             }
 
             public static void MemberFloat3(this ref JsonSerializer s, in Str32 key, in float3 value) {
@@ -31,9 +31,9 @@ namespace Friflo.Json.Burst.Math
             }
 
             private static void WriteFloat3(ref JsonSerializer s, in float3 value) {
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
+                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
+                s.ElementDbl(value.z);
             }
 
             public static void MemberFloat4(this ref JsonSerializer s, in Str32 key, in float4 value) {
@@ -43,10 +43,10 @@ namespace Friflo.Json.Burst.Math
             }
 
             private static void WriteFloat4(ref JsonSerializer s, in float4 value) {
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
-                s.ElementFlt(value.x);
+                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
+                s.ElementDbl(value.z);
+                s.ElementDbl(value.w);
             }
     }
 }

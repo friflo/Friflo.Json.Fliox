@@ -21,7 +21,7 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteDouble2(ref JsonSerializer s, in double2 value) {
                 s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
             }
 
             public static void MemberDouble3(this ref JsonSerializer s, in Str32 key, in double3 value) {
@@ -32,8 +32,8 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteDouble3(ref JsonSerializer s, in double3 value) {
                 s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
+                s.ElementDbl(value.z);
             }
 
             public static void MemberDouble4(this ref JsonSerializer s, in Str32 key, in double4 value) {
@@ -44,9 +44,9 @@ namespace Friflo.Json.Burst.Math
 
             private static void WriteDouble4(ref JsonSerializer s, in double4 value) {
                 s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
-                s.ElementDbl(value.x);
+                s.ElementDbl(value.y);
+                s.ElementDbl(value.z);
+                s.ElementDbl(value.w);
             }
     }
 }
