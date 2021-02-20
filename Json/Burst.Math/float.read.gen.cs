@@ -80,7 +80,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat2x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref float2x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat2x2(ref arr, ref p, ref value);
@@ -99,7 +99,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat2x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref float2x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat2x3(ref arr, ref p, ref value);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat2x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref float2x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat2x4(ref arr, ref p, ref value);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat3x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref float3x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat3x2(ref arr, ref p, ref value);
@@ -156,7 +156,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat3x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref float3x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat3x3(ref arr, ref p, ref value);
@@ -175,7 +175,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat3x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref float3x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat3x4(ref arr, ref p, ref value);
@@ -194,7 +194,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat4x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat4x2(ref arr, ref p, ref value);
@@ -213,7 +213,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat4x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat4x3(ref arr, ref p, ref value);
@@ -232,7 +232,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg("Json.Burst.Math", "expect JSON number");
             }
         }
-        
+
         public static bool UseMemberFloat4x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref float4x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadFloat4x4(ref arr, ref p, ref value);

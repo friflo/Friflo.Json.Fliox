@@ -112,28 +112,36 @@ namespace Friflo.Json.Burst.Math
             var components = new StringBuilder();
             for (int i = 0; i < size; i++)
                 components.Append($@"
-                s.Element{writeSuffix}(value.{coordinate[i]});");
+            s.Element{writeSuffix}(value.{Coordinate[i]});");
 
             var writer = $@"
-            public static void Member{pascal}{size}(this ref JsonSerializer s, in Str32 key, in {type}{size} value) {{
-                s.MemberArrayStart(key, false);
-                Write{pascal}{size}(ref s, in value);
-                s.ArrayEnd();
-            }}
+        public static void Member{pascal}{size}(this ref JsonSerializer s, in Str32 key, in {type}{size} value) {{
+            s.MemberArrayStart(key, false);
+            Write{pascal}{size}(ref s, in value);
+            s.ArrayEnd();
+        }}
 
-            private static void Write{pascal}{size}(ref JsonSerializer s, in {type}{size} value) {{{components}
-            }}
+        public static void Array{pascal}{size}(this ref JsonSerializer s, in {type}{size} value) {{
+            s.ArrayStart(false);
+            Write{pascal}{size}(ref s, in value);
+            s.ArrayEnd();
+        }}
+
+        private static void Write{pascal}{size}(ref JsonSerializer s, in {type}{size} value) {{{components}
+        }}
 ";
             write.Append(writer);
         }
 
-        private static readonly char[] coordinate =  { 'x', 'y', 'z', 'w' };
+        private static readonly char[] Coordinate =  { 'x', 'y', 'z', 'w' };
 
         private static void RenderTypeDim2(StringBuilder read, StringBuilder write, string type, int size1, int size2)
         {
             var pascal = GetPascalCase(type);
             var dim = $"{size1}x{size2}";
-            var str = $@"
+            
+            // --- Reader
+            var reader = $@"
         private static void Read{pascal}{dim}(ref JArr i, ref JsonParser p, ref {type}{dim} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
@@ -144,7 +152,7 @@ namespace Friflo.Json.Burst.Math
                     p.ErrorMsg(""Json.Burst.Math"", ""expect JSON number"");
             }}
         }}
-        
+
         public static bool UseMember{pascal}{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{dim}(ref arr, ref p, ref value);
@@ -153,7 +161,24 @@ namespace Friflo.Json.Burst.Math
             return false;
         }}
 ";
-            read.Append(str);
+            read.Append(reader);
+            
+            // --- Writer
+            var components = new StringBuilder();
+            for (int i = 0; i < size2; i++)
+                components.Append($@"
+            Array{pascal}{size1}(ref s, in value.{Component[i]});");
+            
+            var writer = $@"
+        public static void Member{pascal}{dim}(this ref JsonSerializer s, in Str32 key, in {type}{dim} value) {{
+            s.MemberArrayStart(key, true);{components}
+            s.ArrayEnd();
+        }}
+";
+            write.Append(writer);
+
         }
+        
+        private static readonly string[] Component =  { "c0", "c1", "c2", "c3" };
     }
 }
