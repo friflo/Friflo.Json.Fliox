@@ -18,15 +18,18 @@ namespace Friflo.Json.Burst.Math.CodeGen
             var sb = new StringBuilder();
             
             RenderType(sb, type, suffix);
-            
+            WriteFile(sb, type + ".read.gen.cs");
+        }
+        
+        private static void WriteFile(StringBuilder sb, string fileName) {
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../Burst.Math/";
             baseDir = Path.GetFullPath(baseDir);
-            string path = baseDir + type + ".gen.cs";
+            string path = baseDir + fileName;
             using (StreamWriter fileStream = new StreamWriter(path)) {
                 fileStream.Write(sb);
             }
         }
-        
+
         private static void RenderType(StringBuilder sb, string name, string suffix)
         {
             var header = $@"// Copyright (c) Ullrich Praetz. All rights reserved.
