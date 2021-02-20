@@ -43,7 +43,8 @@ namespace Friflo.Json.Burst.Math
             RenderTypeDim1(sb, name, 2);
             RenderTypeDim1(sb, name, 3);
             RenderTypeDim1(sb, name, 4);
-            /*
+            
+            // 2x2, 2x3, 2x4, 3x2, 3x3, 3x4, 4x2, 4x3, 4x4
             RenderTypeDim2(sb, name, 2, 2);
             RenderTypeDim2(sb, name, 2, 3);
             RenderTypeDim2(sb, name, 2, 4);
@@ -53,7 +54,7 @@ namespace Friflo.Json.Burst.Math
             RenderTypeDim2(sb, name, 3, 4);
 
             RenderTypeDim2(sb, name, 4, 2);
-            RenderTypeDim2(sb, name, 4, 3); */
+            RenderTypeDim2(sb, name, 4, 3);
             RenderTypeDim2(sb, name, 4, 4);
 
             var footer = $@"    }}
@@ -95,8 +96,8 @@ namespace Friflo.Json.Burst.Math
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
                 if (i.UseElementArr(ref p, out JArr arr)) {{
-                    if (index < {size1})
-                        ReadFloat{size2}(ref arr, ref p, ref value[index++]);
+                    if (index < {size2})
+                        ReadFloat{size1}(ref arr, ref p, ref value[index++]);
                 }} else 
                     p.ErrorMsg(""Json.Burst.Math"", ""expect JSON number"");
             }}
