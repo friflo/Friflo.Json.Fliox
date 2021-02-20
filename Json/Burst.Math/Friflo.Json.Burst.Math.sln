@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math.Tests", "..\Burst.Math.Tests\Friflo.Json.Burst.Math.Tests.csproj", "{07135DE3-D309-4D37-9838-4C5609DDD6C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math.CodeGen", "..\Burst.Math.CodeGen\Friflo.Json.Burst.Math.CodeGen.csproj", "{D62BD23E-D86C-4A7B-8630-D6C2B7928A25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{07135DE3-D309-4D37-9838-4C5609DDD6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07135DE3-D309-4D37-9838-4C5609DDD6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07135DE3-D309-4D37-9838-4C5609DDD6C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D62BD23E-D86C-4A7B-8630-D6C2B7928A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D62BD23E-D86C-4A7B-8630-D6C2B7928A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D62BD23E-D86C-4A7B-8630-D6C2B7928A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D62BD23E-D86C-4A7B-8630-D6C2B7928A25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
