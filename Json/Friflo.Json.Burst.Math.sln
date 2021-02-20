@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Burst\Friflo.Json.Burst.csproj", "{5F5B2471-E36B-4E5A-8027-E71789D0BD11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math", "Burst.Math\Friflo.Json.Burst.Math.csproj", "{BE36317F-4118-4C0F-AE86-6579CA58C963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Mathematics", "..\Unity.Mathematics\src\Unity.Mathematics\Unity.Mathematics.csproj", "{19810344-7387-4155-935F-BDD5CC61F0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math.Tests", "Burst.Math.Tests\Friflo.Json.Burst.Math.Tests.csproj", "{4F8B9E3A-F513-45D0-807F-A2F0958856FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst.Math.CodeGen", ".Burst.Math.CodeGen\Friflo.Json.Burst.Math.CodeGen.csproj", "{2AD15888-FCB4-4531-8957-097F8CA4C584}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F5B2471-E36B-4E5A-8027-E71789D0BD11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F5B2471-E36B-4E5A-8027-E71789D0BD11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F5B2471-E36B-4E5A-8027-E71789D0BD11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F5B2471-E36B-4E5A-8027-E71789D0BD11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE36317F-4118-4C0F-AE86-6579CA58C963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE36317F-4118-4C0F-AE86-6579CA58C963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE36317F-4118-4C0F-AE86-6579CA58C963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE36317F-4118-4C0F-AE86-6579CA58C963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19810344-7387-4155-935F-BDD5CC61F0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19810344-7387-4155-935F-BDD5CC61F0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19810344-7387-4155-935F-BDD5CC61F0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19810344-7387-4155-935F-BDD5CC61F0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F8B9E3A-F513-45D0-807F-A2F0958856FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F8B9E3A-F513-45D0-807F-A2F0958856FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F8B9E3A-F513-45D0-807F-A2F0958856FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F8B9E3A-F513-45D0-807F-A2F0958856FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AD15888-FCB4-4531-8957-097F8CA4C584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD15888-FCB4-4531-8957-097F8CA4C584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD15888-FCB4-4531-8957-097F8CA4C584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD15888-FCB4-4531-8957-097F8CA4C584}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
