@@ -15,22 +15,25 @@ namespace Friflo.Json.Burst.Math.CodeGen
         }
 
         private static void GenerateType(string type, string suffix) {
-            var sb = new StringBuilder();
+            var read = new StringBuilder();
+            var write = new StringBuilder();
             
-            RenderType(sb, type, suffix);
-            WriteFile(sb, type + ".read.gen.cs");
+            RenderType(read, write, type, suffix);
+            
+            WriteFile(read,  type + ".read.gen.cs");
+            WriteFile(write, type + ".write.gen.cs");
         }
         
-        private static void WriteFile(StringBuilder sb, string fileName) {
+        private static void WriteFile(StringBuilder read, string fileName) {
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../Burst.Math/";
             baseDir = Path.GetFullPath(baseDir);
             string path = baseDir + fileName;
             using (StreamWriter fileStream = new StreamWriter(path)) {
-                fileStream.Write(sb);
+                fileStream.Write(read);
             }
         }
 
-        private static void RenderType(StringBuilder sb, string name, string suffix)
+        private static void RenderType(StringBuilder read, StringBuilder write, string name, string suffix)
         {
             var header = $@"// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
@@ -47,36 +50,38 @@ namespace Friflo.Json.Burst.Math
 {{
     public static partial class Json
     {{";
-            sb.Append(header);
+            read.Append(header);
+            write.Append(header);
 
-            RenderTypeDim1(sb, name, 2, "Num");
-            RenderTypeDim1(sb, name, 3, "Num");
-            RenderTypeDim1(sb, name, 4, "Num");
+            RenderTypeDim1(read, write, name, 2, "Num");
+            RenderTypeDim1(read, write, name, 3, "Num");
+            RenderTypeDim1(read, write, name, 4, "Num");
             
             // 2x2, 2x3, 2x4, 3x2, 3x3, 3x4, 4x2, 4x3, 4x4
-            RenderTypeDim2(sb, name, 2, 2);
-            RenderTypeDim2(sb, name, 2, 3);
-            RenderTypeDim2(sb, name, 2, 4);
+            RenderTypeDim2(read, write, name, 2, 2);
+            RenderTypeDim2(read, write, name, 2, 3);
+            RenderTypeDim2(read, write, name, 2, 4);
             
-            RenderTypeDim2(sb, name, 3, 2);
-            RenderTypeDim2(sb, name, 3, 3);
-            RenderTypeDim2(sb, name, 3, 4);
+            RenderTypeDim2(read, write, name, 3, 2);
+            RenderTypeDim2(read, write, name, 3, 3);
+            RenderTypeDim2(read, write, name, 3, 4);
 
-            RenderTypeDim2(sb, name, 4, 2);
-            RenderTypeDim2(sb, name, 4, 3);
-            RenderTypeDim2(sb, name, 4, 4);
+            RenderTypeDim2(read, write, name, 4, 2);
+            RenderTypeDim2(read, write, name, 4, 3);
+            RenderTypeDim2(read, write, name, 4, 4);
 
             var footer = $@"    }}
 }}
 ";
-            sb.Append(footer);
+            read.Append(footer);
+            write.Append(footer);
         }
 
         private static string GetPascalCase(string type) {
             return type[0].ToString().ToUpper() + type.Substring(1);
         }
 
-        private static void RenderTypeDim1(StringBuilder sb, string type, int size, string suffix)
+        private static void RenderTypeDim1(StringBuilder read, StringBuilder write, string type, int size, string suffix)
         {
             var pascal = GetPascalCase(type);
             var str = $@"
@@ -99,10 +104,10 @@ namespace Friflo.Json.Burst.Math
             }}
         }}
 ";
-            sb.Append(str);
+            read.Append(str);
         }
         
-        private static void RenderTypeDim2(StringBuilder sb, string type, int size1, int size2)
+        private static void RenderTypeDim2(StringBuilder read, StringBuilder write, string type, int size1, int size2)
         {
             var pascal = GetPascalCase(type);
             var dim = $"{size1}x{size2}";
@@ -126,7 +131,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }}
 ";
-            sb.Append(str);
+            read.Append(str);
         }
     }
 }
