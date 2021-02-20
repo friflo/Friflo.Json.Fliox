@@ -50,7 +50,7 @@ using Unity.Mathematics;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Burst.Math
 {{
-    public static partial class Json
+    public static partial class JsonMath
     {{
         // --------------------------------------- vectors ----------------------------------------------";
             read.Append(header);

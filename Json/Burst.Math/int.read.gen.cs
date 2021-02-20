@@ -13,7 +13,7 @@ using Unity.Mathematics;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Burst.Math
 {
-    public static partial class Json
+    public static partial class JsonMath
     {
         // --------------------------------------- vectors ----------------------------------------------
         public static bool UseMemberInt2(this ref JObj i, ref JsonParser p, in Str32 key, ref int2 value) {
