@@ -7,11 +7,17 @@ namespace Friflo.Json.Burst.Math.CodeGen
     class Program
     {
         private static void Main(string[] args) {
-            var sb = new StringBuilder();
+            GenerateType("bool",    "Bln");
+            GenerateType("float",   "Num");
+            GenerateType("double",  "Num");
+            GenerateType("int",     "Lng");
+            // GenerateType("uint",    "Lng");
+        }
 
-            string type = "float";
+        private static void GenerateType(string type, string suffix) {
+            var sb = new StringBuilder();
             
-            RenderType(sb, type);
+            RenderType(sb, type, suffix);
             
             string baseDir = Directory.GetCurrentDirectory() + "/../../../../Burst.Math/";
             baseDir = Path.GetFullPath(baseDir);
@@ -21,7 +27,7 @@ namespace Friflo.Json.Burst.Math.CodeGen
             }
         }
         
-        private static void RenderType(StringBuilder sb, string name)
+        private static void RenderType(StringBuilder sb, string name, string suffix)
         {
             var header = $@"// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
@@ -40,9 +46,9 @@ namespace Friflo.Json.Burst.Math
     {{";
             sb.Append(header);
 
-            RenderTypeDim1(sb, name, 2);
-            RenderTypeDim1(sb, name, 3);
-            RenderTypeDim1(sb, name, 4);
+            RenderTypeDim1(sb, name, 2, "Num");
+            RenderTypeDim1(sb, name, 3, "Num");
+            RenderTypeDim1(sb, name, 4, "Num");
             
             // 2x2, 2x3, 2x4, 3x2, 3x3, 3x4, 4x2, 4x3, 4x4
             RenderTypeDim2(sb, name, 2, 2);
@@ -63,23 +69,28 @@ namespace Friflo.Json.Burst.Math
             sb.Append(footer);
         }
 
-        private static void RenderTypeDim1(StringBuilder sb, string type, int size)
+        private static string GetPascalCase(string type) {
+            return type[0].ToString().ToUpper() + type.Substring(1);
+        }
+
+        private static void RenderTypeDim1(StringBuilder sb, string type, int size, string suffix)
         {
+            var pascal = GetPascalCase(type);
             var str = $@"
-        public static bool UseMemberFloatX{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
+        public static bool UseMember{pascal}X{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {{
-                ReadFloat{size}(ref arr, ref p, ref value);
+                Read{pascal}{size}(ref arr, ref p, ref value);
                 return true;
             }}
             return false;
         }}
 
-        private static void ReadFloat{size}(ref JArr i, ref JsonParser p, ref {type}{size} value) {{
+        private static void Read{pascal}{size}(ref JArr i, ref JsonParser p, ref {type}{size} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
-                if (i.UseElementNum(ref p)) {{
+                if (i.UseElement{suffix}(ref p)) {{
                     if (index < {size})
-                        value[index++] = p.ValueAsFloat(out bool _);
+                        value[index++] = p.ValueAs{pascal}(out bool _);
                 }} else 
                     p.ErrorMsg(""Json.Burst.Math"", ""expect JSON number"");
             }}
@@ -90,22 +101,23 @@ namespace Friflo.Json.Burst.Math
         
         private static void RenderTypeDim2(StringBuilder sb, string type, int size1, int size2)
         {
+            var pascal = GetPascalCase(type);
             var dim = $"{size1}x{size2}";
             var str = $@"
-        private static void ReadFloat{dim}(ref JArr i, ref JsonParser p, ref {type}{dim} value) {{
+        private static void Read{pascal}{dim}(ref JArr i, ref JsonParser p, ref {type}{dim} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
                 if (i.UseElementArr(ref p, out JArr arr)) {{
                     if (index < {size2})
-                        ReadFloat{size1}(ref arr, ref p, ref value[index++]);
+                        Read{pascal}{size1}(ref arr, ref p, ref value[index++]);
                 }} else 
                     p.ErrorMsg(""Json.Burst.Math"", ""expect JSON number"");
             }}
         }}
         
-        public static bool UseMemberFloatX{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
+        public static bool UseMember{pascal}X{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {{
-                ReadFloat{dim}(ref arr, ref p, ref value);
+                Read{pascal}{dim}(ref arr, ref p, ref value);
                 return true;
             }}
             return false;
