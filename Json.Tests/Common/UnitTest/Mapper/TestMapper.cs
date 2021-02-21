@@ -138,26 +138,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class Derived : Base {
-            public int derivedField = 0;
+            public      int derivedField = 0;
+            public      int Int32 {
+                get;
+                set;
+            }
         }
-        
 
         [Test] public void  TestDerivedClassReflect()   { TestDerivedClass(TypeAccess.Reflection); }
         [Test] public void  TestDerivedClassIL()        { TestDerivedClass(TypeAccess.IL); }
         
         private void TestDerivedClass(TypeAccess typeAccess) {
             using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
-            using (var derivedJson = new Bytes("{\"derivedField\":22,\"baseField\":11}"))
+            using (var derivedJson = new Bytes("{\"Int32\":20,\"derivedField\":21,\"baseField\":10}"))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
                 var result = reader.Read<Derived>(derivedJson);
-                AreEqual(11, result.baseField);
-                AreEqual(22, result.derivedField);
-                
+                AreEqual(10, result.baseField);
+                AreEqual(20, result.Int32);
+                AreEqual(21, result.derivedField);
+
                 var jsonResult = writer.Write(result);
                 AreEqual(derivedJson.ToString(), jsonResult);
             }
         }
+        
     }
 }

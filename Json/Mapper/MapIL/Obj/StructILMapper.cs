@@ -50,6 +50,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             reader.parser.NextEvent();
+            if (isNullable)
+                mirror.StoreStructNonNull(primPos);
             return ReadClassMirror(ref reader, mirror, this, primPos, objPos);
         }
     }

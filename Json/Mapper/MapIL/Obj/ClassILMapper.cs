@@ -94,8 +94,6 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
 
         internal static bool ReadClassMirror(ref Reader reader, ClassMirror mirror, TypeMapper classType, int primPos, int objPos) {
-            if (classType.isNullable)
-                mirror.StoreStructNonNull(primPos);
             JsonEvent ev = reader.parser.Event;
             var propFields = classType.propFields;
 
