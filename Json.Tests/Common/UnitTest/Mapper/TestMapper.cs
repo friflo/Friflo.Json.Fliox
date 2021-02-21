@@ -19,8 +19,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
     public class TestMapper : LeakTestsFixture
     { 
-        [Test]
-        public void TestEnumMapper() {
+        [Test] public void  TestEnumMapperReflect()   { TestEnumMapper(TypeAccess.Reflection); }
+        [Test] public void  TestEnumMapperIL()        { TestEnumMapper(TypeAccess.IL); }
+        
+        private void TestEnumMapper(TypeAccess typeAccess) {
             // C#/.NET behavior in case of duplicate enum v
             AreEqual(EnumClass.Value1, EnumClass.Value3);
             var value1 = "\"Value1\"";
@@ -30,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var num11 =  "11";
             var num999 = "999";
 
-            using (TypeStore typeStore = new TypeStore())
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter write = new JsonWriter(typeStore))
             {
@@ -71,11 +73,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]
-        public void TestBigInteger() {
+        [Test] public void  TestBigIntegerReflect()   { TestBigInteger(TypeAccess.Reflection); }
+        [Test] public void  TestBigIntegerIL()        { TestBigInteger(TypeAccess.IL); }
+        
+        private void TestBigInteger(TypeAccess typeAccess) {
             const string bigIntStr = "1234567890123456789012345678901234567890";
             var bigIntNum = BigInteger.Parse(bigIntStr);
-            using (TypeStore typeStore = new TypeStore())
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var bigInt = new Bytes($"\"{bigIntStr}\"")) {
                 AreEqual(bigIntNum, enc.Read<BigInteger>(bigInt));
@@ -86,9 +90,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public RecursiveClass recField;
         }
         
-        [Test]
-        public void TestMaxDepth() {
-            using (TypeStore typeStore =    new TypeStore())
+        [Test] public void  TestMaxDepthReflect()   { TestMaxDepth(TypeAccess.Reflection); }
+        [Test] public void  TestMaxDepthIL()        { TestMaxDepth(TypeAccess.IL); }
+        
+        private void TestMaxDepth(TypeAccess typeAccess) {
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (JsonReader enc =         new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter writer =      new JsonWriter(typeStore))
             using (var recDepth1 = new Bytes("{\"recField\":null}"))
@@ -136,9 +142,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
 
-        [Test]
-        public void TestDerivedClass() {
-            using (var typeStore = new TypeStore())
+        [Test] public void  TestDerivedClassReflect()   { TestDerivedClass(TypeAccess.Reflection); }
+        [Test] public void  TestDerivedClassIL()        { TestDerivedClass(TypeAccess.IL); }
+        
+        private void TestDerivedClass(TypeAccess typeAccess) {
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (var derivedJson = new Bytes("{\"derivedField\":22,\"baseField\":11}"))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
@@ -151,6 +159,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(derivedJson.ToString(), jsonResult);
             }
         }
-
     }
 }
