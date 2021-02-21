@@ -138,10 +138,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class Derived : Base {
-            public      int derivedField = 0;
-            public      int Int32 {
-                get;
-                set;
+            private     int derivedField = 0;
+            private     int Int32 { get; set; }  // compiler auto generate backing field
+
+            public void AssertFields() {
+                AreEqual(10, baseField);
+                AreEqual(20, Int32);
+                AreEqual(21, derivedField);
             }
         }
 
@@ -155,10 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var writer = new JsonWriter(typeStore))
             {
                 var result = reader.Read<Derived>(derivedJson);
-                AreEqual(10, result.baseField);
-                AreEqual(20, result.Int32);
-                AreEqual(21, result.derivedField);
-
+                result.AssertFields();
                 var jsonResult = writer.Write(result);
                 AreEqual(derivedJson.ToString(), jsonResult);
             }

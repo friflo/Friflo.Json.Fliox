@@ -24,6 +24,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         public              Bytes           subSeqMember;       // dont mutate
         //
         internal readonly   FieldInfo       field;
+        internal readonly   PropertyInfo    property;      
         private  readonly   MethodInfo      getMethod;
         private  readonly   MethodInfo      setMethod;
         private  readonly   object[]        setMethodParams = new object[1];
@@ -38,8 +39,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             subSeqMember    = new Bytes($",\"{name}\":");
             //
             this.field      = field;
-            this.getMethod  = property != null ? property.GetGetMethod() : null;
-            this.setMethod  = property != null ? property.GetSetMethod() : null;
+            this.property   = property;
+            this.getMethod  = property != null ? property.GetGetMethod(true) : null;
+            this.setMethod  = property != null ? property.GetSetMethod(true) : null;
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
         }

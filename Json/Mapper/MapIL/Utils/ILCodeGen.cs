@@ -76,9 +76,9 @@ namespace Friflo.Json.Mapper.MapIL.Utils
 
                 MemberExpression memberVal;
                 if (field.field != null)
-                    memberVal = Exp.Field   (srcTyped, field.name); // memberVal = srcTyped.<field.name>;
+                    memberVal = Exp.Field   (srcTyped, field.field); // memberVal = srcTyped.<field.name>;
                 else
-                    memberVal = Exp.Property(srcTyped, field.name); // memberVal = srcTyped.<field.name>;
+                    memberVal = Exp.Property(srcTyped, field.property); // memberVal = srcTyped.<field.name>;
 
                 BinaryExpression dstAssign;
                 if (!fieldType.IsPrimitive && !field.fieldType.isValueType) {
@@ -196,9 +196,9 @@ namespace Friflo.Json.Mapper.MapIL.Utils
                 
                 MemberExpression dstMember;
                 if (field.field != null)
-                    dstMember   = Exp.Field   (dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
+                    dstMember   = Exp.Field   (dstTyped, field.field);               // ref dstMember = ref dstTyped.<field.name>;
                 else
-                    dstMember   = Exp.Property(dstTyped, field.name);               // ref dstMember = ref dstTyped.<field.name>;
+                    dstMember   = Exp.Property(dstTyped, field.property);               // ref dstMember = ref dstTyped.<field.name>;
                 
                 BinaryExpression dstAssign;
                 if (!fieldType.IsPrimitive && !field.fieldType.isValueType) {

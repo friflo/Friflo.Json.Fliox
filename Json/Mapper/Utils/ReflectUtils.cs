@@ -45,13 +45,13 @@ namespace Friflo.Json.Mapper.Utils
             }
             return list.ToArray();
 #else
-            return type.GetFields(BindingFlags.Public | BindingFlags.Instance ); //| BindingFlags.Static);
+            return type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance ); //| BindingFlags.Static);
 #endif
         }
         
         public static PropertyInfo[] GetProperties (Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance ); //| BindingFlags.Static);
+            return type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance ); //| BindingFlags.Static);
         }
 
         public static PropertyInfo GetPropertyGet (Type type, String name)
