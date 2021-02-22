@@ -112,7 +112,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
 
         public override List<T> Read(ref Reader reader, List<T> slot, out bool success) {
-            if (!ArrayUtils.StartArray(ref reader, this, out success))
+            if (!reader.StartArray(this, out success))
                 return default;
             
             var list = slot;
@@ -136,7 +136,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         PrimitiveList.AddListItem(list, elemVar, index++, startLen);
                         break;
                     case JsonEvent.ValueNull:
-                        if (!ArrayUtils.IsNullable(ref reader, this, elementType, out success))
+                        if (!reader.IsNullable(this, elementType, out success))
                             return default;
                         PrimitiveList.AddListItemNull(list, index++, startLen);
                         break;

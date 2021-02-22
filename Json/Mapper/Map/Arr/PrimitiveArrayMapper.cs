@@ -91,7 +91,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
 
         public override T[] Read(ref Reader reader, T[] slot, out bool success) {
-            if (!ArrayUtils.StartArray(ref reader, this, out success))
+            if (!reader.StartArray(this, out success))
                 return default;
             
             T[] array = slot;
@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!ArrayUtils.IsNullable(ref reader, this, elementType, out success))
+                        if (!reader.IsNullable(this, elementType, out success))
                             return default;
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));

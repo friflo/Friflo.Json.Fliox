@@ -67,7 +67,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
 
         public override TCol Read(ref Reader reader, TCol slot, out bool success) {
-            if (!ArrayUtils.StartArray(ref reader, this, out success))
+            if (!reader.StartArray(this, out success))
                 return default;
             
             var list = slot;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         list.Add(elemVar);
                         break;
                     case JsonEvent.ValueNull:
-                        if (!ArrayUtils.IsNullable(ref reader, this, elementType, out success))
+                        if (!reader.IsNullable(this, elementType, out success))
                             return default;
                         list.Add(default);
                         break;
