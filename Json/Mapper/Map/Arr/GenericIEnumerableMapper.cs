@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 writer.WriteDelimiter( n++);
                 
                 if (!elementType.IsNull(ref item)) {
-                    ObjectUtils.Write(ref writer, elementType, ref item);
+                    writer.WriteElement(elementType, ref item);
                     writer.FlushFilledBuffer();
                 } else
                     writer.AppendNull();

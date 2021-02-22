@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 writer.WriteDelimiter(n++);
                 
                 if (!elementType.IsNull(ref item)) {
-                    ObjectUtils.Write(ref writer, elementType, ref item);
+                    writer.WriteElement(elementType, ref item);
                     writer.FlushFilledBuffer();
                 } else
                     writer.AppendNull();
@@ -83,13 +83,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ObjectStart:
                         TElm elemVar;
                         elemVar = default;
-                        elemVar = ObjectUtils.Read(ref reader, elementType, ref elemVar, out success);
+                        elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
                         if (!success)
                             return default;
                         stack.Push(elemVar);
                         break;
                     case JsonEvent.ValueNull:
-                        if (!reader.IsNullable(this, elementType, out success))
+                        if (!reader.IsElementNullable(this, elementType, out success))
                             return default;
                         stack.Push(default);
                         break;

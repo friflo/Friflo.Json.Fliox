@@ -192,5 +192,19 @@ namespace Friflo.Json.Mapper.Map
                     break;
             }
         }
+        
+        // --- array element
+        public void WriteElement<T>(TypeMapper<T> mapper, ref T value) {
+#if !UNITY_5_3_OR_NEWER
+            if (mapper.useIL) {
+                TypeMapper typeMapper = mapper;
+                ClassMirror mirror = InstanceLoad(ref typeMapper, ref value);
+                mapper.WriteValueIL(ref this, mirror, 0, 0);
+                return;
+            }
+#endif
+            mapper.Write(ref this, value);
+            
+        }
     }
 }

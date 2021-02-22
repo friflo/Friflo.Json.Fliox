@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map
     [CLSCompliant(true)]
 #endif
     public partial struct Reader {
-        public bool IsNullable(TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
+        public bool IsElementNullable(TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
             if (!elementType.isNullable) {
                 ReadUtils.ErrorIncompatible<bool>(ref this, arrayMapper.DataTypeName(), " element", elementType, out success);
                 return false;

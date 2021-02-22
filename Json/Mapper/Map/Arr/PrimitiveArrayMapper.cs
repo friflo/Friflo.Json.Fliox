@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!reader.IsNullable(this, elementType, out success))
+                        if (!reader.IsElementNullable(this, elementType, out success))
                             return default;
                         if (index >= len)
                             array = CopyArray(array, len = ReadUtils.Inc(len));

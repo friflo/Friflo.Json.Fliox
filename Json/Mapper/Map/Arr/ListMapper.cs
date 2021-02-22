@@ -52,7 +52,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 TElm item = list[n];
                 
                 if (!elementType.IsNull(ref item)) {
-                    ObjectUtils.Write(ref writer, elementType, ref item);
+                    writer.WriteElement(elementType, ref item);
                     writer.FlushFilledBuffer();
                 } else
                     writer.AppendNull();
@@ -87,13 +87,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                         TElm elemVar;
                         if (index < startLen) {
                             elemVar = list[index];
-                            elemVar = ObjectUtils.Read(ref reader, elementType, ref elemVar, out success);
+                            elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = ObjectUtils.Read(ref reader, elementType, ref elemVar, out success);
+                            elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             list.Add(elemVar);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         index++;
                         break;
                     case JsonEvent.ValueNull:
-                        if (!reader.IsNullable(this, elementType, out success))
+                        if (!reader.IsElementNullable(this, elementType, out success))
                             return default;
                         if (index < startLen)
                             list[index] = default;

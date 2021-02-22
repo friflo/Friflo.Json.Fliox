@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             }
         }
 
-        public static T Read<T>(ref Reader reader, TypeMapper<T> mapper, ref T value, out bool success) {
+        public static T ReadElement<T>(ref Reader reader, TypeMapper<T> mapper, ref T value, out bool success) {
 #if !UNITY_5_3_OR_NEWER
             if (mapper.useIL) {
                 TypeMapper typeMapper = mapper;
@@ -50,19 +50,6 @@ namespace Friflo.Json.Mapper.Map.Utils
             return mapper.Read(ref reader, value, out success);
         }
         
-        public static void Write<T>(ref Writer writer, TypeMapper<T> mapper, ref T value) {
-#if !UNITY_5_3_OR_NEWER
-            if (mapper.useIL) {
-                TypeMapper typeMapper = mapper;
-                ClassMirror mirror = writer.InstanceLoad(ref typeMapper, ref value);
-                mapper.WriteValueIL(ref writer, mirror, 0, 0);
-                return;
-            }
-#endif
-            mapper.Write(ref writer, value);
-            
-        }
-
         public static TVal ErrorIncompatible<TVal>(ref Reader reader, TypeMapper objectMapper, PropField field, out bool success) {
             ReadUtils.ErrorIncompatible<bool>(ref reader, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
             return default;
