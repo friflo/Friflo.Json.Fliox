@@ -57,5 +57,25 @@ namespace Friflo.Json.Mapper.Map
             typeCache.Dispose();
             parser.Dispose();
         }
+        
+        public TVal CheckElse<TVal>(TypeMapper<TVal> mapper, out bool success) {
+            switch (parser.Event) {
+                case JsonEvent.ValueNull:
+                    const string msg = "requirement: null value must be handled by owner. Add missing JsonEvent.ValueNull case to its Mapper";
+                    throw new InvalidOperationException(msg);
+                /*
+                if (!stubType.isNullable)
+                    return JsonReader.ErrorIncompatible(reader, "primitive", stubType, ref parser);
+                value.SetNull(stubType.varType); // not necessary. null value us handled by owner.
+                return true;
+                */
+                case JsonEvent.Error:
+                    const string msg2 = "requirement: error must be handled by owner. Add missing JsonEvent.Error case to its Mapper";
+                    throw new InvalidOperationException(msg2);
+                // return null;
+                default:
+                    return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+            }
+        }
     }
 }

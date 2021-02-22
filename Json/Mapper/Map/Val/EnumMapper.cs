@@ -138,7 +138,7 @@ namespace Friflo.Json.Mapper.Map.Val
                 }
                 return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
             }
-            return ValueUtils.CheckElse(ref reader, this, out success);
+            return reader.CheckElse(this, out success);
         }
     }
 }

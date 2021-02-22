@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override string Read(ref Reader reader, string slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             success = true;
             return reader.parser.value.GetString(ref reader.charBuf);
             // return reader.parser.value.ToString();
@@ -64,7 +64,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override double Read(ref Reader reader, double slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override double? Read(ref Reader reader, double? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
@@ -105,7 +105,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override float Read(ref Reader reader, float slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
@@ -119,7 +119,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override float? Read(ref Reader reader, float? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
@@ -147,7 +147,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override long Read(ref Reader reader, long slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsLong(out success);
         }
     }
@@ -161,7 +161,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override long? Read(ref Reader reader, long? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsLong(out success);
         }
     }
@@ -188,7 +188,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override int Read(ref Reader reader, int slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsInt(out success);
         }
     }
@@ -202,7 +202,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
         public override int? Read(ref Reader reader, int? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsInt(out success);
         }
     }
@@ -230,7 +230,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override short Read(ref Reader reader, short slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsShort(out success);
         }
     }
@@ -245,7 +245,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override short? Read(ref Reader reader, short? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsShort(out success);
         }
     }
@@ -274,7 +274,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override byte Read(ref Reader reader, byte slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsByte(out success);
         }
     }
@@ -289,7 +289,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override byte? Read(ref Reader reader, byte? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueNumber)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsByte(out success);
         }
     }
@@ -318,7 +318,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override bool Read(ref Reader reader, bool slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsBool(out success);
         }
     }
@@ -333,7 +333,7 @@ namespace Friflo.Json.Mapper.Map.Val
 
         public override bool? Read(ref Reader reader, bool? slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueBool)
-                return ValueUtils.CheckElse(ref reader, this, out success);
+                return reader.CheckElse(this, out success);
             return reader.parser.ValueAsBool(out success);
         }
     }

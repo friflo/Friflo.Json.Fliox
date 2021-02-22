@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     success = true;
                     return ret2;
                 default:
-                    return ValueUtils.CheckElse(ref reader, this, out success);
+                    return reader.CheckElse(this, out success);
             }
         }
     }
