@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.MapIL.Obj;
 
 namespace Friflo.Json.Mapper.Map
@@ -30,6 +31,10 @@ namespace Friflo.Json.Mapper.Map
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
+            bool isNull = nullableUnderlyingType != null || !type.IsValueType;
+            if (isNull != isNullable)
+                throw new InvalidOperationException("invalid parameter: isNullable");
+
             this.useIL                  = config != null && config.useIL && isValueType && !type.IsPrimitive;
         }
 
@@ -64,10 +69,9 @@ namespace Friflo.Json.Mapper.Map
             base(config, type, isNullable, isValueType) {
         }
         
-        protected TypeMapper(bool isNullable, bool isValueType) :
-            base(null, typeof(TVal), isNullable, isValueType) {
+        protected TypeMapper() :
+            base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
         }
-
 
         public abstract void    Write       (ref Writer writer, TVal slot);
         public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);

@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public override string DataTypeName() { return "DateTime"; }
         
         public DateTimeMapper(StoreConfig config, Type type) :
-            base (config, type, TypeUtils.IsPrimitiveNullable(type), false) {
+            base (config, type, false, false) {
         }
 
         public override void Write(ref Writer writer, DateTime value) {

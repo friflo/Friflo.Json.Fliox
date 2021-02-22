@@ -15,8 +15,6 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     
     public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public StringTokenMapper() : base (true, false) { }
-
         public override void Write(ref Writer writer, StringTokens value) {
             writer.WriteString(string.Join(" ", value.tokens));
         }

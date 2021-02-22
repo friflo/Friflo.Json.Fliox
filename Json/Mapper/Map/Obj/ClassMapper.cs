@@ -56,7 +56,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 
        
         protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, bool isValueType) :
-            base (config, type, IsNullable(type), isValueType)
+            base (config, type, TypeUtils.IsNullable(type), isValueType)
         {
             this.constructor = constructor;
             var lambda = CreateInstanceExpression();
@@ -85,12 +85,6 @@ namespace Friflo.Json.Mapper.Map.Obj
             FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);
-        }
-        
-        private static bool IsNullable(Type type) {
-            if (!type.IsValueType)
-                return true;
-            return TypeUtils.GetNullableStruct (type) != null;
         }
         
         public override object CreateInstance() {

@@ -19,8 +19,10 @@ namespace Friflo.Json.Mapper.Map.Utils
             return false;
         }
         
-        public static bool IsPrimitiveNullable(Type type) {
-            return Nullable.GetUnderlyingType(type) != null;
+        public static bool IsNullable(Type type) {
+            if (!type.IsValueType)
+                return true;
+            return GetNullableStruct (type) != null;
         }
 
         public static Type GetNullableStruct(Type type) {
