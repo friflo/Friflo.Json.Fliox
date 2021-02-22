@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     
     public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public StringTokenMapper(StoreConfig config) : base (config, true, false) { }
+        public StringTokenMapper() : base (true, false) { }
 
         public override void Write(ref Writer writer, StringTokens value) {
             writer.WriteString(string.Join(" ", value.tokens));
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void Run() {
             var mapper = new JsonMapper();
-            mapper.typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper(mapper.typeStore.config));
+            mapper.typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper());
             
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             

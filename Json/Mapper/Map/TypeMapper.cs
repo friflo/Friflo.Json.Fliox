@@ -26,13 +26,11 @@ namespace Friflo.Json.Mapper.Map
 
 
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
-            if (config == null)
-                throw new InvalidOperationException("Expect config != null");
             this.type                   = type;
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
-            this.useIL                  = config.useIL && isValueType && !type.IsPrimitive;
+            this.useIL                  = config != null && config.useIL && isValueType && !type.IsPrimitive;
         }
 
         public abstract void            Dispose();
@@ -66,8 +64,8 @@ namespace Friflo.Json.Mapper.Map
             base(config, type, isNullable, isValueType) {
         }
         
-        protected TypeMapper(StoreConfig config, bool isNullable, bool isValueType) :
-            base(config, typeof(TVal), isNullable, isValueType) {
+        protected TypeMapper(bool isNullable, bool isValueType) :
+            base(null, typeof(TVal), isNullable, isValueType) {
         }
 
 
