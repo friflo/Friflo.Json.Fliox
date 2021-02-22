@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public StringMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
         public override void Write(ref Writer writer, string slot) {
-            WriteUtils.WriteString(ref writer, (slot));
+            writer.WriteString(slot);
         }
 
         public override string Read(ref Reader reader, string slot, out bool success) {

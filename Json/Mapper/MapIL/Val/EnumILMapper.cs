@@ -67,7 +67,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
         // ----------------------------------------- Write / Read ----------------------------------------- 
         public override void Write(ref Writer writer, T slot) {
             if (IsNull(ref slot)) {
-                WriteUtils.AppendNull(ref writer);
+                writer.AppendNull();
                 return;
             }
             long integralValue = TypeUtils.GetIntegralFromEnumValue(slot, underlyingEnumType);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             long? integralValue = mirror.LoadLongNull(primPos);
             if (integralValue == null) {
-                WriteUtils.AppendNull(ref writer);
+                writer.AppendNull();
                 return;
             }
             if (!integralToString.TryGetValue((long)integralValue, out EnumString enumName))

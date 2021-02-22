@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
-using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.MapIL.Obj;
 
 namespace Friflo.Json.Mapper.Map
@@ -88,7 +87,7 @@ namespace Friflo.Json.Mapper.Map
             if (slot != null)
                 Write(ref writer, (TVal) slot);
             else
-                WriteUtils.AppendNull(ref writer);
+                writer.AppendNull();
         }
 
         public override object ReadObject(ref Reader reader, object slot, out bool success) {

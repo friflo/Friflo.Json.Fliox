@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public StringTokenMapper(StoreConfig config) : base (config, true, false) { }
 
         public override void Write(ref Writer writer, StringTokens value) {
-            WriteUtils.WriteString(ref writer, string.Join(" ", value.tokens));
+            writer.WriteString(string.Join(" ", value.tokens));
         }
 
         public override StringTokens Read(ref Reader reader, StringTokens slot, out bool success) {

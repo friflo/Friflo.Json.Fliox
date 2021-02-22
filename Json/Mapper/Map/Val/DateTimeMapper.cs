@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, DateTime value) {
-            WriteUtils.WriteString(ref writer, value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            writer.WriteString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
         }
 
         // ReSharper disable once RedundantAssignment

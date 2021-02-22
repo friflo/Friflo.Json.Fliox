@@ -132,7 +132,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 
                 object elemVar = field.GetField(objRef);
                 if (elemVar == null) {
-                    WriteUtils.AppendNull(ref writer);
+                    writer.AppendNull();
                 } else {
                     var fieldType = field.fieldType;
                     fieldType.WriteObject(ref writer, elemVar);

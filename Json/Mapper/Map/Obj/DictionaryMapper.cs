@@ -57,12 +57,12 @@ namespace Friflo.Json.Mapper.Map.Obj
 
             foreach (var entry in map) {
                 WriteUtils.WriteDelimiter(ref writer, n++);
-                WriteUtils.WriteString(ref writer, entry.Key);
+                writer.WriteString(entry.Key);
                 writer.bytes.AppendChar(':');
                 
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
-                    WriteUtils.AppendNull(ref writer);
+                    writer.AppendNull();
                 } else {
                     elementType.Write(ref writer, elemVar);
                     WriteUtils.FlushFilledBuffer(ref writer);

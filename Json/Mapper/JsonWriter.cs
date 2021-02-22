@@ -128,7 +128,7 @@ namespace Friflo.Json.Mapper
         // --------------------------------------- private --------------------------------------- 
         private void WriteStart(object value) {
             if (value == null) {
-                WriteUtils.AppendNull(ref intern);
+                intern.AppendNull();
                 return;
             }
             TypeMapper mapper = intern.typeCache.GetTypeMapper(value.GetType());
@@ -145,7 +145,7 @@ namespace Friflo.Json.Mapper
             var mapper = (TypeMapper<T>)intern.typeCache.GetTypeMapper(typeof(T));
             try {
                 if (mapper.IsNull(ref value))
-                    WriteUtils.AppendNull(ref intern);
+                    intern.AppendNull();
                 else
                     mapper.Write(ref intern, value);
             }

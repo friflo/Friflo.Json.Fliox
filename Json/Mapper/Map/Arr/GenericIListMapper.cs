@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     ObjectUtils.Write(ref writer, elementType, ref item);
                     WriteUtils.FlushFilledBuffer(ref writer);
                 } else
-                    WriteUtils.AppendNull(ref writer);
+                    writer.AppendNull();
             }
             WriteUtils.WriteArrayEnd(ref writer);
             WriteUtils.DecLevel(ref writer, startLevel);

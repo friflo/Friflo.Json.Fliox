@@ -79,7 +79,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 var elemVar = array[n];
 
                 if (elementType.isNullable && EqualityComparer<T>.Default.Equals(elemVar, default)) {
-                    WriteUtils.AppendNull(ref writer);
+                    writer.AppendNull();
                 } else {
                     elementType.Write(ref writer, elemVar);
                     WriteUtils.FlushFilledBuffer(ref writer);

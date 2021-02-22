@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             object obj = mirror.LoadObj(objPos);
             if (obj == null)
-                WriteUtils.AppendNull(ref writer);
+                writer.AppendNull();
             else
                 Write(ref writer, (T) obj);
         }

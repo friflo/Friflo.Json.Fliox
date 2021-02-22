@@ -90,17 +90,6 @@ namespace Friflo.Json.Mapper.Map.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteString(ref Writer writer, String str) {
-            JsonSerializer.AppendEscString(ref writer.bytes, in str);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AppendNull(ref Writer writer) {
-            writer.bytes.AppendBytes(ref writer.@null);
-            FlushFilledBuffer(ref writer);
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FlushFilledBuffer(ref Writer writer) {
             if (writer.bytes.end < 4096)
                 return;

@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
         internal static bool WriteNull<T>(ref Writer writer, T? value) where T : struct {
             if (value.HasValue)
                 return false;
-            WriteUtils.AppendNull(ref writer);
+            writer.AppendNull();
             return true;
         }
     }

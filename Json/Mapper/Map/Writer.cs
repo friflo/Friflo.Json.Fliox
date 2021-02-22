@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
 
@@ -68,6 +70,18 @@ namespace Friflo.Json.Mapper.Map
             format.Dispose();
             bytes.Dispose();
             DisposeMirrorStack();
+        }
+        
+        // --- WriteUtils
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteString(String str) {
+            JsonSerializer.AppendEscString(ref bytes, in str);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendNull() {
+            bytes.AppendBytes(ref @null);
+            WriteUtils.FlushFilledBuffer(ref this);
         }
     }
 }
