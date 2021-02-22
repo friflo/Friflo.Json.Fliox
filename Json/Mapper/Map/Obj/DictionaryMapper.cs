@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
         public override void Write(ref Writer writer, TMap map) {
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
 
             writer.bytes.AppendChar('{');
             int n = 0;
@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (writer.pretty)
                 WriteUtils.IndentEnd(ref writer);
             writer.bytes.AppendChar('}');
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
         
         public override TMap Read(ref Reader reader, TMap map, out bool success) {

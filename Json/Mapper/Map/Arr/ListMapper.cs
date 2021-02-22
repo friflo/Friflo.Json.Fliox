@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         public override void Write(ref Writer writer, List<TElm> slot) {
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
             var list = slot;
             writer.bytes.AppendChar('[');
 
@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.AppendNull();
             }
             WriteUtils.WriteArrayEnd(ref writer);
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
         
 

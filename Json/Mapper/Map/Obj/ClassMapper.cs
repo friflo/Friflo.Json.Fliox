@@ -109,7 +109,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         // ----------------------------------- Write / Read -----------------------------------
         
         public override void Write(ref Writer writer, T slot) {
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
 
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             TypeMapper classMapper = this;
@@ -140,7 +140,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             }
             WriteUtils.WriteObjectEnd(ref writer, firstMember);
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
 
 

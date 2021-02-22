@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 writer.AppendNull();
                 return;
             }
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
             
             PropField[] fields = propFields.fields;
             bool firstMember = true;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 WriteUtils.FlushFilledBuffer(ref writer);
             }
             WriteUtils.WriteObjectEnd(ref writer, firstMember);
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
         
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {

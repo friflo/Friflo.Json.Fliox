@@ -110,20 +110,5 @@ namespace Friflo.Json.Mapper.Map.Utils
                     break;
             }
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IncLevel(ref Writer writer) {
-            if (writer.level++ < writer.maxDepth)
-                return writer.level;
-            throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {writer.maxDepth}");
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DecLevel(ref Writer writer, int expectedLevel) {
-            if (writer.level-- != expectedLevel)
-                throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {writer.level + 1}");
-        }
-
-
     }
 }

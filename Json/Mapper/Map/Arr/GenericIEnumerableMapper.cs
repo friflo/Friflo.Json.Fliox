@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         public override void Write(ref Writer writer, TCol slot) {
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
             var enumerable = slot;
             writer.bytes.AppendChar('[');
 
@@ -56,7 +56,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.AppendNull();
             }
             WriteUtils.WriteArrayEnd(ref writer);
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
 
         public override TCol Read(ref Reader reader, TCol slot, out bool success) {

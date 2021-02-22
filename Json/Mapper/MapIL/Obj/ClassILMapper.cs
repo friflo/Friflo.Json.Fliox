@@ -44,7 +44,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         public override void Write(ref Writer writer, T slot) {
-            int startLevel = WriteUtils.IncLevel(ref writer);
+            int startLevel = writer.IncLevel();
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             writer.InstancePop();
             WriteUtils.WriteObjectEnd(ref writer, firstMember);
 
-            WriteUtils.DecLevel(ref writer, startLevel);
+            writer.DecLevel(startLevel);
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {

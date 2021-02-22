@@ -83,5 +83,18 @@ namespace Friflo.Json.Mapper.Map
             bytes.AppendBytes(ref @null);
             WriteUtils.FlushFilledBuffer(ref this);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int IncLevel() {
+            if (level++ < maxDepth)
+                return level;
+            throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {maxDepth}");
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DecLevel(int expectedLevel) {
+            if (level-- != expectedLevel)
+                throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {level + 1}");
+        }
     }
 }
