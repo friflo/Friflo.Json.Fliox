@@ -1,5 +1,4 @@
-﻿using System;
-using Friflo.Json.Burst;
+﻿using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
@@ -37,12 +36,11 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     {
         [Test]
         public void Run() {
-            var typeStore = new TypeStore();
-            typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper(typeStore.config));
+            var mapper = new JsonMapper();
+            mapper.typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper(mapper.typeStore.config));
             
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
-            var mapper = new JsonMapper(typeStore);
             StringTokens result = mapper.Read<StringTokens>(new Bytes(json));
             AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
             
