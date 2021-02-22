@@ -139,7 +139,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     WriteUtils.FlushFilledBuffer(ref writer);
                 }
             }
-            WriteUtils.WriteObjectEnd(ref writer, firstMember);
+            writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
         }
 

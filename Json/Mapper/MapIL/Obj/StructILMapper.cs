@@ -44,7 +44,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
                 WriteUtils.FlushFilledBuffer(ref writer);
             }
-            WriteUtils.WriteObjectEnd(ref writer, firstMember);
+            writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);
         }
         

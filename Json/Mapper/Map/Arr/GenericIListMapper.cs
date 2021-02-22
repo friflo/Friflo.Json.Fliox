@@ -51,7 +51,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             writer.bytes.AppendChar('[');
 
             for (int n = 0; n < list.Count; n++) {
-                WriteUtils.WriteDelimiter(ref writer, n);
+                writer.WriteDelimiter(n);
                 TElm item = list[n];
                 
                 if (!elementType.IsNull(ref item)) {
@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 } else
                     writer.AppendNull();
             }
-            WriteUtils.WriteArrayEnd(ref writer);
+            writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
         }
         

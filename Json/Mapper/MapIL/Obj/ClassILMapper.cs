@@ -70,7 +70,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 }
             }
             writer.InstancePop();
-            WriteUtils.WriteObjectEnd(ref writer, firstMember);
+            writer.WriteObjectEnd(firstMember);
 
             writer.DecLevel(startLevel);
         }

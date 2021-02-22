@@ -96,5 +96,48 @@ namespace Friflo.Json.Mapper.Map
             if (level-- != expectedLevel)
                 throw new InvalidOperationException($"Unexpected level in Write() end. Expect {expectedLevel}, Found: {level + 1}");
         }
+        
+        // --- indentation
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteDelimiter(int pos) {
+            if (pos > 0) {
+                bytes.EnsureCapacityAbs(bytes.end + 1);
+                bytes.buffer.array[bytes.end++] = (byte)',';
+            }
+            if (pretty)
+                IndentBegin();
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteArrayEnd() {
+            if (pretty)
+                IndentEnd();
+            bytes.EnsureCapacityAbs(bytes.end + 1);
+            bytes.buffer.array[bytes.end++] = (byte)']';
+        }
+        
+        public void IndentBegin() {
+            JsonSerializer.IndentJsonNode(ref bytes, this.level);
+        }
+        
+        public void IndentEnd() {
+            int decLevel = this.level - 1;
+            JsonSerializer.IndentJsonNode(ref bytes, decLevel);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteObjectEnd(bool emptyObject) {
+            if (pretty)
+                IndentEnd();
+
+            if (emptyObject) {
+                bytes.EnsureCapacityAbs(bytes.end + 2);
+                bytes.buffer.array[bytes.end++] = (byte)'{';
+                bytes.buffer.array[bytes.end++] = (byte)'}';
+            } else {
+                bytes.EnsureCapacityAbs(bytes.end + 1);
+                bytes.buffer.array[bytes.end++] = (byte)'}';
+            }
+        }
     }
 }

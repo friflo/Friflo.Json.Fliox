@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             ref var bytes = ref writer.bytes;
             bytes.AppendChar('{');
             if (writer.pretty)
-                IndentBegin(ref writer);
+                writer.IndentBegin();
             bytes.AppendBytes(ref writer.discriminator);
             writer.typeCache.AppendDiscriminator(ref bytes, mapper);
             bytes.AppendChar('\"');
@@ -36,7 +36,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     writer.bytes.AppendBytes(ref field.subSeqMember);
             } else {
                 writer.bytes.AppendChar(firstMember ? '{' : ',');
-                IndentBegin(ref writer);
+                writer.IndentBegin();
                 writer.bytes.AppendChar('"');
                 writer.bytes.AppendBytes(ref field.nameBytes);
                 writer.bytes.AppendChar('"');
@@ -46,48 +46,7 @@ namespace Friflo.Json.Mapper.Map.Utils
             firstMember = false;
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteDelimiter(ref Writer writer, int pos) {
-            if (pos > 0) {
-                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)',';
-            }
-            if (writer.pretty)
-                IndentBegin(ref writer);
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteArrayEnd(ref Writer writer) {
-            if (writer.pretty)
-                IndentEnd(ref writer);
-            writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
-            writer.bytes.buffer.array[writer.bytes.end++] = (byte)']';
-        }
-        
-        public static void IndentBegin(ref Writer writer) {
-            int level = writer.level;
-            JsonSerializer.IndentJsonNode(ref writer.bytes, level);
-        }
-        
-        public static void IndentEnd(ref Writer writer) {
-            int level = writer.level - 1;
-            JsonSerializer.IndentJsonNode(ref writer.bytes, level);
-        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteObjectEnd(ref Writer writer, bool emptyObject) {
-            if (writer.pretty)
-                IndentEnd(ref writer);
-
-            if (emptyObject) {
-                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 2);
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'{';
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'}';
-            } else {
-                writer.bytes.EnsureCapacityAbs(writer.bytes.end + 1);
-                writer.bytes.buffer.array[writer.bytes.end++] = (byte)'}';
-            }
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FlushFilledBuffer(ref Writer writer) {

@@ -56,7 +56,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             int n = 0;
 
             foreach (var entry in map) {
-                WriteUtils.WriteDelimiter(ref writer, n++);
+                writer.WriteDelimiter(n++);
                 writer.WriteString(entry.Key);
                 writer.bytes.AppendChar(':');
                 
@@ -69,7 +69,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             }
             if (writer.pretty)
-                WriteUtils.IndentEnd(ref writer);
+                writer.IndentEnd();
             writer.bytes.AppendChar('}');
             writer.DecLevel(startLevel);
         }

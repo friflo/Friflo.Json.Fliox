@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             int n = 0;
             foreach (var currentItem in list) {
                 var item = currentItem; // capture to use by ref
-                WriteUtils.WriteDelimiter(ref writer, n++);
+                writer.WriteDelimiter(n++);
                 
                 if (!elementType.IsNull(ref item)) {
                     ObjectUtils.Write(ref writer, elementType, ref item);
@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                 } else
                     writer.AppendNull();
             }
-            WriteUtils.WriteArrayEnd(ref writer);
+            writer.WriteArrayEnd();
             writer.DecLevel(startLevel);
         }
         
