@@ -4,7 +4,7 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
-using Friflo.Json.Mapper.Map.Utils;
+
 using Friflo.Json.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace
@@ -20,7 +20,7 @@ namespace Friflo.Json.Mapper.Map
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<T>(ref this, mapper.DataTypeName(), mapper, out success);
+                    ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
                     success = false;
                     return false;
                 case JsonEvent.ObjectStart:
@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.Map
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<T>(ref this, mapper.DataTypeName(), mapper, out success);
+                    ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out success);
                     // reader.ErrorNull("Expect { or null. Got Event: ", ev);
                     return false;
             }
@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Map
         }
         
         public TVal ErrorIncompatible<TVal>(TypeMapper objectMapper, PropField field, out bool success) {
-            ReadUtils.ErrorIncompatible<bool>(ref this, objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
+            ErrorIncompatible<bool>(objectMapper.DataTypeName(), $" field: {field.name}", field.fieldType, out success);
             return default;
         }
       

@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         break;
                     case JsonEvent.ValueNull:
                         if (!elementType.isNullable) {
-                            ReadUtils.ErrorIncompatible<Dictionary<string, TElm>>(ref reader, "Dictionary value", elementType, out success);
+                            reader.ErrorIncompatible<Dictionary<string, TElm>>("Dictionary value", elementType, out success);
                             return default;
                         }
                         key = reader.parser.key.ToString();
@@ -111,7 +111,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<TMap>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<TMap>("unexpected state: ", ev, out success);
                 }
             }
         }

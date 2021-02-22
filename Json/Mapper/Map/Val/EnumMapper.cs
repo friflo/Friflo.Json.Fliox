@@ -126,7 +126,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     success = true;
                     return (T)enumValue;
                 }
-                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out success);
@@ -136,7 +136,7 @@ namespace Friflo.Json.Mapper.Map.Val
                     success = true;
                     return (T)enumValue;
                 }
-                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
             }
             return ValueUtils.CheckElse(ref reader, this, out success);
         }

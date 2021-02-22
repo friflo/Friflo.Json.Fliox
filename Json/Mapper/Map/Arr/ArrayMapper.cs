@@ -73,7 +73,7 @@ namespace Friflo.Json.Mapper.Map.Arr
 
             if (EqualityComparer<TElm[]>.Default.Equals(slot, default)) {
                 startLen = 0;
-                len = ReadUtils.minLen;
+                len = Reader.minLen;
             }
             else {
                 array = slot;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                             if (!success)
                                 return default;
                             if (index >= len)
-                                array = CopyArray(array, len = ReadUtils.Inc(len));
+                                array = CopyArray(array, len = Reader.Inc(len));
                             array[index] = elemVar;
                         }
                         index++;
@@ -111,7 +111,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (!reader.IsElementNullable(this, elementType, out success))
                             return default;
                         if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = Reader.Inc(len));
                         array[index++] = default;
                         break;
                     case JsonEvent.ArrayEnd:
@@ -123,7 +123,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<TElm[]>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<TElm[]>("unexpected state: ", ev, out success);
                 }
             }
         }

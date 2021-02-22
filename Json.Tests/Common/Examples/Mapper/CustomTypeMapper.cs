@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
                 return ValueUtils.CheckElse(ref reader, this, out success);    
             string value =  reader.parser.value.ToString();
             if (value.Contains(","))
-                return ReadUtils.ErrorMsg<StringTokens>(ref reader, "Invalid separator in token value", value, out success);
+                return reader.ErrorMsg<StringTokens>("Invalid separator in token value", value, out success);
             success = true;
             return new StringTokens { tokens = value.Split(' ')};
         }

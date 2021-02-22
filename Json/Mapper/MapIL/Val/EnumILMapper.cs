@@ -83,7 +83,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
                 if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
-                    return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
+                    return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
                 success = true;
                 return (T)enumValue.value;
             }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
                     success = true;
                     return (T)enumValue.value;
                 }
-                return ReadUtils.ErrorIncompatible<T>(ref reader, "enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
             }
             return ValueUtils.CheckElse(ref reader, this, out success);
         }
@@ -120,7 +120,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
             if (reader.parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = reader.parser.value;
                 if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
-                    return ReadUtils.ErrorIncompatible<bool>(ref reader, "enum value. Value unknown", this, out success);
+                    return reader.ErrorIncompatible<bool>( "enum value. Value unknown", this, out success);
                 mirror.StoreLongNull(primPos, enumValue.integral);
                 return true;
             }

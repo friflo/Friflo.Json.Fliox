@@ -111,14 +111,14 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (!success)
                             return default;
                         if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = Reader.Inc(len));
                         array[index++] = elemVar;
                         break;
                     case JsonEvent.ValueNull:
                         if (!reader.IsElementNullable(this, elementType, out success))
                             return default;
                         if (index >= len)
-                            array = CopyArray(array, len = ReadUtils.Inc(len));
+                            array = CopyArray(array, len = Reader.Inc(len));
                         array[index++] = default;
                         break;
                     case JsonEvent.ArrayEnd:
@@ -130,7 +130,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T[]>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<T[]>("unexpected state: ", ev, out success);
                 }
             }
         }

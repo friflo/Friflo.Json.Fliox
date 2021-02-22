@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return ValueUtils.CheckElse(ref reader, this, out success);
             if (!DateTime.TryParse(value.ToString(), out slot))     
-                return ReadUtils.ErrorMsg<DateTime>(ref reader, "Failed parsing DateTime. value: ", value.ToString(), out success);
+                return reader.ErrorMsg<DateTime>("Failed parsing DateTime. value: ", value.ToString(), out success);
             success = true;
             return slot;
         }

@@ -117,7 +117,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             var list = slot;
             if (list == null)
-                list = new List<T>(ReadUtils.minLen);
+                list = new List<T>(Reader.minLen);
 
             int startLen = list.Count;
             int index = 0;
@@ -149,7 +149,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<List<T>>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<List<T>>("unexpected state: ", ev, out success);
                 }
             }
         }

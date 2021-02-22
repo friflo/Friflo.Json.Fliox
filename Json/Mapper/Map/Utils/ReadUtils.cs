@@ -4,12 +4,11 @@
 using System;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Map.Utils
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Mapper.Map
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public static class ReadUtils
+
+    public partial struct Reader
     {
     
         public static readonly int minLen = 0;
@@ -18,15 +17,13 @@ namespace Friflo.Json.Mapper.Map.Utils
             return len == 0 ? 1 : 2 * len;
         }
         
-        public static TVal ErrorIncompatible<TVal>(ref Reader reader, string msg, TypeMapper expectType, out bool success) {
-            ErrorIncompatible<TVal>(ref reader, msg, "", expectType, out success);
+        public TVal ErrorIncompatible<TVal>(string msg, TypeMapper expectType, out bool success) {
+            ErrorIncompatible<TVal>(msg, "", expectType, out success);
             success = false;
             return default;
         }
 
-        public static TVal ErrorIncompatible<TVal>(ref Reader reader, string msg, string msgParam, TypeMapper expectType, out bool success) {
-            ref Bytes strBuf = ref reader.strBuf;
-            ref var parser = ref reader.parser;
+        public TVal ErrorIncompatible<TVal>(string msg, string msgParam, TypeMapper expectType, out bool success) {
 
 #pragma warning disable 162
             // ReSharper disable HeuristicUnreachableCode
@@ -65,33 +62,32 @@ namespace Friflo.Json.Mapper.Map.Utils
             return default;
         }
         
-        public static TVal ErrorMsg<TVal>(ref Reader reader, string msg, string value, out bool success) {
-            ref Bytes strBuf = ref reader.strBuf;
+        public TVal ErrorMsg<TVal>(string msg, string value, out bool success) {
             strBuf.Clear();
             strBuf.AppendString(msg);
             strBuf.AppendString(value);
-            reader.parser.ErrorMsg("JsonReader", ref strBuf);
+            parser.ErrorMsg("JsonReader", ref strBuf);
             success = false;
             return default;
         }
 
-        public static TVal ErrorMsg<TVal>(ref Reader reader, string msg, JsonEvent ev, out bool success) {
-            reader.strBuf.Clear();
-            reader.strBuf.AppendString(msg);
-            JsonEventUtils.AppendEvent(ev, ref reader.strBuf);
-            reader.parser.ErrorMsg("JsonReader", ref reader.strBuf);
+        public TVal ErrorMsg<TVal>(string msg, JsonEvent ev, out bool success) {
+            strBuf.Clear();
+            strBuf.AppendString(msg);
+            JsonEventUtils.AppendEvent(ev, ref strBuf);
+            parser.ErrorMsg("JsonReader", ref strBuf);
             success = false;
             return default;
         }
 
-        public static TVal ErrorMsg<TVal>(ref Reader reader, string msg, ref Bytes value, out bool success) {
-            reader.parser.ErrorMsgParam("JsonReader", msg, ref value);
+        public TVal ErrorMsg<TVal>(string msg, ref Bytes value, out bool success) {
+            parser.ErrorMsgParam("JsonReader", msg, ref value);
             success = false;
             return default;
         }
         
         /** Method only exist to find places, where token (numbers) are parsed. E.g. in or double */
-        public static bool ValueParseError(ref Reader reader) {
+        public bool ValueParseError() {
             return false; // ErrorNull(parser.parseCx.GetError().ToString());
         }
 

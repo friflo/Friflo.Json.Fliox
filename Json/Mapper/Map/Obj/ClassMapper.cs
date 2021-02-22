@@ -152,7 +152,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (ev == JsonEvent.ValueString && reader.discriminator.IsEqualBytes(ref parser.key)) {
                 classType = reader.typeCache.GetTypeByName(ref parser.value);
                 if (classType == null)
-                    return ReadUtils.ErrorMsg<TypeMapper>(ref reader, $"Object with discriminator {reader.discriminator} not found: ", ref parser.value, out success);
+                    return reader.ErrorMsg<TypeMapper>($"Object with discriminator {reader.discriminator} not found: ", ref parser.value, out success);
                 parser.NextEvent();
             }
             if (classType.IsNull(ref obj))
@@ -214,7 +214,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         success = false;
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
                 }
                 ev = reader.parser.NextEvent();
             }

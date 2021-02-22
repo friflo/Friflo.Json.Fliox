@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Utils;
+
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Mapper.Map
@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Map
     public partial struct Reader {
         public bool IsElementNullable(TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
             if (!elementType.isNullable) {
-                ReadUtils.ErrorIncompatible<bool>(ref this, arrayMapper.DataTypeName(), " element", elementType, out success);
+                ErrorIncompatible<bool>(arrayMapper.DataTypeName(), " element", elementType, out success);
                 return false;
             }
             success = false;
@@ -29,14 +29,14 @@ namespace Friflo.Json.Mapper.Map
                         success = true;
                         return false;
                     }
-                    ReadUtils.ErrorIncompatible<TVal>(ref this, map.DataTypeName(), map, out success);
+                    ErrorIncompatible<TVal>(map.DataTypeName(), map, out success);
                     return default;
                 case JsonEvent.ArrayStart:
                     success = true;
                     return true;
                 default:
                     success = false;
-                    ReadUtils.ErrorIncompatible<TVal>(ref this, map.DataTypeName(), map, out success);
+                    ErrorIncompatible<TVal>(map.DataTypeName(), map, out success);
                     return false;
             }
         }

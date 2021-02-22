@@ -217,14 +217,14 @@ namespace Friflo.Json.Mapper
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<object>(ref intern, mapper.DataTypeName(), mapper, out bool _);
+                            return intern.ErrorIncompatible<object>(mapper.DataTypeName(), mapper, out bool _);
                         
                         intern.parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(ref intern, "unexpected state in Read() : ", ev, out bool _);
+                        return intern.ErrorMsg<object>("unexpected state in Read() : ", ev, out bool _);
                 }
             }
         }
@@ -248,14 +248,14 @@ namespace Friflo.Json.Mapper
                         finally { intern.ClearMirrorStack(); }
                     case JsonEvent.ValueNull:
                         if (!mapper.isNullable)
-                            return ReadUtils.ErrorIncompatible<T>(ref intern, mapper.DataTypeName(), mapper, out _);
+                            return intern.ErrorIncompatible<T>(mapper.DataTypeName(), mapper, out _);
                         
                         intern.parser.NextEvent(); // EOF
                         return default;
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(ref intern, "unexpected state in Read() : ", ev, out _);
+                        return intern.ErrorMsg<T>("unexpected state in Read() : ", ev, out _);
                 }
             }
         }
@@ -277,7 +277,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<T>(ref intern, "ReadTo() can only used on an JSON object or array", ev, out _);
+                        return intern.ErrorMsg<T>("ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }
@@ -299,7 +299,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return ReadUtils.ErrorMsg<object>(ref intern, "ReadTo() can only used on an JSON object or array", ev, out _);
+                        return intern.ErrorMsg<object>("ReadTo() can only used on an JSON object or array", ev, out _);
                 }
             }
         }

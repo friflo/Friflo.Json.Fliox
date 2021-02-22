@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Map.Utils
                     throw new InvalidOperationException(msg2);
                     // return null;
                 default:
-                    return ReadUtils.ErrorIncompatible<TVal>(ref reader, mapper.DataTypeName(), mapper, out success);
+                    return reader.ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
             }
         }
     }

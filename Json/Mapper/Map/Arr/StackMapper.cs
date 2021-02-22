@@ -100,7 +100,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                         success = false;
                         return default;
                     default:
-                        ReadUtils.ErrorMsg<bool>(ref reader, "unexpected state: ", ev, out success);
+                        reader.ErrorMsg<bool>("unexpected state: ", ev, out success);
                         return default;
                 }
             }

@@ -38,12 +38,12 @@ namespace Friflo.Json.Mapper.Map.Val
                     if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
                         value.end--;
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return ReadUtils.ErrorMsg<BigInteger>(ref reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
                     success = true;
                     return ret;
                 case  JsonEvent.ValueNumber:
                     if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return ReadUtils.ErrorMsg<BigInteger>(ref reader, "Failed parsing BigInt. value: ", value.ToString(), out success);
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
                     success = true;
                     return ret2;
                 default:

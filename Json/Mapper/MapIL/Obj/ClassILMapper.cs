@@ -138,7 +138,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.Error:
                         return false;
                     default:
-                        return ReadUtils.ErrorMsg<bool>(ref reader, "unexpected state: ", ev, out success);
+                        return reader.ErrorMsg<bool>("unexpected state: ", ev, out success);
                 }
                 ev = reader.parser.NextEvent();
             }
