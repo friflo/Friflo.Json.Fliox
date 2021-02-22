@@ -7,6 +7,7 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     // Custom type as an example to split tokens in a JSON value like "Hello World" into a string[]
+    [JsonType(TypeMapper = typeof(StringTokenMapper))]
     public class StringTokens {
         public string[] tokens;
     }
@@ -35,8 +36,6 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
             using (var mapper = new JsonMapper()) {
-                mapper.typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper());
-
                 StringTokens result = mapper.Read<StringTokens>(json);
                 AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
                 

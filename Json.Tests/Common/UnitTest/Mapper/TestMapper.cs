@@ -163,6 +163,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(derivedJson.ToString(), jsonResult);
             }
         }
+
+        
+        interface ITest {
+            
+        }
+
+        class TestImpl : ITest {
+            
+        }
+
+        public interface IInstanceFactory<T> {
+            T CreateInstance(string name);
+        }
+
+        class TestFactory : IInstanceFactory<ITest>
+        {
+            public ITest CreateInstance(string name) {
+                return new TestImpl();
+            }
+        }
+        
+        [Test] [Ignore("")] public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
+        [Test] [Ignore("")] public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
+        
+        private void TestInterface(TypeAccess typeAccess) {
+            var json = "{}";
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var writer = new JsonWriter(typeStore))
+            {
+                // typeStore.AddInstanceFactory(new TestFactory());
+                var result = reader.Read<ITest>(json);
+                var jsonResult = writer.Write(result);
+                AreEqual(json, jsonResult);
+            }
+        }
         
     }
 }

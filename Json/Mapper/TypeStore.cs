@@ -102,7 +102,14 @@ namespace Friflo.Json.Mapper
                 return mapper;
             
             typeCreationCount++;
-            mapper = typeResolver.CreateTypeMapper(config, type);
+
+            var typeMapperType = GetTypeMapperType(type);
+            if (typeMapperType != null) {
+                mapper = (TypeMapper)ReflectUtils.CreateInstance(typeMapperType);
+            } else {
+                mapper = typeResolver.CreateTypeMapper(config, type);
+            }
+
             if (mapper == null)
                 mapper = TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Found no TypeMapper in TypeStore");
 
@@ -110,6 +117,25 @@ namespace Friflo.Json.Mapper
             typeMap.Add(type, mapper);
             newTypes.Add(mapper);
             return mapper;
+        }
+        
+        private static Type GetTypeMapperType(Type type) {
+            foreach (var attr in type.CustomAttributes) {
+                if (attr.AttributeType == typeof(JsonTypeAttribute)) {
+                    if (attr.NamedArguments != null) {
+                        foreach (var arg in attr.NamedArguments) {
+                            if (arg.MemberName == nameof(JsonTypeAttribute.TypeMapper)) {
+                                if (arg.TypedValue.Value != null) {
+                                    var typeMapper = arg.TypedValue.Value as Type;
+                                    if (typeMapper != null && typeMapper.IsSubclassOf(typeof(TypeMapper)))
+                                        return typeMapper;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
             
         /// <summary>
@@ -137,5 +163,10 @@ namespace Friflo.Json.Mapper
             }
         }
 
+    }
+
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+    public sealed class JsonTypeAttribute : Attribute {
+        public Type TypeMapper { get; set; }
     }
 }
