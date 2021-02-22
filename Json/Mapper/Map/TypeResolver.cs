@@ -22,7 +22,7 @@ namespace Friflo.Json.Mapper.Map
         
         /// <summary>This matcher list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
         public  readonly List<ITypeMatcher>  matcherList =          new List<ITypeMatcher>();
-        private readonly List<ITypeMatcher>  specificTypeMatcher =  new List<ITypeMatcher>();
+        private readonly List<ITypeMatcher>  concreteTypeMatcher =  new List<ITypeMatcher>();
         private readonly List<ITypeMatcher>  genericTypeMatcher =   new List<ITypeMatcher>();
 
       
@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map
         // find a codec manually to simplify debugging
         private TypeMapper QueryTypeMapper (StoreConfig config, Type type, Query q) {
 
-            if (MatchMappers(specificTypeMatcher,       config, type, q)) return q.hit;
+            if (MatchMappers(concreteTypeMatcher,       config, type, q)) return q.hit;
             
             // Specific types on top
             if (Match(BigIntMatcher.        Instance,   config, type, q)) return q.hit;
@@ -82,7 +82,7 @@ namespace Friflo.Json.Mapper.Map
         
         public void AddConcreteTypeMapper(TypeMapper mapper) {
             var matcher = new ConcreteTypeMatcher(mapper);
-            specificTypeMatcher.Add(matcher);
+            concreteTypeMatcher.Add(matcher);
             UpdateMapperList();
         }
         
