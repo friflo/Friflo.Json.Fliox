@@ -163,7 +163,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 
         public override T Read(ref Reader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(ref reader, this, out success))
+            if (!reader.StartObject(this, out success))
                 return default;
                 
             TypeMapper classType = this;
@@ -183,7 +183,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         PropField field;
-                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
+                        if ((field = reader.GetField32(propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         object fieldVal = field.GetField(objRef);
@@ -193,16 +193,16 @@ namespace Friflo.Json.Mapper.Map.Obj
                             return default;
                         //
                         if (!fieldType.isNullable && fieldVal == null)
-                            return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
+                            return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         if (curFieldVal != fieldVal)
                             field.SetField(objRef, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
+                        if ((field = reader.GetField32(propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable)
-                            return ObjectUtils.ErrorIncompatible<T>(ref reader, this, field, out success);
+                            return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         field.SetField(objRef, null);
                         break;

@@ -92,13 +92,13 @@ namespace Friflo.Json.Mapper.Map.Arr
                         TElm elemVar;
                         if (index < startLen) {
                             elemVar = array[index];
-                            elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
+                            elemVar = reader.ReadElement(elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             array[index] = elemVar;
                         } else {
                             elemVar = default;
-                            elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
+                            elemVar = reader.ReadElement(elementType, ref elemVar, out success);
                             if (!success)
                                 return default;
                             if (index >= len)

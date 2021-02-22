@@ -83,7 +83,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ObjectStart:
                         TElm elemVar;
                         elemVar = default;
-                        elemVar = ObjectUtils.ReadElement(ref reader, elementType, ref elemVar, out success);
+                        elemVar = reader.ReadElement(elementType, ref elemVar, out success);
                         if (!success)
                             return default;
                         queue.Enqueue(elemVar);

@@ -77,7 +77,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
         public override T Read(ref Reader reader, T slot, out bool success) {
             // Ensure preconditions are fulfilled
-            if (!ObjectUtils.StartObject(ref reader, this, out success))
+            if (!reader.StartObject(this, out success))
                 return default;
 
             T obj = slot;
@@ -106,7 +106,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         PropField field;
-                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
+                        if ((field = reader.GetField32(propFields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         if (fieldType.isValueType) {
@@ -119,14 +119,14 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                                 return false;
                             mirror.StoreObj(objPos + field.objIndex, fieldVal);
                             if (!fieldType.isNullable && fieldVal == null)
-                                return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
+                                return reader.ErrorIncompatible<bool>(classType, field, out success);
                         }
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = ObjectUtils.GetField32(ref reader, propFields)) == null)
+                        if ((field = reader.GetField32(propFields)) == null)
                             break;
                         if (!field.fieldType.isNullable)
-                            return ObjectUtils.ErrorIncompatible<bool>(ref reader, classType, field, out success);
+                            return reader.ErrorIncompatible<bool>(classType, field, out success);
                         
                         if (field.fieldType.isValueType)
                             mirror.StorePrimitiveNull(primPos + field.primIndex);

@@ -75,7 +75,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override TMap Read(ref Reader reader, TMap map, out bool success) {
-            if (!ObjectUtils.StartObject(ref reader, this, out success))
+            if (!reader.StartObject(this, out success))
                 return default;
 
             if (EqualityComparer<TMap>.Default.Equals(map, default))
