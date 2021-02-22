@@ -49,7 +49,7 @@ namespace Friflo.Json.Mapper
         internal    readonly    Dictionary <Type,  BytesString> typeToName =    new Dictionary <Type,  BytesString >();
         
         private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
-        private     readonly    ITypeResolver                   typeResolver;
+        public      readonly    ITypeResolver                   typeResolver;
         public      readonly    StoreConfig                     config;
         
 

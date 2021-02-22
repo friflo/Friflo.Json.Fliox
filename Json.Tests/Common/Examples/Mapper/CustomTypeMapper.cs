@@ -38,11 +38,8 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
     {
         [Test]
         public void Run() {
-            var resolver = new DefaultTypeResolver();
-            var typeStore = new TypeStore(resolver, null);
-            var mapperCount = resolver.matcherList.Count;
-            resolver.AddConcreteTypeMapper(new StringTokenMapper(typeStore.config));
-            AreEqual(mapperCount + 1, resolver.matcherList.Count);
+            var typeStore = new TypeStore();
+            typeStore.typeResolver.AddConcreteTypeMapper(new StringTokenMapper(typeStore.config));
             
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             

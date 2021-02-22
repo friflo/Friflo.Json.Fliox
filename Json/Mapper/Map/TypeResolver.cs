@@ -11,7 +11,10 @@ using Friflo.Json.Mapper.Map.Val;
 namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
-        TypeMapper      CreateTypeMapper(StoreConfig config, Type type);
+        TypeMapper          CreateTypeMapper(StoreConfig config, Type type);
+        void                AddConcreteTypeMapper(TypeMapper mapper);
+        void                AddGenericTypeMapper(ITypeMatcher matcher);
+        List<ITypeMatcher>  TypeMatcher { get; }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -30,6 +33,8 @@ namespace Friflo.Json.Mapper.Map
             UpdateMapperList();
         }
 
+        public List<ITypeMatcher>   TypeMatcher => matcherList;
+        
         public TypeMapper CreateTypeMapper(StoreConfig config, Type type) {
             var query = new Query(Mode.Search);
             return QueryTypeMapper(config, type, query);
