@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map
             parser.Dispose();
         }
         
-        public TVal CheckElse<TVal>(TypeMapper<TVal> mapper, out bool success) {
+        public TVal HandleEvent<TVal>(TypeMapper<TVal> mapper, out bool success) {
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
                     const string msg = "requirement: null value must be handled by owner. Add missing JsonEvent.ValueNull case to its Mapper";

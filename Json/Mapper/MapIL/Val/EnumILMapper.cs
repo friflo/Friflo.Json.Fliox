@@ -97,7 +97,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 }
                 return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
             }
-            return reader.CheckElse(this, out success);
+            return reader.HandleEvent(this, out success);
         }
 
         // ------------------------------------- WriteValueIL / ReadValueIL ------------------------------------- 
@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
                 mirror.StoreLongNull(primPos, enumValue.integral);
                 return true;
             }
-            reader.CheckElse(this, out success);
+            reader.HandleEvent(this, out success);
             return success;
         }
     }

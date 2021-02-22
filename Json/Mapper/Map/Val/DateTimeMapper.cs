@@ -37,7 +37,7 @@ namespace Friflo.Json.Mapper.Map.Val
         public override DateTime Read(ref Reader reader, DateTime slot, out bool success) {
             ref var value = ref reader.parser.value;
             if (reader.parser.Event != JsonEvent.ValueString)
-                return reader.CheckElse(this, out success);
+                return reader.HandleEvent(this, out success);
             if (!DateTime.TryParse(value.ToString(), out slot))     
                 return reader.ErrorMsg<DateTime>("Failed parsing DateTime. value: ", value.ToString(), out success);
             success = true;
