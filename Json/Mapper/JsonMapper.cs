@@ -24,13 +24,13 @@ namespace Friflo.Json.Mapper
                 writer.MaxDepth = value;
             }
         }
-
-        public JsonMapper(ITypeResolver resolver = null, StoreConfig config = null) {
-            config = config ?? new StoreConfig(TypeAccess.IL);
-            typeStore   = new TypeStore(resolver, config);
-            reader      = new JsonReader(typeStore);
-            writer      = new JsonWriter(typeStore);
-            MaxDepth    = JsonParser.DefaultMaxDepth;
+        
+        public JsonMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
+            typeStore       = typeStore ?? new TypeStore();
+            this.typeStore  = typeStore;
+            reader          = new JsonReader(typeStore, errorHandler);
+            writer          = new JsonWriter(typeStore);
+            MaxDepth        = JsonParser.DefaultMaxDepth;
         }
 
         public void Dispose() {

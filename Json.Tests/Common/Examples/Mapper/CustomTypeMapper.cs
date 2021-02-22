@@ -46,12 +46,11 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
-            JsonReader reader = new JsonReader(typeStore, JsonReader.NoThrow);
-            StringTokens result = reader.Read<StringTokens>(new Bytes(json));
+            var mapper = new JsonMapper(typeStore);
+            StringTokens result = mapper.Read<StringTokens>(new Bytes(json));
             AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
             
-            JsonWriter writer = new JsonWriter(typeStore);
-            var jsonResult = writer.Write(result);
+            var jsonResult = mapper.Write(result);
             AreEqual(json, jsonResult);
         }
     }
