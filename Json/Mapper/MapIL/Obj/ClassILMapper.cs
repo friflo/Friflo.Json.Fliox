@@ -52,13 +52,13 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, ref obj);
 
             if (this != classMapper) {
-                WriteUtils.WriteDiscriminator(ref writer, classMapper);
+                writer.WriteDiscriminator(classMapper);
                 firstMember = false;
             }
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember);
+                writer.WriteMemberKey(field, ref firstMember);
 
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 if (field.fieldType.isValueType) {
@@ -66,7 +66,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 } else {
                     object fieldObj = mirror.LoadObj(field.objIndex);
                     field.fieldType.WriteObject(ref writer, fieldObj);
-                    WriteUtils.FlushFilledBuffer(ref writer);
+                    writer.FlushFilledBuffer();
                 }
             }
             writer.InstancePop();

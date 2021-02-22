@@ -119,8 +119,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 Type objType = slot.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
-                    WriteUtils.WriteDiscriminator(ref writer, classMapper);
-                    WriteUtils.FlushFilledBuffer(ref writer);
+                    writer.WriteDiscriminator(classMapper);
+                    writer.FlushFilledBuffer();
                     firstMember = false;
                 }
             }
@@ -128,7 +128,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember); 
+                writer.WriteMemberKey(field, ref firstMember); 
                 
                 object elemVar = field.GetField(objRef);
                 if (elemVar == null) {
@@ -136,7 +136,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 } else {
                     var fieldType = field.fieldType;
                     fieldType.WriteObject(ref writer, elemVar);
-                    WriteUtils.FlushFilledBuffer(ref writer);
+                    writer.FlushFilledBuffer();
                 }
             }
             writer.WriteObjectEnd(firstMember);

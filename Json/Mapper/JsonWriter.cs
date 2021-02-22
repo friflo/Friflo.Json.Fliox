@@ -103,13 +103,13 @@ namespace Friflo.Json.Mapper
         public void Write<T>(T value, Stream stream) {
             InitJsonWriterStream(stream);
             WriteStart(value);
-            WriteUtils.Flush(ref intern);
+            intern.Flush();
         }
 
         public void WriteObject(object value, Stream stream) {
             InitJsonWriterStream(stream);
             WriteStart(value);
-            WriteUtils.Flush(ref intern);
+            intern.Flush();
         }
         
         // --------------- string ---------------

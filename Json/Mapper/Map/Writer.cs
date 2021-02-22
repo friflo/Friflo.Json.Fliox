@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
@@ -81,7 +82,7 @@ namespace Friflo.Json.Mapper.Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendNull() {
             bytes.AppendBytes(ref @null);
-            WriteUtils.FlushFilledBuffer(ref this);
+            FlushFilledBuffer();
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -137,6 +138,58 @@ namespace Friflo.Json.Mapper.Map
             } else {
                 bytes.EnsureCapacityAbs(bytes.end + 1);
                 bytes.buffer.array[bytes.end++] = (byte)'}';
+            }
+        }
+        
+        // --- member keys
+        public void WriteDiscriminator(TypeMapper mapper) {
+            bytes.AppendChar('{');
+            if (pretty)
+                IndentBegin();
+            bytes.AppendBytes(ref discriminator);
+            typeCache.AppendDiscriminator(ref bytes, mapper);
+            bytes.AppendChar('\"');
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteMemberKey(PropField field, ref bool firstMember) {
+            if (!pretty) {
+                if (firstMember)
+                    bytes.AppendBytes(ref field.firstMember);
+                else
+                    bytes.AppendBytes(ref field.subSeqMember);
+            } else {
+                bytes.AppendChar(firstMember ? '{' : ',');
+                IndentBegin();
+                bytes.AppendChar('"');
+                bytes.AppendBytes(ref field.nameBytes);
+                bytes.AppendChar('"');
+                bytes.AppendChar(':');
+                bytes.AppendChar(' ');
+            } 
+            firstMember = false;
+        }
+        
+        // --- Flush
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void FlushFilledBuffer() {
+            if (bytes.end < 4096)
+                return;
+            Flush();
+        }
+        
+        public void Flush() {
+            switch (outputType) {
+                case OutputType.ByteList:
+                    return; // ByteList mode does not support streaming
+                case OutputType.ByteWriter:
+#if JSON_BURST
+                    NonBurstWriter.WriteNonBurst(writerHandle, ref bytes.buffer, bytes.end);
+#else
+                    bytesWriter.Write(ref bytes.buffer, bytes.end);
+#endif                    
+                    bytes.Clear();
+                    break;
             }
         }
     }

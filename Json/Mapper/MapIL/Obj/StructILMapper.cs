@@ -39,10 +39,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                WriteUtils.WriteMemberKey(ref writer, field, ref firstMember);
+                writer.WriteMemberKey(field, ref firstMember);
                 
                 field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
-                WriteUtils.FlushFilledBuffer(ref writer);
+                writer.FlushFilledBuffer();
             }
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);

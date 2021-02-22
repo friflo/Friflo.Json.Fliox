@@ -103,7 +103,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     writer.AppendNull();
                 } else {
                     elementType.Write(ref writer, elemVar);
-                    WriteUtils.FlushFilledBuffer(ref writer);
+                    writer.FlushFilledBuffer();
                 }
             }
             writer.WriteArrayEnd();

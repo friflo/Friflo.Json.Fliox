@@ -65,7 +65,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     writer.AppendNull();
                 } else {
                     elementType.Write(ref writer, elemVar);
-                    WriteUtils.FlushFilledBuffer(ref writer);
+                    writer.FlushFilledBuffer();
                 }
             }
             if (writer.pretty)
