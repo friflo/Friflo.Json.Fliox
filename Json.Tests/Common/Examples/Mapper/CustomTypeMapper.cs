@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public void Run() {
             var resolver = new DefaultTypeResolver();
             var mapperCount = resolver.matcherList.Count;
-            resolver.AddSpecificTypeMapper(StringTokenMatcher.Instance);
+            resolver.AddConcreteTypeMapper(StringTokenMatcher.Instance);
             AreEqual(mapperCount + 1, resolver.matcherList.Count);
             
             var typeStore = new TypeStore(resolver, null);

@@ -80,13 +80,13 @@ namespace Friflo.Json.Mapper.Map
             return null;
         }
         
-        public void AddSpecificTypeMapper(ITypeMatcher mapper) {
-            specificTypeMatcher.Add(mapper);
+        public void AddConcreteTypeMapper(ITypeMatcher matcher) {
+            specificTypeMatcher.Add(matcher);
             UpdateMapperList();
         }
         
-        public void AddGenericTypeMapper(ITypeMatcher mapper) {
-            genericTypeMatcher.Add(mapper);
+        public void AddGenericTypeMapper(ITypeMatcher matcher) {
+            genericTypeMatcher.Add(matcher);
             UpdateMapperList();
         }
 
