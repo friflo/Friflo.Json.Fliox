@@ -179,8 +179,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]              public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
-        [Test] [Ignore("")] public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
+        [Test]  public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
+        [Test]  public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
         
         private void TestInterface(TypeAccess typeAccess) {
             var json = "{}";
