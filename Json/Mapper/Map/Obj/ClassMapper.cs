@@ -26,8 +26,13 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return null;
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-            if (type.IsClass || type.IsValueType) {
-                object[] constructorParams = {config, type, constructor, type.IsValueType};
+            if (type.IsClass || type.IsValueType || type.IsInterface) {
+                InstanceFactory factory = null;
+                Type factoryType = GetInstanceFactoryType(type);
+                if (factoryType != null) {
+                    factory = (InstanceFactory)ReflectUtils.CreateInstance(factoryType);
+                }
+                object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
                     if (type.IsValueType) {
@@ -43,6 +48,25 @@ namespace Friflo.Json.Mapper.Map.Obj
             }
             return null;
         }
+
+        private static Type GetInstanceFactoryType(Type type) {
+            foreach (var attr in type.CustomAttributes) {
+                if (attr.AttributeType == typeof(JsonTypeAttribute)) {
+                    if (attr.NamedArguments != null) {
+                        foreach (var arg in attr.NamedArguments) {
+                            if (arg.MemberName == nameof(JsonTypeAttribute.InstanceFactory)) {
+                                if (arg.TypedValue.Value != null) {
+                                    var instanceFactory = arg.TypedValue.Value as Type;
+                                    if (instanceFactory != null && instanceFactory.IsSubclassOf(typeof(InstanceFactory)))
+                                        return instanceFactory;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -55,9 +79,12 @@ namespace Friflo.Json.Mapper.Map.Obj
         public override string DataTypeName() { return "class"; }
 
        
-        protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, bool isValueType) :
+        protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base (config, type, TypeUtils.IsNullable(type), isValueType)
         {
+            this.instanceFactory = instanceFactory;
+            if (instanceFactory != null)
+                return;
             this.constructor = constructor;
             var lambda = CreateInstanceExpression();
             createInstance = lambda.Compile();
@@ -87,7 +114,10 @@ namespace Friflo.Json.Mapper.Map.Obj
             fieldInfo.SetValue(this, fields);
         }
         
-        public override object CreateInstance() {
+        public override object CreateInstance(string discriminant) {
+            if (instanceFactory != null)
+                return instanceFactory.CreateObject(discriminant);
+            
             if (createInstance != null)
                 return createInstance();
             
@@ -109,13 +139,11 @@ namespace Friflo.Json.Mapper.Map.Obj
             TypeMapper classMapper = this;
             bool firstMember = true;
 
-            if (!isValueType) {
+            if (!isValueType) { // && instanceFactory != null)   todo
                 Type objType = slot.GetType();  // GetType() cost performance. May use a pre-check with isPolymorphic
                 if (type != objType) {
                     classMapper = writer.typeCache.GetTypeMapper(objType);
-                    writer.WriteDiscriminator(classMapper);
-                    writer.FlushFilledBuffer();
-                    firstMember = false;
+                    writer.WriteDiscriminator(this, classMapper, ref firstMember);
                 }
             }
 
@@ -150,7 +178,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 parser.NextEvent();
             }
             if (classType.IsNull(ref obj))
-                obj = (T)classType.CreateInstance();
+                obj = (T)classType.CreateInstance(parser.value.ToString());
             success = true;
             return classType;
         }

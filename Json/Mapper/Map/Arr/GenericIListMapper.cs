@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             var list = slot;
             int startLen = 0;
             if (list == null)
-                list = (TCol) CreateInstance();
+                list = (TCol) CreateInstance(null);
             else
                 startLen = list.Count;
             

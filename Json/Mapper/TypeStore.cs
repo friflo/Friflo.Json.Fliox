@@ -167,6 +167,20 @@ namespace Friflo.Json.Mapper
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public sealed class JsonTypeAttribute : Attribute {
-        public Type TypeMapper { get; set; }
+        public Type TypeMapper      { get; set; }
+        public Type InstanceFactory { get; set; }
+    }
+
+    public abstract class InstanceFactory {
+        internal    abstract    object  CreateObject(string name);
+        public      virtual     string  Discriminator => null;
+    }
+    
+    public abstract class InstanceFactory<T> : InstanceFactory {
+        public abstract T CreateInstance(string name);
+
+        internal override object CreateObject(string name) {
+            return CreateInstance(name);
+        }
     }
 }

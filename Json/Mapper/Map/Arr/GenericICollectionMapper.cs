@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             var list = slot;
             if (list == null)
-                list = (TCol) CreateInstance();
+                list = (TCol) CreateInstance(null);
             else
                 list.Clear();
 

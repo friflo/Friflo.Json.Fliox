@@ -16,8 +16,8 @@ namespace Friflo.Json.Mapper.MapIL.Obj
     [CLSCompliant(true)]
     public class ClassILMapper<T> : ClassMapper<T> {
         
-        public ClassILMapper (StoreConfig config, Type type, ConstructorInfo constructor, bool isValueType) :
-            base (config, type, constructor, isValueType)
+        public ClassILMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
+            base (config, type, constructor, instanceFactory, isValueType)
         {
         }
 
@@ -50,10 +50,9 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             
             ClassMirror mirror = writer.InstanceLoad(ref classMapper, ref obj);
 
-            if (this != classMapper) {
-                writer.WriteDiscriminator(classMapper);
-                firstMember = false;
-            }
+            if (this != classMapper)
+                writer.WriteDiscriminator(this, classMapper, ref firstMember);
+            
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];

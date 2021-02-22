@@ -141,13 +141,18 @@ namespace Friflo.Json.Mapper.Map
         }
         
         // --- member keys
-        public void WriteDiscriminator(TypeMapper mapper) {
+        public void WriteDiscriminator(TypeMapper baseMapper, TypeMapper mapper, ref bool firstMember) {
+            var factory = baseMapper.instanceFactory;
+            if (factory != null && factory.Discriminator == null)
+                return;
             bytes.AppendChar('{');
             if (pretty)
                 IndentBegin();
             bytes.AppendBytes(ref discriminator);
             typeCache.AppendDiscriminator(ref bytes, mapper);
             bytes.AppendChar('\"');
+            FlushFilledBuffer();
+            firstMember = false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

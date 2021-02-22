@@ -164,27 +164,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        
+
+        [JsonType (InstanceFactory = typeof(TestFactory))]
         interface ITest {
-            
         }
 
         class TestImpl : ITest {
-            
         }
 
-        public interface IInstanceFactory<T> {
-            T CreateInstance(string name);
-        }
-
-        class TestFactory : IInstanceFactory<ITest>
+        class TestFactory : InstanceFactory<ITest>
         {
-            public ITest CreateInstance(string name) {
+            public override ITest CreateInstance(string name) {
                 return new TestImpl();
             }
         }
         
-        [Test] [Ignore("")] public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
+        [Test]              public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
         [Test] [Ignore("")] public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
         
         private void TestInterface(TypeAccess typeAccess) {
