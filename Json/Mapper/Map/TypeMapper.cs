@@ -37,8 +37,9 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public abstract void            Dispose();
-            
-        public abstract string          DataTypeName();
+
+        public virtual string           DataTypeName() { return type.Name; }
+
         public abstract void            InitTypeMapper(TypeStore typeStore);
         
         public abstract void            WriteObject(ref Writer writer, object slot);
@@ -65,6 +66,11 @@ namespace Friflo.Json.Mapper.Map
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) :
             base(config, type, isNullable, isValueType) {
         }
+        
+        protected TypeMapper(StoreConfig config, bool isNullable, bool isValueType) :
+            base(config, typeof(TVal), isNullable, isValueType) {
+        }
+
 
         public abstract void    Write       (ref Writer writer, TVal slot);
         public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
@@ -111,6 +117,20 @@ namespace Friflo.Json.Mapper.Map
         }
     }
     
+    public class ConcreteTypeMatcher : ITypeMatcher
+    {
+        private readonly TypeMapper mapper;
+
+        public ConcreteTypeMatcher(TypeMapper mapper) {
+            this.mapper = mapper;
+        }
+
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
+            if (type != mapper.type)
+                return null;
+            return mapper;
+        }
+    }
 
 
 #if !UNITY_5_3_OR_NEWER

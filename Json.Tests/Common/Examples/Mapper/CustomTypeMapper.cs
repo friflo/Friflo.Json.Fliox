@@ -15,21 +15,9 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public string[] tokens;
     }
     
-    public class StringTokenMatcher : ITypeMatcher {
-        public static readonly StringTokenMatcher Instance = new StringTokenMatcher();
-
-        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type != typeof(StringTokens))
-                return null;
-            return new StringTokenMapper (config, type);
-        }
-    }
-    
     public class StringTokenMapper : TypeMapper<StringTokens>
     {
-        public override string DataTypeName() { return "tokens"; }
-        
-        public StringTokenMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
+        public StringTokenMapper(StoreConfig config) : base (config, true, false) { }
 
         public override void Write(ref Writer writer, StringTokens value) {
             WriteUtils.WriteString(ref writer, string.Join(" ", value.tokens));
@@ -51,11 +39,11 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void Run() {
             var resolver = new DefaultTypeResolver();
+            var typeStore = new TypeStore(resolver, null);
             var mapperCount = resolver.matcherList.Count;
-            resolver.AddConcreteTypeMapper(StringTokenMatcher.Instance);
+            resolver.AddConcreteTypeMapper(new StringTokenMapper(typeStore.config));
             AreEqual(mapperCount + 1, resolver.matcherList.Count);
             
-            var typeStore = new TypeStore(resolver, null);
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
             JsonReader reader = new JsonReader(typeStore, JsonReader.NoThrow);
