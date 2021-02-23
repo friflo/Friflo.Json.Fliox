@@ -22,9 +22,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
         abstract class Abstract { }
         
+        // --- IBook
         [JsonType (InstanceFactory = typeof(BookFactory))]
-        interface IBook {
-        }
+        interface IBook { }
 
         class Book : IBook {
             public int int32;
@@ -34,6 +34,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         {
             public override IBook CreateInstance(string name) {
                 return new Book();
+            }
+        }
+        
+        // --- IVehicle with InstanceFactory returning null 
+        [JsonType (InstanceFactory = typeof(VehicleFactory))]
+        interface IVehicle { }
+        
+        class VehicleFactory : InstanceFactory<IVehicle>
+        {
+            public override IVehicle CreateInstance(string name) {
+                return null;
             }
         }
 
@@ -52,6 +63,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 var jsonResult = writer.Write(result);
                 AreEqual(json, jsonResult);
+
+                reader.Read<IVehicle>("{}");
+                StringAssert.Contains("No instance created in InstanceFactory: VehicleFactory path: '(root)'", reader.Error.msg.ToString());
 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IInvalid>("{}"));
                 AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IInvalid", e.Message);

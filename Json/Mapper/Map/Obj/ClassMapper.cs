@@ -185,6 +185,8 @@ namespace Friflo.Json.Mapper.Map.Obj
                 string discriminator = factory.Discriminator;
                 if (discriminator == null) {
                     obj = (T) classType.CreateInstance(null);
+                    if (classType.IsNull(ref obj))
+                        return reader.ErrorMsg<TypeMapper>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());
                 } else {
                     if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
@@ -192,7 +194,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                         obj = (T) classType.CreateInstance(discriminant);
                         if (classType.IsNull(ref obj))
                             return reader.ErrorMsg<TypeMapper>($"No instance created with name: '{discriminant}' in InstanceFactory: ", factory.GetType().Name, out success);
-                            
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
