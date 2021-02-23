@@ -26,11 +26,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return null;
            
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
-            if (type.IsClass || type.IsValueType || type.IsInterface) {
+            bool notInstantiatable = type.IsInterface || type.IsAbstract;
+            if (type.IsClass || type.IsValueType || notInstantiatable) {
                 InstanceFactory factory = null;
                 Type factoryType = GetInstanceFactoryType(type);
-                if (type.IsInterface && factoryType == null)
-                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on interface: {type} ");
+                if (notInstantiatable && factoryType == null)
+                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: {type} ");
                 
                 if (factoryType != null) {
                     factory = (InstanceFactory)ReflectUtils.CreateInstance(factoryType);
