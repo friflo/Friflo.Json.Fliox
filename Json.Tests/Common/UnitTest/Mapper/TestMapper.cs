@@ -240,7 +240,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 StringAssert.Contains("No instance created with name: 'Tiger' in InstanceFactory: AnimalFactory path: 'animalType'", reader.Error.msg.ToString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" in JSON when using InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
+                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member when using InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
             }
         }
         

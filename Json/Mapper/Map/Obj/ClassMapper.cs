@@ -186,7 +186,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" in JSON when using InstanceFactory: ", factory.GetType().Name, out success);
+                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member when using InstanceFactory: ", factory.GetType().Name, out success);
                 }
             } else {
                 if (classType.IsNull(ref obj))
