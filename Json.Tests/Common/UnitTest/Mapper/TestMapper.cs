@@ -237,10 +237,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No object with discriminant 'Tiger' created in InstanceFactory: AnimalFactory path: 'animalType'", reader.Error.msg.ToString());
+                StringAssert.Contains("No instance created with name: 'Tiger' in InstanceFactory: AnimalFactory path: 'animalType'", reader.Error.msg.ToString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator 'animalType' in InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
+                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" in JSON when using InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
             }
         }
         

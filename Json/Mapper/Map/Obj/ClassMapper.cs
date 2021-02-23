@@ -181,12 +181,12 @@ namespace Friflo.Json.Mapper.Map.Obj
                         string discriminant = reader.parser.value.ToString();
                         obj = (T) classType.CreateInstance(discriminant);
                         if (classType.IsNull(ref obj))
-                            return reader.ErrorMsg<TypeMapper>($"No object with discriminant '{discriminant}' created in InstanceFactory: ", factory.GetType().Name, out success);
+                            return reader.ErrorMsg<TypeMapper>($"No instance created with name: '{discriminant}' in InstanceFactory: ", factory.GetType().Name, out success);
                             
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator '{discriminator}' in InstanceFactory: ", factory.GetType().Name, out success);
+                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" in JSON when using InstanceFactory: ", factory.GetType().Name, out success);
                 }
             } else {
                 if (classType.IsNull(ref obj))
