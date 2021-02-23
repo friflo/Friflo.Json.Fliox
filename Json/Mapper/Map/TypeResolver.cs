@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.Map
 {
     public interface ITypeResolver {
         TypeMapper          CreateTypeMapper(StoreConfig config, Type type);
-        void                AddConcreteTypeMapper(TypeMapper mapper);
+        void                AddTypeMapper(TypeMapper mapper);
         void                AddGenericTypeMapper(ITypeMatcher matcher);
         List<ITypeMatcher>  TypeMatcher { get; }
     }
@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper.Map
             return null;
         }
         
-        public void AddConcreteTypeMapper(TypeMapper mapper) {
+        public void AddTypeMapper(TypeMapper mapper) {
             var matcher = new ConcreteTypeMatcher(mapper);
             concreteTypeMatcher.Add(matcher);
             UpdateMapperList();
