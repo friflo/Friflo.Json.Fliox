@@ -211,7 +211,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        // ------ polymorphic type support
+        // ------ polymorphic interface support
         [JsonType (InstanceFactory = typeof(AnimalFactory))]
         interface IAnimal {
         }
@@ -252,6 +252,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 reader.Read<IAnimal>("{}");
                 StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member when using InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
+            }
+        }
+        
+        // ------ polymorphic class support
+        [JsonType (InstanceFactory = typeof(PersonFactory))]
+        abstract class Person {
+        }
+
+        class Employee : Person {
+            public int int32;
+        }
+
+        class PersonFactory : InstanceFactory<Person>
+        {
+            public override string Discriminator => "personType";
+
+            public override Person CreateInstance(string name) {
+                if (name == "Employee")
+                    return new Employee();
+                return null;
+            }
+        }
+        
+        [Test]  public void  TestAbstractReflect()   { TestAbstract(TypeAccess.Reflection); }
+        [Test]  public void  TestAbstractIL()        { TestAbstract(TypeAccess.IL); }
+        
+        private void TestAbstract(TypeAccess typeAccess) {
+            var json = "{\"personType\":\"Employee\",\"int32\":123}";
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var writer = new JsonWriter(typeStore))
+            {
+                // typeStore.AddInstanceFactory(new TestFactory());
+                var result = reader.Read<Person>(json);
+                AreEqual(123, ((Employee)result).int32);
+                
+                var jsonResult = writer.Write(result);
+                AreEqual(json, jsonResult);
             }
         }
         
