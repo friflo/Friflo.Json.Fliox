@@ -9,14 +9,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestInstanceFactory
     {
-        // ------ interface support
+        // --------------- interface
         
-        // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
-        interface IInvalid { }
+        // missing [Instance] or [Polymorph] attribute
+        interface IVehicle { }
         
-        // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
+        // missing [Instance] or [Polymorph] attribute
         abstract class Abstract { }
-        
+
         // --- IBook
         [Instance(typeof(Book))]
         interface IBook { }
@@ -25,12 +25,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public int int32;
         }
 
-        // --- IVehicle with InstanceFactory returning null 
-        interface IVehicle { }
 
 
-        [Test]  [Ignore("")] public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
-        [Test]  [Ignore("")] public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
+        [Test]  public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
+        [Test]  public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
         
         private void TestInterface(TypeAccess typeAccess) {
             var json = "{\"int32\":123}";
@@ -44,22 +42,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 var jsonResult = writer.Write(result);
                 AreEqual(json, jsonResult);
-
-                reader.Read<IVehicle>("{}");
-                StringAssert.Contains("No instance created in InstanceFactory: VehicleFactory path: '(root)'", reader.Error.msg.ToString());
-
-                var e = Throws<InvalidOperationException>(() => reader.Read<IInvalid>("{}"));
-                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IInvalid", e.Message);
+                
+                var e = Throws<InvalidOperationException>(() => reader.Read<IVehicle>("{}"));
+                AreEqual("type requires instantiatable types by [Instance()] or [Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IVehicle", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+Abstract", e.Message);
-                
-                // e = Throws<InvalidOperationException>(() => reader.Read<IBookWithInvalidFactory>("{}"));
-                // AreEqual("require compatible InstanceFactory<> on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IBookWithInvalidFactory", e.Message);
+                AreEqual("type requires instantiatable types by [Instance()] or [Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+Abstract", e.Message);
             }
         }
         
-        // ------ polymorphic interface support
+        // --------------- polymorphic interface
         [JsonType (Discriminator = "animalType")]
         [Polymorph(typeof(Lion))]
         interface IAnimal {
@@ -69,8 +61,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public int int32;
         }
         
-        [Test]  [Ignore("")] public void  TestPolymorphicReflect()   { TestPolymorphic(TypeAccess.Reflection); }
-        [Test]  [Ignore("")] public void  TestPolymorphicIL()        { TestPolymorphic(TypeAccess.IL); }
+        [Test]  public void  TestPolymorphicReflect()   { TestPolymorphic(TypeAccess.Reflection); }
+        [Test]  public void  TestPolymorphicIL()        { TestPolymorphic(TypeAccess.IL); }
         
         private void TestPolymorphic(TypeAccess typeAccess) {
             var json = "{\"animalType\":\"Lion\",\"int32\":123}";
@@ -86,14 +78,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No instance created with name: 'Tiger' in InstanceFactory: AnimalFactory path: 'animalType'", reader.Error.msg.ToString());
+                StringAssert.Contains("No [Polymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member when using InstanceFactory: AnimalFactory path: '(root)'", reader.Error.msg.ToString());
+                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
             }
         }
         
-        // ------ polymorphic class support
+        // --------------- polymorphic class
         [JsonType (Discriminator = "personType")]
         [Polymorph(typeof(Employee))]
         abstract class Person {

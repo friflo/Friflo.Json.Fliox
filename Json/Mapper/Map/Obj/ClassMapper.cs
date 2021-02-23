@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 InstanceFactory factory = null;
                 bool isFactory = GetFactoryAttributes(type, out Type[] polyTypes, out Type instanceType, out string discriminator);
                 if (notInstantiatable && !isFactory)
-                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: {type}");
+                    throw new InvalidOperationException($"type requires instantiatable types by [Instance()] or [Polymorph()] on: {type}");
                 
                 if (isFactory)
                     factory = new InstanceFactory(discriminator, instanceType, polyTypes);
@@ -211,11 +211,11 @@ namespace Friflo.Json.Mapper.Map.Obj
                         string discriminant = reader.parser.value.ToString();
                         obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
-                            return reader.ErrorMsg<TypeMapper>($"No instance created with name: '{discriminant}' in InstanceFactory: ", factory.GetType().Name, out success);
+                            return reader.ErrorMsg<TypeMapper>($"No [Polymorph] type declared for discriminant: '{discriminant}' on type: ", classType.type.FullName, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member when using InstanceFactory: ", factory.GetType().Name, out success);
+                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member for type: ", classType.type.FullName, out success);
                 }
             } else {
                 if (classType.IsNull(ref obj))
