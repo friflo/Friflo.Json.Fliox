@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -26,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public String           strNull = "notNull";
         public String           escChars;
         public Object           n = "x";
-        public Object           subType = null;
+        public ISub             subType = null;
         public bool             t;
         public bool             f;
         public Sub              sub;
@@ -38,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public DerivedList      listDerived =   new DerivedList();
         public DerivedList      listDerivedNull = null;
         public List <String>    listStr =       new List <String>();
-        public List <Object>    listObj =       new List <Object>();
+        public List <ISub>      listObj =       new List <ISub>();
         public List <JsonStruct>listStruct =    new List <JsonStruct>();
         public Sub[]            arr;
         public int[]            i64Arr;
@@ -68,7 +69,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
 
-    public class Sub
+    public class SubFactory : InstanceFactory<ISub>
+    {
+        public override ISub CreateInstance(string name) {
+            return new Sub();
+        }
+    }
+
+    [JsonType(InstanceFactory = typeof(SubFactory))]
+    public interface ISub {
+    }
+
+    public class Sub : ISub
     {
         public long     i64;
         public Sub() {}

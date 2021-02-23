@@ -27,10 +27,12 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         private     ValueList<long?>    primitives = new ValueList<long?>  (8, AllocType.Persistent);
         private     ValueList<object>   objects    = new ValueList<object>(8, AllocType.Persistent);
         private     ClassLayout         layout;
+        private     bool                isDerivedType;
         private     TypeMapper          classTypeDbg;  // only for debugging
 
-        public void LoadInstance<T>(TypeCache typeCache, ref TypeMapper classType, ref T obj) {
-            if (typeof(T) != typeof(object)) {
+        public void LoadInstance<T>(TypeCache typeCache, TypeMapper baseType, ref TypeMapper classType, ref T obj) {
+            if (baseType.instanceFactory == null) {
+                isDerivedType = false;
                 classTypeDbg = classType;
                 layout = classType.layout;
                 primitives.Resize(layout.primCount);
@@ -38,9 +40,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 ClassLayout<T> l = (ClassLayout<T>) layout;
                 l.LoadObjectToMirror(primitives.array, objects.array, ref obj);
             } else {
+                isDerivedType = true;
                 classType = typeCache.GetTypeMapper(obj.GetType());
                 classTypeDbg = classType;
-                layout = classTypeDbg.layout;
+                layout = classType.layout;
                 primitives.Resize(layout.primCount);
                 objects.   Resize(layout.objCount);
                 layout.LoadObjectToMirror(primitives.array, objects.array, obj);
@@ -51,7 +54,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         public DbgEntry[] DebugView => GetDebugView();
         
         public void StoreInstance<T>(ref T obj) {
-            if (typeof(T) != typeof(object)) {
+            if (!isDerivedType) {
                 ClassLayout<T> l = (ClassLayout<T>) layout;
                 l.StoreMirrorToPayload(ref obj, primitives.array, objects.array);
             } else {

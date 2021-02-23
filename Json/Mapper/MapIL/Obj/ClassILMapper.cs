@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             TypeMapper classMapper = this;
             bool firstMember = true;
             
-            ClassMirror mirror = writer.InstanceLoad(ref classMapper, ref obj);
+            ClassMirror mirror = writer.InstanceLoad(this, ref classMapper, ref obj);
 
             if (this != classMapper)
                 writer.WriteDiscriminator(this, classMapper, ref firstMember);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             if (!success)
                 return default;
             
-            ClassMirror mirror = reader.InstanceLoad(ref classType, ref obj);
+            ClassMirror mirror = reader.InstanceLoad(this, ref classType, ref obj);
             if (!ReadClassMirror(ref reader, mirror, classType, 0, 0))
                 return default;
             reader.InstanceStore(mirror, ref obj);

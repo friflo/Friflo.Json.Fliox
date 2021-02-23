@@ -17,7 +17,6 @@
     
     "listStr": ["str0"],
     "listObj": [{
-        "$type": "Sub",
         "i64": 101
     }],
 	"listStruct": [{
@@ -43,7 +42,6 @@
     "strNull" : null,
     "n" : null,
     "subType": {
-        "$type": "Sub",
         "i64": 99
     },
     "t" : true,

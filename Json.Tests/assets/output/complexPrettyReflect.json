@@ -57,7 +57,6 @@
     "escChars": "_\"_\\_\b_\f_\r_\n_\t_",
     "n": null,
     "subType": {
-        "$type":"Sub",
         "i64": 99
     },
     "t": true,
@@ -145,7 +144,6 @@
     ],
     "listObj": [
         {
-            "$type":"Sub",
             "i64": 101
         }
     ],

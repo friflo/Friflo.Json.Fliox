@@ -170,6 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class TestImpl : ITest {
+            public int int32;
         }
 
         class TestFactory : InstanceFactory<ITest>
@@ -183,13 +184,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]  public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
         
         private void TestInterface(TypeAccess typeAccess) {
-            var json = "{}";
+            var json = "{\"int32\":123}";
             using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<ITest>(json);
+                AreEqual(123, ((TestImpl)result).int32);
+                
                 var jsonResult = writer.Write(result);
                 AreEqual(json, jsonResult);
             }

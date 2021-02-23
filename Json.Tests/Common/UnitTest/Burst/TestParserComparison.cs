@@ -309,8 +309,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(36,    p.skipInfo.integers);
                 AreEqual(14,    p.skipInfo.nulls);
                 AreEqual(41,    p.skipInfo.objects);
-                AreEqual(4,     p.skipInfo.strings);
-                AreEqual(105,   p.skipInfo.Sum);
+                AreEqual(2,     p.skipInfo.strings);
+                AreEqual(103,   p.skipInfo.Sum);
             }
         }
         
