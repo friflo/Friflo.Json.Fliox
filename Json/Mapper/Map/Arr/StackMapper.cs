@@ -69,7 +69,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             var stack = slot;
             if (stack == null)
-                stack = (TCol) CreateInstance(null);
+                stack = (TCol) CreateInstance();
             else
                 stack.Clear();
 

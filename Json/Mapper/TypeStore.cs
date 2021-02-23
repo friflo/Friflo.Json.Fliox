@@ -133,25 +133,67 @@ namespace Friflo.Json.Mapper
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public sealed class JsonTypeAttribute : Attribute {
-        public Type TypeMapper      { get; set; }
-        public Type InstanceFactory { get; set; }
+        public Type     TypeMapper    { get; set; }
+        public string   Discriminator { get; set; }
     }
     
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class PolymorphAttribute : Attribute {
         public PolymorphAttribute (Type instance) {}
     }
+    
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+    public sealed class InstanceAttribute : Attribute {
+        public InstanceAttribute (Type instance) {}
+    }
 
-    public abstract class InstanceFactory {
-        internal    abstract    object  CreateObject(string name);
-        public      virtual     string  Discriminator => null;
+    
+    public class InstanceFactory {  // todo internal
+        internal readonly   string                          discriminator;
+        private  readonly   Type                            instanceType;
+        private  readonly   Type[]                          polyTypes;
+        private             TypeMapper                      instanceMapper;
+        private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
+
+        internal InstanceFactory(string discriminator, Type instanceType, Type[] polyTypes) {
+            this.discriminator = discriminator;
+            this.instanceType = instanceType;
+            this.polyTypes = polyTypes;
+        }
+
+        internal void InitFactory(TypeStore typeStore) {
+            if (instanceType != null)
+                instanceMapper = typeStore.GetTypeMapper(instanceType);
+            
+            foreach (var polyType in polyTypes) {
+                var mapper = typeStore.GetTypeMapper(polyType);
+                polymorphMapper.Add(polyType.Name, mapper);
+            }
+        }
+
+        internal object CreateInstance() {
+            return instanceMapper.CreateInstance();
+        }
+        
+        internal object CreatePolymorph(string name) {
+            if (!polymorphMapper.TryGetValue(name, out TypeMapper mapper))
+                return null;
+            return mapper.CreateInstance();
+        }
+
     }
     
-    public abstract class InstanceFactory<T> : InstanceFactory {
+    
+    /*
+     public class InstanceFactory<T> : InstanceFactory {
+        
+        public InstanceFactory(string discriminator) {
+            
+        }
         public abstract T CreateInstance(string name);
 
         internal override object CreateObject(string name) {
             return CreateInstance(name);
         }
-    }
+    } */
 }

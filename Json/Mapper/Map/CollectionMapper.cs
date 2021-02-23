@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Map
             fieldInfo.SetValue(this, mapper);
         }
         
-        public override object CreateInstance(string discriminant)
+        public override object CreateInstance()
         {
             return ReflectUtils.CreateInstance(constructor);
         }

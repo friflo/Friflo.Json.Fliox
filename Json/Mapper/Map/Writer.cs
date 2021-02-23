@@ -140,7 +140,7 @@ namespace Friflo.Json.Mapper.Map
         // --- member keys
         public void WriteDiscriminator(TypeMapper baseMapper, TypeMapper mapper, ref bool firstMember) {
             var factory = baseMapper.instanceFactory;
-            if (factory != null && factory.Discriminator == null)
+            if (factory != null && factory.discriminator == null)
                 return;
             
             bytes.AppendChar('{');
@@ -148,7 +148,7 @@ namespace Friflo.Json.Mapper.Map
                 IndentBegin();
             // --- discriminator
             bytes.AppendChar('"');
-            bytes.AppendString(factory.Discriminator);
+            bytes.AppendString(factory.discriminator);
             bytes.AppendChar('"');
             bytes.AppendChar(':');
             

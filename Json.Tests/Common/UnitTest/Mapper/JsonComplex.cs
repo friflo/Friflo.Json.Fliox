@@ -69,15 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
 
-    public class SubFactory : InstanceFactory<ISub>
-    {
-        public override ISub CreateInstance(string name) {
-            return new Sub();
-        }
-    }
-
-    [JsonType(InstanceFactory = typeof(SubFactory))]
-    [Polymorph(typeof(Sub))]
+    [Instance(typeof(Sub))]
     public interface ISub {
     }
 

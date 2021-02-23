@@ -79,7 +79,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 return default;
 
             if (EqualityComparer<TMap>.Default.Equals(map, default))
-                map = (TMap) CreateInstance(null);
+                map = (TMap) CreateInstance();
 
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();

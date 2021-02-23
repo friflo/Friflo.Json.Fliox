@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.Map
         public abstract bool            ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
 
 
-        public abstract object CreateInstance(string discriminant);
+        public abstract object CreateInstance();
         
         public bool IsNull<T>(ref T value) {
             if (isValueType) {
@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map
         /// </summary>
         public override      void    InitTypeMapper(TypeStore typeStore) { }
 
-        public override      object  CreateInstance(string discriminant) {
+        public override      object  CreateInstance() {
             return null;
         }
     }

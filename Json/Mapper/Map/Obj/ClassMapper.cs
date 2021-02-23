@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
@@ -29,19 +30,13 @@ namespace Friflo.Json.Mapper.Map.Obj
             bool notInstantiatable = type.IsInterface || type.IsAbstract;
             if (type.IsClass || type.IsValueType || notInstantiatable) {
                 InstanceFactory factory = null;
-                Type factoryType = GetInstanceFactoryType(type);
-                if (notInstantiatable && factoryType == null)
+                bool isFactory = GetFactoryAttributes(type, out Type[] polyTypes, out Type instanceType, out string discriminator);
+                if (notInstantiatable && !isFactory)
                     throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: {type}");
                 
-                if (factoryType != null) {
-                    if (factoryType.BaseType == null || factoryType.BaseType.GetGenericTypeDefinition() != typeof(InstanceFactory<>))
-                        throw new InvalidOperationException($"factory class does not extend InstanceFactory<> {factoryType}");
-                    var args = factoryType.BaseType.GetGenericArguments();
-                    if (args[0] != type)
-                        throw new InvalidOperationException($"require compatible InstanceFactory<> on: {type}");
-                    
-                    factory = (InstanceFactory)ReflectUtils.CreateInstance(factoryType);
-                }
+                if (isFactory)
+                    factory = new InstanceFactory(discriminator, instanceType, polyTypes);
+                
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
                 if (config.useIL) {
@@ -59,23 +54,45 @@ namespace Friflo.Json.Mapper.Map.Obj
             return null;
         }
 
-        private static Type GetInstanceFactoryType(Type type) {
+        private static bool GetFactoryAttributes(Type type, out Type[] polyTypes, out Type instanceType, out string discriminator) {
+            instanceType = null;
+            discriminator = null;
+            List<Type> typeList = new List<Type>();
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(JsonTypeAttribute)) {
+                if (attr.AttributeType == typeof(PolymorphAttribute)) {
+                    var arg = attr.ConstructorArguments;
+                    var polyType = (Type) arg[0].Value;
+                    if (polyType == null)
+                        throw new InvalidOperationException($"[Polymorph(null)] type not be null on: {type}");
+                    if (!type.IsAssignableFrom(polyType))
+                        throw new InvalidOperationException($"[Polymorph({polyType})] type must extend annotated type: {type}");
+                    typeList.Add(polyType);
+                } else if (attr.AttributeType == typeof(InstanceAttribute)) {
+                    var arg = attr.ConstructorArguments;
+                    instanceType = (Type) arg[0].Value;
+                    if (instanceType == null)
+                        throw new InvalidOperationException($"[Instance(null)] type not be null on: {type}");
+                    if (!type.IsAssignableFrom(instanceType))
+                        throw new InvalidOperationException($"[Instance({instanceType})] type must extend annotated type: {type}");
+                } else if (attr.AttributeType == typeof(JsonTypeAttribute)) {
                     if (attr.NamedArguments != null) {
                         foreach (var arg in attr.NamedArguments) {
-                            if (arg.MemberName == nameof(JsonTypeAttribute.InstanceFactory)) {
+                            if (arg.MemberName == nameof(JsonTypeAttribute.Discriminator)) {
                                 if (arg.TypedValue.Value != null) {
-                                    var instanceFactory = arg.TypedValue.Value as Type;
-                                    if (instanceFactory != null && instanceFactory.IsSubclassOf(typeof(InstanceFactory)))
-                                        return instanceFactory;
+                                    discriminator = (string) arg.TypedValue.Value;
                                 }
                             }
                         }
                     }
                 }
             }
-            return null;
+            if (discriminator != null && typeList.Count == 0)
+                throw new InvalidOperationException("specified Discriminator requires at least one [Polymorph] type on : {type}");
+            if (discriminator == null && typeList.Count > 0)
+                throw new InvalidOperationException("specified [Polymorph] attributes requires [JsonType (Discriminator=<name>)] on : {type}");
+
+            polyTypes = typeList.ToArray();
+            return instanceType != null | polyTypes.Length > 0;
         }
     }
     
@@ -118,15 +135,16 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
+            instanceFactory?.InitFactory(typeStore);
             var fields = new PropertyFields(type, typeStore);
             FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);
         }
         
-        public override object CreateInstance(string discriminant) {
+        public override object CreateInstance() {
             if (instanceFactory != null)
-                return instanceFactory.CreateObject(discriminant);
+                return instanceFactory.CreateInstance();
             
             if (createInstance != null)
                 return createInstance();
@@ -182,16 +200,16 @@ namespace Friflo.Json.Mapper.Map.Obj
 
             var factory = classType.instanceFactory;
             if (factory != null) {
-                string discriminator = factory.Discriminator;
+                string discriminator = factory.discriminator;
                 if (discriminator == null) {
-                    obj = (T) classType.CreateInstance(null);
+                    obj = (T) factory.CreateInstance();
                     if (classType.IsNull(ref obj))
                         return reader.ErrorMsg<TypeMapper>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());
                 } else {
                     if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
                         string discriminant = reader.parser.value.ToString();
-                        obj = (T) classType.CreateInstance(discriminant);
+                        obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
                             return reader.ErrorMsg<TypeMapper>($"No instance created with name: '{discriminant}' in InstanceFactory: ", factory.GetType().Name, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
@@ -201,7 +219,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             } else {
                 if (classType.IsNull(ref obj))
-                    obj = (T) classType.CreateInstance(null);
+                    obj = (T) classType.CreateInstance();
             }
             success = true;
             return classType;
