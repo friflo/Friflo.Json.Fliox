@@ -29,6 +29,9 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (type.IsClass || type.IsValueType || type.IsInterface) {
                 InstanceFactory factory = null;
                 Type factoryType = GetInstanceFactoryType(type);
+                if (type.IsInterface && factoryType == null)
+                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on interface: {type} ");
+                
                 if (factoryType != null) {
                     factory = (InstanceFactory)ReflectUtils.CreateInstance(factoryType);
                 }
@@ -92,7 +95,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         public override void Dispose() {
             base.Dispose();
-            propFields.Dispose();
+            propFields?.Dispose();
         }
 
         private static Expression<Func<T>> CreateInstanceExpression () {

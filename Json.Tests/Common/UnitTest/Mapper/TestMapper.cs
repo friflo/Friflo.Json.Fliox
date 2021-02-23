@@ -167,6 +167,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         // ------ interface support
+        // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
+        interface IInvalid { }
+        
         [JsonType (InstanceFactory = typeof(BookFactory))]
         interface IBook {
         }
@@ -197,6 +200,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 var jsonResult = writer.Write(result);
                 AreEqual(json, jsonResult);
+
+                var e = Throws<InvalidOperationException>(() => reader.Read<IInvalid>("{}"));
+                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on interface: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+IInvalid ", e.Message);
             }
         }
         
