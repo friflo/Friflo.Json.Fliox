@@ -65,7 +65,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     if (polyType == null)
                         throw new InvalidOperationException($"[Polymorph(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(polyType))
-                        throw new InvalidOperationException($"[Polymorph({polyType})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[Polymorph({polyType.Name})] type must extend annotated type: {type}");
                     typeList.Add(polyType);
                 } else if (attr.AttributeType == typeof(InstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     if (instanceType == null)
                         throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
-                        throw new InvalidOperationException($"[Instance({instanceType})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[Instance({instanceType.Name})] type must extend annotated type: {type}");
                 } else if (attr.AttributeType == typeof(JsonTypeAttribute)) {
                     if (attr.NamedArguments != null) {
                         foreach (var arg in attr.NamedArguments) {
@@ -87,9 +87,9 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException("specified Discriminator requires at least one [Polymorph] type on : {type}");
+                throw new InvalidOperationException($"specified Discriminator require at least one [Polymorph] attribute on: {type}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException("specified [Polymorph] attributes requires [JsonType (Discriminator=<name>)] on : {type}");
+                throw new InvalidOperationException($"specified [Polymorph] attribute require [JsonType (Discriminator=<name>)] on: {type}");
 
             polyTypes = typeList.ToArray();
             return instanceType != null | polyTypes.Length > 0;

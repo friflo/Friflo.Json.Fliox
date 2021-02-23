@@ -11,11 +11,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         // --------------- interface
         
-        // missing [Instance] or [Polymorph] attribute
+        // exception: missing [Instance] or [Polymorph] attribute
         interface IVehicle { }
         
-        // missing [Instance] or [Polymorph] attribute
+        // exception: missing [Instance] or [Polymorph] attribute
         abstract class Abstract { }
+        
+        // exception: type is null
+        [Instance(null)]
+        interface ITestInstanceNull { }
+        
+        // exception: Book does not extend ITestIncompatibleInstance
+        [Instance(typeof(Book))]
+        interface ITestIncompatibleInstance { }
 
         // --- IBook
         [Instance(typeof(Book))]
@@ -48,10 +56,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
                 AreEqual("type requires instantiatable types by [Instance()] or [Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+Abstract", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<ITestIncompatibleInstance>("{}"));
+                AreEqual("[Instance(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestIncompatibleInstance", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<ITestInstanceNull>("{}"));
+                AreEqual("[Instance(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestInstanceNull", e.Message);
             }
         }
         
         // --------------- polymorphic interface
+        // exception: type is null
+        [Polymorph(null)]
+        abstract class TestPolymorphNull { }
+        
+        // exception: Book does not extend ITestIncompatibleInstance
+        [Polymorph(typeof(Book))]
+        abstract class TestIncompatiblePolymorph { }
+        
+        // exception
+        [Polymorph(typeof(TestNoDiscriminator))]
+        abstract class TestNoDiscriminator { }
+        class TestNoDiscriminatorImpl : TestNoDiscriminator { }
+        
+        // exception
+        [JsonType(Discriminator = "discriminator")]
+        abstract class TestNoPolymorph { }
+        class TestNoPolymorphImpl : TestNoPolymorph { }
+        
+        
         [JsonType (Discriminator = "animalType")]
         [Polymorph(typeof(Lion))]
         interface IAnimal {
@@ -82,6 +115,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 reader.Read<IAnimal>("{}");
                 StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
+                
+                var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
+                AreEqual("[Polymorph(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestIncompatiblePolymorph", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<TestPolymorphNull>("{}"));
+                AreEqual("[Polymorph(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestPolymorphNull", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<TestNoDiscriminator>("{}"));
+                AreEqual("specified [Polymorph] attribute require [JsonType (Discriminator=<name>)] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<TestNoPolymorph>("{}"));
+                AreEqual("specified Discriminator require at least one [Polymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
             }
         }
         
