@@ -25,7 +25,6 @@ namespace Friflo.Json.Mapper.Map
         /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>
         public              ValueFormat         format;
         internal            Bytes               @null;
-        internal            Bytes               discriminator;
         internal            int                 level;
         public              int                 maxDepth;
         public              bool                pretty;
@@ -46,7 +45,6 @@ namespace Friflo.Json.Mapper.Map
             format          = new ValueFormat();
             format. InitTokenFormat();
             @null           = new Bytes("null");
-            discriminator   = new Bytes($"\"{typeStore.config.discriminator}\":\"");
             typeCache       = new TypeCache(typeStore);
             level           = 0;
             maxDepth        = JsonParser.DefaultMaxDepth;
@@ -65,7 +63,6 @@ namespace Friflo.Json.Mapper.Map
         
         public void Dispose() {
             typeCache.Dispose();
-            discriminator.Dispose();
             @null.Dispose();
             format.Dispose();
             bytes.Dispose();
@@ -145,11 +142,19 @@ namespace Friflo.Json.Mapper.Map
             var factory = baseMapper.instanceFactory;
             if (factory != null && factory.Discriminator == null)
                 return;
+            
             bytes.AppendChar('{');
             if (pretty)
                 IndentBegin();
-            bytes.AppendBytes(ref discriminator);
-            // typeCache.AppendDiscriminator(ref bytes, mapper);
+            // --- discriminator
+            bytes.AppendChar('"');
+            bytes.AppendString(factory.Discriminator);
+            bytes.AppendChar('"');
+            bytes.AppendChar(':');
+            
+            // --- discriminant
+            bytes.AppendChar('"');
+            bytes.AppendString(mapper.type.Name);
             bytes.AppendChar('\"');
             FlushFilledBuffer();
             firstMember = false;

@@ -20,11 +20,9 @@ namespace Friflo.Json.Mapper
 #endif
     public class StoreConfig {
         public  readonly bool       useIL;
-        public  readonly string     discriminator;
 
-        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, string discriminator = "$type") {
+        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection) {
             this.useIL = typeAccess == TypeAccess.IL;
-            this.discriminator = discriminator ?? throw new InvalidOperationException("discriminator mus not be null");
         }
     }
 

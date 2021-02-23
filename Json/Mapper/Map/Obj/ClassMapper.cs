@@ -173,11 +173,18 @@ namespace Friflo.Json.Mapper.Map.Obj
             // Is first member is discriminator - "$type": "<typeName>" ?
             var factory = classType.instanceFactory;
             if (factory != null) {
-                obj = (T) classType.CreateInstance(parser.value.ToString());
-                classType = reader.typeCache.GetTypeMapper(obj.GetType());
-                // if (classType == null)
-                //    return reader.ErrorMsg<TypeMapper>($"Object with discriminator {reader.discriminator} not found: ", ref parser.value, out success);
-                // parser.NextEvent();
+                string discriminator = factory.Discriminator;
+                if (discriminator == null) {
+                    obj = (T) classType.CreateInstance(null);
+                    classType = reader.typeCache.GetTypeMapper(obj.GetType());
+                } else {
+                    if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
+                        obj = (T) classType.CreateInstance(reader.parser.value.ToString());
+                        classType = reader.typeCache.GetTypeMapper(obj.GetType());
+                        parser.NextEvent();
+                    } else
+                        return reader.ErrorMsg<TypeMapper>($"Object with discriminator {discriminator} not found: ", ref parser.value, out success);
+                }
             } else {
                 if (classType.IsNull(ref obj))
                     obj = (T) classType.CreateInstance(null);

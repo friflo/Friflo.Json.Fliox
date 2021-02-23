@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-
+        // ------ interface support
         [JsonType (InstanceFactory = typeof(TestFactory))]
         interface ITest {
         }
@@ -192,6 +192,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<ITest>(json);
                 AreEqual(123, ((TestImpl)result).int32);
+                
+                var jsonResult = writer.Write(result);
+                AreEqual(json, jsonResult);
+            }
+        }
+        
+        // ------ polymorphic type support
+        [JsonType (InstanceFactory = typeof(AnimalFactory))]
+        interface IAnimal {
+        }
+
+        class Lion : IAnimal {
+            public int int32;
+        }
+
+        class AnimalFactory : InstanceFactory<IAnimal>
+        {
+            public override string Discriminator => "animalType";
+
+            public override IAnimal CreateInstance(string name) {
+                if (name == "Lion")
+                    return new Lion();
+                return null;
+            }
+        }
+        
+        [Test]  public void  TestPolymorphicReflect()   { TestPolymorphic(TypeAccess.Reflection); }
+        [Test]  public void  TestPolymorphicIL()        { TestPolymorphic(TypeAccess.IL); }
+        
+        private void TestPolymorphic(TypeAccess typeAccess) {
+            var json = "{\"animalType\":\"Lion\",\"int32\":123}";
+            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var writer = new JsonWriter(typeStore))
+            {
+                // typeStore.AddInstanceFactory(new TestFactory());
+                var result = reader.Read<IAnimal>(json);
+                AreEqual(123, ((Lion)result).int32);
                 
                 var jsonResult = writer.Write(result);
                 AreEqual(json, jsonResult);

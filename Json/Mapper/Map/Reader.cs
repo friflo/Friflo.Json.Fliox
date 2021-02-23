@@ -9,7 +9,6 @@ namespace Friflo.Json.Mapper.Map
 {
     public partial struct Reader : IErrorHandler, IDisposable {
         public              JsonParser          parser;
-        internal readonly   Bytes               discriminator;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
         /// <summary>Can be used for custom mappers to create a temporary "string"
@@ -30,7 +29,6 @@ namespace Friflo.Json.Mapper.Map
             this.errorHandler = errorHandler;
 
             typeCache       = new TypeCache(typeStore);
-            discriminator   = new Bytes(typeStore.config.discriminator);
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();
             charBuf         = new char[128];
@@ -52,10 +50,9 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public void Dispose() {
-            strBuf.         Dispose();
-            discriminator.Dispose();
-            typeCache.Dispose();
-            parser.Dispose();
+            strBuf      .Dispose();
+            typeCache   .Dispose();
+            parser      .Dispose();
         }
         
         public TVal HandleEvent<TVal>(TypeMapper<TVal> mapper, out bool success) {
