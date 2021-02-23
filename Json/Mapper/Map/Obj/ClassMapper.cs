@@ -63,7 +63,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
-                        throw new InvalidOperationException($"[Polymorph(null)] type not be null on: {type}");
+                        throw new InvalidOperationException($"[Polymorph(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(polyType))
                         throw new InvalidOperationException($"[Polymorph({polyType})] type must extend annotated type: {type}");
                     typeList.Add(polyType);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
-                        throw new InvalidOperationException($"[Instance(null)] type not be null on: {type}");
+                        throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
                         throw new InvalidOperationException($"[Instance({instanceType})] type must extend annotated type: {type}");
                 } else if (attr.AttributeType == typeof(JsonTypeAttribute)) {
