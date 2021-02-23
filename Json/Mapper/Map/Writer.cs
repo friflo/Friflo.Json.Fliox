@@ -149,7 +149,7 @@ namespace Friflo.Json.Mapper.Map
             if (pretty)
                 IndentBegin();
             bytes.AppendBytes(ref discriminator);
-            typeCache.AppendDiscriminator(ref bytes, mapper);
+            // typeCache.AppendDiscriminator(ref bytes, mapper);
             bytes.AppendChar('\"');
             FlushFilledBuffer();
             firstMember = false;

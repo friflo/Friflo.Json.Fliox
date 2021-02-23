@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
@@ -44,9 +43,6 @@ namespace Friflo.Json.Mapper
     public class TypeStore : IDisposable
     {
         private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();
-        //
-        internal    readonly    Dictionary <Bytes, TypeMapper>  nameToType=     new Dictionary <Bytes, TypeMapper >();
-        internal    readonly    Dictionary <Type,  BytesString> typeToName =    new Dictionary <Type,  BytesString >();
         
         private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
         public      readonly    ITypeResolver                   typeResolver;
@@ -67,11 +63,9 @@ namespace Friflo.Json.Mapper
         }
             
         public void Dispose() {
-            lock (nameToType) {
-                foreach (var item in typeMap.Values)
-                    item.Dispose();
-                foreach (var item in typeToName.Values)
-                    item.value.Dispose();
+            lock (this) {
+                foreach (var mapper in typeMap.Values)
+                    mapper.Dispose();
             }
         }
 
@@ -137,32 +131,6 @@ namespace Friflo.Json.Mapper
             }
             return null;
         }
-            
-        /// <summary>
-        /// Register a polymorphic type by its discriminant. Currently this need the first member in an JSON object
-        /// and its name have to be "$type". E.g.<br/>
-        /// <code>
-        /// { "$type": "discriminatorName", ... }
-        /// </code> 
-        /// </summary>
-        public void RegisterType (String name, Type type)
-        {
-            using (var bytesName = new Bytes(name)) {
-                lock (this) {
-                    if (nameToType.TryGetValue(bytesName, out TypeMapper mapper)) {
-                        if (type != mapper.type)
-                            throw new InvalidOperationException("Another type is already registered with this name: " + name);
-                        return;
-                    }
-                    mapper = GetTypeMapper(type);
-                    BytesString discriminator = new BytesString(name);
-                    typeToName.Add(mapper.type, discriminator);
-                    nameToType.Add(discriminator.value, mapper);
-                    // discriminator.value.EnsureCapacityAbs(20); // provoke error in DebugUtils: "untrack expect the resource was previously tracked"
-                }
-            }
-        }
-
     }
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]

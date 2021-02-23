@@ -16,7 +16,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         private TypeStore createStore() {
             TypeStore      typeStore = new TypeStore(null, new StoreConfig());
-            typeStore.RegisterType("Sub", typeof( Sub ));
             return typeStore;
         }
 
