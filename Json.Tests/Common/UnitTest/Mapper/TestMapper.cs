@@ -170,6 +170,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
         interface IInvalid { }
         
+        [JsonType (InstanceFactory = typeof(AnimalFactory))]
+        interface IBookWithInvalidFactory {
+        }
+        
         abstract class Abstract { }
         
         [JsonType (InstanceFactory = typeof(BookFactory))]
@@ -186,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 return new Book();
             }
         }
-        
+
         [Test]  public void  TestInterfaceReflect()   { TestInterface(TypeAccess.Reflection); }
         [Test]  public void  TestInterfaceIL()        { TestInterface(TypeAccess.IL); }
         
@@ -204,10 +208,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(json, jsonResult);
 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IInvalid>("{}"));
-                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+IInvalid ", e.Message);
+                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+IInvalid", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+Abstract ", e.Message);
+                AreEqual("require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+Abstract", e.Message);
+                
+                e = Throws<InvalidOperationException>(() => reader.Read<IBookWithInvalidFactory>("{}"));
+                AreEqual("require compatible InstanceFactory<> on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestMapper+IBookWithInvalidFactory", e.Message);
             }
         }
         

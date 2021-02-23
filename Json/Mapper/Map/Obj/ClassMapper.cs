@@ -31,9 +31,15 @@ namespace Friflo.Json.Mapper.Map.Obj
                 InstanceFactory factory = null;
                 Type factoryType = GetInstanceFactoryType(type);
                 if (notInstantiatable && factoryType == null)
-                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: {type} ");
+                    throw new InvalidOperationException($"require attribute [JsonType(InstanceFactory = typeof(<factory class>))] on: {type}");
                 
                 if (factoryType != null) {
+                    if (factoryType.BaseType == null)
+                        throw new InvalidOperationException($"factory class does not derive from InstanceFactory<> {factoryType}");
+                    var args = factoryType.BaseType.GetGenericArguments();
+                    if (args[0] != type)
+                        throw new InvalidOperationException($"require compatible InstanceFactory<> on: {type}");
+                    
                     factory = (InstanceFactory)ReflectUtils.CreateInstance(factoryType);
                 }
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
