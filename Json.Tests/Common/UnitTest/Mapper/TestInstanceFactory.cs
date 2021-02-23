@@ -16,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // incompatible InstanceFactory<> 
         [JsonType (InstanceFactory = typeof(AnimalFactory))]
+        [Polymorph(typeof(Lion))]
         interface IBookWithInvalidFactory {
         }
         
@@ -24,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // --- IBook
         [JsonType (InstanceFactory = typeof(BookFactory))]
+        [Polymorph(typeof(Book))]
         interface IBook { }
 
         class Book : IBook {
@@ -80,6 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // ------ polymorphic interface support
         [JsonType (InstanceFactory = typeof(AnimalFactory))]
+        [Polymorph(typeof(Lion))]
         interface IAnimal {
         }
 
@@ -124,6 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // ------ polymorphic class support
         [JsonType (InstanceFactory = typeof(PersonFactory))]
+        [Polymorph(typeof(Employee))]
         abstract class Person {
         }
 

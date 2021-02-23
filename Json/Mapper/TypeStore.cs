@@ -136,6 +136,11 @@ namespace Friflo.Json.Mapper
         public Type TypeMapper      { get; set; }
         public Type InstanceFactory { get; set; }
     }
+    
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
+    public sealed class PolymorphAttribute : Attribute {
+        public PolymorphAttribute (Type instance) {}
+    }
 
     public abstract class InstanceFactory {
         internal    abstract    object  CreateObject(string name);

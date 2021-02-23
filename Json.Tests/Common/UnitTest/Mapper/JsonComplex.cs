@@ -77,6 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
 
     [JsonType(InstanceFactory = typeof(SubFactory))]
+    [Polymorph(typeof(Sub))]
     public interface ISub {
     }
 
