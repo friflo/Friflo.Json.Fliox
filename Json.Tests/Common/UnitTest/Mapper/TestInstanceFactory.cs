@@ -9,14 +9,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestInstanceFactory
     {
-                // ------ interface support
+        // ------ interface support
+        
         // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
         interface IInvalid { }
         
+        // incompatible InstanceFactory<> 
         [JsonType (InstanceFactory = typeof(AnimalFactory))]
         interface IBookWithInvalidFactory {
         }
         
+        // missing: [JsonType (InstanceFactory = typeof(<factory class>))]
         abstract class Abstract { }
         
         [JsonType (InstanceFactory = typeof(BookFactory))]
