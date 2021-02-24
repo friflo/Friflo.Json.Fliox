@@ -11,10 +11,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public int      lower;
             public int      Upper;
             
-            [FloPropertyName("field")]
+            [FloProperty(Name = "field")]
             public int      namedField;
             
-            [FloPropertyName("property")]
+            [FloProperty(Name = "property")]
             public int      namedProperty { get; set; }
         }
         

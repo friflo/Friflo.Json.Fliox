@@ -101,10 +101,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 
         private static string GetPropertyName(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(FloPropertyNameAttribute)) {
-                    var arg = attr.ConstructorArguments;
-                    var name = arg[0].Value as string;
-                    return name;
+                if (attr.AttributeType == typeof(FloPropertyAttribute)) {
+                    if (attr.NamedArguments != null) {
+                        foreach (var args in attr.NamedArguments) {
+                            if (args.MemberName == nameof(FloPropertyAttribute.Name)) {
+                                if (args.TypedValue.Value != null)
+                                    return args.TypedValue.Value as string;
+                            }
+                        }
+                    }
                 }
             }
             return null;

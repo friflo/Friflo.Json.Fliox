@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class FloPropertyNameAttribute : Attribute {
-        public FloPropertyNameAttribute (string name) {}
+    public sealed class FloPropertyAttribute : Attribute {
+        public string     Name    { get; set; }
     }
 }
