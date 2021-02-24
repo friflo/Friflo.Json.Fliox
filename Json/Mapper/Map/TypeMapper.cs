@@ -65,6 +65,9 @@ namespace Friflo.Json.Mapper.Map
         }
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public abstract class TypeMapper<TVal> : TypeMapper
     {
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) :

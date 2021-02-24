@@ -8,6 +8,9 @@ using Friflo.Json.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Mapper
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class JsonMapper : IJsonReader, IJsonWriter, IDisposable
     {
         public readonly TypeStore   typeStore;

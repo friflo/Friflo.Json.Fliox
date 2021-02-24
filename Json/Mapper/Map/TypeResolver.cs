@@ -9,6 +9,9 @@ using Friflo.Json.Mapper.Map.Val;
 // ReSharper disable InlineOutVariableDeclaration
 namespace Friflo.Json.Mapper.Map
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public interface ITypeResolver {
         TypeMapper          CreateTypeMapper(StoreConfig config, Type type);
         void                AddTypeMapper(TypeMapper mapper);
