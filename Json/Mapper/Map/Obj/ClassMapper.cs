@@ -29,13 +29,9 @@ namespace Friflo.Json.Mapper.Map.Obj
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             bool notInstantiatable = type.IsInterface || type.IsAbstract;
             if (type.IsClass || type.IsValueType || notInstantiatable) {
-                InstanceFactory factory = null;
-                bool isFactory = GetFactoryAttributes(type, out Type[] polyTypes, out Type instanceType, out string discriminator);
-                if (notInstantiatable && !isFactory)
+                var factory = GetInstanceFactory(type);
+                if (notInstantiatable && factory == null)
                     throw new InvalidOperationException($"type requires instantiatable types by [Instance()] or [Polymorph()] on: {type}");
-                
-                if (isFactory)
-                    factory = new InstanceFactory(discriminator, instanceType, polyTypes);
                 
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
@@ -54,19 +50,28 @@ namespace Friflo.Json.Mapper.Map.Obj
             return null;
         }
 
-        private static bool GetFactoryAttributes(Type type, out Type[] polyTypes, out Type instanceType, out string discriminator) {
-            instanceType = null;
-            discriminator = null;
-            List<Type> typeList = new List<Type>();
+        private static InstanceFactory GetInstanceFactory(Type type) {
+            Type            instanceType = null;
+            string          discriminator = null;
+            List<PolyType>  typeList = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
                 if (attr.AttributeType == typeof(PolymorphAttribute)) {
+                    string name = null;
+                    if (attr.NamedArguments != null) {
+                        foreach (var args in attr.NamedArguments) {
+                            if (args.MemberName == nameof(PolymorphAttribute.Name)) {
+                                if (args.TypedValue.Value != null)
+                                    name = (string) args.TypedValue.Value;
+                            }
+                        }
+                    }
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
                         throw new InvalidOperationException($"[Polymorph(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(polyType))
                         throw new InvalidOperationException($"[Polymorph({polyType.Name})] type must extend annotated type: {type}");
-                    typeList.Add(polyType);
+                    typeList.Add(new PolyType(polyType, name ?? polyType.Name));
                 } else if (attr.AttributeType == typeof(InstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
@@ -86,8 +91,9 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (discriminator == null && typeList.Count > 0)
                 throw new InvalidOperationException($"specified [Polymorph] attribute require [Discriminator] on: {type}");
 
-            polyTypes = typeList.ToArray();
-            return instanceType != null | polyTypes.Length > 0;
+            if (instanceType != null || typeList.Count > 0)
+                return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
+            return null;
         }
     }
     

@@ -21,6 +21,7 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    Type            nullableUnderlyingType;
         public  readonly    bool            useIL;
         internal            InstanceFactory instanceFactory;
+        internal            string          discriminant;
 
         
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly

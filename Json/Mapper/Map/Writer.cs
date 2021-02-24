@@ -154,7 +154,7 @@ namespace Friflo.Json.Mapper.Map
             
             // --- discriminant
             bytes.AppendChar('"');
-            bytes.AppendString(mapper.type.Name);
+            bytes.AppendString(mapper.discriminant);
             bytes.AppendChar('\"');
             FlushFilledBuffer();
             firstMember = false;

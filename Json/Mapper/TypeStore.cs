@@ -142,6 +142,7 @@ namespace Friflo.Json.Mapper
     
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class PolymorphAttribute : Attribute {
+        public string     Name    { get; set; }
         public PolymorphAttribute (Type instance) {}
     }
     
@@ -150,15 +151,24 @@ namespace Friflo.Json.Mapper
         public InstanceAttribute (Type instance) {}
     }
 
-    
+    internal class PolyType
+    {
+        internal PolyType(Type type, string name) {
+            this.type = type;
+            this.name = name;
+        }
+        internal readonly Type   type;
+        internal readonly string name;
+    }
+
     public class InstanceFactory {  // todo internal
         internal readonly   string                          discriminator;
         private  readonly   Type                            instanceType;
-        private  readonly   Type[]                          polyTypes;
+        private  readonly   PolyType[]                  polyTypes;
         private             TypeMapper                      instanceMapper;
         private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
 
-        internal InstanceFactory(string discriminator, Type instanceType, Type[] polyTypes) {
+        internal InstanceFactory(string discriminator, Type instanceType, PolyType[] polyTypes) {
             this.discriminator = discriminator;
             this.instanceType = instanceType;
             this.polyTypes = polyTypes;
@@ -169,8 +179,9 @@ namespace Friflo.Json.Mapper
                 instanceMapper = typeStore.GetTypeMapper(instanceType);
             
             foreach (var polyType in polyTypes) {
-                var mapper = typeStore.GetTypeMapper(polyType);
-                polymorphMapper.Add(polyType.Name, mapper);
+                var mapper = typeStore.GetTypeMapper(polyType.type);
+                mapper.discriminant = polyType.name;
+                polymorphMapper.Add(polyType.name, mapper);
             }
         }
 

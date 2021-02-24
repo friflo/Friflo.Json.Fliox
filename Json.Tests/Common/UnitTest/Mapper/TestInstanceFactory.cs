@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         
         [Discriminator("animalType")]
-        [Polymorph(typeof(Lion))]
+        [Polymorph(typeof(Lion), Name = "lion")]
         interface IAnimal {
         }
 
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]  public void  TestPolymorphicIL()        { TestPolymorphic(TypeAccess.IL); }
         
         private void TestPolymorphic(TypeAccess typeAccess) {
-            var json = "{\"animalType\":\"Lion\",\"int32\":123}";
+            var json = "{\"animalType\":\"lion\",\"int32\":123}";
             using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     ],
     ""animals"": [
         {
-            ""animalType"":""Lion"",
+            ""animalType"":""lion"",
             ""int32"":123
         }
     ]
