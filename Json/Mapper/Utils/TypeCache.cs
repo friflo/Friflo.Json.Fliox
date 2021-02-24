@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.Utils
