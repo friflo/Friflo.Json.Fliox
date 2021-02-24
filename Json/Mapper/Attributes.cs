@@ -8,9 +8,11 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class FloTypeAttribute : Attribute {
-        public Type     TypeMapper    { get; set; }
+    public sealed class FloTypeMapperAttribute : Attribute {
+        public FloTypeMapperAttribute (Type  typeMapper) {}
     }
+    
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif

@@ -68,17 +68,17 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
-                        throw new InvalidOperationException($"[Polymorph(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[FloPolymorph(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(polyType))
-                        throw new InvalidOperationException($"[Polymorph({polyType.Name})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[FloPolymorph({polyType.Name})] type must extend annotated type: {type}");
                     typeList.Add(new PolyType(polyType, name ?? polyType.Name));
                 } else if (attr.AttributeType == typeof(FloInstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
-                        throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[FloInstance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
-                        throw new InvalidOperationException($"[Instance({instanceType.Name})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[FloInstance({instanceType.Name})] type must extend annotated type: {type}");
                 } else if (attr.AttributeType == typeof(FloDiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
@@ -87,9 +87,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException($"specified [Discriminator] require at least one [Polymorph] attribute on: {type}");
+                throw new InvalidOperationException($"specified [FloDiscriminator] require at least one [FloPolymorph] attribute on: {type}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException($"specified [Polymorph] attribute require [Discriminator] on: {type}");
+                throw new InvalidOperationException($"specified [FloPolymorph] attribute require [FloDiscriminator] on: {type}");
 
             if (instanceType != null || typeList.Count > 0)
                 return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
