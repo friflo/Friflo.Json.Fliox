@@ -7,9 +7,6 @@ using Friflo.Json.Burst;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Mapper.Map
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     public partial struct Reader {
         public bool IsElementNullable(TypeMapper arrayMapper, TypeMapper elementType, out bool success) {
             if (!elementType.isNullable) {
