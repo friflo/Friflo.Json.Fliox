@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
+#pragma warning disable 649 // Field 'field' is never assigned
 
 namespace Friflo.Json.Tests.Common.Examples.Mapper
 {

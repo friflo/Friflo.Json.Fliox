@@ -49,9 +49,6 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
     internal class ClassMapper<T> : TypeMapper<T> {
         private readonly ConstructorInfo    constructor;
         private readonly Func<T>            createInstance;

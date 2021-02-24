@@ -12,7 +12,6 @@ using Friflo.Json.Mapper.Map.Obj.Reflect;
 namespace Friflo.Json.Mapper.MapIL.Obj
 {
    
-    [CLSCompliant(true)]
     internal class ClassILMapper<T> : ClassMapper<T> {
         
         public ClassILMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
