@@ -55,11 +55,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             string          discriminator = null;
             List<PolyType>  typeList = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(PolymorphAttribute)) {
+                if (attr.AttributeType == typeof(FloPolymorphAttribute)) {
                     string name = null;
                     if (attr.NamedArguments != null) {
                         foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(PolymorphAttribute.Discriminant)) {
+                            if (args.MemberName == nameof(FloPolymorphAttribute.Discriminant)) {
                                 if (args.TypedValue.Value != null)
                                     name = (string) args.TypedValue.Value;
                             }
@@ -72,14 +72,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     if (!type.IsAssignableFrom(polyType))
                         throw new InvalidOperationException($"[Polymorph({polyType.Name})] type must extend annotated type: {type}");
                     typeList.Add(new PolyType(polyType, name ?? polyType.Name));
-                } else if (attr.AttributeType == typeof(InstanceAttribute)) {
+                } else if (attr.AttributeType == typeof(FloInstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
                         throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
                         throw new InvalidOperationException($"[Instance({instanceType.Name})] type must extend annotated type: {type}");
-                } else if (attr.AttributeType == typeof(DiscriminatorAttribute)) {
+                } else if (attr.AttributeType == typeof(FloDiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
                         discriminator = (string) arg[0].Value;

@@ -8,29 +8,29 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class JsonTypeAttribute : Attribute {
+    public sealed class FloTypeAttribute : Attribute {
         public Type     TypeMapper    { get; set; }
     }
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class DiscriminatorAttribute : Attribute {
-        public DiscriminatorAttribute (string discriminator) {}
+    public sealed class FloDiscriminatorAttribute : Attribute {
+        public FloDiscriminatorAttribute (string discriminator) {}
     }
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class PolymorphAttribute : Attribute {
+    public sealed class FloPolymorphAttribute : Attribute {
         public string     Discriminant    { get; set; }
-        public PolymorphAttribute (Type instance) {}
+        public FloPolymorphAttribute (Type instance) {}
     }
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class InstanceAttribute : Attribute {
-        public InstanceAttribute (Type instance) {}
+    public sealed class FloInstanceAttribute : Attribute {
+        public FloInstanceAttribute (Type instance) {}
     }
 }

@@ -19,15 +19,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         abstract class Abstract { }
         
         // exception: type is null
-        [Instance(null)]
+        [FloInstance(null)]
         interface ITestInstanceNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Instance(typeof(Book))]
+        [FloInstance(typeof(Book))]
         interface ITestIncompatibleInstance { }
 
         // --- IBook
-        [Instance(typeof(Book))]
+        [FloInstance(typeof(Book))]
         interface IBook { }
 
         class Book : IBook {
@@ -68,26 +68,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // --------------- polymorphic interface
         // exception: type is null
-        [Polymorph(null)]
+        [FloPolymorph(null)]
         abstract class TestPolymorphNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Polymorph(typeof(Book))]
+        [FloPolymorph(typeof(Book))]
         abstract class TestIncompatiblePolymorph { }
         
         // exception
-        [Polymorph(typeof(TestNoDiscriminator))]
+        [FloPolymorph(typeof(TestNoDiscriminator))]
         abstract class TestNoDiscriminator { }
         class TestNoDiscriminatorImpl : TestNoDiscriminator { }
         
         // exception
-        [Discriminator ("discriminator")]
+        [FloDiscriminator ("discriminator")]
         abstract class TestNoPolymorph { }
         class TestNoPolymorphImpl : TestNoPolymorph { }
         
         
-        [Discriminator("animalType")]
-        [Polymorph(typeof(Lion), Discriminant = "lion")]
+        [FloDiscriminator("animalType")]
+        [FloPolymorph(typeof(Lion), Discriminant = "lion")]
         interface IAnimal {
         }
 
@@ -132,8 +132,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         // --------------- polymorphic class
-        [Discriminator ("personType")]
-        [Polymorph(typeof(Employee))]
+        [FloDiscriminator ("personType")]
+        [FloPolymorph(typeof(Employee))]
         abstract class Person {
         }
 
