@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     string name = null;
                     if (attr.NamedArguments != null) {
                         foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(PolymorphAttribute.Name)) {
+                            if (args.MemberName == nameof(PolymorphAttribute.Discriminant)) {
                                 if (args.TypedValue.Value != null)
                                     name = (string) args.TypedValue.Value;
                             }

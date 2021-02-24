@@ -142,7 +142,7 @@ namespace Friflo.Json.Mapper
     
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class PolymorphAttribute : Attribute {
-        public string     Name    { get; set; }
+        public string     Discriminant    { get; set; }
         public PolymorphAttribute (Type instance) {}
     }
     

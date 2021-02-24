@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         
         [Discriminator("animalType")]
-        [Polymorph(typeof(Lion), Name = "lion")]
+        [Polymorph(typeof(Lion), Discriminant = "lion")]
         interface IAnimal {
         }
 
