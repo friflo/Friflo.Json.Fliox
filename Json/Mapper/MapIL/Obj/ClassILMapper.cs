@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 {
    
     [CLSCompliant(true)]
-    public class ClassILMapper<T> : ClassMapper<T> {
+    internal class ClassILMapper<T> : ClassMapper<T> {
         
         public ClassILMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base (config, type, constructor, instanceFactory, isValueType)

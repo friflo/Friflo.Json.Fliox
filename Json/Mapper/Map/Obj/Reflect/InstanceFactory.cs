@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         internal readonly string name;
     }
 
-    public class InstanceFactory {  // todo internal
+    internal class InstanceFactory {  // todo internal
         internal readonly   string                          discriminator;
         private  readonly   Type                            instanceType;
         private  readonly   PolyType[]                      polyTypes;

@@ -11,7 +11,7 @@ using Friflo.Json.Mapper.Map.Obj.Reflect;
 namespace Friflo.Json.Mapper.MapIL.Obj
 {
     // only used for IL
-    public class StructILMapper<T> : ClassILMapper<T>
+    internal class StructILMapper<T> : ClassILMapper<T>
     {
         public StructILMapper(StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base(config, type, constructor, instanceFactory, isValueType)
