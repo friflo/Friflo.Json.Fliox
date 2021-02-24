@@ -24,16 +24,16 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void Run() {
             string json = @"
- [
-    {
-        ""vehicleType"":    ""car"",
-        ""seatCount"":      4
-    },
-    {
-        ""vehicleType"":    ""bike"",
-        ""hasLuggageRack"": true
-    }
-]";
+            [
+                {
+                    ""vehicleType"":    ""car"",
+                    ""seatCount"":      4
+                },
+                {
+                    ""vehicleType"":    ""bike"",
+                    ""hasLuggageRack"": true
+                }
+            ]";
             using (var m = new JsonMapper()) {
                 var vehicles = m.Read<Vehicle[]>(json);
 
