@@ -24,10 +24,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             Type            memberType;
+            string          jsonName;
             if (property != null) {
                 memberType   = property.PropertyType;
+                jsonName = GetPropertyName(property.CustomAttributes);
+
             } else {
                 memberType   = field.FieldType;
+                jsonName = GetPropertyName(field.CustomAttributes);
             }
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
@@ -38,7 +42,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             bool isNullableEnum      = ut != null && ut.IsEnum;
             
             if (addMembers) {
-                string jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
+                if (jsonName == null)
+                    jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
+                
                 PropField pf;
                 if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
                     pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999); // force index exception in case of buggy impl.
@@ -90,6 +96,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     return true;
             }
             return false;
+        }
+        
+                
+        private static string GetPropertyName(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(FloPropertyNameAttribute)) {
+                    var arg = attr.ConstructorArguments;
+                    var name = arg[0].Value as string;
+                    return name;
+                }
+            }
+            return null;
         }
     }
 }

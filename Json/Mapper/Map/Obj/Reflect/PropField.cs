@@ -76,5 +76,6 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             }
             return getMethod.Invoke(obj, null);
         }
+
     }
 }

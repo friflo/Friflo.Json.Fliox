@@ -35,4 +35,12 @@ namespace Friflo.Json.Mapper
     public sealed class FloInstanceAttribute : Attribute {
         public FloInstanceAttribute (Type instance) {}
     }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class FloPropertyNameAttribute : Attribute {
+        public FloPropertyNameAttribute (string name) {}
+    }
 }

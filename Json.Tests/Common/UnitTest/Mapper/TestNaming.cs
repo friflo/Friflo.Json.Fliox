@@ -8,16 +8,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestNaming
     {
         class Naming {
-            public int lower;
-            public int Upper;
+            public int      lower;
+            public int      Upper;
+            
+            [FloPropertyName("field")]
+            public int      namedField;
+            
+            [FloPropertyName("property")]
+            public int      namedProperty { get; set; }
         }
         
         [Test]
         public void CamelCaseTest() {
             string json = @"
             {
-                ""lower"":   10,
-                ""upper"":   11
+                ""property"":   10,
+                ""lower"":      11,
+                ""upper"":      12,
+                ""field"":      13
             }";
             var m = new JsonMapper(new TypeStore(null, new StoreConfig(jsonNaming: new CamelCaseNaming())));
             var naming = m.Read<Naming>(json);
@@ -31,8 +39,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void PascalCaseTest() {
             string json = @"
             {
-                ""Lower"":   10,
-                ""Upper"":   11
+                ""property"":   10,
+                ""Lower"":      11,
+                ""Upper"":      12,
+                ""field"":      13
             }";
             var m = new JsonMapper(new TypeStore(null, new StoreConfig(jsonNaming: new PascalCaseNaming())));
             var naming = m.Read<Naming>(json);
