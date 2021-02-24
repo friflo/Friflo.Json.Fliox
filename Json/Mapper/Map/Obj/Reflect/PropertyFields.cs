@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         public  readonly    int                             objCount;
 
         // ReSharper disable once NotAccessedField.Local
-        private readonly    String                          typeName;
+        private readonly    string                          typeName;
         
         private readonly    Dictionary <string, PropField>  strMap      = new Dictionary <string, PropField>(13);
         private readonly    HashMapOpen<Bytes,  PropField>  fieldMap;

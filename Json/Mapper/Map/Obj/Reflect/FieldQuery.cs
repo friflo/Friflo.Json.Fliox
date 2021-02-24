@@ -21,7 +21,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             TraverseMembers(type, true);
         }
 
-        private void CreatePropField (Type type, String fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
+        private void CreatePropField (Type type, string fieldName, PropertyInfo property, FieldInfo field, bool addMembers) {
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             Type            memberType;
             if (property != null) {
@@ -38,14 +38,15 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             bool isNullableEnum      = ut != null && ut.IsEnum;
             
             if (addMembers) {
+                string jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
                 PropField pf;
                 if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                    pf =     new PropField(fieldName, mapper, field, property, primCount,    -9999); // force index exception in case of buggy impl.
+                    pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999); // force index exception in case of buggy impl.
                 } else {
                     if (mapper.isValueType)
-                        pf = new PropField(fieldName, mapper, field, property, primCount, objCount);
+                        pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount);
                     else
-                        pf = new PropField(fieldName, mapper, field, property, -9999,     objCount); // force index exception in case of buggy impl.
+                        pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount); // force index exception in case of buggy impl.
                 }
 
                 fieldList.Add(pf);

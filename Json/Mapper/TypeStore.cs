@@ -18,10 +18,12 @@ namespace Friflo.Json.Mapper
     [CLSCompliant(true)]
 #endif
     public class StoreConfig {
-        public  readonly bool       useIL;
+        public  readonly    bool        useIL;
+        public  readonly    IJsonNaming jsonNaming;
 
-        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection) {
+        public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, IJsonNaming jsonNaming = null) {
             this.useIL = typeAccess == TypeAccess.IL;
+            this.jsonNaming = jsonNaming ?? new DefaultNaming();
         }
     }
 

@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
 #endif
     public class PropField : IDisposable
     {
-        internal readonly   String              name;
+        internal readonly   string              name;
 
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
@@ -28,14 +28,14 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         private  readonly   MethodInfo      setMethod;
         private  readonly   object[]        setMethodParams = new object[1];
 
-        internal PropField (String name, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
+        internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex)
         {
             this.name       = name;
             this.fieldType  = fieldType;
-            this.nameBytes  = new Bytes(name);
-            firstMember     = new Bytes($"{{\"{name}\":");
-            subSeqMember    = new Bytes($",\"{name}\":");
+            this.nameBytes  = new Bytes(jsonName);
+            firstMember     = new Bytes($"{{\"{jsonName}\":");
+            subSeqMember    = new Bytes($",\"{jsonName}\":");
             //
             this.field      = field;
             this.property   = property;
