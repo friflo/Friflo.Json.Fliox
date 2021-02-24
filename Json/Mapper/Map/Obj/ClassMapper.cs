@@ -74,22 +74,17 @@ namespace Friflo.Json.Mapper.Map.Obj
                         throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
                         throw new InvalidOperationException($"[Instance({instanceType.Name})] type must extend annotated type: {type}");
-                } else if (attr.AttributeType == typeof(JsonTypeAttribute)) {
+                } else if (attr.AttributeType == typeof(DiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
-                        foreach (var arg in attr.NamedArguments) {
-                            if (arg.MemberName == nameof(JsonTypeAttribute.Discriminator)) {
-                                if (arg.TypedValue.Value != null) {
-                                    discriminator = (string) arg.TypedValue.Value;
-                                }
-                            }
-                        }
+                        var arg = attr.ConstructorArguments;
+                        discriminator = (string) arg[0].Value;
                     }
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException($"specified Discriminator require at least one [Polymorph] attribute on: {type}");
+                throw new InvalidOperationException($"specified [Discriminator] require at least one [Polymorph] attribute on: {type}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException($"specified [Polymorph] attribute require [JsonType (Discriminator=<name>)] on: {type}");
+                throw new InvalidOperationException($"specified [Polymorph] attribute require [Discriminator] on: {type}");
 
             polyTypes = typeList.ToArray();
             return instanceType != null | polyTypes.Length > 0;

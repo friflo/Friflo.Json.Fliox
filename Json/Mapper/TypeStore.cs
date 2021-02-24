@@ -134,7 +134,10 @@ namespace Friflo.Json.Mapper
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public sealed class JsonTypeAttribute : Attribute {
         public Type     TypeMapper    { get; set; }
-        public string   Discriminator { get; set; }
+    }
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+    public sealed class DiscriminatorAttribute : Attribute {
+        public DiscriminatorAttribute (string discriminator) {}
     }
     
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]

@@ -80,12 +80,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         class TestNoDiscriminatorImpl : TestNoDiscriminator { }
         
         // exception
-        [JsonType(Discriminator = "discriminator")]
+        [Discriminator ("discriminator")]
         abstract class TestNoPolymorph { }
         class TestNoPolymorphImpl : TestNoPolymorph { }
         
         
-        [JsonType (Discriminator = "animalType")]
+        [Discriminator("animalType")]
         [Polymorph(typeof(Lion))]
         interface IAnimal {
         }
@@ -123,15 +123,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual("[Polymorph(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestPolymorphNull", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoDiscriminator>("{}"));
-                AreEqual("specified [Polymorph] attribute require [JsonType (Discriminator=<name>)] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
+                AreEqual("specified [Polymorph] attribute require [Discriminator] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoPolymorph>("{}"));
-                AreEqual("specified Discriminator require at least one [Polymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
+                AreEqual("specified [Discriminator] require at least one [Polymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
             }
         }
         
         // --------------- polymorphic class
-        [JsonType (Discriminator = "personType")]
+        [Discriminator ("personType")]
         [Polymorph(typeof(Employee))]
         abstract class Person {
         }
