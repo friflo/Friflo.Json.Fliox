@@ -137,7 +137,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         class Derived : Base {
+            [FloProperty]
             private     int derivedField = 0;
+            [FloProperty]
             private     int Int32 { get; set; }  // compiler auto generate backing field
 
             public void AssertFields() {
