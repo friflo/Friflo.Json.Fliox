@@ -2,6 +2,7 @@
 using Friflo.Json.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+#pragma warning disable 649 // Field 'field' is never assigned
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -10,7 +11,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         class Naming {
             public int      lower;
             public int      Upper;
+
+            // ignored members
+            [FloIgnore]
+            public int      ignoredField;
             
+            [FloIgnore]
+            public int      ignoredProperty { get; set; }
+
+            // custom member names
             [FloProperty(Name = "field")]
             public int      namedField;
             

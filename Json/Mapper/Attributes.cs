@@ -43,4 +43,11 @@ namespace Friflo.Json.Mapper
     public sealed class FloPropertyAttribute : Attribute {
         public string     Name    { get; set; }
     }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class FloIgnoreAttribute : Attribute {
+    }
 }
