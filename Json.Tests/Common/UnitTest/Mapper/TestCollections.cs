@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestIList() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestICollection() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestIEnumerable() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             {
                 // --- IEnumerable<>
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestReadOnlyCollection() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestStack() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestQueue() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestIDictionary() {
-            using (TypeStore    typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             using (JsonWriter   writer      = new JsonWriter(typeStore))
             using (var          dst         = new TestBytes())

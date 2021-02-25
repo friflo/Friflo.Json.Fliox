@@ -56,9 +56,9 @@ namespace Friflo.Json.Mapper
             config = new StoreConfig();
         }
         
-        public TypeStore(ITypeResolver resolver, StoreConfig config) {
-            this.typeResolver   = resolver ?? new DefaultTypeResolver();
-            this.config         = config ?? new StoreConfig();
+        public TypeStore(StoreConfig config = null, ITypeResolver resolver = null) {
+            this.config         = config    ?? new StoreConfig();
+            this.typeResolver   = resolver  ?? new DefaultTypeResolver();
         }
             
         public void Dispose() {

@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private void TestInterface(TypeAccess typeAccess) {
             var json = "{\"int32\":123}";
-            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private void TestPolymorphic(TypeAccess typeAccess) {
             var json = "{\"animalType\":\"lion\",\"int32\":123}";
-            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private void TestAbstract(TypeAccess typeAccess) {
             var json = "{\"personType\":\"Employee\",\"int32\":123}";
-            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {
@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 }";
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
             
-            using (var typeStore = new TypeStore(null, new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
             using (var writer = new JsonWriter(typeStore))
             {

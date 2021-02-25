@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
                 return;
             json = new Bytes(0);
             var shelf = CreateBookShelf();
-            using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (var typeStore = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (var writer = new JsonWriter(typeStore)) {
                 writer.Write(shelf, ref json);
             }
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
         public void TestWrite() {
             BookShelf shelf = CreateBookShelf();
             Stream stream = new MemoryStream();
-            using (var      typeStore   = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+            using (var      typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
             using (var      writer      = new JsonWriter(typeStore))
             {
                 for (int n = 0; n < 10; n++) {
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
             for (int n = 0; n < 10; n++) {
                 GC.Collect();
                 int start = TimeUtil.GetMs();
-                using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+                using (var typeStore = new TypeStore(new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
                 {
                     reader.ReadTo(bookShelfJson, shelf);
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Perf.Mapper
             for (int n = 0; n < 10; n++) {
                 GC.Collect();
                 int start = TimeUtil.GetMs();
-                using (var typeStore = new TypeStore(null, new StoreConfig(TypeAccess.IL)))
+                using (var typeStore = new TypeStore(new StoreConfig(TypeAccess.IL)))
                 using (var reader = new JsonReader(typeStore))
                 {
                     reader.Read<BookShelf>(bookShelfJson);

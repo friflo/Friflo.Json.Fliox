@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""upper"":      12,
                 ""field"":      13
             }";
-            var m = new JsonMapper(new TypeStore(null, new StoreConfig(jsonNaming: new CamelCaseNaming())));
+            var m = new JsonMapper(new TypeStore(new StoreConfig(jsonNaming: new CamelCaseNaming())));
             var naming = m.Read<Naming>(json);
             var result = m.Write(naming);
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""Upper"":      12,
                 ""field"":      13
             }";
-            var m = new JsonMapper(new TypeStore(null, new StoreConfig(jsonNaming: new PascalCaseNaming())));
+            var m = new JsonMapper(new TypeStore(new StoreConfig(jsonNaming: new PascalCaseNaming())));
             var naming = m.Read<Naming>(json);
             var result = m.Write(naming);
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
