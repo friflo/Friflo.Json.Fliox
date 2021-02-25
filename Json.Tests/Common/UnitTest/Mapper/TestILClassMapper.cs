@@ -375,7 +375,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test] public void  ReadClassIL()        { ReadClassIL(TypeAccess.IL); }
         
         private void        ReadClassIL(TypeAccess typeAccess) {
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess), null))
+            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
             using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
             {
                 var result = reader.Read<SampleIL>(payloadStr);
