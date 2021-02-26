@@ -50,13 +50,17 @@ namespace Friflo.Json.Mapper
         public void Dispose() {
             intern.Dispose();
         }
-
-        private void InitJsonWriterBytes() {
-            intern.outputType  = OutputType.ByteList;
-            //
+        
+        private void InitJsonWriter() {
             intern.bytes.Clear();
             intern.level = 0;
             intern.InitMirrorStack();
+            intern.jsonValueType.array[0] = JsonValue.Element;
+        }
+
+        private void InitJsonWriterBytes() {
+            intern.outputType  = OutputType.ByteList;
+            InitJsonWriter();
         }
 
         private void InitJsonWriterStream(Stream stream) {
@@ -67,18 +71,12 @@ namespace Friflo.Json.Mapper
 #else
             intern.bytesWriter = bytesWriter;
 #endif
-            //
-            intern.bytes.Clear();
-            intern.level = 0;
-            intern.InitMirrorStack();
+            InitJsonWriter();
         }
         
         private void InitJsonWriterString() {
             intern.outputType = OutputType.ByteList;
-            //
-            intern.bytes.Clear();
-            intern.level = 0;
-            intern.InitMirrorStack();
+            InitJsonWriter();
         }
         
         // --------------- Bytes ---------------

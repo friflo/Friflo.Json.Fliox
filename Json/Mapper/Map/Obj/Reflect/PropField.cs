@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             this.name       = name;
             this.fieldType  = fieldType;
             this.nameBytes  = new Bytes(jsonName);
-            firstMember     = new Bytes($"{{\"{jsonName}\":");
+            firstMember     = new Bytes($"{'{'}\"{jsonName}\":");
             subSeqMember    = new Bytes($",\"{jsonName}\":");
             //
             this.field      = field;

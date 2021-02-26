@@ -49,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
         public override void Write(ref Writer writer, TMap map) {
-            int startLevel = writer.IncLevel();
+            int startLevel = writer.IncLevel(JsonValue.Object);
 
             writer.bytes.AppendChar('{');
             int n = 0;

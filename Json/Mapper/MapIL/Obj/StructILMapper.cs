@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 writer.AppendNull();
                 return;
             }
-            int startLevel = writer.IncLevel();
+            int startLevel = writer.IncLevel(JsonValue.Object);
             
             PropField[] fields = propFields.fields;
             bool firstMember = true;
