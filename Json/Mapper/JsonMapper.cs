@@ -28,6 +28,11 @@ namespace Friflo.Json.Mapper
             }
         }
         
+        public      bool        WriteNullMembers {
+            get => writer.WriteNullMembers;
+            set => writer.WriteNullMembers = value;
+        }
+        
         public JsonMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
             typeStore       = typeStore ?? new TypeStore();
             this.typeStore  = typeStore;
