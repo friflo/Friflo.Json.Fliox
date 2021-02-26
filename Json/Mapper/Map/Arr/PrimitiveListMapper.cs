@@ -93,7 +93,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public override void Write(ref Writer writer, List<T> slot) {
             int startLevel = writer.IncLevel();
             var list = slot;
-            writer.bytes.AppendChar('[');
+            writer.WriteArrayBegin();
             for (int n = 0; n < list.Count; n++) {
                 writer.WriteDelimiter(n);
                 var elemVar = list[n];

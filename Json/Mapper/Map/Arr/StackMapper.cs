@@ -44,7 +44,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public override void Write(ref Writer writer, TCol slot) {
             int startLevel = writer.IncLevel();
             var stack = slot;
-            writer.bytes.AppendChar('[');
+            writer.WriteArrayBegin();
             
             int n = 0;
             foreach (var currentItem in stack) {

@@ -108,6 +108,12 @@ namespace Friflo.Json.Mapper.Map
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteArrayBegin() {
+            bytes.EnsureCapacityAbs(bytes.end + 1);
+            bytes.buffer.array[bytes.end++] = (byte)'[';
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteArrayEnd() {
             if (pretty)
                 IndentEnd();

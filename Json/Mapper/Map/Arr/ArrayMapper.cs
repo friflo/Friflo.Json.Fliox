@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         public override void Write(ref Writer writer, TElm[] slot) {
             int startLevel = writer.IncLevel();
             var arr = slot;
-            writer.bytes.AppendChar('[');
+            writer.WriteArrayBegin();
             for (int n = 0; n < arr.Length; n++) {
                 writer.WriteDelimiter(n);
                 
