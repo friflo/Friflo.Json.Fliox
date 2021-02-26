@@ -90,11 +90,12 @@ namespace Friflo.Json.Mapper.Map
             throw new InvalidOperationException("WriteField() not applicable");
         }
 
-        public override void WriteObject(ref Writer writer, object slot) {
-            if (slot != null)
-                Write(ref writer, (TVal) slot);
-            else
-                writer.AppendNull();
+        public override void WriteObject(ref Writer writer, object value) {
+#if DEBUG
+            if (value == null)
+                throw new InvalidOperationException("WriteObject() value must not be null");
+#endif
+            Write(ref writer, (TVal) value);
         }
 
         public override object ReadObject(ref Reader reader, object slot, out bool success) {

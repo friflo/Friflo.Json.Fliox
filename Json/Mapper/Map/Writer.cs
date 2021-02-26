@@ -30,6 +30,7 @@ namespace Friflo.Json.Mapper.Map
         internal            int                 level;
         public              int                 maxDepth;
         public              bool                pretty;
+        public              bool                writeNullMembers;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -52,6 +53,7 @@ namespace Friflo.Json.Mapper.Map
             maxDepth        = JsonParser.DefaultMaxDepth;
             outputType      = OutputType.ByteList;
             pretty          = false;
+            writeNullMembers= true;
 #if JSON_BURST
             writerHandle    = -1;
 #else

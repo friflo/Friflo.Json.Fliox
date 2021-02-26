@@ -128,12 +128,15 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                writer.WriteFieldKey(field, ref firstMember); 
                 
                 object elemVar = field.GetField(objRef);
                 if (elemVar == null) {
-                    writer.AppendNull();
+                    if (writer.writeNullMembers) {
+                        writer.WriteFieldKey(field, ref firstMember);
+                        writer.AppendNull();
+                    }
                 } else {
+                    writer.WriteFieldKey(field, ref firstMember); 
                     var fieldType = field.fieldType;
                     fieldType.WriteObject(ref writer, elemVar);
                     writer.FlushFilledBuffer();

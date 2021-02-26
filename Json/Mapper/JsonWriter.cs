@@ -42,6 +42,11 @@ namespace Friflo.Json.Mapper
             get => intern.pretty;
             set => intern.pretty = value;
         }
+        
+        public      bool        WriteNullMembers {
+            get => intern.writeNullMembers;
+            set => intern.writeNullMembers = value;
+        }
 
         public JsonWriter(TypeStore typeStore) {
             intern = new Writer(typeStore);

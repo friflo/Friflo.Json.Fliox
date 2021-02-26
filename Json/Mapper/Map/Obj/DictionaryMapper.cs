@@ -57,8 +57,10 @@ namespace Friflo.Json.Mapper.Map.Obj
             foreach (var entry in map) {
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
-                    writer.WriteKey(entry.Key, n++);
-                    writer.AppendNull();
+                    if (writer.writeNullMembers) {
+                        writer.WriteKey(entry.Key, n++);
+                        writer.AppendNull();
+                    }
                 } else {
                     writer.WriteKey(entry.Key, n++);
                     elementType.Write(ref writer, elemVar);
