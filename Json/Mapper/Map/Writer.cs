@@ -16,11 +16,6 @@ namespace Friflo.Json.Mapper.Map
         ByteWriter,
     }
     
-    public enum JsonValue {
-        Object,
-        Element,
-    }
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -34,7 +29,6 @@ namespace Friflo.Json.Mapper.Map
         internal            Bytes               @null;
         internal            int                 level;
         public              int                 maxDepth;
-        internal            ValueList<JsonValue>jsonValueType;
         public              bool                pretty;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
@@ -56,7 +50,6 @@ namespace Friflo.Json.Mapper.Map
             typeCache       = new TypeCache(typeStore);
             level           = 0;
             maxDepth        = JsonParser.DefaultMaxDepth;
-            jsonValueType   = new ValueList<JsonValue>(1, AllocType.Persistent);
             outputType      = OutputType.ByteList;
             pretty          = false;
 #if JSON_BURST
@@ -71,7 +64,6 @@ namespace Friflo.Json.Mapper.Map
         }
         
         public void Dispose() {
-            jsonValueType.Dispose();
             typeCache.Dispose();
             @null.Dispose();
             format.Dispose();
@@ -81,7 +73,7 @@ namespace Friflo.Json.Mapper.Map
         
         // --- WriteUtils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteString(String str) {
+        public void WriteString(string str) {
             JsonSerializer.AppendEscString(ref bytes, in str);
         }
         
@@ -92,14 +84,9 @@ namespace Friflo.Json.Mapper.Map
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IncLevel(JsonValue jsonValue) {
+        public int IncLevel() {
             if (level++ < maxDepth)
                 return level;
-            if (jsonValueType.Count <= level) {
-                int newSize = 2 * (level + 1); // level + 1 is enough, but double to avoid multiple Resize() calls
-                jsonValueType.Resize(newSize);
-            }
-            jsonValueType.array[level] = jsonValue;
             throw new InvalidOperationException($"JsonParser: maxDepth exceeded. maxDepth: {maxDepth}");
         }
         
@@ -180,9 +167,16 @@ namespace Friflo.Json.Mapper.Map
             FlushFilledBuffer();
             firstMember = false;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteKey(string key, int pos) {
+            WriteDelimiter(pos);
+            WriteString(key);
+            bytes.AppendChar(':');
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteMemberKey(PropField field, ref bool firstMember) {
+        public void WriteFieldKey(PropField field, ref bool firstMember) {
             if (!pretty) {
                 if (firstMember)
                     bytes.AppendBytes(ref field.firstMember);

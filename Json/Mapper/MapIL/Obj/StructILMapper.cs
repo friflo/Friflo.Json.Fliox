@@ -28,14 +28,14 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                 writer.AppendNull();
                 return;
             }
-            int startLevel = writer.IncLevel(JsonValue.Object);
+            int startLevel = writer.IncLevel();
             
             PropField[] fields = propFields.fields;
             bool firstMember = true;
 
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                writer.WriteMemberKey(field, ref firstMember);
+                writer.WriteFieldKey(field, ref firstMember);
                 
                 field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
                 writer.FlushFilledBuffer();

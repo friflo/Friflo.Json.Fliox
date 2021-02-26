@@ -41,7 +41,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         public override void Write(ref Writer writer, T slot) {
-            int startLevel = writer.IncLevel(JsonValue.Object);
+            int startLevel = writer.IncLevel();
             T obj = slot;
             TypeMapper classMapper = this;
             bool firstMember = true;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                writer.WriteMemberKey(field, ref firstMember);
+                writer.WriteFieldKey(field, ref firstMember);
 
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 if (field.fieldType.isValueType) {

@@ -42,7 +42,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
 
         public override void Write(ref Writer writer, TCol slot) {
-            int startLevel = writer.IncLevel(JsonValue.Element);
+            int startLevel = writer.IncLevel();
             var queue = slot;
             writer.WriteArrayBegin();
             

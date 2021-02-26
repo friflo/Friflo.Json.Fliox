@@ -111,7 +111,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         // ----------------------------------- Write / Read -----------------------------------
         
         public override void Write(ref Writer writer, T slot) {
-            int startLevel = writer.IncLevel(JsonValue.Object);
+            int startLevel = writer.IncLevel();
 
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             TypeMapper classMapper = this;
@@ -128,7 +128,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                writer.WriteMemberKey(field, ref firstMember); 
+                writer.WriteFieldKey(field, ref firstMember); 
                 
                 object elemVar = field.GetField(objRef);
                 if (elemVar == null) {

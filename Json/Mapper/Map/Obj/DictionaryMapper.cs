@@ -49,20 +49,18 @@ namespace Friflo.Json.Mapper.Map.Obj
         }
 
         public override void Write(ref Writer writer, TMap map) {
-            int startLevel = writer.IncLevel(JsonValue.Object);
+            int startLevel = writer.IncLevel();
 
             writer.bytes.AppendChar('{');
             int n = 0;
 
             foreach (var entry in map) {
-                writer.WriteDelimiter(n++);
-                writer.WriteString(entry.Key);
-                writer.bytes.AppendChar(':');
-                
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
+                    writer.WriteKey(entry.Key, n++);
                     writer.AppendNull();
                 } else {
+                    writer.WriteKey(entry.Key, n++);
                     elementType.Write(ref writer, elemVar);
                     writer.FlushFilledBuffer();
                 }

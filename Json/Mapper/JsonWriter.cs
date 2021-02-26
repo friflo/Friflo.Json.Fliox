@@ -55,7 +55,6 @@ namespace Friflo.Json.Mapper
             intern.bytes.Clear();
             intern.level = 0;
             intern.InitMirrorStack();
-            intern.jsonValueType.array[0] = JsonValue.Element;
         }
 
         private void InitJsonWriterBytes() {
