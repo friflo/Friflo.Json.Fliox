@@ -4,7 +4,7 @@ using System;
 
 namespace Friflo.Json.Mapper
 {
-    public static class Flo {
+    public static class Fri {
     #if !UNITY_5_3_OR_NEWER
         [CLSCompliant(true)]
     #endif

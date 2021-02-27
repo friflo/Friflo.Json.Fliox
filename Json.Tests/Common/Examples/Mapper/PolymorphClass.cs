@@ -7,9 +7,9 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     public class TestPolymorphClass
     {
-        [Flo.Discriminator("vehicleType")]
-        [Flo.Polymorph(typeof(Car),     Discriminant = "car")]
-        [Flo.Polymorph(typeof(Bike),    Discriminant = "bike")]
+        [Fri.Discriminator("vehicleType")]
+        [Fri.Polymorph(typeof(Car),     Discriminant = "car")]
+        [Fri.Polymorph(typeof(Bike),    Discriminant = "bike")]
         class Vehicle {
         }
         
