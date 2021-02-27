@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 #pragma warning disable 649 // Field 'field' is never assigned
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public class TestMemberNull
+    public class TestMemberNull : LeakTestsFixture
     {
         enum EnumNull {
         }
@@ -37,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""nullableStruct"": null,
                 ""nullableEnum"":   null
             }";
-            using (TypeStore typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var m = new JsonMapper(typeStore)) {
                 var naming = m.Read<TestNull>(json);
                 var result = m.Write(naming);
@@ -52,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         private void OmitNull(TypeAccess typeAccess) {
             string json = "{}";
-            using (TypeStore typeStore = new TypeStore(new StoreConfig(typeAccess)))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var m = new JsonMapper(typeStore)) {
                 m.WriteNullMembers = false;
                 var naming = m.Read<TestNull>(json);

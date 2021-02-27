@@ -16,6 +16,8 @@ namespace Friflo.Json.Mapper
         public readonly TypeStore   typeStore;
         public readonly JsonReader  reader;
         public readonly JsonWriter  writer;
+        
+        private readonly TypeStore  autoStore;
 
         private         int         maxDepth;
         
@@ -34,7 +36,7 @@ namespace Friflo.Json.Mapper
         }
         
         public JsonMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
-            typeStore       = typeStore ?? new TypeStore();
+            typeStore       = typeStore ?? (autoStore = new TypeStore());
             this.typeStore  = typeStore;
             reader          = new JsonReader(typeStore, errorHandler);
             writer          = new JsonWriter(typeStore);
@@ -44,7 +46,7 @@ namespace Friflo.Json.Mapper
         public void Dispose() {
             writer.Dispose();
             reader.Dispose();
-            typeStore.Dispose();
+            autoStore?.Dispose();
         }
         
         // --------------- Bytes ---------------
