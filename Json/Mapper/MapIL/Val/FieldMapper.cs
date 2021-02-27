@@ -13,10 +13,11 @@ namespace Friflo.Json.Mapper.MapIL.Val
     static class NullableMapper {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void WriteValue<T>(ref Writer writer, T? value, TypeMapper<T?> mapper) where T : struct {
-            if (value.HasValue) 
-                mapper.Write(ref writer, value.Value);
-            else
-                writer.AppendNull();
+#if DEBUG
+            if (!value.HasValue)
+                throw new InvalidOperationException("Expect non null primitive. Type: " + typeof(T));
+#endif
+            mapper.Write(ref writer, value.Value);
         }
     }
 

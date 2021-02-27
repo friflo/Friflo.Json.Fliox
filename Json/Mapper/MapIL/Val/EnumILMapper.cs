@@ -107,10 +107,10 @@ namespace Friflo.Json.Mapper.MapIL.Val
 
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             long? integralValue = mirror.LoadLongNull(primPos);
-            if (integralValue == null) {
-                writer.AppendNull();
-                return;
-            }
+#if DEBUG
+            if (integralValue == null)
+                throw new InvalidOperationException("Expect non null enum. Type: " + typeof(T));
+#endif
             if (!integralToString.TryGetValue((long)integralValue, out EnumString enumName))
                 throw new InvalidOperationException($"invalid integral enum value: {integralValue} for enum type: {typeof(T)}" );
             writer.bytes.AppendChar('\"');
