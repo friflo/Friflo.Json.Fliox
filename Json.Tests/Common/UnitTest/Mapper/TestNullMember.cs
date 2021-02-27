@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public EnumNull?    nullableEnum;
         }
         
-        [Test]  public void WriteNullReflect()   { WriteNull(TypeAccess.Reflection); }
-        [Test]  public void WriteNullClassIL()   { WriteNull(TypeAccess.IL); }
+        [Test] public void WriteNullReflect()   { WriteNull(TypeAccess.Reflection); }
+        [Test] public void WriteNullIL()        { WriteNull(TypeAccess.IL); }
         
         private void WriteNull(TypeAccess typeAccess) {
             string json = @"
@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]     public void OmitNullReflect()   { OmitNull(TypeAccess.Reflection); }
-        [Test]     public void OmitNullClassIL()   { OmitNull(TypeAccess.IL); }
+        [Test] public void OmitNullReflect()    { OmitNull(TypeAccess.Reflection); }
+        [Test] public void OmitNullIL()         { OmitNull(TypeAccess.IL); }
 
         private void OmitNull(TypeAccess typeAccess) {
             string json = "{}";

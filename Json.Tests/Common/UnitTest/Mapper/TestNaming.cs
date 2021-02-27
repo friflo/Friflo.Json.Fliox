@@ -28,8 +28,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public int      namedProperty { get; set; }
         }
         
-        [Test]
-        public void CamelCaseTest() {
+        [Test] public void CamelCaseReflect()    { CamelCase(TypeAccess.Reflection); }
+        [Test] public void CamelCaseIL()         { CamelCase(TypeAccess.IL); }
+
+        private void CamelCase(TypeAccess typeAccess) {
             string json = @"
             {
                 ""property"":   10,
@@ -37,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore =  new TypeStore(new StoreConfig(jsonNaming: new CamelCaseNaming())))
+            using (var typeStore =  new TypeStore(new StoreConfig(typeAccess, new CamelCaseNaming())))
             using (var m = new JsonMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
@@ -47,8 +49,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]
-        public void PascalCaseTest() {
+        [Test] public void PascalCaseReflect()    { PascalCase(TypeAccess.Reflection); }
+        [Test] public void PascalCaseIL()         { PascalCase(TypeAccess.IL); }
+        
+        private void PascalCase(TypeAccess typeAccess) {
             string json = @"
             {
                 ""property"":   10,
@@ -56,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""Upper"":      12,
                 ""field"":      13
             }";
-            using (var typeStore = new TypeStore(new StoreConfig(jsonNaming: new PascalCaseNaming())))
+            using (var typeStore = new TypeStore(new StoreConfig(typeAccess, new PascalCaseNaming())))
             using (var m = new JsonMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
