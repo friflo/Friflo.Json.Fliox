@@ -19,15 +19,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         abstract class Abstract { }
         
         // exception: type is null
-        [Flo.InstanceAttribute(null)]
+        [Flo.Instance(null)]
         interface ITestInstanceNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Flo.InstanceAttribute(typeof(Book))]
+        [Flo.Instance(typeof(Book))]
         interface ITestIncompatibleInstance { }
 
         // --- IBook
-        [Flo.InstanceAttribute(typeof(Book))]
+        [Flo.Instance(typeof(Book))]
         interface IBook { }
 
         class Book : IBook {
@@ -68,26 +68,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         // --------------- polymorphic interface
         // exception: type is null
-        [Flo.PolymorphAttribute(null)]
+        [Flo.Polymorph(null)]
         abstract class TestPolymorphNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Flo.PolymorphAttribute(typeof(Book))]
+        [Flo.Polymorph(typeof(Book))]
         abstract class TestIncompatiblePolymorph { }
         
         // exception
-        [Flo.PolymorphAttribute(typeof(TestNoDiscriminator))]
+        [Flo.Polymorph(typeof(TestNoDiscriminator))]
         abstract class TestNoDiscriminator { }
         class TestNoDiscriminatorImpl : TestNoDiscriminator { }
         
         // exception
-        [Flo.DiscriminatorAttribute ("discriminator")]
+        [Flo.Discriminator ("discriminator")]
         abstract class TestNoPolymorph { }
         class TestNoPolymorphImpl : TestNoPolymorph { }
         
         
-        [Flo.DiscriminatorAttribute("animalType")]
-        [Flo.PolymorphAttribute(typeof(Lion), Discriminant = "lion")]
+        [Flo.Discriminator("animalType")]
+        [Flo.Polymorph(typeof(Lion), Discriminant = "lion")]
         interface IAnimal {
         }
 
@@ -132,8 +132,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         // --------------- polymorphic class
-        [Flo.DiscriminatorAttribute ("personType")]
-        [Flo.PolymorphAttribute(typeof(Employee))]
+        [Flo.Discriminator ("personType")]
+        [Flo.Polymorph(typeof(Employee))]
         abstract class Person {
         }
 
