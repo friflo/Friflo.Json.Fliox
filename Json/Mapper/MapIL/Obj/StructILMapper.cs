@@ -22,6 +22,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
+        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+            return isNullable && !mirror.LoadPrimitiveHasValue(primPos);
+        }
+        
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             // write JSON value: null, if it is a Nullable<struct>
             if (isNullable && !mirror.LoadPrimitiveHasValue(primPos)) {
@@ -35,10 +39,16 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                writer.WriteFieldKey(field, ref firstMember);
-                
-                field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
-                writer.FlushFilledBuffer();
+                if (field.fieldType.IsValueNullIL(mirror, primPos + field.primIndex, objPos + field.objIndex)) {
+                    if (writer.writeNullMembers) {
+                        writer.WriteFieldKey(field, ref firstMember);
+                        writer.AppendNull();
+                    }
+                } else {
+                    writer.WriteFieldKey(field, ref firstMember);
+                    field.fieldType.WriteValueIL(ref writer, mirror, primPos + field.primIndex, objPos + field.objIndex);
+                    writer.FlushFilledBuffer();
+                }
             }
             writer.WriteObjectEnd(firstMember);
             writer.DecLevel(startLevel);

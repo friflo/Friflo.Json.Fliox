@@ -100,6 +100,10 @@ namespace Friflo.Json.Mapper.MapIL.Val
         }
 
         // ------------------------------------- WriteValueIL / ReadValueIL ------------------------------------- 
+        
+        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+            return mirror.LoadLongNull(primPos) == null;
+        }
 
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             long? integralValue = mirror.LoadLongNull(primPos);

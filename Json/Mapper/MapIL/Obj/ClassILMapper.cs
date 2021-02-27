@@ -24,6 +24,10 @@ namespace Friflo.Json.Mapper.MapIL.Obj
             layout = new ClassLayout<T>(this, typeStore.config);
         }
         
+        public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {
+            return mirror.LoadObj(objPos) == null;
+        }
+        
         public override void WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos) {
             object obj = mirror.LoadObj(objPos);
             if (obj == null)
@@ -57,8 +61,15 @@ namespace Friflo.Json.Mapper.MapIL.Obj
 
                 // check for JSON value: null is done in WriteValueIL() struct's requires different handling than reference types
                 if (field.fieldType.isValueType) {
-                    writer.WriteFieldKey(field, ref firstMember);
-                    field.fieldType.WriteValueIL(ref writer, mirror, field.primIndex, field.objIndex);
+                    if (field.fieldType.IsValueNullIL(mirror, field.primIndex, field.objIndex)) {
+                        if (writer.writeNullMembers) {
+                            writer.WriteFieldKey(field, ref firstMember);
+                            writer.AppendNull();  
+                        }
+                    } else {
+                        writer.WriteFieldKey(field, ref firstMember);
+                        field.fieldType.WriteValueIL(ref writer, mirror, field.primIndex, field.objIndex);
+                    }
                 } else {
                     object fieldObj = mirror.LoadObj(field.objIndex);
                     if (fieldObj == null) {

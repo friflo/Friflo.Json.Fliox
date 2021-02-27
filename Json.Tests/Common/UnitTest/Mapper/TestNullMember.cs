@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -8,13 +9,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestMemberNull
     {
+        enum EnumNull {
+        }
+        
+        struct StructNull {
+        }
+        
         class Child {
         }
         
         class TestNull
         {
-            public Child    child;
-            public int?     int32;
+            public int?         int32;
+            public Child        child;
+            public StructNull?  nullableStruct;
+            public EnumNull?    nullableEnum;
         }
         
         [Test]  public void WriteNullReflect()   { WriteNull(TypeAccess.Reflection); }
@@ -23,8 +32,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void WriteNull(TypeAccess typeAccess) {
             string json = @"
             {
-                ""child"":   null,
-                ""int32"":   null
+                ""int32"":          null,
+                ""child"":          null,
+                ""nullableStruct"": null,
+                ""nullableEnum"":   null
             }";
             using (TypeStore typeStore = new TypeStore(new StoreConfig(typeAccess)))
             using (var m = new JsonMapper(typeStore)) {
@@ -36,8 +47,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
-        [Test]                  public void OmitNullReflect()   { OmitNull(TypeAccess.Reflection); }
-        [Test]  [Ignore("")]    public void OmitNullClassIL()   { OmitNull(TypeAccess.IL); }
+        [Test]     public void OmitNullReflect()   { OmitNull(TypeAccess.Reflection); }
+        [Test]     public void OmitNullClassIL()   { OmitNull(TypeAccess.IL); }
 
         private void OmitNull(TypeAccess typeAccess) {
             string json = "{}";
