@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
     }
 
-    [FloInstance(typeof(Sub))]
+    [Flo.Instance(typeof(Sub))]
     public interface ISub {
     }
 

@@ -4,50 +4,52 @@ using System;
 
 namespace Friflo.Json.Mapper
 {
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class FloTypeMapperAttribute : Attribute {
-        public FloTypeMapperAttribute (Type  typeMapper) {}
-    }
-    
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class FloDiscriminatorAttribute : Attribute {
-        public FloDiscriminatorAttribute (string discriminator) {}
-    }
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class FloPolymorphAttribute : Attribute {
-        public string     Discriminant    { get; set; }
-        public FloPolymorphAttribute (Type instance) {}
-    }
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class FloInstanceAttribute : Attribute {
-        public FloInstanceAttribute (Type instance) {}
-    }
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class FloPropertyAttribute : Attribute {
-        public string     Name    { get; set; }
-    }
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class FloIgnoreAttribute : Attribute {
+    public static class Flo {
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+        public sealed class TypeMapperAttribute : Attribute {
+            public TypeMapperAttribute (Type  typeMapper) {}
+        }
+        
+        
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+        public sealed class DiscriminatorAttribute : Attribute {
+            public DiscriminatorAttribute (string discriminator) {}
+        }
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
+        public sealed class PolymorphAttribute : Attribute {
+            public string     Discriminant    { get; set; }
+            public PolymorphAttribute (Type instance) {}
+        }
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+        public sealed class InstanceAttribute : Attribute {
+            public InstanceAttribute (Type instance) {}
+        }
+        
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+        public sealed class PropertyAttribute : Attribute {
+            public string     Name    { get; set; }
+        }
+        
+    #if !UNITY_5_3_OR_NEWER
+        [CLSCompliant(true)]
+    #endif
+        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+        public sealed class IgnoreAttribute : Attribute {
+        }
     }
 }

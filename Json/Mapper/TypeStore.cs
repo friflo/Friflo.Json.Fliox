@@ -114,7 +114,7 @@ namespace Friflo.Json.Mapper
         
         private static Type GetTypeMapperType(Type type) {
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(FloTypeMapperAttribute)) {
+                if (attr.AttributeType == typeof(Flo.TypeMapperAttribute)) {
                     var arg = attr.ConstructorArguments;
                     var typeMapper = arg[0].Value as Type;
                     if (typeMapper != null && typeMapper.IsSubclassOf(typeof(TypeMapper)))

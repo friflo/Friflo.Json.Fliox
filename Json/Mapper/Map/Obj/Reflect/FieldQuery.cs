@@ -115,7 +115,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         
         private static bool Property(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(FloPropertyAttribute))
+                if (attr.AttributeType == typeof(Flo.PropertyAttribute))
                     return true;
             }
             return false;
@@ -123,7 +123,7 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
         
         private static bool Ignore(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(FloIgnoreAttribute))
+                if (attr.AttributeType == typeof(Flo.IgnoreAttribute))
                     return true;
             }
             return false;
@@ -131,10 +131,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 
         private static string PropertyName(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(FloPropertyAttribute)) {
+                if (attr.AttributeType == typeof(Flo.PropertyAttribute)) {
                     if (attr.NamedArguments != null) {
                         foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(FloPropertyAttribute.Name)) {
+                            if (args.MemberName == nameof(Flo.PropertyAttribute.Name)) {
                                 if (args.TypedValue.Value != null)
                                     return args.TypedValue.Value as string;
                             }

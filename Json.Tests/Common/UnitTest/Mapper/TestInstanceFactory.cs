@@ -12,22 +12,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         // --------------- interface
         
-        // exception: missing [FloInstance] or [FloPolymorph] attribute
+        // exception: missing [Flo.Instance] or [Flo.Polymorph] attribute
         interface IVehicle { }
         
-        // exception: missing [FloInstance] or [FloPolymorph] attribute
+        // exception: missing [Flo.Instance] or [Flo.Polymorph] attribute
         abstract class Abstract { }
         
         // exception: type is null
-        [FloInstance(null)]
+        [Flo.InstanceAttribute(null)]
         interface ITestInstanceNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [FloInstance(typeof(Book))]
+        [Flo.InstanceAttribute(typeof(Book))]
         interface ITestIncompatibleInstance { }
 
         // --- IBook
-        [FloInstance(typeof(Book))]
+        [Flo.InstanceAttribute(typeof(Book))]
         interface IBook { }
 
         class Book : IBook {
@@ -53,41 +53,41 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(json, jsonResult);
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IVehicle>("{}"));
-                AreEqual("type requires instantiatable types by [FloInstance()] or [FloPolymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IVehicle", e.Message);
+                AreEqual("type requires instantiatable types by [Flo.Instance()] or [Flo.Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IVehicle", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("type requires instantiatable types by [FloInstance()] or [FloPolymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+Abstract", e.Message);
+                AreEqual("type requires instantiatable types by [Flo.Instance()] or [Flo.Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+Abstract", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestIncompatibleInstance>("{}"));
-                AreEqual("[FloInstance(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestIncompatibleInstance", e.Message);
+                AreEqual("[Flo.Instance(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestIncompatibleInstance", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestInstanceNull>("{}"));
-                AreEqual("[FloInstance(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestInstanceNull", e.Message);
+                AreEqual("[Flo.Instance(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+ITestInstanceNull", e.Message);
             }
         }
         
         // --------------- polymorphic interface
         // exception: type is null
-        [FloPolymorph(null)]
+        [Flo.PolymorphAttribute(null)]
         abstract class TestPolymorphNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [FloPolymorph(typeof(Book))]
+        [Flo.PolymorphAttribute(typeof(Book))]
         abstract class TestIncompatiblePolymorph { }
         
         // exception
-        [FloPolymorph(typeof(TestNoDiscriminator))]
+        [Flo.PolymorphAttribute(typeof(TestNoDiscriminator))]
         abstract class TestNoDiscriminator { }
         class TestNoDiscriminatorImpl : TestNoDiscriminator { }
         
         // exception
-        [FloDiscriminator ("discriminator")]
+        [Flo.DiscriminatorAttribute ("discriminator")]
         abstract class TestNoPolymorph { }
         class TestNoPolymorphImpl : TestNoPolymorph { }
         
         
-        [FloDiscriminator("animalType")]
-        [FloPolymorph(typeof(Lion), Discriminant = "lion")]
+        [Flo.DiscriminatorAttribute("animalType")]
+        [Flo.PolymorphAttribute(typeof(Lion), Discriminant = "lion")]
         interface IAnimal {
         }
 
@@ -112,28 +112,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No [FloPolymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
+                StringAssert.Contains("No [Flo.Polymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
                 
                 reader.Read<IAnimal>("{}");
                 StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
-                AreEqual("[FloPolymorph(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestIncompatiblePolymorph", e.Message);
+                AreEqual("[Flo.Polymorph(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestIncompatiblePolymorph", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestPolymorphNull>("{}"));
-                AreEqual("[FloPolymorph(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestPolymorphNull", e.Message);
+                AreEqual("[Flo.Polymorph(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestPolymorphNull", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoDiscriminator>("{}"));
-                AreEqual("specified [FloPolymorph] attribute require [FloDiscriminator] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
+                AreEqual("specified [Flo.Polymorph] attribute require [Flo.Discriminator] on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoPolymorph>("{}"));
-                AreEqual("specified [FloDiscriminator] require at least one [FloPolymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
+                AreEqual("specified [Flo.Discriminator] require at least one [Flo.Polymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
             }
         }
         
         // --------------- polymorphic class
-        [FloDiscriminator ("personType")]
-        [FloPolymorph(typeof(Employee))]
+        [Flo.DiscriminatorAttribute ("personType")]
+        [Flo.PolymorphAttribute(typeof(Employee))]
         abstract class Person {
         }
 

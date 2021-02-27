@@ -14,17 +14,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             public int      Upper;
 
             // ignored members
-            [FloIgnore]
+            [Flo.Ignore]
             public int      ignoredField;
             
-            [FloIgnore]
+            [Flo.Ignore]
             public int      ignoredProperty { get; set; }
 
             // custom member names
-            [FloProperty(Name = "field")]
+            [Flo.Property(Name = "field")]
             public int      namedField;
             
-            [FloProperty(Name = "property")]
+            [Flo.Property(Name = "property")]
             public int      namedProperty { get; set; }
         }
         

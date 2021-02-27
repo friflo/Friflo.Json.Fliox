@@ -55,11 +55,11 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
             string          discriminator = null;
             List<PolyType>  typeList = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(FloPolymorphAttribute)) {
+                if (attr.AttributeType == typeof(Flo.PolymorphAttribute)) {
                     string name = null;
                     if (attr.NamedArguments != null) {
                         foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(FloPolymorphAttribute.Discriminant)) {
+                            if (args.MemberName == nameof(Flo.PolymorphAttribute.Discriminant)) {
                                 if (args.TypedValue.Value != null)
                                     name = (string) args.TypedValue.Value;
                             }
@@ -68,18 +68,18 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
-                        throw new InvalidOperationException($"[FloPolymorph(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[Flo.Polymorph(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(polyType))
-                        throw new InvalidOperationException($"[FloPolymorph({polyType.Name})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[Flo.Polymorph({polyType.Name})] type must extend annotated type: {type}");
                     typeList.Add(new PolyType(polyType, name ?? polyType.Name));
-                } else if (attr.AttributeType == typeof(FloInstanceAttribute)) {
+                } else if (attr.AttributeType == typeof(Flo.InstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
-                        throw new InvalidOperationException($"[FloInstance(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[Flo.Instance(null)] type must not be null on: {type}");
                     if (!type.IsAssignableFrom(instanceType))
-                        throw new InvalidOperationException($"[FloInstance({instanceType.Name})] type must extend annotated type: {type}");
-                } else if (attr.AttributeType == typeof(FloDiscriminatorAttribute)) {
+                        throw new InvalidOperationException($"[Flo.Instance({instanceType.Name})] type must extend annotated type: {type}");
+                } else if (attr.AttributeType == typeof(Flo.DiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
                         discriminator = (string) arg[0].Value;
@@ -87,9 +87,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException($"specified [FloDiscriminator] require at least one [FloPolymorph] attribute on: {type}");
+                throw new InvalidOperationException($"specified [Flo.Discriminator] require at least one [Flo.Polymorph] attribute on: {type}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException($"specified [FloPolymorph] attribute require [FloDiscriminator] on: {type}");
+                throw new InvalidOperationException($"specified [Flo.Polymorph] attribute require [Flo.Discriminator] on: {type}");
 
             if (instanceType != null || typeList.Count > 0)
                 return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
