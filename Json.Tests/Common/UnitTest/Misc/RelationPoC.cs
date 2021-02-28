@@ -1,11 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc
 {
 
-    public interface Database {
-        
+    public class Database
+    {
+        private Dictionary<Type, IDatabaseCollection> collection = new Dictionary<Type, IDatabaseCollection>();
+
+        public T CreateEntity<T>() where T : Entity, new ()
+        {
+            return new T();
+        }
+    }
+    
+    public interface IDatabaseCollection {
     }
 
     public class Entity {
@@ -50,16 +60,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     {
         [Test]
         public void Run() {
-            var order = new Order();
-            order.id = "order-1";
+            var db = new Database();
             
-            var customer = new Customer();
+            
+            var order = db.CreateEntity<Order>();
+            order.id            = "order-1";
+            
+            var customer = db.CreateEntity<Customer>();
             customer.id         = "customer-1";
             customer.lastName   = "Smith";
 
-            var article = new Article();
-            article.id      = "article-1";
-            article.name    = "Camera";
+            var article = db.CreateEntity<Article>();
+            article.id          = "article-1";
+            article.name        = "Camera";
             
             var item = new OrderItem();
             item.article = article;     // assign reference
