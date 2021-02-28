@@ -61,8 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         [Test]
         public void Run() {
             var db = new Database();
-            
-            
+
             var order = db.CreateEntity<Order>();
             order.id            = "order-1";
             
