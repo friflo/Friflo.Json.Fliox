@@ -39,7 +39,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     class Article : Entity
     {
         public string           name;
-        public string           description;
     }
 
     class Customer : Entity {
@@ -52,10 +51,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         [Test]
         public void Run() {
             var order = new Order();
+            order.id = "order-1";
+            
             var customer = new Customer();
+            customer.id         = "customer-1";
+            customer.lastName   = "Smith";
 
-            var item = new OrderItem();
             var article = new Article();
+            article.id      = "article-1";
+            article.name    = "Camera";
+            
+            var item = new OrderItem();
             item.article = article;     // assign reference
             order.items.Add(item);
 
