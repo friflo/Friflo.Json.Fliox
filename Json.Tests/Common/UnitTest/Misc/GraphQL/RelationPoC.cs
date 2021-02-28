@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Misc
+namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
 
     public class Database
@@ -40,26 +40,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             reference.id    = id;
             return reference;
         }
-
     }
+
+
     
     // ------------------------------ models ------------------------------
-    class Order : Entity {
+    public class Order : Entity {
         public Ref<Customer>    customer;
         public List<OrderItem>  items = new List<OrderItem>();
     }
 
-    class OrderItem {
+    public class OrderItem {
         public Ref<Article>     article;
         public int              amount;
     }
 
-    class Article : Entity
+    public class Article : Entity
     {
         public string           name;
     }
 
-    class Customer : Entity {
+    public class Customer : Entity {
         public string           lastName;
     }
         
