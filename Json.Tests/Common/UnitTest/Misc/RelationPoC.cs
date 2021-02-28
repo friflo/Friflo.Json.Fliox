@@ -9,9 +9,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
     {
         private Dictionary<Type, IDatabaseCollection> collection = new Dictionary<Type, IDatabaseCollection>();
 
-        public T CreateEntity<T>() where T : Entity, new ()
-        {
-            return new T();
+        public T CreateEntity<T>(string id) where T : Entity, new () {
+            T entity = new T();
+            entity.id = id;
+            return entity;
         }
     }
     
@@ -62,15 +63,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
         public void Run() {
             var db = new Database();
 
-            var order = db.CreateEntity<Order>();
-            order.id            = "order-1";
+            var order       = db.CreateEntity<Order>("order-1");
             
-            var customer = db.CreateEntity<Customer>();
-            customer.id         = "customer-1";
+            var customer    = db.CreateEntity<Customer>("customer-1");
             customer.lastName   = "Smith";
 
-            var article = db.CreateEntity<Article>();
-            article.id          = "article-1";
+            var article     = db.CreateEntity<Article>("article-1");
             article.name        = "Camera";
             
             var item = new OrderItem();
