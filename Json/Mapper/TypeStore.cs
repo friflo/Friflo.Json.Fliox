@@ -68,7 +68,7 @@ namespace Friflo.Json.Mapper
             }
         }
 
-        internal TypeMapper GetTypeMapper (Type type)
+        public TypeMapper GetTypeMapper (Type type)
         {
             lock (this)
             {

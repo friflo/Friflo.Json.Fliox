@@ -47,28 +47,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             object[] constructorParams = {config, type, constructor};
             // new RefMapper<T>(config, type, constructor);
             return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(RefMapper<>), new[] {refType}, constructorParams);
-            
         }
     }
     
+    
+    
+    
     public class RefMapper<T> : TypeMapper<Ref<T>> where T : Entity
     {
+        private TypeMapper entityMapper;
+        
         public override string DataTypeName() { return "Ref<>"; }
 
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, true, true)
         {
-            
+        }
+        
+        public override void InitTypeMapper(TypeStore typeStore) {
+            base.InitTypeMapper(typeStore);
+            entityMapper = typeStore.GetTypeMapper(typeof(T));
         }
 
         public override void Write(ref Writer writer, Ref<T> value) {
-            writer.WriteString(value.ToString());
+            if (value.entity != null)
+                entityMapper.WriteObject(ref writer, value.entity);
+            else
+                writer.AppendNull();
         }
 
         public override Ref<T> Read(ref Reader reader, Ref<T> slot, out bool success) {
-            ref var value = ref reader.parser.value;
-            success = false;
-            return null;
+            T entity = (T)entityMapper.ReadObject(ref reader, slot.entity, out success);
+            var reference = new Ref<T>();
+            reference.entity = entity;
+            return reference;
         }
     }
     
