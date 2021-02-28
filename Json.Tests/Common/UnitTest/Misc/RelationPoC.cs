@@ -79,16 +79,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc
             camera.name        = "Camera";
 
             var item1 = new OrderItem();
-            item1.article = camera;     // assign reference
+            item1.article = camera;         // assign as reference
             item1.amount = 1;
             order.items.Add(item1);
             
             var item2 = new OrderItem();
-            item2.article = "article-2";     // assign reference
-            item2.amount = 1;
+            item2.article = "article-2";    // assign as id
+            item2.amount = 2;
             order.items.Add(item2);
 
-            order.customer = customer;  // assign reference
+            order.customer = customer;      // assign as reference
         }
     }
 }

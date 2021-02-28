@@ -4,6 +4,10 @@
         {
             "article": "article-1",
             "amount":  1
+        },
+        {
+            "article": "article-2",
+            "amount":  2
         }
     ]
 }
