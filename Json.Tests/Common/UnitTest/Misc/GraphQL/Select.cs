@@ -72,10 +72,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         [Test]
         public void RunLinq() {
             var order1 = TestRelationPoC.CreateOrder("order-1");
-            var order2 = TestRelationPoC.CreateOrder("order-2");
+            string lastName = order1.customer.Entity.lastName;
             var orders = new List<Order>();
             orders.Add(order1);
-            orders.Add(order2);
 
             var query =
                 from order in orders
@@ -84,6 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                     id = order.id,
                     customer =  order.customer
                 };
+            IEnumerator<Order> result = query.GetEnumerator();
 
             using (var typeStore = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
@@ -92,7 +92,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 var json = m.Write(orders);
                 Console.WriteLine(json);
             }
-
         }
     }
 }

@@ -55,16 +55,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var customer    = db.CreateEntity<Customer>("customer-1");
             customer.lastName   = "Smith";
 
-            var camera     = db.CreateEntity<Article>("article-1");
-            camera.name        = "Camera";
-
+            var article1 = new Article { id = "article-1", name = "Camera" };
             var item1 = new OrderItem {
-                article = camera,
+                article = article1,
                 amount = 1
             };
             // assign as reference
             order.items.Add(item1);
 
+            // var article2 = new Article { id = "article-2", name = "Smartphone" };
             var item2 = new OrderItem {
                 article = "article-2",
                 amount = 2

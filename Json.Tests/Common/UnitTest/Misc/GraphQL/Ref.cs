@@ -13,16 +13,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
     public class Ref<T> where T : Entity
     {
-        // either id or entity is set. Never both
-        public string   id;
-        public T        entity;
+        private string  id;
+        private T       entity;
         
+        // either id or entity is set. Never both
+        public string   Id {
+            get => entity != null ? entity.id : id;
+            set { id = value; entity = null; }
+        }
+
+        public T        Entity {
+            get => entity;
+            set { entity = value; id = null; }
+        }
+
         public static implicit operator Ref<T>(T entity) {
             var reference = new Ref<T>();
             reference.entity    = entity;
             return reference;
         }
         
+        /* public static implicit operator T(Ref<T> reference) {
+            return reference.entity;
+        } */
+
+
         public static implicit operator Ref<T>(string id) {
             var reference = new Ref<T>();
             reference.id    = id;
@@ -70,16 +85,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         }
 
         public override void Write(ref Writer writer, Ref<T> value) {
-            if (value.entity != null)
-                entityMapper.WriteObject(ref writer, value.entity);
-            else
-                writer.AppendNull();
+            if (value.Entity != null) {
+                entityMapper.WriteObject(ref writer, value.Entity);
+            } else {
+                var id = value.Id;
+                if (id != null)
+                    writer.WriteString(id);
+                else
+                    writer.AppendNull();
+            }
         }
 
         public override Ref<T> Read(ref Reader reader, Ref<T> slot, out bool success) {
-            T entity = (T)entityMapper.ReadObject(ref reader, slot.entity, out success);
+            T entity = (T)entityMapper.ReadObject(ref reader, slot.Entity, out success);
             var reference = new Ref<T>();
-            reference.entity = entity;
+            reference.Entity = entity;
             return reference;
         }
     }
