@@ -75,15 +75,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Fri.Polymorph(typeof(Book))]
         abstract class TestIncompatiblePolymorph { }
         
-        // exception
+        // exception - test missing [Fri.Discriminator]
         [Fri.Polymorph(typeof(TestNoDiscriminator))]
         abstract class TestNoDiscriminator { }
-        class TestNoDiscriminatorImpl : TestNoDiscriminator { }
         
-        // exception
+        // exception - missing [Fri.Polymorph]
         [Fri.Discriminator ("discriminator")]
         abstract class TestNoPolymorph { }
-        class TestNoPolymorphImpl : TestNoPolymorph { }
         
         
         [Fri.Discriminator("animalType")]
@@ -163,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         class FactoryCollection
         {
-            public List<IBook>      iTest   = new List<IBook>();
+            public List<IBook>      books   = new List<IBook>();
             public List<IAnimal>    animals = new List<IAnimal>();
         }
         
@@ -173,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void TestFactoryCollection(TypeAccess typeAccess) {
             var json = @"
 {
-    ""iTest"": [
+    ""books"": [
         {
             ""int32"":123
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
