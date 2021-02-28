@@ -19,30 +19,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public interface IDatabaseCollection {
     }
 
-    public class Entity {
-        public string   id;
-    }
-
-    public class Ref<T> where T : Entity
-    {
-        // either id or entity is set. Never both
-        public string   id;
-        public T        entity;
-        
-        public static implicit operator Ref<T>(T entity) {
-            var reference = new Ref<T>();
-            reference.entity    = entity;
-            return reference;
-        }
-        
-        public static implicit operator Ref<T>(string id) {
-            var reference = new Ref<T>();
-            reference.id    = id;
-            return reference;
-        }
-    }
-
-
     
     // ------------------------------ models ------------------------------
     public class Order : Entity {
@@ -69,9 +45,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void Run() {
+        }
+        
+        public static Order CreateOrder(string orderId) {
             var db = new Database();
 
-            var order       = db.CreateEntity<Order>("order-1");
+            var order       = db.CreateEntity<Order>(orderId);
             
             var customer    = db.CreateEntity<Customer>("customer-1");
             customer.lastName   = "Smith";
@@ -79,17 +58,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var camera     = db.CreateEntity<Article>("article-1");
             camera.name        = "Camera";
 
-            var item1 = new OrderItem();
-            item1.article = camera;         // assign as reference
-            item1.amount = 1;
+            var item1 = new OrderItem {
+                article = camera,
+                amount = 1
+            };
+            // assign as reference
             order.items.Add(item1);
-            
-            var item2 = new OrderItem();
-            item2.article = "article-2";    // assign as id
-            item2.amount = 2;
+
+            var item2 = new OrderItem {
+                article = "article-2",
+                amount = 2
+            };
+            // assign as id
             order.items.Add(item2);
 
             order.customer = customer;      // assign as reference
+            return order;
         }
     }
 }

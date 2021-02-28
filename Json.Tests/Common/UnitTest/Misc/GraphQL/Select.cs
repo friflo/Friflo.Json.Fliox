@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Friflo.Json.Mapper;
 using NUnit.Framework;
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
@@ -64,7 +67,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                     }
                 }
             };
-            List<Order> orders =  Query.Order(orderSelect);
+        }
+        
+        [Test]
+        public void RunLinq() {
+            var order1 = TestRelationPoC.CreateOrder("order-1");
+            var order2 = TestRelationPoC.CreateOrder("order-2");
+            var orders = new List<Order>();
+            orders.Add(order1);
+            orders.Add(order2);
+
+            var query =
+                from order in orders
+                // where order.id == "order-1"
+                select new Order {
+                    id = order.id,
+                    customer =  order.customer
+                };
+
+            using (var typeStore = new TypeStore())
+            using (var m = new JsonMapper(typeStore)) {
+                typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+                m.Pretty = true;
+                var json = m.Write(orders);
+                Console.WriteLine(json);
+            }
+
         }
     }
 }
