@@ -19,7 +19,8 @@ namespace Friflo.Json.Mapper.Map
     
     public interface IDbContainer
     {
-        Type    EntityType { get; }
+        Type    EntityType  { get; }
+        int     Count       { get; }
         
         void    AddEntity   (Entity entity);
         void    RemoveEntity(string id);
@@ -28,7 +29,8 @@ namespace Friflo.Json.Mapper.Map
 
     public abstract class DbContainer<T> : IDbContainer where T : Entity
     {
-        public Type EntityType => typeof(T);
+        public Type         EntityType => typeof(T);
+        public virtual int  Count =>  throw new NotImplementedException();
 
         public virtual void AddEntity(Entity entity) {
             throw new NotImplementedException();
@@ -46,6 +48,8 @@ namespace Friflo.Json.Mapper.Map
     public class MemoryContainer<T> : DbContainer<T> where T : Entity
     {
         private readonly Dictionary<string, T> map = new Dictionary<string, T>();
+
+        public override int Count => map.Count;
 
         public override void AddEntity   (Entity entity) {
             T typedEntity = (T) entity;

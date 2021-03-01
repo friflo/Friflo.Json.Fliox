@@ -59,6 +59,11 @@ namespace Friflo.Json.Mapper
             get => maxDepth;
             set => maxDepth = value;
         }
+        
+        public      Database    Database {
+            get => intern.database;
+            set => intern.database = value;
+        }
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             intern = new Reader (typeStore, errorHandler);

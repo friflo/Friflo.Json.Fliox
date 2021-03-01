@@ -40,6 +40,14 @@ namespace Friflo.Json.Mapper
             set => writer.Pretty = value;
         }
         
+        public      Database    Database {
+            get => writer.Database;
+            set {
+                writer.Database = value;
+                reader.Database = value;
+            }
+        }
+
         public JsonMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
             typeStore       = typeStore ?? (autoStore = new TypeStore());
             this.typeStore  = typeStore;

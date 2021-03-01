@@ -31,6 +31,7 @@ namespace Friflo.Json.Mapper.Map
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
+        public              Database            database;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -55,6 +56,7 @@ namespace Friflo.Json.Mapper.Map
             outputType      = OutputType.ByteList;
             pretty          = false;
             writeNullMembers= true;
+            database        = null;
 #if JSON_BURST
             writerHandle    = -1;
 #else

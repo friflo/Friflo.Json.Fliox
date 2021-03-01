@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
@@ -10,7 +11,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestSelect
     {
 
-        [Test] [Ignore("")]
+        [Test]
         public void ReadToDatabase() {
             var order = TestRelationPoC.CreateOrder("order-1");
             var db = new PocDatabase();
@@ -18,8 +19,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             using (var m = new JsonMapper()) {
                 m.Pretty = true;
                 var jsonOrder = m.Write(order);
-                m.ReadTo(jsonOrder, db);
-                db.orders.GetEntity(order.id);
+                m.Database = db;
+                var result = m.Read<Order>(jsonOrder);
+                
+                AreEqual(1, db.customers.Count);
+                AreEqual(2, db.articles.Count);
             }
         }
 
