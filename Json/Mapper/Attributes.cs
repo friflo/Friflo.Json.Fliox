@@ -39,4 +39,9 @@ namespace Friflo.Json.Mapper
         public sealed class IgnoreAttribute : Attribute {
         }
     }
+    
+    // Change to attribute
+    public class Entity {
+        public string   id;
+    }
 }

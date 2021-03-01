@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Friflo.Json.Mapper;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
@@ -22,12 +23,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     
     // ------------------------------ models ------------------------------
     public class Order : Entity {
-        public Ref<Customer>    customer;
+        public Customer         customer;
         public List<OrderItem>  items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        public Ref<Article>     article;
+        public Article          article;
         public int              amount;
     }
 
@@ -63,9 +64,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             // assign as reference
             order.items.Add(item1);
 
-            // var article2 = new Article { id = "article-2", name = "Smartphone" };
+            var article2 = new Article { id = "article-2", name = "Smartphone" };
             var item2 = new OrderItem {
-                article = "article-2",
+                article = article2,
                 amount = 2
             };
             // assign as id

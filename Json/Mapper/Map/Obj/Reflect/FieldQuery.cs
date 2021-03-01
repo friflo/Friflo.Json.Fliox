@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map.Obj.Reflect
 {
@@ -37,6 +36,10 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
             TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
+            var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
+            if (refMapper != null)
+                mapper = refMapper;
+
             Type        ut          = mapper.nullableUnderlyingType;
             bool isNullablePrimitive = ut != null && ut.IsPrimitive;
             bool isNullableEnum      = ut != null && ut.IsEnum;

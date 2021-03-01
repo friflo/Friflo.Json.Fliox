@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
@@ -72,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         [Test]
         public void RunLinq() {
             var order1 = TestRelationPoC.CreateOrder("order-1");
-            string lastName = order1.customer.Entity.lastName;
+            string lastName = order1.customer.lastName;
             var orders = new List<Order>();
             orders.Add(order1);
 
@@ -85,11 +86,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 };
             IEnumerator<Order> result = query.GetEnumerator();
 
-            using (var typeStore = new TypeStore())
-            using (var m = new JsonMapper(typeStore)) {
-                typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+            using (var m = new JsonMapper()) {
                 m.Pretty = true;
-                var json = m.Write(orders);
+                var json = m.Write(order1);
                 Console.WriteLine(json);
             }
         }

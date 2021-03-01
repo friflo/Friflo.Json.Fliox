@@ -42,6 +42,7 @@ namespace Friflo.Json.Mapper.Map
 #else
         public              IBytesWriter        bytesWriter;
 #endif
+        public              int                 Level => level;
 
         public Writer(TypeStore typeStore) {
             bytes           = new Bytes(128);
