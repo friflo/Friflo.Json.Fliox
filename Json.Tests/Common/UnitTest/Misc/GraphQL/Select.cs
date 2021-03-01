@@ -77,17 +77,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var orders = new List<Order>();
             orders.Add(order1);
 
-            var query =
+            var orderQuery =
                 from order in orders
                 // where order.id == "order-1"
                 select new Order {
                     id = order.id,
-                    customer =  order.customer
+                    customer =  order.customer,
+                    items = order.items
                 };
-            IEnumerator<Order> result = query.GetEnumerator();
 
             using (var m = new JsonMapper()) {
                 m.Pretty = true;
+                // var json = m.Write(orderQuery);
                 var json = m.Write(order1);
                 Console.WriteLine(json);
             }
