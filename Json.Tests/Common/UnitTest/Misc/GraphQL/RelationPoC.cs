@@ -1,26 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
-
-    public class Database
-    {
-        private Dictionary<Type, IDatabaseCollection> collection = new Dictionary<Type, IDatabaseCollection>();
-
-        public T CreateEntity<T>(string id) where T : Entity, new () {
-            T entity = new T();
-            entity.id = id;
-            return entity;
-        }
-    }
-    
-    public interface IDatabaseCollection {
-    }
-
-    
     // ------------------------------ models ------------------------------
     public class Order : Entity {
         public Customer         customer;
@@ -39,6 +23,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
     public class Customer : Entity {
         public string           lastName;
+    }
+
+    // --- database containers
+    public class PocDatabase : Database
+    {
+        public PocDatabase() {
+            AddContainer(orders);
+            AddContainer(customers);
+            AddContainer(articles);
+        }
+        public readonly DbContainer<Order>      orders      = new MemoryContainer<Order>();
+        public readonly DbContainer<Customer>   customers   = new MemoryContainer<Customer>();
+        public readonly DbContainer<Article>    articles    = new MemoryContainer<Article>();
     }
         
     // --------------------------------------------------------------------

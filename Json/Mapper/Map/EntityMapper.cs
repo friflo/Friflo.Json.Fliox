@@ -38,8 +38,8 @@ namespace Friflo.Json.Mapper.Map
         
         public override void Write(ref Writer writer, T value) {
             if (value != null) {
-                writer.WriteString(value.id);
-                // entityMapper.WriteObject(ref writer, value);
+                // writer.WriteString(value.id);
+                entityMapper.WriteObject(ref writer, value);
             } else {
                 writer.AppendNull();
             }

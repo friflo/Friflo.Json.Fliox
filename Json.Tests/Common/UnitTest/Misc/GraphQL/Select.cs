@@ -26,6 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                     items = order.items
                 };
 
+            var db = new PocDatabase();
+
             using (var m = new JsonMapper()) {
                 m.Pretty = true;
                 // var json = m.Write(orderQuery);
