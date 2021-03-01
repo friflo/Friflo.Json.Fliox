@@ -81,5 +81,13 @@ namespace Friflo.Json.Mapper.Map
                     return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
             }
         }
+
+        public void AddEntity<TVal>(TVal entity) where TVal : Entity
+        {
+            if (database == null)
+                return;
+            IDbContainer container = database.GetContainer(typeof(TVal));
+            container.AddEntity(entity);
+        }
     }
 }

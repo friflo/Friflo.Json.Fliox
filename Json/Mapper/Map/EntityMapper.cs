@@ -47,8 +47,7 @@ namespace Friflo.Json.Mapper.Map
 
         public override T Read(ref Reader reader, T slot, out bool success) {
             T entity = (T)entityMapper.ReadObject(ref reader, slot, out success);
-            IDbContainer container = reader.database.GetContainer(typeof(T));
-            container.AddEntity(entity);
+            reader.AddEntity(entity);
             return entity;
         }
     }
