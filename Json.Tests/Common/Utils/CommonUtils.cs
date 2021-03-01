@@ -7,6 +7,10 @@ using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Utils;
 
+#if !UNITY_5_3_OR_NEWER
+    using FluentAssertions;
+#endif
+
 namespace Friflo.Json.Tests.Common.Utils
 {
     public class TestBytes : IDisposable
@@ -15,6 +19,14 @@ namespace Friflo.Json.Tests.Common.Utils
 
         public void Dispose() {
             bytes.Dispose();
+        }
+    }
+
+    public static class AssertUtils {
+        public static void Equivalent<TExpectation>(TExpectation expect, TExpectation actual) {
+#if !UNITY_5_3_OR_NEWER
+            actual.Should().BeEquivalentTo(expect);
+#endif
         }
     }
     

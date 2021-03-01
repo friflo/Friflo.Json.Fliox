@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
     
-    public class TestSelect
+    public class TestSelect : LeakTestsFixture
     {
 
         [Test]
@@ -25,8 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 var jsonOrder = m.Write(order);
                 m.Database = db;
                 var result = m.Read<Order>(jsonOrder);
-                order.Should().BeEquivalentTo(result);
-
+                
+                AssertUtils.Equivalent(order, result);
                 AreEqual(1, db.customers.Count);
                 AreEqual(2, db.articles.Count);
                 AreEqual(1, db.orders.Count);

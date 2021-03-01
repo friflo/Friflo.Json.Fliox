@@ -37,6 +37,11 @@ namespace Friflo.Json.Mapper.Map
         {
             mapper = (TypeMapper<T>)ClassMatcher.Instance.MatchTypeMapper(type, config);
         }
+        
+        public override void Dispose() {
+            base.Dispose();
+            mapper.Dispose();
+        }
 
         public override void InitTypeMapper(TypeStore typeStore) {
             mapper.InitTypeMapper(typeStore);

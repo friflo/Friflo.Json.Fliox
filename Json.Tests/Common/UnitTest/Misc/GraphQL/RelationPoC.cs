@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
-using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
@@ -39,12 +38,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     }
         
     // --------------------------------------------------------------------
-    public class TestRelationPoC
+    public static class TestRelationPoC
     {
-        [Test]
-        public void Run() {
-        }
-        
         public static Order CreateOrder(string orderId) {
             var order       = new Order { id = orderId };
             
