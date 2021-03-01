@@ -9,13 +9,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     
     public class TestSelect
     {
-       
+
+        [Test] [Ignore("")]
+        public void ReadToDatabase() {
+            var order = TestRelationPoC.CreateOrder("order-1");
+            var db = new PocDatabase();
+            
+            using (var m = new JsonMapper()) {
+                m.Pretty = true;
+                var jsonOrder = m.Write(order);
+                m.ReadTo(jsonOrder, db);
+                db.orders.GetEntity(order.id);
+            }
+        }
+
         [Test]
         public void RunLinq() {
             var order1 = TestRelationPoC.CreateOrder("order-1");
-            string lastName = order1.customer.lastName;
-            var orders = new List<Order>();
-            orders.Add(order1);
+            var orders = new List<Order> { order1 };
 
             var orderQuery =
                 from order in orders
@@ -26,11 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                     items = order.items
                 };
 
-            var db = new PocDatabase();
-
             using (var m = new JsonMapper()) {
                 m.Pretty = true;
-                // var json = m.Write(orderQuery);
+                var jsonQuery = m.Write(orderQuery);
                 var json = m.Write(order1);
                 Console.WriteLine(json);
             }

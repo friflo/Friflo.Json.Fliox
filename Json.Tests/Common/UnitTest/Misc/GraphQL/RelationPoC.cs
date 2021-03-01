@@ -46,9 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         }
         
         public static Order CreateOrder(string orderId) {
-            var db = new Database();
-
-            var order       = new Order { id = "orderId" };
+            var order       = new Order { id = orderId };
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
 
