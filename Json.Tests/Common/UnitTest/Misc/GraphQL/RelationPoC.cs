@@ -33,9 +33,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             AddContainer(customers);
             AddContainer(articles);
         }
-        public readonly DbContainer<Order>      orders      = new MemoryContainer<Order>();
-        public readonly DbContainer<Customer>   customers   = new MemoryContainer<Customer>();
-        public readonly DbContainer<Article>    articles    = new MemoryContainer<Article>();
+        public readonly DatabaseContainer<Order>      orders      = new MemoryContainer<Order>();
+        public readonly DatabaseContainer<Customer>   customers   = new MemoryContainer<Customer>();
+        public readonly DatabaseContainer<Article>    articles    = new MemoryContainer<Article>();
     }
         
     // --------------------------------------------------------------------

@@ -86,7 +86,7 @@ namespace Friflo.Json.Mapper.Map
         {
             if (database == null)
                 return;
-            IDbContainer container = database.GetContainer(typeof(TVal));
+            IDatabaseContainer container = database.GetContainer(typeof(TVal));
             container.AddEntity(entity);
         }
     }

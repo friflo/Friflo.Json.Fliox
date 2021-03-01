@@ -5,19 +5,19 @@ namespace Friflo.Json.Mapper.Map
 {
     public class Database
     {
-        private readonly Dictionary<Type, IDbContainer> containers = new Dictionary<Type, IDbContainer>();
+        private readonly Dictionary<Type, IDatabaseContainer> containers = new Dictionary<Type, IDatabaseContainer>();
 
-        protected void AddContainer(IDbContainer container) {
+        protected void AddContainer(IDatabaseContainer container) {
             Type entityType = container.EntityType;
             containers.Add(entityType, container);
         }
 
-        public IDbContainer GetContainer(Type entityType) {
+        public IDatabaseContainer GetContainer(Type entityType) {
             return containers[entityType];
         }
     }
     
-    public interface IDbContainer
+    public interface IDatabaseContainer
     {
         Type    EntityType  { get; }
         int     Count       { get; }
@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Map
         Entity  GetEntity   (string id);
     }
 
-    public abstract class DbContainer<T> : IDbContainer where T : Entity
+    public abstract class DatabaseContainer<T> : IDatabaseContainer where T : Entity
     {
         public Type         EntityType => typeof(T);
         public virtual int  Count =>  throw new NotImplementedException();
@@ -45,7 +45,7 @@ namespace Friflo.Json.Mapper.Map
         }
     }
     
-    public class MemoryContainer<T> : DbContainer<T> where T : Entity
+    public class MemoryContainer<T> : DatabaseContainer<T> where T : Entity
     {
         private readonly Dictionary<string, T> map = new Dictionary<string, T>();
 
