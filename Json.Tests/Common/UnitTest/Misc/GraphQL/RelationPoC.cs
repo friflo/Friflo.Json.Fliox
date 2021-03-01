@@ -51,28 +51,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public static Order CreateOrder(string orderId) {
             var db = new Database();
 
-            var order       = db.CreateEntity<Order>(orderId);
+            var order       = new Order { id = "orderId" };
             
-            var customer    = db.CreateEntity<Customer>("customer-1");
-            customer.lastName   = "Smith";
+            var customer    = new Customer { id = "customer-1", lastName = "Smith" };
 
-            var article1 = new Article { id = "article-1", name = "Camera" };
-            var item1 = new OrderItem {
+            var article1    = new Article { id = "article-1", name = "Camera" };
+            var item1       = new OrderItem {
                 article = article1,
                 amount = 1
             };
-            // assign as reference
             order.items.Add(item1);
 
-            var article2 = new Article { id = "article-2", name = "Smartphone" };
-            var item2 = new OrderItem {
+            var article2    = new Article { id = "article-2", name = "Smartphone" };
+            var item2       = new OrderItem {
                 article = article2,
                 amount = 2
             };
-            // assign as id
             order.items.Add(item2);
 
-            order.customer = customer;      // assign as reference
+            order.customer = customer;
             return order;
         }
     }
