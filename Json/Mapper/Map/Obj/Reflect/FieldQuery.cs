@@ -36,9 +36,9 @@ namespace Friflo.Json.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
             TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
-            var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
+            /* var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
             if (refMapper != null)
-                mapper = refMapper;
+                mapper = refMapper; */
 
             Type        ut          = mapper.nullableUnderlyingType;
             bool isNullablePrimitive = ut != null && ut.IsPrimitive;

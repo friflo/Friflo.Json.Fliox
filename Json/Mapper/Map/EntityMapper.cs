@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
@@ -7,9 +8,10 @@ namespace Friflo.Json.Mapper.Map
 {
     // -------------------------------------------------------------------------------------
     
-    public static class EntityMatcher {
+    public class EntityMatcher : ITypeMatcher {
+        public static readonly EntityMatcher Instance = new EntityMatcher();
         
-        public static TypeMapper GetRefMapper(Type type, StoreConfig config, TypeMapper mapper) {
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // dont handle standard types
                 return null;
             if (!typeof(Entity).IsAssignableFrom(type))
@@ -17,7 +19,7 @@ namespace Friflo.Json.Mapper.Map
             
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             
-            object[] constructorParams = {config, type, constructor, mapper};
+            object[] constructorParams = {config, type, constructor};
             // new EntityMapper<T>(config, type, constructor, mapper);
             return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(EntityMapper<>), new[] {type}, constructorParams);
         }
@@ -26,28 +28,33 @@ namespace Friflo.Json.Mapper.Map
 
     public class EntityMapper<T> : TypeMapper<T> where T : Entity
     {
-        private readonly TypeMapper entityMapper;
+        private readonly TypeMapper<T> mapper;
         
         public override string DataTypeName() { return "Entity"; }
 
-        public EntityMapper(StoreConfig config, Type type, ConstructorInfo constructor, TypeMapper mapper) :
+        public EntityMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, true, true)
         {
-            entityMapper = mapper;
+            mapper = (TypeMapper<T>)ClassMatcher.Instance.MatchTypeMapper(type, config);
+        }
+
+        public override void InitTypeMapper(TypeStore typeStore) {
+            mapper.InitTypeMapper(typeStore);
         }
         
         public override void Write(ref Writer writer, T value) {
             if (value != null) {
                 // writer.WriteString(value.id);
-                entityMapper.WriteObject(ref writer, value);
+                mapper.WriteObject(ref writer, value);
             } else {
                 writer.AppendNull();
             }
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            T entity = (T)entityMapper.ReadObject(ref reader, slot, out success);
-            reader.AddEntity(entity);
+            T entity = (T)mapper.ReadObject(ref reader, slot, out success);
+            if (success)
+                reader.AddEntity(entity);
             return entity;
         }
     }

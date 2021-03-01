@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -16,7 +17,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var order = TestRelationPoC.CreateOrder("order-1");
             var db = new PocDatabase();
             
-            using (var m = new JsonMapper()) {
+            using (var typeStore  = new TypeStore())
+            using (var m = new JsonMapper(typeStore)) {
+                typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
                 var jsonOrder = m.Write(order);
                 m.Database = db;
@@ -24,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 
                 AreEqual(1, db.customers.Count);
                 AreEqual(2, db.articles.Count);
+                AreEqual(1, db.orders.Count);
             }
         }
 
