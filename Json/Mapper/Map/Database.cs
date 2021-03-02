@@ -15,7 +15,10 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public DatabaseContainer GetContainer(Type entityType) {
-            return containers[entityType];
+            if (containers.TryGetValue(entityType, out DatabaseContainer container))
+                return container;
+            containers[entityType] = container = new MemoryContainer<Entity>();
+            return container;
         }
     }
     
