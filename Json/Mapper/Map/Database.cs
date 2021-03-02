@@ -25,13 +25,12 @@ namespace Friflo.Json.Mapper.Map
         public abstract  int        Count       { get; }
         
         protected internal abstract void     AddEntity   (Entity entity);
-        protected internal abstract void     RemoveEntity(string id);
         protected internal abstract Entity   GetEntity   (string id);
     }
 
     public abstract class DatabaseContainer<T> : DatabaseContainer where T : Entity
     {
-        public override Type             EntityType => typeof(T);
+        public override Type    EntityType => typeof(T);
         
         // ---
         public abstract void    Add(T entity);
@@ -46,11 +45,12 @@ namespace Friflo.Json.Mapper.Map
 
         protected internal override void AddEntity   (Entity entity) {
             T typedEntity = (T) entity;
+            if (map.TryGetValue(entity.id, out T value)) {
+                if (value != entity)
+                    throw new InvalidOperationException("");
+                return;
+            }
             map.Add(typedEntity.id, typedEntity);
-        }
-
-        protected internal override void RemoveEntity(string id) {
-            map.Remove(id);
         }
 
         protected internal override Entity GetEntity(string id) {

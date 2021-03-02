@@ -50,15 +50,23 @@ namespace Friflo.Json.Mapper.Map
         
         public override void Write(ref Writer writer, T value) {
             if (writer.database != null && writer.Level > 0) {
-                if (value != null)
+                if (value != null) {
                     writer.WriteString(value.id);
-                else
+                    var container = writer.database.GetContainer(typeof(T));
+                    container.AddEntity(value);
+                } else {
                     writer.AppendNull();
+                }
             } else {
-                if (value != null)
+                if (value != null) {
                     mapper.WriteObject(ref writer, value);
-                else
+                    if (writer.database != null) {
+                        var container = writer.database.GetContainer(typeof(T));
+                        container.AddEntity(value);
+                    }
+                } else {
                     writer.AppendNull();
+                }
             }
         }
 

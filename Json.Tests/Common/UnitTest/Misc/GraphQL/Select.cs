@@ -13,9 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void RunLinq() {
-            var db = TestRelationPoC.CreateDB();
-            
-            var order1 = db.orders["order-1"];
+            var order1 = TestRelationPoC.CreateOrder();
             var orders = new List<Order> { order1 };
 
             var orderQuery =
