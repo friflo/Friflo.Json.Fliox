@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map
         
         // ---
         public abstract void    Add(T entity);
-        public abstract T       this[string id] { get; set; } // Item[] Property
+        public abstract T       this[string id] { get; } // Item[] Property
     }
     
     public class MemoryContainer<T> : DatabaseContainer<T> where T : Entity
@@ -62,9 +62,6 @@ namespace Friflo.Json.Mapper.Map
             map.Add(entity.id, entity);
         }
         
-        public override T this[string id] {
-            get => map[id];
-            set => map[id] = value;
-        }
+        public override T this[string id] => map[id];
     }
 }
