@@ -43,6 +43,12 @@ namespace Friflo.Json.Mapper.Map
         public virtual Entity GetEntity(string id) {
             throw new NotImplementedException();
         }
+        
+        // Item[] Property
+        public virtual T this[string id] {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
     }
     
     public class MemoryContainer<T> : DatabaseContainer<T> where T : Entity
@@ -62,6 +68,11 @@ namespace Friflo.Json.Mapper.Map
 
         public override Entity GetEntity(string id) {
             return map[id];
+        }
+        
+        public override T this[string id] {
+            get => map[id];
+            set => map[id] = value;
         }
     }
 }
