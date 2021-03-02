@@ -5,50 +5,35 @@ namespace Friflo.Json.Mapper.Map
 {
     public class Database
     {
-        private readonly Dictionary<Type, IDatabaseContainer> containers = new Dictionary<Type, IDatabaseContainer>();
+        private readonly Dictionary<Type, DatabaseContainer> containers = new Dictionary<Type, DatabaseContainer>();
 
-        protected void AddContainer(IDatabaseContainer container) {
+        protected void AddContainer(DatabaseContainer container) {
             Type entityType = container.EntityType;
             containers.Add(entityType, container);
         }
 
-        public IDatabaseContainer GetContainer(Type entityType) {
+        public DatabaseContainer GetContainer(Type entityType) {
             return containers[entityType];
         }
     }
     
-    public interface IDatabaseContainer
+    public abstract class DatabaseContainer
     {
-        Type    EntityType  { get; }
-        int     Count       { get; }
+        public abstract  Type       EntityType  { get; }
+        public abstract  int        Count       { get; }
         
-        void    AddEntity   (Entity entity);
-        void    RemoveEntity(string id);
-        Entity  GetEntity   (string id);
+        protected internal abstract void     AddEntity   (Entity entity);
+        protected internal abstract void     RemoveEntity(string id);
+        protected internal abstract Entity   GetEntity   (string id);
     }
 
-    public abstract class DatabaseContainer<T> : IDatabaseContainer where T : Entity
+    public abstract class DatabaseContainer<T> : DatabaseContainer where T : Entity
     {
-        public Type         EntityType => typeof(T);
-        public virtual int  Count =>  throw new NotImplementedException();
-
-        public virtual void AddEntity(Entity entity) {
-            throw new NotImplementedException();
-        }
-
-        public virtual void RemoveEntity(string id) {
-            throw new NotImplementedException();
-        }
-
-        public virtual Entity GetEntity(string id) {
-            throw new NotImplementedException();
-        }
+        public override Type             EntityType => typeof(T);
         
-        // Item[] Property
-        public virtual T this[string id] {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        // ---
+        public abstract void    Add(T entity);
+        public abstract T       this[string id] { get; set; } // Item[] Property
     }
     
     public class MemoryContainer<T> : DatabaseContainer<T> where T : Entity
@@ -57,17 +42,22 @@ namespace Friflo.Json.Mapper.Map
 
         public override int Count => map.Count;
 
-        public override void AddEntity   (Entity entity) {
+        protected internal override void AddEntity   (Entity entity) {
             T typedEntity = (T) entity;
             map.Add(typedEntity.id, typedEntity);
         }
 
-        public override void RemoveEntity(string id) {
+        protected internal override void RemoveEntity(string id) {
             map.Remove(id);
         }
 
-        public override Entity GetEntity(string id) {
+        protected internal override Entity GetEntity(string id) {
             return map[id];
+        }
+        
+        // ---
+        public override void Add(T entity) {
+            map.Add(entity.id, entity);
         }
         
         public override T this[string id] {
