@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Friflo.Json.Mapper.Map
 {
     public class Database
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, DatabaseContainer> containers = new Dictionary<Type, DatabaseContainer>();
 
         protected void AddContainer(DatabaseContainer container) {
