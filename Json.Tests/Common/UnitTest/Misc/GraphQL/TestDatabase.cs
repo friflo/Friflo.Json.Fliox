@@ -19,14 +19,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
                 m.Database = db;
-                var result = AssertWriteRead(m, order);
+                
+                AssertWriteRead(m, order);
                 AssertWriteRead(m, order.customer);
                 AssertWriteRead(m, order.items[0]);
                 AssertWriteRead(m, order.items[1]);
                 AssertWriteRead(m, order.items[0].article);
                 AssertWriteRead(m, order.items[1].article);
                 
-                AssertUtils.Equivalent(order, result);
                 AreEqual(1, db.customers.Count);
                 AreEqual(2, db.articles.Count);
                 AreEqual(1, db.orders.Count);
@@ -38,12 +38,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             }
         }
 
-        private static T AssertWriteRead<T>(JsonMapper m, T entity) {
+        private static void AssertWriteRead<T>(JsonMapper m, T entity) {
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
             AssertUtils.Equivalent(entity, result);
             IsFalse(entity.Equals(result)); // references are not equal
-            return result;
         }
     }
 }
