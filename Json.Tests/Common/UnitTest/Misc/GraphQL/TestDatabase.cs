@@ -19,8 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 m.Pretty = true;
                 m.Database = db;
                 var order = db.orders["order-1"];
-                var jsonOrder = m.Write(order);
-                var result =    m.Read<Order>(jsonOrder);
+                var result = AssertWriteRead(m, order);
                 
                 AssertUtils.Equivalent(order, result);
                 AreEqual(1, db.customers.Count);
@@ -31,7 +30,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 IsTrue(db.articles["article-1"]     == result.items[0].article);
                 IsTrue(db.articles["article-2"]     == result.items[1].article);
                 IsTrue(db.customers["customer-1"]   == result.customer);
+                
+                AssertWriteRead(m, order.customer);
+                AssertWriteRead(m, order.items[0].article);
+                AssertWriteRead(m, order.items[1].article);
             }
+        }
+
+        private static T AssertWriteRead<T>(JsonMapper m, T entity) {
+            var json    = m.Write(entity);
+            var result  = m.Read<T>(json);
+            AssertUtils.Equivalent(entity, result);
+            return result;
         }
     }
 }
