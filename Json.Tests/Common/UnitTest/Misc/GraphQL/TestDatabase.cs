@@ -41,6 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
             AssertUtils.Equivalent(entity, result);
+            IsFalse(entity.Equals(result)); // references are not equal
             return result;
         }
     }
