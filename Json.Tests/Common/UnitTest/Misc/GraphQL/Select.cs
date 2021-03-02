@@ -16,23 +16,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void ReadToDatabase() {
-            var order = TestRelationPoC.CreateOrder("order-1");
-            var db = new PocDatabase();
+            var db = TestRelationPoC.CreateDB();
             
             using (var typeStore  = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
                 typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
-                var jsonOrder = m.Write(order);
                 m.Database = db;
-                var result = m.Read<Order>(jsonOrder);
+                var order = db.orders["order-1"];
+                var jsonOrder = m.Write(order);
+                var result =    m.Read<Order>(jsonOrder);
                 
                 AssertUtils.Equivalent(order, result);
                 AreEqual(1, db.customers.Count);
                 AreEqual(2, db.articles.Count);
                 AreEqual(1, db.orders.Count);
                 
-                IsTrue(db.orders["order-1"]         == result);
+                // IsTrue(db.orders["order-1"]         == result);
                 IsTrue(db.articles["article-1"]     == result.items[0].article);
                 IsTrue(db.articles["article-2"]     == result.items[1].article);
                 IsTrue(db.customers["customer-1"]   == result.customer);
@@ -41,7 +41,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void RunLinq() {
-            var order1 = TestRelationPoC.CreateOrder("order-1");
+            var db = TestRelationPoC.CreateDB();
+            
+            var order1 = db.orders["order-1"];
             var orders = new List<Order> { order1 };
 
             var orderQuery =

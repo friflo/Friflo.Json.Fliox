@@ -40,9 +40,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static Order CreateOrder(string orderId) {
+        public static PocDatabase CreateDB() {
             var db = new PocDatabase();
-            var order       = new Order { id = orderId };
+            var order       = new Order { id = "order-1" };
             db.orders.Add(order);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item2);
 
             order.customer = customer;
-            return order;
+            return db;
         }
     }
 }

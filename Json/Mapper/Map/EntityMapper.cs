@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
@@ -48,19 +49,32 @@ namespace Friflo.Json.Mapper.Map
         }
         
         public override void Write(ref Writer writer, T value) {
-            if (value != null) {
-                // writer.WriteString(value.id);
-                mapper.WriteObject(ref writer, value);
+            if (writer.database != null && writer.Level > 0) {
+                if (value != null)
+                    writer.WriteString(value.id);
+                else
+                    writer.AppendNull();
             } else {
-                writer.AppendNull();
+                if (value != null)
+                    mapper.WriteObject(ref writer, value);
+                else
+                    writer.AppendNull();
             }
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            T entity = (T)mapper.ReadObject(ref reader, slot, out success);
-            if (success)
-                reader.AddEntity(entity);
-            return entity;
+            var db = reader.database;
+            if (db != null && reader.parser.Level > 0) {
+                if (reader.parser.Event == JsonEvent.ValueString) {
+                    var id = reader.parser.value.ToString();
+                    var container = db.GetContainer(typeof(T));
+                    success = true;
+                    return (T)container.GetEntity(id);
+                }
+                T entity = (T) mapper.ReadObject(ref reader, slot, out success);
+                return entity;
+            }
+            return mapper.Read(ref reader, slot, out success);
         }
     }
     
