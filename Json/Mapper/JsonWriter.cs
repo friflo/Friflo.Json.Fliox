@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper
             set => intern.writeNullMembers = value;
         }
         
-        public      Database    Database {
+        public      EntityStore    EntityStore {
             get => intern.database;
             set => intern.database = value;
         }

@@ -4,25 +4,25 @@ using System.Diagnostics;
 
 namespace Friflo.Json.Mapper.Map
 {
-    public class Database
+    public class EntityStore
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<Type, DatabaseContainer> containers = new Dictionary<Type, DatabaseContainer>();
+        private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
 
-        protected void AddContainer(DatabaseContainer container) {
+        protected void AddContainer(EntityContainer container) {
             Type entityType = container.EntityType;
             containers.Add(entityType, container);
         }
 
-        public DatabaseContainer GetContainer(Type entityType) {
-            if (containers.TryGetValue(entityType, out DatabaseContainer container))
+        public EntityContainer GetContainer(Type entityType) {
+            if (containers.TryGetValue(entityType, out EntityContainer container))
                 return container;
             containers[entityType] = container = new MemoryContainer<Entity>();
             return container;
         }
     }
     
-    public abstract class DatabaseContainer
+    public abstract class EntityContainer
     {
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Map
         protected internal abstract Entity   GetEntity   (string id);
     }
 
-    public abstract class DatabaseContainer<T> : DatabaseContainer where T : Entity
+    public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
         public override Type    EntityType => typeof(T);
         
@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper.Map
         public abstract T       this[string id] { get; } // Item[] Property
     }
     
-    public class MemoryContainer<T> : DatabaseContainer<T> where T : Entity
+    public class MemoryContainer<T> : EntityContainer<T> where T : Entity
     {
         private readonly Dictionary<string, T> map = new Dictionary<string, T>();
 

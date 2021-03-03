@@ -7,18 +7,18 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
-    public class TestDatabase : LeakTestsFixture
+    public class TestStore : LeakTestsFixture
     {
         [Test]
         public void WriteRead() {
             var order = TestRelationPoC.CreateOrder();
-            var db = new PocDatabase();
+            var db = new PocStore();
             
             using (var typeStore  = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
                 typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
-                m.Database = db;
+                m.EntityStore = db;
                 
                 AssertWriteRead(m, order);
                 AssertWriteRead(m, order.customer);

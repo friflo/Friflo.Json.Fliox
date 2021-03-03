@@ -40,11 +40,11 @@ namespace Friflo.Json.Mapper
             set => writer.Pretty = value;
         }
         
-        public      Database    Database {
-            get => writer.Database;
+        public      EntityStore    EntityStore {
+            get => writer.EntityStore;
             set {
-                writer.Database = value;
-                reader.Database = value;
+                writer.EntityStore = value;
+                reader.EntityStore = value;
             }
         }
 

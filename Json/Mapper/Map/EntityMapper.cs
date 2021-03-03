@@ -71,7 +71,7 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            var db = reader.database;
+            var db = reader.entityStore;
             if (db != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();

@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.Map
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
         private readonly    IErrorHandler       errorHandler;
-        public              Database            database;
+        public              EntityStore         entityStore;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Map
         public Reader(TypeStore typeStore, IErrorHandler errorHandler) {
             parser = new JsonParser();
             this.errorHandler = errorHandler;
-            database        = null;
+            entityStore       = null;
 
             typeCache       = new TypeCache(typeStore);
             strBuf          = new Bytes(0);
