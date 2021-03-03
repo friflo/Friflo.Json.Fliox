@@ -49,8 +49,8 @@ namespace Friflo.Json.Mapper
         }
         
         public      EntityStore    EntityStore {
-            get => intern.database;
-            set => intern.database = value;
+            get => intern.entityStore;
+            set => intern.entityStore = value;
         }
 
         public JsonWriter(TypeStore typeStore) {

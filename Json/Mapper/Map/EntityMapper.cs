@@ -49,10 +49,10 @@ namespace Friflo.Json.Mapper.Map
         }
         
         public override void Write(ref Writer writer, T value) {
-            if (writer.database != null && writer.Level > 0) {
+            if (writer.entityStore != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var container = writer.database.GetContainer(typeof(T));
+                    var container = writer.entityStore.GetContainer(typeof(T));
                     container.AddEntity(value);
                 } else {
                     writer.AppendNull();
@@ -60,8 +60,8 @@ namespace Friflo.Json.Mapper.Map
             } else {
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
-                    if (writer.database != null) {
-                        var container = writer.database.GetContainer(typeof(T));
+                    if (writer.entityStore != null) {
+                        var container = writer.entityStore.GetContainer(typeof(T));
                         container.AddEntity(value);
                     }
                 } else {
