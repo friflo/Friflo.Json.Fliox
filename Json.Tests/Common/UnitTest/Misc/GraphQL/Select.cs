@@ -33,6 +33,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 Console.WriteLine(json);
             }
         }
+        
+        [Test]
+        public void TestSelectSameInstance() {
+            var order1 = TestRelationPoC.CreateOrder();
+            var orders = new List<Order> { order1 };
+
+            var orderQuery =
+                from order in orders
+                select order;
+
+            int n = 0;
+            foreach (var order in orderQuery) {
+                IsTrue(order == orders[n++]);
+            }
+        }
     }
 }
 
