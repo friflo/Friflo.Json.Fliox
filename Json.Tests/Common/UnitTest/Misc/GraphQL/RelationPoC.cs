@@ -45,19 +45,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
 
-            var article1    = new Article { id = "article-1", name = "Camera" };
+            var camera    = new Article { id = "article-1", name = "Camera" };
             var item1       = new OrderItem {
-                article = article1,
+                article = camera,
                 amount = 1
             };
             order.items.Add(item1);
 
-            var article2    = new Article { id = "article-2", name = "Smartphone" };
+            var smartphone    = new Article { id = "article-2", name = "Smartphone" };
             var item2       = new OrderItem {
-                article = article2,
+                article = smartphone,
                 amount = 2
             };
             order.items.Add(item2);
+            
+            var item3       = new OrderItem {
+                article = camera,
+                amount = 3
+            };
+            order.items.Add(item3);
 
             order.customer = customer;
             return order;
