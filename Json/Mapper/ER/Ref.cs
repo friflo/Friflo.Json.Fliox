@@ -7,7 +7,7 @@
     
     public class Ref<T>  where T : Entity
     {
-        internal T        entity;
+        private  T        entity;
         private  string   id;
         
         // either id or entity is set. Never both
@@ -20,7 +20,14 @@
             get => entity;
             set { entity = value; id = null; }
         }
-        
+
+        public override bool Equals(object obj) {
+            if (obj == null)
+                return false;
+            Ref<T> other = (Ref<T>)obj;
+            return Id.Equals(other.Id);
+        }
+
         public static implicit operator Ref<T>(T entity) {
             var reference = new Ref<T>();
             reference.entity    = entity;

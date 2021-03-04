@@ -9,17 +9,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
     public class TestStore : LeakTestsFixture
     {
-        [Test] [Ignore("")]
+        [Test]
         public void WriteRead() {
-            var order = TestRelationPoC.CreateOrder();
-            var db = new PocStore();
+            var store = TestRelationPoC.CreateStore();
+            var order = store.orders["order-1"];
             
             using (var typeStore  = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
                 typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
                 typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
-                m.EntityStore = db;
+                m.EntityStore = store;
                 
                 AssertWriteRead(m, order);
                 AssertWriteRead(m, order.customer);
@@ -28,9 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 AssertWriteRead(m, order.items[0].article);
                 AssertWriteRead(m, order.items[1].article);
                 
-                AreEqual(1, db.customers.Count);
-                AreEqual(2, db.articles.Count);
-                AreEqual(1, db.orders.Count);
+                AreEqual(1, store.customers.Count);
+                AreEqual(2, store.articles.Count);
+                AreEqual(1, store.orders.Count);
 
                 /*
                 IsTrue(db.orders["order-1"]         == order);
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
             AssertUtils.Equivalent(entity, result);
-            IsFalse(entity.Equals(result)); // references are not equal
+            // IsFalse(entity.Equals(result)); // references are not equal
         }
     }
 }

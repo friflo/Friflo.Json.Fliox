@@ -39,12 +39,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static Order CreateOrder() {
+        public static PocStore CreateStore() {
+            var store = new PocStore(); 
             var order       = new Order { id = "order-1" };
+            store.orders.Add(order);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
+            store.customers.Add(customer);
 
             var camera    = new Article { id = "article-1", name = "Camera" };
+            store.articles.Add(camera);
+            
             var item1       = new OrderItem {
                 article = camera,
                 amount = 1
@@ -52,6 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item1);
 
             var smartphone    = new Article { id = "article-2", name = "Smartphone" };
+            store.articles.Add(smartphone);
+            
             var item2       = new OrderItem {
                 article = smartphone,
                 amount = 2
@@ -65,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item3);
 
             order.customer = customer;
-            return order;
+            return store;
         }
     }
 }

@@ -57,7 +57,9 @@ namespace Friflo.Json.Mapper.ER
         }
 
         protected internal override Entity GetEntity(string id) {
-            return map[id];
+            if (map.TryGetValue(id, out T entity))
+                return entity;
+            return null;
         }
         
         // ---
