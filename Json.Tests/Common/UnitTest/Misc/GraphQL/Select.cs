@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.ER;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -26,7 +27,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                     items = order.items
                 };
 
-            using (var m = new JsonMapper()) {
+            using (var typeStore  = new TypeStore())
+            using (var m = new JsonMapper(typeStore)) {
+                typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+                typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
                 m.Pretty = true;
                 var jsonQuery = m.Write(orderQuery);
                 var json = m.Write(orders);

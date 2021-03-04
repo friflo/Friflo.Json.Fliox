@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
 

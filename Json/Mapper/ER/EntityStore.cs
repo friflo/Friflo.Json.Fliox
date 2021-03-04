@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Mapper.ER
 {
     public class EntityStore
     {

@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.ER;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
     // ------------------------------ models ------------------------------
     public class Order : Entity {
-        public Customer         customer;
+        public Ref<Customer>    customer;
         public List<OrderItem>  items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        public Article          article;
+        public Ref<Article>     article;
         public int              amount;
     }
 

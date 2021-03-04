@@ -40,8 +40,5 @@ namespace Friflo.Json.Mapper
         }
     }
     
-    // Change to attribute
-    public class Entity {
-        public string   id;
-    }
+
 }

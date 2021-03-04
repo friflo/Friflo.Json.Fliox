@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
