@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var order = refDb.orders["order-1"];
             var cache = new EntityCache();
             WriteRead(order,   cache);
-            AssertCache(order, cache);
+            // AssertCache(order, cache);
         }
         
         private static void WriteRead(Order order, EntityCache cache) {
