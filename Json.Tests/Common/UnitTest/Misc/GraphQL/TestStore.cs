@@ -13,9 +13,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public void WriteRead() {
             var refDb = TestRelationPoC.CreateDatabase();
             var order = refDb.orders["order-1"];
-            var cache = new EntityCache();
+            var cache = new EntityCache(refDb);
             WriteRead(order,   cache);
-            // AssertCache(order, cache);
+            AssertCache(order, cache);
         }
         
         private static void WriteRead(Order order, EntityCache cache) {
@@ -27,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 m.EntityCache = cache;
                 
                 AssertWriteRead(m, order);
+                cache.Sync();
                 AssertWriteRead(m, order.customer);
                 AssertWriteRead(m, order.items[0]);
                 AssertWriteRead(m, order.items[1]);
@@ -36,7 +37,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         }
 
         private static void AssertCache(Order order, EntityCache cache) {
-
             var orders      = cache.GetContainer<Order>();
             var articles    = cache.GetContainer<Article>();
             var customers   = cache.GetContainer<Customer>();

@@ -6,8 +6,20 @@ namespace Friflo.Json.Mapper.ER
 {
     public class EntityCache
     {
+        private readonly EntityDatabase database;
+        
+        public EntityCache(EntityDatabase database) {
+            this.database = database;
+        }
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
+
+        public void Sync() {
+            foreach (var container in containers.Values) {
+                container.SyncContainer(database);
+            }
+        }
 
         protected void AddContainer(EntityCacheContainer cache) {
             Type entityType = cache.EntityType;
@@ -32,6 +44,8 @@ namespace Friflo.Json.Mapper.ER
         
         protected internal abstract void     AddEntity   (Entity entity);
         protected internal abstract Entity   GetEntity   (string id);
+        
+        protected internal abstract void     SyncContainer   (EntityDatabase database);
     }
 
     public abstract class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
@@ -65,6 +79,14 @@ namespace Friflo.Json.Mapper.ER
                 return entity;
             unresolvedEntities.Add(id);
             return null;
+        }
+
+        protected internal override void SyncContainer(EntityDatabase database) {
+            foreach (var id in unresolvedEntities) {
+                EntityContainer<T> container = database.GetContainer<T>();
+                var entity = container[id];
+                map.Add(id, entity);
+            }
         }
         
         // ---

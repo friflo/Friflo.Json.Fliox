@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     }
 
     // --- database containers
-    public class PocDatabase : Database
+    public class PocDatabase : EntityDatabase
     {
         public PocDatabase() {
             AddContainer(orders);

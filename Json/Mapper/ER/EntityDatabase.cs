@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Friflo.Json.Mapper.ER
 {
-    public class Database
+    public class EntityDatabase
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
@@ -15,13 +15,13 @@ namespace Friflo.Json.Mapper.ER
             containers.Add(entityType, cache);
         }
 
-        public EntityContainer GetContainer<T>() where T : Entity
+        public EntityContainer<T> GetContainer<T>() where T : Entity
         {
             Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityContainer container))
-                return container;
+                return (EntityContainer<T>)container;
             containers[entityType] = container = new MemoryContainer<Entity>();
-            return container;
+            return (EntityContainer<T>)container;
         }
     }
     
