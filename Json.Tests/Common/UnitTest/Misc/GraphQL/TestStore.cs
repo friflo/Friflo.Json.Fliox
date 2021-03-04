@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Mapper;
+﻿using System.Threading.Tasks;
+using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.ER;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -10,21 +11,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestStore : LeakTestsFixture
     {
         [Test]
-        public void WriteRead() {
+        public async Task WriteRead() {
             var refDb = TestRelationPoC.CreateDatabase();
             var order = refDb.orders["order-1"];
             var cache = new EntityCache(refDb);
             
             // --- cache empty
-            WriteRead(order,   cache);
+            await WriteRead(order,   cache);
             AssertCache(order, cache);
             
             // --- cache filled
-            WriteRead(order,   cache);
+            await WriteRead(order,   cache);
             AssertCache(order, cache);
         }
         
-        private static void WriteRead(Order order, EntityCache cache) {
+        private static async Task WriteRead(Order order, EntityCache cache) {
             using (var typeStore  = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
                 typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
@@ -33,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 m.EntityCache = cache;
                 
                 AssertWriteRead(m, order);
-                cache.Sync();
+                await cache.Sync();
                 AssertWriteRead(m, order.customer);
                 AssertWriteRead(m, order.items[0]);
                 AssertWriteRead(m, order.items[1]);

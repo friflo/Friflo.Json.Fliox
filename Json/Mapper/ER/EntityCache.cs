@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -15,9 +16,9 @@ namespace Friflo.Json.Mapper.ER
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
 
-        public void Sync() {
+        public async Task Sync() {
             foreach (var container in containers.Values) {
-                container.SyncContainer(database);
+                await container.SyncContainer(database);
             }
         }
 
@@ -42,7 +43,7 @@ namespace Friflo.Json.Mapper.ER
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
 
-        protected internal abstract void     SyncContainer   (EntityDatabase database);
+        protected internal abstract Task SyncContainer   (EntityDatabase database);
     }
 
     public abstract class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
@@ -80,11 +81,11 @@ namespace Friflo.Json.Mapper.ER
             return null;
         }
 
-        protected internal override void SyncContainer(EntityDatabase database) {
-            foreach (var id in unresolvedEntities) {
-                EntityContainer<T> container = database.GetContainer<T>();
-                var entity = container[id];
-                map.Add(id, entity);
+        protected internal override async Task SyncContainer(EntityDatabase database) {
+            EntityContainer<T> container = database.GetContainer<T>();
+            var entities = await container.GetEntities(unresolvedEntities);
+            foreach (var entity in entities) {
+                map.Add(entity.id, entity);
             }
             unresolvedEntities.Clear();
         }

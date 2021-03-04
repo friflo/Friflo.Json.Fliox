@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -48,14 +49,14 @@ namespace Friflo.Json.Mapper.ER
         public T this[string id] {
             get {
                 string[] ids = { id };
-                var entities = GetEntities(ids);
+                var entities = GetEntities(ids).Result;
                 return entities.First();
             }
         }
-
+        
         // ---
-        public abstract void            AddEntities(IEnumerable<T> entities);
-        public abstract IEnumerable<T>  GetEntities(IEnumerable<string> ids);
+        public abstract Task AddEntities(IEnumerable<T> entities);
+        public abstract Task<IEnumerable<T>>    GetEntities(IEnumerable<string> ids);
     }
     
     public class MemoryContainer<T> : EntityContainer<T> where T : Entity
@@ -64,18 +65,20 @@ namespace Friflo.Json.Mapper.ER
 
         public override int Count => map.Count;
 
-        public override void AddEntities(IEnumerable<T> entities) {
+#pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
+        public override async Task AddEntities(IEnumerable<T> entities) {
             foreach (var entity in entities) {
                 map.Add(entity.id, entity);
             }
         }
 
-        public override IEnumerable<T> GetEntities(IEnumerable<string> ids) {
+        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<string> ids) {
             var result = new List<T>();
             foreach (var id in ids) {
                 result.Add(map[id]);
             }
             return result;
         }
+#pragma warning restore 1998
     }
 }
