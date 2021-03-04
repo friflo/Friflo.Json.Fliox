@@ -87,6 +87,7 @@ namespace Friflo.Json.Mapper.ER
                 var entity = container[id];
                 map.Add(id, entity);
             }
+            unresolvedEntities.Clear();
         }
         
         // ---

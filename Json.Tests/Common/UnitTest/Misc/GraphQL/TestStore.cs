@@ -14,6 +14,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var refDb = TestRelationPoC.CreateDatabase();
             var order = refDb.orders["order-1"];
             var cache = new EntityCache(refDb);
+            
+            // --- cache empty
+            WriteRead(order,   cache);
+            AssertCache(order, cache);
+            
+            // --- cache filled
             WriteRead(order,   cache);
             AssertCache(order, cache);
         }
