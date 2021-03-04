@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -14,7 +15,9 @@ namespace Friflo.Json.Mapper.ER
             containers.Add(entityType, cache);
         }
 
-        public EntityContainer GetContainer(Type entityType) {
+        public EntityContainer GetContainer<T>() where T : Entity
+        {
+            Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityContainer container))
                 return container;
             containers[entityType] = container = new MemoryContainer<Entity>();
@@ -27,48 +30,52 @@ namespace Friflo.Json.Mapper.ER
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
         
-        protected internal abstract void     AddEntity   (Entity entity);
-        protected internal abstract Entity   GetEntity   (string id);
+        // protected internal abstract void     AddEntities   (Entity entity);
+        // protected internal abstract Entity   GetEntity     (string id);
     }
 
     public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
         public override Type    EntityType => typeof(T);
         
+        // convenience method
+        public void Add(T entity) {
+            var entities = new T[] {entity};
+            AddEntities(entities);
+        }
+        
+        // convenience method
+        public T this[string id] {
+            get {
+                var ids = new string[] { id };
+                var entities = GetEntities(ids);
+                return entities.First();
+            }
+        }
+
         // ---
-        public abstract void    Add(T entity);
-        public abstract T       this[string id] { get; } // Item[] Property
+        public abstract void            AddEntities(IEnumerable<T> entities);
+        public abstract IEnumerable<T>  GetEntities(IEnumerable<string> ids);
     }
     
     public class MemoryContainer<T> : EntityContainer<T> where T : Entity
     {
         private readonly Dictionary<string, T>  map                 = new Dictionary<string, T>();
-        private readonly HashSet<string>        unresolvedEntities  = new HashSet<string>();
 
         public override int Count => map.Count;
 
-        protected internal override void AddEntity   (Entity entity) {
-            T typedEntity = (T) entity;
-            if (map.TryGetValue(entity.id, out T value)) {
-                if (value != entity)
-                    throw new InvalidOperationException("");
-                return;
+        public override void AddEntities(IEnumerable<T> entities) {
+            foreach (var entity in entities) {
+                map.Add(entity.id, entity);
             }
-            map.Add(typedEntity.id, typedEntity);
         }
 
-        protected internal override Entity GetEntity(string id) {
-            if (map.TryGetValue(id, out T entity))
-                return entity;
-            unresolvedEntities.Add(id);
-            return null;
+        public override IEnumerable<T> GetEntities(IEnumerable<string> ids) {
+            var result = new List<T>();
+            foreach (var id in ids) {
+                result.Add(map[id]);
+            }
+            return result;
         }
-        
-        // ---
-        public override void Add(T entity) {
-            map.Add(entity.id, entity);
-        }
-        
-        public override T this[string id] => map[id];
     }
 }
