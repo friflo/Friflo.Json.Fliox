@@ -30,22 +30,19 @@ namespace Friflo.Json.Mapper.ER
     {
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
-        
-        // protected internal abstract void     AddEntities   (Entity entity);
-        // protected internal abstract Entity   GetEntity     (string id);
     }
 
     public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
         public override Type    EntityType => typeof(T);
         
-        // convenience method
+        // synchronous convenience method
         public void Add(T entity) {
             T[] entities = {entity};
             AddEntities(entities);
         }
         
-        // convenience method
+        // synchronous convenience method
         public T this[string id] {
             get {
                 string[] ids = { id };
@@ -55,7 +52,7 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // ---
-        public abstract Task AddEntities(IEnumerable<T> entities);
+        public abstract Task                    AddEntities(IEnumerable<T> entities);
         public abstract Task<IEnumerable<T>>    GetEntities(IEnumerable<string> ids);
     }
     
