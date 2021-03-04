@@ -4,25 +4,25 @@ using System.Diagnostics;
 
 namespace Friflo.Json.Mapper.ER
 {
-    public class EntityStore
+    public class EntityCache
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
+        private readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
 
-        protected void AddContainer(EntityContainer container) {
-            Type entityType = container.EntityType;
-            containers.Add(entityType, container);
+        protected void AddContainer(EntityCacheContainer cache) {
+            Type entityType = cache.EntityType;
+            containers.Add(entityType, cache);
         }
 
-        public EntityContainer GetContainer(Type entityType) {
-            if (containers.TryGetValue(entityType, out EntityContainer container))
+        public EntityCacheContainer GetContainer(Type entityType) {
+            if (containers.TryGetValue(entityType, out EntityCacheContainer container))
                 return container;
-            containers[entityType] = container = new MemoryContainer<Entity>();
+            containers[entityType] = container = new MemoryCacheContainer<Entity>();
             return container;
         }
     }
     
-    public abstract class EntityContainer
+    public abstract class EntityCacheContainer
     {
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.ER
         protected internal abstract Entity   GetEntity   (string id);
     }
 
-    public abstract class EntityContainer<T> : EntityContainer where T : Entity
+    public abstract class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
     {
         public override Type    EntityType => typeof(T);
         
@@ -40,9 +40,10 @@ namespace Friflo.Json.Mapper.ER
         public abstract T       this[string id] { get; } // Item[] Property
     }
     
-    public class MemoryContainer<T> : EntityContainer<T> where T : Entity
+    public class MemoryCacheContainer<T> : EntityCacheContainer<T> where T : Entity
     {
-        private readonly Dictionary<string, T> map = new Dictionary<string, T>();
+        private readonly Dictionary<string, T>  map                 = new Dictionary<string, T>();
+        private readonly HashSet<string>        unresolvedEntities  = new HashSet<string>();
 
         public override int Count => map.Count;
 
@@ -59,6 +60,7 @@ namespace Friflo.Json.Mapper.ER
         protected internal override Entity GetEntity(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
+            unresolvedEntities.Add(id);
             return null;
         }
         

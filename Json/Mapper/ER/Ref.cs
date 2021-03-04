@@ -7,8 +7,9 @@
     
     public class Ref<T>  where T : Entity
     {
-        private  T        entity;
-        private  string   id;
+        private  T                      entity;
+        private  string                 id;
+        internal EntityCacheContainer   container;
         
         // either id or entity is set. Never both
         public string   Id {
@@ -17,7 +18,11 @@
         }
 
         public T        Entity {
-            get => entity;
+            get {
+                if (entity != null)
+                    return entity;
+                return entity = (T)container.GetEntity(id);
+            }
             set { entity = value; id = null; }
         }
 
@@ -26,6 +31,10 @@
                 return false;
             Ref<T> other = (Ref<T>)obj;
             return Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode() {
+            return Id.GetHashCode();
         }
 
         public static implicit operator Ref<T>(T entity) {

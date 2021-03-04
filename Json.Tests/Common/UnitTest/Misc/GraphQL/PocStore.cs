@@ -24,23 +24,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     }
 
     // --- database containers
-    public class PocStore : EntityStore
+    public class PocCache : EntityCache
     {
-        public PocStore() {
+        public PocCache() {
             AddContainer(orders);
             AddContainer(customers);
             AddContainer(articles);
         }
-        public readonly EntityContainer<Order>      orders      = new MemoryContainer<Order>();
-        public readonly EntityContainer<Customer>   customers   = new MemoryContainer<Customer>();
-        public readonly EntityContainer<Article>    articles    = new MemoryContainer<Article>();
+        public readonly EntityCacheContainer<Order>      orders      = new MemoryCacheContainer<Order>();
+        public readonly EntityCacheContainer<Customer>   customers   = new MemoryCacheContainer<Customer>();
+        public readonly EntityCacheContainer<Article>    articles    = new MemoryCacheContainer<Article>();
     }
         
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static PocStore CreateStore() {
-            var store = new PocStore(); 
+        public static PocCache CreateCache() {
+            var store = new PocCache(); 
             var order       = new Order { id = "order-1" };
             store.orders.Add(order);
             

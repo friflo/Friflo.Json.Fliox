@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.ER
 
     public class RefMapper<T> : TypeMapper<Ref<T>> where T : Entity
     {
-        private TypeMapper entityMapper;
+        // private TypeMapper entityMapper;
         
         public override string DataTypeName() { return "Ref<>"; }
 
@@ -50,9 +50,10 @@ namespace Friflo.Json.Mapper.ER
             if (reader.parser.Event == JsonEvent.ValueString) {
                 success = true;
                 string id = reader.parser.value.ToString();
-                var container = reader.entityStore.GetContainer(typeof(T));
+                var container = reader.entityCache.GetContainer(typeof(T));
                 var entity = (T)container.GetEntity(id);
                 slot = new Ref<T>();
+                slot.container = container;
                 if (entity != null)
                     slot.Entity = entity;
                 else

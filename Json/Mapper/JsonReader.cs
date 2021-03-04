@@ -61,9 +61,9 @@ namespace Friflo.Json.Mapper
             set => maxDepth = value;
         }
         
-        public      EntityStore    EntityStore {
-            get => intern.entityStore;
-            set => intern.entityStore = value;
+        public              EntityCache         EntityCache {
+            get => intern.entityCache;
+            set => intern.entityCache = value;
         }
 
         public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {

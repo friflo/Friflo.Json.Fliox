@@ -50,10 +50,10 @@ namespace Friflo.Json.Mapper.ER
         }
         
         public override void Write(ref Writer writer, T value) {
-            if (writer.entityStore != null && writer.Level > 0) {
+            if (writer.entityCache != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var container = writer.entityStore.GetContainer(typeof(T));
+                    var container = writer.entityCache.GetContainer(typeof(T));
                     container.AddEntity(value);
                 } else {
                     writer.AppendNull();
@@ -61,8 +61,8 @@ namespace Friflo.Json.Mapper.ER
             } else {
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
-                    if (writer.entityStore != null) {
-                        var container = writer.entityStore.GetContainer(typeof(T));
+                    if (writer.entityCache != null) {
+                        var container = writer.entityCache.GetContainer(typeof(T));
                         container.AddEntity(value);
                     }
                 } else {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Mapper.ER
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            var db = reader.entityStore;
+            var db = reader.entityCache;
             if (db != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
