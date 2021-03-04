@@ -78,7 +78,7 @@ namespace Friflo.Json.Mapper.ER
                     var id = reader.parser.value.ToString();
                     var container = db.GetContainer<T>();
                     success = true;
-                    return (T)container.GetEntity(id);
+                    return container.GetEntity(id);
                 }
                 T entity = (T) mapper.ReadObject(ref reader, slot, out success);
                 return entity;

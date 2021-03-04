@@ -41,10 +41,7 @@ namespace Friflo.Json.Mapper.ER
     {
         public abstract  Type       EntityType  { get; }
         public abstract  int        Count       { get; }
-        
-        protected internal abstract void     AddEntity   (Entity entity);
-        protected internal abstract Entity   GetEntity   (string id);
-        
+
         protected internal abstract void     SyncContainer   (EntityDatabase database);
     }
 
@@ -55,6 +52,9 @@ namespace Friflo.Json.Mapper.ER
         // ---
         public abstract void    Add(T entity);
         public abstract T       this[string id] { get; } // Item[] Property
+        
+        protected internal abstract void    AddEntity   (T entity);
+        protected internal abstract T       GetEntity   (string id);
     }
     
     public class MemoryCacheContainer<T> : EntityCacheContainer<T> where T : Entity
@@ -64,17 +64,16 @@ namespace Friflo.Json.Mapper.ER
 
         public override int Count => map.Count;
 
-        protected internal override void AddEntity   (Entity entity) {
-            T typedEntity = (T) entity;
+        protected internal override void AddEntity   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
                 if (value != entity)
                     throw new InvalidOperationException("");
                 return;
             }
-            map.Add(typedEntity.id, typedEntity);
+            map.Add(entity.id, entity);
         }
 
-        protected internal override Entity GetEntity(string id) {
+        protected internal override T GetEntity(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
             unresolvedEntities.Add(id);

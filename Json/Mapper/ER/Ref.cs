@@ -7,9 +7,9 @@
     
     public class Ref<T>  where T : Entity
     {
-        private  T                      entity;
-        private  string                 id;
-        internal EntityCacheContainer   container;
+        private  T                          entity;
+        private  string                     id;
+        internal EntityCacheContainer<T>    container;
         
         // either id or entity is set. Never both
         public string   Id {
@@ -21,7 +21,7 @@
             get {
                 if (entity != null)
                     return entity;
-                return entity = (T)container.GetEntity(id);
+                return entity = container.GetEntity(id);
             }
             set { entity = value; id = null; }
         }

@@ -40,14 +40,14 @@ namespace Friflo.Json.Mapper.ER
         
         // convenience method
         public void Add(T entity) {
-            var entities = new T[] {entity};
+            T[] entities = {entity};
             AddEntities(entities);
         }
         
         // convenience method
         public T this[string id] {
             get {
-                var ids = new string[] { id };
+                string[] ids = { id };
                 var entities = GetEntities(ids);
                 return entities.First();
             }
