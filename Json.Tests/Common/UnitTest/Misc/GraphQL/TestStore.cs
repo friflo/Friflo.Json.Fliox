@@ -32,12 +32,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 AreEqual(2, store.articles.Count);
                 AreEqual(1, store.orders.Count);
 
-                /*
-                IsTrue(db.orders["order-1"]         == order);
-                IsTrue(db.articles["article-1"]     == order.items[0].article);
-                IsTrue(db.articles["article-2"]     == order.items[1].article);
-                IsTrue(db.customers["customer-1"]   == order.customer);
-                */
+                IsTrue(store.orders   ["order-1"]      == order);
+                IsTrue(store.articles ["article-1"]    == order.items[0].article.Entity);
+                IsTrue(store.articles ["article-2"]    == order.items[1].article.Entity);
+                IsTrue(store.customers["customer-1"]   == order.customer.Entity);
             }
         }
 
