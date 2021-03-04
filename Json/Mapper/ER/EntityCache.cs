@@ -84,6 +84,9 @@ namespace Friflo.Json.Mapper.ER
         }
 
         protected internal override async Task SyncContainer(EntityDatabase database) {
+            if (unresolvedEntities.Count == 0)
+                return;
+            
             EntityContainer<T> container = database.GetContainer<T>();
             var entities = await container.GetEntities(unresolvedEntities);
             foreach (var entity in entities) {
