@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.ER
     }
 
 
-    public class EntityMapper<T> : TypeMapper<T> where T : Entity
+    internal class EntityMapper<T> : TypeMapper<T> where T : Entity
     {
         private readonly TypeMapper<T> mapper;
         
