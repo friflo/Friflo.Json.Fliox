@@ -14,11 +14,14 @@ namespace Friflo.Json.Mapper.ER
             containers.Add(entityType, cache);
         }
 
-        public EntityCacheContainer GetContainer(Type entityType) {
+        public EntityCacheContainer<T> GetContainer<T>() where T : Entity
+        {
+            Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityCacheContainer container))
-                return container;
-            containers[entityType] = container = new MemoryCacheContainer<Entity>();
-            return container;
+                return (EntityCacheContainer<T>)container;
+            
+            containers[entityType] = container = new MemoryCacheContainer<T>();
+            return (EntityCacheContainer<T>)container;
         }
     }
     

@@ -10,23 +10,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestStore : LeakTestsFixture
     {
         [Test]
-        public void WriteReadFilledStore() {
-            var referenceCache = TestRelationPoC.CreateCache();
-            var order = referenceCache.orders["order-1"];
-            WriteRead(order, referenceCache);
-            AssertCache(order, referenceCache);
+        public void WriteRead() {
+            var refDb = TestRelationPoC.CreateDatabase();
+            var order = refDb.orders["order-1"];
+            var cache = new EntityCache();
+            WriteRead(order,   cache);
+            AssertCache(order, cache);
         }
         
-        [Test]
-        public void WriteReadEmptyStore() {
-            var referenceStore = TestRelationPoC.CreateCache();
-            var order = referenceStore.orders["order-1"];
-            var cache = new PocCache();
-            WriteRead(order, cache);
-            // AssertCache(order,cache);
-        }
-
-        private static void WriteRead(Order order, PocCache cache) {
+        private static void WriteRead(Order order, EntityCache cache) {
             using (var typeStore  = new TypeStore())
             using (var m = new JsonMapper(typeStore)) {
                 typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
@@ -43,15 +35,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             }
         }
 
-        private static void AssertCache(Order order, PocCache cache) {
-            AreEqual(1, cache.customers.Count);
-            AreEqual(2, cache.articles.Count);
-            AreEqual(1, cache.orders.Count);
+        private static void AssertCache(Order order, EntityCache cache) {
 
-            IsTrue(cache.orders   ["order-1"]      == order);
-            IsTrue(cache.articles ["article-1"]    == order.items[0].article.Entity);
-            IsTrue(cache.articles ["article-2"]    == order.items[1].article.Entity);
-            IsTrue(cache.customers["customer-1"]   == order.customer.Entity);
+            var orders      = cache.GetContainer<Order>();
+            var articles    = cache.GetContainer<Article>();
+            var customers   = cache.GetContainer<Customer>();
+            
+            AreEqual(1, customers.Count);
+            AreEqual(2, articles.Count);
+            AreEqual(1, orders.Count);
+
+            IsTrue(orders   ["order-1"]      == order);
+            IsTrue(articles ["article-1"]    == order.items[0].article.Entity);
+            IsTrue(articles ["article-2"]    == order.items[1].article.Entity);
+            IsTrue(customers["customer-1"]   == order.customer.Entity);
         }
 
         private static void AssertWriteRead<T>(JsonMapper m, T entity) {

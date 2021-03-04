@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.ER
             if (writer.entityCache != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var container = writer.entityCache.GetContainer(typeof(T));
+                    var container = writer.entityCache.GetContainer<T>();
                     container.AddEntity(value);
                 } else {
                     writer.AppendNull();
@@ -62,7 +62,7 @@ namespace Friflo.Json.Mapper.ER
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
                     if (writer.entityCache != null) {
-                        var container = writer.entityCache.GetContainer(typeof(T));
+                        var container = writer.entityCache.GetContainer<T>();
                         container.AddEntity(value);
                     }
                 } else {
@@ -76,7 +76,7 @@ namespace Friflo.Json.Mapper.ER
             if (db != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
-                    var container = db.GetContainer(typeof(T));
+                    var container = db.GetContainer<T>();
                     success = true;
                     return (T)container.GetEntity(id);
                 }

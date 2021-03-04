@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void RunLinq() {
-            var cache = TestRelationPoC.CreateCache();
+            var cache = TestRelationPoC.CreateDatabase();
             var order1 = cache.orders["order-1"];
             var orders = new List<Order> { order1 };
 
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void DebugLinqQuery() {
-            var cache = TestRelationPoC.CreateCache();
+            var cache = TestRelationPoC.CreateDatabase();
             var order1 = cache.orders["order-1"];
             var orders = new List<Order> { order1 };
             
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void TestSelectSameInstance() {
-            var cache = TestRelationPoC.CreateCache();
+            var cache = TestRelationPoC.CreateDatabase();
             var order1 = cache.orders["order-1"];
             var orders = new List<Order> { order1 };
 
