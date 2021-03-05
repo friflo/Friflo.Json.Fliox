@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 var store = new PocStore(db);
                 
                 // --- cache empty
-                var order = store.orders["order-1"];
+                var order = store.orders.Get("order-1");
                 // await store.Sync();
 
                 await WriteRead(order, store);
@@ -54,10 +54,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             AreEqual(1, orders.Count);
 
 
-            IsTrue(orders   ["order-1"]      == order);
-            IsTrue(articles ["article-1"]    == order.items[0].article.Entity);
-            IsTrue(articles ["article-2"]    == order.items[1].article.Entity);
-            IsTrue(customers["customer-1"]   == order.customer.Entity);
+            IsTrue(orders.   Get("order-1")      == order);
+            IsTrue(articles. Get("article-1")    == order.items[0].article.Entity);
+            IsTrue(articles. Get("article-2")    == order.items[1].article.Entity);
+            IsTrue(customers.Get("customer-1")   == order.customer.Entity);
         }
 
         private static void AssertWriteRead<T>(JsonMapper m, T entity) {

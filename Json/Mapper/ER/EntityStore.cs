@@ -57,8 +57,6 @@ namespace Friflo.Json.Mapper.ER
             mapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
         }
         
-        public T this[string id] => GetEntity(id);
-
         protected internal void AddEntity   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
                 if (value != entity)
@@ -68,7 +66,7 @@ namespace Friflo.Json.Mapper.ER
             map.Add(entity.id, entity);
         }
 
-        protected internal T GetEntity(string id) {
+        public T Get(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
             entity = (T)mapper.CreateInstance();
