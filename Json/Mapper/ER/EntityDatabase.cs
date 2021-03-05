@@ -72,12 +72,10 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // synchronous convenience method
-        public T this[string id] {
-            get {
-                string[] ids = { id };
-                var entities = GetEntities(ids).Result;
-                return entities.First();
-            }
+        public T Get(string id) {
+            string[] ids = { id };
+            var entities = GetEntities(ids).Result;
+            return entities.First();
         }
         
         // ---

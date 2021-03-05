@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         [Test]
         public async Task WriteRead() {
             using (var db = TestRelationPoC.CreateDatabase()) {
-                var dbOrder = db.orders["order-1"];
+                var dbOrder = db.orders.Get("order-1");
                 var store = new EntityStore(db);
 
                 // --- cache empty
