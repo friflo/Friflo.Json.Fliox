@@ -51,6 +51,10 @@ namespace Friflo.Json.Mapper.ER
             mapper.InitTypeMapper(typeStore);
         }
         
+        public override      object  CreateInstance() {
+            return mapper.CreateInstance();
+        }
+        
         public override void Write(ref Writer writer, T value) {
             if (writer.entityStore != null && writer.Level > 0) {
                 if (value != null) {

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -45,6 +46,7 @@ namespace Friflo.Json.Mapper.ER
    
     public class EntityStoreContainer<T> : EntityStoreContainer where T : Entity
     {
+        private readonly    TypeMapper<T>           mapper;
         private readonly    Dictionary<string, T>   map                 = new Dictionary<string, T>();
         private readonly    HashSet<string>         unresolvedEntities  = new HashSet<string>();
 
@@ -52,6 +54,7 @@ namespace Friflo.Json.Mapper.ER
         
         public EntityStoreContainer(EntityStore store) {
             store.containers[typeof(T)] = this;
+            mapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
         }
 
         protected internal void AddEntity   (T entity) {
@@ -63,8 +66,19 @@ namespace Friflo.Json.Mapper.ER
             map.Add(entity.id, entity);
         }
 
-        public T this[string id] => map[id];
-        
+        public T this[string id] {
+            get {
+                T entity = GetEntity(id);
+                if (entity != null)
+                    return entity;
+                
+                entity = (T)mapper.CreateInstance();
+                entity.id = id;
+                unresolvedEntities.Add(id);
+                return entity;
+            }
+        }
+
         protected internal T GetEntity(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
