@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.ER
         public override int Count => throw new NotImplementedException();
 
 #pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task AddEntities(IEnumerable<T> entities) {
+        public override async Task CreateEntities(IEnumerable<T> entities) {
             throw new NotImplementedException();
         }
         
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.ER
             throw new NotImplementedException();
         }
 
-        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<T> ids) {
+        public override async Task<IEnumerable<T>> ReadEntities(IEnumerable<T> ids) {
             throw new NotImplementedException();
             // var result = new List<T>();
             // return result;

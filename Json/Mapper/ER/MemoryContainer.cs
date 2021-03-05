@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.ER
         public override int Count => payloads.Count;
 
 #pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task AddEntities(IEnumerable<T> entities) {
+        public override async Task CreateEntities(IEnumerable<T> entities) {
             foreach (var entity in entities) {
                 var json = database.mapper.Write(entity);
                 payloads[entity.id] = json;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<T> entities) {
+        public override async Task<IEnumerable<T>> ReadEntities(IEnumerable<T> entities) {
             var result = new List<T>();
             foreach (var entity in entities) {
                 var json = payloads[entity.id];

@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper.ER
             mapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
         }
         
-        protected internal void AddEntity   (T entity) {
+        protected internal void Create   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
                 if (value != entity)
                     throw new InvalidOperationException("");
@@ -66,7 +66,7 @@ namespace Friflo.Json.Mapper.ER
             map.Add(entity.id, entity);
         }
 
-        public T Get(string id) {
+        public T Read(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
             entity = (T)mapper.CreateInstance();
@@ -81,7 +81,7 @@ namespace Friflo.Json.Mapper.ER
                 return;
             
             EntityContainer<T> container = database.GetContainer<T>();
-            var entities = await container.GetEntities(unresolvedEntities);
+            var entities = await container.ReadEntities(unresolvedEntities);
             /* foreach (var entity in entities) {
                 map.Add(entity.id, entity);
             } */

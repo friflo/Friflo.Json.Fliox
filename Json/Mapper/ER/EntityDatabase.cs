@@ -65,7 +65,7 @@ namespace Friflo.Json.Mapper.ER
         // synchronous convenience method
         public void Create(T entity) {
             T[] entities = {entity};
-            AddEntities(entities);
+            CreateEntities(entities);
         }
         
         // synchronous convenience method
@@ -75,17 +75,17 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // synchronous convenience method
-        public T Get(string id) {
+        public T Read(string id) {
             T entity = (T)mapper.CreateInstance();
             entity.id = id;
             T[] entities = { entity };
-            var result = GetEntities(entities).Result;
+            var result = ReadEntities(entities).Result;
             return result.First();
         }
         
         // ---
-        public abstract Task                    AddEntities     (IEnumerable<T> entities);
+        public abstract Task                    CreateEntities  (IEnumerable<T> entities);
         public abstract Task                    UpdateEntities  (IEnumerable<T> entities);
-        public abstract Task<IEnumerable<T>>    GetEntities     (IEnumerable<T> entities);
+        public abstract Task<IEnumerable<T>>    ReadEntities    (IEnumerable<T> entities);
     }
 }

@@ -13,11 +13,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         [Test]
         public async Task WriteRead() {
             using (var db = TestRelationPoC.CreateDatabase()) {
-                var dbOrder = db.orders.Get("order-1");
+                var dbOrder = db.orders.Read("order-1");
                 var store = new PocStore(db);
                 
                 // --- cache empty
-                var order = store.orders.Get("order-1");
+                var order = store.orders.Read("order-1");
                 // await store.Sync();
 
                 await WriteRead(order, store);
@@ -54,10 +54,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             AreEqual(1, orders.Count);
 
 
-            IsTrue(orders.   Get("order-1")      == order);
-            IsTrue(articles. Get("article-1")    == order.items[0].article.Entity);
-            IsTrue(articles. Get("article-2")    == order.items[1].article.Entity);
-            IsTrue(customers.Get("customer-1")   == order.customer.Entity);
+            IsTrue(orders.   Read("order-1")      == order);
+            IsTrue(articles. Read("article-1")    == order.items[0].article.Entity);
+            IsTrue(articles. Read("article-2")    == order.items[1].article.Entity);
+            IsTrue(customers.Read("customer-1")   == order.customer.Entity);
         }
 
         private static void AssertWriteRead<T>(JsonMapper m, T entity) {
