@@ -49,9 +49,9 @@ namespace Friflo.Json.Mapper
             set => intern.writeNullMembers = value;
         }
         
-        public      EntityCache EntityCache {
-            get => intern.entityCache;
-            set => intern.entityCache = value;
+        public      EntityStore EntityStore {
+            get => intern.entityStore;
+            set => intern.entityStore = value;
         }
 
         public JsonWriter(TypeStore typeStore) {

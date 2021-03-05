@@ -24,9 +24,9 @@ namespace Friflo.Json.Mapper.ER
             typeStore.Dispose();
         }
 
-        internal void AddContainer<T>(EntityContainer<T> cache) where T : Entity
+        internal void AddContainer<T>(EntityContainer<T> container) where T : Entity
         {
-            containers.Add(typeof(T), cache);
+            containers.Add(typeof(T), container);
         }
 
         public EntityContainer<T> GetContainer<T>() where T : Entity

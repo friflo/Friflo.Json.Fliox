@@ -12,27 +12,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public async Task WriteRead() {
-            using (var refDb = TestRelationPoC.CreateDatabase()) {
-                var order = refDb.orders["order-1"];
-                var cache = new EntityCache(refDb);
+            using (var db = TestRelationPoC.CreateDatabase()) {
+                var order = db.orders["order-1"];
+                var store = new EntityStore(db);
 
                 // --- cache empty
-                await WriteRead(order, cache);
-                AssertCache(order, cache);
+                await WriteRead(order, store);
+                AssertStore(order, store);
 
                 // --- cache filled
-                await WriteRead(order, cache);
-                AssertCache(order, cache);
+                await WriteRead(order, store);
+                AssertStore(order, store);
             }
         }
         
-        private static async Task WriteRead(Order order, EntityCache cache) {
-            using (var m = new JsonMapper(cache.typeStore)) {
+        private static async Task WriteRead(Order order, EntityStore store) {
+            using (var m = new JsonMapper(store.typeStore)) {
                 m.Pretty = true;
-                m.EntityCache = cache;
+                m.EntityStore = store;
                 
                 AssertWriteRead(m, order);
-                await cache.Sync();
+                await store.Sync();
                 AssertWriteRead(m, order.customer);
                 AssertWriteRead(m, order.items[0]);
                 AssertWriteRead(m, order.items[1]);
@@ -41,10 +41,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             }
         }
 
-        private static void AssertCache(Order order, EntityCache cache) {
-            var orders      = cache.GetContainer<Order>();
-            var articles    = cache.GetContainer<Article>();
-            var customers   = cache.GetContainer<Customer>();
+        private static void AssertStore(Order order, EntityStore store) {
+            var orders      = store.GetContainer<Order>();
+            var articles    = store.GetContainer<Article>();
+            var customers   = store.GetContainer<Customer>();
             
             AreEqual(1, customers.Count);
             AreEqual(2, articles.Count);

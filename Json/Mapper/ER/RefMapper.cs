@@ -52,7 +52,7 @@ namespace Friflo.Json.Mapper.ER
             if (reader.parser.Event == JsonEvent.ValueString) {
                 success = true;
                 string id = reader.parser.value.ToString();
-                var container = reader.entityCache.GetContainer<T>();
+                var container = reader.entityStore.GetContainer<T>();
                 var entity = container.GetEntity(id);
                 slot = new Ref<T>();
                 slot.container = container;

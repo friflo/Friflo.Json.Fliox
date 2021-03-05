@@ -14,9 +14,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void RunLinq() {
-            using (var cache = TestRelationPoC.CreateDatabase())
-            using (var m = new JsonMapper(cache.typeStore)) {
-                var order1 = cache.orders["order-1"];
+            using (var db = TestRelationPoC.CreateDatabase())
+            using (var m = new JsonMapper(db.typeStore)) {
+                var order1 = db.orders["order-1"];
                 var orders = new List<Order> { order1 };
 
                 var orderQuery =
@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void DebugLinqQuery() {
-            using (var cache = TestRelationPoC.CreateDatabase()) {
-                var order1 = cache.orders["order-1"];
+            using (var db = TestRelationPoC.CreateDatabase()) {
+                var order1 = db.orders["order-1"];
                 var orders = new List<Order> {order1};
 
                 IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
@@ -89,8 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var cache = TestRelationPoC.CreateDatabase()) {
-                var order1 = cache.orders["order-1"];
+            using (var db = TestRelationPoC.CreateDatabase()) {
+                var order1 = db.orders["order-1"];
                 var orders = new List<Order> {order1};
 
                 var orderQuery =

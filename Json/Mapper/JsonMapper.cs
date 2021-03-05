@@ -40,11 +40,11 @@ namespace Friflo.Json.Mapper
             set => writer.Pretty = value;
         }
         
-        public      EntityCache EntityCache {
-            get => writer.EntityCache;
+        public      EntityStore EntityStore {
+            get => writer.EntityStore;
             set {
-                writer.EntityCache = value;
-                reader.EntityCache = value;
+                writer.EntityStore = value;
+                reader.EntityStore = value;
             }
         }
 

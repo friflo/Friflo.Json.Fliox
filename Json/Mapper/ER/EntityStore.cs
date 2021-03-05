@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER
 {
-    public class EntityCache
+    public class EntityStore
     {
         private readonly EntityDatabase database;
         public  readonly TypeStore      typeStore;
         
-        public EntityCache(EntityDatabase database) {
+        public EntityStore(EntityDatabase database) {
             this.database = database;
             typeStore = database.typeStore;
         }
