@@ -26,14 +26,14 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        public EntityCacheContainer<T> GetContainer<T>() where T : Entity
+        public EntityStoreContainer<T> GetContainer<T>() where T : Entity
         {
             Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityCacheContainer container))
-                return (EntityCacheContainer<T>)container;
+                return (EntityStoreContainer<T>)container;
             
-            container = new EntityCacheContainer<T>(this);
-            return (EntityCacheContainer<T>)container;
+            container = new EntityStoreContainer<T>(this);
+            return (EntityStoreContainer<T>)container;
         }
     }
     
@@ -43,14 +43,14 @@ namespace Friflo.Json.Mapper.ER
     }
 
    
-    public class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
+    public class EntityStoreContainer<T> : EntityCacheContainer where T : Entity
     {
         private readonly    Dictionary<string, T>   map                 = new Dictionary<string, T>();
         private readonly    HashSet<string>         unresolvedEntities  = new HashSet<string>();
 
         public              int                     Count       => map.Count;
         
-        public EntityCacheContainer(EntityStore store) {
+        public EntityStoreContainer(EntityStore store) {
             store.containers[typeof(T)] = this;
         }
 

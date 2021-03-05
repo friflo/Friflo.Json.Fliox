@@ -40,14 +40,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class PocStore : EntityStore
     {
         public PocStore(EntityDatabase database) : base (database) {
-            orders      = new EntityCacheContainer<Order>       (this);
-            customers   = new EntityCacheContainer<Customer>    (this);
-            articles    = new EntityCacheContainer<Article>     (this);
+            orders      = new EntityStoreContainer<Order>       (this);
+            customers   = new EntityStoreContainer<Customer>    (this);
+            articles    = new EntityStoreContainer<Article>     (this);
         }
 
-        public readonly EntityCacheContainer<Order>      orders;
-        public readonly EntityCacheContainer<Customer>   customers;
-        public readonly EntityCacheContainer<Article>    articles;
+        public readonly EntityStoreContainer<Order>      orders;
+        public readonly EntityStoreContainer<Customer>   customers;
+        public readonly EntityStoreContainer<Article>    articles;
     }
         
     // --------------------------------------------------------------------

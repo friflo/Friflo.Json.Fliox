@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.ER
     {
         private  T                          entity;
         private  string                     id;
-        internal EntityCacheContainer<T>    container;
+        internal EntityStoreContainer<T>    container;
         
         // either id or entity is set. Never both
         public string   Id {
