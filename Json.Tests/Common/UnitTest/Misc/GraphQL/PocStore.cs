@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item3);
 
             order.customer = customer;
-            store.orders.Update(order);
+            store.orders.Update(order); // todo test without Update()
             return store;
         }
     }

@@ -13,15 +13,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         [Test]
         public async Task WriteRead() {
             using (var db = TestRelationPoC.CreateDatabase()) {
-                var order = db.orders["order-1"];
+                var dbOrder = db.orders["order-1"];
                 var store = new EntityStore(db);
 
                 // --- cache empty
-                await WriteRead(order, store);
+                await WriteRead(dbOrder, store);
+                var order = store.GetContainer<Order>()["order-1"];
                 AssertStore(order, store);
 
                 // --- cache filled
-                await WriteRead(order, store);
+                await WriteRead(dbOrder, store);
                 AssertStore(order, store);
             }
         }

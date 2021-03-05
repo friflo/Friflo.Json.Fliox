@@ -39,8 +39,8 @@ namespace Friflo.Json.Mapper.ER
             foreach (var id in ids) {
                 var json = payloads[id];
                 var value = database.mapper.Read<T>(json);
-                // result.Add(value);
-                result.Add(map[id]);
+                result.Add(value);
+                // result.Add(map[id]);
             }
             return result;
         }

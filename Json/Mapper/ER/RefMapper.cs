@@ -42,10 +42,13 @@ namespace Friflo.Json.Mapper.ER
 
         public override void Write(ref Writer writer, Ref<T> value) {
             string id = value.Id;
-            if (id != null)
+            if (id != null) {
                 writer.WriteString(id);
-            else
+                if (writer.entityStore != null)
+                    value.container = writer.entityStore.GetContainer<T>();
+            } else {
                 writer.AppendNull();
+            }
         }
 
         public override Ref<T> Read(ref Reader reader, Ref<T> slot, out bool success) {
