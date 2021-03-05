@@ -8,10 +8,21 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER
 {
-    public class EntityDatabase
+    public class EntityDatabase : IDisposable
     {
+        public readonly TypeStore typeStore = new TypeStore();
+            
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
+
+        public EntityDatabase() {
+            typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+            typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+        }
+        
+        public void Dispose() {
+            typeStore.Dispose();
+        }
 
         internal void AddContainer<T>(EntityContainer<T> cache) where T : Entity
         {

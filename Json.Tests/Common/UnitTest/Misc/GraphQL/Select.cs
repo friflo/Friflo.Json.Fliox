@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.ER;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -15,23 +14,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void RunLinq() {
-            var cache = TestRelationPoC.CreateDatabase();
-            var order1 = cache.orders["order-1"];
-            var orders = new List<Order> { order1 };
+            using (var cache = TestRelationPoC.CreateDatabase())
+            using (var m = new JsonMapper(cache.typeStore)) {
+                var order1 = cache.orders["order-1"];
+                var orders = new List<Order> { order1 };
 
-            var orderQuery =
-                from order in orders
-                // where order.id == "order-1"
-                select new Order {
-                    id = order.id,
-                    customer =  order.customer,
-                    items = order.items
-                };
+                var orderQuery =
+                    from order in orders
+                    // where order.id == "order-1"
+                    select new Order {
+                        id = order.id,
+                        customer =  order.customer,
+                        items = order.items
+                    };
 
-            using (var typeStore  = new TypeStore())
-            using (var m = new JsonMapper(typeStore)) {
-                typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-                typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            
                 m.Pretty = true;
                 var jsonQuery = m.Write(orderQuery);
                 var json = m.Write(orders);
@@ -67,41 +64,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public void DebugLinqQuery() {
-            var cache = TestRelationPoC.CreateDatabase();
-            var order1 = cache.orders["order-1"];
-            var orders = new List<Order> { order1 };
-            
-            IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
+            using (var cache = TestRelationPoC.CreateDatabase()) {
+                var order1 = cache.orders["order-1"];
+                var orders = new List<Order> {order1};
 
-            var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
-            // var gqlOrders = new GqlEnumerable<Order>(orders);
+                IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
-            var orderQuery =
-                from order in gqlOrders
-                where WhereOrderEqual(order, "order-1")  // where  order.id == "order-1"
-                select SelectOrder(order);               // select order;
+                var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
+                // var gqlOrders = new GqlEnumerable<Order>(orders);
 
-            int n = 0;
-            foreach (var order in orderQuery) {
-                n++;
-                IsTrue(order1 == order);
+                var orderQuery =
+                    from order in gqlOrders
+                    where WhereOrderEqual(order, "order-1") // where  order.id == "order-1"
+                    select SelectOrder(order); // select order;
+
+                int n = 0;
+                foreach (var order in orderQuery) {
+                    n++;
+                    IsTrue(order1 == order);
+                }
+                AreEqual(1, n);
             }
-            AreEqual(1, n);
         }
 
         [Test]
         public void TestSelectSameInstance() {
-            var cache = TestRelationPoC.CreateDatabase();
-            var order1 = cache.orders["order-1"];
-            var orders = new List<Order> { order1 };
+            using (var cache = TestRelationPoC.CreateDatabase()) {
+                var order1 = cache.orders["order-1"];
+                var orders = new List<Order> {order1};
 
-            var orderQuery =
-                from order in orders
-                select order;
+                var orderQuery =
+                    from order in orders
+                    select order;
 
-            int n = 0;
-            foreach (var order in orderQuery) {
-                IsTrue(order == orders[n++]);
+                int n = 0;
+                foreach (var order in orderQuery) {
+                    IsTrue(order == orders[n++]);
+                }
             }
         }
     }

@@ -10,9 +10,11 @@ namespace Friflo.Json.Mapper.ER
     public class EntityCache
     {
         private readonly EntityDatabase database;
+        public  readonly TypeStore      typeStore;
         
         public EntityCache(EntityDatabase database) {
             this.database = database;
+            typeStore = database.typeStore;
         }
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

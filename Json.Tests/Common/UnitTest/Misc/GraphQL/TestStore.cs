@@ -12,24 +12,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public async Task WriteRead() {
-            var refDb = TestRelationPoC.CreateDatabase();
-            var order = refDb.orders["order-1"];
-            var cache = new EntityCache(refDb);
-            
-            // --- cache empty
-            await WriteRead(order,   cache);
-            AssertCache(order, cache);
-            
-            // --- cache filled
-            await WriteRead(order,   cache);
-            AssertCache(order, cache);
+            using (var refDb = TestRelationPoC.CreateDatabase()) {
+                var order = refDb.orders["order-1"];
+                var cache = new EntityCache(refDb);
+
+                // --- cache empty
+                await WriteRead(order, cache);
+                AssertCache(order, cache);
+
+                // --- cache filled
+                await WriteRead(order, cache);
+                AssertCache(order, cache);
+            }
         }
         
         private static async Task WriteRead(Order order, EntityCache cache) {
-            using (var typeStore  = new TypeStore())
-            using (var m = new JsonMapper(typeStore)) {
-                typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-                typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            using (var m = new JsonMapper(cache.typeStore)) {
                 m.Pretty = true;
                 m.EntityCache = cache;
                 
