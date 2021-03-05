@@ -13,9 +13,9 @@ namespace Friflo.Json.Mapper.ER
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
 
-        protected void AddContainer(EntityContainer cache) {
-            Type entityType = cache.EntityType;
-            containers.Add(entityType, cache);
+        internal void AddContainer<T>(EntityContainer<T> cache) where T : Entity
+        {
+            containers.Add(typeof(T), cache);
         }
 
         public EntityContainer<T> GetContainer<T>() where T : Entity
@@ -23,7 +23,7 @@ namespace Friflo.Json.Mapper.ER
             Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityContainer container))
                 return (EntityContainer<T>)container;
-            containers[entityType] = container = new MemoryContainer<Entity>();
+            containers[entityType] = container = new MemoryContainer<Entity>(this);
             return (EntityContainer<T>)container;
         }
     }
@@ -36,7 +36,14 @@ namespace Friflo.Json.Mapper.ER
 
     public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
-        public override Type    EntityType => typeof(T);
+        private readonly    EntityDatabase  database;
+        public override     Type            EntityType      => typeof(T);
+        
+
+        protected EntityContainer(EntityDatabase database) {
+            database.AddContainer(this);
+            this.database = database;
+        }
         
         // synchronous convenience method
         public void Add(T entity) {

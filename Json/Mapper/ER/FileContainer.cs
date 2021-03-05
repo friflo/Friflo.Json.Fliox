@@ -10,7 +10,7 @@ namespace Friflo.Json.Mapper.ER
     {
         private readonly string folder;
         
-        public FileContainer(string folder) {
+        public FileContainer(EntityDatabase database, string folder) : base (database) {
             this.folder = folder;
         }
         

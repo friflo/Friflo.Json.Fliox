@@ -27,13 +27,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class PocDatabase : EntityDatabase
     {
         public PocDatabase() {
-            AddContainer(orders);
-            AddContainer(customers);
-            AddContainer(articles);
+            orders      = new MemoryContainer<Order>(this);
+            customers   = new MemoryContainer<Customer>(this);
+            articles    = new MemoryContainer<Article>(this);
         }
-        public readonly EntityContainer<Order>      orders      = new MemoryContainer<Order>();
-        public readonly EntityContainer<Customer>   customers   = new MemoryContainer<Customer>();
-        public readonly EntityContainer<Article>    articles    = new MemoryContainer<Article>();
+
+        public readonly EntityContainer<Order>      orders;
+        public readonly EntityContainer<Customer>   customers;
+        public readonly EntityContainer<Article>    articles;
     }
         
     // --------------------------------------------------------------------

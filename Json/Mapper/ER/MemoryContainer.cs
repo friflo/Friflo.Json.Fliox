@@ -8,8 +8,8 @@ namespace Friflo.Json.Mapper.ER
     public class MemoryContainer<T> : EntityContainer<T> where T : Entity
     {
         private readonly Dictionary<string, T>  map                 = new Dictionary<string, T>();
-        
-        public MemoryContainer() { }
+
+        public MemoryContainer(EntityDatabase database) : base (database) { }
 
         public override int Count => map.Count;
 
