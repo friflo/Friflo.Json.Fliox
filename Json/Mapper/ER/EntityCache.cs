@@ -24,50 +24,31 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        protected void AddContainer(EntityCacheContainer cache) {
-            Type entityType = cache.EntityType;
-            containers.Add(entityType, cache);
-        }
-
         public EntityCacheContainer<T> GetContainer<T>() where T : Entity
         {
             Type entityType = typeof(T);
             if (containers.TryGetValue(entityType, out EntityCacheContainer container))
                 return (EntityCacheContainer<T>)container;
             
-            containers[entityType] = container = new MemoryCacheContainer<T>();
+            containers[entityType] = container = new EntityCacheContainer<T>();
             return (EntityCacheContainer<T>)container;
         }
     }
     
     public abstract class EntityCacheContainer
     {
-        public abstract  Type       EntityType  { get; }
-        public abstract  int        Count       { get; }
-
         protected internal abstract Task SyncContainer   (EntityDatabase database);
     }
 
-    public abstract class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
+   
+    public class EntityCacheContainer<T> : EntityCacheContainer where T : Entity
     {
-        public override Type    EntityType => typeof(T);
-        
-        // ---
-        public abstract void    Add(T entity);
-        public abstract T       this[string id] { get; } // Item[] Property
-        
-        protected internal abstract void    AddEntity   (T entity);
-        protected internal abstract T       GetEntity   (string id);
-    }
-    
-    public class MemoryCacheContainer<T> : EntityCacheContainer<T> where T : Entity
-    {
-        private readonly Dictionary<string, T>  map                 = new Dictionary<string, T>();
-        private readonly HashSet<string>        unresolvedEntities  = new HashSet<string>();
+        private readonly    Dictionary<string, T>   map                 = new Dictionary<string, T>();
+        private readonly    HashSet<string>         unresolvedEntities  = new HashSet<string>();
 
-        public override int Count => map.Count;
+        public              int                     Count       => map.Count;
 
-        protected internal override void AddEntity   (T entity) {
+        protected internal void AddEntity   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
                 if (value != entity)
                     throw new InvalidOperationException("");
@@ -76,7 +57,9 @@ namespace Friflo.Json.Mapper.ER
             map.Add(entity.id, entity);
         }
 
-        protected internal override T GetEntity(string id) {
+        public T this[string id] => map[id];
+        
+        protected internal T GetEntity(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
             unresolvedEntities.Add(id);
@@ -95,11 +78,5 @@ namespace Friflo.Json.Mapper.ER
             unresolvedEntities.Clear();
         }
         
-        // ---
-        public override void Add(T entity) {
-            map.Add(entity.id, entity);
-        }
-        
-        public override T this[string id] => map[id];
     }
 }
