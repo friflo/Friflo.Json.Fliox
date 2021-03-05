@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 
                 // --- cache empty
                 var order = store.orders["order-1"];
-                await store.Sync();
+                // await store.Sync();
 
                 await WriteRead(order, store);
                 AssertStore(order, store);
