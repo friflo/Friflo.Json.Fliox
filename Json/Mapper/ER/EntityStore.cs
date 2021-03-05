@@ -47,8 +47,8 @@ namespace Friflo.Json.Mapper.ER
     public class EntityStoreContainer<T> : EntityStoreContainer where T : Entity
     {
         private readonly    TypeMapper<T>           mapper;
-        private readonly    Dictionary<string, T>   map                 = new Dictionary<string, T>();
-        private readonly    HashSet<string>         unresolvedEntities  = new HashSet<string>();
+        private readonly    Dictionary<string, T>   map                 = new Dictionary<string, T>();  // todo -> HashSet<>
+        private readonly    List<T>                 unresolvedEntities  = new List<T>();  // todo -> HashSet<>
 
         public              int                     Count       => map.Count;
         
@@ -56,6 +56,8 @@ namespace Friflo.Json.Mapper.ER
             store.containers[typeof(T)] = this;
             mapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
         }
+        
+        public T this[string id] => GetEntity(id);
 
         protected internal void AddEntity   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
@@ -66,24 +68,14 @@ namespace Friflo.Json.Mapper.ER
             map.Add(entity.id, entity);
         }
 
-        public T this[string id] {
-            get {
-                T entity = GetEntity(id);
-                if (entity != null)
-                    return entity;
-                
-                entity = (T)mapper.CreateInstance();
-                entity.id = id;
-                unresolvedEntities.Add(id);
-                return entity;
-            }
-        }
-
         protected internal T GetEntity(string id) {
             if (map.TryGetValue(id, out T entity))
                 return entity;
-            unresolvedEntities.Add(id);
-            return null;
+            entity = (T)mapper.CreateInstance();
+            entity.id = id;
+            unresolvedEntities.Add(entity);
+            map.Add(id, entity);
+            return entity;
         }
 
         protected internal override async Task SyncContainer(EntityDatabase database) {
@@ -92,9 +84,9 @@ namespace Friflo.Json.Mapper.ER
             
             EntityContainer<T> container = database.GetContainer<T>();
             var entities = await container.GetEntities(unresolvedEntities);
-            foreach (var entity in entities) {
+            /* foreach (var entity in entities) {
                 map.Add(entity.id, entity);
-            }
+            } */
             unresolvedEntities.Clear();
         }
         

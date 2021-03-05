@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.ER
             throw new NotImplementedException();
         }
 
-        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<string> ids) {
+        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<T> ids) {
             throw new NotImplementedException();
             // var result = new List<T>();
             // return result;

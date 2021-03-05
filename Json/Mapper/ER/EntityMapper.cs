@@ -78,11 +78,11 @@ namespace Friflo.Json.Mapper.ER
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            var db = reader.entityStore;
-            if (db != null && reader.parser.Level > 0) {
+            var store = reader.entityStore;
+            if (store != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
-                    var container = db.GetContainer<T>();
+                    var container = store.GetContainer<T>();
                     success = true;
                     return container.GetEntity(id);
                 }

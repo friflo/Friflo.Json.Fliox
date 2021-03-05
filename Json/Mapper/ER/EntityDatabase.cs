@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -50,13 +51,15 @@ namespace Friflo.Json.Mapper.ER
 
     public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
-        protected readonly      EntityDatabase  database;
-        public    override      Type            EntityType      => typeof(T);
+        private     readonly    TypeMapper<T>   mapper;
+        protected   readonly    EntityDatabase  database;
+        public      override    Type            EntityType      => typeof(T);
         
 
         protected EntityContainer(EntityDatabase database) {
             database.AddContainer(this);
             this.database = database;
+            mapper = (TypeMapper<T>)database.typeStore.GetTypeMapper(typeof(T));
         }
         
         // synchronous convenience method
@@ -73,14 +76,16 @@ namespace Friflo.Json.Mapper.ER
         
         // synchronous convenience method
         public T Get(string id) {
-            string[] ids = { id };
-            var entities = GetEntities(ids).Result;
-            return entities.First();
+            T entity = (T)mapper.CreateInstance();
+            entity.id = id;
+            T[] entities = { entity };
+            var result = GetEntities(entities).Result;
+            return result.First();
         }
         
         // ---
         public abstract Task                    AddEntities     (IEnumerable<T> entities);
         public abstract Task                    UpdateEntities  (IEnumerable<T> entities);
-        public abstract Task<IEnumerable<T>>    GetEntities     (IEnumerable<string> ids);
+        public abstract Task<IEnumerable<T>>    GetEntities     (IEnumerable<T> entities);
     }
 }

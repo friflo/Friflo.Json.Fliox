@@ -15,14 +15,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             using (var db = TestRelationPoC.CreateDatabase()) {
                 var dbOrder = db.orders.Get("order-1");
                 var store = new PocStore(db);
-
+                
                 // --- cache empty
-                await WriteRead(dbOrder, store);
                 var order = store.orders["order-1"];
+                await store.Sync();
+
+                await WriteRead(order, store);
                 AssertStore(order, store);
 
                 // --- cache filled
-                await WriteRead(dbOrder, store);
+                await WriteRead(order, store);
                 AssertStore(order, store);
             }
         }
@@ -62,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
             AssertUtils.Equivalent(entity, result);
-            // IsFalse(entity.Equals(result)); // references are not equal
+            // IsTrue(entity.Equals(result)); // references are equal
         }
     }
 }

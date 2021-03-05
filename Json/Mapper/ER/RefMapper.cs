@@ -58,12 +58,10 @@ namespace Friflo.Json.Mapper.ER
                 if (reader.entityStore != null) {
                     var container = reader.entityStore.GetContainer<T>();
                     var entity = container.GetEntity(id);
-                    slot = new Ref<T>();
-                    slot.container = container;
-                    if (entity != null)
-                        slot.Entity = entity;
-                    else
-                        slot.Id = id;
+                    slot = new Ref<T> {
+                        container = container,
+                        Entity = entity
+                    };
                     return slot;
                 }
                 slot = new Ref<T> { Id = id };

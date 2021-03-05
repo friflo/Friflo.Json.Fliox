@@ -34,11 +34,11 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<string> ids) {
+        public override async Task<IEnumerable<T>> GetEntities(IEnumerable<T> entities) {
             var result = new List<T>();
-            foreach (var id in ids) {
-                var json = payloads[id];
-                var value = database.mapper.Read<T>(json);
+            foreach (var entity in entities) {
+                var json = payloads[entity.id];
+                var value = database.mapper.ReadTo(json, entity);
                 result.Add(value);
                 // result.Add(map[id]);
             }
