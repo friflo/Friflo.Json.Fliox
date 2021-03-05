@@ -36,6 +36,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public readonly EntityContainer<Customer>   customers;
         public readonly EntityContainer<Article>    articles;
     }
+    
+    public class PocStore : EntityStore
+    {
+        public PocStore(EntityDatabase database) : base (database) {
+            orders      = new EntityCacheContainer<Order>       (this);
+            customers   = new EntityCacheContainer<Customer>    (this);
+            articles    = new EntityCacheContainer<Article>     (this);
+        }
+
+        public readonly EntityCacheContainer<Order>      orders;
+        public readonly EntityCacheContainer<Customer>   customers;
+        public readonly EntityCacheContainer<Article>    articles;
+    }
         
     // --------------------------------------------------------------------
     public static class TestRelationPoC

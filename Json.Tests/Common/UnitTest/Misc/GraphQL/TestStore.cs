@@ -14,11 +14,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public async Task WriteRead() {
             using (var db = TestRelationPoC.CreateDatabase()) {
                 var dbOrder = db.orders.Get("order-1");
-                var store = new EntityStore(db);
+                var store = new PocStore(db);
 
                 // --- cache empty
                 await WriteRead(dbOrder, store);
-                var order = store.GetContainer<Order>()["order-1"];
+                var order = store.orders["order-1"];
                 AssertStore(order, store);
 
                 // --- cache filled
@@ -42,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             }
         }
 
-        private static void AssertStore(Order order, EntityStore store) {
-            var orders      = store.GetContainer<Order>();
-            var articles    = store.GetContainer<Article>();
-            var customers   = store.GetContainer<Customer>();
+        private static void AssertStore(Order order, PocStore store) {
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var customers   = store.customers;
             
             AreEqual(1, customers.Count);
             AreEqual(2, articles.Count);

@@ -18,7 +18,7 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
+        internal readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
 
         public async Task Sync() {
             foreach (var container in containers.Values) {
@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.ER
             if (containers.TryGetValue(entityType, out EntityCacheContainer container))
                 return (EntityCacheContainer<T>)container;
             
-            containers[entityType] = container = new EntityCacheContainer<T>();
+            container = new EntityCacheContainer<T>(this);
             return (EntityCacheContainer<T>)container;
         }
     }
@@ -49,6 +49,10 @@ namespace Friflo.Json.Mapper.ER
         private readonly    HashSet<string>         unresolvedEntities  = new HashSet<string>();
 
         public              int                     Count       => map.Count;
+        
+        public EntityCacheContainer(EntityStore store) {
+            store.containers[typeof(T)] = this;
+        }
 
         protected internal void AddEntity   (T entity) {
             if (map.TryGetValue(entity.id, out T value)) {
