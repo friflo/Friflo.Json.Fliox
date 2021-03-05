@@ -43,13 +43,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public static PocDatabase CreateDatabase() {
             var store = new PocDatabase(); 
             var order       = new Order { id = "order-1" };
-            store.orders.Add(order);
+            store.orders.Create(order);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
-            store.customers.Add(customer);
+            store.customers.Create(customer);
 
             var camera    = new Article { id = "article-1", name = "Camera" };
-            store.articles.Add(camera);
+            store.articles.Create(camera);
             
             var item1       = new OrderItem {
                 article = camera,
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item1);
 
             var smartphone    = new Article { id = "article-2", name = "Smartphone" };
-            store.articles.Add(smartphone);
+            store.articles.Create(smartphone);
             
             var item2       = new OrderItem {
                 article = smartphone,
@@ -73,6 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item3);
 
             order.customer = customer;
+            store.orders.Update(order);
             return store;
         }
     }

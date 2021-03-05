@@ -10,7 +10,8 @@ namespace Friflo.Json.Mapper.ER
 {
     public class EntityDatabase : IDisposable
     {
-        public readonly TypeStore typeStore = new TypeStore();
+        public readonly TypeStore   typeStore = new TypeStore();
+        public readonly JsonMapper  mapper;
             
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
@@ -18,9 +19,11 @@ namespace Friflo.Json.Mapper.ER
         public EntityDatabase() {
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            mapper = new JsonMapper(typeStore);
         }
         
         public void Dispose() {
+            mapper.Dispose();
             typeStore.Dispose();
         }
 
@@ -47,8 +50,8 @@ namespace Friflo.Json.Mapper.ER
 
     public abstract class EntityContainer<T> : EntityContainer where T : Entity
     {
-        private readonly    EntityDatabase  database;
-        public override     Type            EntityType      => typeof(T);
+        protected readonly      EntityDatabase  database;
+        public    override      Type            EntityType      => typeof(T);
         
 
         protected EntityContainer(EntityDatabase database) {
@@ -57,9 +60,15 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // synchronous convenience method
-        public void Add(T entity) {
+        public void Create(T entity) {
             T[] entities = {entity};
             AddEntities(entities);
+        }
+        
+        // synchronous convenience method
+        public void Update(T entity) {
+            T[] entities = {entity};
+            UpdateEntities(entities);
         }
         
         // synchronous convenience method
@@ -72,7 +81,8 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // ---
-        public abstract Task                    AddEntities(IEnumerable<T> entities);
-        public abstract Task<IEnumerable<T>>    GetEntities(IEnumerable<string> ids);
+        public abstract Task                    AddEntities     (IEnumerable<T> entities);
+        public abstract Task                    UpdateEntities  (IEnumerable<T> entities);
+        public abstract Task<IEnumerable<T>>    GetEntities     (IEnumerable<string> ids);
     }
 }

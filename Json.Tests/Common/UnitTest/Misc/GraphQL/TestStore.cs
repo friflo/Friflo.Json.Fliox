@@ -50,6 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             AreEqual(2, articles.Count);
             AreEqual(1, orders.Count);
 
+
             IsTrue(orders   ["order-1"]      == order);
             IsTrue(articles ["article-1"]    == order.items[0].article.Entity);
             IsTrue(articles ["article-2"]    == order.items[1].article.Entity);

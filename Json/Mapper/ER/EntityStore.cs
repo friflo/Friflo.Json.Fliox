@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.ER
             typeStore = database.typeStore;
         }
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Type, EntityCacheContainer> containers = new Dictionary<Type, EntityCacheContainer>();
 
         public async Task Sync() {
