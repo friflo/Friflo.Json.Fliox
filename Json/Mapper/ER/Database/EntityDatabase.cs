@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Mapper.Map;
 
-namespace Friflo.Json.Mapper.ER
+namespace Friflo.Json.Mapper.ER.Database
 {
     public class EntityDatabase : IDisposable
     {

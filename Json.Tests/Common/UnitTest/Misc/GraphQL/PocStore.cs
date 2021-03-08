@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Mapper.ER;
+using Friflo.Json.Mapper.ER.Database;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {

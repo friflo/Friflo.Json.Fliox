@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER

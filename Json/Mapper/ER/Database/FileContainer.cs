@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Mapper.ER
+namespace Friflo.Json.Mapper.ER.Database
 {
     public class FileContainer<T> : EntityContainer<T> where T : Entity
     {
