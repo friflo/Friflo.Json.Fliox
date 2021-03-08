@@ -38,14 +38,14 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        public EntityStoreContainer<T> GetContainer<T>() where T : Entity
+        public EntitySet<T> GetSet<T>() where T : Entity
         {
             Type entityType = typeof(T);
-            if (containers.TryGetValue(entityType, out EntityStoreContainer container))
-                return (EntityStoreContainer<T>)container;
+            if (containers.TryGetValue(entityType, out EntityStoreContainer set))
+                return (EntitySet<T>)set;
             
-            container = new EntityStoreContainer<T>(this);
-            return (EntityStoreContainer<T>)container;
+            set = new EntitySet<T>(this);
+            return (EntitySet<T>)set;
         }
     }
     
@@ -78,7 +78,7 @@ namespace Friflo.Json.Mapper.ER
     }
 
    
-    public class EntityStoreContainer<T> : EntityStoreContainer where T : Entity
+    public class EntitySet<T> : EntityStoreContainer where T : Entity
     {
         private readonly    TypeMapper<T>           typeMapper;
         private readonly    JsonMapper              jsonMapper;
@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper.ER
 
         public              int                     Count       => map.Count;
         
-        public EntityStoreContainer(EntityStore store) {
+        public EntitySet(EntityStore store) {
             store.containers[typeof(T)] = this;
             jsonMapper = store.jsonMapper;
             typeMapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));

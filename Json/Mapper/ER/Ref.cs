@@ -10,9 +10,9 @@ namespace Friflo.Json.Mapper.ER
     
     public class Ref<T>  where T : Entity
     {
-        private  T                          entity;
-        private  string                     id;
-        internal EntityStoreContainer<T>    container;
+        private  T               entity;
+        private  string          id;
+        internal EntitySet<T>    set;
         
         // either id or entity is set. Never both
         public string   Id {
@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.ER
             get {
                 if (entity != null)
                     return entity;
-                return entity = container.GetEntity(id);
+                return entity = set.GetEntity(id);
             }
             set { entity = value; id = null; }
         }
