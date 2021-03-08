@@ -15,13 +15,13 @@ namespace Friflo.Json.Mapper.ER.Database
 
 
 #pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task CreateEntities(IEnumerable<KeyValue> entities) {
+        public override async Task CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 payloads[entity.key] = entity.value;
             }
         }
 
-        public override async Task UpdateEntities(IEnumerable<KeyValue> entities) {
+        public override async Task UpdateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.key, out string _))
                     throw new InvalidOperationException($"Expect Entity with id {entity.key} in DatabaseContainer: {name}");
@@ -29,7 +29,7 @@ namespace Friflo.Json.Mapper.ER.Database
             }
         }
 
-        public override async Task<IEnumerable<KeyValue>> ReadEntities(IEnumerable<string> ids) {
+        public override async Task<ICollection<KeyValue>> ReadEntities(ICollection<string> ids) {
             var result = new List<KeyValue>();
             foreach (var id in ids) {
                 var entry = new KeyValue {

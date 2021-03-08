@@ -70,8 +70,8 @@ namespace Friflo.Json.Mapper.ER.Database
         }
         
         // ---
-        public abstract Task                            CreateEntities  (IEnumerable<KeyValue> entities);
-        public abstract Task                            UpdateEntities  (IEnumerable<KeyValue> entities);
-        public abstract Task<IEnumerable<KeyValue>>     ReadEntities    (IEnumerable<string> ids);
+        public abstract Task                            CreateEntities  (ICollection<KeyValue> entities);
+        public abstract Task                            UpdateEntities  (ICollection<KeyValue> entities);
+        public abstract Task<ICollection<KeyValue>>     ReadEntities    (ICollection<string> ids);
     }
 }

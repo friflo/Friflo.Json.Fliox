@@ -21,7 +21,9 @@ namespace Friflo.Json.Mapper.ER
             this.database = database;
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            jsonMapper = new JsonMapper(typeStore);
+            jsonMapper = new JsonMapper(typeStore) {
+                EntityStore = this
+            };
         }
         
         public void Dispose() {
@@ -143,12 +145,16 @@ namespace Friflo.Json.Mapper.ER
             
             // reads
             if (reads.Count > 0) {
-                var ids = reads.Select(read => read.id);
+                List<string> ids = new List<string>();
+                reads.ForEach(read => ids.Add(read.id));
                 var entries = await container.ReadEntities(ids);
+                if (entries.Count != reads.Count)
+                    throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {ids.Count}");
+                
                 int n = 0;
                 foreach (var entry in entries) {
                     var entity = GetEntity(entry.key);
-                    reads[n].result = entity;
+                    reads[n++].result = entity;
                     jsonMapper.ReadTo(entry.value, entity);
                 }
                 reads.Clear();

@@ -17,43 +17,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 // --- cache empty
                 var order = store.orders.Read("order-1");
                 await store.Sync();
-                // await store.Sync();
 
-                await WriteRead(order.Result, store);
-                AssertStore(order.Result, store);
+                WriteRead(order.Result, store);
+                await AssertStore(order.Result, store);
             }
         }
         
-        private static async Task WriteRead(Order order, EntityStore store) {
-            using (var m = new JsonMapper(store.typeStore)) {
-                m.Pretty = true;
-                m.EntityStore = store;
-                
-                AssertWriteRead(m, order);
-                await store.Sync();
-                AssertWriteRead(m, order.customer);
-                AssertWriteRead(m, order.items[0]);
-                AssertWriteRead(m, order.items[1]);
-                AssertWriteRead(m, order.items[0].article);
-                AssertWriteRead(m, order.items[1].article);
-            }
+        private static void WriteRead(Order order, EntityStore store) {
+            var m = store.jsonMapper;
+            m.Pretty = true;
+            
+            AssertWriteRead(m, order);
+            AssertWriteRead(m, order.customer);
+            AssertWriteRead(m, order.items[0]);
+            AssertWriteRead(m, order.items[1]);
+            AssertWriteRead(m, order.items[0].article);
+            AssertWriteRead(m, order.items[1].article);
         }
 
-        private static void AssertStore(Order order, PocStore store) {
+        private static async Task AssertStore(Order order, PocStore store) {
             var order1 =    store.orders.Read("order-1");
             var article1 =  store.articles.Read("article-1");
-            var article2 =  store.articles.Read("article-1");
+            var article2 =  store.articles.Read("article-2");
             var customer1 = store.customers.Read("customer-1");
+
+            await store.Sync();
             
             AreEqual(1, store.customers.Count);
             AreEqual(2, store.articles.Count);
             AreEqual(1, store.orders.Count);
 
-
             IsTrue(order1.Result      == order);
-            IsTrue(article1.Result    == order.items[0].article.Entity);
-            IsTrue(article1.Result    == order.items[1].article.Entity);
             IsTrue(customer1.Result   == order.customer.Entity);
+            IsTrue(article1.Result    == order.items[0].article.Entity);
+            IsTrue(article2.Result    == order.items[1].article.Entity);
         }
 
         private static void AssertWriteRead<T>(JsonMapper m, T entity) {
