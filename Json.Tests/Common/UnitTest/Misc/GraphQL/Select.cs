@@ -14,10 +14,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestSelect : LeakTestsFixture
     {
         [Test]
-        public async Task RunLinq() {
-            using (var store = await TestRelationPoC.CreateStore())
+        public void RunLinq() {
+            using (var store = TestRelationPoC.CreateStore().Result)
             using (var m = new JsonMapper(store.typeStore)) {
                 var order1 = store.orders.Read("order-1");
+                store.Sync();
                 var orders = new List<Order> { order1.Result };
 
                 var orderQuery =
@@ -62,30 +63,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         private static Order SelectOrder(Order order) {
             return order;
         }
+        
+        private static Order GetOrder(string id) {
+            using (var store = TestRelationPoC.CreateStore().Result) {
+                var order = store.orders.Read(id);
+                store.Sync();
+                return order.Result;
+            }
+        }
 
         [Test]
-        public async Task DebugLinqQuery() {
-            using (var store = await TestRelationPoC.CreateStore()) {
-                var order1 = store.orders.Read("order-1");
-                var orders = new List<Order> {order1.Result};
+        public void DebugLinqQuery() {
 
-                IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
+            var order1 = GetOrder("order-1");
 
-                var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
-                // var gqlOrders = new GqlEnumerable<Order>(orders);
+            var orders = new List<Order> {order1};
 
-                var orderQuery =
-                    from order in gqlOrders
-                    where WhereOrderEqual(order, "order-1") // where  order.id == "order-1"
-                    select SelectOrder(order); // select order;
+            IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
-                int n = 0;
-                foreach (var order in orderQuery) {
-                    n++;
-                    IsTrue(order1.Result == order);
-                }
-                AreEqual(1, n);
+            var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
+            // var gqlOrders = new GqlEnumerable<Order>(orders);
+
+            var orderQuery =
+                from order in gqlOrders
+                where WhereOrderEqual(order, "order-1") // where  order.id == "order-1"
+                select SelectOrder(order); // select order;
+
+            int n = 0;
+            foreach (var order in orderQuery) {
+                n++;
+                IsTrue(order1 == order);
             }
+            AreEqual(1, n);
         }
 
         [Test]
