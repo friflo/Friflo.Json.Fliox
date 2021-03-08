@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
@@ -7,7 +8,7 @@ using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.ER
+namespace Friflo.Json.Mapper.ER.Map
 {
     // -------------------------------------------------------------------------------------
     public class RefMatcher : ITypeMatcher {
