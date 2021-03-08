@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER.Database
@@ -48,25 +47,6 @@ namespace Friflo.Json.Mapper.ER.Database
             this.name = name;
             database.AddContainer(this);
             this.database = database;
-        }
-        
-        // synchronous convenience method
-        public void Create(KeyValue value) {
-            KeyValue[] values = {value};
-            CreateEntities(values);
-        }
-        
-        // synchronous convenience method
-        public void Update(KeyValue value) {
-            KeyValue[] values = {value};
-            UpdateEntities(values);
-        }
-        
-        // synchronous convenience method
-        public KeyValue Read(string id) {
-            string[] ids = { id };
-            var result = ReadEntities(ids).Result;
-            return result.First();
         }
         
         // ---
