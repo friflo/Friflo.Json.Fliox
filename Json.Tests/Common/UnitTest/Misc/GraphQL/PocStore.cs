@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.ER.Database;
 
@@ -24,20 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public string           lastName;
     }
 
-    // --- database containers
-    public class PocDatabase : EntityDatabase
-    {
-        public PocDatabase() {
-            orders      = new MemoryContainer<Order>(this);
-            customers   = new MemoryContainer<Customer>(this);
-            articles    = new MemoryContainer<Article>(this);
-        }
-
-        public readonly EntityContainer<Order>      orders;
-        public readonly EntityContainer<Customer>   customers;
-        public readonly EntityContainer<Article>    articles;
-    }
-    
+    // --- store containers
     public class PocStore : EntityStore
     {
         public PocStore(EntityDatabase database) : base (database) {
@@ -54,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static PocDatabase CreateDatabase() {
-            var store = new PocDatabase(); 
+        public static async Task<PocStore> CreateStore() {
+            var database = new EntityDatabase(); 
+            var store = new PocStore(database); 
             var order       = new Order { id = "order-1" };
-            store.orders.Create(order);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
             store.customers.Create(customer);
@@ -87,7 +75,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item3);
 
             order.customer = customer;
-            store.orders.Update(order); // todo test without Update()
+            store.orders.Create(order);
+
+            await store.Sync(); // todo test without Update()
             return store;
         }
     }

@@ -24,7 +24,7 @@ namespace Friflo.Json.Mapper.ER
             get {
                 if (entity != null)
                     return entity;
-                return entity = container.Read(id);
+                return entity = container.GetEntity(id);
             }
             set { entity = value; id = null; }
         }

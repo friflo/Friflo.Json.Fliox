@@ -6,39 +6,37 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER.Database
 {
-    public class MemoryContainer<T> : EntityContainer<T> where T : Entity
+    public class MemoryContainer : EntityContainer
     {
         // private readonly Dictionary<string, T>          map         = new Dictionary<string, T>();
         private readonly Dictionary<string, string>     payloads    = new Dictionary<string, string>();
 
-        public MemoryContainer(EntityDatabase database) : base (database) { }
+        public MemoryContainer(string name, EntityDatabase database) : base (name, database) { }
 
-        public override int Count => payloads.Count;
 
 #pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task CreateEntities(IEnumerable<T> entities) {
+        public override async Task CreateEntities(IEnumerable<KeyValue> entities) {
             foreach (var entity in entities) {
-                var json = database.mapper.Write(entity);
-                payloads[entity.id] = json;
+                payloads[entity.key] = entity.value;
             }
         }
 
-        public override async Task UpdateEntities(IEnumerable<T> entities) {
+        public override async Task UpdateEntities(IEnumerable<KeyValue> entities) {
             foreach (var entity in entities) {
-                if (!payloads.TryGetValue(entity.id, out string _))
-                    throw new InvalidOperationException($"Expect Entity with id {entity.id} in DatabaseContainer<{typeof(T)}>");
-                var json = database.mapper.Write(entity);
-                payloads[entity.id] = json;
+                if (!payloads.TryGetValue(entity.key, out string _))
+                    throw new InvalidOperationException($"Expect Entity with id {entity.key} in DatabaseContainer: {name}");
+                payloads[entity.key] = entity.value;
             }
         }
 
-        public override async Task<IEnumerable<T>> ReadEntities(IEnumerable<T> entities) {
-            var result = new List<T>();
-            foreach (var entity in entities) {
-                var json = payloads[entity.id];
-                var value = database.mapper.ReadTo(json, entity);
-                result.Add(value);
-                // result.Add(map[id]);
+        public override async Task<IEnumerable<KeyValue>> ReadEntities(IEnumerable<string> ids) {
+            var result = new List<KeyValue>();
+            foreach (var id in ids) {
+                var entry = new KeyValue {
+                    key     = id,
+                    value   = payloads[id]
+                };
+                result.Add(entry);
             }
             return result;
         }

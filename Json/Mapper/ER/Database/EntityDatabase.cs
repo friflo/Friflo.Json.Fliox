@@ -6,88 +6,72 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Mapper.ER.Map;
-using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER.Database
 {
     public class EntityDatabase : IDisposable
     {
-        public readonly TypeStore   typeStore = new TypeStore();
-        public readonly JsonMapper  mapper;
-            
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<Type, EntityContainer> containers = new Dictionary<Type, EntityContainer>();
+        private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
 
         public EntityDatabase() {
-            typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-            typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            mapper = new JsonMapper(typeStore);
         }
         
         public void Dispose() {
-            mapper.Dispose();
-            typeStore.Dispose();
         }
 
-        internal void AddContainer<T>(EntityContainer<T> container) where T : Entity
+        internal void AddContainer(EntityContainer container)
         {
-            containers.Add(typeof(T), container);
+            containers.Add(container.name, container);
         }
 
-        public EntityContainer<T> GetContainer<T>() where T : Entity
+        public EntityContainer GetContainer(string name)
         {
-            Type entityType = typeof(T);
-            if (containers.TryGetValue(entityType, out EntityContainer container))
-                return (EntityContainer<T>)container;
-            containers[entityType] = container = new MemoryContainer<Entity>(this);
-            return (EntityContainer<T>)container;
+            if (containers.TryGetValue(name, out EntityContainer container))
+                return container;
+            containers[name] = container = new MemoryContainer(name, this);
+            return container;
         }
+    }
+    
+    public class KeyValue {
+        public string key;
+        public string value;
     }
     
     public abstract class EntityContainer
     {
-        public abstract  Type       EntityType  { get; }
-        public abstract  int        Count       { get; }
-    }
-
-    public abstract class EntityContainer<T> : EntityContainer where T : Entity
-    {
-        private     readonly    TypeMapper<T>   mapper;
+        public      readonly    string          name;
         protected   readonly    EntityDatabase  database;
-        public      override    Type            EntityType      => typeof(T);
-        
 
-        protected EntityContainer(EntityDatabase database) {
+        protected EntityContainer(string name, EntityDatabase database) {
+            this.name = name;
             database.AddContainer(this);
             this.database = database;
-            mapper = (TypeMapper<T>)database.typeStore.GetTypeMapper(typeof(T));
         }
         
         // synchronous convenience method
-        public void Create(T entity) {
-            T[] entities = {entity};
-            CreateEntities(entities);
+        public void Create(KeyValue value) {
+            KeyValue[] values = {value};
+            CreateEntities(values);
         }
         
         // synchronous convenience method
-        public void Update(T entity) {
-            T[] entities = {entity};
-            UpdateEntities(entities);
+        public void Update(KeyValue value) {
+            KeyValue[] values = {value};
+            UpdateEntities(values);
         }
         
         // synchronous convenience method
-        public T Read(string id) {
-            T entity = (T)mapper.CreateInstance();
-            entity.id = id;
-            T[] entities = { entity };
-            var result = ReadEntities(entities).Result;
+        public KeyValue Read(string id) {
+            string[] ids = { id };
+            var result = ReadEntities(ids).Result;
             return result.First();
         }
         
         // ---
-        public abstract Task                    CreateEntities  (IEnumerable<T> entities);
-        public abstract Task                    UpdateEntities  (IEnumerable<T> entities);
-        public abstract Task<IEnumerable<T>>    ReadEntities    (IEnumerable<T> entities);
+        public abstract Task                            CreateEntities  (IEnumerable<KeyValue> entities);
+        public abstract Task                            UpdateEntities  (IEnumerable<KeyValue> entities);
+        public abstract Task<IEnumerable<KeyValue>>     ReadEntities    (IEnumerable<string> ids);
     }
 }

@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.ER.Map
                 string id = reader.parser.value.ToString();
                 if (reader.entityStore != null) {
                     var container = reader.entityStore.GetContainer<T>();
-                    var entity = container.Read(id);
+                    var entity = container.GetEntity(id);
                     slot = new Ref<T> {
                         container = container,
                         Entity = entity

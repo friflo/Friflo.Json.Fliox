@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+/*
 namespace Friflo.Json.Mapper.ER.Database
 {
     public class FileContainer<T> : EntityContainer<T> where T : Entity
@@ -34,3 +34,4 @@ namespace Friflo.Json.Mapper.ER.Database
 #pragma warning restore 1998
     }
 }
+*/

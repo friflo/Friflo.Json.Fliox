@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper.ER.Map
                 if (value != null) {
                     writer.WriteString(value.id);
                     var container = writer.entityStore.GetContainer<T>();
-                    container.Create(value);
+                    container.CreateEntity(value);
                 } else {
                     writer.AppendNull();
                 }
@@ -70,7 +70,7 @@ namespace Friflo.Json.Mapper.ER.Map
                     mapper.WriteObject(ref writer, value);
                     if (writer.entityStore != null) {
                         var container = writer.entityStore.GetContainer<T>();
-                        container.Create(value);
+                        container.CreateEntity(value);
                     }
                 } else {
                     writer.AppendNull();
@@ -85,7 +85,7 @@ namespace Friflo.Json.Mapper.ER.Map
                     var id = reader.parser.value.ToString();
                     var container = store.GetContainer<T>();
                     success = true;
-                    return container.Read(id);
+                    return container.GetEntity(id);
                 }
                 T entity = (T) mapper.ReadObject(ref reader, slot, out success);
                 return entity;

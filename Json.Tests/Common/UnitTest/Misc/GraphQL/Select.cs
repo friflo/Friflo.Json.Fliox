@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -13,11 +14,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestSelect : LeakTestsFixture
     {
         [Test]
-        public void RunLinq() {
-            using (var db = TestRelationPoC.CreateDatabase())
-            using (var m = new JsonMapper(db.typeStore)) {
-                var order1 = db.orders.Read("order-1");
-                var orders = new List<Order> { order1 };
+        public async Task RunLinq() {
+            using (var store = await TestRelationPoC.CreateStore())
+            using (var m = new JsonMapper(store.typeStore)) {
+                var order1 = store.orders.Read("order-1");
+                var orders = new List<Order> { order1.Result };
 
                 var orderQuery =
                     from order in orders
@@ -63,10 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         }
 
         [Test]
-        public void DebugLinqQuery() {
-            using (var db = TestRelationPoC.CreateDatabase()) {
-                var order1 = db.orders.Read("order-1");
-                var orders = new List<Order> {order1};
+        public async Task DebugLinqQuery() {
+            using (var store = await TestRelationPoC.CreateStore()) {
+                var order1 = store.orders.Read("order-1");
+                var orders = new List<Order> {order1.Result};
 
                 IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
@@ -81,17 +82,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 int n = 0;
                 foreach (var order in orderQuery) {
                     n++;
-                    IsTrue(order1 == order);
+                    IsTrue(order1.Result == order);
                 }
                 AreEqual(1, n);
             }
         }
 
         [Test]
-        public void TestSelectSameInstance() {
-            using (var db = TestRelationPoC.CreateDatabase()) {
-                var order1 = db.orders.Read("order-1");
-                var orders = new List<Order> {order1};
+        public async Task TestSelectSameInstance() {
+            using (var store = await TestRelationPoC.CreateStore()) {
+                var order1 = store.orders.Read("order-1");
+                var orders = new List<Order> {order1.Result};
 
                 var orderQuery =
                     from order in orders
