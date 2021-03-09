@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER.Database
 {
+    public class MemoryDatabase : EntityDatabase
+    {
+        protected override EntityContainer CreateContainer(string name, EntityDatabase database) {
+            return new MemoryContainer(name, database);
+        }
+    }
+    
     public class MemoryContainer : EntityContainer
     {
-        // private readonly Dictionary<string, T>          map         = new Dictionary<string, T>();
         private readonly Dictionary<string, string>     payloads    = new Dictionary<string, string>();
 
         public MemoryContainer(string name, EntityDatabase database) : base (name, database) { }

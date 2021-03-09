@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER.Database
 {
-    public class EntityDatabase : IDisposable
+    
+    public abstract class EntityDatabase : IDisposable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
 
-        public EntityDatabase() {
-        }
+        protected EntityDatabase() { }
+        
+        protected abstract EntityContainer CreateContainer(string name, EntityDatabase database);
         
         public void Dispose() {
         }
@@ -28,7 +30,7 @@ namespace Friflo.Json.Mapper.ER.Database
         {
             if (containers.TryGetValue(name, out EntityContainer container))
                 return container;
-            containers[name] = container = new MemoryContainer(name, this);
+            containers[name] = container = CreateContainer(name, this);
             return container;
         }
     }

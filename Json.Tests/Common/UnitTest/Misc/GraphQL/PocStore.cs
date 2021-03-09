@@ -43,7 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public static class TestRelationPoC
     {
         public static async Task<PocStore> CreateStore() {
-            var database = new EntityDatabase(); 
+            var database = new MemoryDatabase();
+            
             var store = new PocStore(database); 
             var order       = new Order { id = "order-1" };
             
