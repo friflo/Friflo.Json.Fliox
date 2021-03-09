@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -15,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public void RunLinq() {
-            using (var store = TestRelationPoC.CreateStore().Result)
+            using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result)
             using (var m = new JsonMapper(store.typeStore)) {
                 var order1 = store.orders.Read("order-1");
                 store.Sync();
@@ -65,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         }
         
         private static Order GetOrder(string id) {
-            using (var store = TestRelationPoC.CreateStore().Result) {
+            using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result) {
                 var order = store.orders.Read(id);
                 store.Sync();
                 return order.Result;
@@ -99,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         [Test]
         public async Task TestSelectSameInstance() {
-            using (var store = await TestRelationPoC.CreateStore()) {
+            using (var store = await TestRelationPoC.CreateStore(new MemoryDatabase())) {
                 var order1 = store.orders.Read("order-1");
                 var orders = new List<Order> {order1.Result};
 

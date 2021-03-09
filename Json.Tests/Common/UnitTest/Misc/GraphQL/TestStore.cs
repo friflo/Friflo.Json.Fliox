@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.ER;
+using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -12,7 +13,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public async Task WriteRead() {
-            using (var store = await TestRelationPoC.CreateStore()) {
+            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            using (var store = await TestRelationPoC.CreateStore(database)) {
                 
                 // --- cache empty
                 var order = store.orders.Read("order-1");

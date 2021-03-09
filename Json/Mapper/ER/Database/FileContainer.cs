@@ -14,6 +14,7 @@ namespace Friflo.Json.Mapper.ER.Database
 
         public FileDatabase(string databaseFolder) {
             this.databaseFolder = databaseFolder + "/";
+            Directory.CreateDirectory(databaseFolder);
         }
 
         protected override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -27,6 +28,7 @@ namespace Friflo.Json.Mapper.ER.Database
         
         public FileContainer(string name, EntityDatabase database, string folder) : base (name, database) {
             this.folder = folder + "/";
+            Directory.CreateDirectory(folder);
         }
 
         private string FilePath(string key) {
