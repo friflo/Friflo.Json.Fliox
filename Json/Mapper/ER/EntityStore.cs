@@ -83,6 +83,7 @@ namespace Friflo.Json.Mapper.ER
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
+        public  readonly   Type                     type;
         private readonly    TypeMapper<T>           typeMapper;
         private readonly    JsonMapper              jsonMapper;
         private readonly    EntityContainer         container;
@@ -96,7 +97,8 @@ namespace Friflo.Json.Mapper.ER
             store.containers[typeof(T)] = this;
             jsonMapper = store.jsonMapper;
             typeMapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
-            container = store.database.GetContainer(typeof(T).Name);
+            type = typeof(T);
+            container = store.database.GetContainer(type.Name);
         }
         
         internal void CreateEntity   (T entity) {
@@ -117,6 +119,10 @@ namespace Friflo.Json.Mapper.ER
             return entity;
         }
         
+        internal bool ContainsEntity(string id) {
+            return map.ContainsKey(id);
+        }
+        
         public Read<T> Read(string id) {
             var read = new Read<T>(id);
             reads.Add(read);
@@ -125,6 +131,7 @@ namespace Friflo.Json.Mapper.ER
         
         public Create<T> Create(T entity) {
             var create = new Create<T>(entity);
+            CreateEntity(entity);
             creates.Add(entity);
             return create;
         }
@@ -154,9 +161,11 @@ namespace Friflo.Json.Mapper.ER
                 
                 int n = 0;
                 foreach (var entry in entries) {
-                    var entity = GetEntity(entry.key);
-                    reads[n++].result = entity;
-                    jsonMapper.ReadTo(entry.value, entity);
+                    if (entry.value != null) {
+                        var entity = GetEntity(entry.key);
+                        reads[n++].result = entity;
+                        jsonMapper.ReadTo(entry.value, entity);
+                    }
                 }
                 reads.Clear();
             }

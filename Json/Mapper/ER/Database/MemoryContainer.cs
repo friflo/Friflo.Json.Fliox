@@ -32,9 +32,10 @@ namespace Friflo.Json.Mapper.ER.Database
         public override async Task<ICollection<KeyValue>> ReadEntities(ICollection<string> ids) {
             var result = new List<KeyValue>();
             foreach (var id in ids) {
+                payloads.TryGetValue(id, out var payload);
                 var entry = new KeyValue {
                     key     = id,
-                    value   = payloads[id]
+                    value   = payload
                 };
                 result.Add(entry);
             }

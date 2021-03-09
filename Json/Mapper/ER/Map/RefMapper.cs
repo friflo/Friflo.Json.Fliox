@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
@@ -45,8 +46,11 @@ namespace Friflo.Json.Mapper.ER.Map
             string id = value.Id;
             if (id != null) {
                 writer.WriteString(id);
-                // if (writer.entityStore != null)
-                //    value.set = writer.entityStore.EntitySet<T>();
+                if (writer.entityStore != null) {
+                    var set = writer.entityStore.EntitySet<T>();
+                    if (!set.ContainsEntity(id))
+                        throw new KeyNotFoundException($"Entity not found in EntityStore {set.type.Name} id: '{id}'");
+                }
             } else {
                 writer.AppendNull();
             }
