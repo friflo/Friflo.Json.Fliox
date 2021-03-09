@@ -9,6 +9,7 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER
 {
+    // --------------------------------------- EntityStore ---------------------------------------
     public class EntityStore : IDisposable
     {
         internal readonly   EntityDatabase  database;
@@ -30,7 +31,7 @@ namespace Friflo.Json.Mapper.ER
         }
         
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal readonly Dictionary<Type, EntityStoreContainer> containers = new Dictionary<Type, EntityStoreContainer>();
+        internal readonly Dictionary<Type, EntitySet> containers = new Dictionary<Type, EntitySet>();
 
         public async Task Sync() {
             foreach (var container in containers.Values) {
@@ -38,10 +39,10 @@ namespace Friflo.Json.Mapper.ER
             }
         }
 
-        public EntitySet<T> GetSet<T>() where T : Entity
+        public EntitySet<T> EntitySet<T>() where T : Entity
         {
             Type entityType = typeof(T);
-            if (containers.TryGetValue(entityType, out EntityStoreContainer set))
+            if (containers.TryGetValue(entityType, out EntitySet set))
                 return (EntitySet<T>)set;
             
             set = new EntitySet<T>(this);
@@ -49,11 +50,8 @@ namespace Friflo.Json.Mapper.ER
         }
     }
     
-    public abstract class EntityStoreContainer
-    {
-        protected internal abstract Task SyncContainer   (EntityDatabase database);
-    }
 
+    // ----------------------------------------- CRUD -----------------------------------------
     public class Read<T>
     {
         internal string id;
@@ -77,8 +75,13 @@ namespace Friflo.Json.Mapper.ER
         public T Result { get => entity; }
     }
 
-   
-    public class EntitySet<T> : EntityStoreContainer where T : Entity
+    // --------------------------------------- EntitySet ---------------------------------------
+    public abstract class EntitySet
+    {
+        protected internal abstract Task SyncContainer   (EntityDatabase database);
+    }
+    
+    public class EntitySet<T> : EntitySet where T : Entity
     {
         private readonly    TypeMapper<T>           typeMapper;
         private readonly    JsonMapper              jsonMapper;

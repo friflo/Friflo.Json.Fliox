@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper.ER.Map
             if (id != null) {
                 writer.WriteString(id);
                 if (writer.entityStore != null)
-                    value.set = writer.entityStore.GetSet<T>();
+                    value.set = writer.entityStore.EntitySet<T>();
             } else {
                 writer.AppendNull();
             }
@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper.ER.Map
                 success = true;
                 string id = reader.parser.value.ToString();
                 if (reader.entityStore != null) {
-                    var set = reader.entityStore.GetSet<T>();
+                    var set = reader.entityStore.EntitySet<T>();
                     var entity = set.GetEntity(id);
                     slot = new Ref<T> {
                         set = set,

@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.ER.Map
             if (writer.entityStore != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var set = writer.entityStore.GetSet<T>();
+                    var set = writer.entityStore.EntitySet<T>();
                     set.CreateEntity(value);
                 } else {
                     writer.AppendNull();
@@ -69,7 +69,7 @@ namespace Friflo.Json.Mapper.ER.Map
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
                     if (writer.entityStore != null) {
-                        var set = writer.entityStore.GetSet<T>();
+                        var set = writer.entityStore.EntitySet<T>();
                         set.CreateEntity(value);
                     }
                 } else {
@@ -83,7 +83,7 @@ namespace Friflo.Json.Mapper.ER.Map
             if (store != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
-                    var set = store.GetSet<T>();
+                    var set = store.EntitySet<T>();
                     success = true;
                     return set.GetEntity(id);
                 }
