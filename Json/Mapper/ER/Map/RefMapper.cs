@@ -48,8 +48,8 @@ namespace Friflo.Json.Mapper.ER.Map
                 writer.WriteString(id);
                 if (writer.entityStore != null) {
                     var set = writer.entityStore.EntitySet<T>();
-                    if (!set.ContainsEntity(id))
-                        throw new KeyNotFoundException($"Entity not found in EntityStore {set.type.Name} id: '{id}'");
+                    if (!set.IsEntityTracked(value))
+                        throw new KeyNotFoundException($"Entity not tracked in EntityStore {set.type.Name} id: '{id}'");
                 }
             } else {
                 writer.AppendNull();
