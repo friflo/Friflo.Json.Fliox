@@ -12,7 +12,7 @@ namespace Friflo.Json.Mapper.ER
     {
         private  T               entity;
         private  string          id;
-        internal EntitySet<T>    set;
+        // internal EntitySet<T>    set;
         
         // either id or entity is set. Never both
         public string   Id {
@@ -21,11 +21,12 @@ namespace Friflo.Json.Mapper.ER
         }
 
         public T        Entity {
-            get {
-                if (entity != null)
-                    return entity;
-                return entity = set.GetEntity(id);
-            }
+            get => entity;
+            //get {
+            //    if (entity != null)
+            //        return entity;
+            //    return entity = set.GetEntity(id);
+            //}
             set { entity = value; id = null; }
         }
 
