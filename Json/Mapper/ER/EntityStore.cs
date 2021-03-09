@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper.ER
         
         internal bool IsEntityTracked(Ref<T> reference) {
             var entity = reference.Entity;
-            return entity != null && map.ContainsKey(entity.id);
+            return entity == null || map.ContainsKey(entity.id);
         }
         
         public Read<T> Read(string id) {
