@@ -13,7 +13,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         [Test]
         public async Task WriteRead() {
-            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            // var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            var database = new MemoryDatabase();
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 
                 // --- cache empty

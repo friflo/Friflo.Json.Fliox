@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Friflo.Json.Mapper.ER
 {
     // Change to attribute
@@ -32,8 +34,11 @@ namespace Friflo.Json.Mapper.ER
             get {
                 if (entity != null)
                     return entity;
-                if (peer != null && peer.loaded)
-                    return peer.entity;
+                if (peer != null) {
+                    if (peer.assigned)
+                        return peer.entity;
+                    throw new PeerNotAssignedException(peer.entity);
+                }
                 return null;
             }
             set { entity = value; id = null; }

@@ -75,13 +75,23 @@ namespace Friflo.Json.Mapper.ER
         public T Result { get => entity; }
     }
 
+    // ------------------------------------- PeerEntity<> -------------------------------------
     internal class PeerEntity<T>
     {
         internal PeerEntity(T entity) {
             this.entity = entity;
         }
         internal readonly   T      entity;
-        internal            bool   loaded;
+        internal            bool   assigned;
+    }
+
+    public class PeerNotAssignedException : Exception
+    {
+        public readonly Entity entity;
+        
+        public PeerNotAssignedException(Entity entity) : base ($"Entity: {entity.GetType().Name} id: {entity.id}") {
+            this.entity = entity;
+        }
     }
 
     // --------------------------------------- EntitySet ---------------------------------------
@@ -182,7 +192,7 @@ namespace Friflo.Json.Mapper.ER
                 foreach (var entry in entries) {
                     if (entry.value != null) {
                         var peer = GetPeer(entry.key);
-                        peer.loaded = true;
+                        peer.assigned = true;
                         reads[n++].result = peer.entity;
                         jsonMapper.ReadTo(entry.value, peer.entity);
                     }

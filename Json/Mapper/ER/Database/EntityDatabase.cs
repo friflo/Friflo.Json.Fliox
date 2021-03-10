@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.ER.Database
     
     public abstract class EntityDatabase : IDisposable
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
 
         protected EntityDatabase() { }
