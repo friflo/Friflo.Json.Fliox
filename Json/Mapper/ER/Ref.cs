@@ -10,10 +10,18 @@ namespace Friflo.Json.Mapper.ER
     
     public class Ref<T>  where T : Entity
     {
-        private  T               entity;
-        private  string          id;
-        // internal EntitySet<T>    set;
-        
+        internal    PeerEntity<T>   peer;
+        private     T               entity;
+        private     string          id;
+
+        public      bool            IsPeered {
+            get {
+                if (entity == null)
+                    return true;
+                return peer != null;
+            }
+        }
+
         // either id or entity is set. Never both
         public string   Id {
             get => entity != null ? entity.id : id;
@@ -21,12 +29,13 @@ namespace Friflo.Json.Mapper.ER
         }
 
         public T        Entity {
-            get => entity;
-            //get {
-            //    if (entity != null)
-            //        return entity;
-            //    return entity = set.GetEntity(id);
-            //}
+            get {
+                if (entity != null)
+                    return entity;
+                if (peer != null && peer.loaded)
+                    return peer.entity;
+                return null;
+            }
             set { entity = value; id = null; }
         }
 

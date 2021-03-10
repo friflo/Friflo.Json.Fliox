@@ -48,8 +48,7 @@ namespace Friflo.Json.Mapper.ER.Map
                 writer.WriteString(id);
                 if (writer.entityStore != null) {
                     var set = writer.entityStore.EntitySet<T>();
-                    if (!set.IsEntityTracked(value))
-                        throw new KeyNotFoundException($"Entity not tracked in EntityStore {set.type.Name} id: '{id}'");
+                    set.SetRefPeer(value);
                 }
             } else {
                 writer.AppendNull();
@@ -62,10 +61,10 @@ namespace Friflo.Json.Mapper.ER.Map
                 string id = reader.parser.value.ToString();
                 if (reader.entityStore != null) {
                     var set = reader.entityStore.EntitySet<T>();
-                    var entity = set.GetEntity(id);
+                    var peer = set.GetPeer(id);
                     slot = new Ref<T> {
-                        // set = set,
-                        Entity = entity
+                        peer = peer,
+                        Id   = id
                     };
                     return slot;
                 }

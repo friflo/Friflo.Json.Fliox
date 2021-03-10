@@ -39,6 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
         private static async Task AssertStore(Order order, PocStore store) {
             var order1 =    store.orders.Read("order-1");
+            // await store.Sync();
+            
             var article1 =  store.articles.Read("article-1");
             var article2 =  store.articles.Read("article-2");
             var customer1 = store.customers.Read("customer-1");

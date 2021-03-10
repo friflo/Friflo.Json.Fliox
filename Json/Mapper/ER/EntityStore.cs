@@ -75,6 +75,15 @@ namespace Friflo.Json.Mapper.ER
         public T Result { get => entity; }
     }
 
+    internal class PeerEntity<T>
+    {
+        internal PeerEntity(T entity) {
+            this.entity = entity;
+        }
+        internal readonly   T      entity;
+        internal            bool   loaded;
+    }
+
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
@@ -83,15 +92,15 @@ namespace Friflo.Json.Mapper.ER
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
-        public  readonly   Type                     type;
-        private readonly    TypeMapper<T>           typeMapper;
-        private readonly    JsonMapper              jsonMapper;
-        private readonly    EntityContainer         container;
-        private readonly    Dictionary<string, T>   map         = new Dictionary<string, T>();  // todo -> HashSet<>
-        private readonly    List<Read<T>>           reads       = new List<Read<T>>();  // todo -> HashSet<>
-        private readonly    List<T>                 creates     = new List<T>();  // todo -> HashSet<>
-
-        public              int                     Count       => map.Count;
+        public  readonly   Type                                 type;
+        private readonly    TypeMapper<T>                       typeMapper;
+        private readonly    JsonMapper                          jsonMapper;
+        private readonly    EntityContainer                     container;
+        private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();  // todo -> HashSet<>
+        private readonly    List<Read<T>>                       reads       = new List<Read<T>>();  // todo -> HashSet<>
+        private readonly    List<T>                             creates     = new List<T>();  // todo -> HashSet<>
+            
+        public              int                                 Count       => peers.Count;
         
         public EntitySet(EntityStore store) {
             store.containers[typeof(T)] = this;
@@ -101,27 +110,36 @@ namespace Friflo.Json.Mapper.ER
             container = store.database.GetContainer(type.Name);
         }
         
-        internal void CreateEntity   (T entity) {
-            if (map.TryGetValue(entity.id, out T value)) {
-                if (value != entity)
+        internal void CreatePeer (T entity) {
+            if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
+                if (peer.entity != entity)
                     throw new InvalidOperationException("");
                 return;
             }
-            map.Add(entity.id, entity);
+            peer = new PeerEntity<T>(entity);
+            peers.Add(entity.id, peer);
         }
 
-        internal T GetEntity(string id) {
-            if (map.TryGetValue(id, out T entity))
-                return entity;
-            entity = (T)typeMapper.CreateInstance();
-            entity.id = id;
-            map.Add(id, entity);
-            return entity;
+        internal PeerEntity<T> GetPeer(string id) {
+            if (peers.TryGetValue(id, out PeerEntity<T> peer))
+                return peer;
+            var entity = (T)typeMapper.CreateInstance();
+            peer = new PeerEntity<T>(entity);
+            peer.entity.id = id;
+            peers.Add(id, peer);
+            return peer;
         }
         
-        internal bool IsEntityTracked(Ref<T> reference) {
-            var entity = reference.Entity;
-            return entity == null || map.ContainsKey(entity.id);
+        internal void SetRefPeer(Ref<T> reference) {
+            if (reference.peer != null) {
+                return;
+            }
+            string id = reference.Id;
+            var peer = GetPeer(id);
+            if (peer == null)
+                throw new KeyNotFoundException($"Entity not peered in EntityStore {type.Name} id: '{id}'");
+            reference.peer = peer;
+            reference.Entity = peer.entity;
         }
         
         public Read<T> Read(string id) {
@@ -132,7 +150,7 @@ namespace Friflo.Json.Mapper.ER
         
         public Create<T> Create(T entity) {
             var create = new Create<T>(entity);
-            CreateEntity(entity);
+            CreatePeer(entity);
             creates.Add(entity);
             return create;
         }
@@ -163,9 +181,10 @@ namespace Friflo.Json.Mapper.ER
                 int n = 0;
                 foreach (var entry in entries) {
                     if (entry.value != null) {
-                        var entity = GetEntity(entry.key);
-                        reads[n++].result = entity;
-                        jsonMapper.ReadTo(entry.value, entity);
+                        var peer = GetPeer(entry.key);
+                        peer.loaded = true;
+                        reads[n++].result = peer.entity;
+                        jsonMapper.ReadTo(entry.value, peer.entity);
                     }
                 }
                 reads.Clear();
