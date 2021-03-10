@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
@@ -46,7 +44,9 @@ namespace Friflo.Json.Mapper.ER.Map
             string id = value.Id;
             if (id != null) {
                 var set = tracer.entityStore.EntitySet<T>();
-                set.SetRefPeer(value);
+                PeerEntity<T> peer = set.GetPeer(value);
+                if (!peer.assigned)
+                    set.AddCreateRequest(peer);
             }
         }
 

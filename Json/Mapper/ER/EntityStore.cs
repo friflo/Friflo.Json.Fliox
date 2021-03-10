@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Mapper.ER.Map;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -141,6 +140,24 @@ namespace Friflo.Json.Mapper.ER
             peers.Add(entity.id, peer);
             return peer;
         }
+        
+        internal void AddCreateRequest (PeerEntity<T> peer) {
+            peer.assigned = true;
+            creates.Add(peer.entity);
+        }
+        
+        internal PeerEntity<T> GetPeer(Ref<T> reference) {
+            string id = reference.Id;
+            PeerEntity<T> peer = reference.peer;
+            if (peer == null) {
+                var entity = reference.GetEntity();
+                if (entity != null)
+                    peer = CreatePeer(entity);
+                else
+                    peer = GetPeer(id);
+            }
+            return peer;
+        }
 
         internal PeerEntity<T> GetPeer(string id) {
             if (peers.TryGetValue(id, out PeerEntity<T> peer))
@@ -156,8 +173,7 @@ namespace Friflo.Json.Mapper.ER
             if (reference.peer != null) {
                 return;
             }
-            string id = reference.Id;
-            var peer = GetPeer(id);
+            var peer = GetPeer(reference);
             if (!peer.assigned)
                 throw new PeerNotAssignedException(peer.entity);
             reference.peer = peer;
@@ -173,8 +189,7 @@ namespace Friflo.Json.Mapper.ER
         public Create<T> Create(T entity) {
             var create = new Create<T>(entity, store);
             var peer = CreatePeer(entity);
-            peer.assigned = true;
-            creates.Add(entity);
+            AddCreateRequest(peer);
             return create;
         }
 

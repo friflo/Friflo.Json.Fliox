@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -16,18 +15,14 @@ namespace Friflo.Json.Mapper.ER
         private     T               entity;
         private     string          id;
 
-        public      bool            IsPeered {
-            get {
-                if (entity == null)
-                    return true;
-                return peer != null;
-            }
-        }
-
         // either id or entity is set. Never both
         public string   Id {
             get => entity != null ? entity.id : id;
             set { id = value; entity = null; }
+        }
+
+        public T GetEntity() {
+            return entity;
         }
 
         public T        Entity {

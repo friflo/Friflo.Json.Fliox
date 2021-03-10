@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.Mapper.ER.Database
@@ -14,8 +13,6 @@ namespace Friflo.Json.Mapper.ER.Database
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
 
-        protected EntityDatabase() { }
-        
         protected abstract EntityContainer CreateContainer(string name, EntityDatabase database);
         
         public void Dispose() {
