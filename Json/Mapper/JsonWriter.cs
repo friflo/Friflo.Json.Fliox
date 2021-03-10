@@ -6,6 +6,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper
 {
@@ -53,6 +54,8 @@ namespace Friflo.Json.Mapper
             get => intern.entityStore;
             set => intern.entityStore = value;
         }
+        
+        internal    TypeCache TypeCache => intern.typeCache;
 
         public JsonWriter(TypeStore typeStore) {
             intern = new Writer(typeStore);

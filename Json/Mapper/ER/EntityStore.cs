@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Mapper.ER.Map;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.ER
 {
@@ -61,18 +62,26 @@ namespace Friflo.Json.Mapper.ER
             this.id = id;
         }
             
-        public T Result { get => result; }
+        public T Result => result;
     }
     
     public class Create<T>
     {
-        internal T      entity;
+        private readonly T             entity;
+        private readonly EntityStore   store;
 
-        internal Create(T entity) {
+        internal Create(T entity, EntityStore entityStore) {
             this.entity = entity;
+            this.store = entityStore;
+        }
+
+        public Create<T> Dependencies() {
+            var tracer = new Tracer(store.jsonMapper.writer.TypeCache, store);
+            tracer.Trace(entity);
+            return this;
         }
             
-        public T Result { get => entity; }
+        // public T Result  => entity;
     }
 
     // ------------------------------------- PeerEntity<> -------------------------------------
@@ -102,7 +111,8 @@ namespace Friflo.Json.Mapper.ER
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
-        public  readonly   Type                                 type;
+        public  readonly    Type                                type;
+        private readonly    EntityStore                         store;
         private readonly    TypeMapper<T>                       typeMapper;
         private readonly    JsonMapper                          jsonMapper;
         private readonly    EntityContainer                     container;
@@ -113,6 +123,7 @@ namespace Friflo.Json.Mapper.ER
         public              int                                 Count       => peers.Count;
         
         public EntitySet(EntityStore store) {
+            this.store = store;
             store.containers[typeof(T)] = this;
             jsonMapper = store.jsonMapper;
             typeMapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
@@ -160,7 +171,7 @@ namespace Friflo.Json.Mapper.ER
         }
         
         public Create<T> Create(T entity) {
-            var create = new Create<T>(entity);
+            var create = new Create<T>(entity, store);
             var peer = CreatePeer(entity);
             peer.assigned = true;
             creates.Add(entity);

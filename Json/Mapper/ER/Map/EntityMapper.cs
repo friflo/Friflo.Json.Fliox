@@ -58,8 +58,9 @@ namespace Friflo.Json.Mapper.ER.Map
         
         public override void Trace(Tracer tracer, T value) {
             if (value != null) {
-                var set = tracer.entityStore.EntitySet<T>();
-                set.CreatePeer(value);
+                mapper.Trace(tracer, value);
+                // var set = tracer.entityStore.EntitySet<T>();
+                // set.CreatePeer(value);
             }
         }
         
