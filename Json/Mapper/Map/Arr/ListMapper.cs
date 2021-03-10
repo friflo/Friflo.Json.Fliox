@@ -40,6 +40,16 @@ namespace Friflo.Json.Mapper.Map.Arr
         public ListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
+        
+        public override void Trace(Tracer tracer, List<TElm> slot) {
+            var list = slot;
+            for (int n = 0; n < list.Count; n++) {
+                TElm item = list[n];
+                if (!elementType.IsNull(ref item)) {
+                    elementType.Trace(tracer, item);
+                }
+            }
+        }
 
         public override void Write(ref Writer writer, List<TElm> slot) {
             int startLevel = writer.IncLevel();

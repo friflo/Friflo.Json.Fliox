@@ -41,6 +41,14 @@ namespace Friflo.Json.Mapper.ER.Map
             base(config, type, true, true)
         {
         }
+        
+        public override void Trace(Tracer tracer, Ref<T> value) {
+            string id = value.Id;
+            if (id != null) {
+                var set = tracer.entityStore.EntitySet<T>();
+                set.SetRefPeer(value);
+            }
+        }
 
         public override void Write(ref Writer writer, Ref<T> value) {
             string id = value.Id;

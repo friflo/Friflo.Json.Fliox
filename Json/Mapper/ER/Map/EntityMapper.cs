@@ -56,6 +56,13 @@ namespace Friflo.Json.Mapper.ER.Map
             return mapper.CreateInstance();
         }
         
+        public override void Trace(Tracer tracer, T value) {
+            if (value != null) {
+                var set = tracer.entityStore.EntitySet<T>();
+                set.CreatePeer(value);
+            }
+        }
+        
         public override void Write(ref Writer writer, T value) {
             if (writer.entityStore != null && writer.Level > 0) {
                 if (value != null) {

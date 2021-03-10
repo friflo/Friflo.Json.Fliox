@@ -47,6 +47,15 @@ namespace Friflo.Json.Mapper.Map.Obj
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {
         }
+        
+        public override void Trace(Tracer tracer, TMap map) {
+            foreach (var entry in map) {
+                var elemVar = entry.Value;
+                if (!EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
+                    elementType.Trace(tracer, elemVar);
+                }
+            }
+        }
 
         public override void Write(ref Writer writer, TMap map) {
             int startLevel = writer.IncLevel();
