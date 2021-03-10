@@ -120,14 +120,15 @@ namespace Friflo.Json.Mapper.ER
             container = store.database.GetContainer(type.Name);
         }
         
-        internal void CreatePeer (T entity) {
+        internal PeerEntity<T> CreatePeer (T entity) {
             if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
                 if (peer.entity != entity)
                     throw new InvalidOperationException("");
-                return;
+                return peer;
             }
             peer = new PeerEntity<T>(entity);
             peers.Add(entity.id, peer);
+            return peer;
         }
 
         internal PeerEntity<T> GetPeer(string id) {
@@ -146,8 +147,8 @@ namespace Friflo.Json.Mapper.ER
             }
             string id = reference.Id;
             var peer = GetPeer(id);
-            if (peer == null)
-                throw new KeyNotFoundException($"Entity not peered in EntityStore {type.Name} id: '{id}'");
+            if (!peer.assigned)
+                throw new PeerNotAssignedException(peer.entity);
             reference.peer = peer;
             reference.Entity = peer.entity;
         }
@@ -160,7 +161,8 @@ namespace Friflo.Json.Mapper.ER
         
         public Create<T> Create(T entity) {
             var create = new Create<T>(entity);
-            CreatePeer(entity);
+            var peer = CreatePeer(entity);
+            peer.assigned = true;
             creates.Add(entity);
             return create;
         }
