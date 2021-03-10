@@ -12,9 +12,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestStore : LeakTestsFixture
     {
         [Test]
-        public async Task WriteRead() {
-            // var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+        public async Task WriteReadMemory() {
             var database = new MemoryDatabase();
+            await WriteRead(database);
+        }
+
+        [Test]
+        public async Task WriteReadFile() {
+            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            await WriteRead(database);
+        }
+
+        private async Task WriteRead(EntityDatabase database) {
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 
                 // --- cache empty
