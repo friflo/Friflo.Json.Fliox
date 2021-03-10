@@ -51,11 +51,13 @@ namespace Friflo.Json.Mapper.ER.Database
         public override async Task<ICollection<KeyValue>> ReadEntities(ICollection<string> ids) {
             var result = new List<KeyValue>();
             foreach (var id in ids) {
-                var path = FilePath(id);
-                var payload = await File.ReadAllTextAsync(path);
+                var filePath = FilePath(id);
+                string payload = null;
+                if (File.Exists(filePath))
+                    payload = await File.ReadAllTextAsync(filePath);
                 var entry = new KeyValue {
-                    key     = id,
-                    value   = payload
+                    key = id,
+                    value = payload
                 };
                 result.Add(entry);
             }
