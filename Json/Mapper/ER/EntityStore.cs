@@ -54,14 +54,21 @@ namespace Friflo.Json.Mapper.ER
     // ----------------------------------------- CRUD -----------------------------------------
     public class Read<T>
     {
-        internal string id;
-        internal T      result;
+        internal readonly   string id;
+        internal            T      result;
+        internal            bool   synced;
 
         internal Read(string id) {
             this.id = id;
         }
             
-        public T Result => result;
+        public T Result {
+            get {
+                if (synced)
+                    return result;
+                throw new InvalidOperationException($"Read.Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
+            }
+        }
     }
     
     public class Create<T>
@@ -220,10 +227,17 @@ namespace Friflo.Json.Mapper.ER
                 foreach (var entry in entries) {
                     if (entry.value != null) {
                         var peer = GetPeer(entry.key);
-                        peer.assigned = true;
-                        reads[n++].result = peer.entity;
                         jsonMapper.ReadTo(entry.value, peer.entity);
+                        peer.assigned = true;
+                        var read = reads[n];
+                        read.result = peer.entity;
+                        read.synced = true;
+                    } else {
+                        var read = reads[n];
+                        read.result = null;
+                        read.synced = true;
                     }
+                    n++;
                 }
                 reads.Clear();
             }

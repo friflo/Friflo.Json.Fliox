@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.ER.Database;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
@@ -47,20 +48,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             store.jsonMapper.Pretty = true;
             var order       = new Order { id = "order-1" };
             
-            var customer    = new Customer { id = "customer-1", lastName = "Smith" };
-            store.customers.Create(customer);
+            var cameraCreate    = new Article { id = "article-1", name = "Camera" };
+            store.articles.Create(cameraCreate);
+            await store.Sync();
 
-            var camera    = new Article { id = "article-1", name = "Camera" };
-            store.articles.Create(camera);
+            var cameraUnknown = store.articles.Read("article-unknown");
+            var camera = store.articles.Read("article-1");
+            await store.Sync();
+            
+            IsNull(cameraUnknown.Result);
+            IsTrue(camera.Result == cameraCreate);
+            
+            var customer    = new Customer { id = "customer-1", lastName = "Smith" };
+            // store.customers.Create(customer);
             
             var item1       = new OrderItem {
-                article = camera,
+                article = camera.Result,
                 amount = 1
             };
             order.items.Add(item1);
 
             var smartphone    = new Article { id = "article-2", name = "Smartphone" };
-            store.articles.Create(smartphone);
+            // store.articles.Create(smartphone);
             
             var item2       = new OrderItem {
                 article = smartphone,
@@ -69,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             order.items.Add(item2);
             
             var item3       = new OrderItem {
-                article = camera,
+                article = camera.Result,
                 amount = 3
             };
             order.items.Add(item3);
