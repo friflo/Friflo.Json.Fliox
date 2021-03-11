@@ -12,27 +12,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     public class TestStore : LeakTestsFixture
     {
         [Test]
-        public async Task WriteReadMemory() {
+        public async Task WriteReadMemoryCreate() {
             var database = new MemoryDatabase();
-            await WriteRead(database);
+            using (var store = await TestRelationPoC.CreateStore(database)) {
+                await WriteRead(store);
+            }
         }
 
         [Test]
-        public async Task WriteReadFile() {
+        public async Task WriteReadFileCreate() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
-            await WriteRead(database);
+            using (var store = await TestRelationPoC.CreateStore(database)) {
+                await WriteRead(store);
+            }
+        }
+        
+        [Test]
+        public async Task WriteReadFileEmpty() {
+            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            using (var store = new PocStore(database)) {
+                await WriteRead(store);
+            }
         }
 
-        private async Task WriteRead(EntityDatabase database) {
-            using (var store = await TestRelationPoC.CreateStore(database)) {
-                
-                // --- cache empty
-                var order = store.orders.Read("order-1");
-                await store.Sync();
+        private async Task WriteRead(PocStore store) {
+            // --- cache empty
+            var order = store.orders.Read("order-1");
+            await store.Sync();
+            // var xxx = order.Result.customer.Entity;
 
-                WriteRead(order.Result, store);
-                await AssertStore(order.Result, store);
-            }
+            WriteRead(order.Result, store);
+            await AssertStore(order.Result, store);
         }
         
         private static void WriteRead(Order order, EntityStore store) {
