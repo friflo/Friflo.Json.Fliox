@@ -102,6 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public async Task TestSelectSameInstance() {
             using (var store = await TestRelationPoC.CreateStore(new MemoryDatabase())) {
                 var order1 = store.orders.Read("order-1");
+                await store.Sync();
                 var orders = new List<Order> {order1.Result};
 
                 var orderQuery =
