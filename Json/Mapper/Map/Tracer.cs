@@ -5,8 +5,8 @@ namespace Friflo.Json.Mapper.Map
 {
     public class Tracer
     {
-        public readonly     TypeCache           typeCache;
-        public readonly     EntityStore         entityStore;
+        public readonly     TypeCache       typeCache;
+        public readonly     IEntityStore    entityStore;
 
         public Tracer(TypeCache typeCache, EntityStore entityStore) {
             this.typeCache = typeCache;

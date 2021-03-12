@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper
             set => maxDepth = value;
         }
         
-        public              EntityStore         EntityStore {
+        public              IEntityStore        EntityStore {
             get => intern.entityStore;
             set => intern.entityStore = value;
         }

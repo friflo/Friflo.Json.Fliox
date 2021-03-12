@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
         private readonly    IErrorHandler       errorHandler;
-        public              EntityStore         entityStore;
+        public              IEntityStore        entityStore;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;

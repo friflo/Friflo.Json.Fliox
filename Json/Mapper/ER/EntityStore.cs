@@ -9,8 +9,20 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.Mapper.ER
 {
+    public interface IEntityStore
+    {
+        
+    }
+
+    public static class StoreExtension
+    {
+        public static EntityStore Instance(this IEntityStore store) {
+            return (EntityStore)store;
+        }
+    }
+    
     // --------------------------------------- EntityStore ---------------------------------------
-    public class EntityStore : IDisposable
+    public class EntityStore : IEntityStore, IDisposable
     {
         internal readonly   EntityDatabase  database;
         public  readonly    TypeStore       typeStore = new TypeStore();

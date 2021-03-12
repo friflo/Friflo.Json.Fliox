@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Map
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
-        public              EntityStore         entityStore;
+        public              IEntityStore        entityStore;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
