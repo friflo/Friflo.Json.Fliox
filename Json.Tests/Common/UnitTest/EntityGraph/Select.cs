@@ -37,8 +37,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 limit:          10,
                 orderBy:        c => c.lastName,
                 orderAscending: false,
-                @where:          c => c.lastName == "dddd",
-                @select:  () => new Customer {
+                where:          c => c.lastName == "dddd",
+                select:  () => new Customer {
                     lastName    = default,
                     id          = default }
             );
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 limit:              10,
                 orderBy:            o => o.customer.Entity.lastName,
                 orderAscending:     true,
-                @select: () => new Order {
+                select: () => new Order {
                     customer = {
                         Entity = {
                             id          = default,
