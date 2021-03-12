@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Mapper.ER;
-using Friflo.Json.Mapper.ER.Database;
+using Friflo.Json.EntityGraph;
+using Friflo.Json.EntityGraph.Database;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL

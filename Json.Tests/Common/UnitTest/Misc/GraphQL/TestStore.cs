@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Friflo.Json.EntityGraph;
+using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.ER;
-using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
