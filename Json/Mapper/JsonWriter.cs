@@ -54,7 +54,7 @@ namespace Friflo.Json.Mapper
             set => intern.tracerContext = value;
         }
         
-        internal    TypeCache TypeCache => intern.typeCache;
+        public      TypeCache TypeCache => intern.typeCache;
 
         public JsonWriter(TypeStore typeStore) {
             intern = new Writer(typeStore);
