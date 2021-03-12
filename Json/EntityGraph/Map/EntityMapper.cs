@@ -4,12 +4,13 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.ER.Map
+namespace Friflo.Json.EntityGraph.Map
 {
     // -------------------------------------------------------------------------------------
     

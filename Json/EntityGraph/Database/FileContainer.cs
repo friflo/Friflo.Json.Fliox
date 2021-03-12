@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Mapper.ER.Database
+namespace Friflo.Json.EntityGraph.Database
 {
     public class FileDatabase : EntityDatabase
     {

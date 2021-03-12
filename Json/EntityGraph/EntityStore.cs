@@ -1,13 +1,15 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Mapper.ER.Database;
-using Friflo.Json.Mapper.ER.Map;
+using Friflo.Json.EntityGraph.Database;
+using Friflo.Json.EntityGraph.Map;
+using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 
-namespace Friflo.Json.Mapper.ER
+namespace Friflo.Json.EntityGraph
 {
 
     public static class StoreExtension

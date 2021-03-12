@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 
-namespace Friflo.Json.Mapper.ER
+namespace Friflo.Json.EntityGraph
 {
     // Change to attribute
     public class Entity {
