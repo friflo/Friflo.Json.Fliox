@@ -8,45 +8,32 @@ using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api.Graph;
+
+
 
 namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
-    public static class Utils
-    {
-        public static TSource Query<TSource, TOrderBy>(
-            int                     limit   = 0,
-            Func<TSource, TOrderBy> orderBy = null,
-            bool                    orderAscending = true,
-            Func<TSource, bool>     where   = null,
-            Func<TSource>           select  = null
-            ) where TSource : class
-        {
-            return null;
-        }
-
-    }
-
 
     public class TestSelect : LeakTestsFixture
     {
-
         [Test]
         public void ElaborateQueryApi() {
            
-            var query1 = Utils.Query(
-                limit:          10,
-                orderBy:        c => c.lastName,
-                orderAscending: false,
-                where:          c => c.lastName == "dddd",
+            var query1 = Query(
+                limit:      10,
+                orderBy:    c => c.lastName,
+                order:      Api.Order.Ascending,
+                where:      c => c.lastName == "dddd",
                 select:  () => new Customer {
                     lastName    = default,
                     id          = default }
             );
 
-            var query2 = Utils.Query(
-                limit:              10,
-                orderBy:            o => o.customer.Entity.lastName,
-                orderAscending:     true,
+            var query2 = Query(
+                limit:      10,
+                orderBy:    o => o.customer.Entity.lastName,
+                order:      Api.Order.Descending,
                 select: () => new Order {
                     customer = {
                         Entity = {
