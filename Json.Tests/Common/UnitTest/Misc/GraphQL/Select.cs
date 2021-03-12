@@ -12,9 +12,9 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
-    public static class Query
+    public static class Utils
     {
-        public static TSource Opt<TSource, TOrderBy>(
+        public static TSource Query<TSource, TOrderBy>(
             int                     limit   = 0,
             Func<TSource, TOrderBy> orderBy = null,
             Func<TSource, bool>     where   = null,
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             };
             
             var test2 = new Order {
-                customer = Query.Opt(
+                customer = Utils.Query(
                     limit: 10,
                     orderBy: c => c.lastName,
                     where:   c => c.lastName == "dddd",
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
                 items = default
             };
 
-            var test3 = Query.Opt(
+            var test3 = Utils.Query(
                 limit: 10,
                 orderBy: o => o.customer.Entity.lastName,
                 select: () => new Order {
