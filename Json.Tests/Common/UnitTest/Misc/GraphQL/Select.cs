@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
     {
         public static T Opt<T>(
             int             limit = 0,
-            T               orderBy = null,
+            Func<T, object> orderBy = null,
             Func<T, bool>   where = null,
             T               select = null
             ) where T : class
@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
             var test2 = new Order {
                 customer = Query.Opt(
                     limit: 10,
-                    orderBy: new Customer { lastName = null },
-                    where: o => o.lastName == "dddd",
+                    orderBy: c => c.lastName,
+                    where:   c => c.lastName == "dddd",
                     select: new Customer {
                         lastName = default,
                         id = default }
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
             var test3 = Query.Opt(
                 limit: 10,
-                orderBy: new Order {customer = {Entity = {lastName = null}}},
+                orderBy: o => o.customer.Entity.lastName,
                 select: new Order {
                     customer = {
                         Entity = {
