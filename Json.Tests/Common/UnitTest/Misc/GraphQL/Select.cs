@@ -17,48 +17,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
         public static TSource Query<TSource, TOrderBy>(
             int                     limit   = 0,
             Func<TSource, TOrderBy> orderBy = null,
+            bool                    orderAscending = true,
             Func<TSource, bool>     where   = null,
             Func<TSource>           select  = null
             ) where TSource : class
         {
-            return select();
+            return null;
         }
+
     }
 
 
     public class TestSelect : LeakTestsFixture
     {
-        private void ElaborateQueryApi() {
-            var test1 = new Order {
-                customer = {
-                    Entity = {
-                        id = default,
-                        lastName = default
-                    }
-                },
-                items = default
-            };
-            
-            var test2 = new Order {
-                customer = Utils.Query(
-                    limit: 10,
-                    orderBy: c => c.lastName,
-                    where:   c => c.lastName == "dddd",
-                    select:  () => new Customer {
-                        lastName = default,
-                        id = default }
-                ),
-                items = default
-            };
 
-            var test3 = Utils.Query(
-                limit: 10,
-                orderBy: o => o.customer.Entity.lastName,
+        [Test]
+        public void ElaborateQueryApi() {
+           
+            var query1 = Utils.Query(
+                limit:          10,
+                orderBy:        c => c.lastName,
+                orderAscending: false,
+                where:          c => c.lastName == "dddd",
+                select:  () => new Customer {
+                    lastName    = default,
+                    id          = default }
+            );
+
+            var query2 = Utils.Query(
+                limit:              10,
+                orderBy:            o => o.customer.Entity.lastName,
+                orderAscending:     true,
                 select: () => new Order {
                     customer = {
                         Entity = {
-                            id = default,
-                            lastName = default
+                            id          = default,
+                            lastName    = default
                         }
                     },
                     items = default
