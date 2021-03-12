@@ -14,12 +14,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
     public static class Query
     {
-        public static T Opt<T>(
-            int             limit = 0,
-            Func<T, object> orderBy = null,
-            Func<T, bool>   where = null,
-            Func<T>         select = null
-            ) where T : class
+        public static TSource Opt<TSource, TOrderBy>(
+            int                     limit   = 0,
+            Func<TSource, TOrderBy> orderBy = null,
+            Func<TSource, bool>     where   = null,
+            Func<TSource>           select  = null
+            ) where TSource : class
         {
             return select();
         }
