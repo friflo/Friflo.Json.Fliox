@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.ER.Database;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -11,9 +12,59 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 {
-    
+    public static class Query
+    {
+        public static T Opt<T>(
+            int             limit = 0,
+            T               orderBy = null,
+            Func<T, bool>   where = null,
+            T               select = null
+            ) where T : class
+        {
+            return select;
+        }
+    }
+
+
     public class TestSelect : LeakTestsFixture
     {
+        private void ElaborateQueryApi() {
+            var test1 = new Order {
+                customer = {
+                    Entity = {
+                        id = default,
+                        lastName = default
+                    }
+                },
+                items = default
+            };
+            
+            var test2 = new Order {
+                customer = Query.Opt(
+                    limit: 10,
+                    orderBy: new Customer { lastName = null },
+                    where: o => o.lastName == "dddd",
+                    select: new Customer {
+                        lastName = default,
+                        id = default }
+                ),
+                items = default
+            };
+
+            var test3 = Query.Opt(
+                limit: 10,
+                orderBy: new Order {customer = {Entity = {lastName = null}}},
+                select: new Order {
+                    customer = {
+                        Entity = {
+                            id = default,
+                            lastName = default
+                        }
+                    },
+                    items = default
+                });
+        }
+        
         [Test]
         public void RunLinq() {
             using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result)
@@ -84,6 +135,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.GraphQL
 
             var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
             // var gqlOrders = new GqlEnumerable<Order>(orders);
+
+
 
             var orderQuery =
                 from order in gqlOrders
