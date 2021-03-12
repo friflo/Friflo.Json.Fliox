@@ -65,10 +65,10 @@ namespace Friflo.Json.Mapper.ER.Map
         }
         
         public override void Write(ref Writer writer, T value) {
-            if (writer.entityStore != null && writer.Level > 0) {
+            if (writer.tracerContext != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var store = writer.entityStore.Instance();
+                    var store = writer.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     set.CreatePeer(value);
                 } else {
@@ -77,8 +77,8 @@ namespace Friflo.Json.Mapper.ER.Map
             } else {
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
-                    if (writer.entityStore != null) {
-                        var store = writer.entityStore.Instance();
+                    if (writer.tracerContext != null) {
+                        var store = writer.tracerContext.Store();
                         var set = store.EntitySet<T>();
                         set.CreatePeer(value);
                     }
@@ -89,11 +89,11 @@ namespace Friflo.Json.Mapper.ER.Map
         }
 
         public override T Read(ref Reader reader, T slot, out bool success) {
-            var entityStore = reader.entityStore;
+            var entityStore = reader.tracerContext;
             if (entityStore != null && reader.parser.Level > 0) {
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
-                    var store = reader.entityStore.Instance();
+                    var store = reader.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     success = true;
                     var peer = set.GetPeer(id); 

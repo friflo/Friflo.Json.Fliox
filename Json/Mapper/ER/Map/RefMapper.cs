@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.ER.Map
         public override void Trace(Tracer tracer, Ref<T> value) {
             string id = value.Id;
             if (id != null) {
-                var store = tracer.entityStore.Instance();
+                var store = tracer.tracerContext.Store();
                 var set = store.EntitySet<T>();
                 PeerEntity<T> peer = set.GetPeer(value);
                 if (!peer.assigned)
@@ -55,8 +55,8 @@ namespace Friflo.Json.Mapper.ER.Map
             string id = value.Id;
             if (id != null) {
                 writer.WriteString(id);
-                if (writer.entityStore != null) {
-                    var store = writer.entityStore.Instance();
+                if (writer.tracerContext != null) {
+                    var store = writer.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     set.SetRefPeer(value);
                 }
@@ -69,8 +69,8 @@ namespace Friflo.Json.Mapper.ER.Map
             if (reader.parser.Event == JsonEvent.ValueString) {
                 success = true;
                 string id = reader.parser.value.ToString();
-                if (reader.entityStore != null) {
-                    var store = reader.entityStore.Instance();
+                if (reader.tracerContext != null) {
+                    var store = reader.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     var peer = set.GetPeer(id);
                     slot = new Ref<T> {

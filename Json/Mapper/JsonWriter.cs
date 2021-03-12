@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 
@@ -50,9 +49,9 @@ namespace Friflo.Json.Mapper
             set => intern.writeNullMembers = value;
         }
         
-        public      IEntityStore EntityStore {
-            get => intern.entityStore;
-            set => intern.entityStore = value;
+        public      ITracerContext TracerContext {
+            get => intern.tracerContext;
+            set => intern.tracerContext = value;
         }
         
         internal    TypeCache TypeCache => intern.typeCache;

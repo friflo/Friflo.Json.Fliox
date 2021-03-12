@@ -1,16 +1,20 @@
-﻿using Friflo.Json.Mapper.ER;
-using Friflo.Json.Mapper.Utils;
+﻿using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
+    public interface ITracerContext
+    {
+        
+    }
+    
     public class Tracer
     {
         public readonly     TypeCache       typeCache;
-        public readonly     IEntityStore    entityStore;
+        public readonly     ITracerContext  tracerContext;
 
-        public Tracer(TypeCache typeCache, EntityStore entityStore) {
+        public Tracer(TypeCache typeCache, ITracerContext tracerContext) {
             this.typeCache = typeCache;
-            this.entityStore = entityStore;
+            this.tracerContext = tracerContext;
         }
         
         public void Trace<T>(T value) {

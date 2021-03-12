@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.ER;
+using Friflo.Json.Mapper.Map;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Mapper
@@ -40,11 +40,11 @@ namespace Friflo.Json.Mapper
             set => writer.Pretty = value;
         }
         
-        public      IEntityStore EntityStore {
-            get => writer.EntityStore;
+        public      ITracerContext TracerContext {
+            get => writer.TracerContext;
             set {
-                writer.EntityStore = value;
-                reader.EntityStore = value;
+                writer.TracerContext = value;
+                reader.TracerContext = value;
             }
         }
 

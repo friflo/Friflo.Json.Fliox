@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.ER;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.MapIL.Obj;
 using Friflo.Json.Mapper.Utils;
@@ -32,7 +31,7 @@ namespace Friflo.Json.Mapper.Map
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
-        public              IEntityStore        entityStore;
+        public              ITracerContext      tracerContext;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -57,7 +56,7 @@ namespace Friflo.Json.Mapper.Map
             outputType      = OutputType.ByteList;
             pretty          = false;
             writeNullMembers= true;
-            entityStore     = null;
+            tracerContext     = null;
 #if JSON_BURST
             writerHandle    = -1;
 #else
