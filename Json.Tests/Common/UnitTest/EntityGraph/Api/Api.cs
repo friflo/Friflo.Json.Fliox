@@ -5,8 +5,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
 
     public enum Order
     {
-        Ascending,
-        Descending,
+        None,
+        Asc,
+        Desc,
     }
 
     public static class Graph
@@ -14,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
         public static TSource Query<TSource, TOrderBy>(
             int                     limit   = 0,
             Func<TSource, TOrderBy> orderBy = null,
-            Order                   order   = Order.Ascending,
+            Order                   order   = Order.None,
             Func<TSource, bool>     where   = null,
             Func<TSource>           select  = null
         ) where TSource : class

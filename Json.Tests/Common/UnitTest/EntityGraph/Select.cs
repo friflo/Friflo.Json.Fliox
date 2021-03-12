@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var query1 = Query(
                 limit:      10,
                 orderBy:    c => c.lastName,
-                order:      Api.Order.Ascending,
+                order:      Api.Order.Asc,
                 where:      c => c.lastName == "dddd",
                 select:  () => new Customer {
                     lastName    = default,
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var query2 = Query(
                 limit:      10,
                 orderBy:    o => o.customer.Entity.lastName,
-                order:      Api.Order.Descending,
+                order:      Api.Order.Desc,
                 select: () => new Order {
                     customer = {
                         Entity = {
