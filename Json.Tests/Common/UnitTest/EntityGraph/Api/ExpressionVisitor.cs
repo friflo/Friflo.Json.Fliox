@@ -3,6 +3,44 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+/*
+LINQ - select expression
+------------------------
+google: "implement linq query provider IQueryable"
+
+[A Simple LINQ Data Provider]
+    http://www.la-solutions.co.uk/content/DotNet/DotNet-SimpleLinqDataProvider.htm
+    
+[Building a LINQ Provider | Microsoft Docs]
+    https://docs.microsoft.com/en-us/previous-versions/ee672195(v=msdn.10)?redirectedfrom=MSDN
+    
+[Walkthrough: Creating an IQueryable LINQ Provider | Microsoft Docs]
+    https://docs.microsoft.com/en-us/previous-versions/bb546158(v=vs.140)?redirectedfrom=MSDN
+
+[LINQ: Building an IQueryable provider series | Microsoft Docs]
+	https://docs.microsoft.com/en-us/archive/blogs/mattwar/linq-building-an-iqueryable-provider-series
+	
+[c# - How to convert an expression tree to a partial SQL query? - Stack Overflow]
+	https://stackoverflow.com/questions/7731905/how-to-convert-an-expression-tree-to-a-partial-sql-query
+
+[c# - Iterate through the properties of a lambda expression? - Stack Overflow]
+	https://stackoverflow.com/questions/36716464/iterate-through-the-properties-of-a-lambda-expression
+	
+[C# in a Nutshell - LINQKit]
+    http://www.albahari.com/nutshell/linqkit.aspx
+
+[Querying based on runtime state (C#) | Microsoft Docs]
+    https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
+
+https://www.codemag.com/Article/070153/Unwrapping-LINQ-to-SQL
+Requires:
+	public class Read<T> : IEnumerable<T>
+			
+		var query1 = order1.Select(o => o.customer);
+		var query2 = order1.Select(o => new {o.customer, o.id, o.items });
+		var query3 = order1.Select(o => o.items.Select(i => i.article));
+ */
+
 // [c# - How to convert an expression tree to a partial SQL query? - Stack Overflow]
 //    https://stackoverflow.com/questions/7731905/how-to-convert-an-expression-tree-to-a-partial-sql-query
 namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
