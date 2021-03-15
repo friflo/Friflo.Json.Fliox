@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
+using Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -148,6 +150,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                     IsTrue(order == orders[n++]);
                 }
             }
+        }
+        
+        [Test]
+        public void TestUpdateField() {
+            var order = new Order();
+            order.customer = new Ref<Customer>();
+
+            Update (order, o => o.customer.Entity.lastName);
+            Update (order, o => o.items[1].amount);
+
+            Update2 (order, o => o.customer.Entity.lastName);
+
+            int index = 3;
+            Update2 (order, o => o.items[index].amount);
         }
     }
 }
