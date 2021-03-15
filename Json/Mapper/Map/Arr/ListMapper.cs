@@ -41,6 +41,33 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
+        public override  bool    Compare     (Comparer comparer, List<TElm> left, List<TElm> right) {
+            if (left.Count != right.Count)
+                return false;
+            
+            bool isEqual = true;
+            for (int n = 0; n < left.Count; n++) {
+                comparer.PushElement(n);
+                TElm leftItem  = left[n];
+                TElm rightItem = right[n];
+                bool leftNull  = elementType.IsNull(ref leftItem);
+                bool rightNull = elementType.IsNull(ref rightItem);
+                if (!leftNull || !rightNull) {
+                    if (!leftNull & !rightNull) {
+                        bool itemsEqual = elementType.Compare(comparer, leftItem, rightItem);
+                        isEqual &= itemsEqual;
+                        if (!itemsEqual)
+                            comparer.AddDiff(leftItem, rightItem);
+                    } else {
+                        isEqual = false;
+                        comparer.AddDiff(leftItem, rightItem);
+                    }
+                }
+                comparer.Pop();
+            }
+            return isEqual;
+        }
+        
         public override void Trace(Tracer tracer, List<TElm> slot) {
             var list = slot;
             for (int n = 0; n < list.Count; n++) {
