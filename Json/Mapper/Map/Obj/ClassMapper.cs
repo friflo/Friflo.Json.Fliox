@@ -209,7 +209,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             
             JsonEvent ev = reader.parser.Event;
-            var propFields = classType.propFields;
+            var fields = classType.propFields;
 
             while (true) {
                 switch (ev) {
@@ -219,7 +219,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                         PropField field;
-                        if ((field = reader.GetField32(propFields)) == null)
+                        if ((field = reader.GetField32(fields)) == null)
                             break;
                         TypeMapper fieldType = field.fieldType;
                         object fieldVal = field.GetField(objRef);
@@ -235,7 +235,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                             field.SetField(objRef, fieldVal);
                         break;
                     case JsonEvent.ValueNull:
-                        if ((field = reader.GetField32(propFields)) == null)
+                        if ((field = reader.GetField32(fields)) == null)
                             break;
                         if (!field.fieldType.isNullable)
                             return reader.ErrorIncompatible<T>(this, field, out success);
