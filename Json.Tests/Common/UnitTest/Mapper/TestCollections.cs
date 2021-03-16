@@ -25,8 +25,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private void AssertCompare<T>(TypeCache typeCache, T left, T right) {
-            var comparer = new Differ(typeCache);
-            var diff = comparer.GetDiff(left, right);
+            var differ = new Differ(typeCache);
+            var diff = differ.GetDiff(left, right);
             IsNull(diff);
         }
         
