@@ -9,6 +9,16 @@ namespace Friflo.Json.Mapper.Map
         public readonly     TypeCache       typeCache;
         private readonly    List<PathItem>  path  = new List<PathItem>();
         private readonly    List<Diff>      diffs = new List<Diff>();
+
+        public Comparer(TypeCache typeCache) {
+            this.typeCache = typeCache;
+        }
+
+        public bool AreEqual<T>(T left, T right) {
+            var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
+            var areEqual = mapper.Compare(this, left, right);
+            return areEqual;
+        }
         
         public void AddDiff(object left, object right) {
             int parentPos = path.Count - 1;

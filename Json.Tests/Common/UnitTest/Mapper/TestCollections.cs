@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -24,6 +25,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
         
+        private void AssertCompare<T>(TypeCache typeCache, T left, T right) {
+            var comparer = new Friflo.Json.Mapper.Map.Comparer(typeCache);
+            var areEqual = comparer.AreEqual(left, right);
+            IsTrue(areEqual);
+        }
+        
         [Test]
         public void TestIList() {
             using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
@@ -37,6 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<Collection<int>>(dst.bytes);
                     AreEqual(collection, result);
+                    AssertCompare(reader.TypeCache, collection, result);
                     
                     AssertNull<Collection<int>>(reader, writer);
                 } {
@@ -44,6 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<IList<int>>(dst.bytes);
                     AreEqual(collection, result);
+                    AssertCompare(reader.TypeCache, collection, result);
                     
                     AssertNull<IList<int>>(reader, writer);
                 }
@@ -69,6 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(collection, ref dst.bytes);
                     var result = reader.Read<ICollection<int>>(dst.bytes);
                     AreEqual(collection, result);
+                    AssertCompare(reader.TypeCache, collection, result);
                     
                     AssertNull<ICollection<int>>(reader, writer);
                 } {
@@ -76,6 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(linkedList, ref dst.bytes);
                     var result = reader.Read<LinkedList<int>>(dst.bytes);
                     AreEqual(linkedList, result);
+                    AssertCompare(reader.TypeCache, linkedList, result);
                     
                     AssertNull<LinkedList<int>>(reader, writer);
                 } {
@@ -83,6 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(linkedList, ref dst.bytes);
                     var result = reader.Read<HashSet<int>>(dst.bytes);
                     AreEqual(linkedList, result);
+                    AssertCompare(reader.TypeCache, linkedList, result);
                     
                     AssertNull<HashSet<int>>(reader, writer);
                 } {
@@ -90,6 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(sortedSet, ref dst.bytes);
                     var result = reader.Read<SortedSet<int>>(dst.bytes);
                     AreEqual(sortedSet, result);
+                    AssertCompare(reader.TypeCache, sortedSet, result);
                     
                     AssertNull<SortedSet<int>>(reader, writer);
                 }
@@ -125,20 +138,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     writer.Write(queue, ref dst.bytes);
                     var result = reader.Read<ConcurrentQueue<int>>(dst.bytes);
                     AreEqual(queue, result);
+                    AssertCompare(reader.TypeCache, queue, result);
                     
                     AssertNull<ConcurrentQueue<int>>(reader, writer);
                 } {
                     var stack = new ConcurrentStack<int>(new[] {1, 2, 3});
                     writer.Write(stack, ref dst.bytes);
                     var result = reader.Read<ConcurrentStack<int>>(dst.bytes);
-                    AreEqual(stack.Reverse(), result);
+                    var reverse = stack.Reverse();
+                    AreEqual(reverse, result);
+                    AssertCompare(reader.TypeCache, reverse, result);
                     
                     AssertNull<ConcurrentStack<int>>(reader, writer);
                 } {
                     var stack = new ConcurrentBag<int>(new[] {1, 2, 3});
                     writer.Write(stack, ref dst.bytes);
                     var result = reader.Read<ConcurrentBag<int>>(dst.bytes);
-                    CollectionAssert.AreEquivalent(stack, result);
+                    var reverse = stack.Reverse();
+                    AreEqual(reverse, result);
+                    AssertCompare(reader.TypeCache, reverse, result);
                     
                     AssertNull<ConcurrentBag<int>>(reader, writer);
                 }
@@ -155,7 +173,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var stack = new Stack<int>(new[] {1, 2, 3});
                 writer.Write(stack, ref dst.bytes);
                 var result = reader.Read<Stack<int>>(dst.bytes);
-                AreEqual(stack.Reverse(), result);
+                var reverse = stack.Reverse();
+                AreEqual(reverse, result);
+                AssertCompare(reader.TypeCache, reverse, result);
                 
                 AssertNull<Stack<int>>(reader, writer);
             }
@@ -172,6 +192,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 writer.Write(stack, ref dst.bytes);
                 var result = reader.Read<Queue<int>>(dst.bytes);
                 AreEqual(stack, result);
+                AssertCompare(reader.TypeCache, stack, result);
                 
                 AssertNull<Queue<int>>(reader, writer);
             }
