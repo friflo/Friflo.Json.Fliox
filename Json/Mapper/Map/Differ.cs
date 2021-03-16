@@ -20,35 +20,35 @@ namespace Friflo.Json.Mapper.Map
             parentStack.Clear();
             path.Clear();
 
-            PushParent(left, right); // push dummy object to avoid checking objectStack.Count in AddDiff()
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var diff = mapper.Diff(this, left, right);
-            PopParent();
             if (parentStack.Count != 0)
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
             return diff;
         }
         
         public Diff AddDiff(object left, object right) {
+            var itemDiff = new Diff(path, left, right);
             int parentIndex = parentStack.Count - 1;
-            var parent = parentStack[parentIndex];
-            var parentDiff = parent.diff;
-            if (parentDiff == null) {
-                var newParentDiff = new Diff(path, parent.left, parent.right);
-                parentDiff = parent.diff = newParentDiff;
+            if (parentIndex >= 0) {
+                var parent = parentStack[parentIndex];
+                var parentDiff = parent.diff;
+                if (parent.diff == null) {
+                    parentDiff = parent.diff = new Diff(path, parent.left, parent.right);
+                }
+                parentDiff.items.Add(itemDiff);
+
                 parentIndex--;
                 while (parentIndex >= 0) {
                     parent = parentStack[parentIndex];
                     if (parent.diff == null) {
                         parent.diff = new Diff(path, parent.left, parent.right);
                     }
-                    parent.diff.items.Add(newParentDiff);
-                    newParentDiff = parent.diff;
+                    parent.diff.items.Add(parentDiff);
+                    parentDiff = parent.diff;
                     parentIndex--;
                 }
             }
-            var itemDiff = new Diff(path, left, right);
-            parentDiff.items.Add(itemDiff);
             return itemDiff;
         }
 

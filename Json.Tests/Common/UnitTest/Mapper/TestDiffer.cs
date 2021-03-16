@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     sample2.Init();
                     var diff = differ.GetDiff(sample2, sample);
                     IsNotNull(diff);
-                    AreEqual(29, diff.items.Count);
+                    AreEqual(31, diff.items.Count);
                 }
             }
         }
