@@ -41,20 +41,20 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
-        public override Diff Diff(Comparer comparer, TCol left, TCol right) {
+        public override Diff Diff(Differ differ, TCol left, TCol right) {
             if (left.Count != right.Count)
-                return comparer.AddDiff(left, right);
+                return differ.AddDiff(left, right);
             
-            comparer.PushObject(left, right);
+            differ.PushObject(left, right);
             int n = 0;
             using (var rightIter = right.GetEnumerator()) {
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                    differ.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return comparer.PopObject();
+            return differ.PopObject();
         }
 
         public override void Write(ref Writer writer, TCol slot) {

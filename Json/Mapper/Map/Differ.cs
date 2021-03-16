@@ -5,14 +5,14 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
-    public class Comparer
+    public class Differ
     {
         public  readonly    TypeCache       typeCache;
 
         private readonly    List<PathItem>  path  = new List<PathItem>();
         private readonly    List<ObjectDiff> objectStack = new List<ObjectDiff>();
 
-        public Comparer(TypeCache typeCache) {
+        public Differ(TypeCache typeCache) {
             this.typeCache = typeCache;
         }
 

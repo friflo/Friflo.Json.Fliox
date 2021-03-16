@@ -110,7 +110,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         
-        public override Diff Diff(Comparer comparer, T left, T right) {
+        public override Diff Diff(Differ differ, T left, T right) {
             object leftObj = left; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             object rightObj = right;
             TypeMapper classMapper = this;
@@ -118,31 +118,31 @@ namespace Friflo.Json.Mapper.Map.Obj
             if (!isValueType) {
                 Type leftType = left.GetType();
                 if (type != leftType)
-                    classMapper = comparer.typeCache.GetTypeMapper(leftType);
+                    classMapper = differ.typeCache.GetTypeMapper(leftType);
                 Type rightType = right.GetType();
                 if (leftType != rightType)
-                    return comparer.AddDiff(left, right);
+                    return differ.AddDiff(left, right);
             }
 
-            comparer.PushObject(left, right);
+            differ.PushObject(left, right);
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                comparer.PushField(field);
+                differ.PushField(field);
 
                 object leftField = field.GetField(leftObj);
                 object rightField = field.GetField(rightObj);
                 if (leftField != null || rightField != null) {
                     if (leftField != null && rightField != null) {
-                        field.fieldType.DiffObject(comparer, leftField, rightField);
+                        field.fieldType.DiffObject(differ, leftField, rightField);
                     } else {
-                        comparer.AddDiff(leftField, rightField);
+                        differ.AddDiff(leftField, rightField);
                     }
                 } // else: both null
 
-                comparer.Pop();
+                differ.Pop();
             }
-            return comparer.PopObject();
+            return differ.PopObject();
         }
 
         public override void Trace(Tracer tracer, T slot) {
