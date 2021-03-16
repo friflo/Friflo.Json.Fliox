@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -26,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private void AssertCompare<T>(TypeCache typeCache, T left, T right) {
-            var comparer = new Friflo.Json.Mapper.Map.Differ(typeCache);
+            var comparer = new Differ(typeCache);
             var diff = comparer.GetDiff(left, right);
             IsNull(diff);
         }

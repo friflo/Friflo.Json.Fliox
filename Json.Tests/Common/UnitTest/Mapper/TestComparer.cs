@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -12,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestClass() {
             using (var typeStore = new TypeStore()) {
                 var typeCache = new TypeCache(typeStore);
-                var comparer = new Friflo.Json.Mapper.Map.Differ(typeCache);
+                var comparer = new Differ(typeCache);
                 var sample = new SampleIL();
                 IsNull(comparer.GetDiff(sample, sample));
 
@@ -28,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestContainer() {
             using (var typeStore = new TypeStore()) {
                 var typeCache = new TypeCache(typeStore);
-                var comparer = new Friflo.Json.Mapper.Map.Differ(typeCache);
+                var comparer = new Differ(typeCache);
                 var list1 =  new List<int> { 1,  2,  3 };
                 var list2 =  new List<int> { 1, 12, 13 };
                 var diff = comparer.GetDiff(list1, list2);
