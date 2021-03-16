@@ -46,7 +46,7 @@ namespace Friflo.Json.Mapper.Map
 
         public abstract void            InitTypeMapper(TypeStore typeStore);
 
-        public abstract bool            CompareObject(Comparer comparer, object left, object right);
+        public abstract Diff            DiffObject(Comparer comparer, object left, object right);
         public abstract void            TraceObject(Tracer tracer, object slot);
         
         public abstract void            WriteObject(ref Writer writer, object slot);
@@ -86,13 +86,15 @@ namespace Friflo.Json.Mapper.Map
         public abstract void    Write       (ref Writer writer, TVal slot);
         public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
 
-        public virtual  bool    Compare     (Comparer comparer, TVal left, TVal right) {
+        public virtual  Diff    Diff        (Comparer comparer, TVal left, TVal right) {
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
-            return areEqual;
+            if (areEqual)
+                return null;
+            return comparer.AddDiff(left, right);
         }
         
-        public override bool CompareObject(Comparer comparer, object left, object right) {
-            return Compare(comparer, (TVal)left, (TVal)right);
+        public override Diff DiffObject(Comparer comparer, object left, object right) {
+            return Diff(comparer, (TVal)left, (TVal)right);
         }
 
         public override void TraceObject(Tracer tracer, object slot) {

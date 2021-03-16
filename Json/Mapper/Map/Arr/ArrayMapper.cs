@@ -43,17 +43,17 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
-        public override  bool    Compare     (Comparer comparer, TElm[] left, TElm[] right) {
+        public override Diff Diff(Comparer comparer, TElm[] left, TElm[] right) {
             if (left.Length != right.Length)
-                return false;
+                return comparer.AddDiff(left, right);
             
-            bool areEqual = true;
+            comparer.PushObject(left, right);
             for (int n = 0; n < left.Length; n++) {
                 TElm leftItem  = left [n];
                 TElm rightItem = right[n];
-                areEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
+                comparer.CompareElement(elementType, n, leftItem, rightItem);
             }
-            return areEqual;
+            return comparer.PopObject();
         }
 
         public override void Write(ref Writer writer, TElm[] slot) {

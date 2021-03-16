@@ -45,20 +45,20 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
-        public override  bool    Compare     (Comparer comparer, TCol left, TCol right) {
+        public override Diff Diff(Comparer comparer, TCol left, TCol right) {
             if (left.Count != right.Count)
-                return false;
+                return comparer.AddDiff(left, right);
             
-            bool areEqual = true;
+            comparer.PushObject(left, right);
             int n = 0;
             using (var rightIter = right.GetEnumerator()) {
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    areEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                    comparer.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return areEqual;
+            return comparer.PopObject();
         }
 
         public override void Write(ref Writer writer, TCol slot) {

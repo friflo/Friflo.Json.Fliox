@@ -110,7 +110,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         
-        public override  bool    Compare     (Comparer comparer, T left, T right) {
+        public override Diff Diff(Comparer comparer, T left, T right) {
             object leftObj = left; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             object rightObj = right;
             TypeMapper classMapper = this;
@@ -121,10 +121,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                     classMapper = comparer.typeCache.GetTypeMapper(leftType);
                 Type rightType = right.GetType();
                 if (leftType != rightType)
-                    return false;
+                    return comparer.AddDiff(left, right);
             }
 
-            bool areEqual = true;
+            comparer.PushObject(left, right);
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
@@ -134,19 +134,15 @@ namespace Friflo.Json.Mapper.Map.Obj
                 object rightField = field.GetField(rightObj);
                 if (leftField != null || rightField != null) {
                     if (leftField != null && rightField != null) {
-                        var fieldsEqual = field.fieldType.CompareObject(comparer, leftField, rightField);
-                        if (!fieldsEqual)
-                            comparer.AddDiff(leftField, rightField);
-                        areEqual &= fieldsEqual;
+                        field.fieldType.DiffObject(comparer, leftField, rightField);
                     } else {
-                        areEqual = false;
                         comparer.AddDiff(leftField, rightField);
                     }
                 } // else: both null
 
                 comparer.Pop();
             }
-            return areEqual;
+            return comparer.PopObject();
         }
 
         public override void Trace(Tracer tracer, T slot) {

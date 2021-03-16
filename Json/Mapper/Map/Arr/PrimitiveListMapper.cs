@@ -90,17 +90,17 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, typeof(T), 1, typeof(string), constructor) {
         }
         
-        public override  bool    Compare     (Comparer comparer, List<T> left, List<T> right) {
+        public override Diff Diff(Comparer comparer, List<T> left, List<T> right) {
             if (left.Count != right.Count)
-                return false;
+                return comparer.AddDiff(left, right);
             
-            bool areEqual = true;
+            comparer.PushObject(left, right);
             for (int n = 0; n < left.Count; n++) {
                 T leftItem  = left [n];
                 T rightItem = right[n];
-                areEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
+                comparer.CompareElement(elementType, n, leftItem, rightItem);
             }
-            return areEqual;
+            return comparer.PopObject();
         }
 
         public override void Write(ref Writer writer, List<T> slot) {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
@@ -7,26 +8,34 @@ namespace Friflo.Json.Mapper.Map
     public class Comparer
     {
         public  readonly    TypeCache       typeCache;
-        public  readonly    List<Diff>      diffs = new List<Diff>();
+
         private readonly    List<PathItem>  path  = new List<PathItem>();
+        private readonly    List<ObjectDiff> objectStack = new List<ObjectDiff>();
 
         public Comparer(TypeCache typeCache) {
             this.typeCache = typeCache;
         }
 
-        public bool AreEqual<T>(T left, T right) {
+        public Diff GetDiff<T>(T left, T right) {
+            objectStack.Clear();
             path.Clear();
-            diffs.Clear();
+
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var areEqual = mapper.Compare(this, left, right);
-            return areEqual;
+            var diff = mapper.Diff(this, left, right);
+            if (objectStack.Count != 0)
+                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {objectStack.Count}");
+            return diff;
         }
         
-        public void AddDiff(object left, object right) {
-            int parentPos = path.Count - 1;
-            path[parentPos].IncrementDiffCount();
-            var diff = new Diff(path, left, right);
-            diffs.Add(diff);
+        public Diff AddDiff(object left, object right) {
+            int lastObjectDiff = objectStack.Count - 1;
+            var array = objectStack[lastObjectDiff];
+            if (array.objectDiff == null) {
+                array.objectDiff = new Diff(path, array.left, array.right);
+            }
+            var itemDiff = new Diff(path, left, right);
+            array.objectDiff.items.Add(itemDiff);
+            return itemDiff;
         }
 
         public void PushField(PropField field) {
@@ -49,25 +58,32 @@ namespace Friflo.Json.Mapper.Map
         }
 
 
-        public bool CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
-            bool areEqual = true;
+        public void CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem)
+        {
             PushElement(index);
             bool leftNull  = elementType.IsNull(ref leftItem);
             bool rightNull = elementType.IsNull(ref rightItem);
             if (!leftNull || !rightNull) {
                 if (!leftNull && !rightNull) {
-                    bool itemsEqual = elementType.Compare(this, leftItem, rightItem);
-                    areEqual &= itemsEqual;
-                    if (!itemsEqual)
-                        AddDiff(leftItem, rightItem);
+                    elementType.Diff(this, leftItem, rightItem);
                 } else {
-                    areEqual = false;
                     AddDiff(leftItem, rightItem);
                 }
             }
             Pop();
-            return areEqual;
         }
+
+        public void PushObject(object left, object right) {
+            objectStack.Add(new ObjectDiff(left, right));
+        }
+        
+        public Diff PopObject() {
+            var lastIndex = objectStack.Count - 1;
+            var last = objectStack[lastIndex];
+            objectStack.RemoveAt(lastIndex);
+            return last.objectDiff;
+        } 
+
     }
 
     public class Diff
@@ -78,19 +94,28 @@ namespace Friflo.Json.Mapper.Map
             this.right  = right;
         }
             
-        public readonly     PathItem[]  path;
+        public  readonly    PathItem[]      path;
+        public  readonly    object          left;
+        public  readonly    object          right;
+        public  readonly    List<Diff>      items = new List<Diff>();
+    }
+
+    class ObjectDiff
+    {
         public readonly     object      left;
         public readonly     object      right;
+        public              Diff        objectDiff;
+
+        public ObjectDiff(object left, object right) {
+            this.left = left;
+            this.right = right;
+            objectDiff = null;
+        }
     }
 
     public struct PathItem
     {
         public PropField    field;
         public int          index;
-        public int          diffCount;
-
-        public void IncrementDiffCount() {
-            diffCount++;
-        }
     }
 }
