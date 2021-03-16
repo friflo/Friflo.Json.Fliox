@@ -20,8 +20,10 @@ namespace Friflo.Json.Mapper.Map
             objectStack.Clear();
             path.Clear();
 
+            PushObject(left, right); // push dummy object to avoid checking objectStack.Count in AddDiff()
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var diff = mapper.Diff(this, left, right);
+            PopObject();
             if (objectStack.Count != 0)
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {objectStack.Count}");
             return diff;
@@ -30,11 +32,12 @@ namespace Friflo.Json.Mapper.Map
         public Diff AddDiff(object left, object right) {
             int lastObjectDiff = objectStack.Count - 1;
             var array = objectStack[lastObjectDiff];
-            if (array.objectDiff == null) {
-                array.objectDiff = new Diff(path, array.left, array.right);
+            var objectDiff = array.objectDiff;
+            if (objectDiff == null) {
+                objectDiff = array.objectDiff = new Diff(path, array.left, array.right);
             }
             var itemDiff = new Diff(path, left, right);
-            array.objectDiff.items.Add(itemDiff);
+            objectDiff.items.Add(itemDiff);
             return itemDiff;
         }
 

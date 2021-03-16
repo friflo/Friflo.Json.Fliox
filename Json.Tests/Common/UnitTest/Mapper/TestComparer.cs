@@ -14,6 +14,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var typeStore = new TypeStore()) {
                 var typeCache = new TypeCache(typeStore);
                 var comparer = new Differ(typeCache);
+                
+                IsNull(comparer.GetDiff(1, 1));
+                
+                IsNotNull(comparer.GetDiff(1, 2));
+
+                IsNull(comparer.GetDiff("A", "A"));
+                
+                IsNotNull(comparer.GetDiff("A", "B"));
+
                 var sample = new SampleIL();
                 IsNull(comparer.GetDiff(sample, sample));
 
