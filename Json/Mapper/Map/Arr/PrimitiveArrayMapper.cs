@@ -68,6 +68,19 @@ namespace Friflo.Json.Mapper.Map.Arr
         public PrimitiveArrayMapper(StoreConfig config, Type type) :
             base(config, type, typeof(T), 1, typeof(string), null) {
         }
+        
+        public override  bool    Compare     (Comparer comparer, T[] left, T[] right) {
+            if (left.Length != right.Length)
+                return false;
+            
+            bool isEqual = true;
+            for (int n = 0; n < left.Length; n++) {
+                T leftItem  = left [n];
+                T rightItem = right[n];
+                isEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
+            }
+            return isEqual;
+        }
 
         public override void Write(ref Writer writer, T[] slot) {
             int startLevel = writer.IncLevel();

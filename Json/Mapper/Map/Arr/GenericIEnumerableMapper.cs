@@ -37,6 +37,26 @@ namespace Friflo.Json.Mapper.Map.Arr
         public GenericIEnumerableMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
+        
+        public override  bool    Compare     (Comparer comparer, TCol left, TCol right) {
+            bool isEqual = true;
+            int n = 0;
+            using (var leftIter  = left.GetEnumerator())
+            using (var rightIter = right.GetEnumerator()) {
+                while (true) {
+                    var moveLeft = leftIter.MoveNext();
+                    var moveRight = rightIter.MoveNext();
+                    if (moveLeft != moveRight)
+                        return false;
+                    if (!moveLeft)
+                        break;
+                    var leftItem  = leftIter.Current;
+                    var rightItem = rightIter.Current;
+                    isEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                }
+            }
+            return isEqual;
+        }
 
         public override void Write(ref Writer writer, TCol slot) {
             int startLevel = writer.IncLevel();

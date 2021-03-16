@@ -35,6 +35,27 @@ namespace Friflo.Json.Mapper.Map
             int last = path.Count - 1;
             path.RemoveAt(last);
         }
+
+
+        public bool CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
+            bool isEqual = true;
+            PushElement(index);
+            bool leftNull  = elementType.IsNull(ref leftItem);
+            bool rightNull = elementType.IsNull(ref rightItem);
+            if (!leftNull || !rightNull) {
+                if (!leftNull && !rightNull) {
+                    bool itemsEqual = elementType.Compare(this, leftItem, rightItem);
+                    isEqual &= itemsEqual;
+                    if (!itemsEqual)
+                        AddDiff(leftItem, rightItem);
+                } else {
+                    isEqual = false;
+                    AddDiff(leftItem, rightItem);
+                }
+            }
+            Pop();
+            return isEqual;
+        }
     }
 
     public class Diff

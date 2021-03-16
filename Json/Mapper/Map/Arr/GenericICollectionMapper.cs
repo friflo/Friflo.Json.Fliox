@@ -44,6 +44,22 @@ namespace Friflo.Json.Mapper.Map.Arr
         public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
+        
+        public override  bool    Compare     (Comparer comparer, TCol left, TCol right) {
+            if (left.Count != right.Count)
+                return false;
+            
+            bool isEqual = true;
+            int n = 0;
+            using (var rightIter = right.GetEnumerator()) {
+                foreach (var leftItem in left) {
+                    rightIter.MoveNext();
+                    var rightItem = rightIter.Current;
+                    isEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                }
+            }
+            return isEqual;
+        }
 
         public override void Write(ref Writer writer, TCol slot) {
             int startLevel = writer.IncLevel();

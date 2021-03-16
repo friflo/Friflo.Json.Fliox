@@ -47,23 +47,9 @@ namespace Friflo.Json.Mapper.Map.Arr
             
             bool isEqual = true;
             for (int n = 0; n < left.Count; n++) {
-                comparer.PushElement(n);
-                TElm leftItem  = left[n];
+                TElm leftItem  = left [n];
                 TElm rightItem = right[n];
-                bool leftNull  = elementType.IsNull(ref leftItem);
-                bool rightNull = elementType.IsNull(ref rightItem);
-                if (!leftNull || !rightNull) {
-                    if (!leftNull & !rightNull) {
-                        bool itemsEqual = elementType.Compare(comparer, leftItem, rightItem);
-                        isEqual &= itemsEqual;
-                        if (!itemsEqual)
-                            comparer.AddDiff(leftItem, rightItem);
-                    } else {
-                        isEqual = false;
-                        comparer.AddDiff(leftItem, rightItem);
-                    }
-                }
-                comparer.Pop();
+                isEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
             }
             return isEqual;
         }
