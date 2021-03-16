@@ -49,16 +49,16 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (left.Count != right.Count)
                 return false;
             
-            bool isEqual = true;
+            bool areEqual = true;
             int n = 0;
             using (var rightIter = right.GetEnumerator()) {
                 foreach (var leftItem in left) {
                     rightIter.MoveNext();
                     var rightItem = rightIter.Current;
-                    isEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                    areEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return isEqual;
+            return areEqual;
         }
 
         public override void Write(ref Writer writer, TCol slot) {

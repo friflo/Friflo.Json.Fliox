@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return false;
             }
 
-            bool isEqual = true;
+            bool areEqual = true;
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
@@ -137,16 +137,16 @@ namespace Friflo.Json.Mapper.Map.Obj
                         var fieldsEqual = field.fieldType.CompareObject(comparer, leftField, rightField);
                         if (!fieldsEqual)
                             comparer.AddDiff(leftField, rightField);
-                        isEqual &= fieldsEqual;
+                        areEqual &= fieldsEqual;
                     } else {
-                        isEqual = false;
+                        areEqual = false;
                         comparer.AddDiff(leftField, rightField);
                     }
                 } // else: both null
 
                 comparer.Pop();
             }
-            return isEqual;
+            return areEqual;
         }
 
         public override void Trace(Tracer tracer, T slot) {

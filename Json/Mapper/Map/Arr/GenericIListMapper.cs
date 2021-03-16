@@ -48,13 +48,13 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (left.Count != right.Count)
                 return false;
             
-            bool isEqual = true;
+            bool areEqual = true;
             for (int n = 0; n < left.Count; n++) {
                 TElm leftItem  = left [n];
                 TElm rightItem = right[n];
-                isEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
+                areEqual &= comparer.CompareElement(elementType, n, leftItem, rightItem);
             }
-            return isEqual;
+            return areEqual;
         }
 
         public override void Write(ref Writer writer, TCol slot) {

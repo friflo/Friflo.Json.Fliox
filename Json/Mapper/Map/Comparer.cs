@@ -48,23 +48,23 @@ namespace Friflo.Json.Mapper.Map
 
 
         public bool CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem) {
-            bool isEqual = true;
+            bool areEqual = true;
             PushElement(index);
             bool leftNull  = elementType.IsNull(ref leftItem);
             bool rightNull = elementType.IsNull(ref rightItem);
             if (!leftNull || !rightNull) {
                 if (!leftNull && !rightNull) {
                     bool itemsEqual = elementType.Compare(this, leftItem, rightItem);
-                    isEqual &= itemsEqual;
+                    areEqual &= itemsEqual;
                     if (!itemsEqual)
                         AddDiff(leftItem, rightItem);
                 } else {
-                    isEqual = false;
+                    areEqual = false;
                     AddDiff(leftItem, rightItem);
                 }
             }
             Pop();
-            return isEqual;
+            return areEqual;
         }
     }
 

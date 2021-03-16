@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
         public override  bool    Compare     (Comparer comparer, TCol left, TCol right) {
-            bool isEqual = true;
+            bool areEqual = true;
             int n = 0;
             using (var leftIter  = left.GetEnumerator())
             using (var rightIter = right.GetEnumerator()) {
@@ -52,10 +52,10 @@ namespace Friflo.Json.Mapper.Map.Arr
                         break;
                     var leftItem  = leftIter.Current;
                     var rightItem = rightIter.Current;
-                    isEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
+                    areEqual &= comparer.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return isEqual;
+            return areEqual;
         }
 
         public override void Write(ref Writer writer, TCol slot) {

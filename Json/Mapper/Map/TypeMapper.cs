@@ -87,8 +87,8 @@ namespace Friflo.Json.Mapper.Map
         public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
 
         public virtual  bool    Compare     (Comparer comparer, TVal left, TVal right) {
-            bool isEquals = EqualityComparer<TVal>.Default.Equals(left, right);
-            return isEquals;
+            bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
+            return areEqual;
         }
         
         public override bool CompareObject(Comparer comparer, object left, object right) {
