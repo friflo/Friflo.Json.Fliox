@@ -10,34 +10,45 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    TypeCache       typeCache;
 
         private readonly    List<PathItem>  path  = new List<PathItem>();
-        private readonly    List<ObjectDiff> objectStack = new List<ObjectDiff>();
+        private readonly    List<Parent> parentStack = new List<Parent>();
 
         public Differ(TypeCache typeCache) {
             this.typeCache = typeCache;
         }
 
         public Diff GetDiff<T>(T left, T right) {
-            objectStack.Clear();
+            parentStack.Clear();
             path.Clear();
 
-            PushObject(left, right); // push dummy object to avoid checking objectStack.Count in AddDiff()
+            PushParent(left, right); // push dummy object to avoid checking objectStack.Count in AddDiff()
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var diff = mapper.Diff(this, left, right);
-            PopObject();
-            if (objectStack.Count != 0)
-                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {objectStack.Count}");
+            PopParent();
+            if (parentStack.Count != 0)
+                throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
             return diff;
         }
         
         public Diff AddDiff(object left, object right) {
-            int lastObjectDiff = objectStack.Count - 1;
-            var array = objectStack[lastObjectDiff];
-            var objectDiff = array.objectDiff;
-            if (objectDiff == null) {
-                objectDiff = array.objectDiff = new Diff(path, array.left, array.right);
+            int parentIndex = parentStack.Count - 1;
+            var parent = parentStack[parentIndex];
+            var parentDiff = parent.diff;
+            if (parentDiff == null) {
+                var newParentDiff = new Diff(path, parent.left, parent.right);
+                parentDiff = parent.diff = newParentDiff;
+                parentIndex--;
+                while (parentIndex >= 0) {
+                    parent = parentStack[parentIndex];
+                    if (parent.diff == null) {
+                        parent.diff = new Diff(path, parent.left, parent.right);
+                    }
+                    parent.diff.items.Add(newParentDiff);
+                    newParentDiff = parent.diff;
+                    parentIndex--;
+                }
             }
             var itemDiff = new Diff(path, left, right);
-            objectDiff.items.Add(itemDiff);
+            parentDiff.items.Add(itemDiff);
             return itemDiff;
         }
 
@@ -76,15 +87,15 @@ namespace Friflo.Json.Mapper.Map
             Pop();
         }
 
-        public void PushObject(object left, object right) {
-            objectStack.Add(new ObjectDiff(left, right));
+        public void PushParent(object left, object right) {
+            parentStack.Add(new Parent(left, right));
         }
         
-        public Diff PopObject() {
-            var lastIndex = objectStack.Count - 1;
-            var last = objectStack[lastIndex];
-            objectStack.RemoveAt(lastIndex);
-            return last.objectDiff;
+        public Diff PopParent() {
+            var lastIndex = parentStack.Count - 1;
+            var last = parentStack[lastIndex];
+            parentStack.RemoveAt(lastIndex);
+            return last.diff;
         } 
 
     }
@@ -103,16 +114,16 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    List<Diff>      items = new List<Diff>();
     }
 
-    class ObjectDiff
+    class Parent
     {
         public readonly     object      left;
         public readonly     object      right;
-        public              Diff        objectDiff;
+        public              Diff        diff;
 
-        public ObjectDiff(object left, object right) {
+        public Parent(object left, object right) {
             this.left = left;
             this.right = right;
-            objectDiff = null;
+            diff = null;
         }
     }
 

@@ -45,13 +45,13 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (left.Count != right.Count)
                 return differ.AddDiff(left, right);
             
-            differ.PushObject(left, right);
+            differ.PushParent(left, right);
             for (int n = 0; n < left.Count; n++) {
                 TElm leftItem  = left [n];
                 TElm rightItem = right[n];
                 differ.CompareElement(elementType, n, leftItem, rightItem);
             }
-            return differ.PopObject();
+            return differ.PopParent();
         }
         
         public override void Trace(Tracer tracer, List<TElm> slot) {

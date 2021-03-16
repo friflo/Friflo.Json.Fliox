@@ -9,12 +9,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
     public class TestComparer
     {
+        class DiffChild
+        {
+            public int childVal;
+        }
+
+        class DiffBase
+        {
+            public DiffChild child;
+
+        }
+        
         [Test]
         public void TestClass() {
             using (var typeStore = new TypeStore()) {
                 var typeCache = new TypeCache(typeStore);
                 var differ = new Differ(typeCache);
-                
+                {
+                    var left  = new DiffBase {child = new DiffChild {childVal = 1}};
+                    var right = new DiffBase {child = new DiffChild {childVal = 2}};
+
+                    var diff = differ.GetDiff(left, right);
+                    AreEqual(1, diff.items.Count);
+                    AreEqual(1, diff.items[0].items.Count);
+                }
+
                 IsNull(differ.GetDiff(1, 1));
                 
                 IsNotNull(differ.GetDiff(1, 2));
@@ -23,14 +42,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 IsNotNull(differ.GetDiff("A", "B"));
 
-                var sample = new SampleIL();
-                IsNull(differ.GetDiff(sample, sample));
+                {
+                    var sample = new SampleIL();
+                    IsNull(differ.GetDiff(sample, sample));
 
-                var sample2 = new SampleIL();
-                sample2.Init();
-                var diff = differ.GetDiff(sample2, sample);
-                IsNotNull(diff);
-                AreEqual(25, diff.items.Count);
+                    var sample2 = new SampleIL();
+                    sample2.Init();
+                    var diff = differ.GetDiff(sample2, sample);
+                    IsNotNull(diff);
+                    AreEqual(29, diff.items.Count);
+                }
             }
         }
         

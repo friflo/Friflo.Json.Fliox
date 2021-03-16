@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     return differ.AddDiff(left, right);
             }
 
-            differ.PushObject(left, right);
+            differ.PushParent(left, right);
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
@@ -142,7 +142,7 @@ namespace Friflo.Json.Mapper.Map.Obj
 
                 differ.Pop();
             }
-            return differ.PopObject();
+            return differ.PopParent();
         }
 
         public override void Trace(Tracer tracer, T slot) {

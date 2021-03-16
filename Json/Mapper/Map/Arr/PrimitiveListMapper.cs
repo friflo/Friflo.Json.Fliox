@@ -94,13 +94,13 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (left.Count != right.Count)
                 return differ.AddDiff(left, right);
             
-            differ.PushObject(left, right);
+            differ.PushParent(left, right);
             for (int n = 0; n < left.Count; n++) {
                 T leftItem  = left [n];
                 T rightItem = right[n];
                 differ.CompareElement(elementType, n, leftItem, rightItem);
             }
-            return differ.PopObject();
+            return differ.PopParent();
         }
 
         public override void Write(ref Writer writer, List<T> slot) {

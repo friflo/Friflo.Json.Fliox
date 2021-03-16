@@ -49,7 +49,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             if (left.Count != right.Count)
                 return differ.AddDiff(left, right);
             
-            differ.PushObject(left, right);
+            differ.PushParent(left, right);
             int n = 0;
             using (var rightIter = right.GetEnumerator()) {
                 foreach (var leftItem in left) {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     differ.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return differ.PopObject();
+            return differ.PopParent();
         }
 
         public override void Write(ref Writer writer, TCol slot) {
