@@ -6,15 +6,17 @@ namespace Friflo.Json.Mapper.Map
 {
     public class Comparer
     {
-        public readonly     TypeCache       typeCache;
+        public  readonly    TypeCache       typeCache;
+        public  readonly    List<Diff>      diffs = new List<Diff>();
         private readonly    List<PathItem>  path  = new List<PathItem>();
-        private readonly    List<Diff>      diffs = new List<Diff>();
 
         public Comparer(TypeCache typeCache) {
             this.typeCache = typeCache;
         }
 
         public bool AreEqual<T>(T left, T right) {
+            path.Clear();
+            diffs.Clear();
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var areEqual = mapper.Compare(this, left, right);
             return areEqual;

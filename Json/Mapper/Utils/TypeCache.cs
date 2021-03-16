@@ -26,7 +26,7 @@ namespace Friflo.Json.Mapper.Utils
         public              int     TypeCreationCount   =>  typeStore.typeCreationCount;
 
         
-        internal TypeCache (TypeStore typeStore) {
+        public TypeCache (TypeStore typeStore) {
             this.typeStore = typeStore;
         }
         
