@@ -160,7 +160,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Update (order, o => o.customer.Entity.lastName);
             Update (order, o => o.items[1].amount);
 
-            Update2 (order, o => o.customer.Entity.lastName);
+            Update2 (order, o => new {
+                customer = o.customer.Sub (c => new {
+                    c.Entity,
+                    c.Entity.id
+                }),
+                o.customer.Entity.lastName,
+                o.customer.Id,
+                item = o.items.Sel(i => new {
+                    i.amount,
+                    i.article,
+                    i.article.Entity
+                }),
+            });
+            
+            Update3 (order, () => new Order{ customer = null, items = null});
+
 
             int index = 3;
             Update2 (order, o => o.items[index].amount);

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using FluentAssertions;
 using Friflo.Json.EntityGraph;
@@ -26,6 +28,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
             return null;
         }
         
+        public static void Selector<TEntity, TValue>(TEntity entity, Func<TValue> selector) where TEntity : Entity
+        {
+        }
+        
+        public static TValue Sel<TElement, TValue>(this IEnumerable<TElement> e, Func<TElement, TValue> selector) {
+            return selector(e.First());
+        }
+
+        public static TValue Sel2<TElement, TValue>(this IEnumerable<TElement> e, Expression<Func<TElement, TValue>> selector) {
+            return selector.Compile()(e.First());
+        }
+        
+        public static TValue Sub<TClass, TValue>(this TClass e, Func<TClass, TValue> selector) where TClass : class
+        {
+            return selector(e);
+        }
+
+        
+        public static void SelectorExpr<TEntity, TValue>(TEntity entity, Expression<Func<TValue>> selector) where TEntity : Entity
+        {
+        }
+        
         public static void Update<TEntity, TValue>(TEntity entity, Func<TEntity, TValue> field) where TEntity : Entity
         {
         }
@@ -34,7 +58,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
         // E.g.: o.customer.Entity.lastName
         public static void Update2<TEntity, TValue>(TEntity entity, Expression<Func<TEntity, TValue>> setterExp) where TEntity : Entity
         {
-            var entityParameterExpression = ((MemberExpression) setterExp.Body).Expression;
+            // var entityParameterExpression = ((MemberExpression) setterExp.Body).Expression;
+        }
+        
+        public static void Update3<TEntity>(TEntity entity, Expression<Func<TEntity>> setterExp) where TEntity : Entity
+        {
+            // var entityParameterExpression = ((MemberExpression) setterExp.Body).Expression;
         }
 
         public static Expression<Action<TEntity>> Set<TEntity, TValue>(
