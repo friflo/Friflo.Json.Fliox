@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
@@ -51,11 +50,11 @@ namespace Friflo.Json.Mapper.Map
             var parentOfParentIndex = parentIndex - 1;
             if (parentOfParentIndex >= 0) {
                 Diff parentOfParent = GetParent(parentOfParentIndex);
-                parentDiff = parent.diff = new Diff(parentOfParent, path[parentOfParentIndex + 1], parent.left, parent.right, new List<Diff>());
+                parentDiff = parent.diff = new Diff(jsonWriter, parentOfParent, path[parentOfParentIndex + 1], parent.left, parent.right, new List<Diff>());
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
-            parentDiff = parent.diff = new Diff(null, path[0], parent.left, parent.right, new List<Diff>());
+            parentDiff = parent.diff = new Diff(jsonWriter, null, path[0], parent.left, parent.right, new List<Diff>());
             return parentDiff;
         }
 
@@ -67,10 +66,10 @@ namespace Friflo.Json.Mapper.Map
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
                 var parent = GetParent(parentIndex);
-                itemDiff = new Diff(parent, path[parentIndex + 1], left, right, null);
+                itemDiff = new Diff(jsonWriter, parent, path[parentIndex + 1], left, right, null);
                 parent.children.Add(itemDiff);
             } else {
-                itemDiff = new Diff(null, path[0], left, right, null);
+                itemDiff = new Diff(jsonWriter, null, path[0], left, right, null);
             }
             return itemDiff;
         }
@@ -130,12 +129,13 @@ namespace Friflo.Json.Mapper.Map
 
     public class Diff
     {
-        public Diff(Diff parent, PathNode pathNode, object left, object right,  List<Diff> children) {
+        public Diff(JsonWriter jsonWriter, Diff parent, PathNode pathNode, object left, object right,  List<Diff> children) {
             this.parent     = parent;
             this.pathNode   = pathNode;
             this.left       = left;
             this.right      = right;
             this.children   = children;
+            this.jsonWriter = jsonWriter;
         }
 
         public  readonly    Diff            parent; 
@@ -143,6 +143,7 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    object          left;
         public  readonly    object          right;
         public  readonly    List<Diff>      children;
+        private readonly    JsonWriter      jsonWriter;
 
         public override string ToString() {
             var sb = new StringBuilder();
@@ -194,10 +195,9 @@ namespace Friflo.Json.Mapper.Map
 
             bool isScalar = type.IsEnum || type.IsPrimitive || isNullablePrimitive || isNullableEnum;
             if (isScalar) {
-                bool isFloat = type == typeof(float) || type == typeof(float?) || type == typeof(double) || type == typeof(double?);
-                AppendValue(sb, left, isFloat);
+                AppendValue(sb, left);
                 sb.Append(" -> ");
-                AppendValue(sb, right, isFloat);
+                AppendValue(sb, right);
             } else {
                 AppendObject(sb, left);
                 sb.Append(" -> ");
@@ -217,15 +217,13 @@ namespace Friflo.Json.Mapper.Map
             sb.Append("(object)");
         }
 
-        private static void AppendValue(StringBuilder sb, object value, bool isFloat) {
+        private void AppendValue(StringBuilder sb, object value) {
             if (value == null) {
                 sb.Append("null");
                 return;
             }
-            if (isFloat)
-                sb.AppendFormat(NumberFormatInfo, "{0}", value);
-            else
-                sb.Append(value);
+            var str = jsonWriter.WriteObject(value);
+            sb.Append(str);
         }
         
         public string GetChildrenDiff(int indent) {
@@ -238,14 +236,6 @@ namespace Friflo.Json.Mapper.Map
                 }
             }
             return sb.ToString();
-        }
-        
-        private static readonly NumberFormatInfo NumberFormatInfo = CreateNumberFormatInfo();
-
-        private static NumberFormatInfo CreateNumberFormatInfo() {
-            var nfi = (NumberFormatInfo)NumberFormatInfo.InvariantInfo.Clone();
-            nfi.NumberDecimalSeparator = ".";
-            return nfi;
         }
     }
 
