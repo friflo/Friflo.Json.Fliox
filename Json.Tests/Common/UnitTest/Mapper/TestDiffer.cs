@@ -51,36 +51,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var diff = differ.GetDiff(sample2, sample);
                     IsNotNull(diff);
                     AreEqual(29, diff.children.Count);
-                    var childrenDiff = diff.GetChildrenDiff();
-                    var expect = @"/enumIL1
-/enumIL2
-/childStructNull1
-/childStructNull2
-/nulDouble
-/nulDoubleNull
-/nulFloat
-/nulFloatNull
-/nulLong
-/nulLongNull
-/nulInt
-/nulIntNull
-/nulShort
-/nulShortNull
-/nulByte
-/nulByteNull
-/nulBool
-/nulBoolNull
-/childStruct1
-/childStruct2
-/child
-/childNull
-/structIL
-/dbl
-/flt
-/int64
-/int32
-/int16
-/int8
+                    var childrenDiff = diff.GetChildrenDiff(20);
+                    var expect =
+@"/enumIL1             three -> one
+/enumIL2              -> two
+/childStructNull1    (object)
+/childStructNull2    (object)
+/nulDouble           20 -> 70
+/nulDoubleNull        -> 71
+/nulFloat            21 -> 72
+/nulFloatNull         -> 73
+/nulLong             22 -> 74
+/nulLongNull          -> 75
+/nulInt              23 -> 76
+/nulIntNull           -> 77
+/nulShort            24 -> 78
+/nulShortNull         -> 79
+/nulByte             25 -> 80
+/nulByteNull          -> 81
+/nulBool             True -> False
+/nulBoolNull          -> True
+/childStruct1        (object)
+/childStruct2        (object)
+/child               (object)
+/childNull           (object)
+/structIL            (object)
+/dbl                 22,5 -> 94
+/flt                 33,5 -> 95
+/int64               10 -> 96
+/int32               11 -> 97
+/int16               12 -> 98
+/int8                13 -> 99
 ";
                     AreEqual(expect, childrenDiff);
                 }
@@ -97,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var diff = differ.GetDiff(list1, list2);
                 IsNotNull(diff);
                 AreEqual(2, diff.children.Count);
-                var childrenDiff = diff.GetChildrenDiff();
+                var childrenDiff = diff.GetChildrenDiff(10);
                 var expect = @"/1
 /2
 ";

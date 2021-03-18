@@ -132,32 +132,56 @@ namespace Friflo.Json.Mapper.Map
 
         public override string ToString() {
             var sb = new StringBuilder();
-            CreatePath(sb);
+            CreatePath(sb, true, 0, 0);
             return sb.ToString();
         }
         
-        private void CreatePath(StringBuilder sb) {
+        private void CreatePath(StringBuilder sb, bool addValue, int startPos, int indent) {
             if (parent != null)
-                parent.CreatePath(sb);
+                parent.CreatePath(sb, false, startPos, indent);
             switch (pathNode.nodeType) {
                 case NodeType.Member:
                     sb.Append('/');
                     sb.Append(pathNode.field.name);
+                    if (addValue) {
+                        var pathLen = sb.Length - startPos;
+                        for (int i = pathLen; i < indent; i++)
+                            sb.Append(" ");
+                        AddValue(sb);
+                    }
                     break;
                 case NodeType.Element:
                     sb.Append('/');
                     sb.Append(pathNode.index);
                     break;
                 case NodeType.Root:
-                    return;
+                    break;
+            }
+        }
+
+        private void AddValue(StringBuilder sb) {
+            TypeMapper  mapper = pathNode.field.fieldType;
+            Type        type = mapper.type;
+            Type        ut          = mapper.nullableUnderlyingType;
+            bool isNullablePrimitive = ut != null && ut.IsPrimitive;
+            bool isNullableEnum      = ut != null && ut.IsEnum;
+
+            bool isScalar = type.IsEnum || type.IsPrimitive || isNullablePrimitive || isNullableEnum;
+            if (isScalar) {
+                sb.Append(" ");
+                sb.Append(left);
+                sb.Append(" -> ");
+                sb.Append(right);
+            } else {
+                sb.Append(" (object)");
             }
         }
         
-        public string GetChildrenDiff() {
+        public string GetChildrenDiff(int indent) {
             var sb = new StringBuilder();
             if (children != null) {
                 foreach (var child in children) {
-                    child.CreatePath(sb);
+                    child.CreatePath(sb, true, sb.Length, indent);
                     sb.Append('\n');
                 }
             }
