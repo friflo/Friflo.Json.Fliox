@@ -51,6 +51,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var diff = differ.GetDiff(sample2, sample);
                     IsNotNull(diff);
                     AreEqual(29, diff.children.Count);
+                    var childrenDiff = diff.GetChildrenDiff();
+                    var expect = @"/enumIL1
+/enumIL2
+/childStructNull1
+/childStructNull2
+/nulDouble
+/nulDoubleNull
+/nulFloat
+/nulFloatNull
+/nulLong
+/nulLongNull
+/nulInt
+/nulIntNull
+/nulShort
+/nulShortNull
+/nulByte
+/nulByteNull
+/nulBool
+/nulBoolNull
+/childStruct1
+/childStruct2
+/child
+/childNull
+/structIL
+/dbl
+/flt
+/int64
+/int32
+/int16
+/int8
+";
+                    AreEqual(expect, childrenDiff);
                 }
             }
         }
@@ -65,6 +97,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var diff = differ.GetDiff(list1, list2);
                 IsNotNull(diff);
                 AreEqual(2, diff.children.Count);
+                var childrenDiff = diff.GetChildrenDiff();
+                var expect = @"/1
+/2
+";
+                AreEqual(expect, childrenDiff);
             }
         }
     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
@@ -127,6 +129,40 @@ namespace Friflo.Json.Mapper.Map
         public  readonly    object          left;
         public  readonly    object          right;
         public  readonly    List<Diff>      children;
+
+        public override string ToString() {
+            var sb = new StringBuilder();
+            CreatePath(sb);
+            return sb.ToString();
+        }
+        
+        private void CreatePath(StringBuilder sb) {
+            if (parent != null)
+                parent.CreatePath(sb);
+            switch (pathNode.nodeType) {
+                case NodeType.Member:
+                    sb.Append('/');
+                    sb.Append(pathNode.field.name);
+                    break;
+                case NodeType.Element:
+                    sb.Append('/');
+                    sb.Append(pathNode.index);
+                    break;
+                case NodeType.Root:
+                    return;
+            }
+        }
+        
+        public string GetChildrenDiff() {
+            var sb = new StringBuilder();
+            if (children != null) {
+                foreach (var child in children) {
+                    child.CreatePath(sb);
+                    sb.Append('\n');
+                }
+            }
+            return sb.ToString();
+        }
     }
 
     class Parent
