@@ -177,24 +177,38 @@ namespace Friflo.Json.Mapper.Map
             if (isScalar) {
                 sb.Append(" ");
                 bool isFloat = type == typeof(float) || type == typeof(float?) || type == typeof(double) || type == typeof(double?);
-                if (isFloat)
-                    sb.AppendFormat(NumberFormatInfo, "{0}", left);
-                else
-                    sb.Append(left);
-                
+                AppendValue(sb, left, isFloat);
                 sb.Append(" -> ");
-                
-                if (isFloat)
-                    sb.AppendFormat(NumberFormatInfo, "{0}", right);
-                else
-                    sb.Append(right);
+                AppendValue(sb, right, isFloat);
             } else {
-                sb.Append(" (object)");
+                AppendObject(sb, left);
+                sb.Append(" -> ");
+                AppendObject(sb, right);
             }
+        }
+        
+        private static void AppendObject(StringBuilder sb, object value) {
+            if (value == null) {
+                sb.Append("null");
+                return;
+            }
+            sb.Append("(object)");
+        }
+
+        private static void AppendValue(StringBuilder sb, object value, bool isFloat) {
+            if (value == null) {
+                sb.Append("null");
+                return;
+            }
+            if (isFloat)
+                sb.AppendFormat(NumberFormatInfo, "{0}", value);
+            else
+                sb.Append(value);
         }
         
         public string GetChildrenDiff(int indent) {
             var sb = new StringBuilder();
+            sb.Append((object)null);
             if (children != null) {
                 foreach (var child in children) {
                     child.CreatePath(sb, true, sb.Length, indent);
