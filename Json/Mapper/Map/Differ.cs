@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
@@ -9,8 +10,8 @@ namespace Friflo.Json.Mapper.Map
     {
         public  readonly    TypeCache       typeCache;
 
-        private readonly    List<PathItem>  path  = new List<PathItem>();
-        private readonly    List<Parent> parentStack = new List<Parent>();
+        private readonly    List<PathNode>  path        = new List<PathNode>();
+        private readonly    List<Parent>    parentStack = new List<Parent>();
 
         public Differ(TypeCache typeCache) {
             this.typeCache = typeCache;
@@ -26,45 +27,51 @@ namespace Friflo.Json.Mapper.Map
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
             return diff;
         }
-        
+
+        private Diff GetParent(int parentIndex) {
+            var parent = parentStack[parentIndex];
+            var parentDiff = parent.diff;
+            if (parentDiff != null)
+                return parentDiff;
+
+            var parentOfParentIndex = parentIndex - 1;
+            if (parentOfParentIndex >= 0) {
+                Diff parentOfParent = GetParent(parentOfParentIndex);
+                parentDiff = parent.diff = new Diff(parentOfParent, path[parentOfParentIndex], parent.left, parent.right, new List<Diff>());
+                parentOfParent.children.Add(parentDiff);
+                return parentDiff;
+            }
+            parentDiff = parent.diff = new Diff(null, new PathNode{ nodeType = NodeType.Root }, parent.left, parent.right, new List<Diff>());
+            return parentDiff;
+        }
 
         public Diff AddDiff(object left, object right) {
             if (path.Count != parentStack.Count)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count");
-            
-            var itemDiff = new Diff(path, left, right, null);
+
+            Diff itemDiff = null; 
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
-                var parent = parentStack[parentIndex];
-                var parentDiff = parent.diff;
-                if (parent.diff == null) {
-                    parentDiff = parent.diff = new Diff(path, parent.left, parent.right, new List<Diff>());
-                }
-                parentDiff.items.Add(itemDiff);
-
-                parentIndex--;
-                while (parentIndex >= 0) {
-                    parent = parentStack[parentIndex];
-                    if (parent.diff == null) {
-                        parent.diff = new Diff(path, parent.left, parent.right, new List<Diff>());
-                    }
-                    parent.diff.items.Add(parentDiff);
-                    parentDiff = parent.diff;
-                    parentIndex--;
-                }
+                var parent = GetParent(parentIndex);
+                itemDiff = new Diff(parent, path[parentIndex], left, right, null);
+                parent.children.Add(itemDiff);
+            } else {
+                itemDiff = new Diff(null, new PathNode{ nodeType = NodeType.Root }, left, right, null);
             }
             return itemDiff;
         }
 
         public void PushField(PropField field) {
-            var item = new PathItem {
+            var item = new PathNode {
+                nodeType = NodeType.Member,
                 field = field
             };
             path.Add(item);
         }
         
         public void PushElement(int index) {
-            var item = new PathItem {
+            var item = new PathNode {
+                nodeType = NodeType.Element,
                 index = index
             };
             path.Add(item);
@@ -107,17 +114,19 @@ namespace Friflo.Json.Mapper.Map
 
     public class Diff
     {
-        public Diff(List<PathItem> path, object left, object right,  List<Diff> items) {
-            this.path       = path.ToArray();
+        public Diff(Diff parent, PathNode pathNode, object left, object right,  List<Diff> children) {
+            this.parent     = parent;
+            this.pathNode   = pathNode;
             this.left       = left;
             this.right      = right;
-            this.items      = items;
+            this.children   = children;
         }
 
-        public  readonly    PathItem[]      path;
+        public  readonly    Diff            parent; 
+        public  readonly    PathNode        pathNode;
         public  readonly    object          left;
         public  readonly    object          right;
-        public  readonly    List<Diff>      items;
+        public  readonly    List<Diff>      children;
     }
 
     class Parent
@@ -133,9 +142,17 @@ namespace Friflo.Json.Mapper.Map
         }
     }
 
-    public struct PathItem
+    internal enum NodeType
     {
-        public PropField    field;
-        public int          index;
+        Root,
+        Element,
+        Member,
+    }
+
+    public struct PathNode
+    {
+        internal    NodeType    nodeType;
+        public      PropField   field;
+        public      int         index;
     }
 }

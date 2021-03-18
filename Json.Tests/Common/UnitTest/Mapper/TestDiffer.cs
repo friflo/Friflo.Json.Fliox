@@ -30,8 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var right = new DiffBase {child = new DiffChild {childVal = 2}};
 
                     var diff = differ.GetDiff(left, right);
-                    AreEqual(1, diff.items.Count);
-                    AreEqual(1, diff.items[0].items.Count);
+                    AreEqual(1, diff.children.Count);
+                    AreEqual(1, diff.children[0].children.Count);
                 }
 
                 IsNull(differ.GetDiff(1, 1));
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     sample2.Init();
                     var diff = differ.GetDiff(sample2, sample);
                     IsNotNull(diff);
-                    AreEqual(31, diff.items.Count);
+                    AreEqual(29, diff.children.Count);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var list2 =  new List<int> { 1, 12, 13 };
                 var diff = differ.GetDiff(list1, list2);
                 IsNotNull(diff);
-                AreEqual(2, diff.items.Count);
+                AreEqual(2, diff.children.Count);
             }
         }
     }
