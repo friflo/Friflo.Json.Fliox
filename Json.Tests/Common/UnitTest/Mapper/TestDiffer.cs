@@ -17,7 +17,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         class DiffBase
         {
             public DiffChild child;
-
         }
         
         [Test]
@@ -99,8 +98,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsNotNull(diff);
                 AreEqual(2, diff.children.Count);
                 var childrenDiff = diff.GetChildrenDiff(10);
-                var expect = @"/1
-/2
+                var expect =
+@"/1         2 -> 12
+/2         3 -> 13
 ";
                 AreEqual(expect, childrenDiff);
             }

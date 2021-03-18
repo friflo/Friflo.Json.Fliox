@@ -70,10 +70,11 @@ namespace Friflo.Json.Mapper.Map
             path.Add(item);
         }
         
-        public void PushElement(int index) {
+        public void PushElement(int index, TypeMapper elementType) {
             var item = new PathNode {
                 nodeType = NodeType.Element,
-                index = index
+                index = index,
+                elementType = elementType
             };
             path.Add(item);
         }
@@ -86,7 +87,7 @@ namespace Friflo.Json.Mapper.Map
 
         public void CompareElement<T> (TypeMapper<T> elementType, int index, T leftItem, T rightItem)
         {
-            PushElement(index);
+            PushElement(index, elementType);
             bool leftNull  = elementType.IsNull(ref leftItem);
             bool rightNull = elementType.IsNull(ref rightItem);
             if (!leftNull || !rightNull) {
@@ -143,25 +144,32 @@ namespace Friflo.Json.Mapper.Map
                     sb.Append('/');
                     sb.Append(pathNode.field.name);
                     if (addValue) {
-                        var pathLen = sb.Length - startPos;
-                        for (int i = pathLen; i < indent; i++)
-                            sb.Append(" ");
-                        AddValue(sb);
+                        Indent(sb, startPos, indent);
+                        AddValue(sb, pathNode.field.fieldType);
                     }
                     break;
                 case NodeType.Element:
                     sb.Append('/');
                     sb.Append(pathNode.index);
+                    if (addValue) {
+                        Indent(sb, startPos, indent);
+                        AddValue(sb, pathNode.elementType);
+                    }
                     break;
                 case NodeType.Root:
                     break;
             }
         }
 
-        private void AddValue(StringBuilder sb) {
-            TypeMapper  mapper = pathNode.field.fieldType;
+        private static void Indent(StringBuilder sb, int startPos, int indent) {
+            var pathLen = sb.Length - startPos;
+            for (int i = pathLen; i < indent; i++)
+                sb.Append(" ");
+        }
+
+        private void AddValue(StringBuilder sb, TypeMapper  mapper) {
             Type        type = mapper.type;
-            Type        ut          = mapper.nullableUnderlyingType;
+            Type        ut   = mapper.nullableUnderlyingType;
             bool isNullablePrimitive = ut != null && ut.IsPrimitive;
             bool isNullableEnum      = ut != null && ut.IsEnum;
 
@@ -230,5 +238,6 @@ namespace Friflo.Json.Mapper.Map
         internal    NodeType    nodeType;
         public      PropField   field;
         public      int         index;
+        public      TypeMapper  elementType;
     }
 }
