@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public class TestDiffer
+    public class TestDiffer : LeakTestsFixture
     {
         class DiffChild
         {
@@ -21,9 +21,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestClass() {
-            using (var typeStore = new TypeStore()) {
-                var typeCache = new TypeCache(typeStore);
-                var differ = new Differ(typeCache);
+            using (var typeStore = new TypeStore())
+            using (var differ = new Differ(typeStore)) {
                 {
                     var left  = new DiffBase {child = new DiffChild {childVal = 1}};
                     var right = new DiffBase {child = new DiffChild {childVal = 2}};
@@ -93,9 +92,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestContainer() {
-            using (var typeStore = new TypeStore()) {
-                var typeCache = new TypeCache(typeStore);
-                var differ = new Differ(typeCache);
+            using (var typeStore = new TypeStore()) 
+            using (var differ = new Differ(typeStore)) {
                 var list1 =  new List<int> { 1,  2,  3 };
                 var list2 =  new List<int> { 1, 12, 13 };
                 var diff = differ.GetDiff(list1, list2);

@@ -7,15 +7,21 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
-    public class Differ
+    public class Differ : IDisposable
     {
         public  readonly    TypeCache       typeCache;
 
+        private readonly    JsonWriter      jsonWriter;
         private readonly    List<PathNode>  path        = new List<PathNode>();
         private readonly    List<Parent>    parentStack = new List<Parent>();
 
-        public Differ(TypeCache typeCache) {
-            this.typeCache = typeCache;
+        public Differ(TypeStore typeStore) {
+            this.jsonWriter = new JsonWriter(typeStore);
+            this.typeCache = jsonWriter.TypeCache;
+        }
+
+        public void Dispose() {
+            jsonWriter.Dispose();
         }
 
         public Diff GetDiff<T>(T left, T right) {
