@@ -37,7 +37,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
     {
-        public override string DataTypeName() { return "array"; }
+        public override string  DataTypeName() { return "array"; }
+        public override int     Count(object array) => ((TElm[]) array).Length; 
 
         public ArrayMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

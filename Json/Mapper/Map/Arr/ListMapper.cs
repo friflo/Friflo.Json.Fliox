@@ -35,7 +35,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class ListMapper<TElm> : CollectionMapper<List<TElm>, TElm>
     {
-        public override string DataTypeName() { return "List"; }
+        public override string  DataTypeName() { return "List"; }
+        public override int     Count(object array) => ((List<TElm>) array).Count;
         
         public ListMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

@@ -23,6 +23,8 @@ namespace Friflo.Json.Mapper.Map
         internal            string          discriminant;
 
         public virtual      bool            IsComplex => false;
+        public virtual      bool            IsArray => false;
+        public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
 
 
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly

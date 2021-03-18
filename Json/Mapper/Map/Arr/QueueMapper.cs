@@ -35,7 +35,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class QueueMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Queue<TElm>
     {
-        public override string DataTypeName() { return "Queue"; }
+        public override string  DataTypeName() { return "Queue"; }
+        public override int     Count(object array) => ((TCol) array).Count;
         
         public QueueMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

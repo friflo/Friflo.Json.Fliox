@@ -22,6 +22,9 @@ namespace Friflo.Json.Mapper.Map
         // ReSharper disable NotAccessedField.Local
         private  readonly   int                 rank;
         private  readonly   Type                keyType;
+        
+        public  override    bool                IsArray => true;
+        
 
         internal CollectionMapper (
             StoreConfig         config,

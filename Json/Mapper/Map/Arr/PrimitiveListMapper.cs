@@ -84,7 +84,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
     {
-        public override string DataTypeName() { return "List"; }
+        public override string  DataTypeName() { return "List"; }
+        public override int     Count(object array) => ((List<T>) array).Count;
         
         public PrimitiveListMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(T), 1, typeof(string), constructor) {

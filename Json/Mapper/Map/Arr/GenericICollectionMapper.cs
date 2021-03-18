@@ -39,7 +39,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : ICollection<TElm>
     {
-        public override string DataTypeName() { return "ICollection"; }
+        public override string  DataTypeName() { return "ICollection"; }
+        public override int     Count(object array) => ((TCol) array).Count;
         
         public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

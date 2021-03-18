@@ -35,7 +35,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class GenericIReadOnlyCollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IReadOnlyCollection<TElm>
     {
-        public override string DataTypeName() { return "IReadOnlyCollection"; }
+        public override string  DataTypeName() { return "IReadOnlyCollection"; }
+        public override int     Count(object array) => ((TCol) array).Count;
         
         public GenericIReadOnlyCollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {

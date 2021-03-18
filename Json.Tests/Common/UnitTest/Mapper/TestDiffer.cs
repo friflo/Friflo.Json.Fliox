@@ -115,15 +115,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var differ = new Differ(typeStore)) {
                 var list1 =  new List<int> { 1,  2,  3 };
                 var list2 =  new List<int> { 1, 12, 13 };
-                var diff = differ.GetDiff(list1, list2);
-                IsNotNull(diff);
-                AreEqual(2, diff.children.Count);
-                var childrenDiff = diff.GetChildrenDiff(10);
-                var expect =
-@"/1        2 -> 12
+                var list3 =  new List<int> { 1,  2 };
+                {
+                    var diff = differ.GetDiff(list1, list2);
+                    IsNotNull(diff);
+                    AreEqual(2, diff.children.Count);
+                    var childrenDiff = diff.GetChildrenDiff(10);
+                    var expect =
+                        @"/1        2 -> 12
 /2        3 -> 13
 ";
-                AreEqual(expect, childrenDiff);
+                    AreEqual(expect, childrenDiff);
+                } {
+                    var diff = differ.GetDiff(list1, list3);
+                    IsNotNull(diff);
+                    AreEqual("Count: 3 -> 2", diff.ToString());
+                }
             }
         }
     }

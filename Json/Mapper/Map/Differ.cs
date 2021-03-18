@@ -129,7 +129,7 @@ namespace Friflo.Json.Mapper.Map
 
     public class Diff
     {
-        public Diff(JsonWriter jsonWriter, Diff parent, PathNode pathNode, object left, object right,  List<Diff> children) {
+        public Diff(JsonWriter jsonWriter, Diff parent, PathNode pathNode, object left, object right, List<Diff> children) {
             this.parent     = parent;
             this.pathNode   = pathNode;
             this.left       = left;
@@ -193,11 +193,20 @@ namespace Friflo.Json.Mapper.Map
                 AppendObject(sb, left);
                 sb.Append(" -> ");
                 AppendObject(sb, right);
-            } else {
-                AppendValue(sb, left);
+                return;
+            }
+            if (mapper.IsArray) {
+                var leftCount = mapper.Count(left);
+                var rightCount = mapper.Count(right);
+                sb.Append("Count: ");
+                AppendValue(sb, leftCount);
                 sb.Append(" -> ");
-                AppendValue(sb, right);
-            } 
+                AppendValue(sb, rightCount);
+                return;
+            }
+            AppendValue(sb, left);
+            sb.Append(" -> ");
+            AppendValue(sb, right);
         }
         
         private void AppendObject(StringBuilder sb, object value) {

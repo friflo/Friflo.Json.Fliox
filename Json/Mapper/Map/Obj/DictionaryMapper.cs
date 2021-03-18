@@ -42,7 +42,8 @@ namespace Friflo.Json.Mapper.Map.Obj
 #endif
     public class DictionaryMapper<TMap, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<string, TElm>
     {
-        public override string DataTypeName() { return "Dictionary"; }
+        public  override    string      DataTypeName() { return "Dictionary"; }
+        public  override    bool        IsArray => false;
         
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {

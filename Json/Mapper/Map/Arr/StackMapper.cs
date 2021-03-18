@@ -35,7 +35,8 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class StackMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Stack<TElm>
     {
-        public override string DataTypeName() { return "Stack"; }
+        public override string  DataTypeName() { return "Stack"; }
+        public override int     Count(object array) => ((TCol) array).Count;
         
         public StackMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor) {
