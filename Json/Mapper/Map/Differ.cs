@@ -21,11 +21,18 @@ namespace Friflo.Json.Mapper.Map
         public Diff GetDiff<T>(T left, T right) {
             parentStack.Clear();
             path.Clear();
-
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
+            var item = new PathNode {
+                nodeType = NodeType.Root,
+                typeMapper = mapper 
+            };
+            path.Add(item);
             var diff = mapper.Diff(this, left, right);
+            Pop();
             if (parentStack.Count != 0)
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
+            if (path.Count != 0)
+                throw new InvalidOperationException($"Expect path.Count == 0. Was: {path.Count}");
             return diff;
         }
 
@@ -38,26 +45,26 @@ namespace Friflo.Json.Mapper.Map
             var parentOfParentIndex = parentIndex - 1;
             if (parentOfParentIndex >= 0) {
                 Diff parentOfParent = GetParent(parentOfParentIndex);
-                parentDiff = parent.diff = new Diff(parentOfParent, path[parentOfParentIndex], parent.left, parent.right, new List<Diff>());
+                parentDiff = parent.diff = new Diff(parentOfParent, path[parentOfParentIndex + 1], parent.left, parent.right, new List<Diff>());
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
-            parentDiff = parent.diff = new Diff(null, new PathNode{ nodeType = NodeType.Root }, parent.left, parent.right, new List<Diff>());
+            parentDiff = parent.diff = new Diff(null, path[0], parent.left, parent.right, new List<Diff>());
             return parentDiff;
         }
 
         public Diff AddDiff(object left, object right) {
-            if (path.Count != parentStack.Count)
-                throw new InvalidOperationException("Expect path.Count != parentStack.Count");
+            if (path.Count != parentStack.Count + 1)
+                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
 
-            Diff itemDiff = null; 
+            Diff itemDiff; 
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
                 var parent = GetParent(parentIndex);
-                itemDiff = new Diff(parent, path[parentIndex], left, right, null);
+                itemDiff = new Diff(parent, path[parentIndex + 1], left, right, null);
                 parent.children.Add(itemDiff);
             } else {
-                itemDiff = new Diff(null, new PathNode{ nodeType = NodeType.Root }, left, right, null);
+                itemDiff = new Diff(null, path[0], left, right, null);
             }
             return itemDiff;
         }
@@ -65,7 +72,8 @@ namespace Friflo.Json.Mapper.Map
         public void PushField(PropField field) {
             var item = new PathNode {
                 nodeType = NodeType.Member,
-                field = field
+                field = field,
+                typeMapper = field.fieldType
             };
             path.Add(item);
         }
@@ -74,7 +82,7 @@ namespace Friflo.Json.Mapper.Map
             var item = new PathNode {
                 nodeType = NodeType.Element,
                 index = index,
-                elementType = elementType
+                typeMapper = elementType
             };
             path.Add(item);
         }
@@ -143,20 +151,25 @@ namespace Friflo.Json.Mapper.Map
                 case NodeType.Member:
                     sb.Append('/');
                     sb.Append(pathNode.field.name);
-                    if (addValue) {
-                        Indent(sb, startPos, indent);
-                        AddValue(sb, pathNode.field.fieldType);
-                    }
+                    if (!addValue)
+                        return;
+                    sb.Append(" ");
+                    Indent(sb, startPos, indent);
+                    AddValue(sb, pathNode.typeMapper);
                     break;
                 case NodeType.Element:
                     sb.Append('/');
                     sb.Append(pathNode.index);
-                    if (addValue) {
-                        Indent(sb, startPos, indent);
-                        AddValue(sb, pathNode.elementType);
-                    }
+                    if (!addValue)
+                        return;
+                    Indent(sb, startPos, indent);
+                    sb.Append(" ");
+                    AddValue(sb, pathNode.typeMapper);
                     break;
                 case NodeType.Root:
+                    if (!addValue)
+                        return;
+                    AddValue(sb, pathNode.typeMapper);
                     break;
             }
         }
@@ -175,13 +188,11 @@ namespace Friflo.Json.Mapper.Map
 
             bool isScalar = type.IsEnum || type.IsPrimitive || isNullablePrimitive || isNullableEnum;
             if (isScalar) {
-                sb.Append(" ");
                 bool isFloat = type == typeof(float) || type == typeof(float?) || type == typeof(double) || type == typeof(double?);
                 AppendValue(sb, left, isFloat);
                 sb.Append(" -> ");
                 AppendValue(sb, right, isFloat);
             } else {
-                sb.Append(" ");
                 AppendObject(sb, left);
                 sb.Append(" -> ");
                 AppendObject(sb, right);
@@ -253,6 +264,6 @@ namespace Friflo.Json.Mapper.Map
         internal    NodeType    nodeType;
         public      PropField   field;
         public      int         index;
-        public      TypeMapper  elementType;
+        public      TypeMapper  typeMapper;
     }
 }
