@@ -181,6 +181,7 @@ namespace Friflo.Json.Mapper.Map
                 sb.Append(" -> ");
                 AppendValue(sb, right, isFloat);
             } else {
+                sb.Append(" ");
                 AppendObject(sb, left);
                 sb.Append(" -> ");
                 AppendObject(sb, right);

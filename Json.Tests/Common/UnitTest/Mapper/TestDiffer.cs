@@ -54,8 +54,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var expect =
 @"/enumIL1             three -> one
 /enumIL2             null -> two
-/childStructNull1   null -> (object)
-/childStructNull2   (object) -> (object)
+/childStructNull1    null -> (object)
+/childStructNull2    (object) -> (object)
 /nulDouble           20 -> 70
 /nulDoubleNull       null -> 71
 /nulFloat            21 -> 72
@@ -70,11 +70,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /nulByteNull         null -> 81
 /nulBool             True -> False
 /nulBoolNull         null -> True
-/childStruct1       (object) -> (object)
-/childStruct2       (object) -> (object)
-/child              (object) -> null
-/childNull          null -> (object)
-/structIL           (object) -> (object)
+/childStruct1        (object) -> (object)
+/childStruct2        (object) -> (object)
+/child               (object) -> null
+/childNull           null -> (object)
+/structIL            (object) -> (object)
 /dbl                 22.5 -> 94
 /flt                 33.5 -> 95
 /int64               10 -> 96
