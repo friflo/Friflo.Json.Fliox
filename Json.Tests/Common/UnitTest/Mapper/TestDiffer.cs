@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
-                    AreEqual("(object) -> (object)", diff.ToString());
+                    AreEqual("A -> B", diff.ToString());
                 }
                 {
                     var sample = new SampleIL();
@@ -103,8 +103,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(2, diff.children.Count);
                 var childrenDiff = diff.GetChildrenDiff(10);
                 var expect =
-@"/1         2 -> 12
-/2         3 -> 13
+@"/1        2 -> 12
+/2        3 -> 13
 ";
                 AreEqual(expect, childrenDiff);
             }

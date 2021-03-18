@@ -153,8 +153,8 @@ namespace Friflo.Json.Mapper.Map
                     sb.Append(pathNode.field.name);
                     if (!addValue)
                         return;
-                    sb.Append(" ");
                     Indent(sb, startPos, indent);
+                    sb.Append(" ");
                     AddValue(sb, pathNode.typeMapper);
                     break;
                 case NodeType.Element:
@@ -176,7 +176,7 @@ namespace Friflo.Json.Mapper.Map
 
         private static void Indent(StringBuilder sb, int startPos, int indent) {
             var pathLen = sb.Length - startPos;
-            for (int i = pathLen; i < indent; i++)
+            for (int i = pathLen; i < indent - 1; i++)
                 sb.Append(" ");
         }
 
@@ -199,9 +199,13 @@ namespace Friflo.Json.Mapper.Map
             }
         }
         
-        private static void AppendObject(StringBuilder sb, object value) {
+        private void AppendObject(StringBuilder sb, object value) {
             if (value == null) {
                 sb.Append("null");
+                return;
+            }
+            if (pathNode.typeMapper.type == typeof(string)) {
+                sb.Append(value);
                 return;
             }
             sb.Append("(object)");
