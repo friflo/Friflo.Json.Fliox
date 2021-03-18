@@ -76,8 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /child               (object)
 /childNull           (object)
 /structIL            (object)
-/dbl                 22,5 -> 94
-/flt                 33,5 -> 95
+/dbl                 22.5 -> 94
+/flt                 33.5 -> 95
 /int64               10 -> 96
 /int32               11 -> 97
 /int16               12 -> 98

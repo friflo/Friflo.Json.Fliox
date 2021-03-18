@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
+using System.Globalization;
 using System.Text;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
@@ -169,9 +168,18 @@ namespace Friflo.Json.Mapper.Map
             bool isScalar = type.IsEnum || type.IsPrimitive || isNullablePrimitive || isNullableEnum;
             if (isScalar) {
                 sb.Append(" ");
-                sb.Append(left);
+                bool isFloat = type == typeof(float) || type == typeof(float?) || type == typeof(double) || type == typeof(double?);
+                if (isFloat)
+                    sb.AppendFormat(NumberFormatInfo, "{0}", left);
+                else
+                    sb.Append(left);
+                
                 sb.Append(" -> ");
-                sb.Append(right);
+                
+                if (isFloat)
+                    sb.AppendFormat(NumberFormatInfo, "{0}", right);
+                else
+                    sb.Append(right);
             } else {
                 sb.Append(" (object)");
             }
@@ -186,6 +194,14 @@ namespace Friflo.Json.Mapper.Map
                 }
             }
             return sb.ToString();
+        }
+        
+        private static readonly NumberFormatInfo NumberFormatInfo = CreateNumberFormatInfo();
+
+        private static NumberFormatInfo CreateNumberFormatInfo() {
+            var nfi = (NumberFormatInfo)NumberFormatInfo.InvariantInfo.Clone();
+            nfi.NumberDecimalSeparator = ".";
+            return nfi;
         }
     }
 
