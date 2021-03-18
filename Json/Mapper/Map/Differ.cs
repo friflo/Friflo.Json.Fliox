@@ -27,14 +27,18 @@ namespace Friflo.Json.Mapper.Map
             return diff;
         }
         
+
         public Diff AddDiff(object left, object right) {
-            var itemDiff = new Diff(path, left, right);
+            if (path.Count != parentStack.Count)
+                throw new InvalidOperationException("Expect path.Count != parentStack.Count");
+            
+            var itemDiff = new Diff(path, left, right, null);
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
                 var parent = parentStack[parentIndex];
                 var parentDiff = parent.diff;
                 if (parent.diff == null) {
-                    parentDiff = parent.diff = new Diff(path, parent.left, parent.right);
+                    parentDiff = parent.diff = new Diff(path, parent.left, parent.right, new List<Diff>());
                 }
                 parentDiff.items.Add(itemDiff);
 
@@ -42,7 +46,7 @@ namespace Friflo.Json.Mapper.Map
                 while (parentIndex >= 0) {
                     parent = parentStack[parentIndex];
                     if (parent.diff == null) {
-                        parent.diff = new Diff(path, parent.left, parent.right);
+                        parent.diff = new Diff(path, parent.left, parent.right, new List<Diff>());
                     }
                     parent.diff.items.Add(parentDiff);
                     parentDiff = parent.diff;
@@ -100,18 +104,20 @@ namespace Friflo.Json.Mapper.Map
 
     }
 
+
     public class Diff
     {
-        public Diff(List<PathItem> items, object left, object right) {
-            this.path   = items.ToArray();
-            this.left   = left;
-            this.right  = right;
+        public Diff(List<PathItem> path, object left, object right,  List<Diff> items) {
+            this.path       = path.ToArray();
+            this.left       = left;
+            this.right      = right;
+            this.items      = items;
         }
-            
+
         public  readonly    PathItem[]      path;
         public  readonly    object          left;
         public  readonly    object          right;
-        public  readonly    List<Diff>      items = new List<Diff>();
+        public  readonly    List<Diff>      items;
     }
 
     class Parent
