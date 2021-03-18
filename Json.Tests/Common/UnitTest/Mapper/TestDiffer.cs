@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Tests.Unity.Utils;
@@ -11,12 +13,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     {
         class DiffChild
         {
-            public int childVal;
+            public int          childVal;
+            public BigInteger   bigInt;
+            public DateTime     dateTime;
         }
 
         class DiffBase
         {
-            public DiffChild child;
+            public DiffChild    child;
         }
         
         [Test]
@@ -24,12 +28,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var typeStore = new TypeStore())
             using (var differ = new Differ(typeStore)) {
                 {
-                    var left  = new DiffBase {child = new DiffChild {childVal = 1}};
-                    var right = new DiffBase {child = new DiffChild {childVal = 2}};
+                    var left  = new DiffBase {child = new DiffChild {
+                        childVal = 1,
+                        bigInt = BigInteger.Parse("111"),
+                        dateTime = DateTime.Parse("2021-03-18T16:30:00.000Z")
+                    }};
+                    var right = new DiffBase {child = new DiffChild {
+                        childVal = 2,
+                        bigInt = BigInteger.Parse("222"),
+                        dateTime = DateTime.Parse("2021-03-18T16:40:00.000Z")
+                    }};
 
                     var diff = differ.GetDiff(left, right);
                     AreEqual(1, diff.children.Count);
-                    AreEqual(1, diff.children[0].children.Count);
+
+                    var childrenDiff = diff.children[0].GetChildrenDiff(20);
+                    var expect =
+@"/child/childVal     1 -> 2
+/child/bigInt       111 -> 222
+/child/dateTime     2021-03-18T16:30:00.000Z -> 2021-03-18T16:40:00.000Z
+"; 
+                    AreEqual(expect, childrenDiff);
                 }
 
                 IsNull(differ.GetDiff(1, 1));

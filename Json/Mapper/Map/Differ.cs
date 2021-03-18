@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
