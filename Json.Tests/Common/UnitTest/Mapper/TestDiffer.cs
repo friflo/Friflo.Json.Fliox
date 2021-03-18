@@ -55,8 +55,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(29, diff.children.Count);
                     var childrenDiff = diff.GetChildrenDiff(20);
                     var expect =
-@"/enumIL1            ""three"" -> ""one""
-/enumIL2            null -> ""two""
+@"/enumIL1            three -> one
+/enumIL2            null -> two
 /childStructNull1   null -> (object)
 /childStructNull2   (object) -> (object)
 /nulDouble          20.0 -> 70.0

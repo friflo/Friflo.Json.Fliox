@@ -223,7 +223,11 @@ namespace Friflo.Json.Mapper.Map
                 return;
             }
             var str = jsonWriter.WriteObject(value);
-            sb.Append(str);
+            var len = str.Length;
+            if (len >= 2 && str[0] == '"' && str[len - 1] == '"')
+                sb.Append(str, 1, len - 2);
+            else
+                sb.Append(str);
         }
         
         public string GetChildrenDiff(int indent) {
