@@ -22,7 +22,9 @@ namespace Friflo.Json.Mapper.Map
         internal            InstanceFactory instanceFactory;
         internal            string          discriminant;
 
-        
+        public virtual      bool            IsComplex => false;
+
+
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
         public  readonly PropertyFields propFields;
         public              ClassLayout layout;  // todo make readonly

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
@@ -187,22 +188,17 @@ namespace Friflo.Json.Mapper.Map
                 sb.Append(" ");
         }
 
-        private void AddValue(StringBuilder sb, TypeMapper  mapper) {
-            Type        type = mapper.type;
-            Type        ut   = mapper.nullableUnderlyingType;
-            bool isNullablePrimitive = ut != null && ut.IsPrimitive;
-            bool isNullableEnum      = ut != null && ut.IsEnum;
-
-            bool isScalar = type.IsEnum || type.IsPrimitive || isNullablePrimitive || isNullableEnum;
-            if (isScalar) {
-                AppendValue(sb, left);
-                sb.Append(" -> ");
-                AppendValue(sb, right);
-            } else {
+        private void AddValue(StringBuilder sb, TypeMapper mapper) {
+            var isComplex = mapper.IsComplex;
+            if (isComplex) {
                 AppendObject(sb, left);
                 sb.Append(" -> ");
                 AppendObject(sb, right);
-            }
+            } else {
+                AppendValue(sb, left);
+                sb.Append(" -> ");
+                AppendValue(sb, right);
+            } 
         }
         
         private void AppendObject(StringBuilder sb, object value) {
