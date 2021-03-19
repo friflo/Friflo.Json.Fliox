@@ -146,6 +146,22 @@ namespace Friflo.Json.Mapper.Map.Obj
             return differ.PopParent();
         }
 
+        public override void PatchObject(Patcher patcher, object value) {
+            var obj = (T)value;
+            TypeMapper classMapper = this;
+            Type objType = value.GetType();
+            if (type != objType)
+                classMapper = patcher.typeCache.GetTypeMapper(objType);
+            
+            PropField[] fields = classMapper.propFields.fields;
+            for (int n = 0; n < fields.Length; n++) {
+                PropField field = fields[n];
+                if (patcher.Walk(field, obj)) {
+                    return;
+                }
+            }
+        }
+
         public override void Trace(Tracer tracer, T slot) {
             object objRef = slot; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             TypeMapper classMapper = this;

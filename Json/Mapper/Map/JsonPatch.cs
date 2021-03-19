@@ -18,11 +18,12 @@ namespace Friflo.Json.Mapper.Map
 
         public JsonPatch(TypeStore typeStore) {
             mapper  = new JsonMapper(typeStore);
-            patcher = new Patcher();
             typeCache = mapper.reader.TypeCache;
+            patcher = new Patcher(mapper.reader);
         }
 
         public void Dispose() {
+            patcher.Dispose();
             mapper.Dispose();
         }
 
@@ -32,10 +33,10 @@ namespace Friflo.Json.Mapper.Map
             return patches;
         }
 
-        public void ApplyPatches<T>(T value, IEnumerable<Patch> patches) {
-            var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(value.GetType());
+        public void ApplyPatches<T>(T root, IEnumerable<Patch> patches) {
+            var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(root.GetType());
             foreach (var patch in patches) { 
-                patcher.Patch(rootMapper, value, patch);
+                patcher.Patch(rootMapper, root, patch);
             }
         }
 
