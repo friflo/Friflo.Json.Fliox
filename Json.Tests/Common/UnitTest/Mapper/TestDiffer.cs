@@ -105,6 +105,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /int8               13 -> 99
 ";
                     AreEqual(expect, childrenDiff);
+
+                    var jsonPath = new JsonPatch();
+                    var patches = jsonPath.CreatePatches(diff);
                 }
             }
         }
