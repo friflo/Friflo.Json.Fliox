@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
@@ -12,9 +13,13 @@ namespace Friflo.Json.Mapper.Map
         private             List<Patch>     patches;
         private readonly    StringBuilder   sb = new StringBuilder();
         private readonly    JsonMapper      mapper;
+        private readonly    TypeCache       typeCache;
+        private readonly    Patcher         patcher;
 
         public JsonPatch(TypeStore typeStore) {
-            mapper = new JsonMapper(typeStore);
+            mapper  = new JsonMapper(typeStore);
+            patcher = new Patcher();
+            typeCache = mapper.reader.TypeCache;
         }
 
         public void Dispose() {
@@ -25,6 +30,13 @@ namespace Friflo.Json.Mapper.Map
             patches = new List<Patch>();
             TraceDiff(diff);
             return patches;
+        }
+
+        public void ApplyPatches<T>(T value, IEnumerable<Patch> patches) {
+            var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(value.GetType());
+            foreach (var patch in patches) { 
+                patcher.Patch(rootMapper, value, patch);
+            }
         }
 
         private void TraceDiff(Diff diff) {

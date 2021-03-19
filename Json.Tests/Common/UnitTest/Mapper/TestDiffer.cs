@@ -116,6 +116,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var jsonPatches = mapper.Write(patches);
                     var destPatches = mapper.Read<List<Patch>>(jsonPatches);
                     AssertUtils.Equivalent(patches, destPatches);
+                    
+                    jsonPatch.ApplyPatches(sample2, destPatches);
                 }
             }
         }

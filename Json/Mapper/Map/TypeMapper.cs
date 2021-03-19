@@ -51,6 +51,8 @@ namespace Friflo.Json.Mapper.Map
         public abstract void            InitTypeMapper(TypeStore typeStore);
 
         public abstract Diff            DiffObject(Differ differ, object left, object right);
+        public virtual  void            PatchObject(Patcher patcher, object value) { }
+
         public abstract void            TraceObject(Tracer tracer, object slot);
         
         public abstract void            WriteObject(ref Writer writer, object slot);

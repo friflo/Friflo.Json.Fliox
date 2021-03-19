@@ -120,7 +120,7 @@ namespace Friflo.Json.Mapper.Map
             return patchValue;
         }
     }
-    
+    /*
     // ------------------------------ PatchMatcher / PatchMapper ------------------------------
     public class PatchMatcher : ITypeMatcher {
         public static readonly PatchMatcher Instance = new PatchMatcher();
@@ -158,6 +158,6 @@ namespace Friflo.Json.Mapper.Map
             return result;
         }
     }
-
+    */
 
 }
