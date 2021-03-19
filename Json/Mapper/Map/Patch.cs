@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Reflection;
+using Friflo.Json.Mapper.Map.Obj;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
@@ -13,38 +17,63 @@ namespace Friflo.Json.Mapper.Map
     [Fri.Polymorph(typeof(PatchTest),       Discriminant = "test")]
     public abstract class Patch
     {
-        public string path;
+        [Fri.Ignore]
+        public abstract string Path { get;  }
 
-        public override string ToString() => path;
+        public override string ToString() => Path;
     }
 
     public class PatchReplace : Patch
     {
-        public PatchValue value;
+        [Fri.Ignore]
+        public override string Path => path;
+        
+        public string       path;
+        public PatchValue   value;
     }
     
     public class PatchAdd : Patch
     {
-        public PatchValue value;
+        [Fri.Ignore]
+        public override string Path => path;
+        
+        public string       path;
+        public PatchValue   value;
     }
     
     public class PatchRemove : Patch
     {
+        [Fri.Ignore]
+        public override string Path => path;
+        
+        public string       path;
     }
     
     public class PatchCopy : Patch
     {
-        public string from;
+        [Fri.Ignore]
+        public override string Path => path;
+
+        public string       path;
+        public string       from;
     }
     
     public class PatchMove : Patch
     {
-        public string from;
+        [Fri.Ignore]
+        public override string Path => path;
+
+        public string       path;
+        public string       from;
     }
     
     public class PatchTest : Patch
     {
-        public PatchValue value;
+        [Fri.Ignore]
+        public override string Path => path;
+
+        public string       path;
+        public PatchValue   value;
     }
     
     
@@ -57,6 +86,7 @@ namespace Friflo.Json.Mapper.Map
         public TypeMapper typeMapper;
     }
     
+    // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
     public class PatchValueMatcher : ITypeMatcher {
         public static readonly PatchValueMatcher Instance = new PatchValueMatcher();
         
@@ -85,6 +115,43 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public override PatchValue Read(ref Reader reader, PatchValue slot, out bool success) {
+            success = false;
+            return default;
+        }
+    }
+    
+    // ------------------------------ PatchMatcher / PatchMapper ------------------------------
+    public class PatchMatcher : ITypeMatcher {
+        public static readonly PatchMatcher Instance = new PatchMatcher();
+        
+        public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
+            if (!type.IsSubclassOf(typeof(Patch)))
+                return null;
+            var factory = InstanceFactory.GetInstanceFactory(type);
+            ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
+            object[] constructorParams = {config, type, constructor, factory};
+
+            // new PatchMapper (config, type, constructor, factory);
+            return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(PatchMapper<>), new[] {type}, constructorParams);
+        }
+    }
+    
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
+    internal class PatchMapper<TPatch> : ClassMapper<TPatch>
+    {
+        public override string DataTypeName() { return "Patch"; }
+
+        public PatchMapper(StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory factory)
+            : base (config, type, constructor, factory, false)
+        { }
+
+        public override void Write(ref Writer writer, TPatch value) {
+            base.Write(ref writer, value);
+        }
+
+        public override TPatch Read(ref Reader reader, TPatch slot, out bool success) {
             success = false;
             return default;
         }
