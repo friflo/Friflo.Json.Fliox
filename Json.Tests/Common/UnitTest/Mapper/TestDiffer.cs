@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -114,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     var jsonPatches = mapper.Write(patches);
                     var destPatches = mapper.Read<List<Patch>>(jsonPatches);
-                    IsFalse(mapper.reader.Error.ErrSet);
+                    AssertUtils.Equivalent(patches, destPatches);
                 }
             }
         }
