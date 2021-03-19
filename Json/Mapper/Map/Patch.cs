@@ -80,11 +80,7 @@ namespace Friflo.Json.Mapper.Map
     
     public class PatchValue
     {
-        [Fri.Ignore]
-        public object value;
-        
-        [Fri.Ignore]
-        public TypeMapper typeMapper;
+        public string       json;
     }
     
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
@@ -108,16 +104,21 @@ namespace Friflo.Json.Mapper.Map
         public PatchValueMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
 
         public override void Write(ref Writer writer, PatchValue value) {
-            if (value.value == null) {
-                writer.AppendNull();
-                return;
-            }
-            value.typeMapper.WriteObject(ref writer, value.value);
+            writer.bytes.AppendString(value.json);
         }
 
         public override PatchValue Read(ref Reader reader, PatchValue slot, out bool success) {
-            success = false;
-            return default;
+            var stub = reader.jsonSerializerStub;
+            if (stub == null)
+                reader.jsonSerializerStub = stub = new JsonSerializerStub();
+            
+            ref var serializer = ref stub.jsonSerializer;
+            serializer.InitSerializer();
+            serializer.WriteTree(ref reader.parser);
+            var json = serializer.json.ToString();
+            var patchValue = new PatchValue { json = json };
+            success = true;
+            return patchValue;
         }
     }
     

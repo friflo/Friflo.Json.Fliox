@@ -245,6 +245,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 ser.SetPretty(true);
                 parser.value.InitParser(bytes);
                 ser.InitSerializer();
+                parser.value.NextEvent();
                 ser.WriteTree(ref parser.value);
                 CommonUtils.ToFile("assets/output/complexPrettySerializer.json", ser.json);
             }

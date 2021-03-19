@@ -72,6 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("{}")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -81,6 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("[]")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -90,6 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("\"abc\"")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -99,6 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("123")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -108,6 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("true")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -117,6 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("null")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -127,6 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("[")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
                     AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", p.error.msg.ToString());
@@ -135,6 +142,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("{")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
                     AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", p.error.msg.ToString());
@@ -143,6 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
                     AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.ToString());
@@ -151,6 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("a")) {
                     p.InitParser(bytes);
                     ser.InitSerializer();
+                    p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
                     AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", p.error.msg.ToString());

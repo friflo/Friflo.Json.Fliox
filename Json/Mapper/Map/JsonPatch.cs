@@ -1,15 +1,26 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Friflo.Json.Mapper.Map
 {
-    public class JsonPatch
+    public class JsonPatch : IDisposable
     {
         private             List<Patch>     patches;
         private readonly    StringBuilder   sb = new StringBuilder();
-        
+        private readonly    JsonMapper      mapper;
+
+        public JsonPatch(TypeStore typeStore) {
+            mapper = new JsonMapper(typeStore);
+        }
+
+        public void Dispose() {
+            mapper.Dispose();
+        }
+
         public List<Patch> CreatePatches(Diff diff) {
             patches = new List<Patch>();
             TraceDiff(diff);
@@ -20,9 +31,9 @@ namespace Friflo.Json.Mapper.Map
             if (diff.diffType == DiffType.Modified) {
                 sb.Clear();
                 diff.AddPath(sb);
+                var json = mapper.WriteObject(diff.right);
                 var value = new PatchValue {
-                    value       = diff.right,
-                    typeMapper  = diff.pathNode.typeMapper
+                    json        = json
                 };
                 var replace = new PatchReplace {
                     path  = sb.ToString(),

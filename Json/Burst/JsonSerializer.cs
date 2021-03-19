@@ -563,8 +563,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool WriteTree(ref JsonParser p) {
-            JsonEvent ev = p.NextEvent();
-            switch (ev) {
+            switch (p.Event) {
                 case JsonEvent.ObjectStart:
                     ObjectStart();
                     return WriteObject(ref p);

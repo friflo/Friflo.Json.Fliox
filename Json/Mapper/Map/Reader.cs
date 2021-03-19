@@ -9,6 +9,15 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
+    public class JsonSerializerStub : IDisposable
+    {
+        public JsonSerializer jsonSerializer;
+        
+        public void Dispose() {
+            jsonSerializer.Dispose();
+        }
+    }
+
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -25,6 +34,7 @@ namespace Friflo.Json.Mapper.Map
         public readonly     TypeCache           typeCache;
         private readonly    IErrorHandler       errorHandler;
         public              ITracerContext      tracerContext;
+        public              JsonSerializerStub  jsonSerializerStub;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -40,6 +50,7 @@ namespace Friflo.Json.Mapper.Map
             searchKey       = new Bytes32();
             charBuf         = new char[128];
             keyRef          = new BytesString();
+            jsonSerializerStub = null;
 #if !UNITY_5_3_OR_NEWER
             mirrorStack     = new List<ClassMirror>(16);
             classLevel      = 0;
@@ -57,6 +68,7 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public void Dispose() {
+            jsonSerializerStub?.Dispose();
             strBuf      .Dispose();
             typeCache   .Dispose();
             parser      .Dispose();
