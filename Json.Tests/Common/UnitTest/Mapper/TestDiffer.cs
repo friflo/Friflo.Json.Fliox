@@ -110,9 +110,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(expect, childrenDiff);
 
                     var jsonPatch = new JsonPatch();
-                    var patches = jsonPatch.CreatePatches(diff);
+                    List<Patch> patches = jsonPatch.CreatePatches(diff);
 
                     var jsonPatches = mapper.Write(patches);
+                    var destPatches = mapper.Read<List<Patch>>(jsonPatches);
+                    IsFalse(mapper.reader.Error.ErrSet);
                 }
             }
         }
