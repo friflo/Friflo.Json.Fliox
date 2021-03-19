@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
@@ -13,7 +12,7 @@ namespace Friflo.Json.Mapper.Map
     {
         public  readonly    TypeCache       typeCache;
         private readonly    JsonReader      jsonReader;
-        private             Bytes           json = new Bytes(0, AllocType.Persistent);
+        private             string          json;
         private             int             pathPos;
         private readonly    List<string>    pathNodes = new List<string>();
         
@@ -23,13 +22,12 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public void Dispose() {
-            json.Dispose();
+
         }
 
         public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
             var replace = (PatchReplace) patch;
-            json.Clear();
-            json.AppendString(replace.value.json);
+            json = replace.value.json;
             pathPos = 0;
             pathNodes.Clear();
             string path = patch.Path;
