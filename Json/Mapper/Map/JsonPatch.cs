@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System.Collections.Generic;
 using System.Text;
 
 namespace Friflo.Json.Mapper.Map
 {
     public class JsonPatch
     {
-        private List<Patch>     patches;
-        private StringBuilder   sb = new StringBuilder();
+        private             List<Patch>     patches;
+        private readonly    StringBuilder   sb = new StringBuilder();
         
         public List<Patch> CreatePatches(Diff diff) {
             patches = new List<Patch>();
@@ -18,9 +20,13 @@ namespace Friflo.Json.Mapper.Map
             if (diff.diffType == DiffType.Modified) {
                 sb.Clear();
                 diff.AddPath(sb);
+                var value = new PatchValue {
+                    value       = diff.right,
+                    typeMapper  = diff.pathNode.typeMapper
+                };
                 var replace = new PatchReplace {
                     path  = sb.ToString(),
-                    value = diff.right
+                    value = value
                 };
                 patches.Add(replace);
             }

@@ -48,6 +48,7 @@ namespace Friflo.Json.Mapper.Map
             if (MatchMappers(concreteTypeMatcher,       config, type, q)) return q.hit;
             
             // Specific types on top
+            if (Match(PatchValueMatcher.    Instance,   config, type, q)) return q.hit;
             if (Match(BigIntMatcher.        Instance,   config, type, q)) return q.hit;
             if (Match(DateTimeMatcher.      Instance,   config, type, q)) return q.hit;
                 
