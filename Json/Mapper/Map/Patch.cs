@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Reflection;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
@@ -155,62 +154,8 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public override TPatch Read(ref Reader reader, TPatch slot, out bool success) {
-            // Ensure preconditions are fulfilled
-            if (!reader.StartObject(this, out success))
-                return default;
-                
-            TypeMapper classType = this;
-            classType = GetPolymorphType(ref reader, classType, ref slot, out success);
-            if (!success)
-                return default;
-            TPatch objRef = slot;
-            
-            JsonEvent ev = reader.parser.Event;
-            var fields = classType.propFields;
-
-            while (true) {
-                switch (ev) {
-                    case JsonEvent.ValueString:
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        PropField field;
-                        if ((field = reader.GetField32(fields)) == null)
-                            break;
-                        TypeMapper fieldType = field.fieldType;
-                        object fieldVal = field.GetField(objRef);
-                        object curFieldVal = fieldVal;
-                        fieldVal = fieldType.ReadObject(ref reader, fieldVal, out success);
-                        if (!success)
-                            return default;
-                        //
-                        if (!fieldType.isNullable && fieldVal == null)
-                            return reader.ErrorIncompatible<TPatch>(this, field, out success);
-                        
-                        if (curFieldVal != fieldVal)
-                            field.SetField(objRef, fieldVal);
-                        break;
-                    case JsonEvent.ValueNull:
-                        if ((field = reader.GetField32(fields)) == null)
-                            break;
-                        if (!field.fieldType.isNullable)
-                            return reader.ErrorIncompatible<TPatch>(this, field, out success);
-                        
-                        field.SetField(objRef, null);
-                        break;
-
-                    case JsonEvent.ObjectEnd:
-                        success = true;
-                        return objRef;
-                    case JsonEvent.Error:
-                        success = false;
-                        return default;
-                    default:
-                        return reader.ErrorMsg<TPatch>("unexpected state: ", ev, out success);
-                }
-                ev = reader.parser.NextEvent();
-            }
+            var result = base.Read(ref reader, slot, out success);
+            return result;
         }
     }
 
