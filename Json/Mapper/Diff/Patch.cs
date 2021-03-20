@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using Friflo.Json.Mapper.Map.Val;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Mapper.Diff
 {
     [Fri.Discriminator("op")]
     [Fri.Polymorph(typeof(PatchReplace),    Discriminant = "replace")]

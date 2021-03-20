@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Mapper.Diff
 {
     public class Differ : IDisposable
     {

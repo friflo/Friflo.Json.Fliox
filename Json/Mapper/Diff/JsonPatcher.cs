@@ -4,10 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Val;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Mapper.Diff
 {
     public class JsonPatcher : IDisposable
     {
