@@ -12,7 +12,6 @@ namespace Friflo.Json.Mapper.Diff
 {
     public class JsonPatcher : IDisposable
     {
-        private             List<Patch>     patches;
         private readonly    StringBuilder   sb = new StringBuilder();
         private readonly    JsonMapper      mapper;
         private readonly    TypeCache       typeCache;
@@ -30,8 +29,8 @@ namespace Friflo.Json.Mapper.Diff
         }
 
         public List<Patch> CreatePatches(DiffNode diff) {
-            patches = new List<Patch>();
-            TraceDiff(diff);
+            var patches = new List<Patch>();
+            TraceDiff(diff, patches);
             return patches;
         }
 
@@ -42,7 +41,7 @@ namespace Friflo.Json.Mapper.Diff
             }
         }
 
-        private void TraceDiff(DiffNode diff) {
+        private void TraceDiff(DiffNode diff, List<Patch> patches) {
             if (diff.diffType == DiffType.Modified) {
                 sb.Clear();
                 diff.AddPath(sb);
@@ -60,7 +59,7 @@ namespace Friflo.Json.Mapper.Diff
             if (children != null) {
                 for (int n = 0; n < children.Count; n++) {
                     var child = children[n];
-                    TraceDiff(child);
+                    TraceDiff(child, patches);
                 }
             }
         }
