@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Mapper.Map.Val;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
@@ -45,7 +46,7 @@ namespace Friflo.Json.Mapper.Map
                 sb.Clear();
                 diff.AddPath(sb);
                 var json = mapper.WriteObject(diff.right);
-                var value = new PatchValue {
+                var value = new JsonValue {
                     json        = json
                 };
                 var replace = new PatchReplace {
