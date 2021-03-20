@@ -4,7 +4,7 @@ using System;
 
 namespace Friflo.Json.Mapper.Map.Val
 {
-    public class JsonValue
+    public struct JsonValue
     {
         public string       json;
     }
@@ -27,7 +27,7 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public override string DataTypeName() { return "PatchValue"; }
 
-        public PatchValueMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
+        public PatchValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
         public override void Write(ref Writer writer, JsonValue value) {
             writer.bytes.AppendString(value.json);
