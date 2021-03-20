@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map.Val
 #endif
     public class PatchValueMapper : TypeMapper<JsonValue>
     {
-        public override string DataTypeName() { return "PatchValue"; }
+        public override string DataTypeName() { return "JsonValue"; }
 
         public PatchValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
