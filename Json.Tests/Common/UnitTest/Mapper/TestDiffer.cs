@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestClass() {
             using (var typeStore    = new TypeStore()) 
             using (var mapper       = new JsonMapper(typeStore))
-            using (var jsonPatch    = new JsonPatch(typeStore))
+            using (var jsonPatcher  = new JsonPatcher(typeStore))
             using (var differ       = new Differ(typeStore))
             {
                 mapper.Pretty = true;
@@ -111,13 +111,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 ";
                     AreEqual(expect, childrenDiff);
 
-                    List<Patch> patches = jsonPatch.CreatePatches(diff);
+                    List<Patch> patches = jsonPatcher.CreatePatches(diff);
 
                     var jsonPatches = mapper.Write(patches);
                     var destPatches = mapper.Read<List<Patch>>(jsonPatches);
                     AssertUtils.Equivalent(patches, destPatches);
                     
-                    jsonPatch.ApplyPatches(sample2, destPatches);
+                    jsonPatcher.ApplyPatches(sample2, destPatches);
                     AssertUtils.Equivalent(sample, sample2);
                 }
             }

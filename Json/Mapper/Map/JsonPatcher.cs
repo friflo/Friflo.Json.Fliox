@@ -9,7 +9,7 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Map
 {
-    public class JsonPatch : IDisposable
+    public class JsonPatcher : IDisposable
     {
         private             List<Patch>     patches;
         private readonly    StringBuilder   sb = new StringBuilder();
@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Map
         private readonly    TypeCache       typeCache;
         private readonly    Patcher         patcher;
 
-        public JsonPatch(TypeStore typeStore) {
+        public JsonPatcher(TypeStore typeStore) {
             mapper  = new JsonMapper(typeStore);
             typeCache = mapper.reader.TypeCache;
             patcher = new Patcher(mapper.reader);
