@@ -111,7 +111,7 @@ namespace Friflo.Json.Mapper.Map.Obj
         
         // ----------------------------------- Write / Read -----------------------------------
         
-        public override Diff Diff(Differ differ, T left, T right) {
+        public override DiffNode Diff(Differ differ, T left, T right) {
             object leftObj = left; // box in case of a struct. This enables FieldInfo.GetValue() / SetValue() operating on struct also.
             object rightObj = right;
             TypeMapper classMapper = this;

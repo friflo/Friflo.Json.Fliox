@@ -38,7 +38,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, elementType, 1, typeof(string), constructor) {
         }
         
-        public override Diff Diff(Differ differ, TCol left, TCol right) {
+        public override DiffNode Diff(Differ differ, TCol left, TCol right) {
             differ.PushParent(left, right);
             int n = 0;
             using (var leftIter  = left.GetEnumerator())

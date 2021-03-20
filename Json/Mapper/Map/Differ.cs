@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map
             jsonWriter.Dispose();
         }
 
-        public Diff GetDiff<T>(T left, T right) {
+        public DiffNode GetDiff<T>(T left, T right) {
             parentStack.Clear();
             path.Clear();
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
@@ -43,7 +43,7 @@ namespace Friflo.Json.Mapper.Map
             return diff;
         }
 
-        private Diff GetParent(int parentIndex) {
+        private DiffNode GetParent(int parentIndex) {
             var parent = parentStack[parentIndex];
             var parentDiff = parent.diff;
             if (parentDiff != null)
@@ -51,29 +51,29 @@ namespace Friflo.Json.Mapper.Map
 
             var parentOfParentIndex = parentIndex - 1;
             if (parentOfParentIndex >= 0) {
-                Diff parentOfParent = GetParent(parentOfParentIndex);
-                parentDiff = parent.diff = new Diff(DiffType.None, jsonWriter, parentOfParent,
-                    path[parentOfParentIndex + 1], parent.left, parent.right, new List<Diff>());
+                DiffNode parentOfParent = GetParent(parentOfParentIndex);
+                parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, parentOfParent,
+                    path[parentOfParentIndex + 1], parent.left, parent.right, new List<DiffNode>());
                 parentOfParent.children.Add(parentDiff);
                 return parentDiff;
             }
-            parentDiff = parent.diff = new Diff(DiffType.None, jsonWriter, null,
-                path[0], parent.left, parent.right, new List<Diff>());
+            parentDiff = parent.diff = new DiffNode(DiffType.None, jsonWriter, null,
+                path[0], parent.left, parent.right, new List<DiffNode>());
             return parentDiff;
         }
 
-        public Diff AddDiff(object left, object right) {
+        public DiffNode AddDiff(object left, object right) {
             if (path.Count != parentStack.Count + 1)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
 
-            Diff itemDiff; 
+            DiffNode itemDiff; 
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
                 var parent = GetParent(parentIndex);
-                itemDiff = new Diff(DiffType.Modified, jsonWriter, parent, path[parentIndex + 1], left, right, null);
+                itemDiff = new DiffNode(DiffType.Modified, jsonWriter, parent, path[parentIndex + 1], left, right, null);
                 parent.children.Add(itemDiff);
             } else {
-                itemDiff = new Diff(DiffType.Modified, jsonWriter, null, path[0], left, right, null);
+                itemDiff = new DiffNode(DiffType.Modified, jsonWriter, null, path[0], left, right, null);
             }
             return itemDiff;
         }
@@ -121,7 +121,7 @@ namespace Friflo.Json.Mapper.Map
             parentStack.Add(new Parent(left, right));
         }
         
-        public Diff PopParent() {
+        public DiffNode PopParent() {
             var lastIndex = parentStack.Count - 1;
             var last = parentStack[lastIndex];
             parentStack.RemoveAt(lastIndex);
@@ -136,10 +136,9 @@ namespace Friflo.Json.Mapper.Map
         Modified,
     }
 
-
-    public class Diff
+    public class DiffNode
     {
-        public Diff(DiffType diffType, JsonWriter jsonWriter, Diff parent, PathNode pathNode, object left, object right, List<Diff> children) {
+        public DiffNode(DiffType diffType, JsonWriter jsonWriter, DiffNode parent, PathNode pathNode, object left, object right, List<DiffNode> children) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;
@@ -150,11 +149,11 @@ namespace Friflo.Json.Mapper.Map
         }
 
         public  readonly    DiffType        diffType;
-        public  readonly    Diff            parent; 
+        public  readonly    DiffNode        parent; 
         public  readonly    PathNode        pathNode;
         public  readonly    object          left;
         public  readonly    object          right;
-        public  readonly    List<Diff>      children;
+        public  readonly    List<DiffNode>  children;
         private readonly    JsonWriter      jsonWriter;
 
         public override string ToString() {
@@ -267,7 +266,7 @@ namespace Friflo.Json.Mapper.Map
     {
         public readonly     object      left;
         public readonly     object      right;
-        public              Diff        diff;
+        public              DiffNode    diff;
 
         public Parent(object left, object right) {
             this.left = left;

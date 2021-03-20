@@ -28,7 +28,7 @@ namespace Friflo.Json.Mapper.Map
             mapper.Dispose();
         }
 
-        public List<Patch> CreatePatches(Diff diff) {
+        public List<Patch> CreatePatches(DiffNode diff) {
             patches = new List<Patch>();
             TraceDiff(diff);
             return patches;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Mapper.Map
             }
         }
 
-        private void TraceDiff(Diff diff) {
+        private void TraceDiff(DiffNode diff) {
             if (diff.diffType == DiffType.Modified) {
                 sb.Clear();
                 diff.AddPath(sb);

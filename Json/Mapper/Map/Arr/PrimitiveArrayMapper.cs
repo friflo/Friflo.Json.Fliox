@@ -70,7 +70,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             base(config, type, typeof(T), 1, typeof(string), null) {
         }
         
-        public override Diff Diff(Differ differ, T[] left, T[] right) {
+        public override DiffNode Diff(Differ differ, T[] left, T[] right) {
             if (left.Length != right.Length)
                 return differ.AddDiff(left, right);
             

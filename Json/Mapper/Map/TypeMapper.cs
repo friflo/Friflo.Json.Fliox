@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Map
 
         public abstract void            InitTypeMapper(TypeStore typeStore);
 
-        public abstract Diff            DiffObject(Differ differ, object left, object right);
+        public abstract DiffNode        DiffObject(Differ differ, object left, object right);
         public virtual  void            PatchObject(Patcher patcher, object value) { }
 
         public abstract void            TraceObject(Tracer tracer, object slot);
@@ -88,18 +88,18 @@ namespace Friflo.Json.Mapper.Map
             base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
         }
 
-        public virtual  void    Trace       (Tracer     tracer, TVal slot) { }
-        public abstract void    Write       (ref Writer writer, TVal slot);
-        public abstract TVal    Read        (ref Reader reader, TVal slot, out bool success);
+        public virtual  void        Trace       (Tracer     tracer, TVal slot) { }
+        public abstract void        Write       (ref Writer writer, TVal slot);
+        public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
 
-        public virtual  Diff    Diff        (Differ differ, TVal left, TVal right) {
+        public virtual  DiffNode    Diff        (Differ differ, TVal left, TVal right) {
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
             if (areEqual)
                 return null;
             return differ.AddDiff(left, right);
         }
         
-        public override Diff    DiffObject  (Differ differ, object left, object right) {
+        public override DiffNode    DiffObject  (Differ differ, object left, object right) {
             return Diff(differ, (TVal)left, (TVal)right);
         }
 
