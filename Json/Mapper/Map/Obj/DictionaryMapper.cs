@@ -98,20 +98,13 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         string key = reader.parser.key.ToString();
                         TElm elemVar = default;
                         elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)
                             return default;
                         map[key] = elemVar;
-                        break;
-                    case JsonEvent.ValueNull:
-                        if (!elementType.isNullable) {
-                            reader.ErrorIncompatible<Dictionary<string, TElm>>("Dictionary value", elementType, out success);
-                            return default;
-                        }
-                        key = reader.parser.key.ToString();
-                        map[key] = default;
                         break;
                     case JsonEvent.ObjectEnd:
                         success = true;

@@ -142,16 +142,12 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         T elemVar = default;
                         elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)
                             return default;
                         PrimitiveList.AddListItem(list, elemVar, index++, startLen);
-                        break;
-                    case JsonEvent.ValueNull:
-                        if (!reader.IsElementNullable(this, elementType, out success))
-                            return default;
-                        PrimitiveList.AddListItemNull(list, index++, startLen);
                         break;
                     case JsonEvent.ArrayEnd:
                         if (startLen - index > 0)

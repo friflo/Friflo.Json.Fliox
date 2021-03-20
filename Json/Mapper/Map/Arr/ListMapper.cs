@@ -107,6 +107,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         TElm elemVar;
                         if (index < startLen) {
                             elemVar = list[index];
@@ -121,15 +122,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                                 return default;
                             list.Add(elemVar);
                         }
-                        index++;
-                        break;
-                    case JsonEvent.ValueNull:
-                        if (!reader.IsElementNullable(this, elementType, out success))
-                            return default;
-                        if (index < startLen)
-                            list[index] = default;
-                        else
-                            list.Add(default);
                         index++;
                         break;
                     case JsonEvent.ArrayEnd:

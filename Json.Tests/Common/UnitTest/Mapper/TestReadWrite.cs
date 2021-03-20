@@ -271,9 +271,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(null,                Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     
                     enc.Read<TestStruct[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to array element. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to array element. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrStr);
                     StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());
 
@@ -382,7 +382,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     }
                     
                     enc.Read<List<int>>(arrNull);
-                    StringAssert.Contains("Cannot assign null to List element. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
                     
                     enc.Read<List<int>>(arrStr);
                     StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());

@@ -119,6 +119,7 @@ namespace Friflo.Json.Mapper.Map.Arr
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         T elemVar = default;
                         elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)
@@ -126,13 +127,6 @@ namespace Friflo.Json.Mapper.Map.Arr
                         if (index >= len)
                             array = CopyArray(array, len = Reader.Inc(len));
                         array[index++] = elemVar;
-                        break;
-                    case JsonEvent.ValueNull:
-                        if (!reader.IsElementNullable(this, elementType, out success))
-                            return default;
-                        if (index >= len)
-                            array = CopyArray(array, len = Reader.Inc(len));
-                        array[index++] = default;
                         break;
                     case JsonEvent.ArrayEnd:
                         if (index != len)
