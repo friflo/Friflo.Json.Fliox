@@ -248,7 +248,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                         AreEqual(root, result);
                     }
                     enc.Read<TestMapperClass>(mapNull);
-                    StringAssert.Contains("Cannot assign null to class field: key. Expect: System.Int32, got: null path: 'key'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: 'key'", enc.Error.msg.ToString());
                     
                     enc.Read<TestMapperClass>(mapStr);
                     StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'value' path: 'key'", enc.Error.msg.ToString());

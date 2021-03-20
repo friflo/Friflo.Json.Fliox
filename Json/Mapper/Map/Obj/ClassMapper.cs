@@ -270,6 +270,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         PropField field;
                         if ((field = reader.GetField32(fields)) == null)
                             break;
@@ -285,14 +286,6 @@ namespace Friflo.Json.Mapper.Map.Obj
                         
                         if (curFieldVal != fieldVal)
                             field.SetField(objRef, fieldVal);
-                        break;
-                    case JsonEvent.ValueNull:
-                        if ((field = reader.GetField32(fields)) == null)
-                            break;
-                        if (!field.fieldType.isNullable)
-                            return reader.ErrorIncompatible<T>(this, field, out success);
-                        
-                        field.SetField(objRef, null);
                         break;
 
                     case JsonEvent.ObjectEnd:

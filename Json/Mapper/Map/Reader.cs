@@ -77,14 +77,11 @@ namespace Friflo.Json.Mapper.Map
         public TVal HandleEvent<TVal>(TypeMapper<TVal> mapper, out bool success) {
             switch (parser.Event) {
                 case JsonEvent.ValueNull:
-                    const string msg = "requirement: null value must be handled by owner. Add missing JsonEvent.ValueNull case to its Mapper";
-                    throw new InvalidOperationException(msg);
-                /*
-                if (!stubType.isNullable)
-                    return JsonReader.ErrorIncompatible(reader, "primitive", stubType, ref parser);
-                value.SetNull(stubType.varType); // not necessary. null value us handled by owner.
-                return true;
-                */
+                    if (!mapper.isNullable)
+                        return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                    success = true;
+                    return default;
+                
                 case JsonEvent.Error:
                     const string msg2 = "requirement: error must be handled by owner. Add missing JsonEvent.Error case to its Mapper";
                     throw new InvalidOperationException(msg2);

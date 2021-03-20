@@ -120,12 +120,18 @@ namespace Friflo.Json.Mapper.MapIL.Val
 
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
             bool success;
+            var ev = reader.parser.Event;
             if (reader.parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = reader.parser.value;
                 if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
                     return reader.ErrorIncompatible<bool>( "enum value. Value unknown", this, out success);
                 mirror.StoreLongNull(primPos, enumValue.integral);
                 return true;
+            }
+            if (ev == JsonEvent.ValueNull) {
+                if (!isNullable)
+                    return reader.ErrorIncompatible<bool>(DataTypeName(), this, out success);
+                mirror.StorePrimitiveNull(primPos);
             }
             reader.HandleEvent(this, out success);
             return success;

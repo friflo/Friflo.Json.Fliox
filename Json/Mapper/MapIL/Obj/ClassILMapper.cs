@@ -121,6 +121,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                     case JsonEvent.ValueBool:
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
+                    case JsonEvent.ValueNull:
                         PropField field;
                         if ((field = reader.GetField32(propFields)) == null)
                             break;
@@ -137,17 +138,6 @@ namespace Friflo.Json.Mapper.MapIL.Obj
                             if (!fieldType.isNullable && fieldVal == null)
                                 return reader.ErrorIncompatible<bool>(classType, field, out success);
                         }
-                        break;
-                    case JsonEvent.ValueNull:
-                        if ((field = reader.GetField32(propFields)) == null)
-                            break;
-                        if (!field.fieldType.isNullable)
-                            return reader.ErrorIncompatible<bool>(classType, field, out success);
-                        
-                        if (field.fieldType.isValueType)
-                            mirror.StorePrimitiveNull(primPos + field.primIndex);
-                        else
-                            mirror.StoreObj(objPos + field.objIndex, null);
                         break;
                     case JsonEvent.ObjectEnd:
                         return true;

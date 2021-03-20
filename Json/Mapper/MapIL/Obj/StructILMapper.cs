@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Reflection;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 
@@ -54,6 +55,12 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
         
         public override bool ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos) {
+            if (reader.parser.Event == JsonEvent.ValueNull) {
+                if (!isNullable)
+                    return false;
+                mirror.StorePrimitiveNull(primPos);
+                return true;
+            }
             reader.parser.NextEvent();
             if (isNullable)
                 mirror.StoreStructNonNull(primPos);

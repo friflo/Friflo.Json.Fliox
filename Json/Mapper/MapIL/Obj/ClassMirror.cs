@@ -116,7 +116,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         
         // ----------------------------------
         public void StoreDblNull(int idx, double? value) {
-            primitives.array[idx] = value.HasValue ? BitConverter.DoubleToInt64Bits((double) value) : default;
+            primitives.array[idx] = value.HasValue ? BitConverter.DoubleToInt64Bits((double) value) : (long?)null;
         }
         public double? LoadDblNull(int idx) {
             var value = primitives.array[idx];
@@ -124,7 +124,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
 
         public void StoreFltNull(int idx, float? value) {
-            primitives.array[idx] = value.HasValue ? BitConverter.SingleToInt32Bits((float)value) : default;
+            primitives.array[idx] = value.HasValue ? BitConverter.SingleToInt32Bits((float)value) : (long?)null;
         }
         public float?    LoadFltNull     (int idx) {
             var value = primitives.array[idx];
@@ -168,7 +168,7 @@ namespace Friflo.Json.Mapper.MapIL.Obj
         }
 
         public void StoreBoolNull(int idx, bool? value) {
-            primitives.array[idx] = value.HasValue ? (bool)value ? 1 : 0 : default;
+            primitives.array[idx] = value.HasValue ? (bool)value ? 1 : 0 : (long?)null;
         }
 
         public bool? LoadBoolNull(int idx) {
