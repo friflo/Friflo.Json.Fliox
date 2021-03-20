@@ -146,17 +146,17 @@ namespace Friflo.Json.Mapper.Map.Obj
             return differ.PopParent();
         }
 
-        public override void PatchObject(Patcher patcher, object value) {
-            var obj = (T)value;
+        public override void PatchObject(Patcher patcher, object obj) {
             TypeMapper classMapper = this;
-            Type objType = value.GetType();
+            Type objType = obj.GetType();
             if (type != objType)
                 classMapper = patcher.typeCache.GetTypeMapper(objType);
             
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                if (patcher.Walk(field, obj)) {
+                if (patcher.Walk(field, obj, out object value)) {
+                    field.SetField(obj, value);
                     return;
                 }
             }

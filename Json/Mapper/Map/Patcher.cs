@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Map
 
         }
 
-        public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
+        public void Patch<T>(TypeMapper<T> mapper, object root, Patch patch) {
             var replace = (PatchReplace) patch;
             json = replace.value.json;
             pathPos = 0;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Mapper.Map
                 if (path[n] == '/') {
                     var pathNode = patch.Path.Substring(last, n - last);
                     pathNodes.Add(pathNode);
-                    last = n;
+                    last = n + 1;
                 }
             }
             var lastNode = patch.Path.Substring(last, len - last);
@@ -46,17 +46,18 @@ namespace Friflo.Json.Mapper.Map
             mapper.PatchObject(this, root);
         }
 
-        public bool Walk(PropField propField, object obj) {
-            if (!propField.name.Equals(pathNodes[pathPos]))
+        public bool Walk(PropField propField, object obj, out object value) {
+            if (!propField.name.Equals(pathNodes[pathPos])) {
+                value = null;
                 return false;
-            
+            }
+
             if (++pathPos >= pathNodes.Count) {
-                object patchValue = jsonReader.ReadObject(json, propField.fieldType.type);
-                propField.SetField(obj, patchValue);
+                value = jsonReader.ReadObject(json, propField.fieldType.type);
                 return true;
             }
-            object elemVar = propField.GetField(obj);
-            propField.fieldType.PatchObject(this, elemVar);
+            value = propField.GetField(obj);
+            propField.fieldType.PatchObject(this, value);
             return true;
         }
     }
