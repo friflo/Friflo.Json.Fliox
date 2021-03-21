@@ -7,6 +7,8 @@ namespace Friflo.Json.Mapper.Map.Val
     public struct JsonValue
     {
         public string       json;
+        
+        public override string ToString() => json;
     }
     
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------

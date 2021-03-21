@@ -24,34 +24,46 @@ namespace Friflo.Json.Mapper.Diff
     {
         public string       path;
         public JsonValue    value;
+
+        public override string ToString() => path;
     }
     
     public class PatchAdd : Patch
     {
         public string       path;
         public JsonValue    value;
+
+        public override string ToString() => path;
     }
     
     public class PatchRemove : Patch
     {
         public string       path;
+
+        public override string ToString() => path;
     }
     
     public class PatchCopy : Patch
     {
         public string       path;
         public string       from;
+
+        public override string ToString() => path;
     }
     
     public class PatchMove : Patch
     {
         public string       path;
         public string       from;
+
+        public override string ToString() => path;
     }
     
     public class PatchTest : Patch
     {
         public string       path;
         public JsonValue    value;
+
+        public override string ToString() => path;
     }
 }

@@ -133,8 +133,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestContainer() {
-            using (var typeStore = new TypeStore()) 
-            using (var differ = new Differ(typeStore)) {
+            using (var typeStore    = new TypeStore())
+            using (var mapper       = new JsonMapper(typeStore))
+            using (var jsonPatcher  = new JsonPatcher(typeStore))
+            using (var differ       = new Differ(typeStore)) {
                 var list1 =  new List<int> { 1,  2,  3 };
                 var list2 =  new List<int> { 1, 12, 13 };
                 var list3 =  new List<int> { 1,  2 };
@@ -148,6 +150,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /2        3 -> 13
 ";
                     AreEqual(expect, childrenDiff);
+                    List<Patch> patches = jsonPatcher.CreatePatches(diff);
+
+                    var jsonPatches = mapper.Write(patches);
+                    var destPatches = mapper.Read<List<Patch>>(jsonPatches);
+                    AssertUtils.Equivalent(patches, destPatches);
+                    
+                    jsonPatcher.ApplyPatches(list1, destPatches);
+                    // AssertUtils.Equivalent(list1, list2);
                 } {
                     var diff = differ.GetDiff(list1, list3);
                     IsNotNull(diff);

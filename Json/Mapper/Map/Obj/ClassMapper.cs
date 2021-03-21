@@ -156,7 +156,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                if (patcher.Walk(field, obj, out object value)) {
+                if (patcher.WalkMember(field, obj, out object value)) {
                     field.SetField(obj, value);
                     return;
                 }

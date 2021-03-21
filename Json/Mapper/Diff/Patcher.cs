@@ -16,6 +16,7 @@ namespace Friflo.Json.Mapper.Diff
         private             string          json;
         private             int             pathPos;
         private readonly    List<string>    pathNodes = new List<string>();
+        private             string          path;
         
         public Patcher(JsonReader jsonReader) {
             this.jsonReader = jsonReader;
@@ -32,10 +33,11 @@ namespace Friflo.Json.Mapper.Diff
             json = replace.value.json;
             pathPos = 0;
             PathToPathNodes(replace.path, pathNodes);
+            path = replace.path;
             mapper.PatchObject(this, root);
         }
 
-        public bool Walk(PropField propField, object obj, out object value) {
+        public bool WalkMember(PropField propField, object obj, out object value) {
             if (!propField.name.Equals(pathNodes[pathPos])) {
                 value = null;
                 return false;
@@ -48,7 +50,25 @@ namespace Friflo.Json.Mapper.Diff
             propField.fieldType.PatchObject(this, value);
             return true;
         }
-        
+
+        public void WalkElement(TypeMapper elementType, object element, out object value) {
+            if (++pathPos >= pathNodes.Count) {
+                value = jsonReader.ReadObject(json, elementType.type);
+                return;
+            }
+            elementType.PatchObject(this, element);
+            value = element;
+        }
+
+        public int GetElementIndex(int count) {
+            var node = pathNodes[pathPos];
+            if (!int.TryParse(node, out int index))
+                throw new InvalidOperationException($"Expect array index of type. Found: {node} in path: {path}");
+            if (index >= count)
+                throw new InvalidOperationException($"Array index of range. Index: {index} in path: {path}");
+            return index;
+        }
+
         private static void PathToPathNodes(string path, List<string> pathNodes) {
             pathNodes.Clear();
             int last = 1;
