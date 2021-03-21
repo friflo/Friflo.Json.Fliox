@@ -10,24 +10,24 @@ namespace Friflo.Json.Mapper.Map.Val
     }
     
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
-    public class PatchValueMatcher : ITypeMatcher {
-        public static readonly PatchValueMatcher Instance = new PatchValueMatcher();
+    public class JsonValueMatcher : ITypeMatcher {
+        public static readonly JsonValueMatcher Instance = new JsonValueMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(JsonValue))
                 return null;
-            return new PatchValueMapper (config, type);
+            return new JsonValueMapper (config, type);
         }
     }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PatchValueMapper : TypeMapper<JsonValue>
+    public class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override string DataTypeName() { return "JsonValue"; }
 
-        public PatchValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
+        public JsonValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
         public override void Write(ref Writer writer, JsonValue value) {
             writer.bytes.AppendString(value.json);
