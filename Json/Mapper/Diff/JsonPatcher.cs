@@ -15,14 +15,17 @@ namespace Friflo.Json.Mapper.Diff
         private readonly    JsonMapper      mapper;
         private readonly    TypeCache       typeCache;
         private readonly    Patcher         patcher;
+        private readonly    Differ          differ;
 
         public JsonPatcher(TypeStore typeStore) {
             mapper  = new JsonMapper(typeStore);
             typeCache = mapper.reader.TypeCache;
             patcher = new Patcher(mapper.reader);
+            differ  = new Differ(mapper.writer);
         }
 
         public void Dispose() {
+            differ.Dispose();
             patcher.Dispose();
             mapper.Dispose();
         }
@@ -30,6 +33,12 @@ namespace Friflo.Json.Mapper.Diff
         public List<Patch> CreatePatches(DiffNode diff) {
             var patches = new List<Patch>();
             TraceDiff(diff, patches);
+            return patches;
+        }
+        
+        public List<Patch> GetPatches<T>(T left, T right) {
+            var diff = differ.GetDiff(left, right);
+            var patches = CreatePatches(diff);
             return patches;
         }
 

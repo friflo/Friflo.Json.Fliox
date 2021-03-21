@@ -150,20 +150,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /2        3 -> 13
 ";
                     AreEqual(expect, childrenDiff);
-                    List<Patch> patches = jsonPatcher.CreatePatches(diff);
-
-                    var jsonPatches = mapper.Write(patches);
-                    var destPatches = mapper.Read<List<Patch>>(jsonPatches);
-                    AssertUtils.Equivalent(patches, destPatches);
-                    
-                    jsonPatcher.ApplyPatches(list1, destPatches);
-                    // AssertUtils.Equivalent(list1, list2);
+                    AssertPatch(jsonPatcher, mapper, list1, list2);
                 } {
                     var diff = differ.GetDiff(list1, list3);
                     IsNotNull(diff);
                     AreEqual("Count: 3 -> 2", diff.ToString());
                 }
             }
+        }
+
+        private static void AssertPatch<T>(JsonPatcher jsonPatcher, JsonMapper mapper, T left, T right) {
+            List<Patch> patches = jsonPatcher.GetPatches(left, right);
+
+            var jsonPatches = mapper.Write(patches);
+            var destPatches = mapper.Read<List<Patch>>(jsonPatches);
+            AssertUtils.Equivalent(patches, destPatches);
+                    
+            jsonPatcher.ApplyPatches(left, destPatches);
+            AssertUtils.Equivalent(left, right);
         }
     }
 }
