@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Diff;
@@ -119,9 +120,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
             using (var differ       = new Differ(typeStore)) {
-                var list1 =  new List<int> { 1,  2,  3 };
-                var list3 =  new List<int> { 1,  2 };
-                var diff = differ.GetDiff(list1, list3);
+                var left  = new List<int> { 1,  2,  3 };
+                var right = new List<int> { 1,  2 };
+                var diff = differ.GetDiff(left, right);
                 IsNotNull(diff);
                 AreEqual("Count: 3 -> 2", diff.ToString());
             }
@@ -131,9 +132,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestPatchContainer() {
             using (var typeStore    = new TypeStore())
             using (var jsonPatcher  = new JsonPatcher(typeStore)) {
-                var list1 =  new List<int> { 1,  2,  3 };
-                var list2 =  new List<int> { 1, 12, 13 };
-                AssertPatchContainer(jsonPatcher, list1, list2);
+                // --- List<>
+                {
+                    var left  = new List<int> {1,  2,  3};
+                    var right = new List<int> {1, 12, 13};
+                    AssertPatchContainer(jsonPatcher, left, right);
+                }
+                // --- IList<>
+                {
+                    // var left  = new Collection<int>(new[] {1,  2,  3});
+                    // -> System.NotSupportedException : Collection is read-only.
+                }
+                // --- ICollection<>
+                {
+                    var left  = new LinkedList<int>(new[] {1,  2,  3});
+                    var right = new LinkedList<int>(new[] {1, 12, 13});
+                    AssertPatchContainer(jsonPatcher, left, right);
+                } {
+                    var left  = new HashSet<int>(new[] {1,  2,  3});
+                    var right = new HashSet<int>(new[] {1, 12, 13});
+                    AssertPatchContainer(jsonPatcher, left, right);
+                } {
+                    var left  = new SortedSet<int>(new[] {1,  2,  3});
+                    var right = new SortedSet<int>(new[] {1, 12, 13});
+                    // AssertPatchContainer(jsonPatcher, left, right); todo
+                }
+ 
             }
         }
 

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Diff;
@@ -61,6 +62,21 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             }
             return differ.PopParent();
+        }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            var list = (TCol)obj;
+            var copy = list.ToArray();
+            list.Clear();
+            int index = patcher.GetElementIndex(copy.Length);
+            var element = copy[index];
+            patcher.WalkElement(elementType, element, out object value);
+            for (int n = 0; n < copy.Length; n++) {
+                if (n == index)
+                    list.Add((TElm)value);
+                else
+                    list.Add(copy[n]);
+            }
         }
 
         public override void Write(ref Writer writer, TCol slot) {
