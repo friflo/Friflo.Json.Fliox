@@ -71,12 +71,9 @@ namespace Friflo.Json.Mapper.Map.Arr
             int index = patcher.GetElementIndex(copy.Length);
             var element = copy[index];
             patcher.WalkElement(elementType, element, out object value);
-            for (int n = 0; n < copy.Length; n++) {
-                if (n == index)
-                    list.Add((TElm)value);
-                else
-                    list.Add(copy[n]);
-            }
+            copy[index] = (TElm)value;
+            for (int n = 0; n < copy.Length; n++)
+                list.Add(copy[n]);
         }
 
         public override void Write(ref Writer writer, TCol slot) {

@@ -58,6 +58,19 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
             return differ.PopParent();
         }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            var list = (TCol)obj;
+            var copy = list.ToArray();
+            list.Clear();
+            var count = copy.Length;
+            int index = patcher.GetElementIndex(count);
+            var element = copy[index];
+            patcher.WalkElement(elementType, element, out object value);
+            copy[index] = (TElm)value;
+            for (int n = 0; n < count; n++)
+                list.Enqueue(copy[n]);
+        }
 
         public override void Write(ref Writer writer, TCol slot) {
             int startLevel = writer.IncLevel();

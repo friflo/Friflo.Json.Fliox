@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Diff;
@@ -162,7 +163,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var right = new SortedSet<int>(new[] {1, 12, 13});
                     // AssertPatchContainer(jsonPatcher, left, right); todo
                 }
- 
+                // --- Stack<>
+                {
+                    var left  = new Stack<int>(new[] { 3,  2, 1});
+                    var right = new Stack<int>(new[] {13, 12, 1});
+                    AssertPatchContainer(jsonPatcher, left, right);
+                }
+                // --- Stack<>
+                {
+                    var left  = new Queue<int>(new[] {1,  2,  3});
+                    var right = new Queue<int>(new[] {1, 12, 13});
+                    AssertPatchContainer(jsonPatcher, left, right);
+                }
             }
         }
 
@@ -172,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual(2, diff.children.Count);
             var childrenDiff = diff.GetChildrenDiff(10);
             var expect =
-                @"/1        2 -> 12
+@"/1        2 -> 12
 /2        3 -> 13
 ";
             AreEqual(expect, childrenDiff);

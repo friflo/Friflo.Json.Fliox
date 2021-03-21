@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Diff;
@@ -57,6 +58,19 @@ namespace Friflo.Json.Mapper.Map.Arr
                 }
             }
             return differ.PopParent();
+        }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            var list = (TCol)obj;
+            var copy = list.ToArray();
+            list.Clear();
+            var count = copy.Length;
+            int index = patcher.GetElementIndex(count);
+            var element = copy[index];
+            patcher.WalkElement(elementType, element, out object value);
+            copy[index] = (TElm)value;
+            for (int n = count - 1; n >= 0; n--)
+                list.Push(copy[n]);
         }
 
         public override void Write(ref Writer writer, TCol slot) {
