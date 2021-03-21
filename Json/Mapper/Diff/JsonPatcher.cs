@@ -46,12 +46,11 @@ namespace Friflo.Json.Mapper.Diff
                 sb.Clear();
                 diff.AddPath(sb);
                 var json = mapper.WriteObject(diff.right);
-                var value = new JsonValue {
-                    json        = json
-                };
                 var replace = new PatchReplace {
-                    path  = sb.ToString(),
-                    value = value
+                    path = sb.ToString(),
+                    value = {
+                        json = json
+                    }
                 };
                 patches.Add(replace);
             }
