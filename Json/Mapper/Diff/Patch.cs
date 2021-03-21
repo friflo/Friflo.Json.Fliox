@@ -14,61 +14,39 @@ namespace Friflo.Json.Mapper.Diff
     [Fri.Polymorph(typeof(PatchTest),       Discriminant = "test")]
     public abstract class Patch
     {
-        [Fri.Ignore]
-        public abstract string Path { get;  }
-
-        public override string ToString() => Path;
     }
 
     public class PatchReplace : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-        
         public string       path;
         public JsonValue    value;
     }
     
     public class PatchAdd : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-        
         public string       path;
         public JsonValue    value;
     }
     
     public class PatchRemove : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-        
         public string       path;
     }
     
     public class PatchCopy : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-
         public string       path;
         public string       from;
     }
     
     public class PatchMove : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-
         public string       path;
         public string       from;
     }
     
     public class PatchTest : Patch
     {
-        [Fri.Ignore]
-        public override string Path => path;
-
         public string       path;
         public JsonValue    value;
     }

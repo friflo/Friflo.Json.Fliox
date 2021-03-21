@@ -31,17 +31,17 @@ namespace Friflo.Json.Mapper.Diff
             json = replace.value.json;
             pathPos = 0;
             pathNodes.Clear();
-            string path = patch.Path;
+            string path = replace.path;
             int last = 1;
             int len = path.Length;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '/') {
-                    var pathNode = patch.Path.Substring(last, n - last);
+                    var pathNode = path.Substring(last, n - last);
                     pathNodes.Add(pathNode);
                     last = n + 1;
                 }
             }
-            var lastNode = patch.Path.Substring(last, len - last);
+            var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
             
             mapper.PatchObject(this, root);

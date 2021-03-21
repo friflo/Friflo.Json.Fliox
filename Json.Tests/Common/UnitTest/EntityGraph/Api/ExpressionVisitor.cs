@@ -305,10 +305,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
         {
             UnaryExpression unary = (UnaryExpression)expression.Arguments[1];
             LambdaExpression lambdaExpression = (LambdaExpression)unary.Operand;
-
-            throw new NotImplementedException("missing Evaluator");
-            
-            // lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
+                        
+            // compiler error: Cannot resolve symbol 'Evaluator'
+            /*
+            lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
             MemberExpression body = lambdaExpression.Body as MemberExpression;
             if (body != null)
@@ -324,7 +324,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
 
                 return true;
             }
-
+            */
             return false;
         }
 
