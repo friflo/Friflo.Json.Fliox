@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Diff;
@@ -11,7 +10,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public class TestDiffer : LeakTestsFixture
+    public class TestPatcher : LeakTestsFixture
     {
         class DiffChild
         {
