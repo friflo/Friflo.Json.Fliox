@@ -63,9 +63,9 @@ namespace Friflo.Json.Mapper.Diff
         public int GetElementIndex(int count) {
             var node = pathNodes[pathPos];
             if (!int.TryParse(node, out int index))
-                throw new InvalidOperationException($"Expect array index of type. Found: {node} in path: {path}");
+                throw new InvalidOperationException($"Incompatible element index type. index: {node} path: {path}");
             if (index >= count)
-                throw new InvalidOperationException($"Array index of range. Index: {index} in path: {path}");
+                throw new InvalidOperationException($"Element index out of range. Count: {count} index: {index} path: {path}");
             return index;
         }
 
