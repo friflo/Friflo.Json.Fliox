@@ -137,21 +137,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new[] {1,  2,  3};
                     var right = new[] {1, 12, 13};
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- List<>
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- IList<>
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
-                    PatchContainer<IList<int>>(jsonPatcher, left, right);
+                    PatchElements<IList<int>>(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     // var left  = new Collection<int>(new[] {1,  2,  3});
@@ -161,37 +161,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new LinkedList<int>(new[] {1,  2,  3});
                     var right = new LinkedList<int>(new[] {1, 12, 13});
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new HashSet<int>(new[] {1,  2,  3});
                     var right = new HashSet<int>(new[] {1, 12, 13});
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
                     var right = new SortedSet<int>(new[] {1, 12, 13});
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchCollection(jsonPatcher, left, right);
                     // AssertUtils.Equivalent(left, right);  // todo
                 }
                 // --- Stack<>
                 {
                     var left  = new Stack<int>(new[] { 3,  2, 1});
                     var right = new Stack<int>(new[] {13, 12, 1});
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Stack<>
                 {
                     var left  = new Queue<int>(new[] {1,  2,  3});
                     var right = new Queue<int>(new[] {1, 12, 13});
-                    PatchContainer(jsonPatcher, left, right);
+                    PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
             }
         }
 
-        private static void PatchContainer<T>(JsonPatcher jsonPatcher, T left, T right) {
+        private static void PatchElements<T>(JsonPatcher jsonPatcher, T left, T right) {
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             AreEqual(2, diff.children.Count);
@@ -201,6 +201,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /2        3 -> 13
 ";
             AreEqual(expect, childrenDiff);
+            Patch(jsonPatcher, left, right);
+        }
+        
+        private static void PatchCollection<T>(JsonPatcher jsonPatcher, T left, T right) {
+            var diff = jsonPatcher.differ.GetDiff(left, right);
+            IsNotNull(diff);
+            AreEqual(0, diff.children.Count);
+            AreEqual("Count: 3 -> 3", diff.ToString());
             Patch(jsonPatcher, left, right);
         }
 

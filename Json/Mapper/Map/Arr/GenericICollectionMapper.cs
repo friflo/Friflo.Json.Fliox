@@ -41,11 +41,15 @@ namespace Friflo.Json.Mapper.Map.Arr
 #endif
     public class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : ICollection<TElm>
     {
-        public override string  DataTypeName() { return "ICollection"; }
-        public override int     Count(object array) => ((TCol) array).Count;
+        private readonly    bool    diffElements;
         
+        public override     string  DataTypeName() { return "ICollection"; }
+        public override     int     Count(object array) => ((TCol) array).Count;
+
         public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
-            base(config, type, elementType, 1, typeof(string), constructor) {
+            base(config, type, elementType, 1, typeof(string), constructor)
+        {
+            diffElements = type.GetGenericTypeDefinition() != typeof(SortedSet<>);
         }
         
         public override DiffNode Diff(Differ differ, TCol left, TCol right) {
@@ -61,7 +65,10 @@ namespace Friflo.Json.Mapper.Map.Arr
                     differ.CompareElement(elementType, n++, leftItem, rightItem);
                 }
             }
-            return differ.PopParent();
+            var parent = differ.PopParent();
+            if (parent != null && !diffElements)
+                parent.children.Clear();
+            return parent;
         }
         
         public override void PatchObject(Patcher patcher, object obj) {
