@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map.Utils;
@@ -40,18 +41,14 @@ namespace Friflo.Json.Mapper.Map.Arr
         }
         
         public override DiffNode Diff(Differ differ, TCol left, TCol right) {
+            if (left.Count() != right.Count())
+                return differ.AddDiff(left, right);
+            
             differ.PushParent(left, right);
             int n = 0;
-            using (var leftIter  = left.GetEnumerator())
             using (var rightIter = right.GetEnumerator()) {
-                while (true) {
-                    var moveLeft = leftIter.MoveNext();
-                    var moveRight = rightIter.MoveNext();
-                    if (moveLeft != moveRight)
-                        return differ.AddDiff(left, right);
-                    if (!moveLeft)
-                        break;
-                    var leftItem  = leftIter.Current;
+                foreach (var leftItem in left) {
+                    rightIter.MoveNext();
                     var rightItem = rightIter.Current;
                     differ.CompareElement(elementType, n++, leftItem, rightItem);
                 }
