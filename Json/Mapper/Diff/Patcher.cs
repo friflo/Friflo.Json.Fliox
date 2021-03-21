@@ -27,7 +27,10 @@ namespace Friflo.Json.Mapper.Diff
         }
 
         public void Patch<T>(TypeMapper<T> mapper, object root, Patch patch) {
-            var replace = (PatchReplace) patch;
+            var replace = patch as PatchReplace;
+            if (replace == null)
+                throw new NotImplementedException("Patcher support only PatchReplace for now");
+            
             json = replace.value.json;
             pathPos = 0;
             pathNodes.Clear();
