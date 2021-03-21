@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Numerics;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Diff;
@@ -132,6 +131,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestPatchContainer() {
             using (var typeStore    = new TypeStore())
             using (var jsonPatcher  = new JsonPatcher(typeStore)) {
+                // --- []
+                {
+                    var left  = new[] {1,  2,  3};
+                    var right = new[] {1, 12, 13};
+                    AssertPatchContainer(jsonPatcher, left, right);
+                }
                 // --- List<>
                 {
                     var left  = new List<int> {1,  2,  3};

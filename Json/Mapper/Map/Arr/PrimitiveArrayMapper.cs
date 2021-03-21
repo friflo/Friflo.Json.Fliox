@@ -83,6 +83,14 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
             return differ.PopParent();
         }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            var list = (T[])obj;
+            int index = patcher.GetElementIndex(list.Length);
+            var element = list[index];
+            patcher.WalkElement(elementType, element, out object value);
+            list[index] = (T)value;
+        }
 
         public override void Write(ref Writer writer, T[] slot) {
             int startLevel = writer.IncLevel();

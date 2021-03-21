@@ -58,6 +58,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
             return differ.PopParent();
         }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            throw new NotSupportedException($"Cant patch IEnumerable<>. Type: {type}");
+        }
 
         public override void Write(ref Writer writer, TCol slot) {
             int startLevel = writer.IncLevel();
