@@ -5,6 +5,10 @@ using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.Mapper.Diff
 {
+    /// <summary>
+    /// Implement models of RFC 6902 - "JavaScript Object Notation (JSON) Patch"
+    /// See: https://tools.ietf.org/html/rfc6902
+    /// </summary>
     [Fri.Discriminator("op")]
     [Fri.Polymorph(typeof(PatchReplace),    Discriminant = "replace")]
     [Fri.Polymorph(typeof(PatchAdd),        Discriminant = "add")]
