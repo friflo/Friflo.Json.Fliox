@@ -116,30 +116,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         [Test]
-        public void TestContainer() {
+        public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
-            using (var jsonPatcher  = new JsonPatcher(typeStore))
             using (var differ       = new Differ(typeStore)) {
                 var list1 =  new List<int> { 1,  2,  3 };
-                var list2 =  new List<int> { 1, 12, 13 };
                 var list3 =  new List<int> { 1,  2 };
-                {
-                    var diff = differ.GetDiff(list1, list2);
-                    IsNotNull(diff);
-                    AreEqual(2, diff.children.Count);
-                    var childrenDiff = diff.GetChildrenDiff(10);
-                    var expect =
-@"/1        2 -> 12
+                var diff = differ.GetDiff(list1, list3);
+                IsNotNull(diff);
+                AreEqual("Count: 3 -> 2", diff.ToString());
+            }
+        }
+        
+        [Test]
+        public void TestPatchContainer() {
+            using (var typeStore    = new TypeStore())
+            using (var jsonPatcher  = new JsonPatcher(typeStore)) {
+                var list1 =  new List<int> { 1,  2,  3 };
+                var list2 =  new List<int> { 1, 12, 13 };
+                AssertPatchContainer(jsonPatcher, list1, list2);
+            }
+        }
+
+        private static void AssertPatchContainer<T>(JsonPatcher jsonPatcher, T left, T right) {
+            var diff = jsonPatcher.differ.GetDiff(left, right);
+            IsNotNull(diff);
+            AreEqual(2, diff.children.Count);
+            var childrenDiff = diff.GetChildrenDiff(10);
+            var expect =
+                @"/1        2 -> 12
 /2        3 -> 13
 ";
-                    AreEqual(expect, childrenDiff);
-                    AssertPatch(jsonPatcher, list1, list2);
-                } {
-                    var diff = differ.GetDiff(list1, list3);
-                    IsNotNull(diff);
-                    AreEqual("Count: 3 -> 2", diff.ToString());
-                }
-            }
+            AreEqual(expect, childrenDiff);
+            AssertPatch(jsonPatcher, left, right);
         }
 
         private static void AssertPatch<T>(JsonPatcher jsonPatcher, T left, T right) {

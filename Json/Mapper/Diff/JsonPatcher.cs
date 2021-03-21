@@ -12,10 +12,11 @@ namespace Friflo.Json.Mapper.Diff
     public class JsonPatcher : IDisposable
     {
         public  readonly    JsonMapper      mapper;
+        public  readonly    Differ          differ;
+        
         private readonly    StringBuilder   sb = new StringBuilder();
         private readonly    TypeCache       typeCache;
         private readonly    Patcher         patcher;
-        private readonly    Differ          differ;
 
         public JsonPatcher(TypeStore typeStore) 
             : this (new JsonMapper(typeStore))
