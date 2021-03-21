@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Diff
         }
 
         public void ApplyPatches<T>(T root, IEnumerable<Patch> patches) {
-            var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(root.GetType());
+            var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             foreach (var patch in patches) { 
                 patcher.Patch(rootMapper, root, patch);
             }

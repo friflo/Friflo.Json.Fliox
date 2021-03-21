@@ -145,6 +145,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 }
                 // --- IList<>
                 {
+                    var left  = new List<int> {1,  2,  3};
+                    var right = new List<int> {1, 12, 13};
+                    AssertPatchContainer<IList<int>>(jsonPatcher, left, right);
+                } {
                     // var left  = new Collection<int>(new[] {1,  2,  3});
                     // -> System.NotSupportedException : Collection is read-only.
                 }
@@ -160,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
                     var right = new SortedSet<int>(new[] {1, 12, 13});
-                    // AssertPatchContainer(jsonPatcher, left, right); todo
+                    // AssertPatchContainer(jsonPatcher, left, right); // todo
                 }
                 // --- Stack<>
                 {
