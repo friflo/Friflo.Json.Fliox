@@ -22,9 +22,7 @@ namespace Friflo.Json.Mapper.Diff
             this.typeCache = jsonReader.TypeCache;
         }
 
-        public void Dispose() {
-
-        }
+        public void Dispose() { }
 
         public void Patch<T>(TypeMapper<T> mapper, object root, Patch patch) {
             var replace = patch as PatchReplace;
@@ -33,8 +31,26 @@ namespace Friflo.Json.Mapper.Diff
             
             json = replace.value.json;
             pathPos = 0;
+            PathToPathNodes(replace.path, pathNodes);
+            mapper.PatchObject(this, root);
+        }
+
+        public bool Walk(PropField propField, object obj, out object value) {
+            if (!propField.name.Equals(pathNodes[pathPos])) {
+                value = null;
+                return false;
+            }
+            if (++pathPos >= pathNodes.Count) {
+                value = jsonReader.ReadObject(json, propField.fieldType.type);
+                return true;
+            }
+            value = propField.GetField(obj);
+            propField.fieldType.PatchObject(this, value);
+            return true;
+        }
+        
+        private static void PathToPathNodes(string path, List<string> pathNodes) {
             pathNodes.Clear();
-            string path = replace.path;
             int last = 1;
             int len = path.Length;
             for (int n = 1; n < len; n++) {
@@ -46,23 +62,6 @@ namespace Friflo.Json.Mapper.Diff
             }
             var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
-            
-            mapper.PatchObject(this, root);
-        }
-
-        public bool Walk(PropField propField, object obj, out object value) {
-            if (!propField.name.Equals(pathNodes[pathPos])) {
-                value = null;
-                return false;
-            }
-
-            if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json, propField.fieldType.type);
-                return true;
-            }
-            value = propField.GetField(obj);
-            propField.fieldType.PatchObject(this, value);
-            return true;
         }
     }
 }
