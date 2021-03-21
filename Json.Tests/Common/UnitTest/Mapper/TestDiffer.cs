@@ -27,11 +27,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void TestClass() {
             using (var typeStore    = new TypeStore()) 
-            using (var mapper       = new JsonMapper(typeStore))
             using (var jsonPatcher  = new JsonPatcher(typeStore))
             using (var differ       = new Differ(typeStore))
             {
-                mapper.Pretty = true;
+                jsonPatcher.mapper.Pretty = true;
                 {
                     var left  = new DiffBase {child = new DiffChild {
                         childVal = 1,
@@ -54,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /child/dateTime     2021-03-18T16:30:00.000Z -> 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
-                    AssertPatch(jsonPatcher, mapper, left, right);
+                    AssertPatch(jsonPatcher, left, right);
                 }
 
                 IsNull(differ.GetDiff(1, 1));
@@ -111,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /int8               13 -> 99
 ";
                     AreEqual(expect, childrenDiff);
-                    AssertPatch(jsonPatcher, mapper, sample2, sample);
+                    AssertPatch(jsonPatcher, sample2, sample);
                 }
             }
         }
@@ -119,7 +118,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void TestContainer() {
             using (var typeStore    = new TypeStore())
-            using (var mapper       = new JsonMapper(typeStore))
             using (var jsonPatcher  = new JsonPatcher(typeStore))
             using (var differ       = new Differ(typeStore)) {
                 var list1 =  new List<int> { 1,  2,  3 };
@@ -135,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /2        3 -> 13
 ";
                     AreEqual(expect, childrenDiff);
-                    AssertPatch(jsonPatcher, mapper, list1, list2);
+                    AssertPatch(jsonPatcher, list1, list2);
                 } {
                     var diff = differ.GetDiff(list1, list3);
                     IsNotNull(diff);
@@ -144,11 +142,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        private static void AssertPatch<T>(JsonPatcher jsonPatcher, JsonMapper mapper, T left, T right) {
+        private static void AssertPatch<T>(JsonPatcher jsonPatcher, T left, T right) {
             List<Patch> patches = jsonPatcher.GetPatches(left, right);
 
-            var jsonPatches = mapper.Write(patches);
-            var destPatches = mapper.Read<List<Patch>>(jsonPatches);
+            var jsonPatches = jsonPatcher.mapper.Write(patches);
+            var destPatches = jsonPatcher.mapper.Read<List<Patch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
                     
             jsonPatcher.ApplyPatches(left, destPatches);
