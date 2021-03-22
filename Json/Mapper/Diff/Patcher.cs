@@ -50,7 +50,7 @@ namespace Friflo.Json.Mapper.Diff
                 path = remove.path;
                 mapper.PatchObject(this, root);
             } else {
-                throw new NotImplementedException("Patcher support only PatchReplace for now");
+                throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
         }
 
