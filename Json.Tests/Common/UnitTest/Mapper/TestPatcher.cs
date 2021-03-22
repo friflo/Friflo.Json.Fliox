@@ -172,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
                     var right = new SortedSet<int>(new[] {1, 12, 13});
                     PatchCollection(jsonPatcher, left, right);
-                    // AssertUtils.Equivalent(left, right);  // todo
+                    AssertUtils.Equivalent(left, right);
                 }
                 // --- Stack<>
                 {
@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     PatchElements(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
-                // --- Stack<>
+                // --- Queue<>
                 {
                     var left  = new Queue<int>(new[] {1,  2,  3});
                     var right = new Queue<int>(new[] {1, 12, 13});
@@ -207,7 +207,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private static void PatchCollection<T>(JsonPatcher jsonPatcher, T left, T right) {
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
-            AreEqual(0, diff.children.Count);
+            IsNull(diff.children);
             AreEqual("Count: 3 -> 3", diff.ToString());
             Patch(jsonPatcher, left, right);
         }

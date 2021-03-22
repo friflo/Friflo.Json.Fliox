@@ -34,7 +34,11 @@ namespace Friflo.Json.Mapper.Diff
             pathPos = 0;
             PathToPathNodes(replace.path, pathNodes);
             path = replace.path;
-            mapper.PatchObject(this, root);
+            if (pathNodes.Count == 0) {
+                jsonReader.ReadToObject(json, root);
+            } else {
+                mapper.PatchObject(this, root);
+            }
         }
 
         public bool WalkMember(PropField propField, object obj, out object value) {
@@ -73,6 +77,8 @@ namespace Friflo.Json.Mapper.Diff
             pathNodes.Clear();
             int last = 1;
             int len = path.Length;
+            if (len == 0)
+                return;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '/') {
                     var pathNode = path.Substring(last, n - last);

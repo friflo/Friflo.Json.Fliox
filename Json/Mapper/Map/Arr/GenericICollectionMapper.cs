@@ -67,7 +67,7 @@ namespace Friflo.Json.Mapper.Map.Arr
             }
             var parent = differ.PopParent();
             if (parent != null && !diffElements)
-                parent.children.Clear();
+                return differ.AddDiff(left, right);
             return parent;
         }
         
