@@ -59,32 +59,23 @@ namespace Friflo.Json.Mapper.Diff
             }
         }
 
-        public bool WalkMember(PropField propField, object obj, out object value) {
-            if (!propField.name.Equals(pathNodes[pathPos])) {
-                value = null;
-                return false;
-            }
+        public bool IsMember(string key) {
+            return key.Equals(pathNodes[pathPos]);
+        }
+
+        public NodeAction Member(TypeMapper typeMapper, object member, out object value) {
             if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json, propField.fieldType.type);
-                return true;
+                value = jsonReader.ReadObject(json, typeMapper.type);
+                return NodeAction.Assign;
             }
-            value = propField.GetField(obj);
-            propField.fieldType.PatchObject(this, value);
-            return true;
+            typeMapper.PatchObject(this, member);
+            value = member;
+            return NodeAction.Assign;
         }
         
         public string GetMemberKey() {
             var key = pathNodes[pathPos];
             return key;
-        }
-        
-        public void WalkMemberValue(TypeMapper elementType, object element, out object value) {
-            if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json, elementType.type);
-                return;
-            }
-            elementType.PatchObject(this, element);
-            value = element;
         }
 
         public void WalkElement(TypeMapper elementType, object element, out object value) {
@@ -121,5 +112,11 @@ namespace Friflo.Json.Mapper.Diff
             var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
         }
+    }
+
+    public enum NodeAction
+    {
+        Assign,
+        Remove,
     }
 }

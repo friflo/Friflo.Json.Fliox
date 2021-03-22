@@ -89,8 +89,14 @@ namespace Friflo.Json.Mapper.Map.Obj
             TMap map = (TMap)obj;
             var key = patcher.GetMemberKey();
             if (map.TryGetValue(key, out TElm value)) {
-                patcher.WalkMemberValue(elementType, value, out object outValue);
-                map[key] = (TElm)outValue;
+                var action = patcher.Member(elementType, value, out object newValue);
+                switch (action) {
+                    case NodeAction.Assign:
+                        map[key] = (TElm) newValue;
+                        break;
+                    default:
+                        throw new InvalidOperationException($"NodeAction not applicable: {action}");
+                }
             } else {
                 throw new NotImplementedException("");
             }
