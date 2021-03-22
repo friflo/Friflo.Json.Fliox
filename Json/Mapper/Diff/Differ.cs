@@ -68,7 +68,7 @@ namespace Friflo.Json.Mapper.Diff
             return parentDiff;
         }
 
-        public DiffNode AddModified(object left, object right) {
+        public DiffNode AddNotEqual(object left, object right) {
             if (path.Count != parentStack.Count + 1)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
 
@@ -76,10 +76,10 @@ namespace Friflo.Json.Mapper.Diff
             int parentIndex = parentStack.Count - 1;
             if (parentIndex >= 0) {
                 var parent = GetParent(parentIndex);
-                itemDiff = new DiffNode(DiffType.Modified, jsonWriter, parent, path[parentIndex + 1], left, right, null);
+                itemDiff = new DiffNode(DiffType.NotEqual, jsonWriter, parent, path[parentIndex + 1], left, right, null);
                 parent.children.Add(itemDiff);
             } else {
-                itemDiff = new DiffNode(DiffType.Modified, jsonWriter, null, path[0], left, right, null);
+                itemDiff = new DiffNode(DiffType.NotEqual, jsonWriter, null, path[0], left, right, null);
             }
             return itemDiff;
         }
@@ -158,7 +158,7 @@ namespace Friflo.Json.Mapper.Diff
                 if (!leftNull && !rightNull) {
                     elementType.Diff(this, leftItem, rightItem);
                 } else {
-                    AddModified(leftItem, rightItem);
+                    AddNotEqual(leftItem, rightItem);
                 }
             }
             Pop();
@@ -180,7 +180,7 @@ namespace Friflo.Json.Mapper.Diff
     public enum DiffType
     {
         None,
-        Modified,
+        NotEqual,
         OnlyLeft,
         OnlyRight,
     }
@@ -253,12 +253,12 @@ namespace Friflo.Json.Mapper.Diff
 
         private void AddValue(StringBuilder sb, TypeMapper mapper) {
             switch (diffType) {
-                case DiffType.Modified:
+                case DiffType.NotEqual:
                 case DiffType.None:
                     var isComplex = mapper.IsComplex;
                     if (isComplex) {
                         AppendObject(sb, left);
-                        sb.Append(" -> ");
+                        sb.Append(" != ");
                         AppendObject(sb, right);
                         return;
                     }
@@ -267,21 +267,21 @@ namespace Friflo.Json.Mapper.Diff
                         var rightCount = mapper.Count(right);
                         sb.Append("[");
                         AppendValue(sb, leftCount);
-                        sb.Append("] -> [");
+                        sb.Append("] != [");
                         AppendValue(sb, rightCount);
                         sb.Append("]");
                         return;
                     }
                     AppendValue(sb, left);
-                    sb.Append(" -> ");
+                    sb.Append(" != ");
                     AppendValue(sb, right);
                     break;
                 case DiffType.OnlyLeft:
                     AppendValue(sb, left);
-                    sb.Append(" -> (missing)");
+                    sb.Append(" != (missing)");
                     break;
                 case DiffType.OnlyRight:
-                    sb.Append("(missing) -> ");
+                    sb.Append("(missing) != ");
                     AppendValue(sb, right);
                     break;
             }

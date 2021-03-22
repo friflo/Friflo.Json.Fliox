@@ -48,9 +48,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     var childrenDiff = diff.children[0].GetChildrenDiff(20);
                     var expect =
-@"/child/childVal     1 -> 2
-/child/bigInt       111 -> 222
-/child/dateTime     2021-03-18T16:30:00.000Z -> 2021-03-18T16:40:00.000Z
+@"/child/childVal     1 != 2
+/child/bigInt       111 != 222
+/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
                     Patch(jsonPatcher, left, right);
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var diff = differ.GetDiff(1, 2);
                     IsNotNull(diff);
-                    AreEqual("1 -> 2", diff.ToString());
+                    AreEqual("1 != 2", diff.ToString());
                     var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff(1, diff); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueNumber path: '(root)'", e.Message);
                 }
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
-                    AreEqual("A -> B", diff.ToString());
+                    AreEqual("A != B", diff.ToString());
                     var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff("A", diff); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueString path: '(root)'", e.Message);
                 }
@@ -84,35 +84,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(29, diff.children.Count);
                     var childrenDiff = diff.GetChildrenDiff(20);
                     var expect =
-@"/enumIL1            three -> one
-/enumIL2            null -> two
-/childStructNull1   null -> (object)
-/childStructNull2   (object) -> (object)
-/nulDouble          20.0 -> 70.0
-/nulDoubleNull      null -> 71.0
-/nulFloat           21.0 -> 72.0
-/nulFloatNull       null -> 73.0
-/nulLong            22 -> 74
-/nulLongNull        null -> 75
-/nulInt             23 -> 76
-/nulIntNull         null -> 77
-/nulShort           24 -> 78
-/nulShortNull       null -> 79
-/nulByte            25 -> 80
-/nulByteNull        null -> 81
-/nulBool            true -> false
-/nulBoolNull        null -> true
-/childStruct1       (object) -> (object)
-/childStruct2       (object) -> (object)
-/child              (object) -> null
-/childNull          null -> (object)
-/structIL           (object) -> (object)
-/dbl                22.5 -> 94.0
-/flt                33.5 -> 95.0
-/int64              10 -> 96
-/int32              11 -> 97
-/int16              12 -> 98
-/int8               13 -> 99
+@"/enumIL1            three != one
+/enumIL2            null != two
+/childStructNull1   null != (object)
+/childStructNull2   (object) != (object)
+/nulDouble          20.0 != 70.0
+/nulDoubleNull      null != 71.0
+/nulFloat           21.0 != 72.0
+/nulFloatNull       null != 73.0
+/nulLong            22 != 74
+/nulLongNull        null != 75
+/nulInt             23 != 76
+/nulIntNull         null != 77
+/nulShort           24 != 78
+/nulShortNull       null != 79
+/nulByte            25 != 80
+/nulByteNull        null != 81
+/nulBool            true != false
+/nulBoolNull        null != true
+/childStruct1       (object) != (object)
+/childStruct2       (object) != (object)
+/child              (object) != null
+/childNull          null != (object)
+/structIL           (object) != (object)
+/dbl                22.5 != 94.0
+/flt                33.5 != 95.0
+/int64              10 != 96
+/int32              11 != 97
+/int16              12 != 98
+/int8               13 != 99
 ";
                     AreEqual(expect, childrenDiff);
                     Patch(jsonPatcher, sample2, sample);
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var right = new List<int> { 1,  2 };
                 var diff = differ.GetDiff(left, right);
                 IsNotNull(diff);
-                AreEqual("[3] -> [2]", diff.ToString());
+                AreEqual("[3] != [2]", diff.ToString());
             }
         }
         
@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(1, diff.children.Count);
                     var childrenDiff = diff.GetChildrenDiff(10);
                     var expect =
- @"/A        1 -> (missing)
+ @"/A        1 != (missing)
 ";
                     AreEqual(expect, childrenDiff);
                     var patches = jsonPatcher.CreatePatches(diff);
@@ -226,7 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(1, diff.children.Count);
                     var childrenDiff = diff.GetChildrenDiff(10);
                     var expect =
-@"/B        (missing) -> 2
+@"/B        (missing) != 2
 ";
                     AreEqual(expect, childrenDiff);
                     var patches = jsonPatcher.CreatePatches(diff);
@@ -242,8 +242,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual(2, diff.children.Count);
             var childrenDiff = diff.GetChildrenDiff(10);
             var expect =
-@"/1        2 -> 12
-/2        3 -> 13
+@"/1        2 != 12
+/2        3 != 13
 ";
             AreEqual(expect, childrenDiff);
             Patch(jsonPatcher, left, right);
@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             IsNull(diff.children);
-            AreEqual("[3] -> [3]", diff.ToString());
+            AreEqual("[3] != [3]", diff.ToString());
             Patch(jsonPatcher, left, right);
         }
         
@@ -263,8 +263,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual(2, diff.children.Count);
             var childrenDiff = diff.GetChildrenDiff(10);
             var expect =
-@"/B        2 -> 12
-/C        3 -> 13
+@"/B        2 != 12
+/C        3 != 13
 ";
             AreEqual(expect, childrenDiff);
             Patch(jsonPatcher, left, right);

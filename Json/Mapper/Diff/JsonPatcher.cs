@@ -61,7 +61,7 @@ namespace Friflo.Json.Mapper.Diff
 
         private void TraceDiff(DiffNode diff, List<Patch> patches) {
             switch (diff.diffType) {
-                case DiffType.Modified:
+                case DiffType.NotEqual:
                     sb.Clear();
                     diff.AddPath(sb);
                     var json = mapper.WriteObject(diff.right);

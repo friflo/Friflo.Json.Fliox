@@ -45,7 +45,7 @@ namespace Friflo.Json.Mapper.Map.Arr
         
         public override DiffNode Diff(Differ differ, List<TElm> left, List<TElm> right) {
             if (left.Count != right.Count)
-                return differ.AddModified(left, right);
+                return differ.AddNotEqual(left, right);
             
             differ.PushParent(left, right);
             for (int n = 0; n < left.Count; n++) {
