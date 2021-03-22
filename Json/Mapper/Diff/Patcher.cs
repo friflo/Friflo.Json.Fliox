@@ -28,29 +28,34 @@ namespace Friflo.Json.Mapper.Diff
 
         public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
             pathPos = 0;
-            if (patch is PatchReplace replace) {
-                patchType = PatchType.Replace;
-                json = replace.value.json;
-                PathToPathNodes(replace.path, pathNodes);
-                path = replace.path;
-                if (pathNodes.Count == 0) {
-                    jsonReader.ReadTo(json, root);
-                    return;
-                }
-                mapper.PatchObject(this, root);
-            } else if (patch is PatchAdd add) {
-                patchType = PatchType.Add;
-                json = add.value.json;
-                PathToPathNodes(add.path, pathNodes);
-                path = add.path;
-                mapper.PatchObject(this, root);
-            } else if (patch is PatchRemove remove) {
-                patchType = PatchType.Remove;
-                PathToPathNodes(remove.path, pathNodes);
-                path = remove.path;
-                mapper.PatchObject(this, root);
-            } else {
-                throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
+            patchType = patch.PatchType;
+            switch (patchType) {
+                case PatchType.Replace:
+                    var replace = (PatchReplace) patch;
+                    json = replace.value.json;
+                    PathToPathNodes(replace.path, pathNodes);
+                    path = replace.path;
+                    if (pathNodes.Count == 0) {
+                        jsonReader.ReadTo(json, root);
+                        return;
+                    }
+                    mapper.PatchObject(this, root);
+                    break;
+                case PatchType.Add:
+                    var add = (PatchAdd) patch;
+                    json = add.value.json;
+                    PathToPathNodes(add.path, pathNodes);
+                    path = add.path;
+                    mapper.PatchObject(this, root);
+                    break;
+                case PatchType.Remove:
+                    var remove = (PatchRemove) patch;
+                    PathToPathNodes(remove.path, pathNodes);
+                    path = remove.path;
+                    mapper.PatchObject(this, root);
+                    break;
+                default:
+                    throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
         }
 
@@ -116,12 +121,5 @@ namespace Friflo.Json.Mapper.Diff
             var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
         }
-    }
-
-    enum PatchType
-    {
-        Replace,
-        Remove,
-        Add
     }
 }

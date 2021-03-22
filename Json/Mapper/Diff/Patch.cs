@@ -18,6 +18,7 @@ namespace Friflo.Json.Mapper.Diff
     [Fri.Polymorph(typeof(PatchTest),       Discriminant = "test")]
     public abstract class Patch
     {
+        public abstract PatchType PatchType { get; }
     }
 
     public class PatchReplace : Patch
@@ -25,7 +26,8 @@ namespace Friflo.Json.Mapper.Diff
         public string       path;
         public JsonValue    value;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Replace;
+        public override string      ToString()  => path;
     }
     
     public class PatchAdd : Patch
@@ -33,14 +35,16 @@ namespace Friflo.Json.Mapper.Diff
         public string       path;
         public JsonValue    value;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Add;
+        public override string      ToString()  => path;
     }
     
     public class PatchRemove : Patch
     {
         public string       path;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Remove;
+        public override string      ToString()  => path;
     }
     
     public class PatchCopy : Patch
@@ -48,7 +52,8 @@ namespace Friflo.Json.Mapper.Diff
         public string       path;
         public string       from;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Copy;
+        public override string      ToString()  => path;
     }
     
     public class PatchMove : Patch
@@ -56,7 +61,9 @@ namespace Friflo.Json.Mapper.Diff
         public string       path;
         public string       from;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Move;
+        public override string      ToString()  => path;
+
     }
     
     public class PatchTest : Patch
@@ -64,6 +71,17 @@ namespace Friflo.Json.Mapper.Diff
         public string       path;
         public JsonValue    value;
 
-        public override string ToString() => path;
+        public override PatchType   PatchType   => PatchType.Test;
+        public override string      ToString()  => path;
+    }
+    
+    public enum PatchType
+    {
+        Replace,
+        Remove,
+        Add,
+        Copy,
+        Move,
+        Test,
     }
 }
