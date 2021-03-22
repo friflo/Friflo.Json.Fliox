@@ -97,7 +97,7 @@ namespace Friflo.Json.Mapper.Map
             bool areEqual = EqualityComparer<TVal>.Default.Equals(left, right);
             if (areEqual)
                 return null;
-            return differ.AddDiff(left, right);
+            return differ.AddModified(left, right);
         }
         
         public override DiffNode    DiffObject  (Differ differ, object left, object right) {

@@ -123,7 +123,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     classMapper = differ.typeCache.GetTypeMapper(leftType);
                 Type rightType = right.GetType();
                 if (leftType != rightType)
-                    return differ.AddDiff(left, right);
+                    return differ.AddModified(left, right);
             }
 
             differ.PushParent(left, right);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                     if (leftField != null && rightField != null) {
                         field.fieldType.DiffObject(differ, leftField, rightField);
                     } else {
-                        differ.AddDiff(leftField, rightField);
+                        differ.AddModified(leftField, rightField);
                     }
                 } // else: both null
 

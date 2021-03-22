@@ -68,7 +68,7 @@ namespace Friflo.Json.Mapper.Diff
             return parentDiff;
         }
 
-        public DiffNode AddDiff(object left, object right) {
+        public DiffNode AddModified(object left, object right) {
             if (path.Count != parentStack.Count + 1)
                 throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
 
@@ -126,7 +126,7 @@ namespace Friflo.Json.Mapper.Diff
                 if (!leftNull && !rightNull) {
                     elementType.Diff(this, leftItem, rightItem);
                 } else {
-                    AddDiff(leftItem, rightItem);
+                    AddModified(leftItem, rightItem);
                 }
             }
             Pop();
