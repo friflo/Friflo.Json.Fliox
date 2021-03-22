@@ -73,6 +73,15 @@ namespace Friflo.Json.Mapper.Map.Obj
                 }
                 differ.Pop();
             }
+            foreach (var rightPair in right) {
+                var rightKey   = rightPair.Key;
+                var rightValue = rightPair.Value;
+                differ.PushKey(elementType, rightKey);
+                if (!left.TryGetValue(rightKey, out TElm _)) {
+                    differ.AddOnlyRight(rightValue);
+                }
+                differ.Pop();
+            }
             return differ.PopParent();
         }
         

@@ -67,21 +67,25 @@ namespace Friflo.Json.Mapper.Diff
                     var json = mapper.WriteObject(diff.right);
                     Patch patch = new PatchReplace {
                         path = sb.ToString(),
-                        value = {
-                            json = json
-                        }
+                        value = { json = json }
                     };
                     patches.Add(patch);
                     break;
                 case DiffType.OnlyLeft:
                     sb.Clear();
                     diff.AddPath(sb);
-                    json = mapper.WriteObject(diff.left);
+                    patch = new PatchRemove {
+                        path = sb.ToString()
+                    };
+                    patches.Add(patch);
+                    break;
+                case DiffType.OnlyRight:
+                    sb.Clear();
+                    diff.AddPath(sb);
+                    json = mapper.WriteObject(diff.right);
                     patch = new PatchAdd {
                         path = sb.ToString(),
-                        value = {
-                            json = json
-                        }
+                        value = { json = json }
                     };
                     patches.Add(patch);
                     break;

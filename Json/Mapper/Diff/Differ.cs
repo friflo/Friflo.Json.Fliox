@@ -99,6 +99,22 @@ namespace Friflo.Json.Mapper.Diff
             }
             return itemDiff;
         }
+        
+        public DiffNode AddOnlyRight(object right) {
+            if (path.Count != parentStack.Count + 1)
+                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
+
+            DiffNode itemDiff; 
+            int parentIndex = parentStack.Count - 1;
+            if (parentIndex >= 0) {
+                var parent = GetParent(parentIndex);
+                itemDiff = new DiffNode(DiffType.OnlyRight, jsonWriter, parent, path[parentIndex + 1], null, right, null);
+                parent.children.Add(itemDiff);
+            } else {
+                itemDiff = new DiffNode(DiffType.OnlyRight, jsonWriter, null, path[0], null, right, null);
+            }
+            return itemDiff;
+        }
 
         public void PushMember(PropField field) {
             var item = new PathNode {
@@ -166,6 +182,7 @@ namespace Friflo.Json.Mapper.Diff
         None,
         Modified,
         OnlyLeft,
+        OnlyRight,
     }
 
     public class DiffNode
@@ -262,6 +279,10 @@ namespace Friflo.Json.Mapper.Diff
                 case DiffType.OnlyLeft:
                     AppendValue(sb, left);
                     sb.Append(" -> (missing)");
+                    break;
+                case DiffType.OnlyRight:
+                    sb.Append("(missing) -> ");
+                    AppendValue(sb, right);
                     break;
             }
         }
