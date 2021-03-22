@@ -200,37 +200,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var typeStore = new TypeStore())
             using (var jsonPatcher = new JsonPatcher(typeStore)) {
                 {
-                    var left  = new Dictionary<string, int> {{"A", 1}, {"B",  2}, {"C",  3}};
-                    var right = new Dictionary<string, int> {{"A", 1}, {"B", 12}, {"C", 13}};
+                    var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
+                    var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
                     PatchKeyValues(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
-                    var left  = new Dictionary<string, int> {{"A", 1}};
-                    var right = new Dictionary<string, int> ();
-                    var diff = jsonPatcher.differ.GetDiff(left, right);
-                    IsNotNull(diff);
-                    AreEqual(1, diff.children.Count);
-                    var childrenDiff = diff.GetChildrenDiff(10);
-                    var expect =
- @"/A        1 != (missing)
-";
-                    AreEqual(expect, childrenDiff);
-                    var patches = jsonPatcher.CreatePatches(diff);
-                    jsonPatcher.ApplyPatches(left, patches);
+                    var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
+                    var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
+                    PatchKeyValues<IDictionary<string, int>>(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
-                    var left  = new Dictionary<string, int> ();
-                    var right = new Dictionary<string, int> {{"B",  2}};
-                    var diff = jsonPatcher.differ.GetDiff(left, right);
-                    IsNotNull(diff);
-                    AreEqual(1, diff.children.Count);
-                    var childrenDiff = diff.GetChildrenDiff(10);
-                    var expect =
-@"/B        (missing) != 2
-";
-                    AreEqual(expect, childrenDiff);
-                    var patches = jsonPatcher.CreatePatches(diff);
-                    jsonPatcher.ApplyPatches(left, patches);
+                    var left  = new SortedDictionary<string, int> {{"A", 1}, {"C",  3}};
+                    var right = new SortedDictionary<string, int> {{"A", 2}, {"B", 12}};
+                    PatchKeyValues(jsonPatcher, left, right);
+                    AssertUtils.Equivalent(left, right);
+                } {
+                    var left  = new SortedList<string, int> {{"A", 1}, {"C",  3}};
+                    var right = new SortedList<string, int> {{"A", 2}, {"B", 12}};
+                    PatchKeyValues(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -260,16 +247,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private static void PatchKeyValues<T>(JsonPatcher jsonPatcher, T left, T right) {
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
-            AreEqual(2, diff.children.Count);
+            AreEqual(3, diff.children.Count);
             var childrenDiff = diff.GetChildrenDiff(10);
             var expect =
-@"/B        2 != 12
-/C        3 != 13
+                @"/A        1 != 2
+/C        3 != (missing)
+/B        (missing) != 12
 ";
             AreEqual(expect, childrenDiff);
-            Patch(jsonPatcher, left, right);
+            var patches = jsonPatcher.CreatePatches(diff);
+            jsonPatcher.ApplyPatches(left, patches);
         }
-
+        
         private static void Patch<T>(JsonPatcher jsonPatcher, T left, T right)
         {
             List<Patch> patches = jsonPatcher.GetPatches(left, right);
