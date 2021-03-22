@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
@@ -94,11 +93,18 @@ namespace Friflo.Json.Mapper.Map.Obj
                     case NodeAction.Assign:
                         map[key] = (TElm) newValue;
                         break;
+                    case NodeAction.Remove:
+                        map.Remove(key);
+                        break;
                     default:
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                 }
             } else {
-                throw new NotImplementedException("");
+                var action = patcher.Member(elementType, null, out object newValue);
+                if (action == NodeAction.Assign)
+                    map[key] = (TElm) newValue;
+                else
+                    throw new InvalidOperationException($"NodeAction not applicable: {action}");
             }
         }
 

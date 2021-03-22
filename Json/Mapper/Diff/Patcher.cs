@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Diff
@@ -66,7 +65,14 @@ namespace Friflo.Json.Mapper.Diff
         public NodeAction Member(TypeMapper typeMapper, object member, out object value) {
             if (++pathPos >= pathNodes.Count) {
                 value = jsonReader.ReadObject(json, typeMapper.type);
-                return NodeAction.Assign;
+                switch (patchType) {
+                    case PatchType.Replace:
+                    case PatchType.Add:
+                        return NodeAction.Assign;
+                    case PatchType.Remove:
+                        return NodeAction.Remove;
+                }
+                throw new NotImplementedException($"patchType not implemented: {patchType}");
             }
             typeMapper.PatchObject(this, member);
             value = member;

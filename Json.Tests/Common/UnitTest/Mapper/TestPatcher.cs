@@ -216,8 +216,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 ";
                     AreEqual(expect, childrenDiff);
                     var patches = jsonPatcher.CreatePatches(diff);
-                    // jsonPatcher.ApplyPatches(left, patches);
-                    // AssertUtils.Equivalent(left, right);
+                    jsonPatcher.ApplyPatches(left, patches);
+                    AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new Dictionary<string, int> ();
                     var right = new Dictionary<string, int> {{"B",  2}};
@@ -230,8 +230,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 ";
                     AreEqual(expect, childrenDiff);
                     var patches = jsonPatcher.CreatePatches(diff);
-                    // jsonPatcher.ApplyPatches(left, patches);
-                    // AssertUtils.Equivalent(left, right);
+                    jsonPatcher.ApplyPatches(left, patches);
+                    AssertUtils.Equivalent(left, right);
                 }
             }
         }

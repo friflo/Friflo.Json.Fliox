@@ -159,13 +159,10 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (patcher.IsMember(field.name)) {
                     var value = field.GetField(obj); 
                     var action = patcher.Member(field.fieldType, value, out object newValue);
-                    switch (action) {
-                        case NodeAction.Assign:
-                            field.SetField(obj, newValue);
-                            break;
-                        default:
-                            throw new InvalidOperationException($"NodeAction not applicable: {action}");
-                    }
+                    if  (action == NodeAction.Assign)
+                        field.SetField(obj, newValue);
+                    else
+                        throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
                 }
             }
