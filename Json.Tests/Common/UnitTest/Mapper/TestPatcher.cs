@@ -62,12 +62,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var diff = differ.GetDiff(1, 2);
                     IsNotNull(diff);
                     AreEqual("1 -> 2", diff.ToString());
+                    var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff(1, diff); });
+                    StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueNumber path: '(root)'", e.Message);
                 }
                 IsNull(differ.GetDiff("A", "A"));
                 {
                     var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
                     AreEqual("A -> B", diff.ToString());
+                    var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff("A", diff); });
+                    StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueString path: '(root)'", e.Message);
                 }
                 {
                     var sample = new SampleIL();

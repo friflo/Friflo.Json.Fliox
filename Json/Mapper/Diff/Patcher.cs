@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Diff
 
         public void Dispose() { }
 
-        public void Patch<T>(TypeMapper<T> mapper, object root, Patch patch) {
+        public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
             var replace = patch as PatchReplace;
             if (replace == null)
                 throw new NotImplementedException("Patcher support only PatchReplace for now");
@@ -35,10 +35,10 @@ namespace Friflo.Json.Mapper.Diff
             PathToPathNodes(replace.path, pathNodes);
             path = replace.path;
             if (pathNodes.Count == 0) {
-                jsonReader.ReadToObject(json, root);
-            } else {
-                mapper.PatchObject(this, root);
+                jsonReader.ReadTo(json, root);
+                return;
             }
+            mapper.PatchObject(this, root);
         }
 
         public bool WalkMember(PropField propField, object obj, out object value) {

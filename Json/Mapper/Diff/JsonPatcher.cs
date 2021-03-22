@@ -53,6 +53,11 @@ namespace Friflo.Json.Mapper.Diff
                 patcher.Patch(rootMapper, root, patch);
             }
         }
+        
+        public void ApplyDiff<T>(T root, DiffNode diff) {
+            List<Patch> patches = CreatePatches(diff);
+            ApplyPatches(root, patches);
+        }
 
         private void TraceDiff(DiffNode diff, List<Patch> patches) {
             if (diff.diffType == DiffType.Modified) {
