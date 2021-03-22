@@ -32,30 +32,25 @@ namespace Friflo.Json.Mapper.Diff
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
                     json = replace.value.json;
-                    PathToPathNodes(replace.path, pathNodes);
-                    path = replace.path;
+                    path = PathToPathNodes(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
                         jsonReader.ReadTo(json, root);
                         return;
                     }
-                    mapper.PatchObject(this, root);
                     break;
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
                     json = add.value.json;
-                    PathToPathNodes(add.path, pathNodes);
-                    path = add.path;
-                    mapper.PatchObject(this, root);
+                    path = PathToPathNodes(add.path, pathNodes);
                     break;
                 case PatchType.Remove:
                     var remove = (PatchRemove) patch;
-                    PathToPathNodes(remove.path, pathNodes);
-                    path = remove.path;
-                    mapper.PatchObject(this, root);
+                    path = PathToPathNodes(remove.path, pathNodes);
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
+            mapper.PatchObject(this, root);
         }
 
         public bool IsMember(string key) {
@@ -102,12 +97,12 @@ namespace Friflo.Json.Mapper.Diff
             return index;
         }
 
-        private static void PathToPathNodes(string path, List<string> pathNodes) {
+        private static string PathToPathNodes(string path, List<string> pathNodes) {
             pathNodes.Clear();
             int last = 1;
             int len = path.Length;
             if (len == 0)
-                return;
+                return path;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '/') {
                     var pathNode = path.Substring(last, n - last);
@@ -117,6 +112,7 @@ namespace Friflo.Json.Mapper.Diff
             }
             var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
+            return path;
         }
     }
 
