@@ -280,7 +280,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return intern.ErrorMsg<T>("ReadTo() can only used on an JSON object or array", ev, out _);
+                        return intern.ErrorMsg<T>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace Friflo.Json.Mapper
                     case JsonEvent.Error:
                         return default;
                     default:
-                        return intern.ErrorMsg<object>("ReadTo() can only used on an JSON object or array", ev, out _);
+                        return intern.ErrorMsg<object>("ReadTo() can only used on an JSON object or array. Found: ", ev, out _);
                 }
             }
         }
