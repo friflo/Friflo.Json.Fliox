@@ -87,23 +87,16 @@ namespace Friflo.Json.Mapper.Map.Obj
         public override void PatchObject(Patcher patcher, object obj) {
             TMap map = (TMap)obj;
             var key = patcher.GetMemberKey();
-            if (map.TryGetValue(key, out TElm value)) {
-                var action = patcher.Member(elementType, value, out object newValue);
-                switch (action) {
-                    case NodeAction.Assign:
-                        map[key] = (TElm) newValue;
-                        break;
-                    case NodeAction.Remove:
-                        map.Remove(key);
-                        break;
-                    default:
-                        throw new InvalidOperationException($"NodeAction not applicable: {action}");
-                }
-            } else {
-                var action = patcher.Member(elementType, null, out object newValue);
-                if (action == NodeAction.Assign)
+            map.TryGetValue(key, out TElm value);
+            var action = patcher.Member(elementType, value, out object newValue);
+            switch (action) {
+                case NodeAction.Assign:
                     map[key] = (TElm) newValue;
-                else
+                    break;
+                case NodeAction.Remove:
+                    map.Remove(key);
+                    break;
+                default:
                     throw new InvalidOperationException($"NodeAction not applicable: {action}");
             }
         }
