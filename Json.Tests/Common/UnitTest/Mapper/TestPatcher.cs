@@ -195,6 +195,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
+        [Test]
+        public void TestPatchDictionary() {
+            using (var typeStore = new TypeStore())
+            using (var jsonPatcher = new JsonPatcher(typeStore)) {
+                var left  = new Dictionary<string, int> { { "A", 1 }, { "B",  2 }, { "C",  3} };
+                var right = new Dictionary<string, int> { { "A", 1 }, { "B", 12 }, { "C", 13} };
+                PatchKeyValues(jsonPatcher, left, right);
+                AssertUtils.Equivalent(left, right);
+            }
+        }
+
         private static void PatchElements<T>(JsonPatcher jsonPatcher, T left, T right) {
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
@@ -213,6 +224,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             IsNotNull(diff);
             IsNull(diff.children);
             AreEqual("[3] -> [3]", diff.ToString());
+            Patch(jsonPatcher, left, right);
+        }
+        
+        private static void PatchKeyValues<T>(JsonPatcher jsonPatcher, T left, T right) {
+            var diff = jsonPatcher.differ.GetDiff(left, right);
+            IsNotNull(diff);
+            AreEqual(2, diff.children.Count);
+            var childrenDiff = diff.GetChildrenDiff(10);
+            var expect =
+@"/B        2 -> 12
+/C        3 -> 13
+";
+            AreEqual(expect, childrenDiff);
             Patch(jsonPatcher, left, right);
         }
 

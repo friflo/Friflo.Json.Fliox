@@ -84,11 +84,20 @@ namespace Friflo.Json.Mapper.Diff
             return itemDiff;
         }
 
-        public void PushField(PropField field) {
+        public void PushMember(PropField field) {
             var item = new PathNode {
                 nodeType = NodeType.Member,
-                field = field,
+                name = field.name,
                 typeMapper = field.fieldType
+            };
+            path.Add(item);
+        }
+        
+        public void PushKey(TypeMapper mapper, string key) {
+            var item = new PathNode {
+                nodeType = NodeType.Member,
+                name = key,
+                typeMapper = mapper
             };
             path.Add(item);
         }
@@ -178,7 +187,7 @@ namespace Friflo.Json.Mapper.Diff
             switch (pathNode.nodeType) {
                 case NodeType.Member:
                     sb.Append('/');
-                    sb.Append(pathNode.field.name);
+                    sb.Append(pathNode.name);
                     if (!addValue)
                         return;
                     Indent(sb, startPos, indent);
@@ -292,7 +301,7 @@ namespace Friflo.Json.Mapper.Diff
     public struct PathNode
     {
         internal    NodeType    nodeType;
-        public      PropField   field;
+        public      string      name;
         public      int         index;
         public      TypeMapper  typeMapper;
     }

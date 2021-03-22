@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
 
@@ -55,6 +57,34 @@ namespace Friflo.Json.Mapper.Map.Obj
                 if (!EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
                     elementType.Trace(tracer, elemVar);
                 }
+            }
+        }
+        
+        public override DiffNode Diff(Differ differ, TMap left, TMap right) {
+            differ.PushParent(left, right);
+            foreach (var leftPair in left) {
+                var leftKey   = leftPair.Key;
+                var leftValue = leftPair.Value;
+                if (right.TryGetValue(leftKey, out TElm rightValue)) {
+                    differ.PushKey(elementType, leftKey);
+                    elementType.DiffObject(differ, leftValue, rightValue);
+                    differ.Pop();
+                } else {
+                    throw new NotImplementedException("");
+                    // differ.AddDiff(leftKey, null);
+                }
+            }
+            return differ.PopParent();
+        }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            TMap map = (TMap)obj;
+            var key = patcher.GetMemberKey();
+            if (map.TryGetValue(key, out TElm value)) {
+                patcher.WalkMemberValue(elementType, value, out object outValue);
+                map[key] = (TElm)outValue;
+            } else {
+                throw new NotImplementedException("");
             }
         }
 

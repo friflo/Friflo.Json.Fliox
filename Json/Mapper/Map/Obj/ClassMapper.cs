@@ -130,7 +130,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             PropField[] fields = classMapper.propFields.fields;
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
-                differ.PushField(field);
+                differ.PushMember(field);
 
                 object leftField = field.GetField(leftObj);
                 object rightField = field.GetField(rightObj);

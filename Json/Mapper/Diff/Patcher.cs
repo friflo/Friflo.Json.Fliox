@@ -54,6 +54,20 @@ namespace Friflo.Json.Mapper.Diff
             propField.fieldType.PatchObject(this, value);
             return true;
         }
+        
+        public string GetMemberKey() {
+            var key = pathNodes[pathPos];
+            return key;
+        }
+        
+        public void WalkMemberValue(TypeMapper elementType, object element, out object value) {
+            if (++pathPos >= pathNodes.Count) {
+                value = jsonReader.ReadObject(json, elementType.type);
+                return;
+            }
+            elementType.PatchObject(this, element);
+            value = element;
+        }
 
         public void WalkElement(TypeMapper elementType, object element, out object value) {
             if (++pathPos >= pathNodes.Count) {
