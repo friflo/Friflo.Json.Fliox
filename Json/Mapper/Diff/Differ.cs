@@ -219,10 +219,11 @@ namespace Friflo.Json.Mapper.Diff
             if (mapper.IsArray) {
                 var leftCount = mapper.Count(left);
                 var rightCount = mapper.Count(right);
-                sb.Append("Count: ");
+                sb.Append("[");
                 AppendValue(sb, leftCount);
-                sb.Append(" -> ");
+                sb.Append("] -> [");
                 AppendValue(sb, rightCount);
+                sb.Append("]");
                 return;
             }
             AppendValue(sb, left);

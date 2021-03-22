@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var right = new List<int> { 1,  2 };
                 var diff = differ.GetDiff(left, right);
                 IsNotNull(diff);
-                AreEqual("Count: 3 -> 2", diff.ToString());
+                AreEqual("[3] -> [2]", diff.ToString());
             }
         }
         
@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var diff = jsonPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             IsNull(diff.children);
-            AreEqual("Count: 3 -> 3", diff.ToString());
+            AreEqual("[3] -> [3]", diff.ToString());
             Patch(jsonPatcher, left, right);
         }
 
