@@ -83,6 +83,22 @@ namespace Friflo.Json.Mapper.Diff
             }
             return itemDiff;
         }
+        
+        public DiffNode AddOnlyLeft(object left) {
+            if (path.Count != parentStack.Count + 1)
+                throw new InvalidOperationException("Expect path.Count != parentStack.Count + 1");
+
+            DiffNode itemDiff; 
+            int parentIndex = parentStack.Count - 1;
+            if (parentIndex >= 0) {
+                var parent = GetParent(parentIndex);
+                itemDiff = new DiffNode(DiffType.OnlyLeft, jsonWriter, parent, path[parentIndex + 1], left, null, null);
+                parent.children.Add(itemDiff);
+            } else {
+                itemDiff = new DiffNode(DiffType.OnlyLeft, jsonWriter, null, path[0], left, null, null);
+            }
+            return itemDiff;
+        }
 
         public void PushMember(PropField field) {
             var item = new PathNode {
@@ -149,6 +165,7 @@ namespace Friflo.Json.Mapper.Diff
     {
         None,
         Modified,
+        OnlyLeft,
     }
 
     public class DiffNode
@@ -218,26 +235,35 @@ namespace Friflo.Json.Mapper.Diff
         }
 
         private void AddValue(StringBuilder sb, TypeMapper mapper) {
-            var isComplex = mapper.IsComplex;
-            if (isComplex) {
-                AppendObject(sb, left);
-                sb.Append(" -> ");
-                AppendObject(sb, right);
-                return;
+            switch (diffType) {
+                case DiffType.Modified:
+                case DiffType.None:
+                    var isComplex = mapper.IsComplex;
+                    if (isComplex) {
+                        AppendObject(sb, left);
+                        sb.Append(" -> ");
+                        AppendObject(sb, right);
+                        return;
+                    }
+                    if (mapper.IsArray) {
+                        var leftCount = mapper.Count(left);
+                        var rightCount = mapper.Count(right);
+                        sb.Append("[");
+                        AppendValue(sb, leftCount);
+                        sb.Append("] -> [");
+                        AppendValue(sb, rightCount);
+                        sb.Append("]");
+                        return;
+                    }
+                    AppendValue(sb, left);
+                    sb.Append(" -> ");
+                    AppendValue(sb, right);
+                    break;
+                case DiffType.OnlyLeft:
+                    AppendValue(sb, left);
+                    sb.Append(" -> (missing)");
+                    break;
             }
-            if (mapper.IsArray) {
-                var leftCount = mapper.Count(left);
-                var rightCount = mapper.Count(right);
-                sb.Append("[");
-                AppendValue(sb, leftCount);
-                sb.Append("] -> [");
-                AppendValue(sb, rightCount);
-                sb.Append("]");
-                return;
-            }
-            AppendValue(sb, left);
-            sb.Append(" -> ");
-            AppendValue(sb, right);
         }
         
         private void AppendObject(StringBuilder sb, object value) {

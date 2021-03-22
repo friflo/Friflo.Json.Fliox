@@ -199,10 +199,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestPatchDictionary() {
             using (var typeStore = new TypeStore())
             using (var jsonPatcher = new JsonPatcher(typeStore)) {
-                var left  = new Dictionary<string, int> { { "A", 1 }, { "B",  2 }, { "C",  3} };
-                var right = new Dictionary<string, int> { { "A", 1 }, { "B", 12 }, { "C", 13} };
-                PatchKeyValues(jsonPatcher, left, right);
-                AssertUtils.Equivalent(left, right);
+                {
+                    var left  = new Dictionary<string, int> {{"A", 1}, {"B",  2}, {"C",  3}};
+                    var right = new Dictionary<string, int> {{"A", 1}, {"B", 12}, {"C", 13}};
+                    PatchKeyValues(jsonPatcher, left, right);
+                    AssertUtils.Equivalent(left, right);
+                } {
+                    var left  = new Dictionary<string, int> {{"A", 1}};
+                    var right = new Dictionary<string, int> ();
+                    var diff = jsonPatcher.differ.GetDiff(left, right);
+                    IsNotNull(diff);
+                    AreEqual(1, diff.children.Count);
+                    var childrenDiff = diff.GetChildrenDiff(10);
+                    var expect =
+ @"/A        1 -> (missing)
+";
+                    AreEqual(expect, childrenDiff);
+                    var patches = jsonPatcher.CreatePatches(diff);
+                    // Patch(jsonPatcher, left, right);
+                    // AssertUtils.Equivalent(left, right);
+                }
             }
         }
 

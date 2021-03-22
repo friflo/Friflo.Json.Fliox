@@ -65,14 +65,13 @@ namespace Friflo.Json.Mapper.Map.Obj
             foreach (var leftPair in left) {
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
+                differ.PushKey(elementType, leftKey);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
-                    differ.PushKey(elementType, leftKey);
                     elementType.DiffObject(differ, leftValue, rightValue);
-                    differ.Pop();
                 } else {
-                    throw new NotImplementedException("");
-                    // differ.AddDiff(leftKey, null);
+                    differ.AddOnlyLeft(leftValue);
                 }
+                differ.Pop();
             }
             return differ.PopParent();
         }

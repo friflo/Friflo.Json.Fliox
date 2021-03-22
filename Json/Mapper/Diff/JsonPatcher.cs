@@ -60,17 +60,31 @@ namespace Friflo.Json.Mapper.Diff
         }
 
         private void TraceDiff(DiffNode diff, List<Patch> patches) {
-            if (diff.diffType == DiffType.Modified) {
-                sb.Clear();
-                diff.AddPath(sb);
-                var json = mapper.WriteObject(diff.right);
-                var replace = new PatchReplace {
-                    path = sb.ToString(),
-                    value = {
-                        json = json
-                    }
-                };
-                patches.Add(replace);
+            switch (diff.diffType) {
+                case DiffType.Modified:
+                    sb.Clear();
+                    diff.AddPath(sb);
+                    var json = mapper.WriteObject(diff.right);
+                    Patch patch = new PatchReplace {
+                        path = sb.ToString(),
+                        value = {
+                            json = json
+                        }
+                    };
+                    patches.Add(patch);
+                    break;
+                case DiffType.OnlyLeft:
+                    sb.Clear();
+                    diff.AddPath(sb);
+                    json = mapper.WriteObject(diff.left);
+                    patch = new PatchAdd {
+                        path = sb.ToString(),
+                        value = {
+                            json = json
+                        }
+                    };
+                    patches.Add(patch);
+                    break;
             }
             var children = diff.children;
             if (children != null) {
