@@ -13,6 +13,7 @@ namespace Friflo.Json.Mapper.Diff
     {
         public  readonly    TypeCache       typeCache;
         private readonly    JsonReader      jsonReader;
+        private             PatchType       patchType;
         private             string          json;
         private             int             pathPos;
         private readonly    List<string>    pathNodes = new List<string>();
@@ -26,19 +27,31 @@ namespace Friflo.Json.Mapper.Diff
         public void Dispose() { }
 
         public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
-            var replace = patch as PatchReplace;
-            if (replace == null)
-                throw new NotImplementedException("Patcher support only PatchReplace for now");
-            
-            json = replace.value.json;
             pathPos = 0;
-            PathToPathNodes(replace.path, pathNodes);
-            path = replace.path;
-            if (pathNodes.Count == 0) {
-                jsonReader.ReadTo(json, root);
-                return;
+            if (patch is PatchReplace replace) {
+                patchType = PatchType.Replace;
+                json = replace.value.json;
+                PathToPathNodes(replace.path, pathNodes);
+                path = replace.path;
+                if (pathNodes.Count == 0) {
+                    jsonReader.ReadTo(json, root);
+                    return;
+                }
+                mapper.PatchObject(this, root);
+            } else if (patch is PatchAdd add) {
+                patchType = PatchType.Add;
+                json = add.value.json;
+                PathToPathNodes(add.path, pathNodes);
+                path = add.path;
+                mapper.PatchObject(this, root);
+            } else if (patch is PatchRemove remove) {
+                patchType = PatchType.Remove;
+                PathToPathNodes(remove.path, pathNodes);
+                path = remove.path;
+                mapper.PatchObject(this, root);
+            } else {
+                throw new NotImplementedException("Patcher support only PatchReplace for now");
             }
-            mapper.PatchObject(this, root);
         }
 
         public bool WalkMember(PropField propField, object obj, out object value) {
@@ -103,5 +116,12 @@ namespace Friflo.Json.Mapper.Diff
             var lastNode = path.Substring(last, len - last);
             pathNodes.Add(lastNode);
         }
+    }
+
+    enum PatchType
+    {
+        Replace,
+        Remove,
+        Add
     }
 }
