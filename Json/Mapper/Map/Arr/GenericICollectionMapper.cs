@@ -49,7 +49,11 @@ namespace Friflo.Json.Mapper.Map.Arr
         public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
             base(config, type, elementType, 1, typeof(string), constructor)
         {
-            diffElements = type.GetGenericTypeDefinition() != typeof(SortedSet<>);
+            // don't create element Diff's if ICollection<> implements ISet<>
+            // e.g. HashSet<> and SortedSet<> implements ISet<>
+            bool isSet = type.GetInterfaces().Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISet<>));
+            diffElements = !isSet;
         }
         
         public override DiffNode Diff(Differ differ, TCol left, TCol right) {

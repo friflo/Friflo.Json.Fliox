@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 } {
                     var left  = new HashSet<int>(new[] {1,  2,  3});
                     var right = new HashSet<int>(new[] {1, 12, 13});
-                    PatchElements(jsonPatcher, left, right);
+                    PatchCollection(jsonPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
