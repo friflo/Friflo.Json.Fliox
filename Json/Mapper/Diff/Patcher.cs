@@ -57,7 +57,7 @@ namespace Friflo.Json.Mapper.Diff
             return key.Equals(pathNodes[pathPos]);
         }
 
-        public NodeAction Member(TypeMapper typeMapper, object member, out object value) {
+        public NodeAction DescendMember(TypeMapper typeMapper, object member, out object value) {
             if (++pathPos >= pathNodes.Count) {
                 value = jsonReader.ReadObject(json, typeMapper.type);
                 switch (patchType) {
@@ -79,13 +79,14 @@ namespace Friflo.Json.Mapper.Diff
             return key;
         }
 
-        public void WalkElement(TypeMapper elementType, object element, out object value) {
+        public NodeAction DescendElement(TypeMapper elementType, object element, out object value) {
             if (++pathPos >= pathNodes.Count) {
                 value = jsonReader.ReadObject(json, elementType.type);
-                return;
+                return NodeAction.Assign;
             }
             elementType.PatchObject(this, element);
             value = element;
+            return NodeAction.Assign;
         }
 
         public int GetElementIndex(int count) {

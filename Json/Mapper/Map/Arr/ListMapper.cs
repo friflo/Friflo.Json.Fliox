@@ -60,8 +60,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             var list = (List<TElm>)obj;
             int index = patcher.GetElementIndex(list.Count);
             var element = list[index];
-            patcher.WalkElement(elementType, element, out object value);
-            list[index] = (TElm)value;
+            var action = patcher.DescendElement(elementType, element, out object value);
+            if (action == NodeAction.Assign) {
+                list[index] = (TElm) value;
+            }
         }
         
         public override void Trace(Tracer tracer, List<TElm> slot) {

@@ -62,8 +62,10 @@ namespace Friflo.Json.Mapper.Map.Arr
             var list = (TElm[])obj;
             int index = patcher.GetElementIndex(list.Length);
             var element = list[index];
-            patcher.WalkElement(elementType, element, out object value);
-            list[index] = (TElm)value;
+            var action = patcher.DescendElement(elementType, element, out object value);
+            if (action == NodeAction.Assign) {
+                list[index] = (TElm) value;
+            }
         }
 
         public override void Write(ref Writer writer, TElm[] slot) {

@@ -158,7 +158,7 @@ namespace Friflo.Json.Mapper.Map.Obj
                 PropField field = fields[n];
                 if (patcher.IsMember(field.name)) {
                     var value = field.GetField(obj); 
-                    var action = patcher.Member(field.fieldType, value, out object newValue);
+                    var action = patcher.DescendMember(field.fieldType, value, out object newValue);
                     if  (action == NodeAction.Assign)
                         field.SetField(obj, newValue);
                     else

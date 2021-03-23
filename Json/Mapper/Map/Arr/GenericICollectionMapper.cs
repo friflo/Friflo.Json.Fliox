@@ -81,10 +81,12 @@ namespace Friflo.Json.Mapper.Map.Arr
             list.Clear();
             int index = patcher.GetElementIndex(copy.Length);
             var element = copy[index];
-            patcher.WalkElement(elementType, element, out object value);
-            copy[index] = (TElm)value;
-            for (int n = 0; n < copy.Length; n++)
-                list.Add(copy[n]);
+            var action = patcher.DescendElement(elementType, element, out object value);
+            if (action == NodeAction.Assign) {
+                copy[index] = (TElm) value;
+                for (int n = 0; n < copy.Length; n++)
+                    list.Add(copy[n]);
+            }
         }
 
         public override void Write(ref Writer writer, TCol slot) {

@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Map.Obj
             TMap map = (TMap)obj;
             var key = patcher.GetMemberKey();
             map.TryGetValue(key, out TElm value);
-            var action = patcher.Member(elementType, value, out object newValue);
+            var action = patcher.DescendMember(elementType, value, out object newValue);
             switch (action) {
                 case NodeAction.Assign:
                     map[key] = (TElm) newValue;

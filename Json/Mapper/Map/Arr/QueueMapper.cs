@@ -66,10 +66,12 @@ namespace Friflo.Json.Mapper.Map.Arr
             var count = copy.Length;
             int index = patcher.GetElementIndex(count);
             var element = copy[index];
-            patcher.WalkElement(elementType, element, out object value);
-            copy[index] = (TElm)value;
-            for (int n = 0; n < count; n++)
-                list.Enqueue(copy[n]);
+            var action = patcher.DescendElement(elementType, element, out object value);
+            if (action == NodeAction.Assign) {
+                copy[index] = (TElm) value;
+                for (int n = 0; n < count; n++)
+                    list.Enqueue(copy[n]);
+            }
         }
 
         public override void Write(ref Writer writer, TCol slot) {
