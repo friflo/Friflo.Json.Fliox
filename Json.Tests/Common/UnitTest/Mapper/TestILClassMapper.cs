@@ -10,7 +10,6 @@ using NUnit.Framework;
 // using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
-#if !UNITY_5_3_OR_NEWER
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
@@ -182,6 +181,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             bln   = true;
         }
     }
+    
+#if !UNITY_5_3_OR_NEWER
+
     
     public class TestILClassMapper : LeakTestsFixture
     {
@@ -560,7 +562,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
     }
+#endif
 }
 
-#endif
 
