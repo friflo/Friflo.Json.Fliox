@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -40,7 +41,8 @@ namespace Friflo.Json.EntityGraph.Database
         public override async Task CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 var path = FilePath(entity.key);
-                await File.WriteAllTextAsync(path, entity.value);
+                await WriteTextAsync(path, entity.value);
+                // await File.WriteAllTextAsync(path, entity.value);
             }
         }
 
@@ -53,8 +55,10 @@ namespace Friflo.Json.EntityGraph.Database
             foreach (var id in ids) {
                 var filePath = FilePath(id);
                 string payload = null;
-                if (File.Exists(filePath))
-                    payload = await File.ReadAllTextAsync(filePath);
+                if (File.Exists(filePath)) {
+                    payload = await ReadTextAsync(filePath);
+                    // payload = await File.ReadAllTextAsync(filePath);
+                }
                 var entry = new KeyValue {
                     key = id,
                     value = payload
@@ -64,5 +68,32 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
 #pragma warning restore 1998
+        
+        private static async Task WriteTextAsync(string filePath, string text)
+        {
+            byte[] encodedText = Encoding.UTF8.GetBytes(text);
+            using (var sourceStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None,
+                bufferSize: 4096, useAsync: true))
+            {
+                await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+            }
+        }
+        
+        private static async Task<string> ReadTextAsync(string filePath)
+        {
+            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+                bufferSize: 4096, useAsync: true))
+            {
+                var sb = new StringBuilder();
+                byte[] buffer = new byte[0x1000];
+                int numRead;
+                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                {
+                    string text = Encoding.UTF8.GetString(buffer, 0, numRead);
+                    sb.Append(text);
+                }
+                return sb.ToString();
+            }
+        }
     }
 }
