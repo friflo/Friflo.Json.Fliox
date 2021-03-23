@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Tests.Common.Utils
 {
+    // Await utilities to async Task methods as a [UnityTest] in Unity Test Runner
+    // see: [Async await in Unittests - Unity Forum] https://forum.unity.com/threads/async-await-in-unittests.513857/
     public static class RunAsync {
         public static IEnumerator Await(Task task)
         {
