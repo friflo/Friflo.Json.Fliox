@@ -1,11 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
-using NUnit.Framework;
+using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
+
+#if UNITY_5_3_OR_NEWER
+    using UnitTest.Dummy;
+#else
+    using NUnit.Framework;
+#endif
+
 
 namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
@@ -18,9 +26,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 await WriteRead(store);
             }
         }
+        
+        [UnityTest]
+        public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileCreate(); }); }
 
         [Test]
-        public async Task WriteReadFileCreate() {
+        public async Task WriteReadFileCreateSync() { await WriteReadFileCreate(); }
+
+        private async Task WriteReadFileCreate() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
