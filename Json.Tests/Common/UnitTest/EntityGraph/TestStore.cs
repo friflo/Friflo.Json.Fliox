@@ -19,11 +19,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
     public class TestStore : LeakTestsFixture
     {
-        [UnityTest]
-        public IEnumerator WriteReadMemoryCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadMemoryCreate(); }); }
-
-        [Test]
-        public async Task WriteReadMemoryCreateAsync() { await WriteReadMemoryCreate(); }
+        [UnityTest] public IEnumerator WriteReadMemoryCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadMemoryCreate(); }); }
+        [Test]      public async Task   WriteReadMemoryCreateAsync() { await WriteReadMemoryCreate(); }
         
         private async Task WriteReadMemoryCreate() {
             var database = new MemoryDatabase();
@@ -32,11 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest]
-        public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileCreate(); }); }
-
-        [Test]
-        public async Task WriteReadFileCreateAsync() { await WriteReadFileCreate(); }
+        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileCreate(); }); }
+        [Test]      public async Task  WriteReadFileCreateAsync() { await WriteReadFileCreate(); }
 
         private async Task WriteReadFileCreate() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
@@ -45,11 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest]
-        public IEnumerator WriteReadFileEmptyCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileEmpty(); }); }
-
-        [Test]
-        public async Task WriteReadFileEmptyAsync() { await WriteReadFileEmpty(); }
+        [UnityTest] public IEnumerator WriteReadFileEmptyCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileEmpty(); }); }
+        [Test]      public async Task  WriteReadFileEmptyAsync() { await WriteReadFileEmpty(); }
         
         private async Task WriteReadFileEmpty() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
