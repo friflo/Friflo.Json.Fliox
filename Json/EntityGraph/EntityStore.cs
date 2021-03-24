@@ -23,9 +23,11 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntityStore ---------------------------------------
     public class EntityStore : ITracerContext, IDisposable
     {
-        internal readonly   EntityDatabase  database;
-        public  readonly    TypeStore       typeStore = new TypeStore();
-        public readonly     JsonMapper      jsonMapper;
+        internal readonly   EntityDatabase      database;
+        public   readonly   TypeStore           typeStore = new TypeStore();
+        public   readonly   JsonMapper          jsonMapper;
+        private             List<StoreRequest>  requests = new List<StoreRequest>();
+
         
         public EntityStore(EntityDatabase database) {
             this.database = database;
@@ -47,8 +49,10 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             var storeRequest = new StoreSyncRequest();
+            storeRequest.requests = requests;
+            requests = new List<StoreRequest>();
+            
             foreach (var container in setByType.Values) {
-                container.CreateStoreRequest(storeRequest);
                 // async Sync Point!
                 foreach (var request in storeRequest.requests) {
                     request.Execute(database);
@@ -59,17 +63,21 @@ namespace Friflo.Json.EntityGraph
                         case RequestType.Create:
                             var create = (CreateEntitiesRequest) request;
                             EntitySet set = setByName[create.containerName];
-                            set.CreateEntities(create);
+                            set.CreateEntitiesResponse(create);
                             break;
                         case RequestType.Read:
                             var read = (ReadEntitiesRequest) request;
                             set = setByName[read.containerName];
-                            set.ReadEntities(read);
+                            set.ReadEntitiesResponse(read);
                             break;
                         
                     }
                 }
             }
+        }
+
+        internal void AddRequest(StoreRequest request) {
+            requests.Add(request);
         }
 
         public EntitySet<T> EntitySet<T>() where T : Entity
@@ -85,7 +93,9 @@ namespace Friflo.Json.EntityGraph
     
 
     // ----------------------------------------- CRUD -----------------------------------------
-    public class Read<T>
+    public interface ICommand { }
+
+    public class Read<T> : ICommand
     {
         internal readonly   string id;
         internal            T      result;
@@ -104,11 +114,11 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class Create<T>
+    public class Create<T> : ICommand
     {
         private readonly T             entity;
         private readonly EntityStore   store;
-
+        
         internal Create(T entity, EntityStore entityStore) {
             this.entity = entity;
             this.store = entityStore;
@@ -175,8 +185,12 @@ namespace Friflo.Json.EntityGraph
     {
         public  string              containerName;
         public  List<string>        ids;
+        
         [Fri.Ignore]
         public  List<KeyValue>      entitiesResult;
+
+        [Fri.Ignore]
+        internal ICommand           command;
         
         public override RequestType RequestType => RequestType.Read;
         

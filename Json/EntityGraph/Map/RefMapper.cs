@@ -57,11 +57,11 @@ namespace Friflo.Json.EntityGraph.Map
             string id = value.Id;
             if (id != null) {
                 writer.WriteString(id);
-                if (writer.tracerContext != null) {
+                /* if (writer.tracerContext != null) {
                     var store = writer.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     set.SetRefPeer(value);
-                }
+                } */
             } else {
                 writer.AppendNull();
             }

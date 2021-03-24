@@ -11,10 +11,8 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        public  abstract    void    CreateStoreRequest  (StoreSyncRequest syncRequest);
-        //
-        public  abstract    void    CreateEntities      (CreateEntitiesRequest create);
-        public  abstract    void    ReadEntities        (ReadEntitiesRequest read);
+        public  abstract    void    CreateEntitiesResponse      (CreateEntitiesRequest create);
+        public  abstract    void    ReadEntitiesResponse        (ReadEntitiesRequest read);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -25,8 +23,6 @@ namespace Friflo.Json.EntityGraph
         private readonly    JsonMapper                          jsonMapper;
         private readonly    EntityContainer                     container;
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();  // todo -> HashSet<>
-        private readonly    List<Read<T>>                       reads       = new List<Read<T>>();  // todo -> HashSet<>
-        private readonly    List<T>                             creates     = new List<T>();  // todo -> HashSet<>
             
         public              int                                 Count       => peers.Count;
         
@@ -54,7 +50,7 @@ namespace Friflo.Json.EntityGraph
         
         internal void AddCreateRequest (PeerEntity<T> peer) {
             peer.assigned = true;
-            creates.Add(peer.entity);
+            CreateEntityRequest(null, peer.entity);
         }
         
         internal PeerEntity<T> GetPeer(Ref<T> reference) {
@@ -93,7 +89,7 @@ namespace Friflo.Json.EntityGraph
         
         public Read<T> Read(string id) {
             var read = new Read<T>(id);
-            reads.Add(read);
+            ReadEntityRequest(read);
             return read;
         }
         
@@ -104,62 +100,56 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override void CreateStoreRequest(StoreSyncRequest syncRequest) {
-            // creates
-            if (creates.Count > 0) {
-                var req = new CreateEntitiesRequest { containerName = container.name };
-                syncRequest.requests.Add(req);
-                List<KeyValue> entries = new List<KeyValue>();
-                foreach (var entity in creates) {
-                    var entry = new KeyValue {
-                        key = entity.id,
-                        value = jsonMapper.Write(entity)
-                    };
-                    entries.Add(entry);
-                }
-                req.entities = entries;
-                container.CreateEntities(entries);
-                creates.Clear();
-            }
-            
-            // reads
-            if (reads.Count > 0) {
-                var req = new ReadEntitiesRequest{ containerName = container.name };
-                syncRequest.requests.Add(req);
-                List<string> ids = new List<string>();
-                reads.ForEach(read => ids.Add(read.id));
-                req.ids = ids;
-                
-                var entries = container.ReadEntities(ids);
-                if (entries.Count != reads.Count)
-                    throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {ids.Count}");
-                
-                int n = 0;
-                foreach (var entry in entries) {
-                    if (entry.value != null) {
-                        var peer = GetPeer(entry.key);
-                        jsonMapper.ReadTo(entry.value, peer.entity);
-                        peer.assigned = true;
-                        var read = reads[n];
-                        read.result = peer.entity;
-                        read.synced = true;
-                    } else {
-                        var read = reads[n];
-                        read.result = null;
-                        read.synced = true;
-                    }
-                    n++;
-                }
-                reads.Clear();
-            }
+
+        // --- CreateEntities request / result ---
+        private void CreateEntityRequest(Create<T> create, T entity) {
+            var req = new CreateEntitiesRequest {
+                containerName = container.name,
+            };
+            var json = jsonMapper.Write(entity);
+            var entry = new KeyValue {
+                key = entity.id,
+                value = json
+            };
+            List<KeyValue> entries = new List<KeyValue> {entry};
+            req.entities = entries;
+            store.AddRequest(req);
         }
 
-        public override void CreateEntities(CreateEntitiesRequest create) {
-            
+        public override void CreateEntitiesResponse(CreateEntitiesRequest create) {
+            // may handle success/error of entity creation
+        }
+        
+        // --- ReadEntities request / result ---
+        private void ReadEntityRequest(Read<T> read) {
+            var req = new ReadEntitiesRequest {
+                containerName = container.name,
+                command = read
+            };
+            List<string> ids = new List<string> {read.id};
+            req.ids = ids;
+            store.AddRequest(req);
         }
 
-        public override void ReadEntities(ReadEntitiesRequest read) {
-            
+        public override void ReadEntitiesResponse(ReadEntitiesRequest readRequest) {
+            var entries = readRequest.entitiesResult;
+            if (entries.Count != readRequest.ids.Count)
+                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {readRequest.ids.Count}");
+                
+            foreach (var entry in entries) {
+                if (entry.value != null) {
+                    var peer = GetPeer(entry.key);
+                    jsonMapper.ReadTo(entry.value, peer.entity);
+                    peer.assigned = true;
+                    var read = (Read<T>)readRequest.command;
+                    read.result = peer.entity;
+                    read.synced = true;
+                } else {
+                    var read = (Read<T>)readRequest.command;
+                    read.result = null;
+                    read.synced = true;
+                }
+            }
         }
     }
 }
