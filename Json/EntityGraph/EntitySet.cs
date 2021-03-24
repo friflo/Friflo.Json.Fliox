@@ -11,8 +11,10 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        protected internal abstract void SyncContainerRequest (StoreSyncRequest syncRequest);
-        protected internal abstract void SyncContainerResponse(StoreSyncResponse request);
+        public  abstract    void    CreateStoreRequest  (StoreSyncRequest syncRequest);
+        //
+        public  abstract    void    CreateEntities      (CreateEntitiesRequest create);
+        public  abstract    void    ReadEntities        (ReadEntitiesRequest read);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -30,10 +32,12 @@ namespace Friflo.Json.EntityGraph
         
         public EntitySet(EntityStore store) {
             this.store = store;
-            store.containers[typeof(T)] = this;
+            type = typeof(T);
+            store.setByType[type]       = this;
+            store.setByName[type.Name]  = this;
+            
             jsonMapper = store.jsonMapper;
             typeMapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
-            type = typeof(T);
             container = store.database.GetContainer(type.Name);
         }
         
@@ -100,9 +104,11 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        protected internal override void SyncContainerRequest(StoreSyncRequest syncRequest) {
+        public override void CreateStoreRequest(StoreSyncRequest syncRequest) {
             // creates
             if (creates.Count > 0) {
+                var req = new CreateEntitiesRequest { containerName = container.name };
+                syncRequest.requests.Add(req);
                 List<KeyValue> entries = new List<KeyValue>();
                 foreach (var entity in creates) {
                     var entry = new KeyValue {
@@ -111,14 +117,19 @@ namespace Friflo.Json.EntityGraph
                     };
                     entries.Add(entry);
                 }
+                req.entities = entries;
                 container.CreateEntities(entries);
                 creates.Clear();
             }
             
             // reads
             if (reads.Count > 0) {
+                var req = new ReadEntitiesRequest{ containerName = container.name };
+                syncRequest.requests.Add(req);
                 List<string> ids = new List<string>();
                 reads.ForEach(read => ids.Add(read.id));
+                req.ids = ids;
+                
                 var entries = container.ReadEntities(ids);
                 if (entries.Count != reads.Count)
                     throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {ids.Count}");
@@ -143,8 +154,12 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        protected internal override void SyncContainerResponse(StoreSyncResponse request) {
+        public override void CreateEntities(CreateEntitiesRequest create) {
+            
         }
 
+        public override void ReadEntities(ReadEntitiesRequest read) {
+            
+        }
     }
 }

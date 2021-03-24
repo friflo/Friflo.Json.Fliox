@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Map;
@@ -41,19 +42,40 @@ namespace Friflo.Json.EntityGraph
         }
         
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal readonly Dictionary<Type, EntitySet> containers = new Dictionary<Type, EntitySet>();
+        internal readonly Dictionary<Type,   EntitySet> setByType = new Dictionary<Type, EntitySet>();
+        internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
 
         public async Task Sync() {
-            var request = new StoreSyncRequest();
-            foreach (var container in containers.Values) {
-                container.SyncContainerRequest(request);
+            var storeRequest = new StoreSyncRequest();
+            foreach (var container in setByType.Values) {
+                container.CreateStoreRequest(storeRequest);
+                // async Sync Point!
+                foreach (var request in storeRequest.requests) {
+                    request.Execute(database);
+                }
+                foreach (var request in storeRequest.requests) {
+                    RequestType type = request.RequestType;
+                    switch (type) {
+                        case RequestType.Create:
+                            var create = (CreateEntitiesRequest) request;
+                            EntitySet set = setByName[create.containerName];
+                            set.CreateEntities(create);
+                            break;
+                        case RequestType.Read:
+                            var read = (ReadEntitiesRequest) request;
+                            set = setByName[read.containerName];
+                            set.ReadEntities(read);
+                            break;
+                        
+                    }
+                }
             }
         }
 
         public EntitySet<T> EntitySet<T>() where T : Entity
         {
             Type entityType = typeof(T);
-            if (containers.TryGetValue(entityType, out EntitySet set))
+            if (setByType.TryGetValue(entityType, out EntitySet set))
                 return (EntitySet<T>)set;
             
             set = new EntitySet<T>(this);
@@ -124,7 +146,7 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------- StoreSyncRequest -----------------------------------
     public class StoreSyncRequest
     {
-        public List<StoreRequest>   requests; 
+        public List<StoreRequest> requests = new List<StoreRequest>();
     }
 
     [Fri.Discriminator("request")]
@@ -132,39 +154,42 @@ namespace Friflo.Json.EntityGraph
     [Fri.Polymorph(typeof(ReadEntitiesRequest),    Discriminant = "read")]
     public abstract class StoreRequest
     {
+        public abstract void        Execute(EntityDatabase database);
+        public abstract RequestType RequestType { get; }
     }
     
     public class CreateEntitiesRequest : StoreRequest
     {
-        public  string              container;
+        public  string              containerName;
         public  List<KeyValue>      entities;
+
+        public override RequestType RequestType => RequestType.Create;
+
+        public override void Execute(EntityDatabase database) {
+            var container = database.GetContainer(containerName);
+            container.CreateEntities(entities);   
+        }
     }
     
     public class ReadEntitiesRequest : StoreRequest
     {
-        public  string              container;
+        public  string              containerName;
         public  List<string>        ids;
+        [Fri.Ignore]
+        public  List<KeyValue>      entitiesResult;
+        
+        public override RequestType RequestType => RequestType.Read;
+        
+        public override void Execute(EntityDatabase database) {
+            var container = database.GetContainer(containerName);
+            entitiesResult = container.ReadEntities(ids).ToList(); 
+        }
     }
-    
-    // ----------------------------------- StoreSyncResponse -----------------------------------
-    public class StoreSyncResponse
+
+    public enum RequestType
     {
-        public List<StoreResponse>   requests; 
+        Read,
+        Create
     }
-    
-    [Fri.Discriminator("response")]
-    [Fri.Polymorph(typeof(CreateEntitiesResponse),  Discriminant = "create")]
-    [Fri.Polymorph(typeof(ReadEntitiesResponse),    Discriminant = "read")]
-    public abstract class StoreResponse
-    {
-    }
-    
-    public class CreateEntitiesResponse : StoreResponse
-    {
-    }
-    
-    public class ReadEntitiesResponse : StoreResponse
-    {
-        public  List<KeyValue>         entities;
-    }
+
 }
