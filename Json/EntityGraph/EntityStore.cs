@@ -8,7 +8,6 @@ using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Map;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -45,8 +44,9 @@ namespace Friflo.Json.EntityGraph
         internal readonly Dictionary<Type, EntitySet> containers = new Dictionary<Type, EntitySet>();
 
         public async Task Sync() {
+            var request = new StoreSyncRequest();
             foreach (var container in containers.Values) {
-                container.SyncContainer();
+                container.SyncContainerRequest(request);
             }
         }
 
@@ -121,21 +121,50 @@ namespace Friflo.Json.EntityGraph
     }
 
 
-    // ------------------------------------- Store Request -------------------------------------
-    public class StoreRequest
+    // ----------------------------------- StoreSyncRequest -----------------------------------
+    public class StoreSyncRequest
     {
-        public readonly    List<SetRequest>                sets     = new List<SetRequest>(); 
+        public List<StoreRequest>   requests; 
+    }
+
+    [Fri.Discriminator("request")]
+    [Fri.Polymorph(typeof(CreateEntitiesRequest),  Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntitiesRequest),    Discriminant = "read")]
+    public abstract class StoreRequest
+    {
     }
     
-    public class SetRequest
+    public class CreateEntitiesRequest : StoreRequest
     {
-        public readonly    List<string>                        readIds  = new List<string>();
-        public readonly    List<CreateEntityRequest>           creates  = new List<CreateEntityRequest>(); 
+        public  string              container;
+        public  List<KeyValue>      entities;
     }
     
-    public class CreateEntityRequest
+    public class ReadEntitiesRequest : StoreRequest
     {
-        public readonly    string                              ids;
-        public readonly    JsonValue                           payload; 
+        public  string              container;
+        public  List<string>        ids;
+    }
+    
+    // ----------------------------------- StoreSyncResponse -----------------------------------
+    public class StoreSyncResponse
+    {
+        public List<StoreResponse>   requests; 
+    }
+    
+    [Fri.Discriminator("response")]
+    [Fri.Polymorph(typeof(CreateEntitiesResponse),  Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntitiesResponse),    Discriminant = "read")]
+    public abstract class StoreResponse
+    {
+    }
+    
+    public class CreateEntitiesResponse : StoreResponse
+    {
+    }
+    
+    public class ReadEntitiesResponse : StoreResponse
+    {
+        public  List<KeyValue>         entities;
     }
 }

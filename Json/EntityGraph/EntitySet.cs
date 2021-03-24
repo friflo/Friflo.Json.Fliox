@@ -11,7 +11,8 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        protected internal abstract void SyncContainer   ();
+        protected internal abstract void SyncContainerRequest (StoreSyncRequest syncRequest);
+        protected internal abstract void SyncContainerResponse(StoreSyncResponse request);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -99,7 +100,7 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        protected internal override void SyncContainer() {
+        protected internal override void SyncContainerRequest(StoreSyncRequest syncRequest) {
             // creates
             if (creates.Count > 0) {
                 List<KeyValue> entries = new List<KeyValue>();
@@ -141,6 +142,9 @@ namespace Friflo.Json.EntityGraph
                 reads.Clear();
             }
         }
-        
+
+        protected internal override void SyncContainerResponse(StoreSyncResponse request) {
+        }
+
     }
 }
