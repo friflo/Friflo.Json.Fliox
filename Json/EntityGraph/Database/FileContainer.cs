@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -36,27 +35,25 @@ namespace Friflo.Json.EntityGraph.Database
             return folder + key + ".json";
         }
         
-
-#pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task CreateEntities(ICollection<KeyValue> entities) {
+        public override void CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 var path = FilePath(entity.key);
-                await WriteTextAsync(path, entity.value);
+                WriteText(path, entity.value);
                 // await File.WriteAllTextAsync(path, entity.value);
             }
         }
 
-        public override async Task UpdateEntities(ICollection<KeyValue> entities) {
+        public override void UpdateEntities(ICollection<KeyValue> entities) {
             throw new NotImplementedException();
         }
 
-        public override async Task<ICollection<KeyValue>> ReadEntities(ICollection<string> ids) {
+        public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
             var result = new List<KeyValue>();
             foreach (var id in ids) {
                 var filePath = FilePath(id);
                 string payload = null;
                 if (File.Exists(filePath)) {
-                    payload = await ReadTextAsync(filePath);
+                    payload = ReadText(filePath);
                     // payload = await File.ReadAllTextAsync(filePath);
                 }
                 var entry = new KeyValue {
@@ -67,27 +64,26 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return result;
         }
-#pragma warning restore 1998
         
-        private static async Task WriteTextAsync(string filePath, string text)
+        private static void WriteText(string filePath, string text)
         {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
             using (var sourceStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None,
-                bufferSize: 4096, useAsync: true))
+                bufferSize: 4096, useAsync: false))
             {
-                await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+                sourceStream.Write(encodedText, 0, encodedText.Length);
             }
         }
         
-        private static async Task<string> ReadTextAsync(string filePath)
+        private static string ReadText(string filePath)
         {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-                bufferSize: 4096, useAsync: true))
+                bufferSize: 4096, useAsync: false))
             {
                 var sb = new StringBuilder();
                 byte[] buffer = new byte[0x1000];
                 int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                while ((numRead = sourceStream.Read(buffer, 0, buffer.Length)) != 0)
                 {
                     string text = Encoding.UTF8.GetString(buffer, 0, numRead);
                     sb.Append(text);

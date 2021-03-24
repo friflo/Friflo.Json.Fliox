@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(WriteReadFileCreate()); }
+        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(WriteReadFileCreate(), i => Log.Info("--- " + i)); }
         [Test]      public async Task  WriteReadFileCreateAsync() { await WriteReadFileCreate(); }
 
         private async Task WriteReadFileCreate() {

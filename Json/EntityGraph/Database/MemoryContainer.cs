@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -21,14 +20,13 @@ namespace Friflo.Json.EntityGraph.Database
         public MemoryContainer(string name, EntityDatabase database) : base (name, database) { }
 
 
-#pragma warning disable 1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
-        public override async Task CreateEntities(ICollection<KeyValue> entities) {
+        public override void CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 payloads[entity.key] = entity.value;
             }
         }
 
-        public override async Task UpdateEntities(ICollection<KeyValue> entities) {
+        public override void UpdateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.key, out string _))
                     throw new InvalidOperationException($"Expect Entity with id {entity.key} in DatabaseContainer: {name}");
@@ -36,7 +34,7 @@ namespace Friflo.Json.EntityGraph.Database
             }
         }
 
-        public override async Task<ICollection<KeyValue>> ReadEntities(ICollection<string> ids) {
+        public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
             var result = new List<KeyValue>();
             foreach (var id in ids) {
                 payloads.TryGetValue(id, out var payload);
@@ -48,6 +46,5 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return result;
         }
-#pragma warning restore 1998
     }
 }

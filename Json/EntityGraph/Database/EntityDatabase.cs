@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -49,8 +48,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         // ---
-        public abstract Task                            CreateEntities  (ICollection<KeyValue> entities);
-        public abstract Task                            UpdateEntities  (ICollection<KeyValue> entities);
-        public abstract Task<ICollection<KeyValue>>     ReadEntities    (ICollection<string> ids);
+        public abstract void                      CreateEntities  (ICollection<KeyValue> entities);
+        public abstract void                      UpdateEntities  (ICollection<KeyValue> entities);
+        public abstract ICollection<KeyValue>     ReadEntities    (ICollection<string> ids);
     }
 }
