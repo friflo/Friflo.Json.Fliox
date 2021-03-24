@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
@@ -19,7 +20,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
     public class TestStore : LeakTestsFixture
     {
-        [UnityTest] public IEnumerator WriteReadMemoryCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadMemoryCreate(); }); }
+        [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Log.Info("--- " + i)); }
+        [Test]      public async Task   CollectAwaitAsync() { await CollectAwait(); }
+        
+        private async Task CollectAwait() {
+            List<Task> tasks = new List<Task>();
+            for (int n = 0; n < 1000; n++) {
+                Task task = Task.Delay(1);
+                tasks.Add(task);
+            }
+            await Task.WhenAll(tasks);
+        }
+
+        [UnityTest] public IEnumerator  ChainAwaitCoroutine() { yield return RunAsync.Await(ChainAwait(), i => Log.Info("--- " + i)); }
+        [Test]      public async Task   ChainAwaitAsync() { await ChainAwait(); }
+        private async Task ChainAwait() {
+            for (int n = 0; n < 5; n++) {
+                await Task.Delay(1);
+            }
+        }
+        
+        [UnityTest] public IEnumerator  WriteReadMemoryCreateCoroutine() { yield return RunAsync.Await(WriteReadMemoryCreate()); }
         [Test]      public async Task   WriteReadMemoryCreateAsync() { await WriteReadMemoryCreate(); }
         
         private async Task WriteReadMemoryCreate() {
@@ -29,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileCreate(); }); }
+        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(WriteReadFileCreate()); }
         [Test]      public async Task  WriteReadFileCreateAsync() { await WriteReadFileCreate(); }
 
         private async Task WriteReadFileCreate() {
@@ -39,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest] public IEnumerator WriteReadFileEmptyCoroutine() { yield return RunAsync.Await(async () => { await WriteReadFileEmpty(); }); }
+        [UnityTest] public IEnumerator WriteReadFileEmptyCoroutine() { yield return RunAsync.Await(WriteReadFileEmpty()); }
         [Test]      public async Task  WriteReadFileEmptyAsync() { await WriteReadFileEmpty(); }
         
         private async Task WriteReadFileEmpty() {
