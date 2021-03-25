@@ -26,7 +26,6 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntityDatabase      database;
         public   readonly   TypeStore           typeStore = new TypeStore();
         public   readonly   JsonMapper          jsonMapper;
-        private             List<StoreRequest>  requests = new List<StoreRequest>();
 
         
         public EntityStore(EntityDatabase database) {
@@ -48,38 +47,24 @@ namespace Friflo.Json.EntityGraph
         internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
 
         public async Task Sync() {
-            var storeRequest = new StoreSyncRequest { requests = requests };
+            var storeRequest = new StoreSyncRequest { requests = new List<StoreRequest>() };
             foreach (var setPair in setByType) {
                 EntitySet set = setPair.Value;
                 set.AddSetRequests(storeRequest);
             }
 
             // ---> async Sync Point!
-            var jsonSync = jsonMapper.Write(requests);
+            var jsonSync = jsonMapper.Write(storeRequest);
             
-            requests = new List<StoreRequest>();
+            // todo handle Execute() asynchronous 
             foreach (var request in storeRequest.requests) {
                 request.Execute(database);
             }
-            foreach (var request in storeRequest.requests) {
-                RequestType type = request.RequestType;
-                switch (type) {
-                    case RequestType.Create:
-                        var create = (CreateEntitiesRequest) request;
-                        EntitySet set = setByName[create.containerName];
-                        set.CreateEntitiesResponse(create);
-                        break;
-                    case RequestType.Read:
-                        var read = (ReadEntitiesRequest) request;
-                        set = setByName[read.containerName];
-                        set.ReadEntitiesResponse(read);
-                        break;
-                }
+            
+            foreach (var setPair in setByType) {
+                EntitySet set = setPair.Value;
+                set.HandleSetResponse(storeRequest);
             }
-        }
-
-        internal void AddRequest(StoreRequest request) {
-            requests.Add(request);
         }
 
         public EntitySet<T> EntitySet<T>() where T : Entity

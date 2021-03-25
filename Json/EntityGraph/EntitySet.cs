@@ -13,10 +13,11 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        public  abstract    void    AddSetRequests               (StoreSyncRequest syncRequest);
+        public  abstract    void    AddSetRequests          (StoreSyncRequest syncRequest);
+        public  abstract    void    HandleSetResponse       (StoreSyncRequest syncRequest);
         //
-        public  abstract    void    CreateEntitiesResponse      (CreateEntitiesRequest create);
-        public  abstract    void    ReadEntitiesResponse        (ReadEntitiesRequest read);
+        public  abstract    void    CreateEntitiesResponse  (CreateEntitiesRequest create);
+        public  abstract    void    ReadEntitiesResponse    (ReadEntitiesRequest read);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -147,6 +148,24 @@ namespace Friflo.Json.EntityGraph
                 };
                 syncRequest.requests.Add(req);
                 reads.Clear();
+            }
+        }
+
+        public override void HandleSetResponse(StoreSyncRequest syncRequest) {
+            foreach (var request in syncRequest.requests) {
+                RequestType requestType = request.RequestType;
+                switch (requestType) {
+                    case RequestType.Create:
+                        var create = (CreateEntitiesRequest) request;
+                        EntitySet set = store.setByName[create.containerName];
+                        set.CreateEntitiesResponse(create);
+                        break;
+                    case RequestType.Read:
+                        var read = (ReadEntitiesRequest) request;
+                        set = store.setByName[read.containerName];
+                        set.ReadEntitiesResponse(read);
+                        break;
+                }
             }
         }
 
