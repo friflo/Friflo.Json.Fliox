@@ -49,6 +49,9 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             var storeRequest = new StoreSyncRequest { requests = requests };
+            foreach (var set in setByType.Values) {
+                set.AddSetRequests(storeRequest);
+            }
 
             // ---> async Sync Point!
             var jsonSync = jsonMapper.Write(requests);

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
@@ -12,6 +13,8 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
+        public  abstract    void    AddSetRequests               (StoreSyncRequest syncRequest);
+        //
         public  abstract    void    CreateEntitiesResponse      (CreateEntitiesRequest create);
         public  abstract    void    ReadEntitiesResponse        (ReadEntitiesRequest read);
     }
@@ -23,7 +26,8 @@ namespace Friflo.Json.EntityGraph
         private readonly    TypeMapper<T>                       typeMapper;
         private readonly    JsonMapper                          jsonMapper;
         private readonly    EntityContainer                     container;
-        private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();  // todo -> HashSet<>
+        private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
+        private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
             
         
         public EntitySet(EntityStore store) {
@@ -88,9 +92,11 @@ namespace Friflo.Json.EntityGraph
         }
         
         public Read<T> Read(string id) {
+            if (reads.TryGetValue(id, out Read<T> read))
+                return read;
             var peer = GetPeer(id);
-            var read = peer.CreateRead();
-            ReadEntityRequest(read);
+            read = peer.CreateRead();
+            reads.Add(id, read);
             return read;
         }
         
@@ -101,6 +107,17 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
+        public override void AddSetRequests(StoreSyncRequest syncRequest) {
+            if (reads.Count > 0) {
+                var ids = reads.Select(read => read.Key).ToList();
+                var req = new ReadEntitiesRequest {
+                    containerName = container.name,
+                    ids = ids
+                };
+                syncRequest.requests.Add(req);
+                reads.Clear();
+            }
+        }
 
         // --- CreateEntities request / result ---
         private void CreateEntityRequest(Create<T> create, T entity) {
@@ -122,14 +139,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         // --- ReadEntities request / result ---
-        private void ReadEntityRequest(Read<T> read) {
-            var req = new ReadEntitiesRequest {
-                containerName = container.name
-            };
-            List<string> ids = new List<string> {read.id};
-            req.ids = ids;
-            store.AddRequest(req);
-        }
+
 
         public override void ReadEntitiesResponse(ReadEntitiesRequest readRequest) {
             var entries = readRequest.entitiesResult;
