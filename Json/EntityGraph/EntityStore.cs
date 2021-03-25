@@ -48,30 +48,27 @@ namespace Friflo.Json.EntityGraph
         internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
 
         public async Task Sync() {
-            var storeRequest = new StoreSyncRequest();
-            storeRequest.requests = requests;
+            var storeRequest = new StoreSyncRequest { requests = requests };
             requests = new List<StoreRequest>();
+
+            // ---> async Sync Point!
             
-            foreach (var container in setByType.Values) {
-                // async Sync Point!
-                foreach (var request in storeRequest.requests) {
-                    request.Execute(database);
-                }
-                foreach (var request in storeRequest.requests) {
-                    RequestType type = request.RequestType;
-                    switch (type) {
-                        case RequestType.Create:
-                            var create = (CreateEntitiesRequest) request;
-                            EntitySet set = setByName[create.containerName];
-                            set.CreateEntitiesResponse(create);
-                            break;
-                        case RequestType.Read:
-                            var read = (ReadEntitiesRequest) request;
-                            set = setByName[read.containerName];
-                            set.ReadEntitiesResponse(read);
-                            break;
-                        
-                    }
+            foreach (var request in storeRequest.requests) {
+                request.Execute(database);
+            }
+            foreach (var request in storeRequest.requests) {
+                RequestType type = request.RequestType;
+                switch (type) {
+                    case RequestType.Create:
+                        var create = (CreateEntitiesRequest) request;
+                        EntitySet set = setByName[create.containerName];
+                        set.CreateEntitiesResponse(create);
+                        break;
+                    case RequestType.Read:
+                        var read = (ReadEntitiesRequest) request;
+                        set = setByName[read.containerName];
+                        set.ReadEntitiesResponse(read);
+                        break;
                 }
             }
         }
