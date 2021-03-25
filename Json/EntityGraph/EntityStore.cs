@@ -12,6 +12,27 @@ using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.EntityGraph
 {
+    public interface ISyncHandler {
+        Task ExecuteSync(EntityDatabase database, StoreSyncRequest request);
+    }
+
+    public class SyncHandler : ISyncHandler
+    {
+#pragma warning disable 1998  // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await TaskEx.Run(...)' to do CPU-bound work on a background thread
+        public async Task ExecuteSync(EntityDatabase database, StoreSyncRequest syncRequest) { 
+            syncRequest.Execute(database);
+        }
+    }
+#pragma warning restore 1998
+    
+    public class BackgroundSyncHandler : ISyncHandler
+    {
+        public async Task ExecuteSync(EntityDatabase database, StoreSyncRequest syncRequest) {
+            await Task.Run(() => {
+                syncRequest.Execute(database);
+            });
+        }
+    }
 
     public static class StoreExtension
     {
@@ -26,6 +47,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntityDatabase      database;
         public   readonly   TypeStore           typeStore = new TypeStore();
         public   readonly   JsonMapper          jsonMapper;
+        private  readonly   ISyncHandler   syncHandler = new SyncHandler();
 
         
         public EntityStore(EntityDatabase database) {
@@ -53,14 +75,12 @@ namespace Friflo.Json.EntityGraph
                 set.AddSetRequests(storeRequest);
             }
 
-            // ---> async Sync Point!
-            var jsonSync = jsonMapper.Write(storeRequest);
+            await syncHandler.ExecuteSync(database, storeRequest);
             
-            // todo handle Execute() asynchronous 
-            foreach (var request in storeRequest.requests) {
-                request.Execute(database);
-            }
-
+            // ---> async Sync Point!
+#if DEBUG
+            var jsonSync = jsonMapper.Write(storeRequest); // todo remove - log StoreSyncRequest as JSON
+#endif
             HandleSetResponse(storeRequest);
         }
         
@@ -163,6 +183,12 @@ namespace Friflo.Json.EntityGraph
     public class StoreSyncRequest
     {
         public List<StoreRequest> requests = new List<StoreRequest>();
+
+        public void Execute(EntityDatabase database) {
+            foreach (var request in requests) {
+                request.Execute(database);
+            }
+        }
     }
 
     [Fri.Discriminator("request")]
