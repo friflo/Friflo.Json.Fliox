@@ -49,7 +49,8 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             var storeRequest = new StoreSyncRequest { requests = requests };
-            foreach (var set in setByType.Values) {
+            foreach (var setPair in setByType) {
+                EntitySet set = setPair.Value;
                 set.AddSetRequests(storeRequest);
             }
 
@@ -115,8 +116,10 @@ namespace Friflo.Json.EntityGraph
     
     public class Create<T>
     {
-        private readonly T             entity;
-        private readonly EntityStore   store;
+        private readonly    T           entity;
+        private readonly    EntityStore store;
+
+        internal            T           Entity => entity;
         
         internal Create(T entity, EntityStore entityStore) {
             this.entity = entity;
@@ -135,12 +138,11 @@ namespace Friflo.Json.EntityGraph
     // ------------------------------------- PeerEntity<> -------------------------------------
     internal class PeerEntity<T>  where T : Entity
     {
-        internal readonly   T       entity;
-        internal            bool    assigned;
-        internal            Read<T> read;
+        internal readonly   T           entity;
+        internal            bool        assigned;
+        internal            Read<T>     read;
+        internal            Create<T>   create;
 
-        internal            Read<T> CreateRead() => read ?? (read = new Read<T>(entity.id)); 
-        
         internal PeerEntity(T entity) {
             this.entity = entity;
         }

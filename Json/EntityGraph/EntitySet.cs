@@ -28,6 +28,7 @@ namespace Friflo.Json.EntityGraph
         private readonly    EntityContainer                     container;
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
+        private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
             
         
         public EntitySet(EntityStore store) {
@@ -52,9 +53,14 @@ namespace Friflo.Json.EntityGraph
             return peer;
         }
         
-        internal void AddCreateRequest (PeerEntity<T> peer) {
+        internal Create<T> AddCreateRequest (PeerEntity<T> peer) {
             peer.assigned = true;
-            CreateEntityRequest(null, peer.entity);
+            var create = peer.create;
+            if (create == null) {
+                peer.create = create = new Create<T>(peer.entity, store);
+            }
+            creates.Add(peer.entity.id, create);
+            return create;
         }
         
         internal PeerEntity<T> GetPeer(Ref<T> reference) {
@@ -95,19 +101,44 @@ namespace Friflo.Json.EntityGraph
             if (reads.TryGetValue(id, out Read<T> read))
                 return read;
             var peer = GetPeer(id);
-            read = peer.CreateRead();
+            read = peer.read;
+            if (read == null) {
+                peer.read = read = new Read<T>(peer.entity.id);
+            }
             reads.Add(id, read);
             return read;
         }
         
         public Create<T> Create(T entity) {
-            var create = new Create<T>(entity, store);
+            if (creates.TryGetValue(entity.id, out Create<T> create))
+                return create;
             var peer = CreatePeer(entity);
-            AddCreateRequest(peer);
+            create = AddCreateRequest(peer);
             return create;
         }
 
         public override void AddSetRequests(StoreSyncRequest syncRequest) {
+            // --- CreateEntities
+            if (creates.Count > 0) {
+                var entries = new List<KeyValue>();
+                foreach (var createPair in creates) {
+                    Create<T> create = createPair.Value;
+                    var entity = create.Entity;
+                    var json = jsonMapper.Write(entity);
+                    var entry = new KeyValue {
+                        key = entity.id,
+                        value = new JsonValue{json = json }
+                    };
+                    entries.Add(entry);
+                }
+                var req = new CreateEntitiesRequest {
+                    containerName = container.name,
+                    entities = entries
+                };
+                syncRequest.requests.Add(req);
+                creates.Clear();
+            }
+            // --- ReadEntities
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
                 var req = new ReadEntitiesRequest {
@@ -119,28 +150,16 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        // --- CreateEntities request / result ---
-        private void CreateEntityRequest(Create<T> create, T entity) {
-            var req = new CreateEntitiesRequest {
-                containerName = container.name,
-            };
-            var json = jsonMapper.Write(entity);
-            var entry = new KeyValue {
-                key = entity.id,
-                value = new JsonValue{json = json }
-            };
-            List<KeyValue> entries = new List<KeyValue> {entry};
-            req.entities = entries;
-            store.AddRequest(req);
-        }
-
+        // --- CreateEntities
         public override void CreateEntitiesResponse(CreateEntitiesRequest create) {
-            // may handle success/error of entity creation
+            var entities = create.entities;
+            foreach (var entry in entities) {
+                var peer = GetPeer(entry.key);
+                peer.create = null;
+            }
         }
         
-        // --- ReadEntities request / result ---
-
-
+        // --- ReadEntities
         public override void ReadEntitiesResponse(ReadEntitiesRequest readRequest) {
             var entries = readRequest.entitiesResult;
             if (entries.Count != readRequest.ids.Count)

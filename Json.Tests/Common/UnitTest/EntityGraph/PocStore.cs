@@ -50,7 +50,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var order       = new Order { id = "order-1" };
             
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
-            store.articles.Create(cameraCreate);
+            var createCam1 = store.articles.Create(cameraCreate);
+            var createCam2 = store.articles.Create(cameraCreate);
+            IsTrue(createCam1 == createCam2);  // test redundant create
+            
             await store.Sync();
 
             var cameraUnknown = store.articles.Read("article-unknown");
