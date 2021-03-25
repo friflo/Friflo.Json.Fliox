@@ -54,6 +54,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var createCam2 = store.articles.Create(cameraCreate);
             IsTrue(createCam1 == createCam2);  // test redundant create
             
+            for (int n = 0; n < 1; n++) {
+                var id = $"bulk-article-{n:D4}";
+                var newArticle = new Article { id = id, name = id };
+                store.articles.Create(newArticle);
+            }
+            
             await store.Sync();
 
             var cameraUnknown = store.articles.Read("article-unknown");

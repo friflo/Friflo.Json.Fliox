@@ -47,7 +47,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntityDatabase      database;
         public   readonly   TypeStore           typeStore = new TypeStore();
         public   readonly   JsonMapper          jsonMapper;
-        private  readonly   ISyncHandler   syncHandler = new SyncHandler();
+        private  readonly   ISyncHandler        syncHandler = new BackgroundSyncHandler();
 
         
         public EntityStore(EntityDatabase database) {
