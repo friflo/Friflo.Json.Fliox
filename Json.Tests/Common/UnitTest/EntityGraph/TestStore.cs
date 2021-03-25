@@ -96,7 +96,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var order1 =    store.orders.Read("order-1");
             // await store.Sync();
             
-            var article1 =  store.articles.Read("article-1");
+            var article1            =  store.articles.Read("article-1");
+            var article1Redundant   =  store.articles.Read("article-1");
+            IsTrue(article1 == article1Redundant);
+            
             var article2 =  store.articles.Read("article-2");
             var customer1 = store.customers.Read("customer-1");
             var unknown   = store.customers.Read("article-unknown");
