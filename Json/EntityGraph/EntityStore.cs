@@ -47,7 +47,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntityDatabase      database;
         public   readonly   TypeStore           typeStore = new TypeStore();
         public   readonly   JsonMapper          jsonMapper;
-        private  readonly   ISyncHandler        syncHandler = new BackgroundSyncHandler();
+        private  readonly   ISyncHandler        backgroundSyncHandler = new BackgroundSyncHandler();
 
         
         public EntityStore(EntityDatabase database) {
@@ -69,22 +69,31 @@ namespace Friflo.Json.EntityGraph
         internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
 
         public async Task Sync() {
-            var storeRequest = new StoreSyncRequest { requests = new List<StoreRequest>() };
-            foreach (var setPair in setByType) {
-                EntitySet set = setPair.Value;
-                set.AddSetRequests(storeRequest);
-            }
-
-            await syncHandler.ExecuteSync(database, storeRequest);
-            
+            var syncRequest = CreateSyncRequest();
             // ---> async Sync Point!
+            await backgroundSyncHandler.ExecuteSync(database, syncRequest);
 #if DEBUG
-            var jsonSync = jsonMapper.Write(storeRequest); // todo remove - log StoreSyncRequest as JSON
+            var jsonSync = jsonMapper.Write(syncRequest); // todo remove - log StoreSyncRequest as JSON
 #endif
-            HandleSetResponse(storeRequest);
+            HandleSyncRequest(syncRequest);
         }
         
-        private void HandleSetResponse(StoreSyncRequest syncRequest) {
+        public void SyncWait() {
+            var syncRequest = CreateSyncRequest();
+            syncRequest.Execute(database);
+            HandleSyncRequest(syncRequest);
+        }
+
+        private StoreSyncRequest CreateSyncRequest() {
+            var syncRequest = new StoreSyncRequest { requests = new List<StoreRequest>() };
+            foreach (var setPair in setByType) {
+                EntitySet set = setPair.Value;
+                set.AddSetRequests(syncRequest);
+            }
+            return syncRequest;
+        }
+
+        private void HandleSyncRequest(StoreSyncRequest syncRequest) {
             var requests = syncRequest.requests;
             foreach (var request in requests) {
                 RequestType requestType = request.RequestType;
@@ -182,7 +191,7 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------- StoreSyncRequest -----------------------------------
     public class StoreSyncRequest
     {
-        public List<StoreRequest> requests = new List<StoreRequest>();
+        public List<StoreRequest> requests;
 
         public void Execute(EntityDatabase database) {
             foreach (var request in requests) {

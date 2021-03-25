@@ -52,8 +52,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result)
             using (var m = new JsonMapper(store.typeStore)) {
                 var order1 = store.orders.Read("order-1");
-                store.Sync();
-                var orders = new List<Order> { order1.Result };
+                store.SyncWait();
+                var orderResult = order1.Result;
+                var orders = new List<Order> { orderResult };
 
                 var orderQuery =
                     from order in orders
@@ -101,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static Order GetOrder(string id) {
             using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result) {
                 var order = store.orders.Read(id);
-                store.Sync();
+                store.SyncWait();
                 return order.Result;
             }
         }
