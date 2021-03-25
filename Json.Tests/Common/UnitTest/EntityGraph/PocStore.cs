@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
@@ -55,6 +56,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var cameraUnknown = store.articles.Read("article-unknown");
             var camera = store.articles.Read("article-1");
             await store.Sync();
+            
+            var cameraNotSynced = store.articles.Read("article-1");
+            var e = Throws<InvalidOperationException>(() => { var res = cameraNotSynced.Result; });
+            AreEqual("Read().Result requires Sync(). Entity: Article id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);
             IsTrue(camera.Result == cameraCreate);

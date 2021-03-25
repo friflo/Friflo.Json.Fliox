@@ -102,9 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
             
-            AreEqual(1, store.customers.Count);
-            AreEqual(2, store.articles.Count);
-            AreEqual(1, store.orders.Count);
+            // AreEqual(1, store.customers.Count);
+            // AreEqual(2, store.articles.Count);
+            // AreEqual(1, store.orders.Count);
 
             IsTrue(order1.Result      == order);
             IsTrue(customer1.Result   == order.customer.Entity);

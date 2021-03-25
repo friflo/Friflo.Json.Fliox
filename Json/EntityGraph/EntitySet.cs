@@ -24,7 +24,6 @@ namespace Friflo.Json.EntityGraph
         private readonly    EntityContainer                     container;
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();  // todo -> HashSet<>
             
-        public              int                                 Count       => peers.Count;
         
         public EntitySet(EntityStore store) {
             this.store = store;
@@ -88,7 +87,8 @@ namespace Friflo.Json.EntityGraph
         }
         
         public Read<T> Read(string id) {
-            var read = new Read<T>(id);
+            var peer = GetPeer(id);
+            var read = peer.CreateRead();
             ReadEntityRequest(read);
             return read;
         }
@@ -123,8 +123,7 @@ namespace Friflo.Json.EntityGraph
         // --- ReadEntities request / result ---
         private void ReadEntityRequest(Read<T> read) {
             var req = new ReadEntitiesRequest {
-                containerName = container.name,
-                command = read
+                containerName = container.name
             };
             List<string> ids = new List<string> {read.id};
             req.ids = ids;
@@ -137,18 +136,22 @@ namespace Friflo.Json.EntityGraph
                 throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {readRequest.ids.Count}");
                 
             foreach (var entry in entries) {
+                var peer = GetPeer(entry.key);
+                var read = peer.read;
                 if (entry.value != null) {
-                    var peer = GetPeer(entry.key);
                     jsonMapper.ReadTo(entry.value, peer.entity);
                     peer.assigned = true;
-                    var read = (Read<T>)readRequest.command;
-                    read.result = peer.entity;
-                    read.synced = true;
+                    if (read != null) {
+                        read.result = peer.entity;
+                        read.synced = true;
+                    }
                 } else {
-                    var read = (Read<T>)readRequest.command;
-                    read.result = null;
-                    read.synced = true;
+                    if (read != null) {
+                        read.result = null;
+                        read.synced = true;
+                    }
                 }
+                peer.read = null;
             }
         }
     }

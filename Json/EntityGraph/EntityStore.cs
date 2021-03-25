@@ -93,9 +93,7 @@ namespace Friflo.Json.EntityGraph
     
 
     // ----------------------------------------- CRUD -----------------------------------------
-    public interface ICommand { }
-
-    public class Read<T> : ICommand
+    public class Read<T>
     {
         internal readonly   string id;
         internal            T      result;
@@ -109,12 +107,12 @@ namespace Friflo.Json.EntityGraph
             get {
                 if (synced)
                     return result;
-                throw new InvalidOperationException($"Read.Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
+                throw new InvalidOperationException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
             }
         }
     }
     
-    public class Create<T> : ICommand
+    public class Create<T>
     {
         private readonly T             entity;
         private readonly EntityStore   store;
@@ -134,13 +132,17 @@ namespace Friflo.Json.EntityGraph
     }
 
     // ------------------------------------- PeerEntity<> -------------------------------------
-    internal class PeerEntity<T>
+    internal class PeerEntity<T>  where T : Entity
     {
+        internal readonly   T       entity;
+        internal            bool    assigned;
+        internal            Read<T> read;
+
+        internal            Read<T> CreateRead() => read ?? (read = new Read<T>(entity.id)); 
+        
         internal PeerEntity(T entity) {
             this.entity = entity;
         }
-        internal readonly   T      entity;
-        internal            bool   assigned;
     }
 
     public class PeerNotAssignedException : Exception
@@ -189,8 +191,6 @@ namespace Friflo.Json.EntityGraph
         [Fri.Ignore]
         public  List<KeyValue>      entitiesResult;
 
-        [Fri.Ignore]
-        internal ICommand           command;
         
         public override RequestType RequestType => RequestType.Read;
         
