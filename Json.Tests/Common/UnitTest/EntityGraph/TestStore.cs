@@ -99,6 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var article1 =  store.articles.Read("article-1");
             var article2 =  store.articles.Read("article-2");
             var customer1 = store.customers.Read("customer-1");
+            var unknown   = store.customers.Read("article-unknown");
 
             await store.Sync();
             
@@ -110,6 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             IsTrue(customer1.Result   == order.customer.Entity);
             IsTrue(article1.Result    == order.items[0].article.Entity);
             IsTrue(article2.Result    == order.items[1].article.Entity);
+            IsNull(unknown.Result);
         }
 
         private static void AssertWriteRead<T>(JsonMapper m, T entity) {
