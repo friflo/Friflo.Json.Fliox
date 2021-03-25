@@ -60,10 +60,26 @@ namespace Friflo.Json.EntityGraph
             foreach (var request in storeRequest.requests) {
                 request.Execute(database);
             }
-            
-            foreach (var setPair in setByType) {
-                EntitySet set = setPair.Value;
-                set.HandleSetResponse(storeRequest);
+
+            HandleSetResponse(storeRequest);
+        }
+        
+        private void HandleSetResponse(StoreSyncRequest syncRequest) {
+            var requests = syncRequest.requests;
+            foreach (var request in requests) {
+                RequestType requestType = request.RequestType;
+                switch (requestType) {
+                    case RequestType.Create:
+                        var create = (CreateEntitiesRequest) request;
+                        EntitySet set = setByName[create.containerName];
+                        set.CreateEntitiesResponse(create);
+                        break;
+                    case RequestType.Read:
+                        var read = (ReadEntitiesRequest) request;
+                        set = setByName[read.containerName];
+                        set.ReadEntitiesResponse(read);
+                        break;
+                }
             }
         }
 
