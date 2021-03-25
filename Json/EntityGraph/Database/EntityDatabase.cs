@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -32,8 +33,8 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     public class KeyValue {
-        public string key;
-        public string value;
+        public string       key;
+        public JsonValue    value;
     }
     
     public abstract class EntityContainer

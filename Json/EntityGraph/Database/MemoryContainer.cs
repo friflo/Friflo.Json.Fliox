@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -22,7 +23,7 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override void CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
-                payloads[entity.key] = entity.value;
+                payloads[entity.key] = entity.value.json;
             }
         }
 
@@ -30,7 +31,7 @@ namespace Friflo.Json.EntityGraph.Database
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.key, out string _))
                     throw new InvalidOperationException($"Expect Entity with id {entity.key} in DatabaseContainer: {name}");
-                payloads[entity.key] = entity.value;
+                payloads[entity.key] = entity.value.json;
             }
         }
 
@@ -40,7 +41,7 @@ namespace Friflo.Json.EntityGraph.Database
                 payloads.TryGetValue(id, out var payload);
                 var entry = new KeyValue {
                     key     = id,
-                    value   = payload
+                    value   = new JsonValue{ json = payload }
                 };
                 result.Add(entry);
             }

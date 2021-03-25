@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -109,7 +110,7 @@ namespace Friflo.Json.EntityGraph
             var json = jsonMapper.Write(entity);
             var entry = new KeyValue {
                 key = entity.id,
-                value = json
+                value = new JsonValue{json = json }
             };
             List<KeyValue> entries = new List<KeyValue> {entry};
             req.entities = entries;
@@ -138,8 +139,8 @@ namespace Friflo.Json.EntityGraph
             foreach (var entry in entries) {
                 var peer = GetPeer(entry.key);
                 var read = peer.read;
-                if (entry.value != null) {
-                    jsonMapper.ReadTo(entry.value, peer.entity);
+                if (entry.value.json != null) {
+                    jsonMapper.ReadTo(entry.value.json, peer.entity);
                     peer.assigned = true;
                     if (read != null) {
                         read.result = peer.entity;

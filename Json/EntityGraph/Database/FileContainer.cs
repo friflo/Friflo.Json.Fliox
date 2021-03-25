@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -38,7 +39,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override void CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 var path = FilePath(entity.key);
-                WriteText(path, entity.value);
+                WriteText(path, entity.value.json);
                 // await File.WriteAllTextAsync(path, entity.value);
             }
         }
@@ -58,7 +59,7 @@ namespace Friflo.Json.EntityGraph.Database
                 }
                 var entry = new KeyValue {
                     key = id,
-                    value = payload
+                    value = new JsonValue{ json = payload }
                 };
                 result.Add(entry);
             }
