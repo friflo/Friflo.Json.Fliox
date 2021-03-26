@@ -49,7 +49,7 @@ namespace Friflo.Json.EntityGraph.Map
                 var set = store.EntitySet<T>();
                 PeerEntity<T> peer = set.GetPeer(value);
                 if (!peer.assigned)
-                    set.AddCreateRequest(peer);
+                    set.AddCreate(peer);
             }
         }
 

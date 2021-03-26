@@ -62,27 +62,27 @@ namespace Friflo.Json.EntityGraph
             HandleSyncRequest(syncRequest);
         }
 
-        private StoreSyncRequest CreateSyncRequest() {
-            var syncRequest = new StoreSyncRequest { requests = new List<StoreRequest>() };
+        private SyncRequest CreateSyncRequest() {
+            var syncRequest = new SyncRequest { commands = new List<DatabaseCommand>() };
             foreach (var setPair in setByType) {
                 EntitySet set = setPair.Value;
-                set.AddSetRequests(syncRequest);
+                set.AddSetCommands(syncRequest);
             }
             return syncRequest;
         }
 
-        private void HandleSyncRequest(StoreSyncRequest syncRequest) {
-            var requests = syncRequest.requests;
-            foreach (var request in requests) {
-                RequestType requestType = request.RequestType;
-                switch (requestType) {
-                    case RequestType.Create:
-                        var create = (CreateEntitiesRequest) request;
+        private void HandleSyncRequest(SyncRequest syncRequest) {
+            var commands = syncRequest.commands;
+            foreach (var command in commands) {
+                CommandType commandType = command.CommandType;
+                switch (commandType) {
+                    case CommandType.Create:
+                        var create = (CreateEntities) command;
                         EntitySet set = setByName[create.containerName];
                         set.CreateEntitiesResponse(create);
                         break;
-                    case RequestType.Read:
-                        var read = (ReadEntitiesRequest) request;
+                    case CommandType.Read:
+                        var read = (ReadEntities) command;
                         set = setByName[read.containerName];
                         set.ReadEntitiesResponse(read);
                         break;
@@ -167,32 +167,32 @@ namespace Friflo.Json.EntityGraph
 
 
     // ----------------------------------- StoreSyncRequest -----------------------------------
-    public class StoreSyncRequest
+    public class SyncRequest
     {
-        public List<StoreRequest> requests;
+        public List<DatabaseCommand> commands;
 
         public void Execute(EntityDatabase database) {
-            foreach (var request in requests) {
-                request.Execute(database);
+            foreach (var command in commands) {
+                command.Execute(database);
             }
         }
     }
 
-    [Fri.Discriminator("request")]
-    [Fri.Polymorph(typeof(CreateEntitiesRequest),  Discriminant = "create")]
-    [Fri.Polymorph(typeof(ReadEntitiesRequest),    Discriminant = "read")]
-    public abstract class StoreRequest
+    [Fri.Discriminator("command")]
+    [Fri.Polymorph(typeof(CreateEntities),  Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntities),    Discriminant = "read")]
+    public abstract class DatabaseCommand
     {
         public abstract void        Execute(EntityDatabase database);
-        public abstract RequestType RequestType { get; }
+        public abstract CommandType CommandType { get; }
     }
     
-    public class CreateEntitiesRequest : StoreRequest
+    public class CreateEntities : DatabaseCommand
     {
         public  string              containerName;
         public  List<KeyValue>      entities;
 
-        public override RequestType RequestType => RequestType.Create;
+        public override CommandType CommandType => CommandType.Create;
 
         public override void Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
@@ -200,7 +200,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadEntitiesRequest : StoreRequest
+    public class ReadEntities : DatabaseCommand
     {
         public  string              containerName;
         public  List<string>        ids;
@@ -209,7 +209,7 @@ namespace Friflo.Json.EntityGraph
         public  List<KeyValue>      entitiesResult;
 
         
-        public override RequestType RequestType => RequestType.Read;
+        public override CommandType CommandType => CommandType.Read;
         
         public override void Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
@@ -217,7 +217,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
 
-    public enum RequestType
+    public enum CommandType
     {
         Read,
         Create

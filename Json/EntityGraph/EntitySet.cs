@@ -13,10 +13,10 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        public  abstract    void    AddSetRequests          (StoreSyncRequest syncRequest);
+        public  abstract    void    AddSetCommands          (SyncRequest syncRequest);
         //
-        public  abstract    void    CreateEntitiesResponse  (CreateEntitiesRequest create);
-        public  abstract    void    ReadEntitiesResponse    (ReadEntitiesRequest read);
+        public  abstract    void    CreateEntitiesResponse  (CreateEntities createEntities);
+        public  abstract    void    ReadEntitiesResponse    (ReadEntities readEntities);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -53,7 +53,7 @@ namespace Friflo.Json.EntityGraph
             return peer;
         }
         
-        internal Create<T> AddCreateRequest (PeerEntity<T> peer) {
+        internal Create<T> AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
             var create = peer.create;
             if (create == null) {
@@ -113,11 +113,11 @@ namespace Friflo.Json.EntityGraph
             if (creates.TryGetValue(entity.id, out Create<T> create))
                 return create;
             var peer = CreatePeer(entity);
-            create = AddCreateRequest(peer);
+            create = AddCreate(peer);
             return create;
         }
 
-        public override void AddSetRequests(StoreSyncRequest syncRequest) {
+        public override void AddSetCommands(SyncRequest syncRequest) {
             // --- CreateEntities
             if (creates.Count > 0) {
                 var entries = new List<KeyValue>();
@@ -131,28 +131,28 @@ namespace Friflo.Json.EntityGraph
                     };
                     entries.Add(entry);
                 }
-                var req = new CreateEntitiesRequest {
+                var req = new CreateEntities {
                     containerName = container.name,
                     entities = entries
                 };
-                syncRequest.requests.Add(req);
+                syncRequest.commands.Add(req);
                 creates.Clear();
             }
             // --- ReadEntities
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
-                var req = new ReadEntitiesRequest {
+                var req = new ReadEntities {
                     containerName = container.name,
                     ids = ids
                 };
-                syncRequest.requests.Add(req);
+                syncRequest.commands.Add(req);
                 reads.Clear();
             }
         }
 
         // --- CreateEntities
-        public override void CreateEntitiesResponse(CreateEntitiesRequest create) {
-            var entities = create.entities;
+        public override void CreateEntitiesResponse(CreateEntities createEntities) {
+            var entities = createEntities.entities;
             foreach (var entry in entities) {
                 var peer = GetPeer(entry.key);
                 peer.create = null;
@@ -160,10 +160,10 @@ namespace Friflo.Json.EntityGraph
         }
         
         // --- ReadEntities
-        public override void ReadEntitiesResponse(ReadEntitiesRequest readRequest) {
-            var entries = readRequest.entitiesResult;
-            if (entries.Count != readRequest.ids.Count)
-                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {readRequest.ids.Count}");
+        public override void ReadEntitiesResponse(ReadEntities readEntities) {
+            var entries = readEntities.entitiesResult;
+            if (entries.Count != readEntities.ids.Count)
+                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {readEntities.ids.Count}");
                 
             foreach (var entry in entries) {
                 var peer = GetPeer(entry.key);
