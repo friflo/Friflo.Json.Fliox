@@ -70,22 +70,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        //[Test]      public async Task  RemoteEmptyAsync() { await RemoteEmpty(); }
+        // [Test]      public async Task  RemoteEmptyAsync() { await RemoteEmpty(); }
         
         private async Task RemoteEmpty() {
-            var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
-            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
-                new PocStore(hostDatabase);
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/"))
+            using (new PocStore(hostDatabase)) {
                 hostDatabase.Start();
-                Task.Run(() => {
+                var hostTask = Task.Run(() => {
                     hostDatabase.Run();
                     Log.Info("RemoteHost returned");
                 });
-                var clientDatabase = new RemoteClient("http://localhost:8080/");
+                using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
                 using (var clientStore = new PocStore(clientDatabase)) {
                     await WriteRead(clientStore);
                 }
                 hostDatabase.Stop();
+                // hostTask.GetAwaiter().GetResult();
             }
         }
 

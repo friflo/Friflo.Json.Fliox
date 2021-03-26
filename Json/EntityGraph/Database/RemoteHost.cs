@@ -23,10 +23,15 @@ namespace Friflo.Json.EntityGraph.Database
         
         public RemoteHost(EntityDatabase local, string endpoint) {
             this.endpoint = endpoint;
+            jsonMapper = new JsonMapper();
             listener = new HttpListener();
             listener.Prefixes.Add(endpoint);
-            jsonMapper = new JsonMapper();
             this.local = local;
+        }
+        
+        public override void Dispose() {
+            base.Dispose();
+            jsonMapper.Dispose();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -54,7 +59,7 @@ namespace Friflo.Json.EntityGraph.Database
                     HttpListenerRequest req = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
-                    string reqMsg = $@"request #: {+requestCount}
+                    string reqMsg = $@"request #: {++requestCount}
 {req.Url.ToString()}
 {req.HttpMethod}
 {req.UserHostName}

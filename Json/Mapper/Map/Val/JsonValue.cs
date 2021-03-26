@@ -35,7 +35,7 @@ namespace Friflo.Json.Mapper.Map.Val
             if (value.json != null)
                 writer.bytes.AppendString(value.json);
             else
-                writer.AppendNull();
+                writer.AppendNull(); // todo throw exception. value.json must be not null
         }
 
         public override JsonValue Read(ref Reader reader, JsonValue slot, out bool success) {

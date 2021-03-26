@@ -15,7 +15,7 @@ namespace Friflo.Json.EntityGraph.Database
 
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
         
-        public void Dispose() {
+        public virtual void Dispose() {
         }
 
         internal void AddContainer(EntityContainer container)

@@ -17,6 +17,12 @@ namespace Friflo.Json.EntityGraph.Database
             jsonMapper = new JsonMapper();
             httpClient = new HttpClient();
         }
+        
+        public override void Dispose() {
+            base.Dispose();
+            httpClient.Dispose();
+            jsonMapper.Dispose();
+        }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             ClientContainer container = new ClientContainer(name, this);
