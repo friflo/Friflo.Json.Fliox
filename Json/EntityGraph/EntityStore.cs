@@ -45,20 +45,18 @@ namespace Friflo.Json.EntityGraph
         internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
 
         public async Task Sync() {
-            var syncRequest = CreateSyncRequest();
-            await Task.Run(() => {
-                syncRequest.Execute(database); // <--- async Sync Point
-            });
+            SyncRequest syncRequest = CreateSyncRequest();
+            SyncResponse response = await Task.Run(() => syncRequest.Execute(database));
 #if DEBUG
             var jsonSync = jsonMapper.Write(syncRequest); // todo remove - log StoreSyncRequest as JSON
 #endif
-            HandleSyncRequest(syncRequest);
+            HandleSyncRequest(syncRequest, response);
         }
         
         public void SyncWait() {
-            var syncRequest = CreateSyncRequest();
-            syncRequest.Execute(database); // <--- synchronous Sync Point
-            HandleSyncRequest(syncRequest);
+            SyncRequest syncRequest = CreateSyncRequest();
+            SyncResponse response = syncRequest.Execute(database); // <--- synchronous Sync Point
+            HandleSyncRequest(syncRequest, response);
         }
 
         private SyncRequest CreateSyncRequest() {
@@ -70,20 +68,23 @@ namespace Friflo.Json.EntityGraph
             return syncRequest;
         }
 
-        private void HandleSyncRequest(SyncRequest syncRequest) {
+        private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
             var commands = syncRequest.commands;
-            foreach (var command in commands) {
+            var results = response.results;
+            for (int n = 0; n < commands.Count; n++) {
+                var command = commands[n];
+                var result = results[n];
                 CommandType commandType = command.CommandType;
                 switch (commandType) {
                     case CommandType.Create:
                         var create = (CreateEntities) command;
                         EntitySet set = setByName[create.containerName];
-                        set.CreateEntitiesResponse(create);
+                        set.CreateEntitiesResponse(create, (CreateEntitiesResult)result);
                         break;
                     case CommandType.Read:
                         var read = (ReadEntities) command;
                         set = setByName[read.containerName];
-                        set.ReadEntitiesResponse(read);
+                        set.ReadEntitiesResponse(read, (ReadEntitiesResult)result);
                         break;
                 }
             }

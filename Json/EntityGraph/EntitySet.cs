@@ -15,8 +15,8 @@ namespace Friflo.Json.EntityGraph
     {
         public  abstract    void    AddSetCommands          (SyncRequest syncRequest);
         //
-        public  abstract    void    CreateEntitiesResponse  (CreateEntities createEntities);
-        public  abstract    void    ReadEntitiesResponse    (ReadEntities readEntities);
+        public  abstract    void    CreateEntitiesResponse  (CreateEntities createEntities, CreateEntitiesResult result);
+        public  abstract    void    ReadEntitiesResponse    (ReadEntities readEntities,     ReadEntitiesResult   result);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -151,8 +151,8 @@ namespace Friflo.Json.EntityGraph
         }
 
         // --- CreateEntities
-        public override void CreateEntitiesResponse(CreateEntities createEntities) {
-            var entities = createEntities.entities;
+        public override void CreateEntitiesResponse(CreateEntities command, CreateEntitiesResult result) {
+            var entities = command.entities;
             foreach (var entry in entities) {
                 var peer = GetPeer(entry.key);
                 peer.create = null;
@@ -160,10 +160,10 @@ namespace Friflo.Json.EntityGraph
         }
         
         // --- ReadEntities
-        public override void ReadEntitiesResponse(ReadEntities readEntities) {
-            var entries = readEntities.entitiesResult;
-            if (entries.Count != readEntities.ids.Count)
-                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {readEntities.ids.Count}");
+        public override void ReadEntitiesResponse(ReadEntities command, ReadEntitiesResult result) {
+            var entries = result.entities;
+            if (entries.Count != command.ids.Count)
+                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {command.ids.Count}");
                 
             foreach (var entry in entries) {
                 var peer = GetPeer(entry.key);

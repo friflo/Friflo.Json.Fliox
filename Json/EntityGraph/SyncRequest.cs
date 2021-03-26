@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
@@ -9,22 +11,49 @@ namespace Friflo.Json.EntityGraph
     {
         public List<DatabaseCommand> commands;
 
-        public void Execute(EntityDatabase database) {
+        public SyncResponse Execute(EntityDatabase database) {
+            var response = new SyncResponse { results = new List<CommandResult>() };
             foreach (var command in commands) {
-                command.Execute(database);
+                var result = command.Execute(database);
+                response.results.Add(result);
             }
+            return response;
         }
     }
-
+    
+    public class SyncResponse
+    {
+        public List<CommandResult> results;
+    }
+    
+    
+    // ------------------------------ DatabaseCommand ------------------------------
+    
     [Fri.Discriminator("command")]
     [Fri.Polymorph(typeof(CreateEntities),  Discriminant = "create")]
     [Fri.Polymorph(typeof(ReadEntities),    Discriminant = "read")]
     public abstract class DatabaseCommand
     {
-        public abstract void        Execute(EntityDatabase database);
+        public abstract CommandResult  Execute(EntityDatabase database);
+        public abstract CommandType     CommandType { get; }
+    }
+    
+    // ------------------------------ CommandResult ------------------------------
+    [Fri.Discriminator("command")]
+    [Fri.Polymorph(typeof(CreateEntitiesResult),  Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntitiesResult),    Discriminant = "read")]
+    public abstract class CommandResult
+    {
         public abstract CommandType CommandType { get; }
     }
     
+    public enum CommandType
+    {
+        Read,
+        Create
+    }
+    
+    // ------ CreateEntities
     public class CreateEntities : DatabaseCommand
     {
         public  string              containerName;
@@ -32,32 +61,41 @@ namespace Friflo.Json.EntityGraph
 
         public override CommandType CommandType => CommandType.Create;
 
-        public override void Execute(EntityDatabase database) {
+        public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
-            container.CreateEntities(entities);   
+            container.CreateEntities(entities);
+            return new CreateEntitiesResult();
         }
     }
     
+    public class CreateEntitiesResult : CommandResult
+    {
+        public override CommandType CommandType => CommandType.Create;
+    }
+    
+    
+    // ------ ReadEntities
     public class ReadEntities : DatabaseCommand
     {
         public  string              containerName;
         public  List<string>        ids;
         
-        [Fri.Ignore]
-        public  List<KeyValue>      entitiesResult;
-
-        
         public override CommandType CommandType => CommandType.Read;
         
-        public override void Execute(EntityDatabase database) {
+        public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
-            entitiesResult = container.ReadEntities(ids).ToList(); 
+            var entities = container.ReadEntities(ids).ToList();
+            var result = new ReadEntitiesResult {
+                entities = entities
+            };
+            return result; 
         }
     }
 
-    public enum CommandType
+    public class ReadEntitiesResult : CommandResult
     {
-        Read,
-        Create
+        public  List<KeyValue>      entities;
+        
+        public override CommandType CommandType => CommandType.Read;
     }
 }
