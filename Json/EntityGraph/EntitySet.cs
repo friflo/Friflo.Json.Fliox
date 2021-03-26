@@ -13,10 +13,10 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        public  abstract    void    AddCommands           (List<DatabaseCommand> commands);
+        internal  abstract    void    AddCommands           (List<DatabaseCommand> commands);
         //
-        public  abstract    void    CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
-        public  abstract    void    ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
+        internal  abstract    void    CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
+        internal  abstract    void    ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -117,7 +117,7 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override void AddCommands(List<DatabaseCommand> commands) {
+        internal override void AddCommands(List<DatabaseCommand> commands) {
             // --- CreateEntities
             if (creates.Count > 0) {
                 var entries = new List<KeyValue>();
@@ -151,7 +151,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         // --- CreateEntities
-        public override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
+        internal override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
             var entities = command.entities;
             foreach (var entry in entities) {
                 var peer = GetPeer(entry.key);
@@ -160,7 +160,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         // --- ReadEntities
-        public override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
+        internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
             var entries = result.entities;
             if (entries.Count != command.ids.Count)
                 throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {command.ids.Count}");
