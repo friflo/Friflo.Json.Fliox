@@ -18,7 +18,7 @@ namespace Friflo.Json.EntityGraph.Database
             Directory.CreateDirectory(databaseFolder);
         }
 
-        protected override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new FileContainer(name, database, databaseFolder + name);
         }
     }

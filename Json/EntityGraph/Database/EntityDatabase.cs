@@ -13,7 +13,7 @@ namespace Friflo.Json.EntityGraph.Database
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
 
-        protected abstract EntityContainer CreateContainer(string name, EntityDatabase database);
+        public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
         
         public void Dispose() {
         }
@@ -31,7 +31,7 @@ namespace Friflo.Json.EntityGraph.Database
             return container;
         }
         
-        public SyncResponse Execute(SyncRequest syncRequest) {
+        public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse { results = new List<CommandResult>() };
             foreach (var command in syncRequest.commands) {
                 var result = command.Execute(this);
