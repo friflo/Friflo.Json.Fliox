@@ -45,50 +45,53 @@ namespace Friflo.Json.EntityGraph.Database
             bool runServer = true;
 
             // While a user hasn't visited the `shutdown` url, keep on handling requests
-            while (runServer)
-            {
-                // Will wait here until we hear from a connection
-                HttpListenerContext ctx = await listener.GetContextAsync();
+            while (runServer) {
+                 try {
+                    // Will wait here until we hear from a connection
+                    HttpListenerContext ctx = await listener.GetContextAsync();
 
-                // Peel out the requests and response objects
-                HttpListenerRequest  req  = ctx.Request;
-                HttpListenerResponse resp = ctx.Response;
+                    // Peel out the requests and response objects
+                    HttpListenerRequest req = ctx.Request;
+                    HttpListenerResponse resp = ctx.Response;
 
-                string reqMsg = $@"request #: {+requestCount}
+                    string reqMsg = $@"request #: {+requestCount}
 {req.Url.ToString()}
 {req.HttpMethod}
 {req.UserHostName}
 {req.UserAgent}";
-                Log(reqMsg);
+                    Log(reqMsg);
 
-                // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-                if (req.HttpMethod == "POST")
-                {
-                    if (req.Url.AbsolutePath == "/shutdown") {
-                        Console.WriteLine("Shutdown requested");
-                        runServer = false;
-                    } else {
-                        var inputStream = req.InputStream;
-                        System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
-                        string requestContent = await reader.ReadToEndAsync();
-                        var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
-                        var syncResponse = Execute(syncRequest);
-                        var jsonResponse = jsonMapper.Write(syncResponse);
-                        
-                        // Write the response info
-                        byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
-                        int len = data.Length;
+                    // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
+                    if (req.HttpMethod == "POST") {
+                        if (req.Url.AbsolutePath == "/shutdown") {
+                            Console.WriteLine("Shutdown requested");
+                            runServer = false;
+                        } else {
+                            var inputStream = req.InputStream;
+                            System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
+                            string requestContent = await reader.ReadToEndAsync();
+                            var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
+                            var syncResponse = Execute(syncRequest);
+                            var jsonResponse = jsonMapper.Write(syncResponse);
 
-                        resp.ContentType = "application/json";
-                        resp.ContentEncoding = Encoding.UTF8;
-                        resp.ContentLength64 = len;
+                            // Write the response info
+                            byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
+                            int len = data.Length;
 
-                        // Write out to the response stream (asynchronously), then close it
-                        await resp.OutputStream.WriteAsync(data, 0, len);
-                        resp.Close();
+                            resp.ContentType = "application/json";
+                            resp.ContentEncoding = Encoding.UTF8;
+                            resp.ContentLength64 = len;
+
+                            // Write out to the response stream (asynchronously), then close it
+                            await resp.OutputStream.WriteAsync(data, 0, len);
+                            resp.Close();
+                        }
                     }
-                }
+                 } catch (Exception e) {
+                     Log($"RemoteHost error: {e}");
+                 }
             }
+
         }
 
         /// <summary>

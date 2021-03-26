@@ -44,6 +44,8 @@ namespace Friflo.Json.EntityGraph.Database
     public class KeyValue {
         public string       key;
         public JsonValue    value;
+
+        public override string ToString() => key ?? "null";
     }
     
     public abstract class EntityContainer

@@ -168,7 +168,8 @@ namespace Friflo.Json.EntityGraph
             foreach (var entry in entries) {
                 var peer = GetPeer(entry.key);
                 var read = peer.read;
-                if (entry.value.json != null) {
+                var json = entry.value.json;
+                if (json != null && "null" != json) {
                     jsonMapper.ReadTo(entry.value.json, peer.entity);
                     peer.assigned = true;
                     if (read != null) {

@@ -8,7 +8,7 @@ namespace Friflo.Json.Mapper.Map.Val
     {
         public string       json;
         
-        public override string ToString() => json;
+        public override string ToString() => json ?? "null";
     }
     
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
@@ -32,7 +32,10 @@ namespace Friflo.Json.Mapper.Map.Val
         public JsonValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
         public override void Write(ref Writer writer, JsonValue value) {
-            writer.bytes.AppendString(value.json);
+            if (value.json != null)
+                writer.bytes.AppendString(value.json);
+            else
+                writer.AppendNull();
         }
 
         public override JsonValue Read(ref Reader reader, JsonValue slot, out bool success) {

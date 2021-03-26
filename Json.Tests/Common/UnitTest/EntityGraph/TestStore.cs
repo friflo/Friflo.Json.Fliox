@@ -79,8 +79,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 hostDatabase.Start();
                 Task.Run(() => {
                     hostDatabase.Run();
+                    Log.Info("RemoteHost returned");
                 });
-                var clientDatabase = new RemoteClient("http://192.168.178.20:8080/");
+                var clientDatabase = new RemoteClient("http://localhost:8080/");
                 using (var clientStore = new PocStore(clientDatabase)) {
                     await WriteRead(clientStore);
                 }
