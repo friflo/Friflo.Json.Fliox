@@ -30,6 +30,15 @@ namespace Friflo.Json.EntityGraph.Database
             containers[name] = container = CreateContainer(name, this);
             return container;
         }
+        
+        public SyncResponse Execute(SyncRequest syncRequest) {
+            var response = new SyncResponse { results = new List<CommandResult>() };
+            foreach (var command in syncRequest.commands) {
+                var result = command.Execute(this);
+                response.results.Add(result);
+            }
+            return response;
+        }
     }
     
     public class KeyValue {

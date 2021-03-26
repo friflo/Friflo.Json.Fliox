@@ -1,24 +1,15 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.EntityGraph.Database
 {
     public class SyncRequest
     {
         public List<DatabaseCommand> commands;
-
-        public SyncResponse Execute(EntityDatabase database) {
-            var response = new SyncResponse { results = new List<CommandResult>() };
-            foreach (var command in commands) {
-                var result = command.Execute(database);
-                response.results.Add(result);
-            }
-            return response;
-        }
     }
     
     public class SyncResponse
