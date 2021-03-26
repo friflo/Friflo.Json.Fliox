@@ -77,13 +77,14 @@ namespace Friflo.Json.EntityGraph.Database
                         
                         // Write the response info
                         byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
+                        int len = data.Length;
 
                         resp.ContentType = "application/json";
                         resp.ContentEncoding = Encoding.UTF8;
-                        resp.ContentLength64 = data.LongLength;
+                        resp.ContentLength64 = len;
 
                         // Write out to the response stream (asynchronously), then close it
-                        await resp.OutputStream.WriteAsync(data);
+                        await resp.OutputStream.WriteAsync(data, 0, len);
                         resp.Close();
                     }
                 }
