@@ -46,7 +46,7 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await Task.Run(() => syncRequest.Execute(database));
+            SyncResponse response = await Task.Run(() => syncRequest.Execute(database)); // <--- asynchronous Sync Point
 #if DEBUG
             var jsonSync = jsonMapper.Write(syncRequest); // todo remove - log StoreSyncRequest as JSON
 #endif
@@ -63,7 +63,7 @@ namespace Friflo.Json.EntityGraph
             var syncRequest = new SyncRequest { commands = new List<DatabaseCommand>() };
             foreach (var setPair in setByType) {
                 EntitySet set = setPair.Value;
-                set.AddSetCommands(syncRequest);
+                set.AddCommands(syncRequest.commands);
             }
             return syncRequest;
         }
@@ -79,12 +79,12 @@ namespace Friflo.Json.EntityGraph
                     case CommandType.Create:
                         var create = (CreateEntities) command;
                         EntitySet set = setByName[create.containerName];
-                        set.CreateEntitiesResponse(create, (CreateEntitiesResult)result);
+                        set.CreateEntitiesResult(create, (CreateEntitiesResult)result);
                         break;
                     case CommandType.Read:
                         var read = (ReadEntities) command;
                         set = setByName[read.containerName];
-                        set.ReadEntitiesResponse(read, (ReadEntitiesResult)result);
+                        set.ReadEntitiesResult(read, (ReadEntitiesResult)result);
                         break;
                 }
             }

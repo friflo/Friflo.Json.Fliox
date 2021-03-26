@@ -13,10 +13,10 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        public  abstract    void    AddSetCommands          (SyncRequest syncRequest);
+        public  abstract    void    AddCommands           (List<DatabaseCommand> commands);
         //
-        public  abstract    void    CreateEntitiesResponse  (CreateEntities createEntities, CreateEntitiesResult result);
-        public  abstract    void    ReadEntitiesResponse    (ReadEntities readEntities,     ReadEntitiesResult   result);
+        public  abstract    void    CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
+        public  abstract    void    ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -117,7 +117,7 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override void AddSetCommands(SyncRequest syncRequest) {
+        public override void AddCommands(List<DatabaseCommand> commands) {
             // --- CreateEntities
             if (creates.Count > 0) {
                 var entries = new List<KeyValue>();
@@ -135,7 +135,7 @@ namespace Friflo.Json.EntityGraph
                     containerName = container.name,
                     entities = entries
                 };
-                syncRequest.commands.Add(req);
+                commands.Add(req);
                 creates.Clear();
             }
             // --- ReadEntities
@@ -145,13 +145,13 @@ namespace Friflo.Json.EntityGraph
                     containerName = container.name,
                     ids = ids
                 };
-                syncRequest.commands.Add(req);
+                commands.Add(req);
                 reads.Clear();
             }
         }
 
         // --- CreateEntities
-        public override void CreateEntitiesResponse(CreateEntities command, CreateEntitiesResult result) {
+        public override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
             var entities = command.entities;
             foreach (var entry in entities) {
                 var peer = GetPeer(entry.key);
@@ -160,7 +160,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         // --- ReadEntities
-        public override void ReadEntitiesResponse(ReadEntities command, ReadEntitiesResult result) {
+        public override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
             var entries = result.entities;
             if (entries.Count != command.ids.Count)
                 throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {command.ids.Count}");
