@@ -30,13 +30,13 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            EntityContainer localContainer = local.CreateContainer(name, database);
+            EntityContainer localContainer = local.CreateContainer(name, local);
             HostContainer container = new HostContainer(name, this, localContainer);
             return container;
         }
 
         public override SyncResponse Execute(SyncRequest syncRequest) {
-            var response = new SyncResponse();
+            var response = base.Execute(syncRequest);
             return response;
         }
         
@@ -90,20 +90,32 @@ namespace Friflo.Json.EntityGraph.Database
                 }
             }
         }
-        
-        public void Run()
-        {
+
+        /// <summary>
+        /// For testing requires:
+        ///     netsh http add urlacl url=http://+:8080/ user=<DOMAIN>\<USER> listen=yes
+        ///     netsh http delete urlacl http://+:8080/
+        /// 
+        /// Get DOMAIN\USER via  PowerShell
+        ///     $env:UserName
+        ///     $env:UserDomain
+        /// </summary>
+        public void Start() {
             // Create a Http server and start listening for incoming connections
             listener.Start();
             Log($"Listening for connections on {this.endpoint}");
-
+        }
+        
+        public void Run() {
             // Handle requests
             Task listenTask = HandleIncomingConnections();
             listenTask.GetAwaiter().GetResult();
-
-            // Close the listener
+        }
+        
+        public void Stop() {
             listener.Close();
         }
+
 
         private void Log(string msg) {
 #if UNITY_5_3_OR_NEWER

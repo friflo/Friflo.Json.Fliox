@@ -69,6 +69,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 await WriteRead(store);
             }
         }
+        
+        //[Test]      public async Task  RemoteEmptyAsync() { await RemoteEmpty(); }
+        
+        private async Task RemoteEmpty() {
+            var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
+                new PocStore(hostDatabase);
+                hostDatabase.Start();
+                Task.Run(() => {
+                    hostDatabase.Run();
+                });
+                var clientDatabase = new RemoteClient("http://192.168.178.20:8080/");
+                using (var clientStore = new PocStore(clientDatabase)) {
+                    await WriteRead(clientStore);
+                }
+                hostDatabase.Stop();
+            }
+        }
+
 
         private async Task WriteRead(PocStore store) {
             // --- cache empty
