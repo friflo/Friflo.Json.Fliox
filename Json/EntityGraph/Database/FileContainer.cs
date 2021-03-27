@@ -5,29 +5,41 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Burst;
 using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
     public class FileDatabase : EntityDatabase
     {
-        private readonly string databaseFolder;
+        private readonly    string          databaseFolder;
+        internal            JsonSerializer  serializer;
+        internal            JsonParser      parser;
 
-        public FileDatabase(string databaseFolder) {
+        public FileDatabase(string databaseFolder, bool pretty = false) {
+            serializer.SetPretty(pretty);
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);
         }
 
+        public override void Dispose() {
+            base.Dispose();
+            parser.Dispose();
+            serializer.Dispose();
+        }
+
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new FileContainer(name, database, databaseFolder + name);
+            return new FileContainer(name, (FileDatabase)database, databaseFolder + name);
         }
     }
     
     public class FileContainer : EntityContainer
     {
-        private readonly string folder;
+        private readonly string         folder;
+        private readonly FileDatabase   fileDatabase;
         
-        public FileContainer(string name, EntityDatabase database, string folder) : base (name, database) {
+        public FileContainer(string name, FileDatabase database, string folder) : base (name, database) {
+            this.fileDatabase = database;
             this.folder = folder + "/";
             Directory.CreateDirectory(folder);
         }
@@ -39,7 +51,13 @@ namespace Friflo.Json.EntityGraph.Database
         public override void CreateEntities(ICollection<KeyValue> entities) {
             foreach (var entity in entities) {
                 var path = FilePath(entity.key);
-                WriteText(path, entity.value.json);
+                using (var json = new Bytes(entity.value.json)) {
+                    fileDatabase.parser.InitParser(json);
+                    fileDatabase.parser.NextEvent();
+                    fileDatabase.serializer.InitSerializer();
+                    fileDatabase.serializer.WriteTree(ref fileDatabase.parser);
+                    WriteText(path, fileDatabase.serializer.json.ToString());
+                }
                 // await File.WriteAllTextAsync(path, entity.value);
             }
         }

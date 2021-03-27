@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private async Task FileCreate() {
-            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
             }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task  FileEmptyAsync() { await FileEmpty(); }
         
         private async Task FileEmpty() {
-            var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var store = new PocStore(database)) {
                 await WriteRead(store);
             }
@@ -72,17 +72,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         // [Test]      public async Task  RemoteEmptyAsync() { await RemoteEmpty(); }
         
-        private async Task RemoteEmpty() {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/"))
-            using (new PocStore(hostDatabase)) {
+        private async Task RemoteCreate() {
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db", true))
+            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
                 hostDatabase.Start();
                 var hostTask = Task.Run(() => {
                     hostDatabase.Run();
                     Log.Info("RemoteHost returned");
                 });
                 using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
-                using (var clientStore = new PocStore(clientDatabase)) {
+                using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {
                     await WriteRead(clientStore);
                 }
                 hostDatabase.Stop();
