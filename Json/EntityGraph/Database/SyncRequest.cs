@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<KeyValue>      entities;
 
         public override CommandType CommandType => CommandType.Create;
-        public override string      ToString() => containerName;
+        public override string      ToString() => "container: " + containerName;
 
         public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
@@ -73,7 +73,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<string>        ids;
         
         public override CommandType CommandType => CommandType.Read;
-        public override string      ToString() => containerName;
+        public override string      ToString() => "container: " + containerName;
         
         public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
