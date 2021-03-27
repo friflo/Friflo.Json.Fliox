@@ -6,7 +6,7 @@ using Friflo.Json.Mapper.Map;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- CRUD -----------------------------------------
-    public class Read<T>
+    public class Read<T> where T : Entity
     {
         private  readonly   string id;
         internal            T      result;
@@ -25,7 +25,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class Create<T>
+    public class Create<T> where T : Entity
     {
         private readonly    T           entity;
         private readonly    EntityStore store;
