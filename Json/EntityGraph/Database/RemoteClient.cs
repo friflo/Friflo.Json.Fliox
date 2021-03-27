@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Friflo.Json.Mapper;
@@ -20,6 +22,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public override void Dispose() {
             base.Dispose();
+            httpClient.CancelPendingRequests();
             httpClient.Dispose();
             jsonMapper.Dispose();
         }
@@ -44,21 +47,20 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class ClientContainer : EntityContainer
     {
-
         public ClientContainer(string name, EntityDatabase database)
             : base(name, database) {
         }
 
         public override void CreateEntities(ICollection<KeyValue> entities) {
-
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
         public override void UpdateEntities(ICollection<KeyValue> entities) {
-
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
         public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
-            return null;
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
     }
 }

@@ -51,12 +51,12 @@ namespace Friflo.Json.EntityGraph.Database
     public abstract class EntityContainer
     {
         public      readonly    string          name;
-        protected   readonly    EntityDatabase  database;
+    //  protected   readonly    EntityDatabase  database;
 
         protected EntityContainer(string name, EntityDatabase database) {
             this.name = name;
             database.AddContainer(this);
-            this.database = database;
+            // this.database = database;
         }
         
         // ---
