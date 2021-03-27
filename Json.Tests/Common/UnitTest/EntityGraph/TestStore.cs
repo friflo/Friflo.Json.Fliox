@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        // [Test]      public async Task  RemoteEmptyAsync() { await RemoteEmpty(); }
+        [Test]      public async Task  RemoteEmptyAsync() { await RemoteCreate(); }
         
         private async Task RemoteCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db", true))
