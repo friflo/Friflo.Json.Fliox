@@ -37,8 +37,8 @@ namespace Friflo.Json.EntityGraph
             store.setByType[type]       = this;
             store.setByName[type.Name]  = this;
             
-            jsonMapper = store.jsonMapper;
-            typeMapper = (TypeMapper<T>)store.typeStore.GetTypeMapper(typeof(T));
+            jsonMapper = store.JsonMapper;
+            typeMapper = (TypeMapper<T>)store.TypeStore.GetTypeMapper(typeof(T));
             container = store.database.GetContainer(type.Name);
         }
         

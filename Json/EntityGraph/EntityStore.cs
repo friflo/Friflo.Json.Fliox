@@ -21,10 +21,15 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntityStore ---------------------------------------
     public class EntityStore : ITracerContext, IDisposable
     {
-        internal readonly   EntityDatabase      database;
-        public   readonly   TypeStore           typeStore = new TypeStore();
-        public   readonly   JsonMapper          jsonMapper;
-
+        internal readonly   EntityDatabase                  database;
+        private  readonly   TypeStore                       typeStore = new TypeStore();
+        private  readonly   JsonMapper                      jsonMapper;
+        
+        internal readonly   Dictionary<Type,   EntitySet>   setByType = new Dictionary<Type, EntitySet>();
+        internal readonly   Dictionary<string, EntitySet>   setByName = new Dictionary<string, EntitySet>();
+        
+        public              TypeStore                       TypeStore   => typeStore;
+        public              JsonMapper                      JsonMapper  => jsonMapper;
         
         public EntityStore(EntityDatabase database) {
             this.database = database;
@@ -40,9 +45,7 @@ namespace Friflo.Json.EntityGraph
             typeStore.Dispose();
         }
         
-        // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal readonly Dictionary<Type,   EntitySet> setByType = new Dictionary<Type, EntitySet>();
-        internal readonly Dictionary<string, EntitySet> setByName = new Dictionary<string, EntitySet>();
+
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();

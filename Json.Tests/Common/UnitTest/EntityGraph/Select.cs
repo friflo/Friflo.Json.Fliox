@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]
         public void RunLinq() {
             using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result)
-            using (var m = new JsonMapper(store.typeStore)) {
+            using (var m = new JsonMapper(store.TypeStore)) {
                 var order1 = store.orders.Read("order-1");
                 store.SyncWait();
                 var orderResult = order1.Result;
