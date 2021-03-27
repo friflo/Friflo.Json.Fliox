@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         }
         
         private static void WriteRead(Order order, EntityStore store) {
-            var m = store.JsonMapper;
+            var m = store.intern.jsonMapper;
             m.Pretty = true;
             
             AssertWriteRead(m, order);

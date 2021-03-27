@@ -17,51 +17,63 @@ namespace Friflo.Json.EntityGraph
             return (EntityStore)store;
         }
     }
+
+    public readonly struct StoreIntern
+    {
+        public   readonly   TypeStore                       typeStore;
+        public   readonly   JsonMapper                      jsonMapper;
+        
+        internal readonly   EntityDatabase                  database;
+        internal readonly   Dictionary<Type,   EntitySet>   setByType;
+        internal readonly   Dictionary<string, EntitySet>   setByName;
+
+        internal StoreIntern(TypeStore typeStore, EntityDatabase database, JsonMapper jsonMapper) {
+            this.typeStore  = typeStore;
+            this.database   = database;
+            this.jsonMapper = jsonMapper;
+            setByType = new Dictionary<Type, EntitySet>();
+            setByName = new Dictionary<string, EntitySet>();
+        } 
+    }
     
     // --------------------------------------- EntityStore ---------------------------------------
     public class EntityStore : ITracerContext, IDisposable
     {
-        internal readonly   EntityDatabase                  database;
-        private  readonly   TypeStore                       typeStore = new TypeStore();
-        private  readonly   JsonMapper                      jsonMapper;
-        
-        internal readonly   Dictionary<Type,   EntitySet>   setByType = new Dictionary<Type, EntitySet>();
-        internal readonly   Dictionary<string, EntitySet>   setByName = new Dictionary<string, EntitySet>();
-        
-        public              TypeStore                       TypeStore   => typeStore;
-        public              JsonMapper                      JsonMapper  => jsonMapper;
+        // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
+        // Reason: EntityStore is extended by application and add multiple EntitySet fields.
+        //         So internal fields are encapsulated in field intern.
+        public readonly StoreIntern   intern;
         
         public EntityStore(EntityDatabase database) {
-            this.database = database;
+            var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            jsonMapper = new JsonMapper(typeStore) {
+            var jsonMapper = new JsonMapper(typeStore) {
                 TracerContext = this
             };
+            intern = new StoreIntern(typeStore, database, jsonMapper);
         }
         
         public void Dispose() {
-            jsonMapper.Dispose();
-            typeStore.Dispose();
+            intern.jsonMapper.Dispose();
+            intern.typeStore.Dispose();
         }
-        
-
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await Task.Run(() => database.Execute(syncRequest)); // <--- asynchronous Sync point
+            SyncResponse response = await Task.Run(() => intern.database.Execute(syncRequest)); // <--- asynchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
         
         public void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = database.Execute(syncRequest); // <--- synchronous Sync point
+            SyncResponse response = intern.database.Execute(syncRequest); // <--- synchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
 
         private SyncRequest CreateSyncRequest() {
             var syncRequest = new SyncRequest { commands = new List<DatabaseCommand>() };
-            foreach (var setPair in setByType) {
+            foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
                 set.AddCommands(syncRequest.commands);
             }
@@ -78,12 +90,12 @@ namespace Friflo.Json.EntityGraph
                 switch (commandType) {
                     case CommandType.Create:
                         var create = (CreateEntities) command;
-                        EntitySet set = setByName[create.containerName];
+                        EntitySet set = intern.setByName[create.containerName];
                         set.CreateEntitiesResult(create, (CreateEntitiesResult)result);
                         break;
                     case CommandType.Read:
                         var read = (ReadEntities) command;
-                        set = setByName[read.containerName];
+                        set = intern.setByName[read.containerName];
                         set.ReadEntitiesResult(read, (ReadEntitiesResult)result);
                         break;
                 }
@@ -93,7 +105,7 @@ namespace Friflo.Json.EntityGraph
         public EntitySet<T> EntitySet<T>() where T : Entity
         {
             Type entityType = typeof(T);
-            if (setByType.TryGetValue(entityType, out EntitySet set))
+            if (intern.setByType.TryGetValue(entityType, out EntitySet set))
                 return (EntitySet<T>)set;
             
             set = new EntitySet<T>(this);

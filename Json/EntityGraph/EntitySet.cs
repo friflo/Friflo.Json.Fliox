@@ -34,12 +34,12 @@ namespace Friflo.Json.EntityGraph
         public EntitySet(EntityStore store) {
             this.store = store;
             type = typeof(T);
-            store.setByType[type]       = this;
-            store.setByName[type.Name]  = this;
+            store.intern.setByType[type]       = this;
+            store.intern.setByName[type.Name]  = this;
             
-            jsonMapper = store.JsonMapper;
-            typeMapper = (TypeMapper<T>)store.TypeStore.GetTypeMapper(typeof(T));
-            container = store.database.GetContainer(type.Name);
+            jsonMapper = store.intern.jsonMapper;
+            typeMapper = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
+            container = store.intern.database.GetContainer(type.Name);
         }
         
         internal PeerEntity<T> CreatePeer (T entity) {
