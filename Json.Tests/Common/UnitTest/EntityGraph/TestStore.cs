@@ -40,30 +40,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest] public IEnumerator  WriteReadMemoryCreateCoroutine() { yield return RunAsync.Await(WriteReadMemoryCreate()); }
-        [Test]      public async Task   WriteReadMemoryCreateAsync() { await WriteReadMemoryCreate(); }
+        [UnityTest] public IEnumerator  MemoryCreateCoroutine() { yield return RunAsync.Await(MemoryCreate()); }
+        [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
-        private async Task WriteReadMemoryCreate() {
+        private async Task MemoryCreate() {
             var database = new MemoryDatabase();
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
             }
         }
         
-        [UnityTest] public IEnumerator WriteReadFileCreateCoroutine() { yield return RunAsync.Await(WriteReadFileCreate(), i => Log.Info("--- " + i)); }
-        [Test]      public async Task  WriteReadFileCreateAsync() { await WriteReadFileCreate(); }
+        [UnityTest] public IEnumerator FileCreateCoroutine() { yield return RunAsync.Await(FileCreate(), i => Log.Info("--- " + i)); }
+        [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
-        private async Task WriteReadFileCreate() {
+        private async Task FileCreate() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
             }
         }
         
-        [UnityTest] public IEnumerator WriteReadFileEmptyCoroutine() { yield return RunAsync.Await(WriteReadFileEmpty()); }
-        [Test]      public async Task  WriteReadFileEmptyAsync() { await WriteReadFileEmpty(); }
+        [UnityTest] public IEnumerator FileEmptyCoroutine() { yield return RunAsync.Await(FileEmpty()); }
+        [Test]      public async Task  FileEmptyAsync() { await FileEmpty(); }
         
-        private async Task WriteReadFileEmpty() {
+        private async Task FileEmpty() {
             var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
             using (var store = new PocStore(database)) {
                 await WriteRead(store);
