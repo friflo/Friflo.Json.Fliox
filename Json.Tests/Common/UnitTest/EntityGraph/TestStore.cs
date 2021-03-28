@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
@@ -76,24 +77,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private async Task RemoteCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db", true))
             using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
-                hostDatabase.Start();
-
-                var hostTask = Task.Run(async () => {
-                    // await hostDatabase.HandleIncomingConnections();
-                    hostDatabase.Run();
-                    // await Task.Delay(100); // test awaiting hostTask
-                    Log.Info("1. RemoteHost finished");
+                await RunRemoteHost(hostDatabase, async () => {
+                    using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
+                    using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {
+                        await WriteRead(clientStore);
+                    }
                 });
-                
-                using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
-                using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {
-                    await WriteRead(clientStore);
-                }
-                await hostDatabase.Stop();
-                await hostTask;
-                Log.Info("2. awaited hostTask");
             }
         }
+
+        private static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
+            remoteHost.Start();
+            var hostTask = Task.Run(() => {
+                // await hostDatabase.HandleIncomingConnections();
+                remoteHost.Run();
+                // await Task.Delay(100); // test awaiting hostTask
+                Log.Info("1. RemoteHost finished");
+            });
+            
+            await run();
+            
+            await remoteHost.Stop();
+            await hostTask;
+            Log.Info("2. awaited hostTask");
+        } 
 
 
         private async Task WriteRead(PocStore store) {
