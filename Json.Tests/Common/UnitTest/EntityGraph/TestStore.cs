@@ -70,23 +70,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        // [Test]
+        [Test]
         public async Task  RemoteEmptyAsync() { await RemoteCreate(); }
         
         private async Task RemoteCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db", true))
             using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
                 hostDatabase.Start();
-                var hostTask = Task.Run(() => {
+
+                var hostTask = Task.Run(async () => {
+                    // await hostDatabase.HandleIncomingConnections();
                     hostDatabase.Run();
-                    Log.Info("RemoteHost returned");
+                    // await Task.Delay(100); // test awaiting hostTask
+                    Log.Info("1. RemoteHost finished");
                 });
+                
                 using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
                 using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {
                     await WriteRead(clientStore);
                 }
-                hostDatabase.Stop();
-                // hostTask.GetAwaiter().GetResult();
+                await hostDatabase.Stop();
+                await hostTask;
+                Log.Info("2. awaited hostTask");
             }
         }
 

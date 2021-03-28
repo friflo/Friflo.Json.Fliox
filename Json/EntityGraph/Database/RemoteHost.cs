@@ -18,6 +18,7 @@ namespace Friflo.Json.EntityGraph.Database
         private readonly    JsonMapper      jsonMapper;
         private readonly    string          endpoint;
         private readonly    HttpListener    listener;
+        private             bool            runServer;
         
         private             int             requestCount;
         
@@ -45,13 +46,13 @@ namespace Friflo.Json.EntityGraph.Database
             return response;
         }
         
-        private async Task HandleIncomingConnections()
+        public async Task HandleIncomingConnections()
         {
-            bool runServer = true;
+            runServer = true;
 
             // While a user hasn't visited the `shutdown` url, keep on handling requests
             while (runServer) {
-                 try {
+                try {
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync();
 
@@ -59,11 +60,7 @@ namespace Friflo.Json.EntityGraph.Database
                     HttpListenerRequest req = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
-                    string reqMsg = $@"request #: {++requestCount}
-{req.Url.ToString()}
-{req.HttpMethod}
-{req.UserHostName}
-{req.UserAgent}";
+                    string reqMsg = $@"request {++requestCount} {req.Url.ToString()} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
                     Log(reqMsg);
 
                     // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
@@ -92,9 +89,15 @@ namespace Friflo.Json.EntityGraph.Database
                             resp.Close();
                         }
                     }
-                 } catch (Exception e) {
+                }
+                catch (HttpListenerException  e) {
+                    if (e.ErrorCode != 995)
+                        Log($"RemoteHost error: {e}");
+                    return;
+                }
+                catch (Exception e) {
                      Log($"RemoteHost error: {e}");
-                 }
+                }
             }
 
         }
@@ -113,15 +116,17 @@ namespace Friflo.Json.EntityGraph.Database
             listener.Start();
             Log($"Listening for connections on {this.endpoint}");
         }
-        
+
         public void Run() {
             // Handle requests
-            Task listenTask = HandleIncomingConnections();
+            var listenTask = HandleIncomingConnections();
             listenTask.GetAwaiter().GetResult();
         }
         
-        public void Stop() {
-            listener.Close();
+        public async Task Stop() {
+            await Task.Delay(1);
+            runServer = false;
+            listener.Stop();
         }
 
 
