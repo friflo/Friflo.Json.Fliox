@@ -11,26 +11,29 @@ namespace Friflo.Json.EntityGraph.Database
 {
     public class FileDatabase : EntityDatabase
     {
-        private readonly    string          databaseFolder;
+        private readonly    string  databaseFolder;
+        private readonly    bool    pretty;
 
-        public FileDatabase(string databaseFolder) {
+        public FileDatabase(string databaseFolder, bool pretty = true) {
+            this.pretty = pretty;
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new FileContainer(name, (FileDatabase)database, databaseFolder + name);
+            return new FileContainer(name, this, databaseFolder + name, pretty);
         }
     }
     
     public class FileContainer : EntityContainer
     {
         private readonly    string          folder;
-        
-        public  override    bool            Pretty => true;
 
-        
-        public FileContainer(string name, FileDatabase database, string folder) : base (name, database) {
+        public  override    bool            Pretty { get; }
+
+
+        public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {
+            this.Pretty = pretty;
             this.folder = folder + "/";
             Directory.CreateDirectory(folder);
         }

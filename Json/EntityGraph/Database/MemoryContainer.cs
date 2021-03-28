@@ -9,16 +9,26 @@ namespace Friflo.Json.EntityGraph.Database
 {
     public class MemoryDatabase : EntityDatabase
     {
+        private readonly    bool    pretty;
+
+        public MemoryDatabase(bool pretty = false) {
+            this.pretty = pretty;
+        }
+        
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new MemoryContainer(name, database);
+            return new MemoryContainer(name, database, pretty);
         }
     }
     
     public class MemoryContainer : EntityContainer
     {
-        private readonly Dictionary<string, string>     payloads    = new Dictionary<string, string>();
+        private readonly    Dictionary<string, string>  payloads    = new Dictionary<string, string>();
+        
+        public  override    bool                        Pretty { get; }
 
-        public MemoryContainer(string name, EntityDatabase database) : base (name, database) { }
+        public MemoryContainer(string name, EntityDatabase database, bool pretty) : base(name, database) {
+            Pretty = pretty;
+        }
 
 
         public override void CreateEntities(ICollection<KeyValue> entities) {
