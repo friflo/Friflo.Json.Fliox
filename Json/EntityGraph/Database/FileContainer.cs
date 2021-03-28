@@ -30,12 +30,18 @@ namespace Friflo.Json.EntityGraph.Database
         private readonly    string          folder;
 
         public  override    bool            Pretty { get; }
+        public  override    CommandContext  CommandContext { get; }
 
 
         public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {
             this.Pretty = pretty;
+            CommandContext = new CommandContext();
             this.folder = folder + "/";
             Directory.CreateDirectory(folder);
+        }
+
+        public override void Dispose() {
+            CommandContext.Dispose();
         }
 
         private string FilePath(string key) {

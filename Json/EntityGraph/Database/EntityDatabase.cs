@@ -11,12 +11,13 @@ namespace Friflo.Json.EntityGraph.Database
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer>    containers = new Dictionary<string, EntityContainer>();
-        private readonly CommandContext                         commandContext = new CommandContext();
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
         public virtual void Dispose() {
-            commandContext.Dispose();
+            foreach (var container in containers ) {
+                container.Value.Dispose();
+            }
         }
 
         internal void AddContainer(EntityContainer container)
@@ -35,7 +36,7 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse { results = new List<CommandResult>() };
             foreach (var command in syncRequest.commands) {
-                var result = command.Execute(this, commandContext);
+                var result = command.Execute(this);
                 response.results.Add(result);
             }
             return response;
@@ -49,10 +50,12 @@ namespace Friflo.Json.EntityGraph.Database
         public override string ToString() => key ?? "null";
     }
     
-    public abstract class EntityContainer
+    public abstract class EntityContainer : IDisposable
     {
-        public readonly     string          name;
+        public  readonly    string          name;
+
         public virtual      bool            Pretty => false;
+        public virtual      CommandContext  CommandContext => null;
 
 
         protected EntityContainer(string name, EntityDatabase database) {
@@ -61,9 +64,12 @@ namespace Friflo.Json.EntityGraph.Database
             // this.database = database;
         }
         
+        public virtual void Dispose() { }
+        
         // ---
         public abstract void                      CreateEntities  (ICollection<KeyValue> entities);
         public abstract void                      UpdateEntities  (ICollection<KeyValue> entities);
         public abstract ICollection<KeyValue>     ReadEntities    (ICollection<string> ids);
+
     }
 }

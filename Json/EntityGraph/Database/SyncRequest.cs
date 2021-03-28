@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(ReadEntities),    Discriminant = "read")]
     public abstract class DatabaseCommand
     {
-        public abstract CommandResult   Execute(EntityDatabase database, CommandContext context);
+        public abstract CommandResult   Execute(EntityDatabase database);
         public abstract CommandType     CommandType { get; }
     }
     
@@ -54,10 +54,11 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandType CommandType => CommandType.Create;
         public override string      ToString() => "container: " + containerName;
 
-        public override CommandResult Execute(EntityDatabase database, CommandContext context) {
+        public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
             // may call serializer.WriteTree() always to ensure a valid JSON value
             if (container.Pretty) {
+                CommandContext context = container.CommandContext;
                 context.serializer.SetPretty(true);
                 foreach (var entity in entities) {
                     using (var json = new Bytes(entity.value.json)) {
@@ -89,7 +90,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandType CommandType => CommandType.Read;
         public override string      ToString() => "container: " + containerName;
         
-        public override CommandResult Execute(EntityDatabase database, CommandContext context) {
+        public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
             var entities = container.ReadEntities(ids).ToList();
             var result = new ReadEntitiesResult {
@@ -107,9 +108,18 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // ------------------------------------ CommandContext ------------------------------------
+    /// <summary>
+    /// One <see cref="CommandContext"/> is created per <see cref="EntityContainer"/> to enable multi threaded
+    /// request handling for different <see cref="EntityContainer"/> instances.
+    ///
+    /// The <see cref="EntityContainer.CommandContext"/> for a specific <see cref="EntityContainer"/> must not be used
+    /// multi threaded.
+    ///
+    /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
+    /// for a <see cref="SyncResponse"/> in <see cref="DatabaseCommand.Execute"/> need to be single threaded. 
+    /// </summary>
     public class CommandContext : IDisposable
     {
-
         public              JsonSerializer  serializer;
         public              JsonParser      parser;
 

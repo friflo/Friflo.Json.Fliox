@@ -25,9 +25,15 @@ namespace Friflo.Json.EntityGraph.Database
         private readonly    Dictionary<string, string>  payloads    = new Dictionary<string, string>();
         
         public  override    bool                        Pretty { get; }
+        public  override    CommandContext  CommandContext { get; }
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty) : base(name, database) {
+            CommandContext = new CommandContext();
             Pretty = pretty;
+        }
+        
+        public override void Dispose() {
+            CommandContext.Dispose();
         }
 
 
