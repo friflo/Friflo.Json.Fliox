@@ -87,6 +87,8 @@ namespace Friflo.Json.EntityGraph
                 var command = commands[n];
                 var result = results[n];
                 CommandType commandType = command.CommandType;
+                if (commandType != result.CommandType)
+                    throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {commandType} got: {result.CommandType}");
                 switch (commandType) {
                     case CommandType.Create:
                         var create = (CreateEntities) command;

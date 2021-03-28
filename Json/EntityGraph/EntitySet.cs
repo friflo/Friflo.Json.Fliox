@@ -163,9 +163,14 @@ namespace Friflo.Json.EntityGraph
         internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
             var entries = result.entities;
             if (entries.Count != command.ids.Count)
-                throw new InvalidOperationException($"Expect returning same number of entities {entries.Count} as number ids {command.ids.Count}");
+                throw new InvalidOperationException($"read command: Expect entities.Count of response matches request. expect: {command.ids.Count} got: {entries.Count}");
                 
-            foreach (var entry in entries) {
+            for (int n = 0; n < entries.Count; n++) {
+                var entry = entries[n];
+                var expectedId = command.ids[n];
+                if (entry.key != expectedId)
+                    throw new InvalidOperationException($"read command: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entry.key}");
+                
                 var peer = GetPeer(entry.key);
                 var read = peer.read;
                 var json = entry.value.json;
