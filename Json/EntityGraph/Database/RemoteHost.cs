@@ -90,8 +90,16 @@ namespace Friflo.Json.EntityGraph.Database
                         }
                     }
                 }
+#if UNITY_5_3_OR_NEWER
+                catch (ObjectDisposedException  e) {
+                    if (runServer)
+                        Log($"RemoteHost error: {e}");
+                    return;
+                }
+#endif
                 catch (HttpListenerException  e) {
-                    if (e.ErrorCode != 995)
+                    bool serverStopped = e.ErrorCode == 995 && runServer == false;
+                    if (!serverStopped) 
                         Log($"RemoteHost error: {e}");
                     return;
                 }
