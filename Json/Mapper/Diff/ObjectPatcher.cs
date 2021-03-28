@@ -9,7 +9,7 @@ using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.Mapper.Diff
 {
-    public class JsonPatcher : IDisposable
+    public class ObjectPatcher : IDisposable
     {
         public  readonly    JsonMapper      mapper;
         public  readonly    Differ          differ;
@@ -18,11 +18,11 @@ namespace Friflo.Json.Mapper.Diff
         private readonly    TypeCache       typeCache;
         private readonly    Patcher         patcher;
 
-        public JsonPatcher(TypeStore typeStore) 
+        public ObjectPatcher(TypeStore typeStore) 
             : this (new JsonMapper(typeStore))
         { }
         
-        public JsonPatcher(JsonMapper mapper) {
+        public ObjectPatcher(JsonMapper mapper) {
             this.mapper = mapper;
             typeCache   = mapper.reader.TypeCache;
             patcher     = new Patcher(mapper.reader);
