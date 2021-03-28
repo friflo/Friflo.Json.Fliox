@@ -7,15 +7,16 @@ using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
-    
     public abstract class EntityDatabase : IDisposable
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        private readonly Dictionary<string, EntityContainer>    containers = new Dictionary<string, EntityContainer>();
+        private readonly CommandContext                         commandContext = new CommandContext(true);
 
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
-        
+
         public virtual void Dispose() {
+            commandContext.Dispose();
         }
 
         internal void AddContainer(EntityContainer container)
@@ -34,7 +35,7 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse { results = new List<CommandResult>() };
             foreach (var command in syncRequest.commands) {
-                var result = command.Execute(this);
+                var result = command.Execute(this, commandContext);
                 response.results.Add(result);
             }
             return response;

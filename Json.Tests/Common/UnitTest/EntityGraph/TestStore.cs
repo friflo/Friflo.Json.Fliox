@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
         private async Task MemoryCreate() {
-            var database = new MemoryDatabase();
+            using (var database = new MemoryDatabase())
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
             }
