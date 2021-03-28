@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Diff
             return index;
         }
 
-        private static string PathToPathNodes(string path, List<string> pathNodes) {
+        public static string PathToPathNodes(string path, List<string> pathNodes) {
             pathNodes.Clear();
             int last = 1;
             int len = path.Length;
