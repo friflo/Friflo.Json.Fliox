@@ -54,8 +54,8 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  readonly    string          name;
 
-        public virtual      bool            Pretty => false;
-        public virtual      CommandContext  CommandContext => null;
+        public virtual      bool            Pretty      => false;
+        public virtual      SyncContext     SyncContext => null;
 
 
         protected EntityContainer(string name, EntityDatabase database) {

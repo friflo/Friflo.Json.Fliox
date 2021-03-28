@@ -152,8 +152,8 @@ namespace Friflo.Json.EntityGraph.Database
     {
         private readonly    EntityContainer local;
         
-        public  override    bool            Pretty          => local.Pretty;
-        public  override    CommandContext  CommandContext  => local.CommandContext;
+        public  override    bool            Pretty       => local.Pretty;
+        public  override    SyncContext     SyncContext  => local.SyncContext;
 
         public HostContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {

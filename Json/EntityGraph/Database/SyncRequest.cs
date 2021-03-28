@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Burst;
@@ -58,7 +57,7 @@ namespace Friflo.Json.EntityGraph.Database
             var container = database.GetContainer(containerName);
             // may call serializer.WriteTree() always to ensure a valid JSON value
             if (container.Pretty) {
-                CommandContext context = container.CommandContext;
+                SyncContext context = container.SyncContext;
                 context.serializer.SetPretty(true);
                 foreach (var entity in entities) {
                     using (var json = new Bytes(entity.value.json)) {
@@ -105,27 +104,5 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<KeyValue>      entities;
         
         public override CommandType CommandType => CommandType.Read;
-    }
-    
-    // ------------------------------------ CommandContext ------------------------------------
-    /// <summary>
-    /// One <see cref="CommandContext"/> is created per <see cref="EntityContainer"/> to enable multi threaded
-    /// request handling for different <see cref="EntityContainer"/> instances.
-    ///
-    /// The <see cref="EntityContainer.CommandContext"/> for a specific <see cref="EntityContainer"/> must not be used
-    /// multi threaded.
-    ///
-    /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
-    /// for a <see cref="SyncResponse"/> in <see cref="DatabaseCommand.Execute"/> need to be single threaded. 
-    /// </summary>
-    public class CommandContext : IDisposable
-    {
-        public              JsonSerializer  serializer;
-        public              JsonParser      parser;
-
-        public void Dispose() {
-            parser.Dispose();
-            serializer.Dispose();
-        }
     }
 }
