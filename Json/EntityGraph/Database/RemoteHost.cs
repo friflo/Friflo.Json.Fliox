@@ -58,7 +58,7 @@ namespace Friflo.Json.EntityGraph.Database
                     HttpListenerContext ctx = await listener.GetContextAsync();
 
                     // Peel out the requests and response objects
-                    HttpListenerRequest req = ctx.Request;
+                    HttpListenerRequest  req  = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
                     string reqMsg = $@"request {++requestCount} {req.Url.ToString()} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
@@ -66,27 +66,15 @@ namespace Friflo.Json.EntityGraph.Database
 
                     // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
                     if (req.HttpMethod == "POST") {
+                        var inputStream = req.InputStream;
+                        System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
+                        string requestContent = await reader.ReadToEndAsync();
                         if (req.Url.AbsolutePath == "/shutdown") {
-                            Console.WriteLine("Shutdown requested");
+                            Log("Shutdown requested");
                             runServer = false;
                         } else {
-                            var inputStream = req.InputStream;
-                            System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
-                            string requestContent = await reader.ReadToEndAsync();
-                            var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
-                            var syncResponse = Execute(syncRequest);
-                            var jsonResponse = jsonMapper.Write(syncResponse);
-
-                            // Write the response info
-                            byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
-                            int len = data.Length;
-
-                            resp.ContentType = "application/json";
-                            resp.ContentEncoding = Encoding.UTF8;
-                            resp.ContentLength64 = len;
-
-                            // Write out to the response stream (asynchronously), then close it
-                            await resp.OutputStream.WriteAsync(data, 0, len);
+                            var data = HandlePost(requestContent, resp);
+                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
                             resp.Close();
                         }
                     }
@@ -108,7 +96,22 @@ namespace Friflo.Json.EntityGraph.Database
                      Log($"RemoteHost error: {e}");
                 }
             }
+        }
 
+        private byte[] HandlePost (string requestContent, HttpListenerResponse resp) {
+            var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
+            var syncResponse = Execute(syncRequest);
+            var jsonResponse = jsonMapper.Write(syncResponse);
+
+            // Write the response info
+            byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
+            int len = data.Length;
+
+            resp.ContentType = "application/json";
+            resp.ContentEncoding = Encoding.UTF8;
+            resp.ContentLength64 = len;
+
+            return data;
         }
 
         /// <summary>
