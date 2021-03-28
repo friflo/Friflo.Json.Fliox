@@ -46,7 +46,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     {
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database);
-            store.intern.jsonMapper.Pretty = true;
             var order       = new Order { id = "order-1" };
             
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };

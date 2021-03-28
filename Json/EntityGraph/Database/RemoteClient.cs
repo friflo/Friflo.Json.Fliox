@@ -16,7 +16,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public RemoteClient(string endpoint) : base (false) {
             this.endpoint = endpoint;
-            jsonMapper = new JsonMapper();
+            jsonMapper = new JsonMapper { Pretty = true };
             httpClient = new HttpClient();
         }
         
