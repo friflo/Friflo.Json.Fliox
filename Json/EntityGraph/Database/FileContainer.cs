@@ -13,8 +13,7 @@ namespace Friflo.Json.EntityGraph.Database
     {
         private readonly    string          databaseFolder;
 
-
-        public FileDatabase(string databaseFolder, bool pretty = false) : base (pretty) {
+        public FileDatabase(string databaseFolder) {
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);
         }
@@ -26,11 +25,12 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class FileContainer : EntityContainer
     {
-        private readonly string         folder;
-        private readonly FileDatabase   fileDatabase;
+        private readonly    string          folder;
+        
+        public  override    bool            Pretty => true;
+
         
         public FileContainer(string name, FileDatabase database, string folder) : base (name, database) {
-            this.fileDatabase = database;
             this.folder = folder + "/";
             Directory.CreateDirectory(folder);
         }

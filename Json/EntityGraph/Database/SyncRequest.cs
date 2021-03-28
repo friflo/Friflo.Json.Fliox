@@ -56,7 +56,9 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override CommandResult Execute(EntityDatabase database, CommandContext context) {
             var container = database.GetContainer(containerName);
-            if (context.pretty) {
+            // may call serializer.WriteTree() always to ensure a valid JSON value
+            if (container.Pretty) {
+                context.serializer.SetPretty(true);
                 foreach (var entity in entities) {
                     using (var json = new Bytes(entity.value.json)) {
                         context.parser.InitParser(json);
@@ -107,15 +109,10 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------------ CommandContext ------------------------------------
     public class CommandContext : IDisposable
     {
-        public  readonly    bool            pretty;
+
         public              JsonSerializer  serializer;
         public              JsonParser      parser;
 
-        public CommandContext(bool pretty) {
-            this.pretty = pretty;
-            serializer.SetPretty(pretty);
-        }
-        
         public void Dispose() {
             parser.Dispose();
             serializer.Dispose();

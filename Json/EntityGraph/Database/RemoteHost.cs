@@ -22,7 +22,8 @@ namespace Friflo.Json.EntityGraph.Database
         
         private             int             requestCount;
         
-        public RemoteHost(EntityDatabase local, string endpoint, bool pretty = false) : base (pretty) {
+        
+        public RemoteHost(EntityDatabase local, string endpoint) {
             this.endpoint = endpoint;
             jsonMapper = new JsonMapper();
             listener = new HttpListener();
@@ -149,7 +150,9 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class HostContainer : EntityContainer
     {
-        private readonly EntityContainer local;
+        private readonly    EntityContainer local;
+        
+        public  override    bool            Pretty => local.Pretty;
 
         public HostContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {

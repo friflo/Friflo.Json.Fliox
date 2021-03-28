@@ -9,9 +9,6 @@ namespace Friflo.Json.EntityGraph.Database
 {
     public class MemoryDatabase : EntityDatabase
     {
-        public MemoryDatabase(bool pretty = false) : base(pretty) {
-        }
-        
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new MemoryContainer(name, database);
         }
