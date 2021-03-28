@@ -22,7 +22,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         private             int             requestCount;
         
-        public RemoteHost(EntityDatabase local, string endpoint) {
+        public RemoteHost(EntityDatabase local, string endpoint, bool pretty = false) : base (pretty) {
             this.endpoint = endpoint;
             jsonMapper = new JsonMapper();
             listener = new HttpListener();

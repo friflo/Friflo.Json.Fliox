@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph.Database
         private readonly    string          databaseFolder;
 
 
-        public FileDatabase(string databaseFolder, bool pretty = false) {
+        public FileDatabase(string databaseFolder, bool pretty = false) : base (pretty) {
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);
         }

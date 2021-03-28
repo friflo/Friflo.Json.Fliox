@@ -75,8 +75,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task  RemoteCreateAsync() { await RemoteCreate(); }
         
         private async Task RemoteCreate() {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db", true))
-            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/", true)) {
                 await RunRemoteHost(hostDatabase, async () => {
                     using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
                     using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {

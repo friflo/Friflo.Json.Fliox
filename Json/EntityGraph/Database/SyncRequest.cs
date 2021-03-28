@@ -56,13 +56,15 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override CommandResult Execute(EntityDatabase database, CommandContext context) {
             var container = database.GetContainer(containerName);
-            foreach (var entity in entities) {
-                using (var json = new Bytes(entity.value.json)) {
-                    context.parser.InitParser(json);
-                    context.parser.NextEvent();
-                    context.serializer.InitSerializer();
-                    context.serializer.WriteTree(ref context.parser);
-                    entity.value.json = context.serializer.json.ToString();
+            if (context.pretty) {
+                foreach (var entity in entities) {
+                    using (var json = new Bytes(entity.value.json)) {
+                        context.parser.InitParser(json);
+                        context.parser.NextEvent();
+                        context.serializer.InitSerializer();
+                        context.serializer.WriteTree(ref context.parser);
+                        entity.value.json = context.serializer.json.ToString();
+                    }
                 }
             }
             container.CreateEntities(entities);
@@ -105,10 +107,12 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------------ CommandContext ------------------------------------
     public class CommandContext : IDisposable
     {
-        public          JsonSerializer                         serializer;
-        public          JsonParser                             parser;
+        public  readonly    bool            pretty;
+        public              JsonSerializer  serializer;
+        public              JsonParser      parser;
 
         public CommandContext(bool pretty) {
+            this.pretty = pretty;
             serializer.SetPretty(pretty);
         }
         

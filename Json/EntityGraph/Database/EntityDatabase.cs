@@ -11,9 +11,13 @@ namespace Friflo.Json.EntityGraph.Database
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer>    containers = new Dictionary<string, EntityContainer>();
-        private readonly CommandContext                         commandContext = new CommandContext(true);
+        private readonly CommandContext                         commandContext;
 
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
+
+        protected EntityDatabase(bool pretty) {
+            commandContext = new CommandContext(pretty);
+        } 
 
         public virtual void Dispose() {
             commandContext.Dispose();
