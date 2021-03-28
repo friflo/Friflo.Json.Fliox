@@ -375,6 +375,20 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref json, value);
         }
         
+        /// <summary>Writes a key/value pair where the value is a "string"</summary>
+        public void MemberBytes(in Bytes key, ref Bytes value) {
+            AddSeparator();
+            AppendKeyBytes(ref json, in key);
+            /*
+            // Conversion to long or double is expensive and not required 
+            if (p.isFloat)
+                MemberDouble(ref key, ValueAsDouble(out _));
+            else
+                MemberLong(ref key, ValueAsLong(out _));
+            */
+            json.AppendBytes(ref value);
+        }
+        
         /// <summary>Writes a key/value pair where the value is a <see cref="bool"/></summary>
         public void MemberBln(in Str32 key, bool value) {
             AssertMember();
@@ -454,6 +468,11 @@ namespace Friflo.Json.Burst
             format.AppendLong(ref json, value);
         }
         
+        public void ElementBytes(ref Bytes value) {
+            AddSeparator();
+            json.AppendBytes(ref value);
+        }
+        
         /// <summary>Write an array element of type <see cref="bool"/></summary>
         public void ElementBln(bool value) {
             AssertElement();
@@ -484,16 +503,7 @@ namespace Friflo.Json.Burst
                         MemberStr(in p.key, in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        AddSeparator();
-                        AppendKeyBytes(ref json, in p.key);
-                        /*
-                        // Conversion to long or double is expensive and not required 
-                        if (p.isFloat)
-                            MemberDouble(ref p.key, p.ValueAsDouble(out _));
-                        else
-                            MemberLong(ref p.key, p.ValueAsLong(out _));
-                        */
-                        json.AppendBytes(ref p.value);
+                        MemberBytes(in p.key, ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         MemberBln(in p.key, p.boolValue);
@@ -535,8 +545,7 @@ namespace Friflo.Json.Burst
                         ElementStr(in p.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        AddSeparator();
-                        json.AppendBytes(ref p.value);
+                        ElementBytes(ref p.value);
                         break;
                     case JsonEvent.ValueBool:
                         ElementBln(p.boolValue);
@@ -574,7 +583,7 @@ namespace Friflo.Json.Burst
                     ElementStr(in p.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    json.AppendBytes(ref p.value);
+                    ElementBytes(ref p.value);
                     return true;
                 case JsonEvent.ValueBool:
                     ElementBln(p.boolValue);
@@ -586,7 +595,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        private static bool NextObjectMember (ref JsonParser p) {
+        public static bool NextObjectMember (ref JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
@@ -604,7 +613,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        private static bool NextArrayElement (ref JsonParser p) {
+        public static bool NextArrayElement (ref JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
