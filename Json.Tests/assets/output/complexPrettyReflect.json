@@ -1,48 +1,48 @@
 {
     "map": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "map2": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "map3": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "map4": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "mapStruct": {
-        "key1":{
+        "key1": {
             "val": 1
         }
     },
     "mapDerived": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "mapDerivedNull": {
-        "key1":{
+        "key1": {
             "val": 1
         },
-        "key2":null
+        "key2": null
     },
     "map5": {
-        "key1":"str1",
-        "key2":null
+        "key1": "str1",
+        "key2": null
     },
     "i64": 6400000000000000000,
     "i64Neg": -640,

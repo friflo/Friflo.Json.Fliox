@@ -215,7 +215,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     
                     var rightJson = objectPatcher.mapper.Write(right);
                     var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
-                    // AreEqual(rightJson, leftPatched);
+                    AreEqual(rightJson, leftPatched);
                     
                     PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);

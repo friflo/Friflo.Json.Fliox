@@ -177,7 +177,10 @@ namespace Friflo.Json.Mapper.Map
         public void WriteKey(string key, int pos) {
             WriteDelimiter(pos);
             WriteString(key);
-            bytes.AppendChar(':');
+            if (!pretty)
+                bytes.AppendChar(':');
+            else
+                bytes.AppendChar2(':', ' ');
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -193,8 +196,7 @@ namespace Friflo.Json.Mapper.Map
                 bytes.AppendChar('"');
                 bytes.AppendBytes(ref field.nameBytes);
                 bytes.AppendChar('"');
-                bytes.AppendChar(':');
-                bytes.AppendChar(' ');
+                bytes.AppendChar2(':', ' ');
             } 
             firstMember = false;
         }
