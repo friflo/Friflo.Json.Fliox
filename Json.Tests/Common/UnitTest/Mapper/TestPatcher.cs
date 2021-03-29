@@ -143,12 +143,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestPatchContainer() {
+            using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
             using (var objectPatcher    = new ObjectPatcher(typeStore)) {
+                objectPatcher.mapper.Pretty = true;
                 // --- []
                 {
                     var left  = new[] {1,  2,  3};
                     var right = new[] {1, 12, 13};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -156,6 +163,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
@@ -163,6 +175,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchElements<IList<int>>(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
@@ -173,6 +190,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new LinkedList<int>(new[] {1,  2,  3});
                     var right = new LinkedList<int>(new[] {1, 12, 13});
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+
                     PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {

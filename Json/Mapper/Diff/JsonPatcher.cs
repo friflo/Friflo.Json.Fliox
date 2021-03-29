@@ -138,7 +138,32 @@ namespace Friflo.Json.Mapper.Diff
         }
         
         private bool TraceArray(ref JsonParser p) {
+            int index = -1;
             while (JsonSerializer.NextArrayElement(ref p)) {
+                index++;
+                var node = nodeStack[nodeStack.Count - 1];
+                string key = index.ToString();
+                if (node.children.TryGetValue(key, out PatchNode patch)) {
+                    switch (patch.patchType) {
+                        case PatchType.Replace:
+                            patchJson.Clear();
+                            patchJson.AppendString(patch.json);
+                            patchParser.InitParser(patchJson);
+                            patchParser.NextEvent();
+                            serializer.WriteTree(ref patchParser);
+                            targetParser.SkipEvent();
+                            node.children.Remove(key);
+                            continue;
+                        case PatchType.Add:
+                        case PatchType.Remove:
+                            throw new InvalidOperationException($"patchType not supported for JSON array: {patch.patchType}");
+                        case null:
+                            nodeStack.Add(patch);
+                            break;
+                        default:
+                            throw new InvalidOperationException($"patchType not supported: {patch.patchType}");
+                    }
+                }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
                         serializer.ArrayStart(true);
@@ -170,6 +195,7 @@ namespace Friflo.Json.Mapper.Diff
             switch (p.Event) {
                 case JsonEvent.ArrayEnd:
                     serializer.ArrayEnd();
+                    nodeStack.RemoveAt(nodeStack.Count - 1);
                     break;
                 case JsonEvent.Error:
                 case JsonEvent.EOF:
