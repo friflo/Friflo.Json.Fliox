@@ -26,11 +26,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestClass() {
-            using (var typeStore    = new TypeStore()) 
-            using (var jsonPatcher  = new ObjectPatcher(typeStore))
-            using (var differ       = new Differ(typeStore))
+            using (var jsonPatcher      = new JsonPatcher())
+            using (var typeStore        = new TypeStore()) 
+            using (var objectPatcher    = new ObjectPatcher(typeStore))
+            using (var differ           = new Differ(typeStore))
             {
-                jsonPatcher.mapper.Pretty = true;
+                objectPatcher.mapper.Pretty = true;
                 {
                     var left  = new DiffBase {child = new DiffChild {
                         childVal = 1,
@@ -53,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
-                    Patch(jsonPatcher, left, right);
+                    Patch(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
 
@@ -62,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var diff = differ.GetDiff(1, 2);
                     IsNotNull(diff);
                     AreEqual("1 != 2", diff.ToString());
-                    var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff(1, diff); });
+                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff(1, diff); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueNumber path: '(root)'", e.Message);
                 }
                 IsNull(differ.GetDiff("A", "A"));
@@ -70,16 +71,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
                     AreEqual("A != B", diff.ToString());
-                    var e = Throws<JsonReaderException>(() => { jsonPatcher.ApplyDiff("A", diff); });
+                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff("A", diff); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueString path: '(root)'", e.Message);
                 }
                 {
-                    var sample = new SampleIL();
-                    IsNull(differ.GetDiff(sample, sample));
+                    var left = new SampleIL();
+                    left.Init();
+                    IsNull(differ.GetDiff(left, left));
 
-                    var sample2 = new SampleIL();
-                    sample2.Init();
-                    var diff = differ.GetDiff(sample2, sample);
+                    var leftJson = objectPatcher.mapper.Write(left);
+                    
+                    var right = new SampleIL();
+                    IsNull(differ.GetDiff(right, right));
+
+                    var diff = differ.GetDiff(left, right);
                     IsNotNull(diff);
                     AreEqual(29, diff.children.Count);
                     var childrenDiff = diff.GetChildrenDiff(20);
@@ -115,8 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /int8               13 != 99
 ";
                     AreEqual(expect, childrenDiff);
-                    Patch(jsonPatcher, sample2, sample);
-                    AssertUtils.Equivalent(sample2, sample);
+                    Patch(objectPatcher, left, right);
+                    AssertUtils.Equivalent(left, right);
+
+                    var patches = objectPatcher.CreatePatches(diff);
+                    var jsonPatched = jsonPatcher.ApplyPatches(leftJson, patches);
+                    
+                    
                 }
             }
         }
@@ -135,27 +145,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void TestPatchContainer() {
-            using (var typeStore    = new TypeStore())
-            using (var jsonPatcher  = new ObjectPatcher(typeStore)) {
+            using (var typeStore        = new TypeStore())
+            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
                 // --- []
                 {
                     var left  = new[] {1,  2,  3};
                     var right = new[] {1, 12, 13};
-                    PatchElements(jsonPatcher, left, right);
+                    PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- List<>
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
-                    PatchElements(jsonPatcher, left, right);
+                    PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- IList<>
                 {
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
-                    PatchElements<IList<int>>(jsonPatcher, left, right);
+                    PatchElements<IList<int>>(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     // var left  = new Collection<int>(new[] {1,  2,  3});
@@ -165,31 +175,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 {
                     var left  = new LinkedList<int>(new[] {1,  2,  3});
                     var right = new LinkedList<int>(new[] {1, 12, 13});
-                    PatchElements(jsonPatcher, left, right);
+                    PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new HashSet<int>(new[] {1,  2,  3});
                     var right = new HashSet<int>(new[] {1, 12, 13});
-                    PatchCollection(jsonPatcher, left, right);
+                    PatchCollection(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
                     var right = new SortedSet<int>(new[] {1, 12, 13});
-                    PatchCollection(jsonPatcher, left, right);
+                    PatchCollection(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Stack<>
                 {
                     var left  = new Stack<int>(new[] { 3,  2, 1});
                     var right = new Stack<int>(new[] {13, 12, 1});
-                    PatchElements(jsonPatcher, left, right);
+                    PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Queue<>
                 {
                     var left  = new Queue<int>(new[] {1,  2,  3});
                     var right = new Queue<int>(new[] {1, 12, 13});
-                    PatchElements(jsonPatcher, left, right);
+                    PatchElements(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -197,27 +207,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestPatchDictionary() {
-            using (var typeStore = new TypeStore())
-            using (var jsonPatcher = new ObjectPatcher(typeStore)) {
+            using (var typeStore        = new TypeStore())
+            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
                 {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
-                    PatchKeyValues(jsonPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
-                    PatchKeyValues<IDictionary<string, int>>(jsonPatcher, left, right);
+                    PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedDictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedDictionary<string, int> {{"A", 2}, {"B", 12}};
-                    PatchKeyValues(jsonPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedList<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedList<string, int> {{"A", 2}, {"B", 12}};
-                    PatchKeyValues(jsonPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
             }
