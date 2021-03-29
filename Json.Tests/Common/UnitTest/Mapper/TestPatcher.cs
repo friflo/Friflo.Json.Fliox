@@ -79,10 +79,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     left.Init();
                     IsNull(differ.GetDiff(left, left));
 
-                    var leftJson = objectPatcher.mapper.Write(left);
-                    
                     var right = new SampleIL();
                     IsNull(differ.GetDiff(right, right));
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+
 
                     var diff = differ.GetDiff(left, right);
                     IsNotNull(diff);
@@ -122,12 +125,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(expect, childrenDiff);
                     Patch(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
-
-                    var patches = objectPatcher.CreatePatches(diff);
-                    var jsonPatched = jsonPatcher.ApplyPatches(leftJson, patches, true);
-                    var patched = objectPatcher.mapper.Read<SampleIL>(jsonPatched);
-                    AssertUtils.Equivalent(left, patched);
-                    
                 }
             }
         }
@@ -208,6 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public void TestPatchDictionary() {
+            using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
             using (var objectPatcher    = new ObjectPatcher(typeStore)) {
                 {
@@ -279,6 +277,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AssertUtils.Equivalent(patches, destPatches);
                     
             objectPatcher.ApplyPatches(left, destPatches);
+        }
+        
+        private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right)
+        {
+            List<Patch> patches = objectPatcher.GetPatches(left, right);
+            var leftJson = objectPatcher.mapper.Write(left);
+            
+            var jsonPatches = objectPatcher.mapper.Write(patches);
+            var destPatches = objectPatcher.mapper.Read<List<Patch>>(jsonPatches);
+            AssertUtils.Equivalent(patches, destPatches);
+            
+            var leftPatched = jsonPatcher.ApplyPatches(leftJson, patches, true);
+            return leftPatched;
         }
     }
 }

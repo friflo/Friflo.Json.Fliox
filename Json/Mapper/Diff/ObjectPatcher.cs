@@ -37,7 +37,8 @@ namespace Friflo.Json.Mapper.Diff
 
         public List<Patch> CreatePatches(DiffNode diff) {
             var patches = new List<Patch>();
-            TraceDiff(diff, patches);
+            if (diff != null)
+                TraceDiff(diff, patches);
             return patches;
         }
         

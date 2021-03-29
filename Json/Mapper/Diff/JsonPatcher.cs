@@ -47,10 +47,10 @@ namespace Friflo.Json.Mapper.Diff
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                var debug = true;
-                if (debug && node.children.TryGetValue(key, out PatchNode patch)) {
+                if (node.children.TryGetValue(key, out PatchNode patch)) {
                     switch (patch.patchType) {
                         case PatchType.Replace:
+                        case PatchType.Add:
                             patchInput.Clear();
                             patchInput.AppendString(patch.json);
                             patchParser.InitParser(patchInput);
@@ -58,14 +58,15 @@ namespace Friflo.Json.Mapper.Diff
                             serializer.WriteMember(ref p.key, ref patchParser);
                             parser.SkipEvent();
                             continue;
-                        case PatchType.Add:
-                            throw new NotImplementedException("PatchType.Add");
-                            continue;
                         case PatchType.Remove:
-                            throw new NotImplementedException("PatchType.Remove");
+                            parser.SkipEvent();
                             continue;
+                        case null:
+                            nodeStack.Add(patch);
+                            break;
+                        default:
+                            throw new InvalidOperationException($"patchType not supported: {patch.patchType}");
                     }
-                    nodeStack.Add(patch);
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
