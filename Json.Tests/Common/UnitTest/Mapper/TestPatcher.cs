@@ -208,9 +208,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
             using (var objectPatcher    = new ObjectPatcher(typeStore)) {
+                objectPatcher.mapper.Pretty = true;
                 {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    // AreEqual(rightJson, leftPatched);
+                    
                     PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {

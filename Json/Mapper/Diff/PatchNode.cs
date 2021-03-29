@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Diff
         public override     string                          ToString() => patchType != null ? patchType.ToString() : "---";
         
 
-        public void InitPatchNode(Patch patch) {
+        private void InitPatchNode(Patch patch) {
             patchType = patch.PatchType;
             switch (patchType) {
                 case PatchType.Replace:
@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Diff
             }
         }
         
-        internal static void GetPathNodes(Patch patch, List<string> pathNodes) {
+        private static void GetPathNodes(Patch patch, List<string> pathNodes) {
             pathNodes.Clear();
             var patchType = patch.PatchType;
             switch (patchType) {

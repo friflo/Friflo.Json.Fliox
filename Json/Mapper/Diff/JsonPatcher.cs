@@ -13,11 +13,13 @@ namespace Friflo.Json.Mapper.Diff
         private             JsonParser      parser;
         private             Bytes           patchInput = new Bytes(128);
         private             JsonParser      patchParser;
+        private             Bytes           keyBytes = new Bytes(32);
         private readonly    List<PatchNode> nodeStack = new List<PatchNode>();
         private readonly    List<string>    pathNodes = new List<string>(); // reused buffer
         private readonly    PatchNode       rootNode = new PatchNode();
 
         public void Dispose() {
+            keyBytes.Dispose();
             patchParser.Dispose();
             patchInput.Dispose();
             parser.Dispose();
@@ -57,9 +59,11 @@ namespace Friflo.Json.Mapper.Diff
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
                             parser.SkipEvent();
+                            node.children.Remove(key);
                             continue;
                         case PatchType.Remove:
                             parser.SkipEvent();
+                            node.children.Remove(key);
                             continue;
                         case null:
                             nodeStack.Add(patch);
@@ -99,6 +103,27 @@ namespace Friflo.Json.Mapper.Diff
 
             switch (p.Event) {
                 case JsonEvent.ObjectEnd:
+                    var node = nodeStack[nodeStack.Count - 1];
+                    foreach (var child in node.children) {
+                        var patch = child.Value;
+                        switch (patch.patchType) {
+                            case PatchType.Replace:
+                            case PatchType.Add:
+                                keyBytes.Clear();
+                                keyBytes.AppendString(child.Key);
+                                patchInput.Clear();
+                                patchInput.AppendString(patch.json);
+                                patchParser.InitParser(patchInput);
+                                patchParser.NextEvent();
+                                serializer.WriteMember(ref keyBytes, ref patchParser);
+                                continue;
+                            case PatchType.Remove:
+                            case null:
+                                continue;
+                            default:
+                                throw new InvalidOperationException($"patchType not supported: {patch.patchType}");
+                        }
+                    }
                     serializer.ObjectEnd();
                     nodeStack.RemoveAt(nodeStack.Count - 1);
                     break;
