@@ -404,7 +404,7 @@ namespace Friflo.Json.Burst
             AppendKeyString(ref json, in key);
             json.AppendStr32(in @null);
         }
-
+        
         // ----------------------------- array with elements -----------------------------
         public void ArrayStart(bool wrapItems) {
             AssertStart();
@@ -591,6 +591,32 @@ namespace Friflo.Json.Burst
                 case JsonEvent.ValueNull:
                     ElementNul();
                     return true;
+            }
+            return false;
+        }
+        
+        public bool WriteMember(ref Bytes key, ref JsonParser p) {
+            switch (p.Event) {
+                case JsonEvent.ArrayStart:
+                    MemberArrayStart(key);
+                    WriteArray(ref p);
+                    break;
+                case JsonEvent.ObjectStart:
+                    MemberObjectStart(key);
+                    WriteObject(ref p);
+                    break;
+                case JsonEvent.ValueString:
+                    MemberStr(key, in p.value);
+                    break;
+                case JsonEvent.ValueNumber:
+                    MemberBytes(key, ref p.value);
+                    break;
+                case JsonEvent.ValueBool:
+                    MemberBln(key, p.boolValue);
+                    break;
+                case JsonEvent.ValueNull:
+                    MemberNul(key);
+                    break;
             }
             return false;
         }

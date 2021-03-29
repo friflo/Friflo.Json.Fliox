@@ -25,7 +25,6 @@ namespace Friflo.Json.Mapper.Diff
                     json = add.value.json;
                     break;
                 case PatchType.Remove:
-                    var remove = (PatchRemove) patch;
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
