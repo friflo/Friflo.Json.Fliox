@@ -57,16 +57,8 @@ namespace Friflo.Json.EntityGraph.Database
             // may call serializer.WriteTree() always to ensure a valid JSON value
             if (container.Pretty) {
                 var patcher = container.SyncContext.jsonPatcher;
-                patcher.serializer.SetPretty(true);
                 foreach (var entity in entities) {
-                    ref var json = ref patcher.json;
-                    json.Clear();
-                    json.AppendString(entity.value.json);
-                    patcher.parser.InitParser(json);
-                    patcher.parser.NextEvent();
-                    patcher.serializer.InitSerializer();
-                    patcher.serializer.WriteTree(ref patcher.parser);
-                    entity.value.json = patcher.serializer.json.ToString();
+                    entity.value.json = patcher.Copy(entity.value.json, true);
                 }
             }
             container.CreateEntities(entities);
