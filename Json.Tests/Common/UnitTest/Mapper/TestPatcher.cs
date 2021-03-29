@@ -125,7 +125,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                     var patches = objectPatcher.CreatePatches(diff);
                     var jsonPatched = jsonPatcher.ApplyPatches(leftJson, patches, true);
-                    
+                    var patched = objectPatcher.mapper.Read<SampleIL>(jsonPatched);
+                    AssertUtils.Equivalent(left, patched);
                     
                 }
             }

@@ -37,7 +37,8 @@ namespace Friflo.Json.Mapper.Diff
             serializer.SetPretty(pretty);
             
             TraceTree(ref parser);
-
+            if (nodeStack.Count != 0)
+                throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
             return serializer.json.ToString();
         }
@@ -56,43 +57,42 @@ namespace Friflo.Json.Mapper.Diff
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
                             parser.SkipEvent();
-                            break;
+                            continue;
                         case PatchType.Add:
                             throw new NotImplementedException("PatchType.Add");
-                            break;
+                            continue;
                         case PatchType.Remove:
                             throw new NotImplementedException("PatchType.Remove");
-                            break;
+                            continue;
                     }
                     nodeStack.Add(patch);
-                } else {
-                    switch (p.Event) {
-                        case JsonEvent.ArrayStart:
-                            serializer.MemberArrayStart(in p.key);
-                            TraceArray(ref p);
-                            break;
-                        case JsonEvent.ObjectStart:
-                            serializer.MemberObjectStart(in p.key);
-                            TraceObject(ref p);
-                            break;
-                        case JsonEvent.ValueString:
-                            serializer.MemberStr(in p.key, in p.value);
-                            break;
-                        case JsonEvent.ValueNumber:
-                            serializer.MemberBytes(in p.key, ref p.value);
-                            break;
-                        case JsonEvent.ValueBool:
-                            serializer.MemberBln(in p.key, p.boolValue);
-                            break;
-                        case JsonEvent.ValueNull:
-                            serializer.MemberNul(in p.key);
-                            break;
-                        case JsonEvent.ObjectEnd:
-                        case JsonEvent.ArrayEnd:
-                        case JsonEvent.Error:
-                        case JsonEvent.EOF:
-                            throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
-                    }
+                }
+                switch (p.Event) {
+                    case JsonEvent.ArrayStart:
+                        serializer.MemberArrayStart(in p.key);
+                        TraceArray(ref p);
+                        break;
+                    case JsonEvent.ObjectStart:
+                        serializer.MemberObjectStart(in p.key);
+                        TraceObject(ref p);
+                        break;
+                    case JsonEvent.ValueString:
+                        serializer.MemberStr(in p.key, in p.value);
+                        break;
+                    case JsonEvent.ValueNumber:
+                        serializer.MemberBytes(in p.key, ref p.value);
+                        break;
+                    case JsonEvent.ValueBool:
+                        serializer.MemberBln(in p.key, p.boolValue);
+                        break;
+                    case JsonEvent.ValueNull:
+                        serializer.MemberNul(in p.key);
+                        break;
+                    case JsonEvent.ObjectEnd:
+                    case JsonEvent.ArrayEnd:
+                    case JsonEvent.Error:
+                    case JsonEvent.EOF:
+                        throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
                 }
             }
 
