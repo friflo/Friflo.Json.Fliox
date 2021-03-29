@@ -58,7 +58,7 @@ namespace Friflo.Json.Mapper.Diff
             var count = patches.Count;
             for (int n = 0; n < count; n++) {
                 var patch = patches[n];
-                PatchNode.GetPathNodes(patch, pathNodes);
+                GetPathNodes(patch, pathNodes);
                 PatchNode curNode = rootNode;
                 PatchNode childNode = null;
                 for (int i = 0; i < pathNodes.Count; i++) {
