@@ -54,6 +54,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchObject(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
