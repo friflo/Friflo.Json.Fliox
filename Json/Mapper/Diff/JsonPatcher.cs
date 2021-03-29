@@ -9,10 +9,13 @@ namespace Friflo.Json.Mapper.Diff
     public class JsonPatcher : IDisposable
     {
         private             JsonSerializer  serializer;
-        private             Bytes           input = new Bytes(128);
-        private             JsonParser      parser;
-        private             Bytes           patchInput = new Bytes(128);
+        
+        private             Bytes           targetJson = new Bytes(128);
+        private             JsonParser      targetParser;
+        
+        private             Bytes           patchJson = new Bytes(128);
         private             JsonParser      patchParser;
+        
         private             Bytes           keyBytes = new Bytes(32);
         private readonly    List<PatchNode> nodeStack = new List<PatchNode>();
         private readonly    List<string>    pathNodes = new List<string>(); // reused buffer
@@ -21,9 +24,9 @@ namespace Friflo.Json.Mapper.Diff
         public void Dispose() {
             keyBytes.Dispose();
             patchParser.Dispose();
-            patchInput.Dispose();
-            parser.Dispose();
-            input.Dispose();
+            patchJson.Dispose();
+            targetParser.Dispose();
+            targetJson.Dispose();
             serializer.Dispose();
         }
         
@@ -31,14 +34,14 @@ namespace Friflo.Json.Mapper.Diff
             PatchNode.CreatePatchTree(rootNode, patches, pathNodes);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
-            input.Clear();
-            input.AppendString(root);
-            parser.InitParser(input);
-            parser.NextEvent();
+            targetJson.Clear();
+            targetJson.AppendString(root);
+            targetParser.InitParser(targetJson);
+            targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(pretty);
             
-            TraceTree(ref parser);
+            TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
@@ -53,16 +56,16 @@ namespace Friflo.Json.Mapper.Diff
                     switch (patch.patchType) {
                         case PatchType.Replace:
                         case PatchType.Add:
-                            patchInput.Clear();
-                            patchInput.AppendString(patch.json);
-                            patchParser.InitParser(patchInput);
+                            patchJson.Clear();
+                            patchJson.AppendString(patch.json);
+                            patchParser.InitParser(patchJson);
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
-                            parser.SkipEvent();
+                            targetParser.SkipEvent();
                             node.children.Remove(key);
                             continue;
                         case PatchType.Remove:
-                            parser.SkipEvent();
+                            targetParser.SkipEvent();
                             node.children.Remove(key);
                             continue;
                         case null:
@@ -111,9 +114,9 @@ namespace Friflo.Json.Mapper.Diff
                             case PatchType.Add:
                                 keyBytes.Clear();
                                 keyBytes.AppendString(child.Key);
-                                patchInput.Clear();
-                                patchInput.AppendString(patch.json);
-                                patchParser.InitParser(patchInput);
+                                patchJson.Clear();
+                                patchJson.AppendString(patch.json);
+                                patchParser.InitParser(patchJson);
                                 patchParser.NextEvent();
                                 serializer.WriteMember(ref keyBytes, ref patchParser);
                                 continue;

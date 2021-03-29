@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
 "; 
                     AreEqual(expect, childrenDiff);
-                    Patch(objectPatcher, left, right);
+                    PatchObject(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
 
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /int8               13 != 99
 ";
                     AreEqual(expect, childrenDiff);
-                    Patch(objectPatcher, left, right);
+                    PatchObject(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -248,7 +248,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 /2        3 != 13
 ";
             AreEqual(expect, childrenDiff);
-            Patch(objectPatcher, left, right);
+            PatchObject(objectPatcher, left, right);
         }
         
         private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right) {
@@ -256,7 +256,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             IsNotNull(diff);
             IsNull(diff.children);
             AreEqual("[3] != [3]", diff.ToString());
-            Patch(objectPatcher, left, right);
+            PatchObject(objectPatcher, left, right);
         }
         
         private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right) {
@@ -274,7 +274,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             objectPatcher.ApplyPatches(left, patches);
         }
         
-        private static void Patch<T>(ObjectPatcher objectPatcher, T left, T right)
+        private static void PatchObject<T>(ObjectPatcher objectPatcher, T left, T right)
         {
             List<Patch> patches = objectPatcher.GetPatches(left, right);
 
