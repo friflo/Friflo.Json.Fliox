@@ -60,7 +60,7 @@ namespace Friflo.Json.Mapper.Diff
                 var patch = patches[n];
                 GetPathNodes(patch, pathNodes);
                 PatchNode curNode = rootNode;
-                PatchNode childNode = null;
+                PatchNode childNode = rootNode;
                 for (int i = 0; i < pathNodes.Count; i++) {
                     var pathNode = pathNodes[i];
                     if (!curNode.children.TryGetValue(pathNode, out childNode)) {
@@ -69,8 +69,6 @@ namespace Friflo.Json.Mapper.Diff
                     }
                     curNode = childNode;
                 }
-                if (childNode == null)
-                    throw new NullReferenceException("Invariant: childNode not null");
                 childNode.InitPatchNode(patch);
             }
         }

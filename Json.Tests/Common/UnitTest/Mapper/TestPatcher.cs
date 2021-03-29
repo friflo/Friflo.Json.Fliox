@@ -202,10 +202,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var right = new HashSet<int>(new[] {1, 12, 13});
                     // the whole JSON array is added as a single Patch  
                     
-                    // todo
-                    // var rightJson = objectPatcher.mapper.Write(right);
-                    // var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
-                    // AreEqual(rightJson, leftPatched);
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
                     
                     PatchCollection(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
@@ -214,10 +213,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     var right = new SortedSet<int>(new[] {1, 12, 13});
                     // the whole JSON array is added as a single Patch  
                     
-                    // todo
-                    // var rightJson = objectPatcher.mapper.Write(right);
-                    // var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
-                    // AreEqual(rightJson, leftPatched);
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
                     
                     PatchCollection(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);

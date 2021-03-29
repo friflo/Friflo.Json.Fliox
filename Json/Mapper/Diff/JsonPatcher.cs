@@ -40,7 +40,7 @@ namespace Friflo.Json.Mapper.Diff
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(pretty);
-            
+
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
@@ -205,6 +205,20 @@ namespace Friflo.Json.Mapper.Diff
         }
         
         private bool TraceTree(ref JsonParser p) {
+            switch (rootNode.patchType) {
+                case PatchType.Replace:
+                    patchJson.Clear();
+                    patchJson.AppendString(rootNode.json);
+                    patchParser.InitParser(patchJson);
+                    patchParser.NextEvent();
+                    serializer.WriteTree(ref patchParser);
+                    nodeStack.Clear();
+                    return true;
+                case null:
+                    break;
+                default:
+                    throw new InvalidOperationException($"PatchType not supported on JSON root. PatchType: {rootNode.patchType}"); 
+            }
             switch (p.Event) {
                 case JsonEvent.ObjectStart:
                     serializer.ObjectStart();
