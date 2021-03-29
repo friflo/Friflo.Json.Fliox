@@ -8,10 +8,10 @@ namespace Friflo.Json.Mapper.Diff
 {
     public class JsonPatcher : IDisposable
     {
-        private             JsonSerializer  serializer;
+        public              JsonSerializer  serializer;
         
-        private             Bytes           targetJson = new Bytes(128);
-        private             JsonParser      targetParser;
+        public              Bytes           json = new Bytes(128);
+        public              JsonParser      parser;
         
         private             Bytes           patchJson = new Bytes(128);
         private             JsonParser      patchParser;
@@ -25,8 +25,8 @@ namespace Friflo.Json.Mapper.Diff
             keyBytes.Dispose();
             patchParser.Dispose();
             patchJson.Dispose();
-            targetParser.Dispose();
-            targetJson.Dispose();
+            parser.Dispose();
+            json.Dispose();
             serializer.Dispose();
         }
         
@@ -34,14 +34,14 @@ namespace Friflo.Json.Mapper.Diff
             PatchNode.CreatePatchTree(rootNode, patches, pathNodes);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
-            targetJson.Clear();
-            targetJson.AppendString(root);
-            targetParser.InitParser(targetJson);
-            targetParser.NextEvent();
+            json.Clear();
+            json.AppendString(root);
+            parser.InitParser(json);
+            parser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(pretty);
 
-            TraceTree(ref targetParser);
+            TraceTree(ref parser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
@@ -61,11 +61,11 @@ namespace Friflo.Json.Mapper.Diff
                             patchParser.InitParser(patchJson);
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
-                            targetParser.SkipEvent();
+                            parser.SkipEvent();
                             node.children.Remove(key);
                             continue;
                         case PatchType.Remove:
-                            targetParser.SkipEvent();
+                            parser.SkipEvent();
                             node.children.Remove(key);
                             continue;
                         case null:
@@ -151,7 +151,7 @@ namespace Friflo.Json.Mapper.Diff
                             patchParser.InitParser(patchJson);
                             patchParser.NextEvent();
                             serializer.WriteTree(ref patchParser);
-                            targetParser.SkipEvent();
+                            parser.SkipEvent();
                             node.children.Remove(key);
                             continue;
                         case PatchType.Add:

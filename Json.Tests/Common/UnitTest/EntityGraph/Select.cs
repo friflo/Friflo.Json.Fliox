@@ -49,7 +49,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         [Test]
         public void RunLinq() {
-            using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result)
+            using (var database = new MemoryDatabase())
+            using (var store = TestRelationPoC.CreateStore(database).Result)
             using (var m = new JsonMapper(store.intern.typeStore)) {
                 var order1 = store.orders.Read("order-1");
                 store.SyncWait();
@@ -100,7 +101,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         }
         
         private static Order GetOrder(string id) {
-            using (var store = TestRelationPoC.CreateStore(new MemoryDatabase()).Result) {
+            using (var database = new MemoryDatabase())
+            using (var store = TestRelationPoC.CreateStore(database).Result) {
                 var order = store.orders.Read(id);
                 store.SyncWait();
                 return order.Result;
@@ -137,7 +139,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         [Test]
         public async Task TestSelectSameInstance() {
-            using (var store = await TestRelationPoC.CreateStore(new MemoryDatabase())) {
+            using (var database = new MemoryDatabase())
+            using (var store = await TestRelationPoC.CreateStore(database)) {
                 var order1 = store.orders.Read("order-1");
                 await store.Sync();
                 var orders = new List<Order> {order1.Result};

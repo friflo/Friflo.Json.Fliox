@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Burst;
+using Friflo.Json.Mapper.Diff;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -18,12 +18,10 @@ namespace Friflo.Json.EntityGraph.Database
     /// </summary>
     public class SyncContext : IDisposable
     {
-        public              JsonSerializer  serializer;
-        public              JsonParser      parser;
+        public readonly  JsonPatcher     jsonPatcher = new JsonPatcher();
 
         public void Dispose() {
-            parser.Dispose();
-            serializer.Dispose();
+            jsonPatcher.Dispose();
         }
     }
 }

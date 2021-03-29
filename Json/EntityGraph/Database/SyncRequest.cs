@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -57,16 +56,17 @@ namespace Friflo.Json.EntityGraph.Database
             var container = database.GetContainer(containerName);
             // may call serializer.WriteTree() always to ensure a valid JSON value
             if (container.Pretty) {
-                SyncContext context = container.SyncContext;
-                context.serializer.SetPretty(true);
+                var patcher = container.SyncContext.jsonPatcher;
+                patcher.serializer.SetPretty(true);
                 foreach (var entity in entities) {
-                    using (var json = new Bytes(entity.value.json)) {
-                        context.parser.InitParser(json);
-                        context.parser.NextEvent();
-                        context.serializer.InitSerializer();
-                        context.serializer.WriteTree(ref context.parser);
-                        entity.value.json = context.serializer.json.ToString();
-                    }
+                    ref var json = ref patcher.json;
+                    json.Clear();
+                    json.AppendString(entity.value.json);
+                    patcher.parser.InitParser(json);
+                    patcher.parser.NextEvent();
+                    patcher.serializer.InitSerializer();
+                    patcher.serializer.WriteTree(ref patcher.parser);
+                    entity.value.json = patcher.serializer.json.ToString();
                 }
             }
             container.CreateEntities(entities);
