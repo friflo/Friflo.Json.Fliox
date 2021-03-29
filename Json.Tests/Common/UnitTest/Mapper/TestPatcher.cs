@@ -222,16 +222,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 } {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedDictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedDictionary<string, int> {{"A", 2}, {"B", 12}};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedList<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedList<string, int> {{"A", 2}, {"B", 12}};
+                    
+                    var rightJson = objectPatcher.mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    AreEqual(rightJson, leftPatched);
+                    
                     PatchKeyValues(objectPatcher, left, right);
                     AssertUtils.Equivalent(left, right);
                 }
