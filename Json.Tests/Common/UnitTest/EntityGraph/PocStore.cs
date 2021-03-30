@@ -58,8 +58,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 var newArticle = new Article { id = id, name = id };
                 store.articles.Create(newArticle);
             }
-            
+
+            store.PatchesFromChanges();
             await store.Sync();
+            
 
             var cameraUnknown = store.articles.Read("article-unknown");
             var camera = store.articles.Read("article-1");

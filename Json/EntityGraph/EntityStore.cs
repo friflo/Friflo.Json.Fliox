@@ -36,7 +36,7 @@ namespace Friflo.Json.EntityGraph
             this.jsonMapper = jsonMapper;
             setByType = new Dictionary<Type, EntitySet>();
             setByName = new Dictionary<string, EntitySet>();
-            objectPatcher = new ObjectPatcher(jsonMapper.typeStore);
+            objectPatcher = new ObjectPatcher(jsonMapper);
         } 
     }
     
