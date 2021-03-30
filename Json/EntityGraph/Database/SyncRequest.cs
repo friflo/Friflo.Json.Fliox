@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
@@ -107,32 +106,14 @@ namespace Friflo.Json.EntityGraph.Database
     public class PatchEntities : DatabaseCommand
     {
         public  string              containerName;
-        public  List<EntityPatch>   entityPatch;
+        public  List<EntityPatch>   entityPatches;
         
         public override CommandType CommandType => CommandType.Patch;
         public override string      ToString() => "container: " + containerName;
         
         public override CommandResult Execute(EntityDatabase database) {
             var container = database.GetContainer(containerName);
-            var ids = entityPatch.Select(patch => patch.id).ToList();
-            // Read entities to be patched
-            var entities = container.ReadEntities(ids).ToList();
-            if (entities.Count != ids.Count)
-                throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
-            
-            // Apply patches
-            var patcher = container.SyncContext.jsonPatcher;
-            int n = 0;
-            foreach (var entity in entities) {
-                var expectedId = ids[n];
-                var patch = entityPatch[n++];
-                if (entity.key != expectedId) {
-                    throw new InvalidOperationException($"PatchEntities: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entity.key}");
-                }
-                entity.value.json = patcher.ApplyPatches(entity.value.json, patch.patches, container.Pretty);
-            }
-            // Write patched entities back
-            container.CreateEntities(entities); // should be UpdateEntities
+            container.PatchEntities(this);
             return new PatchEntitiesResult(); 
         }
     }
