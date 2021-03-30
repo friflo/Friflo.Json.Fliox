@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Diff;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -20,8 +21,9 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------ DatabaseCommand ------------------------------
     
     [Fri.Discriminator("command")]
-    [Fri.Polymorph(typeof(CreateEntities),  Discriminant = "create")]
-    [Fri.Polymorph(typeof(ReadEntities),    Discriminant = "read")]
+    [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
+    [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     public abstract class DatabaseCommand
     {
         public abstract CommandResult   Execute(EntityDatabase database);
@@ -30,8 +32,9 @@ namespace Friflo.Json.EntityGraph.Database
     
     // ------------------------------ CommandResult ------------------------------
     [Fri.Discriminator("command")]
-    [Fri.Polymorph(typeof(CreateEntitiesResult),  Discriminant = "create")]
-    [Fri.Polymorph(typeof(ReadEntitiesResult),    Discriminant = "read")]
+    [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
+    [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
+    [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     public abstract class CommandResult
     {
         public abstract CommandType CommandType { get; }
@@ -40,7 +43,8 @@ namespace Friflo.Json.EntityGraph.Database
     public enum CommandType
     {
         Read,
-        Create
+        Create,
+        Patch
     }
     
     // ------ CreateEntities
@@ -96,5 +100,46 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<KeyValue>      entities;
         
         public override CommandType CommandType => CommandType.Read;
+    }
+    
+    // ------ PatchEntities
+    public class PatchEntities : DatabaseCommand
+    {
+        public  string              containerName;
+        public  List<EntityPatch>   entityPatch;
+        
+        public override CommandType CommandType => CommandType.Patch;
+        public override string      ToString() => "container: " + containerName;
+        
+        public override CommandResult Execute(EntityDatabase database) {
+            var container = database.GetContainer(containerName);
+            var ids = entityPatch.Select(patch => patch.id).ToList();
+            // Read entities to be patched
+            var entities = container.ReadEntities(ids).ToList();
+            
+            // Apply patches
+            var patcher = container.SyncContext.jsonPatcher;
+            int n = 0;
+            foreach (var entity in entities) {
+                var patch = entityPatch[n++];
+                entity.value.json = patcher.ApplyPatches(entity.value.json, patch.patches, container.Pretty);
+            }
+            // Write patched entities back
+            container.CreateEntities(entities); // should be UpdateEntities
+            return new PatchEntitiesResult(); 
+        }
+    }
+
+    public class EntityPatch
+    {
+        public string       id;
+        public List<Patch>  patches;
+    }
+
+    public class PatchEntitiesResult : CommandResult
+    {
+        public  List<KeyValue>      entities;
+        
+        public override CommandType CommandType => CommandType.Patch;
     }
 }

@@ -17,6 +17,7 @@ namespace Friflo.Json.EntityGraph
         //
         internal  abstract    void    CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract    void    ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
+        internal  abstract    void    PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -148,6 +149,8 @@ namespace Friflo.Json.EntityGraph
                 commands.Add(req);
                 reads.Clear();
             }
+            // --- PatchEntities
+            // todo add patches to commands
         }
 
         // --- CreateEntities
@@ -189,6 +192,11 @@ namespace Friflo.Json.EntityGraph
                 }
                 peer.read = null;
             }
+        }
+        
+        // --- ReadEntities
+        internal override void PatchEntitiesResult(PatchEntities command, PatchEntitiesResult result) {
+            
         }
     }
 }
