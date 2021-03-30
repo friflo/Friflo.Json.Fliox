@@ -50,8 +50,8 @@ namespace Friflo.Json.EntityGraph
     internal class PeerEntity<T>  where T : Entity
     {
         internal readonly   T           entity;
-        internal            T           patchReference;
-        internal            T           nextPatchReference;
+        internal            string      patchReference;     // JSON reference used for diffing 
+        internal            string      nextPatchReference; // JSON reference used for diffing 
         internal            bool        assigned;
         internal            Read<T>     read;
         internal            Create<T>   create;
