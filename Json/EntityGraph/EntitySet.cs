@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Val;
 
@@ -13,11 +14,13 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  abstract    void    AddCommands           (List<DatabaseCommand> commands);
-        //
-        internal  abstract    void    CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
-        internal  abstract    void    ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract    void    PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
+        internal  abstract  void            AddCommands           (List<DatabaseCommand> commands);
+        //          
+        internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
+        internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
+        internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
+
+        public    abstract  PatchEntities   PatchesFromChanges();
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -30,6 +33,7 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
+        private readonly    ObjectPatcher                       objectPatcher;
             
         
         public EntitySet(EntityStore store) {
@@ -41,6 +45,7 @@ namespace Friflo.Json.EntityGraph
             jsonMapper = store.intern.jsonMapper;
             typeMapper = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
             container = store.intern.database.GetContainer(type.Name);
+            objectPatcher = store.intern.objectPatcher;
         }
         
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -116,6 +121,27 @@ namespace Friflo.Json.EntityGraph
             var peer = CreatePeer(entity);
             create = AddCreate(peer);
             return create;
+        }
+
+        public override PatchEntities PatchesFromChanges() {
+            var entityPatches = new List<EntityPatch>(); 
+            var patchEntities = new PatchEntities {
+                container = container.name,
+                entityPatches = entityPatches
+            };
+            foreach (var peerPair in peers) {
+                var entity = peerPair.Value.entity;
+                var diff = objectPatcher.differ.GetDiff(entity, entity); // compare with original entity
+                if (diff != null) {
+                    var patches = objectPatcher.CreatePatches(diff);
+                    var entityPatch = new EntityPatch {
+                        id = entity.id,
+                        patches = patches
+                    };
+                    entityPatches.Add(entityPatch);
+                }
+            }
+            return patchEntities;
         }
 
         internal override void AddCommands(List<DatabaseCommand> commands) {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Map;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map;
 
 namespace Friflo.Json.EntityGraph
@@ -22,6 +23,8 @@ namespace Friflo.Json.EntityGraph
     {
         public   readonly   TypeStore                       typeStore;
         public   readonly   JsonMapper                      jsonMapper;
+
+        internal readonly   ObjectPatcher                   objectPatcher;
         
         internal readonly   EntityDatabase                  database;
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
@@ -33,6 +36,7 @@ namespace Friflo.Json.EntityGraph
             this.jsonMapper = jsonMapper;
             setByType = new Dictionary<Type, EntitySet>();
             setByName = new Dictionary<string, EntitySet>();
+            objectPatcher = new ObjectPatcher(jsonMapper.typeStore);
         } 
     }
     
@@ -55,6 +59,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public void Dispose() {
+            intern.objectPatcher.Dispose();
             intern.jsonMapper.Dispose();
             intern.typeStore.Dispose();
         }
@@ -117,6 +122,17 @@ namespace Friflo.Json.EntityGraph
             
             set = new EntitySet<T>(this);
             return (EntitySet<T>)set;
+        }
+        
+        public IList<PatchEntities> PatchesFromChanges() {
+            var patches = new List<PatchEntities>();
+            foreach (var setPair in intern.setByType) {
+                EntitySet set = setPair.Value;
+                var patchEntities = set.PatchesFromChanges();
+                if (patchEntities.entityPatches.Count > 0)
+                    patches.Add(patchEntities);
+            }
+            return patches;
         }
     }
 }
