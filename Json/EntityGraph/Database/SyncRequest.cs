@@ -57,8 +57,8 @@ namespace Friflo.Json.EntityGraph.Database
         public override string      ToString() => "container: " + container;
 
         public override CommandResult Execute(EntityDatabase database) {
-            var entityContainer = database.GetContainer(this.container);
-            // may call serializer.WriteTree() always to ensure a valid JSON value
+            var entityContainer = database.GetContainer(container);
+            // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
                 var patcher = entityContainer.SyncContext.jsonPatcher;
                 foreach (var entity in entities) {
@@ -86,7 +86,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override string      ToString() => "container: " + container;
         
         public override CommandResult Execute(EntityDatabase database) {
-            var entityContainer = database.GetContainer(this.container);
+            var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
             var result = new ReadEntitiesResult {
                 entities = entities
@@ -112,8 +112,8 @@ namespace Friflo.Json.EntityGraph.Database
         public override string      ToString() => "container: " + container;
         
         public override CommandResult Execute(EntityDatabase database) {
-            var entityContainer = database.GetContainer(this.container);
-            entityContainer.PatchEntities(this);
+            var entityContainer = database.GetContainer(container);
+            entityContainer.PatchEntities(entityPatches);
             return new PatchEntitiesResult(); 
         }
     }
@@ -126,8 +126,6 @@ namespace Friflo.Json.EntityGraph.Database
 
     public class PatchEntitiesResult : CommandResult
     {
-        public  List<KeyValue>      entities;
-        
         public override CommandType CommandType => CommandType.Patch;
     }
 }
