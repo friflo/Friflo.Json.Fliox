@@ -124,15 +124,14 @@ namespace Friflo.Json.EntityGraph
             return (EntitySet<T>)set;
         }
         
-        public IList<PatchEntities> PatchesFromChanges() {
-            var patches = new List<PatchEntities>();
+        public int SaveChanges() {
+            int count = 0;
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
-                var patchEntities = set.PatchesFromChanges();
-                if (patchEntities.entityPatches.Count > 0)
-                    patches.Add(patchEntities);
+                var patchEntities = set.CreatePatchesFromChanges();
+                count += patchEntities.entityPatches.Count;
             }
-            return patches;
+            return count;
         }
     }
 }

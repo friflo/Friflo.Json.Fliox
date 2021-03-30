@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
-        public    abstract  PatchEntities   PatchesFromChanges();
+        internal  abstract  PatchEntities   CreatePatchesFromChanges();
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -124,7 +124,12 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override PatchEntities PatchesFromChanges() {
+        public int SaveChanges() {
+            var patchEntities = CreatePatchesFromChanges();
+            return patchEntities.entityPatches.Count;
+        }
+
+        internal override PatchEntities CreatePatchesFromChanges() {
             var entityPatches = new List<EntityPatch>(); 
             var patchEntities = new PatchEntities {
                 container = container.name,

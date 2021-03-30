@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             
             cameraCreate.name = "Changed name";
-            store.PatchesFromChanges();
+            AreEqual(1, store.SaveChanges());
             await store.Sync();
 
             var cameraNotSynced = store.articles.Read("article-1");
