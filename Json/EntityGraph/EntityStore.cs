@@ -92,17 +92,17 @@ namespace Friflo.Json.EntityGraph
                 switch (commandType) {
                     case CommandType.Create:
                         var create = (CreateEntities) command;
-                        EntitySet set = intern.setByName[create.containerName];
+                        EntitySet set = intern.setByName[create.container];
                         set.CreateEntitiesResult(create, (CreateEntitiesResult)result);
                         break;
                     case CommandType.Read:
                         var read = (ReadEntities) command;
-                        set = intern.setByName[read.containerName];
+                        set = intern.setByName[read.container];
                         set.ReadEntitiesResult(read, (ReadEntitiesResult)result);
                         break;
                     case CommandType.Patch:
                         var patch = (PatchEntities) command;
-                        set = intern.setByName[patch.containerName];
+                        set = intern.setByName[patch.container];
                         set.PatchEntitiesResult(patch, (PatchEntitiesResult)result);
                         break;
                 }

@@ -133,7 +133,7 @@ namespace Friflo.Json.EntityGraph
                     entries.Add(entry);
                 }
                 var req = new CreateEntities {
-                    containerName = container.name,
+                    container = container.name,
                     entities = entries
                 };
                 commands.Add(req);
@@ -143,7 +143,7 @@ namespace Friflo.Json.EntityGraph
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
                 var req = new ReadEntities {
-                    containerName = container.name,
+                    container = container.name,
                     ids = ids
                 };
                 commands.Add(req);

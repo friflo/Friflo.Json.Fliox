@@ -50,22 +50,22 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ CreateEntities
     public class CreateEntities : DatabaseCommand
     {
-        public  string              containerName;
+        public  string              container;
         public  List<KeyValue>      entities;
 
         public override CommandType CommandType => CommandType.Create;
-        public override string      ToString() => "container: " + containerName;
+        public override string      ToString() => "container: " + container;
 
         public override CommandResult Execute(EntityDatabase database) {
-            var container = database.GetContainer(containerName);
+            var entityContainer = database.GetContainer(this.container);
             // may call serializer.WriteTree() always to ensure a valid JSON value
-            if (container.Pretty) {
-                var patcher = container.SyncContext.jsonPatcher;
+            if (entityContainer.Pretty) {
+                var patcher = entityContainer.SyncContext.jsonPatcher;
                 foreach (var entity in entities) {
                     entity.value.json = patcher.Copy(entity.value.json, true);
                 }
             }
-            container.CreateEntities(entities);
+            entityContainer.CreateEntities(entities);
             return new CreateEntitiesResult();
         }
     }
@@ -79,15 +79,15 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ ReadEntities
     public class ReadEntities : DatabaseCommand
     {
-        public  string              containerName;
+        public  string              container;
         public  List<string>        ids;
         
         public override CommandType CommandType => CommandType.Read;
-        public override string      ToString() => "container: " + containerName;
+        public override string      ToString() => "container: " + container;
         
         public override CommandResult Execute(EntityDatabase database) {
-            var container = database.GetContainer(containerName);
-            var entities = container.ReadEntities(ids).ToList();
+            var entityContainer = database.GetContainer(this.container);
+            var entities = entityContainer.ReadEntities(ids).ToList();
             var result = new ReadEntitiesResult {
                 entities = entities
             };
@@ -105,15 +105,15 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ PatchEntities
     public class PatchEntities : DatabaseCommand
     {
-        public  string              containerName;
+        public  string              container;
         public  List<EntityPatch>   entityPatches;
         
         public override CommandType CommandType => CommandType.Patch;
-        public override string      ToString() => "container: " + containerName;
+        public override string      ToString() => "container: " + container;
         
         public override CommandResult Execute(EntityDatabase database) {
-            var container = database.GetContainer(containerName);
-            container.PatchEntities(this);
+            var entityContainer = database.GetContainer(this.container);
+            entityContainer.PatchEntities(this);
             return new PatchEntitiesResult(); 
         }
     }
