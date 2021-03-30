@@ -33,6 +33,7 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
+        private readonly    List<EntityPatch>                   patches     = new List<EntityPatch>();
         private readonly    ObjectPatcher                       objectPatcher;
             
         
@@ -135,14 +136,16 @@ namespace Friflo.Json.EntityGraph
                     continue;
                 var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
                 if (diff != null) {
-                    var patches = objectPatcher.CreatePatches(diff);
+                    var patchList = objectPatcher.CreatePatches(diff);
+                    var id = peer.entity.id;
                     var entityPatch = new EntityPatch {
-                        id = peer.entity.id,
-                        patches = patches
+                        id      = id,
+                        patches = patchList
                     };
                     var json = jsonMapper.writer.Write(peer.entity);
                     peer.nextPatchReference = jsonMapper.reader.Read<T>(json);
                     entityPatches.Add(entityPatch);
+                    patches.Add(entityPatch);
                 }
             }
             return patchEntities;
@@ -180,7 +183,14 @@ namespace Friflo.Json.EntityGraph
                 reads.Clear();
             }
             // --- PatchEntities
-            // todo add patches to commands
+            if (patches.Count > 0) {
+                var req = new PatchEntities {
+                    container = container.name,
+                    entityPatches = patches.ToList()
+                };
+                commands.Add(req);
+                patches.Clear();
+            }
         }
 
         // --- CreateEntities

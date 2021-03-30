@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj;
 using Friflo.Json.Mapper.Map.Utils;
@@ -55,6 +56,11 @@ namespace Friflo.Json.EntityGraph.Map
         
         public override      object  CreateInstance() {
             return mapper.CreateInstance();
+        }
+        
+        public override DiffNode Diff (Differ differ, T left, T right) {
+            DiffNode diff = mapper.Diff(differ, left, right);
+            return diff;
         }
         
         public override void Trace(Tracer tracer, T value) {
