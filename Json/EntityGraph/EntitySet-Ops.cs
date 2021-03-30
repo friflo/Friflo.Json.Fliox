@@ -51,6 +51,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal readonly   T           entity;
         internal            T           patchReference;
+        internal            T           nextPatchReference;
         internal            bool        assigned;
         internal            Read<T>     read;
         internal            Create<T>   create;

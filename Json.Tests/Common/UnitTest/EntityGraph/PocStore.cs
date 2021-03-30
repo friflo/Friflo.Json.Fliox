@@ -59,14 +59,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 store.articles.Create(newArticle);
             }
 
-            store.PatchesFromChanges();
-            await store.Sync();
-            
-
             var cameraUnknown = store.articles.Read("article-unknown");
             var camera = store.articles.Read("article-1");
             await store.Sync();
             
+            cameraCreate.name = "Changed name";
+            store.PatchesFromChanges();
+            await store.Sync();
+
             var cameraNotSynced = store.articles.Read("article-1");
             var e = Throws<InvalidOperationException>(() => { var res = cameraNotSynced.Result; });
             AreEqual("Read().Result requires Sync(). Entity: Article id: article-1", e.Message);

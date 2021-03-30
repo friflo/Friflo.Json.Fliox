@@ -131,6 +131,8 @@ namespace Friflo.Json.EntityGraph
             };
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
+                if (peer.patchReference == null)
+                    continue;
                 var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
                 if (diff != null) {
                     var patches = objectPatcher.CreatePatches(diff);
@@ -138,6 +140,8 @@ namespace Friflo.Json.EntityGraph
                         id = peer.entity.id,
                         patches = patches
                     };
+                    var json = jsonMapper.writer.Write(peer.entity);
+                    peer.nextPatchReference = jsonMapper.reader.Read<T>(json);
                     entityPatches.Add(entityPatch);
                 }
             }
@@ -225,7 +229,13 @@ namespace Friflo.Json.EntityGraph
         
         // --- ReadEntities
         internal override void PatchEntitiesResult(PatchEntities command, PatchEntitiesResult result) {
-            
+            var entityPatches = command.entityPatches;
+            foreach (var entityPatch in entityPatches) {
+                var id = entityPatch.id;
+                var peer = GetPeer(id);
+                peer.patchReference = peer.nextPatchReference;
+                peer.nextPatchReference = null;
+            }
         }
     }
 }
