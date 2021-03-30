@@ -151,7 +151,7 @@ namespace Friflo.Json.EntityGraph
                     var json = jsonMapper.writer.Write(peer.entity);
                     peer.nextPatchReference = json;
                     entityPatches.Add(entityPatch);
-                    patches.Add(peer.entity.id, entityPatch);
+                    patches[peer.entity.id] = entityPatch;
                 }
             }
             return patchEntities;
