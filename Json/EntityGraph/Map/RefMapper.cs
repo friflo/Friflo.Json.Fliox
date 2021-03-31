@@ -34,13 +34,19 @@ namespace Friflo.Json.EntityGraph.Map
 
     internal class RefMapper<T> : TypeMapper<Ref<T>> where T : Entity
     {
-        // private TypeMapper entityMapper;
+        private TypeMapper<T> entityMapper;
         
         public override string DataTypeName() { return "Ref<>"; }
 
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, true, true)
         {
+        }
+
+        private TypeMapper<T> GetEntityMapper(TypeCache typeCache) {
+            if (entityMapper == null)
+                entityMapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+            return entityMapper;
         }
         
         public override DiffNode Diff (Differ differ, Ref<T> left, Ref<T> right) {
@@ -60,7 +66,7 @@ namespace Friflo.Json.EntityGraph.Map
                 return;
             // Track untracked entity
             set.AddCreate(peer);
-            var mapper = (TypeMapper<T>)tracer.typeCache.GetTypeMapper(typeof(T));
+            var mapper = GetEntityMapper(tracer.typeCache);
             mapper.Trace(tracer, peer.entity);
         }
 
