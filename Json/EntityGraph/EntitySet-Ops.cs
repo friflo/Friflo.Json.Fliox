@@ -37,12 +37,6 @@ namespace Friflo.Json.EntityGraph
             this.store = entityStore;
         }
 
-        public Create<T> Dependencies() {
-            var tracer = new Tracer(store.intern.typeCache, store);
-            tracer.Trace(entity);
-            return this;
-        }
-            
         // public T Result  => entity;
     }
 

@@ -66,8 +66,6 @@ namespace Friflo.Json.EntityGraph.Map
         public override void Trace(Tracer tracer, T value) {
             if (value != null) {
                 mapper.Trace(tracer, value);
-                // var set = tracer.entityStore.EntitySet<T>();
-                // set.CreatePeer(value);
             }
         }
         
@@ -75,20 +73,12 @@ namespace Friflo.Json.EntityGraph.Map
             if (writer.tracerContext != null && writer.Level > 0) {
                 if (value != null) {
                     writer.WriteString(value.id);
-                    var store = writer.tracerContext.Store();
-                    var set = store.EntitySet<T>();
-                    set.CreatePeer(value);
                 } else {
                     writer.AppendNull();
                 }
             } else {
                 if (value != null) {
                     mapper.WriteObject(ref writer, value);
-                    if (writer.tracerContext != null) {
-                        var store = writer.tracerContext.Store();
-                        var set = store.EntitySet<T>();
-                        set.CreatePeer(value);
-                    }
                 } else {
                     writer.AppendNull();
                 }
@@ -103,10 +93,10 @@ namespace Friflo.Json.EntityGraph.Map
                     var store = reader.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     success = true;
-                    var peer = set.GetPeer(id); 
+                    var peer = set.GetPeer(id);
                     return peer.entity;
                 }
-                T entity = (T) mapper.ReadObject(ref reader, slot, out success);
+                T entity = mapper.Read(ref reader, slot, out success);                
                 return entity;
             }
             return mapper.Read(ref reader, slot, out success);

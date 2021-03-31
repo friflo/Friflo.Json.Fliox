@@ -84,24 +84,14 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal PeerEntity<T> GetPeer(string id) {
-            if (peers.TryGetValue(id, out PeerEntity<T> peer))
+            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
+            }
             var entity = (T)typeMapper.CreateInstance();
             peer = new PeerEntity<T>(entity);
             peer.entity.id = id;
             peers.Add(id, peer);
             return peer;
-        }
-        
-        internal void SetRefPeer(Ref<T> reference) {
-            if (reference.peer != null) {
-                return;
-            }
-            var peer = GetPeer(reference);
-            if (!peer.assigned)
-                throw new PeerNotAssignedException(peer.entity);
-            reference.peer = peer;
-            reference.Entity = peer.entity;
         }
         
         public Read<T> Read(string id) {
@@ -137,18 +127,23 @@ namespace Friflo.Json.EntityGraph
             };
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
-                if (peer.patchReference == null)
+                if (peer.create != null) {
+                    var tracer = new Tracer(store.intern.typeCache, store);
+                    tracer.Trace(peer.entity);
                     continue;
-                var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
-                if (diff != null) {
+                }
+                if (peer.patchReference != null) {
+                    var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
+                    if (diff == null)
+                        continue;
                     var patchList = objectPatcher.CreatePatches(diff);
                     var id = peer.entity.id;
                     var entityPatch = new EntityPatch {
-                        id      = id,
+                        id = id,
                         patches = patchList
                     };
                     var json = jsonMapper.writer.Write(peer.entity);
-                    peer.nextPatchReference = jsonMapper.Read<T>(json);;
+                    peer.nextPatchReference = jsonMapper.Read<T>(json);
                     entityPatches.Add(entityPatch);
                     patches[peer.entity.id] = entityPatch;
                 }

@@ -100,8 +100,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order.items.Add(item3);
 
             order.customer = customer;
-            store.orders.Create(order).Dependencies();
-
+            store.orders.Create(order);
+            store.orders.SaveChanges();
             await store.Sync(); // todo test without Update()
             return store;
         }

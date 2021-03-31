@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Mapper;
+using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Utils;
@@ -42,26 +43,31 @@ namespace Friflo.Json.EntityGraph.Map
         {
         }
         
+        public override DiffNode Diff (Differ differ, Ref<T> left, Ref<T> right) {
+            if (left.Id != right.Id)
+                return differ.AddNotEqual(left.Id, right.Id);
+            return null;
+        }
+        
         public override void Trace(Tracer tracer, Ref<T> value) {
             string id = value.Id;
-            if (id != null) {
-                var store = tracer.tracerContext.Store();
-                var set = store.EntitySet<T>();
-                PeerEntity<T> peer = set.GetPeer(value);
-                if (!peer.assigned)
-                    set.AddCreate(peer);
-            }
+            if (id == null)
+                return;
+            var store = tracer.tracerContext.Store();
+            var set = store.EntitySet<T>();
+            PeerEntity<T> peer = set.GetPeer(value);
+            if (peer.assigned)
+                return;
+            // Track untracked entity
+            set.AddCreate(peer);
+            var mapper = (TypeMapper<T>)tracer.typeCache.GetTypeMapper(typeof(T));
+            mapper.Trace(tracer, peer.entity);
         }
 
         public override void Write(ref Writer writer, Ref<T> value) {
             string id = value.Id;
             if (id != null) {
                 writer.WriteString(id);
-                /* if (writer.tracerContext != null) {
-                    var store = writer.tracerContext.Store();
-                    var set = store.EntitySet<T>();
-                    set.SetRefPeer(value);
-                } */
             } else {
                 writer.AppendNull();
             }

@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Utils
         internal void Dispose() {
         }
         
-        internal TypeMapper GetTypeMapper (Type type) {
+        public TypeMapper GetTypeMapper (Type type) {
             lookupCount++;
             if (!typeMap.TryGetValue(type, out TypeMapper propType)) {
                 propType = typeStore.GetTypeMapper(type);
