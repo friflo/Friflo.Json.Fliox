@@ -130,8 +130,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
-            Read<Customer> customers = order1.Dependency(o => o.customer);
-            IEnumerable<Read<Article>> articles = order1.Dependencies(o => o.items.Select(a => a.article));
+            
+            // lab - test dependency expressions
+            Read<Customer>              customers = order1.Dependency(o => o.customer);
+            IEnumerable<Read<Article>>  articles  = order1.Dependencies(o => o.items.Select(a => a.article));
             
             // await store.Sync();
             

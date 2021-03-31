@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -25,13 +26,13 @@ namespace Friflo.Json.EntityGraph
         }
 
         // lab - expression API
-        public Read<TValue> Dependency<TValue>(Func<T, Ref<TValue>> selector) where TValue : Entity 
+        public Read<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             return default;
         }
         
         // lab - expression API
-        public IEnumerable<Read<TValue>> Dependencies<TValue>(Func<T, IEnumerable<Ref<TValue>>> selector) where TValue : Entity 
+        public IEnumerable<Read<TValue>> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
         {
             return default;
         }
