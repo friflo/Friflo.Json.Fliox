@@ -139,8 +139,7 @@ namespace Friflo.Json.EntityGraph
                 PeerEntity<T> peer = peerPair.Value;
                 if (peer.patchReference == null)
                     continue;
-                var patchReference = jsonMapper.Read<T>(peer.patchReference);
-                var diff = objectPatcher.differ.GetDiff(patchReference, peer.entity);
+                var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
                 if (diff != null) {
                     var patchList = objectPatcher.CreatePatches(diff);
                     var id = peer.entity.id;
@@ -149,7 +148,7 @@ namespace Friflo.Json.EntityGraph
                         patches = patchList
                     };
                     var json = jsonMapper.writer.Write(peer.entity);
-                    peer.nextPatchReference = json;
+                    peer.nextPatchReference = jsonMapper.Read<T>(json);;
                     entityPatches.Add(entityPatch);
                     patches[peer.entity.id] = entityPatch;
                 }
@@ -205,7 +204,7 @@ namespace Friflo.Json.EntityGraph
             foreach (var entry in entities) {
                 var peer = GetPeer(entry.key);
                 peer.create = null;
-                peer.patchReference = entry.value.json;
+                peer.patchReference = jsonMapper.Read<T>(entry.value.json);
             }
         }
         
@@ -226,7 +225,7 @@ namespace Friflo.Json.EntityGraph
                 var json = entry.value.json;
                 if (json != null && "null" != json) {
                     jsonMapper.ReadTo(entry.value.json, peer.entity);
-                    peer.patchReference = entry.value.json;
+                    peer.patchReference = jsonMapper.Read<T>(entry.value.json);
                     peer.assigned = true;
                     if (read != null) {
                         read.result = peer.entity;
