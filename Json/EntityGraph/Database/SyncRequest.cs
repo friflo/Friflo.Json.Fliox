@@ -81,6 +81,7 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  string              container;
         public  List<string>        ids;
+        public  List<Dependency>    dependencies;                  
         
         public override CommandType CommandType => CommandType.Read;
         public override string      ToString() => "container: " + container;
@@ -93,6 +94,14 @@ namespace Friflo.Json.EntityGraph.Database
             };
             return result; 
         }
+    }
+    
+    public class Dependency
+    {
+        public  string      container;
+        /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
+        /// These dependent entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
+        public  string      refPath; // e.g. "items[*].article"
     }
 
     public class ReadEntitiesResult : CommandResult
