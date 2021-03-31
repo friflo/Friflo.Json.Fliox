@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
@@ -125,8 +126,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AssertWriteRead(m, order.items[1].article);
         }
 
+        
+
         private static async Task AssertStore(Order order, PocStore store) {
-            var order1 =    store.orders.Read("order-1");
+            Read<Order> order1 =    store.orders.Read("order-1");
+            Read<Customer> customers = order1.Dependency(o => o.customer);
+            IEnumerable<Read<Article>> articles = order1.Dependencies(o => o.items.Select(a => a.article));
+            
             // await store.Sync();
             
             var article1            =  store.articles.Read("article-1");

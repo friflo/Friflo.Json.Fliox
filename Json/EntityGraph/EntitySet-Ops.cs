@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Mapper.Map;
+using System.Collections.Generic;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -22,6 +22,18 @@ namespace Friflo.Json.EntityGraph
                     return result;
                 throw new InvalidOperationException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
             }
+        }
+
+        // lab - expression API
+        public Read<TValue> Dependency<TValue>(Func<T, Ref<TValue>> selector) where TValue : Entity 
+        {
+            return default;
+        }
+        
+        // lab - expression API
+        public IEnumerable<Read<TValue>> Dependencies<TValue>(Func<T, IEnumerable<Ref<TValue>>> selector) where TValue : Entity 
+        {
+            return default;
         }
     }
     
