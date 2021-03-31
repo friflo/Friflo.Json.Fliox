@@ -121,7 +121,7 @@ namespace Friflo.Json.EntityGraph
                 PeerEntity<T> peer = peerPair.Value;
                 GetEntityChanges(peer);
             }
-            return creates.Count + patches.Count;
+            return creates.Count + patches.Values.Count;
         }
         
         private void GetEntityChanges(PeerEntity<T> peer) {
@@ -145,9 +145,11 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        public void SaveEntityChanges(T entity) {
+        public int SaveEntityChanges(T entity) {
             var peer = GetPeer(entity.id);
             GetEntityChanges(peer);
+            var patch = patches[entity.id];
+            return patch.patches.Count;
         }
 
         internal override void AddCommands(List<DatabaseCommand> commands) {

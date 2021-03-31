@@ -64,6 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             
             cameraCreate.name = "Changed name";
+            AreEqual(1, store.articles.SaveEntityChanges(cameraCreate));
+            AreEqual(1, store.articles.SaveSetChanges());
             AreEqual(1, store.SaveStoreChanges());
             AreEqual(1, store.SaveStoreChanges()); // SaveChanges() is idempotent => state did not change
             await store.Sync();
