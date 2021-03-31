@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             IsTrue(camera.Result == cameraCreate);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
-            // store.customers.Create(customer);
+            // store.customers.Create(customer);   // redundant - implicit tracked by order
             
             var item1       = new OrderItem {
                 article = camera.Result,
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order.items.Add(item1);
 
             var smartphone    = new Article { id = "article-2", name = "Smartphone" };
-            // store.articles.Create(smartphone);
+            // store.articles.Create(smartphone);  // redundant - implicit tracked by order
             
             var item2       = new OrderItem {
                 article = smartphone,
@@ -100,10 +100,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order.items.Add(item3);
 
             order.customer = customer;
-            store.orders.Create(order);
+            store.orders.Create(order);         // redundant - implicit tracked by order
             AreEqual(3, store.SaveChanges());
-            AreEqual(3, store.SaveChanges()); // SaveChanges() is idempotent => state did not change
-            await store.Sync(); // todo test without Update()
+            AreEqual(3, store.SaveChanges());   // SaveChanges() is idempotent => state did not change
+            await store.Sync();
             return store;
         }
     }
