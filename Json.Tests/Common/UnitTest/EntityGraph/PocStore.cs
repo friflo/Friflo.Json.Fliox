@@ -64,10 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             
             cameraCreate.name = "Changed name";
-            AreEqual(1, store.articles.SaveEntityChanges(cameraCreate));
-            AreEqual(1, store.articles.SaveSetChanges());
-            AreEqual(1, store.SaveChanges());
-            AreEqual(1, store.SaveChanges());       // SaveChanges() is idempotent => state did not change
+            AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
+            AreEqual(1, store.articles.LogSetChanges());
+            AreEqual(1, store.LogChanges());
+            AreEqual(1, store.LogChanges());       // SaveChanges() is idempotent => state did not change
             await store.Sync();
 
             var cameraNotSynced = store.articles.Read("article-1");
@@ -103,9 +103,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             order.customer = customer;
             store.orders.Create(order);
-            AreEqual(1, store.orders.SaveSetChanges());
-            AreEqual(3, store.SaveChanges());
-            AreEqual(3, store.SaveChanges());       // SaveChanges() is idempotent => state did not change
+            AreEqual(1, store.orders.LogSetChanges());
+            AreEqual(3, store.LogChanges());
+            AreEqual(3, store.LogChanges());       // SaveChanges() is idempotent => state did not change
             await store.Sync();
             return store;
         }

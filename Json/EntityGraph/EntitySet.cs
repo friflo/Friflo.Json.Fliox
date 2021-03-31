@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
-        public    abstract  int             SaveSetChanges();
+        public    abstract  int             LogSetChanges();
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -116,7 +116,7 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override int SaveSetChanges() {
+        public override int LogSetChanges() {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
                 GetEntityChanges(peer);
@@ -145,7 +145,7 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        public int SaveEntityChanges(T entity) {
+        public int LogEntityChanges(T entity) {
             var peer = GetPeerById(entity.id);
             GetEntityChanges(peer);
             var patch = patches[entity.id];
