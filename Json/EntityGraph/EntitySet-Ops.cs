@@ -38,7 +38,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         public Create<T> Dependencies() {
-            var tracer = new Tracer(store.intern.jsonMapper.writer.TypeCache, store);
+            var tracer = new Tracer(store.intern.typeCache, store);
             tracer.Trace(entity);
             return this;
         }

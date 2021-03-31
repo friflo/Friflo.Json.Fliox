@@ -9,6 +9,7 @@ using Friflo.Json.EntityGraph.Map;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Mapper.Map;
+using Friflo.Json.Mapper.Utils;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -22,6 +23,7 @@ namespace Friflo.Json.EntityGraph
     public readonly struct StoreIntern
     {
         public   readonly   TypeStore                       typeStore;
+        public   readonly   TypeCache                       typeCache;
         public   readonly   JsonMapper                      jsonMapper;
 
         internal readonly   ObjectPatcher                   objectPatcher;
@@ -34,6 +36,7 @@ namespace Friflo.Json.EntityGraph
             this.typeStore  = typeStore;
             this.database   = database;
             this.jsonMapper = jsonMapper;
+            this.typeCache  = jsonMapper.writer.TypeCache;
             setByType = new Dictionary<Type, EntitySet>();
             setByName = new Dictionary<string, EntitySet>();
             objectPatcher = new ObjectPatcher(jsonMapper);
