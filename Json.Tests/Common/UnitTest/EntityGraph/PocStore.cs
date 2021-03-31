@@ -101,7 +101,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             order.customer = customer;
             store.orders.Create(order);
-            store.orders.SaveChanges();
+            AreEqual(3, store.SaveChanges());
+            AreEqual(3, store.SaveChanges()); // SaveChanges() is idempotent => state did not change
             await store.Sync(); // todo test without Update()
             return store;
         }

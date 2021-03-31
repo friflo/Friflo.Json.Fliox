@@ -131,8 +131,7 @@ namespace Friflo.Json.EntityGraph
             int count = 0;
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
-                var patchEntities = set.CreatePatchesFromChanges();
-                count += patchEntities.entityPatches.Count;
+                count += set.SaveChanges();
             }
             return count;
         }
