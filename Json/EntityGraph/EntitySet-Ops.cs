@@ -36,6 +36,10 @@ namespace Friflo.Json.EntityGraph
         {
             return default;
         }
+
+        public IEnumerable<Read<Entity>> AllDependencies(IEnumerable<Type> entityTypes) {
+            return default;
+        }
     }
     
     public class Create<T> where T : Entity
