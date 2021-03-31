@@ -127,11 +127,11 @@ namespace Friflo.Json.EntityGraph
             return (EntitySet<T>)set;
         }
         
-        public int SaveChanges() {
+        public int SaveStoreChanges() {
             int count = 0;
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
-                count += set.SaveChanges();
+                count += set.SaveSetChanges();
             }
             return count;
         }

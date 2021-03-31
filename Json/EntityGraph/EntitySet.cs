@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
-        public    abstract  int             SaveChanges();
+        public    abstract  int             SaveSetChanges();
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -30,12 +30,13 @@ namespace Friflo.Json.EntityGraph
         private readonly    TypeMapper<T>                       typeMapper;
         private readonly    JsonMapper                          jsonMapper;
         private readonly    EntityContainer                     container;
+        private readonly    ObjectPatcher                       objectPatcher;
+        private readonly    Tracer                              tracer;
+        
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
-        private readonly    ObjectPatcher                       objectPatcher;
-            
         
         public EntitySet(EntityStore store) {
             this.store = store;
@@ -47,9 +48,10 @@ namespace Friflo.Json.EntityGraph
             typeMapper = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
             container = store.intern.database.GetContainer(type.Name);
             objectPatcher = store.intern.objectPatcher;
+            tracer = new Tracer(store.intern.typeCache, store);
         }
         
-        internal PeerEntity<T> CreatePeer (T entity) {
+        private PeerEntity<T> CreatePeer (T entity) {
             if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
                 if (peer.entity != entity)
                     throw new InvalidOperationException("");
@@ -114,36 +116,38 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
 
-        public override int SaveChanges() {
-            var entityPatches = new List<EntityPatch>(); 
-            var patchEntities = new PatchEntities {
-                container = container.name,
-                entityPatches = entityPatches
-            };
+        public override int SaveSetChanges() {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
-                if (peer.create != null) {
-                    var tracer = new Tracer(store.intern.typeCache, store);
-                    tracer.Trace(peer.entity);
-                    continue;
-                }
-                if (peer.patchReference != null) {
-                    var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
-                    if (diff == null)
-                        continue;
-                    var patchList = objectPatcher.CreatePatches(diff);
-                    var id = peer.entity.id;
-                    var entityPatch = new EntityPatch {
-                        id = id,
-                        patches = patchList
-                    };
-                    var json = jsonMapper.writer.Write(peer.entity);
-                    peer.nextPatchReference = jsonMapper.Read<T>(json);
-                    entityPatches.Add(entityPatch);
-                    patches[peer.entity.id] = entityPatch;
-                }
+                GetEntityChanges(peer);
             }
             return creates.Count + patches.Count;
+        }
+        
+        private void GetEntityChanges(PeerEntity<T> peer) {
+            if (peer.create != null) {
+                tracer.Trace(peer.entity);
+                return;
+            }
+            if (peer.patchReference != null) {
+                var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
+                if (diff == null)
+                    return;
+                var patchList = objectPatcher.CreatePatches(diff);
+                var id = peer.entity.id;
+                var entityPatch = new EntityPatch {
+                    id = id,
+                    patches = patchList
+                };
+                var json = jsonMapper.writer.Write(peer.entity);
+                peer.nextPatchReference = jsonMapper.Read<T>(json);
+                patches[peer.entity.id] = entityPatch;
+            }
+        }
+
+        public void SaveEntityChanges(T entity) {
+            var peer = GetPeer(entity.id);
+            GetEntityChanges(peer);
         }
 
         internal override void AddCommands(List<DatabaseCommand> commands) {

@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
             var createCam1 = store.articles.Create(cameraCreate);
-            var createCam2 = store.articles.Create(cameraCreate);
+            var createCam2 = store.articles.Create(cameraCreate); // Create() is idempotent
             IsTrue(createCam1 == createCam2);  // test redundant create
             
             for (int n = 0; n < 1; n++) {
@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             
             cameraCreate.name = "Changed name";
-            AreEqual(1, store.SaveChanges());
-            AreEqual(1, store.SaveChanges()); // SaveChanges() is idempotent => state did not change
+            AreEqual(1, store.SaveStoreChanges());
+            AreEqual(1, store.SaveStoreChanges()); // SaveChanges() is idempotent => state did not change
             await store.Sync();
 
             var cameraNotSynced = store.articles.Read("article-1");
@@ -101,8 +101,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             order.customer = customer;
             store.orders.Create(order);         // redundant - implicit tracked by order
-            AreEqual(3, store.SaveChanges());
-            AreEqual(3, store.SaveChanges());   // SaveChanges() is idempotent => state did not change
+            AreEqual(3, store.SaveStoreChanges());
+            AreEqual(3, store.SaveStoreChanges());   // SaveChanges() is idempotent => state did not change
             await store.Sync();
             return store;
         }
