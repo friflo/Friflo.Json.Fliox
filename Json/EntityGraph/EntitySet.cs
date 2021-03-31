@@ -72,7 +72,7 @@ namespace Friflo.Json.EntityGraph
             return create;
         }
         
-        internal PeerEntity<T> GetPeer(Ref<T> reference) {
+        internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
             string id = reference.Id;
             PeerEntity<T> peer = reference.peer;
             if (peer == null) {
@@ -80,12 +80,12 @@ namespace Friflo.Json.EntityGraph
                 if (entity != null)
                     peer = CreatePeer(entity);
                 else
-                    peer = GetPeer(id);
+                    peer = GetPeerById(id);
             }
             return peer;
         }
 
-        internal PeerEntity<T> GetPeer(string id) {
+        internal PeerEntity<T> GetPeerById(string id) {
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
             }
@@ -99,7 +99,7 @@ namespace Friflo.Json.EntityGraph
         public Read<T> Read(string id) {
             if (reads.TryGetValue(id, out Read<T> read))
                 return read;
-            var peer = GetPeer(id);
+            var peer = GetPeerById(id);
             read = peer.read;
             if (read == null) {
                 peer.read = read = new Read<T>(peer.entity.id);
@@ -146,7 +146,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         public int SaveEntityChanges(T entity) {
-            var peer = GetPeer(entity.id);
+            var peer = GetPeerById(entity.id);
             GetEntityChanges(peer);
             var patch = patches[entity.id];
             return patch.patches.Count;
@@ -198,7 +198,7 @@ namespace Friflo.Json.EntityGraph
         internal override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
             var entities = command.entities;
             foreach (var entry in entities) {
-                var peer = GetPeer(entry.key);
+                var peer = GetPeerById(entry.key);
                 peer.create = null;
                 peer.patchReference = jsonMapper.Read<T>(entry.value.json);
             }
@@ -216,7 +216,7 @@ namespace Friflo.Json.EntityGraph
                 if (entry.key != expectedId)
                     throw new InvalidOperationException($"read command: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entry.key}");
                 
-                var peer = GetPeer(entry.key);
+                var peer = GetPeerById(entry.key);
                 var read = peer.read;
                 var json = entry.value.json;
                 if (json != null && "null" != json) {
@@ -243,7 +243,7 @@ namespace Friflo.Json.EntityGraph
             var entityPatches = command.entityPatches;
             foreach (var entityPatch in entityPatches) {
                 var id = entityPatch.id;
-                var peer = GetPeer(id);
+                var peer = GetPeerById(id);
                 peer.patchReference = peer.nextPatchReference;
                 peer.nextPatchReference = null;
             }

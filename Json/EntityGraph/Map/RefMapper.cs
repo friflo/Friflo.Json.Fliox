@@ -55,7 +55,7 @@ namespace Friflo.Json.EntityGraph.Map
                 return;
             var store = tracer.tracerContext.Store();
             var set = store.EntitySet<T>();
-            PeerEntity<T> peer = set.GetPeer(value);
+            PeerEntity<T> peer = set.GetPeerByRef(value);
             if (peer.assigned)
                 return;
             // Track untracked entity
@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph.Map
                 if (reader.tracerContext != null) {
                     var store = reader.tracerContext.Store();
                     var set = store.EntitySet<T>();
-                    var peer = set.GetPeer(id);
+                    var peer = set.GetPeerById(id);
                     slot = new Ref<T> {
                         peer = peer,
                         Id   = id

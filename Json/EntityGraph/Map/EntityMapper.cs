@@ -93,7 +93,7 @@ namespace Friflo.Json.EntityGraph.Map
                     var store = reader.tracerContext.Store();
                     var set = store.EntitySet<T>();
                     success = true;
-                    var peer = set.GetPeer(id);
+                    var peer = set.GetPeerById(id);
                     return peer.entity;
                 }
                 T entity = mapper.Read(ref reader, slot, out success);                
