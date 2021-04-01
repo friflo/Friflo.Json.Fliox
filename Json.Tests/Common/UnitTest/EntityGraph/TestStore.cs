@@ -135,7 +135,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Read<Customer>              customers = order1.Dependency(o => o.customer);
             IEnumerable<Read<Article>>  articles  = order1.Dependencies(o => o.items.Select(a => a.article));
             
-            IEnumerable<Read<Entity>>   deps      = order1.AllDependencies(new [] { typeof(Article), typeof(Customer) });
+            IEnumerable<Read<Article>>  articles2 = order1.DependenciesOfType<Article>();
+            IEnumerable<Read<Entity>>   allDeps   = order1.AllDependencies();
             
             // await store.Sync();
             

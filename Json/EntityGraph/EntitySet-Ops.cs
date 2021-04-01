@@ -37,9 +37,18 @@ namespace Friflo.Json.EntityGraph
             return default;
         }
 
-        public IEnumerable<Read<Entity>> AllDependencies(IEnumerable<Type> entityTypes) {
+        // lab - dependencies by Entity Type
+        public IEnumerable<Read<TValue>> DependenciesOfType<TValue>() where TValue : Entity
+        {
             return default;
         }
+        
+        // lab - all dependencies
+        public IEnumerable<Read<Entity>> AllDependencies()
+        {
+            return default;
+        }
+
     }
     
     public class Create<T> where T : Entity
