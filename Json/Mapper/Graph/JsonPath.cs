@@ -52,22 +52,30 @@ namespace Friflo.Json.Mapper.Graph
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
 
-            return selectList.Select(i => i.jsonResult).ToList();
+            var result = selectList.Select(select => {
+                var arrayResult = select.arrayResult;
+                if (arrayResult != null) {
+                    arrayResult.Append(']');
+                    return arrayResult.ToString();
+                }
+                return select.jsonResult;
+            }).ToList();
+            return result;
         }
 
         private void AddResult(SelectQuery select) {
-            if (select.isArrayResult) {
-                if (select.itemCount == 0) {
-                    serializer.InitSerializer();
-                    serializer.ArrayStart(false);
+            serializer.InitSerializer();
+            serializer.WriteTree(ref targetParser);
+            var json = serializer.json.ToString();
+            if (select.arrayResult != null) {
+                if (select.itemCount > 0) {
+                    select.arrayResult.Append(',');
                 }
-                serializer.WriteTree(ref targetParser);
+                select.arrayResult.Append(json);
                 select.itemCount++;
                 return;
             }
-            serializer.InitSerializer();
-            serializer.WriteTree(ref targetParser);
-            select.jsonResult = serializer.json.ToString();
+            select.jsonResult = json;
         }
 
         private bool TraceObject(ref JsonParser p) {
@@ -134,12 +142,6 @@ namespace Friflo.Json.Mapper.Graph
                 }
                 if (path.select != null) {
                     AddResult(path.select);
-                    continue;
-                }
-                if (path.select != null) {
-                    serializer.InitSerializer();
-                    serializer.WriteTree(ref targetParser);
-                    path.select.jsonResult = serializer.json.ToString();
                     continue;
                 }
                 switch (p.Event) {

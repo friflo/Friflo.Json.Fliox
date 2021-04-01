@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
     internal class PathNode {
         internal            SelectQuery                     select;
-        private  readonly   SelectorNode                    selectorNode;
+        internal readonly   SelectorNode                    selectorNode;
         internal readonly   Dictionary<string, PathNode>    children = new Dictionary<string, PathNode>();
         public   override   string                          ToString() => selectorNode.name;
 
@@ -70,7 +71,11 @@ namespace Friflo.Json.Mapper.Graph
                     curNode = childNode;
                 }
                 curNode.select = select;
-                curNode.select.isArrayResult = isArrayResult;
+                if (isArrayResult) {
+                    var sb = new StringBuilder();
+                    sb.Append('[');
+                    curNode.select.arrayResult = sb;
+                }
             }
         }
 
@@ -83,11 +88,10 @@ namespace Friflo.Json.Mapper.Graph
     }
     
     internal class SelectQuery {
-        internal    string      path;
-        internal    string      jsonResult;
-        internal    bool        isArrayResult;
-        internal    int         itemCount;
-
+        internal    string          path;
+        internal    string          jsonResult;
+        internal    StringBuilder   arrayResult;
+        internal    int             itemCount;
     }
     
     public enum SelectorType

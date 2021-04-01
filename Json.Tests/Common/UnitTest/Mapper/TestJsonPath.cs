@@ -39,6 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public class Book
         {
             public string   title;
+            public string   author;
         }
 
         public class Store
@@ -47,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             public void InitSample() {
                 books = new List<Book>(new[] {
-                    new Book {title = "The Lord of the Rings"},
-                    new Book {title = "Moby Dick"}
+                    new Book {title = "The Lord of the Rings",  author = "J. R. R. Tolkien"},
+                    new Book {title = "Moby Dick",              author = "Herman Melville"}
                 });
             }
         }
@@ -64,8 +65,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var json = jsonWriter.Write(store);
 
                 var result = jsonPath.Select(json, new [] {
-                    ".books[*].title"
+                    ".books[*].title",
+                    ".books[*].author"
                 });
+                AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",  result[0]);
+                AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]", result[1]);
             }
         }
     }
