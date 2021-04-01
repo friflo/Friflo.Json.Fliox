@@ -18,21 +18,21 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
-            
+            int len = end - start;
             var arrayStart = path.IndexOf('[', start);
             var arrayEnd   = path.IndexOf(']', start);
             if (arrayStart != -1 || arrayEnd != -1) {
                 if (arrayStart + 2 == arrayEnd) {
                     if (path[arrayStart + 1] != '*')
-                        throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, end)}");
+                        throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     var token = path.Substring(start, arrayStart - start);
                     selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
                     selectorNodes.Add(new SelectorNode ("[*]", SelectorType.ArrayWildcard));
                     return;
                 }
-                throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, end)}");
+                throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, len)}");
             }
-            var memberToken = path.Substring(start, end);
+            var memberToken = path.Substring(start, len);
             selectorNodes.Add(new SelectorNode (memberToken, SelectorType.Member));
         }
 
@@ -44,11 +44,11 @@ namespace Friflo.Json.Mapper.Graph
                 return;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '.') {
-                    PathNodeToSelectorNode(path, last, n - last, selectorNodes);
+                    PathNodeToSelectorNode(path, last, n, selectorNodes);
                     last = n + 1;
                 }
             }
-            PathNodeToSelectorNode(path, last, len - last, selectorNodes);
+            PathNodeToSelectorNode(path, last, len, selectorNodes);
         }
 
         internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<SelectorNode> selectorNodes) {
