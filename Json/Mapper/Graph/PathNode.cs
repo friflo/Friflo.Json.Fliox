@@ -7,7 +7,6 @@ namespace Friflo.Json.Mapper.Graph
 {
     internal class PathNode {
         internal            SelectQuery                     select;
-        internal            PathType                        pathType;
         private  readonly   SelectorNode                    selectorNode;
         internal readonly   Dictionary<string, PathNode>    children = new Dictionary<string, PathNode>();
         public   override   string                          ToString() => selectorNode.name;
@@ -15,27 +14,29 @@ namespace Friflo.Json.Mapper.Graph
         internal PathNode(SelectorNode selectorNode) {
             this.selectorNode = selectorNode;
         }
-        
-        private static void PathToSelectorNode(string path, List<SelectorNode> selectorNodes) {
+
+        private static SelectorNode PathNodeToSelectorNode(string path, int start, int end) {
+            var token = path.Substring(start, end);
+            var selectorNode = new SelectorNode {
+                name = token
+            };
+            return selectorNode;
+        }
+
+        private static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {
             selectorNodes.Clear();
             int last = 1;
             int len = path.Length;
             if (len == 0)
                 return;
             for (int n = 1; n < len; n++) {
-                if (path[n] == '/') {
-                    var token = path.Substring(last, n - last);
-                    var selectorNode = new SelectorNode {
-                        name = token
-                    };
+                if (path[n] == '.') {
+                    var selectorNode = PathNodeToSelectorNode(path, last, n - last);
                     selectorNodes.Add(selectorNode);
                     last = n + 1;
                 }
             }
-            var lastToken = path.Substring(last, len - last);
-            var lastNode = new SelectorNode {
-                name = lastToken
-            };
+            var lastNode = PathNodeToSelectorNode(path, last, len - last);
             selectorNodes.Add(lastNode);
         }
 
@@ -44,7 +45,7 @@ namespace Friflo.Json.Mapper.Graph
             var count = selects.Count;
             for (int n = 0; n < count; n++) {
                 var select = selects[n];
-                PathToSelectorNode(select.path, selectorNodes);
+                PathToSelectorNodes(select.path, selectorNodes);
                 PathNode curNode = rootNode;
                 for (int i = 0; i < selectorNodes.Count; i++) {
                     var selectorNode = selectorNodes[i];
@@ -71,14 +72,15 @@ namespace Friflo.Json.Mapper.Graph
         internal    string      jsonResult;
     }
     
-    public enum PathType
+    public enum SelectorType
     {
-        Node,
+        Member,
         Array
     }
     
     internal struct SelectorNode
     {
-        internal string name;
+        internal string         name;
+        internal SelectorType   selectorType;
     }
 }

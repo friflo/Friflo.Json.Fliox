@@ -18,12 +18,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var json = jsonWriter.Write(sample);
 
                 var result = jsonPath.Select(json, new [] {
-                    "/childStructNull1",
-                    "/childStructNull2/val2",
-                    "/dbl",
-                    "/bln",
-                    "/enumIL1",
-                    "/child"
+                    ".childStructNull1",
+                    ".childStructNull2.val2",
+                    ".dbl",
+                    ".bln",
+                    ".enumIL1",
+                    ".child"
                 });
                 AreEqual(@"{""val2"":68}",  result[0]);
                 AreEqual("69",              result[1]);
