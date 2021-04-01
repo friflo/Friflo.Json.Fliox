@@ -18,7 +18,7 @@ namespace Friflo.Json.Mapper.Graph
         private readonly    List<PathNode>      nodeStack = new List<PathNode>();
         private readonly    List<SelectQuery>   selectList = new List<SelectQuery>();
         private readonly    PathNode            rootNode = new PathNode("root");
-        private readonly    List<string>        pathNodeBuffer = new List<string>(); // reused buffer
+        private readonly    List<string>        pathTokens = new List<string>(); // reused buffer
         
 
         public void Dispose() {
@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Graph
                 var select = new SelectQuery { path = path };
                 selectList.Add(select);
             }
-            PathNode.CreatePathTree(rootNode, selectList, pathNodeBuffer);
+            PathNode.CreatePathTree(rootNode, selectList, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
             targetJson.Clear();

@@ -17,18 +17,18 @@ namespace Friflo.Json.Mapper.Graph
         }
         
 
-        internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<string> pathNodeBuffer) {
+        internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<string> pathTokens) {
             rootNode.children.Clear();
             var count = selects.Count;
             for (int n = 0; n < count; n++) {
                 var select = selects[n];
-                Patcher.PathToPathNodes(select.path, pathNodeBuffer);
+                Patcher.PathToPathTokens(select.path, pathTokens);
                 PathNode curNode = rootNode;
-                for (int i = 0; i < pathNodeBuffer.Count; i++) {
-                    var pathNode = pathNodeBuffer[i];
-                    if (!curNode.children.TryGetValue(pathNode, out PathNode childNode)) {
-                        childNode = new PathNode(pathNode);
-                        curNode.children.Add(pathNode, childNode);
+                for (int i = 0; i < pathTokens.Count; i++) {
+                    var token = pathTokens[i];
+                    if (!curNode.children.TryGetValue(token, out PathNode childNode)) {
+                        childNode = new PathNode(token);
+                        curNode.children.Add(token, childNode);
                     }
                     curNode = childNode;
                 }

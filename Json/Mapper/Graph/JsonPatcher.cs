@@ -19,7 +19,7 @@ namespace Friflo.Json.Mapper.Graph
         
         private             Bytes           keyBytes = new Bytes(32);
         private readonly    List<PatchNode> nodeStack = new List<PatchNode>();
-        private readonly    List<string>    pathNodes = new List<string>(); // reused buffer
+        private readonly    List<string>    pathTokens = new List<string>(); // reused buffer
         private readonly    PatchNode       rootNode = new PatchNode();
 
         public void Dispose() {
@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public string ApplyPatches(string root, IList<Patch> patches, bool pretty = false) {
-            PatchNode.CreatePatchTree(rootNode, patches, pathNodes);
+            PatchNode.CreatePatchTree(rootNode, patches, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
             targetJson.Clear();

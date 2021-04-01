@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Graph
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
                     json = replace.value.json;
-                    path = PathToPathNodes(replace.path, pathNodes);
+                    path = PathToPathTokens(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
                         jsonReader.ReadTo(json, root);
                         return;
@@ -41,11 +41,11 @@ namespace Friflo.Json.Mapper.Graph
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
                     json = add.value.json;
-                    path = PathToPathNodes(add.path, pathNodes);
+                    path = PathToPathTokens(add.path, pathNodes);
                     break;
                 case PatchType.Remove:
                     var remove = (PatchRemove) patch;
-                    path = PathToPathNodes(remove.path, pathNodes);
+                    path = PathToPathTokens(remove.path, pathNodes);
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
@@ -98,21 +98,21 @@ namespace Friflo.Json.Mapper.Graph
             return index;
         }
 
-        public static string PathToPathNodes(string path, List<string> pathNodes) {
-            pathNodes.Clear();
+        public static string PathToPathTokens(string path, List<string> pathTokens) {
+            pathTokens.Clear();
             int last = 1;
             int len = path.Length;
             if (len == 0)
                 return path;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '/') {
-                    var pathNode = path.Substring(last, n - last);
-                    pathNodes.Add(pathNode);
+                    var token = path.Substring(last, n - last);
+                    pathTokens.Add(token);
                     last = n + 1;
                 }
             }
-            var lastNode = path.Substring(last, len - last);
-            pathNodes.Add(lastNode);
+            var lastToken = path.Substring(last, len - last);
+            pathTokens.Add(lastToken);
             return path;
         }
     }

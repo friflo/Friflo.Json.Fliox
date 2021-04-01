@@ -32,41 +32,41 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
         
-        private static void GetPathNodes(Patch patch, List<string> pathNodes) {
-            pathNodes.Clear();
+        private static void GetPathNodes(Patch patch, List<string> pathTokens) {
+            pathTokens.Clear();
             var patchType = patch.PatchType;
             switch (patchType) {
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
-                    Patcher.PathToPathNodes(replace.path, pathNodes);
+                    Patcher.PathToPathTokens(replace.path, pathTokens);
                     break;
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
-                    Patcher.PathToPathNodes(add.path, pathNodes);
+                    Patcher.PathToPathTokens(add.path, pathTokens);
                     break;
                 case PatchType.Remove:
                     var remove = (PatchRemove) patch;
-                    Patcher.PathToPathNodes(remove.path, pathNodes);
+                    Patcher.PathToPathTokens(remove.path, pathTokens);
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
         }
 
-        internal static void CreatePatchTree(PatchNode rootNode, IList<Patch> patches, List<string> pathNodes) {
+        internal static void CreatePatchTree(PatchNode rootNode, IList<Patch> patches, List<string> pathTokens) {
             rootNode.children.Clear();
             rootNode.patchType = null;
             var count = patches.Count;
             for (int n = 0; n < count; n++) {
                 var patch = patches[n];
-                GetPathNodes(patch, pathNodes);
+                GetPathNodes(patch, pathTokens);
                 PatchNode curNode = rootNode;
                 PatchNode childNode = rootNode;
-                for (int i = 0; i < pathNodes.Count; i++) {
-                    var pathNode = pathNodes[i];
-                    if (!curNode.children.TryGetValue(pathNode, out childNode)) {
+                for (int i = 0; i < pathTokens.Count; i++) {
+                    var token = pathTokens[i];
+                    if (!curNode.children.TryGetValue(token, out childNode)) {
                         childNode = new PatchNode();
-                        curNode.children.Add(pathNode, childNode);
+                        curNode.children.Add(token, childNode);
                     }
                     curNode = childNode;
                 }
