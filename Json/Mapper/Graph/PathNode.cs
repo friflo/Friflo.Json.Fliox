@@ -25,16 +25,15 @@ namespace Friflo.Json.Mapper.Graph
                 if (arrayStart + 2 == arrayEnd) {
                     if (path[arrayStart + 1] != '*')
                         throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, end)}");
-                    var token = path.Substring(start, arrayStart - 1);
+                    var token = path.Substring(start, arrayStart - start);
                     selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
                     selectorNodes.Add(new SelectorNode ("[*]", SelectorType.ArrayWildcard));
+                    return;
                 }
-                else
-                    throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, end)}");
-            } else {
-                var token = path.Substring(start, end);
-                selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
+                throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, end)}");
             }
+            var memberToken = path.Substring(start, end);
+            selectorNodes.Add(new SelectorNode (memberToken, SelectorType.Member));
         }
 
         private static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {

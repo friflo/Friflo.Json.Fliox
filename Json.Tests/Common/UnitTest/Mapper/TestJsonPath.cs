@@ -35,11 +35,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
             }
         }
+
+        public class Chapter
+        {
+            public string   name;
+        }
         
         public class Book
         {
-            public string   title;
-            public string   author;
+            public string           title;
+            public string           author;
+            public List<Chapter>    chapters;
         }
 
         public class Store
@@ -48,8 +54,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             public void InitSample() {
                 books = new List<Book>(new[] {
-                    new Book {title = "The Lord of the Rings",  author = "J. R. R. Tolkien"},
-                    new Book {title = "Moby Dick",              author = "Herman Melville"}
+                    new Book {
+                        title = "The Lord of the Rings",
+                        author = "J. R. R. Tolkien",
+                        chapters = new List<Chapter>() {
+                            new Chapter {name = "The Sermon" }
+                        }
+                    },
+                    new Book {
+                        title = "Moby Dick",
+                        author = "Herman Melville",
+                        chapters = new List<Chapter>() {
+                            new Chapter { name = "A Long-expected Party"  },
+                            new Chapter { name = "The Shadow of the Past" }
+                        }
+                    }
                 });
             }
         }
@@ -66,10 +85,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
                 var result = jsonPath.Select(json, new [] {
                     ".books[*].title",
-                    ".books[*].author"
+                    ".books[*].author",
+                    ".books[*].chapters[*].name"
                 });
-                AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",  result[0]);
-                AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]", result[1]);
+                AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0]);
+                AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1]);
+                AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2]);
             }
         }
     }
