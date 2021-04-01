@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Graph
         
         private readonly    List<PathNode>      nodeStack = new List<PathNode>();
         private readonly    List<SelectQuery>   selectList = new List<SelectQuery>();
-        private readonly    PathNode            rootNode = new PathNode();
+        private readonly    PathNode            rootNode = new PathNode("root");
         private readonly    List<string>        pathNodeBuffer = new List<string>(); // reused buffer
         
 
@@ -46,30 +46,37 @@ namespace Friflo.Json.Mapper.Graph
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
-            serializer.InitSerializer();
             serializer.SetPretty(pretty);
             
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
 
-            return selectList.Select(i => i.node.jsonResult).ToList();
+            return selectList.Select(i => i.jsonResult).ToList();
         }
 
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                if (node.children.TryGetValue(key, out PathNode path)) {
+                if (!node.children.TryGetValue(key, out PathNode path)) {
+                    targetParser.SkipEvent();
+                    continue;
+                }
+                // found node
+                if (path.select != null) {
+                    serializer.InitSerializer();
                     serializer.WriteTree(ref targetParser);
-                    path.jsonResult = serializer.json.ToString();
+                    path.select.jsonResult = serializer.json.ToString();
                     continue;
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
+                        nodeStack.Add(path);
                         TraceArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
+                        nodeStack.Add(path);
                         TraceObject(ref p);
                         break;
                     case JsonEvent.ValueString:
@@ -84,7 +91,6 @@ namespace Friflo.Json.Mapper.Graph
                         throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
                 }
             }
-
             switch (p.Event) {
                 case JsonEvent.ObjectEnd:
                     nodeStack.RemoveAt(nodeStack.Count - 1);
@@ -102,16 +108,24 @@ namespace Friflo.Json.Mapper.Graph
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
                 string key = index.ToString();
-                if (node.children.TryGetValue(key, out PathNode path)) {
+                if (!node.children.TryGetValue(key, out PathNode path)) {
+                    targetParser.SkipEvent();
+                    continue;
+                }
+                // found node
+                if (path.select != null) {
+                    serializer.InitSerializer();
                     serializer.WriteTree(ref targetParser);
-                    path.jsonResult = serializer.json.ToString();
+                    path.select.jsonResult = serializer.json.ToString();
                     continue;
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
+                        nodeStack.Add(path);
                         TraceArray(ref p);
                         break;
                     case JsonEvent.ObjectStart:
+                        nodeStack.Add(path);
                         TraceObject(ref p);
                         break;
                     case JsonEvent.ValueString:
@@ -123,7 +137,7 @@ namespace Friflo.Json.Mapper.Graph
                     case JsonEvent.ArrayEnd:
                     case JsonEvent.Error:
                     case JsonEvent.EOF:
-                        throw new InvalidOperationException("TraceArray() unreachable");  // because of behaviour of ContinueArray()
+                        throw new InvalidOperationException("TraceArray() unreachable"); // because of behaviour of ContinueArray()
                 }
             }
             switch (p.Event) {

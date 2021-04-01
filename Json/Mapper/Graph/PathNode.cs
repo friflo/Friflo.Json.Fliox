@@ -6,10 +6,15 @@ using System.Collections.Generic;
 namespace Friflo.Json.Mapper.Graph
 {
     internal class PathNode {
-        internal            string                          jsonResult;
+        internal            SelectQuery                     select;
         internal            PathType                        pathType;
+        private  readonly   string                          name;
         internal readonly   Dictionary<string, PathNode>    children = new Dictionary<string, PathNode>();
-        public   override   string                          ToString() => string.Join(", ", children.Keys);
+        public   override   string                          ToString() => name;
+
+        internal PathNode(string name) {
+            this.name = name;
+        }
         
 
         internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<string> pathNodeBuffer) {
@@ -22,12 +27,12 @@ namespace Friflo.Json.Mapper.Graph
                 for (int i = 0; i < pathNodeBuffer.Count; i++) {
                     var pathNode = pathNodeBuffer[i];
                     if (!curNode.children.TryGetValue(pathNode, out PathNode childNode)) {
-                        childNode = new PathNode();
+                        childNode = new PathNode(pathNode);
                         curNode.children.Add(pathNode, childNode);
                     }
                     curNode = childNode;
                 }
-                select.node = curNode;
+                curNode.select = select;
             }
         }
 
@@ -39,9 +44,9 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
     
-    internal struct SelectQuery {
+    internal class SelectQuery {
         internal    string      path;
-        internal    PathNode    node;
+        internal    string      jsonResult;
     }
     
     public enum PathType
