@@ -13,7 +13,7 @@ namespace Friflo.Json.Mapper.Graph
     {
         public  readonly    TypeCache       typeCache;
         private readonly    JsonWriter      jsonWriter;
-        private readonly    List<PathNode>  path        = new List<PathNode>();
+        private readonly    List<TypeNode>  path        = new List<TypeNode>();
         private readonly    List<Parent>    parentStack = new List<Parent>();
 
         public Differ(TypeStore typeStore) {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Mapper.Graph
             parentStack.Clear();
             path.Clear();
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var item = new PathNode {
+            var item = new TypeNode {
                 nodeType = NodeType.Root,
                 typeMapper = mapper 
             };
@@ -116,7 +116,7 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public void PushMember(PropField field) {
-            var item = new PathNode {
+            var item = new TypeNode {
                 nodeType = NodeType.Member,
                 name = field.name,
                 typeMapper = field.fieldType
@@ -125,7 +125,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public void PushKey(TypeMapper mapper, string key) {
-            var item = new PathNode {
+            var item = new TypeNode {
                 nodeType = NodeType.Member,
                 name = key,
                 typeMapper = mapper
@@ -134,7 +134,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public void PushElement(int index, TypeMapper elementType) {
-            var item = new PathNode {
+            var item = new TypeNode {
                 nodeType = NodeType.Element,
                 index = index,
                 typeMapper = elementType
