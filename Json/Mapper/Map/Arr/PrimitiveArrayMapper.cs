@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.Mapper.Map.Arr
 {

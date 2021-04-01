@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Mapper.Map;
 
-namespace Friflo.Json.Mapper.Diff
+namespace Friflo.Json.Mapper.Graph
 {
     public enum DiffType
     {
@@ -40,7 +41,7 @@ namespace Friflo.Json.Mapper.Diff
             return sb.ToString();
         }
 
-        public void AddPath(StringBuilder sb) {
+        internal void AddPath(StringBuilder sb) {
             CreatePath(sb, false, 0, 0);
         }
         

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Database
 {

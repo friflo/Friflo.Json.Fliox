@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Map;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Graph;
 using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Utils;
 

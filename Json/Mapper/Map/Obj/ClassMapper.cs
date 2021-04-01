@@ -4,7 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Graph;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Map.Utils;
 using Friflo.Json.Mapper.Map.Val;
