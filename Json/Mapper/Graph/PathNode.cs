@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Friflo.Json.Mapper.Graph
@@ -16,9 +17,27 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         private static SelectorNode PathNodeToSelectorNode(string path, int start, int end) {
-            var token = path.Substring(start, end);
+            string          token; 
+            SelectorType    selectorType;
+            
+            var arrayStart = path.IndexOf('[', start);
+            var arrayEnd   = path.IndexOf(']', start);
+            if (arrayStart != -1 || arrayEnd != -1) {
+                if (arrayStart + 2 == arrayEnd) {
+                    if (path[arrayStart + 1] != '*')
+                        throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, end)}");
+                    selectorType = SelectorType.Array;
+                    token = path.Substring(start, arrayStart - 1);
+                }
+                else
+                    throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, end)}");
+            } else {
+                selectorType = SelectorType.Member;
+                token = path.Substring(start, end);
+            }
             var selectorNode = new SelectorNode {
-                name = token
+                name            = token,
+                selectorType    = selectorType
             };
             return selectorNode;
         }
