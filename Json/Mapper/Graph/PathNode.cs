@@ -16,9 +16,7 @@ namespace Friflo.Json.Mapper.Graph
             this.selectorNode = selectorNode;
         }
 
-        private static SelectorNode PathNodeToSelectorNode(string path, int start, int end) {
-            string          token; 
-            SelectorType    selectorType;
+        private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
             
             var arrayStart = path.IndexOf('[', start);
             var arrayEnd   = path.IndexOf(']', start);
@@ -26,20 +24,16 @@ namespace Friflo.Json.Mapper.Graph
                 if (arrayStart + 2 == arrayEnd) {
                     if (path[arrayStart + 1] != '*')
                         throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, end)}");
-                    selectorType = SelectorType.Array;
-                    token = path.Substring(start, arrayStart - 1);
+                    var token = path.Substring(start, arrayStart - 1);
+                    selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
+                    selectorNodes.Add(new SelectorNode ("[*]", SelectorType.ArrayWildcard));
                 }
                 else
                     throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, end)}");
             } else {
-                selectorType = SelectorType.Member;
-                token = path.Substring(start, end);
+                var token = path.Substring(start, end);
+                selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
             }
-            var selectorNode = new SelectorNode {
-                name            = token,
-                selectorType    = selectorType
-            };
-            return selectorNode;
         }
 
         private static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {
@@ -50,17 +44,16 @@ namespace Friflo.Json.Mapper.Graph
                 return;
             for (int n = 1; n < len; n++) {
                 if (path[n] == '.') {
-                    var selectorNode = PathNodeToSelectorNode(path, last, n - last);
-                    selectorNodes.Add(selectorNode);
+                    PathNodeToSelectorNode(path, last, n - last, selectorNodes);
                     last = n + 1;
                 }
             }
-            var lastNode = PathNodeToSelectorNode(path, last, len - last);
-            selectorNodes.Add(lastNode);
+            PathNodeToSelectorNode(path, last, len - last, selectorNodes);
         }
 
         internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<SelectorNode> selectorNodes) {
             rootNode.children.Clear();
+            var isArrayResult = false;
             var count = selects.Count;
             for (int n = 0; n < count; n++) {
                 var select = selects[n];
@@ -72,9 +65,12 @@ namespace Friflo.Json.Mapper.Graph
                         childNode = new PathNode(selectorNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
+                    if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
+                        isArrayResult = true;
                     curNode = childNode;
                 }
                 curNode.select = select;
+                curNode.select.isArrayResult = isArrayResult;
             }
         }
 
@@ -89,17 +85,26 @@ namespace Friflo.Json.Mapper.Graph
     internal class SelectQuery {
         internal    string      path;
         internal    string      jsonResult;
+        internal    bool        isArrayResult;
+        internal    int         itemCount;
+
     }
     
     public enum SelectorType
     {
+        Root,
         Member,
-        Array
+        ArrayWildcard
     }
     
-    internal struct SelectorNode
+    internal readonly struct SelectorNode
     {
-        internal string         name;
-        internal SelectorType   selectorType;
+        internal SelectorNode(string name, SelectorType selectorType) {
+            this.name           = name;
+            this.selectorType   = selectorType;
+        }
+        
+        internal readonly   string         name;
+        internal readonly   SelectorType   selectorType;
     }
 }

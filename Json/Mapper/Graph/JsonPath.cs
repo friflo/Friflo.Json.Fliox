@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Graph
         
         private readonly    List<PathNode>      nodeStack = new List<PathNode>();
         private readonly    List<SelectQuery>   selectList = new List<SelectQuery>();
-        private readonly    PathNode            rootNode = new PathNode(new SelectorNode{name = "root"});
+        private readonly    PathNode            rootNode = new PathNode(new SelectorNode("root", SelectorType.Root));
         private readonly    List<SelectorNode>  selectorNodes = new List<SelectorNode>(); // reused buffer
         
 
@@ -55,6 +55,21 @@ namespace Friflo.Json.Mapper.Graph
             return selectList.Select(i => i.jsonResult).ToList();
         }
 
+        private void AddResult(SelectQuery select) {
+            if (select.isArrayResult) {
+                if (select.itemCount == 0) {
+                    serializer.InitSerializer();
+                    serializer.ArrayStart(false);
+                }
+                serializer.WriteTree(ref targetParser);
+                select.itemCount++;
+                return;
+            }
+            serializer.InitSerializer();
+            serializer.WriteTree(ref targetParser);
+            select.jsonResult = serializer.json.ToString();
+        }
+
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
@@ -65,9 +80,7 @@ namespace Friflo.Json.Mapper.Graph
                 }
                 // found node
                 if (path.select != null) {
-                    serializer.InitSerializer();
-                    serializer.WriteTree(ref targetParser);
-                    path.select.jsonResult = serializer.json.ToString();
+                    AddResult(path.select);
                     continue;
                 }
                 switch (p.Event) {
@@ -107,12 +120,22 @@ namespace Friflo.Json.Mapper.Graph
             while (JsonSerializer.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
-                string key = index.ToString();
-                if (!node.children.TryGetValue(key, out PathNode path)) {
-                    targetParser.SkipEvent();
+                PathNode path;
+                var wildcard = node.children["[*]"];
+                if (wildcard != null) {
+                    path = wildcard;
+                } else {
+                    string key = index.ToString();
+                    if (!node.children.TryGetValue(key, out path)) {
+                        targetParser.SkipEvent();
+                        continue;
+                    }
+                    // found node
+                }
+                if (path.select != null) {
+                    AddResult(path.select);
                     continue;
                 }
-                // found node
                 if (path.select != null) {
                     serializer.InitSerializer();
                     serializer.WriteTree(ref targetParser);

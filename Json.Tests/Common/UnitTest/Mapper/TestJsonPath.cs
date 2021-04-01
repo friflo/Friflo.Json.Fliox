@@ -64,9 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var json = jsonWriter.Write(store);
 
                 var result = jsonPath.Select(json, new [] {
-                    ".book[*]"
+                    ".books[*].title"
                 });
-                
             }
         }
     }
