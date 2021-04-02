@@ -24,7 +24,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     ".dbl",
                     ".bln",
                     ".enumIL1",
-                    ".child"
+                    ".child",
+                    ".unknown"
                 });
                 AreEqual(@"{""val2"":68}",  result[0]);
                 AreEqual("69",              result[1]);
@@ -32,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual("true",            result[3]);
                 AreEqual(@"""one""",        result[4]);
                 AreEqual("null",            result[5]);
-                
+                IsNull(                     result[6]);
             }
         }
 
@@ -86,11 +87,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var result = jsonPath.Select(json, new [] {
                     ".books[*].title",
                     ".books[*].author",
-                    ".books[*].chapters[*].name"
+                    ".books[*].chapters[*].name",
+                    ".books[*].unknown"
                 });
                 AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0]);
                 AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1]);
                 AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2]);
+                AreEqual(@"[]",                                                                     result[3]);
             }
         }
     }
