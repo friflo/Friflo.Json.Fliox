@@ -13,6 +13,8 @@ namespace Friflo.Json.Mapper.Graph
     internal class PathNode<TResult>
     {
         internal            TResult                                 result;
+        /// direct access to <see cref="children"/>[*]
+        internal            PathNode<TResult>                       wildcardNode;   
         internal readonly   SelectorNode                            selectorNode;
         internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         
@@ -37,8 +39,10 @@ namespace Friflo.Json.Mapper.Graph
             this.selectorType   = selectorType;
         }
         
-        internal readonly   string         name;
-        internal readonly   SelectorType   selectorType;
+        internal        readonly    string          name;
+        internal        readonly    SelectorType    selectorType;
+        
+        internal static readonly    string          Wildcard = "[*]"; 
         
         private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
             int len = end - start;
@@ -50,7 +54,7 @@ namespace Friflo.Json.Mapper.Graph
                         throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     var token = path.Substring(start, arrayStart - start);
                     selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
-                    selectorNodes.Add(new SelectorNode ("[*]", SelectorType.ArrayWildcard));
+                    selectorNodes.Add(new SelectorNode (Wildcard, SelectorType.ArrayWildcard));
                     return;
                 }
                 throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, len)}");
@@ -111,6 +115,9 @@ namespace Friflo.Json.Mapper.Graph
                         childNode = new PathNode<T>(selectorNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
+                    if (selectorNode.name == SelectorNode.Wildcard)
+                        curNode.wildcardNode = childNode;
+                    
                     if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
                         isArrayResult = true;
                     curNode = childNode;

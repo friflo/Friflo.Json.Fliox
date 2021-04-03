@@ -117,9 +117,8 @@ namespace Friflo.Json.Mapper.Graph
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
                 PathNode<SelectorResult> path;
-                var wildcard = node.children["[*]"];
-                if (wildcard != null) {
-                    path = wildcard;
+                if (node.wildcardNode != null) {
+                    path = node.wildcardNode;
                 } else {
                     string key = index.ToString();
                     if (!node.children.TryGetValue(key, out path)) {
