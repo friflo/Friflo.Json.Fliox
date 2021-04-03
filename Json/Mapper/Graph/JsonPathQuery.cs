@@ -22,9 +22,29 @@ namespace Friflo.Json.Mapper.Graph
         internal JsonPathQuery() { }
         
         public JsonPathQuery(IList<string> pathList) {
-            CreateSelector(pathList);
+            CreateNodeTree(pathList);
         }
 
+        internal new void CreateNodeTree(IList<string> pathList) {
+            base.CreateNodeTree(pathList);
+            foreach (var leaf in leafNodes) {
+                StringBuilder arrayResult = leaf.isArrayResult ? new StringBuilder() : null;
+                leaf.node.result = new SelectorResult (arrayResult);
+            }
+        }
+        
+        internal void InitSelectorResults() {
+            foreach (var leaf in leafNodes) {
+                var sb = leaf.node.result.arrayResult;
+                if (sb != null) {
+                    sb.Clear();
+                    sb.Append('[');
+                }
+                leaf.node.result.itemCount = 0;
+                leaf.node.result.jsonResult = null;
+            }
+        }
+        
         public IList<string> GetResult() {
             var result = leafNodes.Select(leaf => {
                 var arrayResult = leaf.node.result.arrayResult;
@@ -35,26 +55,6 @@ namespace Friflo.Json.Mapper.Graph
                 return leaf.node.result.jsonResult;
             }).ToList();
             return result;
-        }
-
-        internal new void CreateSelector(IList<string> pathList) {
-            base.CreateSelector(pathList);
-            foreach (var leaf in leafNodes) {
-                StringBuilder arrayResult = leaf.isArrayResult ? new StringBuilder() : null;
-                leaf.node.result = new SelectorResult (arrayResult);
-            }
-        }
-        
-        internal void InitSelector() {
-            foreach (var leaf in leafNodes) {
-                var sb = leaf.node.result.arrayResult;
-                if (sb != null) {
-                    sb.Clear();
-                    sb.Append('[');
-                }
-                leaf.node.result.itemCount = 0;
-                leaf.node.result.jsonResult = null;
-            }
         }
     }
 }

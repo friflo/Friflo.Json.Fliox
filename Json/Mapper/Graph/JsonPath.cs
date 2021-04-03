@@ -30,13 +30,13 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public IList<string> Select(string json, IList<string> pathList, bool pretty = false) {
-            pathSelectorQuery.CreateSelector(pathList);
+            pathSelectorQuery.CreateNodeTree(pathList);
             Select(json, pathSelectorQuery, pretty);
             return pathSelectorQuery.GetResult();
         }
 
         public JsonPathQuery Select(string json, JsonPathQuery selectorQuery, bool pretty = false) {
-            selectorQuery.InitSelector();
+            selectorQuery.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(selectorQuery.rootNode);
             targetJson.Clear();

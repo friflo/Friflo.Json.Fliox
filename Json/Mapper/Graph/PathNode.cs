@@ -96,7 +96,7 @@ namespace Friflo.Json.Mapper.Graph
         internal readonly   List<LeafNode<T>>   leafNodes       = new List<LeafNode<T>>();
         private  readonly   List<SelectorNode>  selectorNodes   = new List<SelectorNode>(); // reused buffer
 
-        internal void CreateSelector(IList<string> pathList) {
+        protected void CreateNodeTree(IList<string> pathList) {
             leafNodes.Clear();
             rootNode.children.Clear();
             var count = pathList.Count;
