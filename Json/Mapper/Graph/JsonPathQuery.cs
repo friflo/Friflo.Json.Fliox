@@ -17,7 +17,7 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
     
-    public class JsonPathQuery : PathSelector<SelectorResult>
+    public class JsonPathQuery : PathNodeTree<SelectorResult>
     {
         internal JsonPathQuery() { }
         

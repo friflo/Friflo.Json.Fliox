@@ -7,13 +7,15 @@ using System.Collections.Generic;
 namespace Friflo.Json.Mapper.Graph
 {
     /// Each leaf node in a <see cref="PathNode{TResult}"/> hierarchy has <see cref="result"/> not null.
-    /// The root of the hierarchy is <see cref="PathSelector{T}.rootNode"/>
+    /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path. 
+    /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
     /// The <see cref="result"/> is intended to store the result when reaching as leaf node.
     internal class PathNode<TResult>
     {
         internal            TResult                                 result;
         internal readonly   SelectorNode                            selectorNode;
         internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
+        
         public   override   string                                  ToString() => selectorNode.name;
 
         internal PathNode(SelectorNode selectorNode) {
@@ -79,16 +81,16 @@ namespace Friflo.Json.Mapper.Graph
         internal readonly   PathNode<T> node;
         internal readonly   bool        isArrayResult;
 
+        public override string ToString() => path;
+        
         internal LeafNode(string path, PathNode<T> node, bool isArrayResult) {
             this.path           = path;
             this.node           = node;
             this.isArrayResult  = isArrayResult;
         }
-
-        public override string ToString() => path;
     }
 
-    public class PathSelector<T>
+    public class PathNodeTree<T>
     {
         internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("root", SelectorType.Root));
         internal readonly   List<LeafNode<T>>   leafNodes       = new List<LeafNode<T>>();
