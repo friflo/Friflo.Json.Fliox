@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper.Graph
@@ -32,10 +31,11 @@ namespace Friflo.Json.Mapper.Graph
 
         public IList<string> Select(string json, IList<string> pathList, bool pretty = false) {
             pathSelector.CreateSelector(pathList);
-            return Select(json, pathSelector, pretty);
+            Select(json, pathSelector, pretty);
+            return pathSelector.GetResult();
         }
 
-        public IList<string> Select(string json, PathSelector selector, bool pretty = false) {
+        public PathSelector Select(string json, PathSelector selector, bool pretty = false) {
             selector.InitSelector();
             nodeStack.Clear();
             nodeStack.Add(selector.rootNode);
@@ -48,16 +48,7 @@ namespace Friflo.Json.Mapper.Graph
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
-
-            var result = selector.selectList.Select(select => {
-                var arrayResult = select.arrayResult;
-                if (arrayResult != null) {
-                    arrayResult.Append(']');
-                    return arrayResult.ToString();
-                }
-                return select.jsonResult;
-            }).ToList();
-            return result;
+            return selector;
         }
 
         private void AddResult(SelectQuery select) {

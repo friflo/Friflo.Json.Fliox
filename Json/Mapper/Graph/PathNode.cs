@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
@@ -93,6 +94,18 @@ namespace Friflo.Json.Mapper.Graph
         
         public PathSelector(IList<string> pathList) {
             CreateSelector(pathList);
+        }
+
+        public IList<string> GetResult() {
+            var result = selectList.Select(select => {
+                var arrayResult = select.arrayResult;
+                if (arrayResult != null) {
+                    arrayResult.Append(']');
+                    return arrayResult.ToString();
+                }
+                return select.jsonResult;
+            }).ToList();
+            return result;
         }
 
         internal void CreateSelector(IList<string> pathList) {
