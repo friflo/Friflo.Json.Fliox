@@ -14,8 +14,8 @@ namespace Friflo.Json.Mapper.Graph
         private             Bytes                           targetJson = new Bytes(128);
         private             JsonParser                      targetParser;
         
-        private readonly    List<PathNode<SelectorPath>>    nodeStack = new List<PathNode<SelectorPath>>();
-        private readonly    PathSelector                    pathSelector = new PathSelector();
+        private readonly    List<PathNode<SelectorResult>>  nodeStack = new List<PathNode<SelectorResult>>();
+        private readonly    JsonPathQuery                   pathSelectorQuery = new JsonPathQuery();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -30,15 +30,15 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public IList<string> Select(string json, IList<string> pathList, bool pretty = false) {
-            pathSelector.CreateSelector(pathList);
-            Select(json, pathSelector, pretty);
-            return pathSelector.GetResult();
+            pathSelectorQuery.CreateSelector(pathList);
+            Select(json, pathSelectorQuery, pretty);
+            return pathSelectorQuery.GetResult();
         }
 
-        public PathSelector Select(string json, PathSelector selector, bool pretty = false) {
-            selector.InitSelector();
+        public JsonPathQuery Select(string json, JsonPathQuery selectorQuery, bool pretty = false) {
+            selectorQuery.InitSelector();
             nodeStack.Clear();
-            nodeStack.Add(selector.rootNode);
+            nodeStack.Add(selectorQuery.rootNode);
             targetJson.Clear();
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
@@ -48,35 +48,35 @@ namespace Friflo.Json.Mapper.Graph
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
-            return selector;
+            return selectorQuery;
         }
 
-        private void AddResult(SelectorPath select) {
+        private void AddResult(SelectorResult result) {
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
             var json = serializer.json.ToString();
-            if (select.arrayResult != null) {
-                if (select.itemCount > 0) {
-                    select.arrayResult.Append(',');
+            if (result.arrayResult != null) {
+                if (result.itemCount > 0) {
+                    result.arrayResult.Append(',');
                 }
-                select.arrayResult.Append(json);
-                select.itemCount++;
+                result.arrayResult.Append(json);
+                result.itemCount++;
                 return;
             }
-            select.jsonResult = json;
+            result.jsonResult = json;
         }
 
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.children.TryGetValue(key, out PathNode<SelectorPath> path)) {
+                if (!node.children.TryGetValue(key, out PathNode<SelectorResult> path)) {
                     targetParser.SkipEvent();
                     continue;
                 }
                 // found node
-                if (path.selector != null) {
-                    AddResult(path.selector);
+                if (path.result != null) {
+                    AddResult(path.result);
                     continue;
                 }
                 switch (p.Event) {
@@ -116,7 +116,7 @@ namespace Friflo.Json.Mapper.Graph
             while (JsonSerializer.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
-                PathNode<SelectorPath> path;
+                PathNode<SelectorResult> path;
                 var wildcard = node.children["[*]"];
                 if (wildcard != null) {
                     path = wildcard;
@@ -128,8 +128,8 @@ namespace Friflo.Json.Mapper.Graph
                     }
                     // found node
                 }
-                if (path.selector != null) {
-                    AddResult(path.selector);
+                if (path.result != null) {
+                    AddResult(path.result);
                     continue;
                 }
                 switch (p.Event) {

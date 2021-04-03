@@ -3,17 +3,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
-       
-    internal class PathNode<TSelector>
+    /// Each leaf node in a <see cref="PathNode{TResult}"/> hierarchy has <see cref="result"/> not null.
+    /// The root of the hierarchy is <see cref="PathSelector{T}.rootNode"/>
+    /// The <see cref="result"/> is intended to store the result when reaching as leaf node.
+    internal class PathNode<TResult>
     {
-        internal            TSelector                               selector;
+        internal            TResult                                 result;
         internal readonly   SelectorNode                            selectorNode;
-        internal readonly   Dictionary<string, PathNode<TSelector>> children = new Dictionary<string, PathNode<TSelector>>();
+        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         public   override   string                                  ToString() => selectorNode.name;
 
         internal PathNode(SelectorNode selectorNode) {
@@ -21,18 +21,6 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
 
-    internal class SelectorPath  {
-        internal readonly   string          path;
-        internal readonly   StringBuilder   arrayResult;
-        internal            string          jsonResult;
-        internal            int             itemCount;
-
-        internal SelectorPath(string path, StringBuilder arrayResult) {
-            this.path           = path;
-            this.arrayResult    = arrayResult;
-        }
-    }
-    
     public enum SelectorType
     {
         Root,
@@ -84,68 +72,51 @@ namespace Friflo.Json.Mapper.Graph
             PathNodeToSelectorNode(path, last, len, selectorNodes);
         }
     }
-    
-    public class PathSelector
+
+    internal readonly struct LeafNode<T>
     {
-        internal readonly   PathNode<SelectorPath>          rootNode = new PathNode<SelectorPath>(new SelectorNode("root", SelectorType.Root));
-        internal readonly   List<PathNode<SelectorPath>>    pathTails = new List<PathNode<SelectorPath>>();
-        private  readonly   List<SelectorNode>              selectorNodes = new List<SelectorNode>(); // reused buffer
+        private  readonly   string      path;
+        internal readonly   PathNode<T> node;
+        internal readonly   bool        isArrayResult;
 
-        internal PathSelector() { }
-        
-        public PathSelector(IList<string> pathList) {
-            CreateSelector(pathList);
+        internal LeafNode(string path, PathNode<T> node, bool isArrayResult) {
+            this.path           = path;
+            this.node           = node;
+            this.isArrayResult  = isArrayResult;
         }
 
-        public IList<string> GetResult() {
-            var result = pathTails.Select(node => {
-                var arrayResult = node.selector.arrayResult;
-                if (arrayResult != null) {
-                    arrayResult.Append(']');
-                    return arrayResult.ToString();
-                }
-                return node.selector.jsonResult;
-            }).ToList();
-            return result;
-        }
+        public override string ToString() => path;
+    }
+
+    public class PathSelector<T>
+    {
+        internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("root", SelectorType.Root));
+        internal readonly   List<LeafNode<T>>   leafNodes       = new List<LeafNode<T>>();
+        private  readonly   List<SelectorNode>  selectorNodes   = new List<SelectorNode>(); // reused buffer
 
         internal void CreateSelector(IList<string> pathList) {
-            pathTails.Clear();
+            leafNodes.Clear();
             rootNode.children.Clear();
-            var isArrayResult = false;
             var count = pathList.Count;
             for (int n = 0; n < count; n++) {
+                bool isArrayResult = false;
                 var path = pathList[n];
                 SelectorNode.PathToSelectorNodes(path, selectorNodes);
-                PathNode<SelectorPath> curNode = rootNode;
+                PathNode<T> curNode = rootNode;
                 for (int i = 0; i < selectorNodes.Count; i++) {
                     var selectorNode = selectorNodes[i];
-                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode<SelectorPath> childNode)) {
-                        childNode = new PathNode<SelectorPath>(selectorNode);
+                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode<T> childNode)) {
+                        childNode = new PathNode<T>(selectorNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
                     if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
                         isArrayResult = true;
                     curNode = childNode;
                 }
-
-                StringBuilder arrayResult = isArrayResult ? new StringBuilder() : null;
-
-                curNode.selector = new SelectorPath (path, arrayResult);;
-                pathTails.Add(curNode);
-            }
-        }
-        
-        internal void InitSelector() {
-            foreach (var pathTail in pathTails) {
-                var sb = pathTail.selector.arrayResult;
-                if (sb != null) {
-                    sb.Clear();
-                    sb.Append('[');
-                }
-                pathTail.selector.itemCount = 0;
-                pathTail.selector.jsonResult = null;
+                var leaf = new LeafNode<T>(path, curNode, isArrayResult);
+                leafNodes.Add(leaf);
             }
         }
     }
+
 }

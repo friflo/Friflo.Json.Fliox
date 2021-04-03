@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 }
                 AssertStoreResult(result);
                 
-                var selector = new PathSelector(selectList);
+                var selector = new JsonPathQuery(selectList);
                 for (int n = 0; n < 2; n++) {
                     jsonPath.Select(json, selector);
                     result = selector.GetResult();
