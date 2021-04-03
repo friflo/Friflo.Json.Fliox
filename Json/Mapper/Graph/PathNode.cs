@@ -8,16 +8,48 @@ using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
-    internal class PathNode {
-        internal            SelectQuery                     select;
-        internal readonly   SelectorNode                    selectorNode;
-        internal readonly   Dictionary<string, PathNode>    children = new Dictionary<string, PathNode>();
-        public   override   string                          ToString() => selectorNode.name;
+       
+    internal class PathNode<TSelector>
+    {
+        internal            TSelector                               selector;
+        internal readonly   SelectorNode                            selectorNode;
+        internal readonly   Dictionary<string, PathNode<TSelector>> children = new Dictionary<string, PathNode<TSelector>>();
+        public   override   string                                  ToString() => selectorNode.name;
 
         internal PathNode(SelectorNode selectorNode) {
-            this.selectorNode = selectorNode;
+            this.selectorNode   = selectorNode;
         }
+    }
 
+    internal class SelectorPath  {
+        internal readonly   string          path;
+        internal readonly   StringBuilder   arrayResult;
+        internal            string          jsonResult;
+        internal            int             itemCount;
+
+        internal SelectorPath(string path, StringBuilder arrayResult) {
+            this.path           = path;
+            this.arrayResult    = arrayResult;
+        }
+    }
+    
+    public enum SelectorType
+    {
+        Root,
+        Member,
+        ArrayWildcard
+    }
+    
+    internal readonly struct SelectorNode
+    {
+        internal SelectorNode(string name, SelectorType selectorType) {
+            this.name           = name;
+            this.selectorType   = selectorType;
+        }
+        
+        internal readonly   string         name;
+        internal readonly   SelectorType   selectorType;
+        
         private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
             int len = end - start;
             var arrayStart = path.IndexOf('[', start);
@@ -51,44 +83,13 @@ namespace Friflo.Json.Mapper.Graph
             }
             PathNodeToSelectorNode(path, last, len, selectorNodes);
         }
-
-
     }
     
-    internal class SelectQuery {
-        internal readonly   string          path;
-        internal readonly   StringBuilder   arrayResult;
-        internal            string          jsonResult;
-        internal            int             itemCount;
-
-        internal SelectQuery(string path, StringBuilder arrayResult) {
-            this.path           = path;
-            this.arrayResult    = arrayResult;
-        }
-    }
-    
-    public enum SelectorType
+    public class PathSelector
     {
-        Root,
-        Member,
-        ArrayWildcard
-    }
-    
-    internal readonly struct SelectorNode
-    {
-        internal SelectorNode(string name, SelectorType selectorType) {
-            this.name           = name;
-            this.selectorType   = selectorType;
-        }
-        
-        internal readonly   string         name;
-        internal readonly   SelectorType   selectorType;
-    }
-    
-    public class PathSelector {
-        internal readonly   PathNode            rootNode = new PathNode(new SelectorNode("root", SelectorType.Root));
-        internal readonly   List<SelectQuery>   selectList = new List<SelectQuery>();
-        private  readonly   List<SelectorNode>  selectorNodes = new List<SelectorNode>(); // reused buffer
+        internal readonly   PathNode<SelectorPath>          rootNode = new PathNode<SelectorPath>(new SelectorNode("root", SelectorType.Root));
+        internal readonly   List<PathNode<SelectorPath>>    pathTails = new List<PathNode<SelectorPath>>();
+        private  readonly   List<SelectorNode>              selectorNodes = new List<SelectorNode>(); // reused buffer
 
         internal PathSelector() { }
         
@@ -97,30 +98,30 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public IList<string> GetResult() {
-            var result = selectList.Select(select => {
-                var arrayResult = select.arrayResult;
+            var result = pathTails.Select(node => {
+                var arrayResult = node.selector.arrayResult;
                 if (arrayResult != null) {
                     arrayResult.Append(']');
                     return arrayResult.ToString();
                 }
-                return select.jsonResult;
+                return node.selector.jsonResult;
             }).ToList();
             return result;
         }
 
         internal void CreateSelector(IList<string> pathList) {
-            selectList.Clear();
+            pathTails.Clear();
             rootNode.children.Clear();
             var isArrayResult = false;
             var count = pathList.Count;
             for (int n = 0; n < count; n++) {
                 var path = pathList[n];
-                PathNode.PathToSelectorNodes(path, selectorNodes);
-                PathNode curNode = rootNode;
+                SelectorNode.PathToSelectorNodes(path, selectorNodes);
+                PathNode<SelectorPath> curNode = rootNode;
                 for (int i = 0; i < selectorNodes.Count; i++) {
                     var selectorNode = selectorNodes[i];
-                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode childNode)) {
-                        childNode = new PathNode(selectorNode);
+                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode<SelectorPath> childNode)) {
+                        childNode = new PathNode<SelectorPath>(selectorNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
                     if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
@@ -129,21 +130,21 @@ namespace Friflo.Json.Mapper.Graph
                 }
 
                 StringBuilder arrayResult = isArrayResult ? new StringBuilder() : null;
-                var select = new SelectQuery (path, arrayResult);
-                curNode.select = select;
-                selectList.Add(select);
+
+                curNode.selector = new SelectorPath (path, arrayResult);;
+                pathTails.Add(curNode);
             }
         }
         
         internal void InitSelector() {
-            foreach (var select in selectList) {
-                var sb = select.arrayResult;
+            foreach (var pathTail in pathTails) {
+                var sb = pathTail.selector.arrayResult;
                 if (sb != null) {
                     sb.Clear();
                     sb.Append('[');
                 }
-                select.itemCount = 0;
-                select.jsonResult = null;
+                pathTail.selector.itemCount = 0;
+                pathTail.selector.jsonResult = null;
             }
         }
     }
