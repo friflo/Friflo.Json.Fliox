@@ -36,7 +36,7 @@ namespace Friflo.Json.Mapper.Graph
             selectorNodes.Add(new SelectorNode (memberToken, SelectorType.Member));
         }
 
-        private static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {
+        internal static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {
             selectorNodes.Clear();
             int last = 1;
             int len = path.Length;
@@ -51,44 +51,19 @@ namespace Friflo.Json.Mapper.Graph
             PathNodeToSelectorNode(path, last, len, selectorNodes);
         }
 
-        internal static void CreatePathTree(PathNode rootNode, List<SelectQuery> selects, List<SelectorNode> selectorNodes) {
-            rootNode.children.Clear();
-            var isArrayResult = false;
-            var count = selects.Count;
-            for (int n = 0; n < count; n++) {
-                var select = selects[n];
-                PathToSelectorNodes(select.path, selectorNodes);
-                PathNode curNode = rootNode;
-                for (int i = 0; i < selectorNodes.Count; i++) {
-                    var selectorNode = selectorNodes[i];
-                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode childNode)) {
-                        childNode = new PathNode(selectorNode);
-                        curNode.children.Add(selectorNode.name, childNode);
-                    }
-                    if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
-                        isArrayResult = true;
-                    curNode = childNode;
-                }
-                curNode.select = select;
-                if (isArrayResult) {
-                    curNode.select.arrayResult = new StringBuilder();
-                }
-            }
-        }
 
-        internal void ClearChildren() {
-            foreach (var child in children) {
-                child.Value.ClearChildren();
-                child.Value.children.Clear();
-            }
-        }
     }
     
     internal class SelectQuery {
-        internal    string          path;
-        internal    string          jsonResult;
-        internal    StringBuilder   arrayResult;
-        internal    int             itemCount;
+        internal readonly   string          path;
+        internal readonly   StringBuilder   arrayResult;
+        internal            string          jsonResult;
+        internal            int             itemCount;
+
+        internal SelectQuery(string path, StringBuilder arrayResult) {
+            this.path           = path;
+            this.arrayResult    = arrayResult;
+        }
     }
     
     public enum SelectorType
@@ -122,11 +97,29 @@ namespace Friflo.Json.Mapper.Graph
 
         internal void CreateSelector(IList<string> pathList) {
             selectList.Clear();
-            foreach (var path in pathList) {
-                var select = new SelectQuery { path = path };
+            rootNode.children.Clear();
+            var isArrayResult = false;
+            var count = pathList.Count;
+            for (int n = 0; n < count; n++) {
+                var path = pathList[n];
+                PathNode.PathToSelectorNodes(path, selectorNodes);
+                PathNode curNode = rootNode;
+                for (int i = 0; i < selectorNodes.Count; i++) {
+                    var selectorNode = selectorNodes[i];
+                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode childNode)) {
+                        childNode = new PathNode(selectorNode);
+                        curNode.children.Add(selectorNode.name, childNode);
+                    }
+                    if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
+                        isArrayResult = true;
+                    curNode = childNode;
+                }
+
+                StringBuilder arrayResult = isArrayResult ? new StringBuilder() : null;
+                var select = new SelectQuery (path, arrayResult);
+                curNode.select = select;
                 selectList.Add(select);
             }
-            PathNode.CreatePathTree(rootNode, selectList, selectorNodes);     
         }
         
         internal void InitSelector() {
