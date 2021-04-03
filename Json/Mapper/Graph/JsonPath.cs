@@ -15,11 +15,8 @@ namespace Friflo.Json.Mapper.Graph
         private             Bytes           targetJson = new Bytes(128);
         private             JsonParser      targetParser;
         
-        private readonly    List<PathNode>      nodeStack = new List<PathNode>();
-        private readonly    List<SelectQuery>   selectList = new List<SelectQuery>();
-        private readonly    PathNode            rootNode = new PathNode(new SelectorNode("root", SelectorType.Root));
-        private readonly    List<SelectorNode>  selectorNodes = new List<SelectorNode>(); // reused buffer
-        
+        private readonly    List<PathNode>  nodeStack = new List<PathNode>();
+        private readonly    PathSelector    pathSelector = new PathSelector();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -34,14 +31,14 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public IList<string> Select(string json, IList<string> pathList, bool pretty = false) {
-            selectList.Clear();
-            foreach (var path in pathList) {
-                var select = new SelectQuery { path = path };
-                selectList.Add(select);
-            }
-            PathNode.CreatePathTree(rootNode, selectList, selectorNodes);
+            pathSelector.CreateSelector(pathList);
+            return Select(json, pathSelector, pretty);
+        }
+
+        public IList<string> Select(string json, PathSelector selector, bool pretty = false) {
+            selector.InitSelector();
             nodeStack.Clear();
-            nodeStack.Add(rootNode);
+            nodeStack.Add(selector.rootNode);
             targetJson.Clear();
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
@@ -52,7 +49,7 @@ namespace Friflo.Json.Mapper.Graph
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
 
-            var result = selectList.Select(select => {
+            var result = selector.selectList.Select(select => {
                 var arrayResult = select.arrayResult;
                 if (arrayResult != null) {
                     arrayResult.Append(']');
@@ -195,4 +192,6 @@ namespace Friflo.Json.Mapper.Graph
         }
 
     }
+
+
 }

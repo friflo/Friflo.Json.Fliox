@@ -71,9 +71,7 @@ namespace Friflo.Json.Mapper.Graph
                 }
                 curNode.select = select;
                 if (isArrayResult) {
-                    var sb = new StringBuilder();
-                    sb.Append('[');
-                    curNode.select.arrayResult = sb;
+                    curNode.select.arrayResult = new StringBuilder();
                 }
             }
         }
@@ -109,5 +107,38 @@ namespace Friflo.Json.Mapper.Graph
         
         internal readonly   string         name;
         internal readonly   SelectorType   selectorType;
+    }
+    
+    public class PathSelector {
+        internal readonly   PathNode            rootNode = new PathNode(new SelectorNode("root", SelectorType.Root));
+        internal readonly   List<SelectQuery>   selectList = new List<SelectQuery>();
+        private  readonly   List<SelectorNode>  selectorNodes = new List<SelectorNode>(); // reused buffer
+
+        internal PathSelector() { }
+        
+        public PathSelector(IList<string> pathList) {
+            CreateSelector(pathList);
+        }
+
+        internal void CreateSelector(IList<string> pathList) {
+            selectList.Clear();
+            foreach (var path in pathList) {
+                var select = new SelectQuery { path = path };
+                selectList.Add(select);
+            }
+            PathNode.CreatePathTree(rootNode, selectList, selectorNodes);     
+        }
+        
+        internal void InitSelector() {
+            foreach (var select in selectList) {
+                var sb = select.arrayResult;
+                if (sb != null) {
+                    sb.Clear();
+                    sb.Append('[');
+                }
+                select.itemCount = 0;
+                select.jsonResult = null;
+            }
+        }
     }
 }

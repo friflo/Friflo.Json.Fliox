@@ -83,18 +83,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var store = new Store();
                 store.InitSample();
                 var json = jsonWriter.Write(store);
-
-                var result = jsonPath.Select(json, new [] {
+                var selectList = new[] {
                     ".books[*].title",
                     ".books[*].author",
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
-                });
-                AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0]);
-                AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1]);
-                AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2]);
-                AreEqual(@"[]",                                                                     result[3]);
+                };
+                IList<string> result = new List<string>();
+                for (int n = 0; n < 2; n++) {
+                    result = jsonPath.Select(json, selectList);
+                }
+                AssertStoreResult(result);
+                
+                var selector = new PathSelector(selectList);
+                for (int n = 0; n < 2; n++) {
+                    result = jsonPath.Select(json, selector);
+                }
+                AssertStoreResult(result);
             }
+        }
+
+        private void AssertStoreResult(IList<string> result) {
+            AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0]);
+            AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1]);
+            AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2]);
+            AreEqual(@"[]",                                                                     result[3]);
         }
     }
 }
