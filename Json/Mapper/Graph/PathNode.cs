@@ -41,9 +41,9 @@ namespace Friflo.Json.Mapper.Graph
         
         internal        readonly    string          name;
         internal        readonly    SelectorType    selectorType;
-        
-        internal static readonly    string          Wildcard = "[*]"; 
-        
+
+        private         const       string          Wildcard = "[*]";
+
         private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
             int len = end - start;
             var arrayStart = path.IndexOf('[', start);
@@ -115,11 +115,10 @@ namespace Friflo.Json.Mapper.Graph
                         childNode = new PathNode<T>(selectorNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
-                    if (selectorNode.name == SelectorNode.Wildcard)
-                        curNode.wildcardNode = childNode;
-                    
-                    if (curNode.selectorNode.selectorType == SelectorType.ArrayWildcard)
+                    if (selectorNode.selectorType == SelectorType.ArrayWildcard) {
                         isArrayResult = true;
+                        curNode.wildcardNode = childNode;
+                    }
                     curNode = childNode;
                 }
                 var leaf = new LeafNode<T>(path, curNode, isArrayResult);
