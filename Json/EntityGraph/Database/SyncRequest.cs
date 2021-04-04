@@ -97,15 +97,6 @@ namespace Friflo.Json.EntityGraph.Database
             return result; 
         }
     }
-    
-    public class ReadDependency
-    {
-        /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
-        /// These dependent entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string          refPath; // e.g. ".items[*].article"
-        public  List<string>    ids;
-        public  string          container;
-    }
 
     public class ReadEntitiesResult : CommandResult
     {
@@ -113,6 +104,16 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<ReadDependencyResult>  dependencies;
 
         public override CommandType CommandType => CommandType.Read;
+    }
+    
+    // ------ ReadDependency
+    public class ReadDependency
+    {
+        /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
+        /// These dependent entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
+        public  string          refPath; // e.g. ".items[*].article"
+        public  string          container;
+        public  List<string>    ids;
     }
     
     public class ReadDependencyResult
