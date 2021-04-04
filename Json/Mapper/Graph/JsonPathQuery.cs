@@ -7,14 +7,10 @@ using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
-    public class SelectorResult  {
-        internal readonly   StringBuilder   arrayResult;
-        internal            string          jsonResult;
+    public class SelectorResult
+    {
+        internal readonly   StringBuilder   arrayResult = new StringBuilder();
         internal            int             itemCount;
-
-        internal SelectorResult(StringBuilder arrayResult) {
-            this.arrayResult    = arrayResult;
-        }
     }
     
     public class JsonPathQuery : PathNodeTree<SelectorResult>
@@ -28,31 +24,24 @@ namespace Friflo.Json.Mapper.Graph
         internal new void CreateNodeTree(IList<string> pathList) {
             base.CreateNodeTree(pathList);
             foreach (var leaf in leafNodes) {
-                StringBuilder arrayResult = leaf.isArrayResult ? new StringBuilder() : null;
-                leaf.node.result = new SelectorResult (arrayResult);
+                leaf.node.result = new SelectorResult ();
             }
         }
         
         internal void InitSelectorResults() {
             foreach (var leaf in leafNodes) {
                 var sb = leaf.node.result.arrayResult;
-                if (sb != null) {
-                    sb.Clear();
-                    sb.Append('[');
-                }
+                sb.Clear();
+                sb.Append('[');
                 leaf.node.result.itemCount = 0;
-                leaf.node.result.jsonResult = null;
             }
         }
         
         public IList<string> GetResult() {
             var result = leafNodes.Select(leaf => {
                 var arrayResult = leaf.node.result.arrayResult;
-                if (arrayResult != null) {
-                    arrayResult.Append(']');
-                    return arrayResult.ToString();
-                }
-                return leaf.node.result.jsonResult;
+                arrayResult.Append(']');
+                return arrayResult.ToString();
             }).ToList();
             return result;
         }

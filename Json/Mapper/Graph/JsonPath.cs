@@ -55,15 +55,11 @@ namespace Friflo.Json.Mapper.Graph
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
             var json = serializer.json.ToString();
-            if (result.arrayResult != null) {
-                if (result.itemCount > 0) {
-                    result.arrayResult.Append(',');
-                }
-                result.arrayResult.Append(json);
-                result.itemCount++;
-                return;
+            if (result.itemCount > 0) {
+                result.arrayResult.Append(',');
             }
-            result.jsonResult = json;
+            result.arrayResult.Append(json);
+            result.itemCount++;
         }
 
         private bool TraceObject(ref JsonParser p) {

@@ -27,13 +27,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     ".child",
                     ".unknown"
                 });
-                AreEqual(@"{""val2"":68}",  result[0]);
-                AreEqual("69",              result[1]);
-                AreEqual("94.0",            result[2]);
-                AreEqual("true",            result[3]);
-                AreEqual(@"""one""",        result[4]);
-                AreEqual("null",            result[5]);
-                IsNull(                     result[6]);
+                AreEqual(@"[{""val2"":68}]",    result[0]);
+                AreEqual("[69]",                result[1]);
+                AreEqual("[94.0]",              result[2]);
+                AreEqual("[true]",              result[3]);
+                AreEqual(@"[""one""]",          result[4]);
+                AreEqual("[null]",              result[5]);
+                AreEqual("[]",                  result[6]);
             }
         }
 
