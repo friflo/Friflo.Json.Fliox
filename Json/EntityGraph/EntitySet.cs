@@ -18,6 +18,7 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
+        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
@@ -254,6 +255,20 @@ namespace Friflo.Json.EntityGraph
                     }
                 }
                 peer.read = null;
+            }
+            for (int n = 0; n < result.dependencies.Count; n++) {
+                ReadDependencyResult dependency = result.dependencies[n];
+                var depContainer = store.intern.setByName[dependency.container];
+                depContainer.ReadDependencyResult(null, dependency);
+            }
+        }
+
+        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result) {
+            for (int o = 0; o < result.entities.Count; o++) {
+                var keyValue = result.entities[o];
+                var peer = GetPeerById(keyValue.key);
+                var entity = jsonMapper.ReadTo<T>(keyValue.value.json, peer.entity);
+                peer.assigned = true;
             }
         }
         

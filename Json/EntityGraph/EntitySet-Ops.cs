@@ -112,12 +112,13 @@ namespace Friflo.Json.EntityGraph
     // ------------------------------------- PeerEntity<> -------------------------------------
     internal class PeerEntity<T>  where T : Entity
     {
-        internal readonly   T           entity;
-        internal            T           patchReference; 
-        internal            T           nextPatchReference; 
-        internal            bool        assigned;
-        internal            Read<T>     read;
-        internal            Create<T>   create;
+        internal readonly   T                               entity;
+        internal            T                               patchReference; 
+        internal            T                               nextPatchReference; 
+        internal            bool                            assigned;
+        internal            Read<T>                         read;
+        internal            Create<T>                       create;
+        internal            Dictionary<string, ReadDeps>    readDeps = new Dictionary<string, ReadDeps>();
 
         internal PeerEntity(T entity) {
             this.entity = entity;
