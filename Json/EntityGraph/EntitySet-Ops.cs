@@ -6,7 +6,9 @@ using System.Linq.Expressions;
 
 namespace Friflo.Json.EntityGraph
 {
-    // ----------------------------------------- CRUD -----------------------------------------
+    // =======================================   CRUD   ==========================================
+    
+    // ----------------------------------------- Read<> -----------------------------------------
     public class Read<T> where T : Entity
     {
         private  readonly   string          id;
@@ -65,9 +67,10 @@ namespace Friflo.Json.EntityGraph
         {
             return default;
         }
-
     }
     
+    
+    // ----------------------------------------- Create<> -----------------------------------------
     public class Create<T> where T : Entity
     {
         private readonly    T           entity;
@@ -83,6 +86,9 @@ namespace Friflo.Json.EntityGraph
         // public T Result  => entity;
     }
 
+    
+    
+    // ----------------------------------------- Dependency<> -----------------------------------------
     public class Dependency
     {
         internal readonly    string          id;
@@ -110,7 +116,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadDeps
+    internal class ReadDeps
     {
         internal readonly   string              selector;
         internal readonly   Type                entityType;
@@ -121,29 +127,5 @@ namespace Friflo.Json.EntityGraph
             this.entityType = entityType;
         }
     }
-
-    // ------------------------------------- PeerEntity<> -------------------------------------
-    internal class PeerEntity<T>  where T : Entity
-    {
-        internal readonly   T                               entity;
-        internal            T                               patchReference; 
-        internal            T                               nextPatchReference; 
-        internal            bool                            assigned;
-        internal            Read<T>                         read;
-        internal            Create<T>                       create;
-        internal            Dictionary<string, ReadDeps>    readDeps = new Dictionary<string, ReadDeps>();
-
-        internal PeerEntity(T entity) {
-            this.entity = entity;
-        }
-    }
-
-    public class PeerNotAssignedException : Exception
-    {
-        public readonly Entity entity;
-        
-        public PeerNotAssignedException(Entity entity) : base ($"Entity: {entity.GetType().Name} id: {entity.id}") {
-            this.entity = entity;
-        }
-    }
 }
+
