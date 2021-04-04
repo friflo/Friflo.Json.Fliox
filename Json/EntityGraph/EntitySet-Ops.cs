@@ -28,14 +28,18 @@ namespace Friflo.Json.EntityGraph
         }
         
         // lab - prototype API
-        public Read<TValue> Dep<TValue>(string selector) where TValue : Entity {
-            if (!set.readDeps.TryGetValue(selector, out ReadDeps depsById)) {
-                depsById = new ReadDeps(selector, typeof(TValue));
-                set.readDeps.Add(selector, depsById);
+        public Dependency<TValue> Dep<TValue>(string selector) where TValue : Entity {
+            if (!set.readDeps.TryGetValue(selector, out ReadDeps readDeps)) {
+                readDeps = new ReadDeps(selector, typeof(TValue));
+                set.readDeps.Add(selector, readDeps);
             }
-            var dependency = new Dependency<TValue>(id);
-            depsById.dependencies.Add(dependency);
-            return default;
+            var newDependency = new Dependency<TValue>(id);
+            if (readDeps.dependencies.TryGetValue(newDependency, out Dependency dependency)) {
+                newDependency = (Dependency<TValue>) dependency;
+            } else {
+                readDeps.dependencies.Add(newDependency);
+            }
+            return newDependency;
         }
 
         // lab - expression API
@@ -79,29 +83,38 @@ namespace Friflo.Json.EntityGraph
         // public T Result  => entity;
     }
 
-    public interface IDependency
+    public class Dependency
     {
-        string Id { get; }
-    }
-    
-    public class Dependency<T> : IDependency where T : Entity
-    {
-        private readonly    string          id;
-        // private readonly    EntitySet<T>    set;
-        public              string          Id => id;
-        
+        internal readonly    string          id;
+
         internal Dependency(string id) {
             this.id = id;
+        }
+        
+        public override int GetHashCode() => id.GetHashCode();
+
+        public override bool Equals(object obj) {
+            if (obj == null)
+                return false;
+            var other = (Dependency)obj;
+            return id.Equals(other.id);
+        }
+    }
+    
+    public class Dependency<T> : Dependency where T : Entity
+    {
+        // private readonly    EntitySet<T>    set;
+        
+        internal Dependency(string id) : base (id){
             // this.set = set;
         }
-
     }
     
     public class ReadDeps
     {
         internal readonly   string              selector;
         internal readonly   Type                entityType;
-        internal readonly   List<IDependency>   dependencies = new List<IDependency>();
+        internal readonly   HashSet<Dependency> dependencies = new HashSet<Dependency>();
         
         internal ReadDeps(string selector, Type entityType) {
             this.selector = selector;

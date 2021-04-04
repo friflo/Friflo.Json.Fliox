@@ -189,8 +189,8 @@ namespace Friflo.Json.EntityGraph
                         container = depsById.entityType.Name,
                         ids = new List<string>() 
                     };
-                    foreach (IDependency dep in depsById.dependencies) {
-                        readDep.ids.Add(dep.Id);
+                    foreach (Dependency dep in depsById.dependencies) {
+                        readDep.ids.Add(dep.id);
                     }
                     dependencies.Add(readDep);
                 }
