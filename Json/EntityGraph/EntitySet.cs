@@ -38,6 +38,9 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
+        internal readonly   Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
+
+        
         public EntitySet(EntityStore store) {
             this.store = store;
             type = typeof(T);
@@ -102,7 +105,7 @@ namespace Friflo.Json.EntityGraph
             var peer = GetPeerById(id);
             read = peer.read;
             if (read == null) {
-                peer.read = read = new Read<T>(peer.entity.id);
+                peer.read = read = new Read<T>(peer.entity.id, this);
             }
             reads.Add(id, read);
             return read;
@@ -176,11 +179,27 @@ namespace Friflo.Json.EntityGraph
             // --- ReadEntities
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
+
+                var dependencies = new List<ReadDependency>();
+                foreach (var depPair in readDeps) {
+                    ReadDeps depsById = depPair.Value;
+                    ReadDependency readDep = new ReadDependency {
+                        refPath = depsById.selector,
+                        container = depsById.entityType.Name,
+                        ids = new List<string>() 
+                    };
+                    foreach (IDependency dep in depsById.dependencies) {
+                        readDep.ids.Add(dep.Id);
+                    }
+                    dependencies.Add(readDep);
+                }
                 var req = new ReadEntities {
                     container = container.name,
-                    ids = ids
+                    ids = ids,
+                    dependencies = dependencies
                 };
                 commands.Add(req);
+                readDeps.Clear();
                 reads.Clear();
             }
             // --- PatchEntities

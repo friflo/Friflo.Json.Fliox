@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -18,9 +19,13 @@ namespace Friflo.Json.EntityGraph.Database
     /// </summary>
     public class SyncContext : IDisposable
     {
-        public readonly  JsonPatcher     jsonPatcher = new JsonPatcher();
+        public readonly  JsonPatcher    jsonPatcher = new JsonPatcher();
+        public readonly  JsonPath       jsonPath    = new JsonPath();
+        public readonly  JsonMapper     jsonMapper  = new JsonMapper();
 
         public void Dispose() {
+            jsonMapper.Dispose();
+            jsonPath.Dispose();
             jsonPatcher.Dispose();
         }
     }

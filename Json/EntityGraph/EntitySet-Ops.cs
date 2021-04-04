@@ -9,12 +9,14 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------------- CRUD -----------------------------------------
     public class Read<T> where T : Entity
     {
-        private  readonly   string id;
-        internal            T      result;
-        internal            bool   synced;
+        private  readonly   string          id;
+        internal            T               result;
+        internal            bool            synced;
+        private  readonly   EntitySet<T>    set;
 
-        internal Read(string id) {
+        internal Read(string id, EntitySet<T> set) {
             this.id = id;
+            this.set = set;
         }
             
         public T Result {
@@ -23,6 +25,17 @@ namespace Friflo.Json.EntityGraph
                     return result;
                 throw new InvalidOperationException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
             }
+        }
+        
+        // lab - prototype API
+        public Read<TValue> Dep<TValue>(string selector) where TValue : Entity {
+            if (!set.readDeps.TryGetValue(selector, out ReadDeps depsById)) {
+                depsById = new ReadDeps(selector, typeof(TValue));
+                set.readDeps.Add(selector, depsById);
+            }
+            var dependency = new Dependency<TValue>(id);
+            depsById.dependencies.Add(dependency);
+            return default;
         }
 
         // lab - expression API
@@ -64,6 +77,36 @@ namespace Friflo.Json.EntityGraph
         }
 
         // public T Result  => entity;
+    }
+
+    public interface IDependency
+    {
+        string Id { get; }
+    }
+    
+    public class Dependency<T> : IDependency where T : Entity
+    {
+        private readonly    string          id;
+        // private readonly    EntitySet<T>    set;
+        public              string          Id => id;
+        
+        internal Dependency(string id) {
+            this.id = id;
+            // this.set = set;
+        }
+
+    }
+    
+    public class ReadDeps
+    {
+        internal readonly   string              selector;
+        internal readonly   Type                entityType;
+        internal readonly   List<IDependency>   dependencies = new List<IDependency>();
+        
+        internal ReadDeps(string selector, Type entityType) {
+            this.selector = selector;
+            this.entityType = entityType;
+        }
     }
 
     // ------------------------------------- PeerEntity<> -------------------------------------

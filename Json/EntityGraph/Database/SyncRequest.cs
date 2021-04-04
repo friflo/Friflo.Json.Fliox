@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Graph;
+using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -79,9 +80,9 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ ReadEntities
     public class ReadEntities : DatabaseCommand
     {
-        public  string              container;
-        public  List<string>        ids;
-        public  List<Dependency>    dependencies;                  
+        public  string                  container;
+        public  List<string>            ids;
+        public  List<ReadDependency>    dependencies;                  
         
         public override CommandType CommandType => CommandType.Read;
         public override string      ToString() => "container: " + container;
@@ -89,6 +90,19 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
+            
+            // todo move as method to EntityContainer
+            var jsonPath    = entityContainer.SyncContext.jsonPath;
+            var jsonMapper  = entityContainer.SyncContext.jsonMapper;
+            foreach (var dependency in dependencies) {
+                var depContainer = database.GetContainer(dependency.container);
+                foreach (var entityPair in entities) {
+                    JsonValue entityValue = entityPair.value;
+                    var depIdsJson = jsonPath.Select(entityValue.json, dependency.refPath);
+                    // var depIds = jsonMapper.Read <List<string>>(depIdsJson);
+                    // depContainer.ReadEntities(depIds);
+                }
+            }
             var result = new ReadEntitiesResult {
                 entities = entities
             };
@@ -96,12 +110,13 @@ namespace Friflo.Json.EntityGraph.Database
         }
     }
     
-    public class Dependency
+    public class ReadDependency
     {
-        public  string      container;
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These dependent entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string      refPath; // e.g. "items[*].article"
+        public  string          refPath; // e.g. ".items[*].article"
+        public  List<string>    ids;
+        public  string          container;
     }
 
     public class ReadEntitiesResult : CommandResult
