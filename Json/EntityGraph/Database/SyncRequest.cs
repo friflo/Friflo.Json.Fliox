@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper;
@@ -90,31 +89,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
-            
-            // todo move as method to EntityContainer
-            var jsonPath    = entityContainer.SyncContext.jsonPath;
-            var jsonMapper  = entityContainer.SyncContext.jsonMapper;
-            var dependencyResults = new List<ReadDependencyResult>();
-            foreach (var dependency in dependencies) {
-                var depContainer = database.GetContainer(dependency.container);
-                var dependencyResult = new ReadDependencyResult {
-                    refPath     = dependency.refPath,
-                    container   = dependency.container,
-                    entities    = new List<KeyValue>()
-                };
-                foreach (var id in dependency.ids) {
-                    KeyValue depEntity = entities.Find(e => e.key == id);
-                    if (depEntity == null) {
-                        throw new InvalidOperationException($"expect entity dependency available: {id}");
-                    }
-                    // todo call Select() only once with multiple selectors 
-                    var depIdsJson = jsonPath.Select(depEntity.value.json, dependency.refPath);
-                    var depIds = jsonMapper.Read <List<string>>(depIdsJson);
-                    var depEntities = depContainer.ReadEntities(depIds);
-                    dependencyResult.entities = depEntities.ToList();
-                }
-                dependencyResults.Add(dependencyResult);
-            }
+            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities);
             var result = new ReadEntitiesResult {
                 entities = entities,
                 dependencies = dependencyResults

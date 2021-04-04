@@ -54,6 +54,7 @@ namespace Friflo.Json.EntityGraph.Database
     public abstract class EntityContainer : IDisposable
     {
         public  readonly    string          name;
+        private readonly    EntityDatabase  database;
 
         public virtual      bool            Pretty      => false;
         public virtual      SyncContext     SyncContext => null;
@@ -62,7 +63,7 @@ namespace Friflo.Json.EntityGraph.Database
         protected EntityContainer(string name, EntityDatabase database) {
             this.name = name;
             database.AddContainer(this);
-            // this.database = database;
+            this.database = database;
         }
         
         public virtual void Dispose() { }
@@ -97,6 +98,33 @@ namespace Friflo.Json.EntityGraph.Database
             }
             // Write patched entities back
             CreateEntities(entities); // should be UpdateEntities
+        }
+
+        public List<ReadDependencyResult> ReadDependencies(List<ReadDependency> dependencies, List<KeyValue> entities) {
+            var jsonPath    = SyncContext.jsonPath;
+            var jsonMapper  = SyncContext.jsonMapper;
+            var dependencyResults = new List<ReadDependencyResult>();
+            foreach (var dependency in dependencies) {
+                var depContainer = database.GetContainer(dependency.container);
+                var dependencyResult = new ReadDependencyResult {
+                    refPath     = dependency.refPath,
+                    container   = dependency.container,
+                    entities    = new List<KeyValue>()
+                };
+                foreach (var id in dependency.ids) {
+                    KeyValue depEntity = entities.Find(e => e.key == id);
+                    if (depEntity == null) {
+                        throw new InvalidOperationException($"expect entity dependency available: {id}");
+                    }
+                    // todo call Select() only once with multiple selectors 
+                    var depIdsJson = jsonPath.Select(depEntity.value.json, dependency.refPath);
+                    var depIds = jsonMapper.Read <List<string>>(depIdsJson);
+                    var depEntities = depContainer.ReadEntities(depIds);
+                    dependencyResult.entities = depEntities.ToList();
+                }
+                dependencyResults.Add(dependencyResult);
+            }
+            return dependencyResults;
         }
 
         // ---

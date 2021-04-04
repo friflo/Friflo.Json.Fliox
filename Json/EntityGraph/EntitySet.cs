@@ -267,7 +267,7 @@ namespace Friflo.Json.EntityGraph
             for (int o = 0; o < result.entities.Count; o++) {
                 var keyValue = result.entities[o];
                 var peer = GetPeerById(keyValue.key);
-                var entity = jsonMapper.ReadTo<T>(keyValue.value.json, peer.entity);
+                jsonMapper.ReadTo(keyValue.value.json, peer.entity);
                 peer.assigned = true;
             }
         }
