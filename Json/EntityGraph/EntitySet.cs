@@ -18,7 +18,7 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result);
+        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result, ReadDeps deps);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
@@ -39,7 +39,9 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
-        internal readonly   Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
+        internal            Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
+        internal            Dictionary<string, ReadDeps>        syncReadDeps;
+
 
         
         public EntitySet(EntityStore store) {
@@ -189,8 +191,8 @@ namespace Friflo.Json.EntityGraph
                         container = depsById.entityType.Name,
                         ids = new List<string>() 
                     };
-                    foreach (Dependency dep in depsById.dependencies) {
-                        readDep.ids.Add(dep.id);
+                    foreach (var dep in depsById.dependencies) {
+                        readDep.ids.Add(dep.Key);
                     }
                     dependencies.Add(readDep);
                 }
@@ -200,7 +202,8 @@ namespace Friflo.Json.EntityGraph
                     dependencies = dependencies
                 };
                 commands.Add(req);
-                readDeps.Clear();
+                syncReadDeps = readDeps;
+                readDeps = new Dictionary<string, ReadDeps>();
                 reads.Clear();
             }
             // --- PatchEntities
@@ -257,16 +260,22 @@ namespace Friflo.Json.EntityGraph
                 peer.read = null;
             }
             for (int n = 0; n < result.dependencies.Count; n++) {
-                ReadDependencyResult dependency = result.dependencies[n];
-                var depContainer = store.intern.setByName[dependency.container];
-                depContainer.ReadDependencyResult(null, dependency);
+                ReadDependency          dependency = command.dependencies[n];
+                ReadDependencyResult    depResult  = result.dependencies[n];
+                var depContainer = store.intern.setByName[depResult.container];
+                var deps = syncReadDeps[depResult.refPath];
+                depContainer.ReadDependencyResult(dependency, depResult, deps);
             }
         }
 
-        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result) {
+        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, ReadDeps deps) {
             for (int o = 0; o < result.entities.Count; o++) {
                 var keyValue = result.entities[o];
-                var peer = GetPeerById(keyValue.key);
+                var id = keyValue.key;
+                var peer = GetPeerById(id);
+                // var dep = deps.dependencies[id];
+                // var depTyped = (Dependency<T>)dep;
+                
                 jsonMapper.ReadTo(keyValue.value.json, peer.entity);
                 peer.assigned = true;
             }

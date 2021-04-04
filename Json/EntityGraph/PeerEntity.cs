@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -15,7 +14,6 @@ namespace Friflo.Json.EntityGraph
         internal            bool                            assigned;
         internal            Read<T>                         read;
         internal            Create<T>                       create;
-        internal            Dictionary<string, ReadDeps>    readDeps = new Dictionary<string, ReadDeps>();
 
         internal PeerEntity(T entity) {
             this.entity = entity;

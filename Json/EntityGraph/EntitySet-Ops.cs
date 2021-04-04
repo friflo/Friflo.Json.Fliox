@@ -35,11 +35,12 @@ namespace Friflo.Json.EntityGraph
                 readDeps = new ReadDeps(selector, typeof(TValue));
                 set.readDeps.Add(selector, readDeps);
             }
-            var newDependency = new Dependency<TValue>(id);
-            if (readDeps.dependencies.TryGetValue(newDependency, out Dependency dependency)) {
+            Dependency<TValue> newDependency;
+            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency)) {
                 newDependency = (Dependency<TValue>) dependency;
             } else {
-                readDeps.dependencies.Add(newDependency);
+                newDependency = new Dependency<TValue>(id);
+                readDeps.dependencies.Add(id, newDependency);
             }
             return newDependency;
         }
@@ -118,9 +119,9 @@ namespace Friflo.Json.EntityGraph
     
     internal class ReadDeps
     {
-        internal readonly   string              selector;
-        internal readonly   Type                entityType;
-        internal readonly   HashSet<Dependency> dependencies = new HashSet<Dependency>();
+        internal readonly   string                          selector;
+        internal readonly   Type                            entityType;
+        internal readonly   Dictionary<string, Dependency>  dependencies = new Dictionary<string, Dependency>();
         
         internal ReadDeps(string selector, Type entityType) {
             this.selector = selector;
