@@ -162,16 +162,15 @@ namespace Friflo.Json.EntityGraph
         internal override void AddCommands(List<DatabaseCommand> commands) {
             // --- CreateEntities
             if (creates.Count > 0) {
-                var entries = new List<KeyValue>();
+                var entries = new Dictionary<string, EntityValue>();
                 foreach (var createPair in creates) {
                     Create<T> create = createPair.Value;
                     var entity = create.Entity;
                     var json = jsonMapper.Write(entity);
-                    var entry = new KeyValue {
-                        key = entity.id,
+                    var entry = new EntityValue {
                         value = new JsonValue{json = json }
                     };
-                    entries.Add(entry);
+                    entries.Add(entity.id, entry);
                 }
                 var req = new CreateEntities {
                     container = container.name,
@@ -222,9 +221,9 @@ namespace Friflo.Json.EntityGraph
         internal override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
             var entities = command.entities;
             foreach (var entry in entities) {
-                var peer = GetPeerById(entry.key);
+                var peer = GetPeerById(entry.Key);
                 peer.create = null;
-                peer.patchReference = jsonMapper.Read<T>(entry.value.json);
+                peer.patchReference = jsonMapper.Read<T>(entry.Value.value.json);
             }
         }
         
@@ -252,10 +251,10 @@ namespace Friflo.Json.EntityGraph
 
         internal override void SyncDependencies(SyncDependencies syncDependencies) {
             foreach (var entity in syncDependencies.entities) {
-                var id = entity.key;
+                var id = entity.Key;
                 var peer = GetPeerById(id);
                 var read = peer.read;
-                var json = entity.value.json;
+                var json = entity.Value.value.json;
                 if (json != null && "null" != json) {
                     jsonMapper.ReadTo(json, peer.entity);
                     peer.patchReference = jsonMapper.Read<T>(json);

@@ -61,7 +61,7 @@ namespace Friflo.Json.EntityGraph.Database
                     HttpListenerRequest  req  = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
-                    string reqMsg = $@"request {++requestCount} {req.Url.ToString()} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
+                    string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
                     Log(reqMsg);
 
                     // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
@@ -164,15 +164,15 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override void CreateEntities(ICollection<KeyValue> entities) {
+        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
             local.CreateEntities(entities);
         }
 
-        public override void UpdateEntities(ICollection<KeyValue> entities) {
+        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
             local.UpdateEntities(entities);
         }
 
-        public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
+        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
             var result = local.ReadEntities(ids);
             return result;
         }

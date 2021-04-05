@@ -48,20 +48,20 @@ namespace Friflo.Json.EntityGraph.Database
             return folder + key + ".json";
         }
         
-        public override void CreateEntities(ICollection<KeyValue> entities) {
+        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
             foreach (var entity in entities) {
-                var path = FilePath(entity.key);
-                WriteText(path, entity.value.json);
+                var path = FilePath(entity.Key);
+                WriteText(path, entity.Value.value.json);
                 // await File.WriteAllTextAsync(path, entity.value);
             }
         }
 
-        public override void UpdateEntities(ICollection<KeyValue> entities) {
+        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
             throw new NotImplementedException();
         }
 
-        public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
-            var result = new List<KeyValue>();
+        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
+            var result = new Dictionary<string,EntityValue>();
             foreach (var id in ids) {
                 var filePath = FilePath(id);
                 string payload = null;
@@ -69,11 +69,10 @@ namespace Friflo.Json.EntityGraph.Database
                     payload = ReadText(filePath);
                     // payload = await File.ReadAllTextAsync(filePath);
                 }
-                var entry = new KeyValue {
-                    key = id,
+                var entry = new EntityValue {
                     value = new JsonValue{ json = payload }
                 };
-                result.Add(entry);
+                result.Add(id, entry);
             }
             return result;
         }

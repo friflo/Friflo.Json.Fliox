@@ -47,11 +47,10 @@ namespace Friflo.Json.EntityGraph.Database
         }
     }
     
-    public class KeyValue {
-        public string       key;
+    public class EntityValue {
         public JsonValue    value;
-
-        public override string ToString() => key ?? "null";
+        
+        // todo add constructor
     }
     
     public abstract class EntityContainer : IDisposable
@@ -84,7 +83,7 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual void PatchEntities(IList<EntityPatch> entityPatches) {
             var ids = entityPatches.Select(patch => patch.id).ToList();
             // Read entities to be patched
-            var entities = ReadEntities(ids).ToList();
+            var entities = ReadEntities(ids);
             if (entities.Count != ids.Count)
                 throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
             
@@ -94,19 +93,19 @@ namespace Friflo.Json.EntityGraph.Database
             foreach (var entity in entities) {
                 var expectedId = ids[n];
                 var patch = entityPatches[n++];
-                if (entity.key != expectedId) {
-                    throw new InvalidOperationException($"PatchEntities: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entity.key}");
+                if (entity.Key != expectedId) {
+                    throw new InvalidOperationException($"PatchEntities: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entity.Key}");
                 }
-                entity.value.json = patcher.ApplyPatches(entity.value.json, patch.patches, Pretty);
+                entity.Value.value.json = patcher.ApplyPatches(entity.Value.value.json, patch.patches, Pretty);
             }
             // Write patched entities back
             CreateEntities(entities); // should be UpdateEntities
         }
 
         public List<ReadDependencyResult> ReadDependencies(
-                List<ReadDependency>    dependencies,
-                List<KeyValue>          entities,
-                SyncResponse            syncResponse)
+                List<ReadDependency>            dependencies,
+                Dictionary<string, EntityValue> entities,
+                SyncResponse                    syncResponse)
         {
             var jsonPath    = SyncContext.jsonPath;
             var jsonMapper  = SyncContext.jsonMapper;
@@ -119,7 +118,7 @@ namespace Friflo.Json.EntityGraph.Database
                     ids         = new List<string>()
                 };
                 foreach (var id in dependency.ids) {
-                    KeyValue depEntity = entities.Find(e => e.key == id);
+                    EntityValue depEntity = entities[id];
                     if (depEntity == null) {
                         throw new InvalidOperationException($"expect entity dependency available: {id}");
                     }
@@ -131,7 +130,7 @@ namespace Friflo.Json.EntityGraph.Database
                     // add dependencies to syncDependencies
                     var depEntities = depContainer.ReadEntities(depIds);
                     var syncDep = syncResponse.GetSyncDependencies(dependency.container);
-                    syncDep.entities.AddRange(depEntities);
+                    syncDep.AddEntities(depEntities);
                 }
                 dependencyResults.Add(dependencyResult);
             }
@@ -139,9 +138,9 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         // ---
-        public abstract void                      CreateEntities  (ICollection<KeyValue> entities);
-        public abstract void                      UpdateEntities  (ICollection<KeyValue> entities);
-        public abstract ICollection<KeyValue>     ReadEntities    (ICollection<string> ids);
+        public abstract void                            CreateEntities(Dictionary<string, EntityValue> entities);
+        public abstract void                            UpdateEntities(Dictionary<string, EntityValue> entities);
+        public abstract Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids);
 
     }
 }

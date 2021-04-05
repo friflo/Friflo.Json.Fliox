@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Graph;
 
@@ -23,7 +22,7 @@ namespace Friflo.Json.EntityGraph.Database
                 return syncDep;
             syncDep = new SyncDependencies {
                 container = container,
-                entities = new List<KeyValue>()
+                entities = new Dictionary<string,EntityValue>()
             };
             syncDependencies.Add(container, syncDep);
             return syncDep;
@@ -62,8 +61,8 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ CreateEntities
     public class CreateEntities : DatabaseCommand
     {
-        public  string              container;
-        public  List<KeyValue>      entities;
+        public  string                          container;
+        public  Dictionary<string, EntityValue> entities;
 
         public override CommandType CommandType => CommandType.Create;
         public override string      ToString() => "container: " + container;
@@ -74,7 +73,7 @@ namespace Friflo.Json.EntityGraph.Database
             if (entityContainer.Pretty) {
                 var patcher = entityContainer.SyncContext.jsonPatcher;
                 foreach (var entity in entities) {
-                    entity.value.json = patcher.Copy(entity.value.json, true);
+                    entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
                 }
             }
             entityContainer.CreateEntities(entities);
@@ -90,8 +89,14 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ SyncDependencies
     public class SyncDependencies : CommandResult
     {
-        public  string              container; // only for debugging
-        public  List<KeyValue>      entities;
+        public  string                          container; // only for debugging
+        public  Dictionary<string, EntityValue> entities;
+
+        public void AddEntities(Dictionary<string, EntityValue> add) {
+            foreach (var entity in add) {
+                entities.TryAdd(entity.Key, entity.Value);
+            }
+        }
 
         public override CommandType CommandType => CommandType.Read;
     }
@@ -108,9 +113,9 @@ namespace Friflo.Json.EntityGraph.Database
         
         public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            var entities = entityContainer.ReadEntities(ids).ToList();
+            var entities = entityContainer.ReadEntities(ids);
             var syncDeps = response.GetSyncDependencies(container);
-            syncDeps.entities.AddRange(entities);
+            syncDeps.AddEntities(entities);
             var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
             var result = new ReadEntitiesResult {
                 dependencies    = dependencyResults

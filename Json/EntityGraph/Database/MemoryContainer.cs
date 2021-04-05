@@ -37,29 +37,28 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override void CreateEntities(ICollection<KeyValue> entities) {
+        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
             foreach (var entity in entities) {
-                payloads[entity.key] = entity.value.json;
+                payloads[entity.Key] = entity.Value.value.json;
             }
         }
 
-        public override void UpdateEntities(ICollection<KeyValue> entities) {
+        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
             foreach (var entity in entities) {
-                if (!payloads.TryGetValue(entity.key, out string _))
-                    throw new InvalidOperationException($"Expect Entity with id {entity.key} in DatabaseContainer: {name}");
-                payloads[entity.key] = entity.value.json;
+                if (!payloads.TryGetValue(entity.Key, out string _))
+                    throw new InvalidOperationException($"Expect Entity with id {entity.Key} in DatabaseContainer: {name}");
+                payloads[entity.Key] = entity.Value.value.json;
             }
         }
 
-        public override ICollection<KeyValue> ReadEntities(ICollection<string> ids) {
-            var result = new List<KeyValue>();
+        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
+            var result = new Dictionary<string, EntityValue>();
             foreach (var id in ids) {
                 payloads.TryGetValue(id, out var payload);
-                var entry = new KeyValue {
-                    key     = id,
+                var entry = new EntityValue {
                     value   = new JsonValue{ json = payload }
                 };
-                result.Add(entry);
+                result.Add(id, entry);
             }
             return result;
         }
