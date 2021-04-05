@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
-            Dependency<Customer>                customer  = order1.Dep<Customer>(".customer");
+            Dependency<Customer>                customer    = order1.DependencyPath<Customer>(".customer");
             
             // lab - test dependency expressions
             Dependency<Customer>                customers = order1.Dependency(o => o.customer);
@@ -142,6 +142,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Entity.lastName);
+            
+            order1 =    store.orders.Read("order-1");
+            Dependencies<Article>               articleDeps = order1.DependenciesPath<Article>(".items[*].article");
+            await store.Sync();
+            
+
             
             var article1            =  store.articles.Read("article-1");
             var article1Redundant   =  store.articles.Read("article-1");

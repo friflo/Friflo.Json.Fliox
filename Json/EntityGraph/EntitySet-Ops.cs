@@ -30,10 +30,17 @@ namespace Friflo.Json.EntityGraph
         }
         
         // lab - prototype API
-        public Dependency<TValue> Dep<TValue>(string selector) where TValue : Entity {
+        public Dependency<TValue> DependencyPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             Dependency<TValue> newDependency = new Dependency<TValue>(id);
-            readDeps.dependencies.Add(newDependency);
+            readDeps.dependencies.Add(id, newDependency);
+            return newDependency;
+        }
+        
+        public Dependencies<TValue> DependenciesPath<TValue>(string selector) where TValue : Entity {
+            var readDeps = set.GetReadDeps<TValue>(selector);
+            Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
+            readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
 
@@ -85,29 +92,37 @@ namespace Friflo.Json.EntityGraph
     public class Dependency
     {
         internal readonly   string      parentId;
-        internal            string      id;
+        internal readonly   bool        singleEntity;
 
-        public              string      Id => id ?? throw new InvalidOperationException("Dependency not synced"); 
-
-        internal Dependency(string parentId) {
-            this.parentId = parentId;
+        internal Dependency(string parentId, bool singleEntity) {
+            this.parentId       = parentId;
+            this.singleEntity   = singleEntity;
         }
     }
     
     public class Dependency<T> : Dependency where T : Entity
     {
+        internal            string      id;
         internal            T           entity;
-        
-        public              T           Entity => entity ?? throw new InvalidOperationException("Dependency not synced"); 
 
-        internal Dependency(string parentId) : base (parentId) { }
+        public              string      Id      => id       ?? throw new InvalidOperationException("Dependency not synced"); 
+        public              T           Entity  => entity   ?? throw new InvalidOperationException("Dependency not synced"); 
+
+        internal Dependency(string parentId) : base (parentId, true) { }
+    }
+    
+    public class Dependencies<T> : Dependency where T : Entity
+    {
+        public readonly     List<Dependency<T>>     dependencies = new List<Dependency<T>>();
+
+        internal Dependencies(string parentId) : base (parentId, false) { }
     }
     
     internal class ReadDeps
     {
-        internal readonly   string              selector;
-        internal readonly   Type                entityType;
-        internal readonly   List<Dependency>    dependencies = new List<Dependency>();
+        internal readonly   string                          selector;
+        internal readonly   Type                            entityType;
+        internal readonly   Dictionary<string, Dependency>  dependencies = new Dictionary<string, Dependency>();
         
         internal ReadDeps(string selector, Type entityType) {
             this.selector = selector;

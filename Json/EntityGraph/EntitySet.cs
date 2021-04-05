@@ -17,7 +17,7 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result, ReadDeps deps);
+        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
@@ -197,7 +197,7 @@ namespace Friflo.Json.EntityGraph
                         ids = new List<string>() 
                     };
                     foreach (var dep in depsById.dependencies) {
-                        readDep.ids.Add(dep.parentId);
+                        readDep.ids.Add(dep.Key);
                     }
                     dependencies.Add(readDep);
                 }
@@ -239,18 +239,34 @@ namespace Friflo.Json.EntityGraph
                 ReadDependencyResult    depResult  = result.dependencies[n];
                 var depContainer = store.intern.setByName[depResult.container];
                 ReadDeps deps = syncReadDeps[dependency.refPath];
-                depContainer.ReadDependencyResult(dependency, depResult, deps);
+                depContainer.ReadDependencyResult(dependency, depResult, command.ids, deps);
             }
             syncReadDeps = null;
         }
 
-        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, ReadDeps deps) {
-            for (int o = 0; o < result.ids.Count; o++) {
-                var id = result.ids[o];
-                var peer = GetPeerById(id);
-                var dependency = (Dependency<T>)deps.dependencies[o];
-                dependency.id = id;
-                dependency.entity = peer.entity;
+        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps) {
+            foreach (var parentId in parentIds) {
+                var dependency = deps.dependencies[parentId];
+                if (dependency.singleEntity) {
+                    var singleDep = (Dependency<T>) dependency;
+                    if (result.ids.Count != 1)
+                        throw new InvalidOperationException("Expect exactly one dependency");
+                    var id = result.ids[0];
+                    var peer = GetPeerById(id);
+                    singleDep.id = id;
+                    singleDep.entity = peer.entity;
+                } else {
+                    var multiDep = (Dependencies<T>) dependency;
+                    for (int o = 0; o < result.ids.Count; o++) {
+                        var id = result.ids[o];
+                        var peer = GetPeerById(id);
+                        var dep = new Dependency<T>(dependency.parentId) {
+                            id = id,
+                            entity = peer.entity
+                        };
+                        multiDep.dependencies.Add(dep);
+                    }
+                }
             }
         }
 
