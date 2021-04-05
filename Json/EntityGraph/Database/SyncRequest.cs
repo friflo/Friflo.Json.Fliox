@@ -7,6 +7,7 @@ using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Database
 {
+    // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest
     {
         public List<DatabaseCommand> commands;
@@ -15,17 +16,30 @@ namespace Friflo.Json.EntityGraph.Database
     public class SyncResponse
     {
         public  List<CommandResult>                     results;
-        public  Dictionary<string, SyncDependencies>    syncDependencies;
+        public  Dictionary<string, ContainerEntities>   containerResults;
 
-        public SyncDependencies GetSyncDependencies(string container) {
-            if (syncDependencies.TryGetValue(container, out SyncDependencies syncDep))
-                return syncDep;
-            syncDep = new SyncDependencies {
+        public ContainerEntities GetContainerResults(string container) {
+            if (containerResults.TryGetValue(container, out ContainerEntities result))
+                return result;
+            result = new ContainerEntities {
                 container = container,
                 entities = new Dictionary<string,EntityValue>()
             };
-            syncDependencies.Add(container, syncDep);
-            return syncDep;
+            containerResults.Add(container, result);
+            return result;
+        }
+    }
+    
+    // ------ ContainerEntities
+    public class ContainerEntities
+    {
+        public  string                          container; // only for debugging
+        public  Dictionary<string, EntityValue> entities;
+
+        public void AddEntities(Dictionary<string, EntityValue> add) {
+            foreach (var entity in add) {
+                entities.TryAdd(entity.Key, entity.Value);
+            }
         }
     }
     
@@ -86,21 +100,6 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandType CommandType => CommandType.Create;
     }
 
-    // ------ SyncDependencies
-    public class SyncDependencies : CommandResult
-    {
-        public  string                          container; // only for debugging
-        public  Dictionary<string, EntityValue> entities;
-
-        public void AddEntities(Dictionary<string, EntityValue> add) {
-            foreach (var entity in add) {
-                entities.TryAdd(entity.Key, entity.Value);
-            }
-        }
-
-        public override CommandType CommandType => CommandType.Read;
-    }
-    
     // ------ ReadEntities
     public class ReadEntities : DatabaseCommand
     {
@@ -114,8 +113,8 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids);
-            var syncDeps = response.GetSyncDependencies(container);
-            syncDeps.AddEntities(entities);
+            var containerResults = response.GetContainerResults(container);
+            containerResults.AddEntities(entities);
             var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
             var result = new ReadEntitiesResult {
                 dependencies    = dependencyResults
@@ -124,7 +123,7 @@ namespace Friflo.Json.EntityGraph.Database
         }
     }
     
-    /// The data of requested entities are added to <see cref="SyncDependencies.entities"/> 
+    /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public class ReadEntitiesResult : CommandResult
     {
         public  List<ReadDependencyResult>  dependencies;

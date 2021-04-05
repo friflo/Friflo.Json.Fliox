@@ -8,6 +8,7 @@ using Friflo.Json.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
+    // ----------------------------------------- EntityDatabase -----------------------------------------
     public abstract class EntityDatabase : IDisposable
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -37,7 +38,7 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 results             = new List<CommandResult>(),
-                syncDependencies    = new Dictionary<string, SyncDependencies>()
+                containerResults    = new Dictionary<string, ContainerEntities>()
             };
             foreach (var command in syncRequest.commands) {
                 var result = command.Execute(this, response);
@@ -57,6 +58,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
     }
     
+    
+    // ----------------------------------------- EntityContainer -----------------------------------------
     public abstract class EntityContainer : IDisposable
     {
         public  readonly    string          name;
@@ -76,7 +79,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public abstract void                            CreateEntities(Dictionary<string, EntityValue> entities);
         public abstract void                            UpdateEntities(Dictionary<string, EntityValue> entities);
-        public abstract Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids);
+        public abstract Dictionary<string, EntityValue> ReadEntities  (ICollection<string> ids);
 
         /// <summary>
         /// Default implementation to apply patches to entities.
@@ -136,8 +139,8 @@ namespace Friflo.Json.EntityGraph.Database
                     
                     // add dependencies to syncDependencies
                     var depEntities = depContainer.ReadEntities(depIds);
-                    var syncDep = syncResponse.GetSyncDependencies(dependency.container);
-                    syncDep.AddEntities(depEntities);
+                    var containerResults = syncResponse.GetContainerResults(dependency.container);
+                    containerResults.AddEntities(depEntities);
                 }
                 dependencyResults.Add(dependencyResult);
             }

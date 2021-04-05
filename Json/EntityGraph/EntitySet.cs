@@ -21,7 +21,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
-        internal  abstract  void            SyncDependencies      (SyncDependencies syncDependencies);
+        internal  abstract  void            SyncDependencies      (ContainerEntities containerResults);
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -254,8 +254,8 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal override void SyncDependencies(SyncDependencies syncDependencies) {
-            foreach (var entity in syncDependencies.entities) {
+        internal override void SyncDependencies(ContainerEntities containerResults) {
+            foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var peer = GetPeerById(id);
                 var read = peer.read;
