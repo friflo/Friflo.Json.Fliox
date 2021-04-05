@@ -139,8 +139,8 @@ namespace Friflo.Json.EntityGraph.Database
                     
                     // add dependencies to syncDependencies
                     var depEntities = depContainer.ReadEntities(depIds);
-                    var containerResults = syncResponse.GetContainerResults(dependency.container);
-                    containerResults.AddEntities(depEntities);
+                    var containerResult = syncResponse.GetContainerResult(dependency.container);
+                    containerResult.AddEntities(depEntities);
                 }
                 dependencyResults.Add(dependencyResult);
             }

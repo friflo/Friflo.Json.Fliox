@@ -18,7 +18,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<CommandResult>                     results;
         public  Dictionary<string, ContainerEntities>   containerResults;
 
-        public ContainerEntities GetContainerResults(string container) {
+        public ContainerEntities GetContainerResult(string container) {
             if (containerResults.TryGetValue(container, out ContainerEntities result))
                 return result;
             result = new ContainerEntities {
@@ -113,8 +113,8 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids);
-            var containerResults = response.GetContainerResults(container);
-            containerResults.AddEntities(entities);
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(entities);
             var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
             var result = new ReadEntitiesResult {
                 dependencies    = dependencyResults
