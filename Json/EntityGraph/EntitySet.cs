@@ -264,7 +264,7 @@ namespace Friflo.Json.EntityGraph
                             id = id,
                             entity = peer.entity
                         };
-                        multiDep.dependencies.Add(dep);
+                        multiDep.results.Add(dep);
                     }
                 }
             }

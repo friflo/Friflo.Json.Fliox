@@ -146,7 +146,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order1 =    store.orders.Read("order-1");
             Dependencies<Article>               articleDeps = order1.DependenciesPath<Article>(".items[*].article");
             await store.Sync();
-            
+            AreEqual("article-1",       articleDeps[0].Id);
+            AreEqual("Changed name",    articleDeps[0].Entity.name);
+            AreEqual("article-2",       articleDeps[1].Id);
+            AreEqual("Smartphone",      articleDeps[1].Entity.name);
+            AreEqual("article-1",       articleDeps[2].Id);
+            AreEqual("Changed name",    articleDeps[2].Entity.name);
+
 
             
             var article1            =  store.articles.Read("article-1");

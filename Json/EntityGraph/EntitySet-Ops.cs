@@ -113,7 +113,9 @@ namespace Friflo.Json.EntityGraph
     
     public class Dependencies<T> : Dependency where T : Entity
     {
-        public readonly     List<Dependency<T>>     dependencies = new List<Dependency<T>>();
+        public readonly     List<Dependency<T>>     results = new List<Dependency<T>>();
+
+        public              Dependency<T>           this[int index] =>  results[index];
 
         internal Dependencies(string parentId) : base (parentId, false) { }
     }
