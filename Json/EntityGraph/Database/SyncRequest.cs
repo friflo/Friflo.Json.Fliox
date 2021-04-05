@@ -15,7 +15,8 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class SyncResponse
     {
-        public List<CommandResult> results;
+        public  List<CommandResult>         results;
+        public  List<SyncDependencies>      syncDependencies;
     }
     
     // ------------------------------ DatabaseCommand ------------------------------
@@ -26,7 +27,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     public abstract class DatabaseCommand
     {
-        public abstract CommandResult   Execute(EntityDatabase database);
+        public abstract CommandResult   Execute(EntityDatabase database, SyncResponse response);
         public abstract CommandType     CommandType { get; }
     }
     
@@ -56,7 +57,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandType CommandType => CommandType.Create;
         public override string      ToString() => "container: " + container;
 
-        public override CommandResult Execute(EntityDatabase database) {
+        public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
@@ -81,21 +82,29 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  string                  container;
         public  List<string>            ids;
-        public  List<ReadDependency>    dependencies;                  
+        public  List<ReadDependency>    dependencies;
         
         public override CommandType CommandType => CommandType.Read;
         public override string      ToString() => "container: " + container;
         
-        public override CommandResult Execute(EntityDatabase database) {
+        public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
-            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities);
+            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response.syncDependencies);
             var result = new ReadEntitiesResult {
-                entities = entities,
-                dependencies = dependencyResults
+                entities        = entities,
+                dependencies    = dependencyResults
             };
             return result; 
         }
+    }
+    
+    public class SyncDependencies : CommandResult
+    {
+        public  string              container;
+        public  List<KeyValue>      entities;
+
+        public override CommandType CommandType => CommandType.Read;
     }
 
     public class ReadEntitiesResult : CommandResult
@@ -119,7 +128,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class ReadDependencyResult
     {
         public  string          container;
-        public  List<KeyValue>  entities;
+        public  List<string>    ids;
     }
     
     // ------ PatchEntities
@@ -131,7 +140,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandType CommandType => CommandType.Patch;
         public override string      ToString() => "container: " + container;
         
-        public override CommandResult Execute(EntityDatabase database) {
+        public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             entityContainer.PatchEntities(entityPatches);
             return new PatchEntitiesResult(); 

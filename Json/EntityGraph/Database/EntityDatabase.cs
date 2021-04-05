@@ -35,9 +35,12 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
-            var response = new SyncResponse { results = new List<CommandResult>() };
+            var response = new SyncResponse {
+                results             = new List<CommandResult>(),
+                syncDependencies    = new List<SyncDependencies>()
+            };
             foreach (var command in syncRequest.commands) {
-                var result = command.Execute(this);
+                var result = command.Execute(this, response);
                 response.results.Add(result);
             }
             return response;
@@ -100,7 +103,11 @@ namespace Friflo.Json.EntityGraph.Database
             CreateEntities(entities); // should be UpdateEntities
         }
 
-        public List<ReadDependencyResult> ReadDependencies(List<ReadDependency> dependencies, List<KeyValue> entities) {
+        public List<ReadDependencyResult> ReadDependencies(
+                List<ReadDependency>    dependencies,
+                List<KeyValue>          entities,
+                List<SyncDependencies>  syncDependencies)
+        {
             var jsonPath    = SyncContext.jsonPath;
             var jsonMapper  = SyncContext.jsonMapper;
             var dependencyResults = new List<ReadDependencyResult>();
@@ -108,7 +115,7 @@ namespace Friflo.Json.EntityGraph.Database
                 var depContainer = database.GetContainer(dependency.container);
                 var dependencyResult = new ReadDependencyResult {
                     container   = dependency.container,
-                    entities    = new List<KeyValue>()
+                    ids         = new List<string>()
                 };
                 foreach (var id in dependency.ids) {
                     KeyValue depEntity = entities.Find(e => e.key == id);
@@ -118,8 +125,19 @@ namespace Friflo.Json.EntityGraph.Database
                     // todo call Select() only once with multiple selectors 
                     var depIdsJson = jsonPath.Select(depEntity.value.json, dependency.refPath);
                     var depIds = jsonMapper.Read <List<string>>(depIdsJson);
+                    dependencyResult.ids.AddRange(depIds);
+                    
+                    // add dependencies to syncDependencies
                     var depEntities = depContainer.ReadEntities(depIds);
-                    dependencyResult.entities = depEntities.ToList();
+                    SyncDependencies syncDep = syncDependencies.Find(sd => sd.container == dependency.container);
+                    if (syncDep == null) {
+                        syncDep = new SyncDependencies {
+                            container = dependency.container,
+                            entities = new List<KeyValue>()
+                        };
+                        syncDependencies.Add(syncDep);
+                    }
+                    syncDep.entities.AddRange(depEntities);
                 }
                 dependencyResults.Add(dependencyResult);
             }
