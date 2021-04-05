@@ -247,7 +247,7 @@ namespace Friflo.Json.EntityGraph
         internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps) {
             foreach (var parentId in parentIds) {
                 var dependency = deps.dependencies[parentId];
-                if (dependency.singleEntity) {
+                if (dependency.singleResult) {
                     var singleDep = (Dependency<T>) dependency;
                     if (result.ids.Count != 1)
                         throw new InvalidOperationException("Expect exactly one dependency");

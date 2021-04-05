@@ -30,14 +30,14 @@ namespace Friflo.Json.EntityGraph
         }
         
         // lab - prototype API
-        public Dependency<TValue> DependencyPath<TValue>(string selector) where TValue : Entity {
+        public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             Dependency<TValue> newDependency = new Dependency<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
         
-        public Dependencies<TValue> DependenciesPath<TValue>(string selector) where TValue : Entity {
+        public Dependencies<TValue> DependenciesByPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
@@ -92,11 +92,11 @@ namespace Friflo.Json.EntityGraph
     public class Dependency
     {
         internal readonly   string      parentId;
-        internal readonly   bool        singleEntity;
+        internal readonly   bool        singleResult;
 
-        internal Dependency(string parentId, bool singleEntity) {
+        internal Dependency(string parentId, bool singleResult) {
             this.parentId       = parentId;
-            this.singleEntity   = singleEntity;
+            this.singleResult   = singleResult;
         }
     }
     
