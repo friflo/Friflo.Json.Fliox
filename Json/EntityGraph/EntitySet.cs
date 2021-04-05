@@ -167,9 +167,7 @@ namespace Friflo.Json.EntityGraph
                     Create<T> create = createPair.Value;
                     var entity = create.Entity;
                     var json = jsonMapper.Write(entity);
-                    var entry = new EntityValue {
-                        value = new JsonValue{json = json }
-                    };
+                    var entry = new EntityValue(json);
                     entries.Add(entity.id, entry);
                 }
                 var req = new CreateEntities {

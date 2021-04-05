@@ -69,9 +69,7 @@ namespace Friflo.Json.EntityGraph.Database
                     payload = ReadText(filePath);
                     // payload = await File.ReadAllTextAsync(filePath);
                 }
-                var entry = new EntityValue {
-                    value = new JsonValue{ json = payload }
-                };
+                var entry = new EntityValue(payload);
                 result.Add(id, entry);
             }
             return result;

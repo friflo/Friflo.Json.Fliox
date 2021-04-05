@@ -55,9 +55,7 @@ namespace Friflo.Json.EntityGraph.Database
             var result = new Dictionary<string, EntityValue>();
             foreach (var id in ids) {
                 payloads.TryGetValue(id, out var payload);
-                var entry = new EntityValue {
-                    value   = new JsonValue{ json = payload }
-                };
+                var entry = new EntityValue(payload);
                 result.Add(id, entry);
             }
             return result;

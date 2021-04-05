@@ -49,8 +49,12 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class EntityValue {
         public JsonValue    value;
-        
-        // todo add constructor
+
+        public EntityValue() { } // required for TypeMapper
+
+        public EntityValue(string json) {
+            value.json = json;
+        }
     }
     
     public abstract class EntityContainer : IDisposable
@@ -109,7 +113,6 @@ namespace Friflo.Json.EntityGraph.Database
         {
             var jsonPath    = SyncContext.jsonPath;
             var jsonMapper  = SyncContext.jsonMapper;
-            var syncDependencies = syncResponse.syncDependencies;
             var dependencyResults = new List<ReadDependencyResult>();
             foreach (var dependency in dependencies) {
                 var depContainer = database.GetContainer(dependency.container);
