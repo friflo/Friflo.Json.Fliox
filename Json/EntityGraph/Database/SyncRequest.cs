@@ -17,6 +17,17 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  List<CommandResult>                     results;
         public  Dictionary<string, SyncDependencies>    syncDependencies;
+
+        public SyncDependencies GetSyncDependencies(string container) {
+            if (syncDependencies.TryGetValue(container, out SyncDependencies syncDep))
+                return syncDep;
+            syncDep = new SyncDependencies {
+                container = container,
+                entities = new List<KeyValue>()
+            };
+            syncDependencies.Add(container, syncDep);
+            return syncDep;
+        }
     }
     
     // ------------------------------ DatabaseCommand ------------------------------
@@ -75,7 +86,15 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public override CommandType CommandType => CommandType.Create;
     }
-    
+
+    // ------ SyncDependencies
+    public class SyncDependencies : CommandResult
+    {
+        public  string              container; // only for debugging
+        public  List<KeyValue>      entities;
+
+        public override CommandType CommandType => CommandType.Read;
+    }
     
     // ------ ReadEntities
     public class ReadEntities : DatabaseCommand
@@ -90,26 +109,19 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
+            var syncDeps = response.GetSyncDependencies(container);
+            syncDeps.entities.AddRange(entities);
             var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
             var result = new ReadEntitiesResult {
-                entities        = entities,
                 dependencies    = dependencyResults
             };
             return result; 
         }
     }
     
-    public class SyncDependencies : CommandResult
-    {
-        public  string              container; // only for debugging
-        public  List<KeyValue>      entities;
-
-        public override CommandType CommandType => CommandType.Read;
-    }
-
+    /// The data of requested entities are added to <see cref="SyncDependencies.entities"/> 
     public class ReadEntitiesResult : CommandResult
     {
-        public  List<KeyValue>              entities;
         public  List<ReadDependencyResult>  dependencies;
 
         public override CommandType CommandType => CommandType.Read;

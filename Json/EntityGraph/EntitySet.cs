@@ -230,36 +230,6 @@ namespace Friflo.Json.EntityGraph
         
         // --- ReadEntities
         internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
-            var entries = result.entities;
-            if (entries.Count != command.ids.Count)
-                throw new InvalidOperationException($"read command: Expect entities.Count of response matches request. expect: {command.ids.Count} got: {entries.Count}");
-                
-            for (int n = 0; n < entries.Count; n++) {
-                var entry = entries[n];
-                var expectedId = command.ids[n];
-                if (entry.key != expectedId)
-                    throw new InvalidOperationException($"read command: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entry.key}");
-                
-                var peer = GetPeerById(entry.key);
-                var read = peer.read;
-                var json = entry.value.json;
-                if (json != null && "null" != json) {
-                    jsonMapper.ReadTo(entry.value.json, peer.entity);
-                    peer.patchReference = jsonMapper.Read<T>(entry.value.json);
-                    peer.assigned = true;
-                    if (read != null) {
-                        read.result = peer.entity;
-                        read.synced = true;
-                    }
-                } else {
-                    peer.patchReference = null;
-                    if (read != null) {
-                        read.result = null;
-                        read.synced = true;
-                    }
-                }
-                peer.read = null;
-            }
             for (int n = 0; n < result.dependencies.Count; n++) {
                 ReadDependency          dependency = command.dependencies[n];
                 ReadDependencyResult    depResult  = result.dependencies[n];
@@ -284,8 +254,24 @@ namespace Friflo.Json.EntityGraph
             foreach (var entity in syncDependencies.entities) {
                 var id = entity.key;
                 var peer = GetPeerById(id);
-                jsonMapper.ReadTo(entity.value.json, peer.entity);
-                peer.assigned = true;
+                var read = peer.read;
+                var json = entity.value.json;
+                if (json != null && "null" != json) {
+                    jsonMapper.ReadTo(json, peer.entity);
+                    peer.patchReference = jsonMapper.Read<T>(json);
+                    peer.assigned = true;
+                    if (read != null) {
+                        read.result = peer.entity;
+                        read.synced = true;
+                    }
+                } else {
+                    peer.patchReference = null;
+                    if (read != null) {
+                        read.result = null;
+                        read.synced = true;
+                    }
+                }
+                peer.read = null;
             }
         }
 
