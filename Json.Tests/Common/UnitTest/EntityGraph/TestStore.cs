@@ -130,21 +130,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
-            Dependency<Customer>                customer    = order1.DependencyPath<Customer>(".customer");
+            Dependency<Customer>     customer   = order1.DependencyPath<Customer>(".customer");
             
             // lab - test dependency expressions
-            Dependency<Customer>                customers = order1.Dependency(o => o.customer);
-            IEnumerable<Dependency<Article>>    articles  = order1.Dependencies(o => o.items.Select(a => a.article));
+            Dependency<Customer>     customers  = order1.Dependency(o => o.customer);
+            Dependencies<Article>    articles   = order1.Dependencies(o => o.items.Select(a => a.article));
             
-            IEnumerable<Dependency<Article>>    articles2 = order1.DependenciesOfType<Article>();
-            IEnumerable<Dependency<Entity>>     allDeps   = order1.AllDependencies();
+            Dependencies<Article>    articles2  = order1.DependenciesOfType<Article>();
+            Dependencies<Entity>     allDeps    = order1.AllDependencies();
             
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Entity.lastName);
             
-            order1 =    store.orders.Read("order-1");
-            Dependencies<Article>               articleDeps = order1.DependenciesPath<Article>(".items[*].article");
+            order1 =    store.orders.Read("order-1"); // todo assert reusing order1
+            Dependencies<Article>    articleDeps = order1.DependenciesPath<Article>(".items[*].article");
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);
             AreEqual("Changed name",    articleDeps[0].Entity.name);

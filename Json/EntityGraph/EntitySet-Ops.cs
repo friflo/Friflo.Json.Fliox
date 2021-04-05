@@ -51,19 +51,19 @@ namespace Friflo.Json.EntityGraph
         }
         
         // lab - expression API
-        public IEnumerable<Dependency<TValue>> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
+        public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
         {
             return default;
         }
 
         // lab - dependencies by Entity Type
-        public IEnumerable<Dependency<TValue>> DependenciesOfType<TValue>() where TValue : Entity
+        public Dependencies<TValue> DependenciesOfType<TValue>() where TValue : Entity
         {
             return default;
         }
         
         // lab - all dependencies
-        public IEnumerable<Dependency<Entity>> AllDependencies()
+        public Dependencies<Entity> AllDependencies()
         {
             return default;
         }
