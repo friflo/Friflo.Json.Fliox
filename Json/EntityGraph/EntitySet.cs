@@ -39,8 +39,8 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
-        internal            Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
-        internal            Dictionary<string, ReadDeps>        syncReadDeps;
+        private             Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
+        private             Dictionary<string, ReadDeps>        syncReadDeps;
 
 
         
@@ -55,6 +55,14 @@ namespace Friflo.Json.EntityGraph
             container = store.intern.database.GetContainer(type.Name);
             objectPatcher = store.intern.objectPatcher;
             tracer = new Tracer(store.intern.typeCache, store);
+        }
+
+        internal ReadDeps GetReadDeps<TValue>(string selector) {
+            if (readDeps.TryGetValue(selector, out ReadDeps result))
+                return result;
+            result = new ReadDeps(selector, typeof(TValue));
+            readDeps.Add(selector, result);
+            return result;
         }
         
         private PeerEntity<T> CreatePeer (T entity) {

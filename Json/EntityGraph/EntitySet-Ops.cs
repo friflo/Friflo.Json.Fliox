@@ -31,10 +31,7 @@ namespace Friflo.Json.EntityGraph
         
         // lab - prototype API
         public Dependency<TValue> Dep<TValue>(string selector) where TValue : Entity {
-            if (!set.readDeps.TryGetValue(selector, out ReadDeps readDeps)) {
-                readDeps = new ReadDeps(selector, typeof(TValue));
-                set.readDeps.Add(selector, readDeps);
-            }
+            var readDeps = set.GetReadDeps<TValue>(selector);
             Dependency<TValue> newDependency = new Dependency<TValue>(id);
             readDeps.dependencies.Add(newDependency);
             return newDependency;
