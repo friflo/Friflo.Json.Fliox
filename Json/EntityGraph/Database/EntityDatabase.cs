@@ -72,7 +72,11 @@ namespace Friflo.Json.EntityGraph.Database
             this.database = database;
         }
         
-        public virtual void Dispose() { }
+        public virtual  void                            Dispose() { }
+        
+        public abstract void                            CreateEntities(Dictionary<string, EntityValue> entities);
+        public abstract void                            UpdateEntities(Dictionary<string, EntityValue> entities);
+        public abstract Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids);
 
         /// <summary>
         /// Default implementation to apply patches to entities.
@@ -139,11 +143,5 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return dependencyResults;
         }
-
-        // ---
-        public abstract void                            CreateEntities(Dictionary<string, EntityValue> entities);
-        public abstract void                            UpdateEntities(Dictionary<string, EntityValue> entities);
-        public abstract Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids);
-
     }
 }
