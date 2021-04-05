@@ -37,7 +37,7 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 results             = new List<CommandResult>(),
-                syncDependencies    = new List<SyncDependencies>()
+                syncDependencies    = new Dictionary<string, SyncDependencies>()
             };
             foreach (var command in syncRequest.commands) {
                 var result = command.Execute(this, response);
@@ -106,10 +106,11 @@ namespace Friflo.Json.EntityGraph.Database
         public List<ReadDependencyResult> ReadDependencies(
                 List<ReadDependency>    dependencies,
                 List<KeyValue>          entities,
-                List<SyncDependencies>  syncDependencies)
+                SyncResponse            syncResponse)
         {
             var jsonPath    = SyncContext.jsonPath;
             var jsonMapper  = SyncContext.jsonMapper;
+            var syncDependencies = syncResponse.syncDependencies;
             var dependencyResults = new List<ReadDependencyResult>();
             foreach (var dependency in dependencies) {
                 var depContainer = database.GetContainer(dependency.container);
@@ -129,13 +130,13 @@ namespace Friflo.Json.EntityGraph.Database
                     
                     // add dependencies to syncDependencies
                     var depEntities = depContainer.ReadEntities(depIds);
-                    SyncDependencies syncDep = syncDependencies.Find(sd => sd.container == dependency.container);
+                    syncDependencies.TryGetValue(dependency.container, out SyncDependencies syncDep);
                     if (syncDep == null) {
                         syncDep = new SyncDependencies {
                             container = dependency.container,
                             entities = new List<KeyValue>()
                         };
-                        syncDependencies.Add(syncDep);
+                        syncDependencies.Add(dependency.container, syncDep);
                     }
                     syncDep.entities.AddRange(depEntities);
                 }

@@ -15,8 +15,8 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class SyncResponse
     {
-        public  List<CommandResult>         results;
-        public  List<SyncDependencies>      syncDependencies;
+        public  List<CommandResult>                     results;
+        public  Dictionary<string, SyncDependencies>    syncDependencies;
     }
     
     // ------------------------------ DatabaseCommand ------------------------------
@@ -90,7 +90,7 @@ namespace Friflo.Json.EntityGraph.Database
         public override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids).ToList();
-            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response.syncDependencies);
+            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
             var result = new ReadEntitiesResult {
                 entities        = entities,
                 dependencies    = dependencyResults
@@ -101,7 +101,7 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class SyncDependencies : CommandResult
     {
-        public  string              container;
+        public  string              container; // only for debugging
         public  List<KeyValue>      entities;
 
         public override CommandType CommandType => CommandType.Read;

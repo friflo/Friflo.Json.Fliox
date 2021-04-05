@@ -89,9 +89,9 @@ namespace Friflo.Json.EntityGraph
         }
 
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
-            foreach (var syncDependencies in response.syncDependencies) {
-                var set = intern.setByName[syncDependencies.container];
-                set.SyncDependencies(syncDependencies);
+            foreach (var syncDepPair in response.syncDependencies) {
+                var set = intern.setByName[syncDepPair.Key];
+                set.SyncDependencies(syncDepPair.Value);
             }
             
             var commands = syncRequest.commands;
