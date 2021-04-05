@@ -192,7 +192,7 @@ namespace Friflo.Json.EntityGraph
                         ids = new List<string>() 
                     };
                     foreach (var dep in depsById.dependencies) {
-                        readDep.ids.Add(dep.Key);
+                        readDep.ids.Add(dep.parentId);
                     }
                     dependencies.Add(readDep);
                 }
@@ -263,9 +263,10 @@ namespace Friflo.Json.EntityGraph
                 ReadDependency          dependency = command.dependencies[n];
                 ReadDependencyResult    depResult  = result.dependencies[n];
                 var depContainer = store.intern.setByName[depResult.container];
-                var deps = syncReadDeps[depResult.refPath];
+                ReadDeps deps = syncReadDeps[dependency.refPath];
                 depContainer.ReadDependencyResult(dependency, depResult, deps);
             }
+            syncReadDeps = null;
         }
 
         internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, ReadDeps deps) {
@@ -273,11 +274,12 @@ namespace Friflo.Json.EntityGraph
                 var keyValue = result.entities[o];
                 var id = keyValue.key;
                 var peer = GetPeerById(id);
-                // var dep = deps.dependencies[id];
-                // var depTyped = (Dependency<T>)dep;
-                
                 jsonMapper.ReadTo(keyValue.value.json, peer.entity);
                 peer.assigned = true;
+               
+                var dependency = (Dependency<T>)deps.dependencies[o];
+                dependency.id = id;
+                dependency.entity = peer.entity;
             }
         }
         

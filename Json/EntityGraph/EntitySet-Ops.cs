@@ -35,36 +35,31 @@ namespace Friflo.Json.EntityGraph
                 readDeps = new ReadDeps(selector, typeof(TValue));
                 set.readDeps.Add(selector, readDeps);
             }
-            Dependency<TValue> newDependency;
-            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency)) {
-                newDependency = (Dependency<TValue>) dependency;
-            } else {
-                newDependency = new Dependency<TValue>(id);
-                readDeps.dependencies.Add(id, newDependency);
-            }
+            Dependency<TValue> newDependency = new Dependency<TValue>(id);
+            readDeps.dependencies.Add(newDependency);
             return newDependency;
         }
 
         // lab - expression API
-        public Read<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
+        public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             return default;
         }
         
         // lab - expression API
-        public IEnumerable<Read<TValue>> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
+        public IEnumerable<Dependency<TValue>> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
         {
             return default;
         }
 
         // lab - dependencies by Entity Type
-        public IEnumerable<Read<TValue>> DependenciesOfType<TValue>() where TValue : Entity
+        public IEnumerable<Dependency<TValue>> DependenciesOfType<TValue>() where TValue : Entity
         {
             return default;
         }
         
         // lab - all dependencies
-        public IEnumerable<Read<Entity>> AllDependencies()
+        public IEnumerable<Dependency<Entity>> AllDependencies()
         {
             return default;
         }
@@ -92,36 +87,30 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------------- Dependency<> -----------------------------------------
     public class Dependency
     {
-        internal readonly    string          id;
+        internal readonly   string      parentId;
+        internal            string      id;
 
-        internal Dependency(string id) {
-            this.id = id;
-        }
-        
-        public override int GetHashCode() => id.GetHashCode();
+        public              string      Id => id ?? throw new InvalidOperationException("Dependency not synced"); 
 
-        public override bool Equals(object obj) {
-            if (obj == null)
-                return false;
-            var other = (Dependency)obj;
-            return id.Equals(other.id);
+        internal Dependency(string parentId) {
+            this.parentId = parentId;
         }
     }
     
     public class Dependency<T> : Dependency where T : Entity
     {
-        // private readonly    EntitySet<T>    set;
+        internal            T           entity;
         
-        internal Dependency(string id) : base (id){
-            // this.set = set;
-        }
+        public              T           Entity => entity ?? throw new InvalidOperationException("Dependency not synced"); 
+
+        internal Dependency(string parentId) : base (parentId) { }
     }
     
     internal class ReadDeps
     {
-        internal readonly   string                          selector;
-        internal readonly   Type                            entityType;
-        internal readonly   Dictionary<string, Dependency>  dependencies = new Dictionary<string, Dependency>();
+        internal readonly   string              selector;
+        internal readonly   Type                entityType;
+        internal readonly   List<Dependency>    dependencies = new List<Dependency>();
         
         internal ReadDeps(string selector, Type entityType) {
             this.selector = selector;

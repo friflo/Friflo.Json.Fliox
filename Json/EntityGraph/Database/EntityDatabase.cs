@@ -107,7 +107,6 @@ namespace Friflo.Json.EntityGraph.Database
             foreach (var dependency in dependencies) {
                 var depContainer = database.GetContainer(dependency.container);
                 var dependencyResult = new ReadDependencyResult {
-                    refPath     = dependency.refPath,
                     container   = dependency.container,
                     entities    = new List<KeyValue>()
                 };

@@ -130,18 +130,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
-            Dependency<Customer>        customer  = order1.Dep<Customer>(".customer");
-            Dependency<Customer>        customer2 = order1.Dep<Customer>(".customer");
-            IsTrue(ReferenceEquals(customer, customer2));
+            Dependency<Customer>                customer  = order1.Dep<Customer>(".customer");
             
             // lab - test dependency expressions
-            Read<Customer>              customers = order1.Dependency(o => o.customer);
-            IEnumerable<Read<Article>>  articles  = order1.Dependencies(o => o.items.Select(a => a.article));
+            Dependency<Customer>                customers = order1.Dependency(o => o.customer);
+            IEnumerable<Dependency<Article>>    articles  = order1.Dependencies(o => o.items.Select(a => a.article));
             
-            IEnumerable<Read<Article>>  articles2 = order1.DependenciesOfType<Article>();
-            IEnumerable<Read<Entity>>   allDeps   = order1.AllDependencies();
+            IEnumerable<Dependency<Article>>    articles2 = order1.DependenciesOfType<Article>();
+            IEnumerable<Dependency<Entity>>     allDeps   = order1.AllDependencies();
             
             await store.Sync();
+            AreEqual("customer-1",  customer.Id);
+            AreEqual("Smith",       customer.Entity.lastName);
             
             var article1            =  store.articles.Read("article-1");
             var article1Redundant   =  store.articles.Read("article-1");

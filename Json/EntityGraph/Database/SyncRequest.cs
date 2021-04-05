@@ -118,7 +118,6 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class ReadDependencyResult
     {
-        public  string          refPath; // e.g. ".items[*].article"
         public  string          container;
         public  List<KeyValue>  entities;
     }
