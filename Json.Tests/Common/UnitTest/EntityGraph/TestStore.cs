@@ -131,6 +131,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
+            var read1 = store.orders.ReadWhere(o => o.customer.Id == "customer-1");
+            var read2 = store.orders.ReadWhere(o => o.customer.Entity.lastName == "Smith");
+            var read3 = store.orders.ReadWhere(o => o.items.Count(i => i.amount < 1) > 0);
+            var read4 = store.orders.ReadWhere(o => o.items.Any(i => i.amount < 1));
+            var read5 = store.orders.ReadWhere(o => o.items.All(i => i.amount < 1));
+            var read6 = store.orders.ReadWhere(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
+
             
             Dependency<Customer>     customer   = order1.DependencyByPath<Customer>(".customer");
             Dependency<Customer>     customer2  = order1.DependencyByPath<Customer>(".customer");

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Graph;
@@ -120,6 +121,11 @@ namespace Friflo.Json.EntityGraph
             }
             reads.Add(id, read);
             return read;
+        }
+
+        // lab interface
+        public ReadWhere<T> ReadWhere(Expression<Func<T, bool>> where) {
+            return default;
         }
         
         public Create<T> Create(T entity) {

@@ -86,6 +86,13 @@ namespace Friflo.Json.EntityGraph
             return newDependency;
         }
     }
+
+    public class ReadWhere<T> where T : Entity
+    {
+        private readonly    List<Dependency<T>> results = new List<Dependency<T>>();
+
+        public              List<Dependency<T>> Results => results;
+    }
     
     
     // ----------------------------------------- Create<> -----------------------------------------
