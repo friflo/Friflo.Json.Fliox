@@ -135,8 +135,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(customer, customer2);
             Dependency<Customer>     customer3  = order1.Dependency(o => o.customer);
             AreSame(customer, customer3);
-            
-            var e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
+            Exception e;
+            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
             AreEqual("Dependency not synced. Dependency<Customer>", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("Dependency not synced. Dependency<Customer>", e.Message);
@@ -150,7 +150,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
-            
+
+            // schedule dependency an already synced Read operation
+            e = Throws<InvalidOperationException>(() => { order1.DependencyByPath<Article>(".customer"); });
+            AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
+            e = Throws<InvalidOperationException>(() => { order1.DependenciesByPath<Article>(".items[*].article"); });
+            AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
+
             order1 =    store.orders.Read("order-1"); // todo assert reusing order1 or implicit read the parent entity
             Dependencies<Article>    articleDeps    = order1.DependenciesByPath<Article>(".items[*].article");
             Dependencies<Article>    articleDeps2   = order1.DependenciesByPath<Article>(".items[*].article");

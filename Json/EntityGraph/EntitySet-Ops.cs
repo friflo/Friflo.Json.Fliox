@@ -63,6 +63,9 @@ namespace Friflo.Json.EntityGraph
         }
         
         private Dependency<TValue> DependencyByPathIntern<TValue>(string selector) where TValue : Entity {
+            if (synced)
+                throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
+            
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependency<TValue>)dependency;
@@ -72,6 +75,9 @@ namespace Friflo.Json.EntityGraph
         }
         
         private Dependencies<TValue> DependenciesByPathIntern<TValue>(string selector) where TValue : Entity {
+            if (synced)
+                throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
+            
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependencies<TValue>)dependency;
