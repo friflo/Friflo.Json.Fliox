@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Dependencies<Article>    articleDeps2   = order1.DependenciesByPath<Article>(".items[*].article");
             AreSame(articleDeps, articleDeps2);
             Dependencies<Article>    articleDeps3   = order1.Dependencies(o => o.items.Select(a => a.article));
-            // AreSame(articleDeps, articleDeps3);
+            AreSame(articleDeps, articleDeps3);
             
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);

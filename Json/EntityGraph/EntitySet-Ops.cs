@@ -57,7 +57,6 @@ namespace Friflo.Json.EntityGraph
         
         // lab - expression API
         public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            return default;
             string path = MemberSelector.PathFromExpression(selector);
             return DependenciesByPath<TValue>(path);
         }
