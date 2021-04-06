@@ -119,13 +119,13 @@ namespace Friflo.Json.EntityGraph
         internal    T           entity;
         internal    bool        synced;
 
-        public      string      Id      => synced ? id      : (string)  ThrowError();
-        public      T           Result  => synced ? entity  : (T)       ThrowError();
+        public      string      Id      => synced ? id      : throw Error();
+        public      T           Result  => synced ? entity  : throw Error();
 
         internal Dependency(string parentId) : base (parentId, true) { }
         
-        private object ThrowError() {
-            throw new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>");
+        private Exception Error() {
+            return new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>");
         }
     }
     
@@ -134,13 +134,13 @@ namespace Friflo.Json.EntityGraph
         internal            bool                synced;
         internal readonly   List<Dependency<T>> results = new List<Dependency<T>>();
         
-        public              List<Dependency<T>> Results         => synced ? results : (List<Dependency<T>>) ThrowError();
-        public              Dependency<T>       this[int index] => synced ? results[index] : (Dependency<T>)ThrowError();
+        public              List<Dependency<T>> Results         => synced ? results         : throw Error();
+        public              Dependency<T>       this[int index] => synced ? results[index]  : throw Error();
 
         internal Dependencies(string parentId) : base (parentId, false) { }
         
-        private object ThrowError() {
-            throw new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>");
+        private Exception Error() {
+            return new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>");
         }
     }
     
