@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 
 namespace Friflo.Json.EntityGraph
@@ -16,17 +17,15 @@ namespace Friflo.Json.EntityGraph
         internal            bool            synced;
         private  readonly   EntitySet<T>    set;
 
+        public              T               Result => synced ? result : throw Error();
+
         internal Read(string id, EntitySet<T> set) {
             this.id = id;
             this.set = set;
         }
-            
-        public T Result {
-            get {
-                if (synced)
-                    return result;
-                throw new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
-            }
+
+        private Exception Error() {
+            return new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
         }
         
         public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
