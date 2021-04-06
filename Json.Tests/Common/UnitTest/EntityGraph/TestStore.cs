@@ -138,8 +138,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // lab - test dependency expressions
             if (lab) {
-                Dependencies<Article> articles2 = order1.DependenciesOfType<Article>();
-                Dependencies<Entity> allDeps = order1.AllDependencies();
+                Dependencies<Article> articles2 =   order1.DependenciesOfType<Article>();
+                Dependencies<Entity> allDeps =      order1.AllDependencies();
             }
 
             await store.Sync();
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var article1            =  store.articles.Read("article-1");
             var article1Redundant   =  store.articles.Read("article-1");
-            IsTrue(article1 == article1Redundant);
+            AreSame(article1, article1Redundant);
             
             var article2 =  store.articles.Read("article-2");
             var customer1 = store.customers.Read("customer-1");
@@ -177,10 +177,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             // AreEqual(2, store.articles.Count);
             // AreEqual(1, store.orders.Count);
 
-            IsTrue(order1.Result      == order);
-            IsTrue(customer1.Result   == order.customer.Entity);
-            IsTrue(article1.Result    == order.items[0].article.Entity);
-            IsTrue(article2.Result    == order.items[1].article.Entity);
+            AreSame(order1.   Result,   order);
+            AreSame(customer1.Result,   order.customer.Entity);
+            AreSame(article1. Result,   order.items[0].article.Entity);
+            AreSame(article2. Result,   order.items[1].article.Entity);
             IsNull(unknown.Result);
         }
 

@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
             var createCam1 = store.articles.Create(cameraCreate);
             var createCam2 = store.articles.Create(cameraCreate);   // Create() is idempotent
-            IsTrue(createCam1 == createCam2);                       // test redundant create
+            AreSame(createCam1, createCam2);                       // test redundant create
             
             for (int n = 0; n < 1; n++) {
                 var id = $"bulk-article-{n:D4}";
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
 
             var cameraUnknown = store.articles.Read("article-unknown");
-            var camera = store.articles.Read("article-1");
+            var camera =        store.articles.Read("article-1");
             await store.Sync();
             
             cameraCreate.name = "Changed name";
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Read().Result requires Sync(). Entity: Article id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);
-            IsTrue(camera.Result == cameraCreate);
+            AreSame(camera.Result, cameraCreate);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
             // store.customers.Create(customer);    // redundant - implicit tracked by order
