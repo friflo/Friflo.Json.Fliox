@@ -16,7 +16,8 @@ namespace Friflo.Json.EntityGraph
         internal            bool            synced;
         private  readonly   EntitySet<T>    set;
 
-        public              T               Result => synced ? result : throw Error();
+        public              T               Result      => synced ? result : throw Error();
+        public   override   string          ToString()  => id;
 
         internal Read(string id, EntitySet<T> set) {
             this.id = id;
@@ -93,7 +94,8 @@ namespace Friflo.Json.EntityGraph
         private readonly    T           entity;
         private readonly    EntityStore store;
 
-        internal            T           Entity => entity;
+        internal            T           Entity      => entity;
+        public   override   string      ToString()  => entity.id;
         
         internal Create(T entity, EntityStore entityStore) {
             this.entity = entity;

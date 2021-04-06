@@ -130,6 +130,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
+            AreEqual("order-1", order1.ToString());
+            
             Dependency<Customer>     customer   = order1.DependencyByPath<Customer>(".customer");
             Dependency<Customer>     customer2  = order1.DependencyByPath<Customer>(".customer");
             AreSame(customer, customer2);
@@ -159,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<InvalidOperationException>(() => { order1.DependenciesByPath<Article>(".items[*].article"); });
             AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
 
-            order1 =    store.orders.Read("order-1"); // todo assert reusing order1 or implicit read the parent entity
+            order1 =    store.orders.Read("order-1");
             Dependencies<Article>    articleDeps    = order1.DependenciesByPath<Article>(".items[*].article");
             Dependencies<Article>    articleDeps2   = order1.DependenciesByPath<Article>(".items[*].article");
             AreSame(articleDeps, articleDeps2);
