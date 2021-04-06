@@ -136,6 +136,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Dependency<Customer>     customer3  = order1.Dependency(o => o.customer);
             AreSame(customer, customer3);
             
+            var e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
+            AreEqual("Dependency not synced. Dependency<Customer>, selector: '.customer'", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
+            AreEqual("Dependency not synced. Dependency<Customer>, selector: '.customer'", e.Message);
+            
             // lab - test dependency expressions
             if (lab) {
                 Dependencies<Article> articles2 =   order1.DependenciesOfType<Article>();
@@ -144,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
-            AreEqual("Smith",       customer.Entity.lastName);
+            AreEqual("Smith",       customer.Result.lastName);
             
             order1 =    store.orders.Read("order-1"); // todo assert reusing order1 or implicit read the parent entity
             Dependencies<Article>    articleDeps    = order1.DependenciesByPath<Article>(".items[*].article");
@@ -153,14 +158,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Dependencies<Article>    articleDeps3   = order1.Dependencies(o => o.items.Select(a => a.article));
             AreSame(articleDeps, articleDeps3);
             
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
+            AreEqual("Dependencies not synced. Dependencies<Article>, selector: '.items[*].article'", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
+            AreEqual("Dependencies not synced. Dependencies<Article>, selector: '.items[*].article'", e.Message);
+
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);
-            AreEqual("Changed name",    articleDeps[0].Entity.name);
+            AreEqual("Changed name",    articleDeps[0].Result.name);
             AreEqual("article-2",       articleDeps[1].Id);
-            AreEqual("Smartphone",      articleDeps[1].Entity.name);
+            AreEqual("Smartphone",      articleDeps[1].Result.name);
             AreEqual("article-1",       articleDeps[2].Id);
-            AreEqual("Changed name",    articleDeps[2].Entity.name);
-
+            AreEqual("Changed name",    articleDeps[2].Result.name);
+            
+            // Test expression exceptions
+            customer = order1.Dependency(o => o.customer);
+            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
+            AreEqual("Dependency not synced. Dependency<Customer>, selector: 'o => o.customer'", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
+            AreEqual("Dependency not synced. Dependency<Customer>, selector: 'o => o.customer'", e.Message);
+            
+            articleDeps   = order1.Dependencies(o => o.items.Select(a => a.article));
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
+            AreEqual("Dependencies not synced. Dependencies<Article>, selector: 'o => o.items.Select(a => a.article)'", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
+            AreEqual("Dependencies not synced. Dependencies<Article>, selector: 'o => o.items.Select(a => a.article)'", e.Message);
 
             
             var article1            =  store.articles.Read("article-1");

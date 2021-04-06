@@ -28,4 +28,9 @@ namespace Friflo.Json.EntityGraph
             this.entity = entity;
         }
     }
+    
+    public class PeerNotSyncedException : Exception
+    {
+        public PeerNotSyncedException(string message) : base (message) { }
+    }
 }

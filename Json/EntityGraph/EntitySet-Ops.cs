@@ -25,41 +25,31 @@ namespace Friflo.Json.EntityGraph
             get {
                 if (synced)
                     return result;
-                throw new InvalidOperationException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
+                throw new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
             }
         }
         
         public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
-            var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
-                return (Dependency<TValue>)dependency;
-            Dependency<TValue> newDependency = new Dependency<TValue>(id);
-            readDeps.dependencies.Add(id, newDependency);
-            return newDependency;
+            return DependencyByPathIntern<TValue>(selector, selector);
         }
         
         public Dependencies<TValue> DependenciesByPath<TValue>(string selector) where TValue : Entity {
-            var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
-                return (Dependencies<TValue>)dependency;
-            Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
-            readDeps.dependencies.Add(id, newDependency);
-            return newDependency;
+            return DependenciesByPathIntern<TValue>(selector, selector);
         }
-
+        
         public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
                 throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(Dependencies)}()");
-            return DependencyByPath<TValue>(path);
+            return DependencyByPathIntern<TValue>(path, selector.ToString());
         }
         
         public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
                 throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(Dependency)}()");
-            return DependenciesByPath<TValue>(path);
+            return DependenciesByPathIntern<TValue>(path, selector.ToString());
         }
 
         // lab - dependencies by Entity Type
@@ -71,6 +61,24 @@ namespace Friflo.Json.EntityGraph
         public Dependencies<Entity> AllDependencies()
         {
             throw new NotImplementedException("AllDependencies() planned to be implemented");
+        }
+        
+        private Dependency<TValue> DependencyByPathIntern<TValue>(string selector, string name) where TValue : Entity {
+            var readDeps = set.GetReadDeps<TValue>(selector);
+            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
+                return (Dependency<TValue>)dependency;
+            Dependency<TValue> newDependency = new Dependency<TValue>(id, name);
+            readDeps.dependencies.Add(id, newDependency);
+            return newDependency;
+        }
+        
+        private Dependencies<TValue> DependenciesByPathIntern<TValue>(string selector, string name) where TValue : Entity {
+            var readDeps = set.GetReadDeps<TValue>(selector);
+            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
+                return (Dependencies<TValue>)dependency;
+            Dependencies<TValue> newDependency = new Dependencies<TValue>(id, name);
+            readDeps.dependencies.Add(id, newDependency);
+            return newDependency;
         }
     }
     
@@ -97,32 +105,45 @@ namespace Friflo.Json.EntityGraph
     public class Dependency
     {
         internal readonly   string      parentId;
+        internal readonly   string      selector;
         internal readonly   bool        singleResult;
 
-        internal Dependency(string parentId, bool singleResult) {
+        internal Dependency(string parentId, string selector, bool singleResult) {
             this.parentId       = parentId;
+            this.selector       = selector;
             this.singleResult   = singleResult;
         }
     }
     
     public class Dependency<T> : Dependency where T : Entity
     {
-        internal            string      id;
-        internal            T           entity;
+        internal    string      id;
+        internal    T           entity;
+        internal    bool        synced;
 
-        public              string      Id      => id       ?? throw new InvalidOperationException("Dependency not synced"); 
-        public              T           Entity  => entity   ?? throw new InvalidOperationException("Dependency not synced"); 
+        public      string      Id      => synced ? id      : (string)  ThrowError();
+        public      T           Result  => synced ? entity  : (T)       ThrowError();
 
-        internal Dependency(string parentId) : base (parentId, true) { }
+        internal Dependency(string parentId, string selector) : base (parentId, selector, true) { }
+        
+        private object ThrowError() {
+            throw new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>, selector: '{selector}'");
+        }
     }
     
     public class Dependencies<T> : Dependency where T : Entity
     {
-        public readonly     List<Dependency<T>>     results = new List<Dependency<T>>();
+        internal            bool                synced;
+        internal readonly   List<Dependency<T>> results = new List<Dependency<T>>();
+        
+        public              List<Dependency<T>> Results         => synced ? results : (List<Dependency<T>>) ThrowError();
+        public              Dependency<T>       this[int index] => synced ? results[index] : (Dependency<T>)ThrowError();
 
-        public              Dependency<T>           this[int index] =>  results[index];
-
-        internal Dependencies(string parentId) : base (parentId, false) { }
+        internal Dependencies(string parentId, string selector) : base (parentId, selector, false) { }
+        
+        private object ThrowError() {
+            throw new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>, selector: '{selector}'");
+        }
     }
     
     internal class ReadDeps

@@ -253,16 +253,19 @@ namespace Friflo.Json.EntityGraph
                         throw new InvalidOperationException("Expect exactly one dependency");
                     var id = result.ids[0];
                     var peer = GetPeerById(id);
-                    singleDep.id = id;
-                    singleDep.entity = peer.entity;
+                    singleDep.id        = id;
+                    singleDep.entity    = peer.entity;
+                    singleDep.synced    = true;
                 } else {
                     var multiDep = (Dependencies<T>) dependency;
+                    multiDep.synced = true;
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new Dependency<T>(dependency.parentId) {
-                            id = id,
-                            entity = peer.entity
+                        var dep = new Dependency<T>(dependency.parentId, dependency.selector) {
+                            id      = id,
+                            entity  = peer.entity,
+                            synced  = true
                         };
                         multiDep.results.Add(dep);
                     }
