@@ -51,13 +51,17 @@ namespace Friflo.Json.EntityGraph
         // lab - expression API
         public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
-            string path = MemberSelector.PathFromExpression(selector);
+            string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
+            if (isArraySelector)
+                throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(Dependencies)}()");
             return DependencyByPath<TValue>(path);
         }
         
         // lab - expression API
         public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            string path = MemberSelector.PathFromExpression(selector);
+            string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
+            if (!isArraySelector)
+                throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(Dependency)}()");
             return DependenciesByPath<TValue>(path);
         }
 

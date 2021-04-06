@@ -10,17 +10,18 @@ namespace Friflo.Json.EntityGraph
 {
     internal static class MemberSelector
     {
-        internal static string PathFromExpression(Expression selector) {
+        internal static string PathFromExpression(Expression selector, out bool isArraySelector) {
+            isArraySelector = false;
             if (selector is LambdaExpression lambda) {
                 var body = lambda.Body;
                 var sb = new StringBuilder();
-                TraceExpression(body, sb);
+                TraceExpression(body, sb, ref isArraySelector);
                 return sb.ToString();
             }
             throw new NotSupportedException($"selector not supported: {selector}");
         }
 
-        private static void TraceExpression(Expression expression, StringBuilder sb) {
+        private static void TraceExpression(Expression expression, StringBuilder sb, ref bool isArraySelector) {
             switch (expression) {
                 case MemberExpression member:
                     MemberInfo memberInfo = member.Member;
@@ -39,18 +40,19 @@ namespace Friflo.Json.EntityGraph
                     }
                     if (typeof(IEnumerable).IsAssignableFrom(type)) {
                         sb.Append("[*]");
+                        isArraySelector = true;
                     }
                     return;
                 case MethodCallExpression methodCall: 
                     var args = methodCall.Arguments;
                     for (int n = 0; n < args.Count; n++) {
                         var arg = args[n];
-                        TraceExpression(arg, sb);
+                        TraceExpression(arg, sb, ref isArraySelector);
                     }
                     return;
                 case LambdaExpression lambda: 
                     var body = lambda.Body;
-                    TraceExpression(body, sb);
+                    TraceExpression(body, sb, ref isArraySelector);
                     return;
                 default:
                     throw new NotSupportedException($"Body not supported: {expression}");
