@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq.Expressions;
 
 namespace Friflo.Json.EntityGraph
@@ -69,7 +68,7 @@ namespace Friflo.Json.EntityGraph
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependency<TValue>)dependency;
-            Dependency<TValue> newDependency = new Dependency<TValue>(id);
+            Dependency<TValue> newDependency = new Dependency<TValue>(id, selector);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
@@ -81,7 +80,7 @@ namespace Friflo.Json.EntityGraph
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependencies<TValue>)dependency;
-            Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
+            Dependencies<TValue> newDependency = new Dependencies<TValue>(id, selector);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
@@ -111,10 +110,14 @@ namespace Friflo.Json.EntityGraph
     {
         internal readonly   string      parentId;
         internal readonly   bool        singleResult;
+        internal readonly   string      label;
 
-        internal Dependency(string parentId, bool singleResult) {
+        public   override   string      ToString() => $"'{parentId}' - '{label}'";
+        
+        internal Dependency(string parentId, string label, bool singleResult) {
             this.parentId       = parentId;
             this.singleResult   = singleResult;
+            this.label          = label;
         }
     }
     
@@ -127,7 +130,7 @@ namespace Friflo.Json.EntityGraph
         public      string      Id      => synced ? id      : throw Error();
         public      T           Result  => synced ? entity  : throw Error();
 
-        internal Dependency(string parentId) : base (parentId, true) { }
+        internal Dependency(string parentId, string label) : base (parentId, label, true) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>");
@@ -142,7 +145,7 @@ namespace Friflo.Json.EntityGraph
         public              List<Dependency<T>> Results         => synced ? results         : throw Error();
         public              Dependency<T>       this[int index] => synced ? results[index]  : throw Error();
 
-        internal Dependencies(string parentId) : base (parentId, false) { }
+        internal Dependencies(string parentId, string label) : base (parentId, label, false) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>");

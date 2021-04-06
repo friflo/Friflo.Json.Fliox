@@ -262,7 +262,7 @@ namespace Friflo.Json.EntityGraph
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new Dependency<T>(dependency.parentId) {
+                        var dep = new Dependency<T>(dependency.parentId, dependency.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true
