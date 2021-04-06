@@ -101,6 +101,7 @@ namespace Friflo.Json.EntityGraph.Database
         private byte[] HandlePost (string requestContent, HttpListenerResponse resp) {
             var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
             var syncResponse = Execute(syncRequest);
+            jsonMapper.Pretty = true;
             var jsonResponse = jsonMapper.Write(syncResponse);
 
             // Write the response info
