@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Burst; // UnityExtension.TryAdd()
 using Friflo.Json.Mapper;
 using Friflo.Json.Mapper.Graph;
 

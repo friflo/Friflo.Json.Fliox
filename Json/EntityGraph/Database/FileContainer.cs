@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Burst; // UnityExtension.TryAdd()
 
 namespace Friflo.Json.EntityGraph.Database
 {
