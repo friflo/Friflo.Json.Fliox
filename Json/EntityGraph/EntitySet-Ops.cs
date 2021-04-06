@@ -30,11 +30,11 @@ namespace Friflo.Json.EntityGraph
         }
         
         public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
-            return DependencyByPathIntern<TValue>(selector, selector);
+            return DependencyByPathIntern<TValue>(selector);
         }
         
         public Dependencies<TValue> DependenciesByPath<TValue>(string selector) where TValue : Entity {
-            return DependenciesByPathIntern<TValue>(selector, selector);
+            return DependenciesByPathIntern<TValue>(selector);
         }
         
         public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
@@ -42,14 +42,14 @@ namespace Friflo.Json.EntityGraph
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
                 throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(Dependencies)}()");
-            return DependencyByPathIntern<TValue>(path, selector.ToString());
+            return DependencyByPathIntern<TValue>(path);
         }
         
         public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
                 throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(Dependency)}()");
-            return DependenciesByPathIntern<TValue>(path, selector.ToString());
+            return DependenciesByPathIntern<TValue>(path);
         }
 
         // lab - dependencies by Entity Type
@@ -63,20 +63,20 @@ namespace Friflo.Json.EntityGraph
             throw new NotImplementedException("AllDependencies() planned to be implemented");
         }
         
-        private Dependency<TValue> DependencyByPathIntern<TValue>(string selector, string name) where TValue : Entity {
+        private Dependency<TValue> DependencyByPathIntern<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependency<TValue>)dependency;
-            Dependency<TValue> newDependency = new Dependency<TValue>(id, name);
+            Dependency<TValue> newDependency = new Dependency<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
         
-        private Dependencies<TValue> DependenciesByPathIntern<TValue>(string selector, string name) where TValue : Entity {
+        private Dependencies<TValue> DependenciesByPathIntern<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
                 return (Dependencies<TValue>)dependency;
-            Dependencies<TValue> newDependency = new Dependencies<TValue>(id, name);
+            Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
         }
@@ -105,12 +105,10 @@ namespace Friflo.Json.EntityGraph
     public class Dependency
     {
         internal readonly   string      parentId;
-        internal readonly   string      selector;
         internal readonly   bool        singleResult;
 
-        internal Dependency(string parentId, string selector, bool singleResult) {
+        internal Dependency(string parentId, bool singleResult) {
             this.parentId       = parentId;
-            this.selector       = selector;
             this.singleResult   = singleResult;
         }
     }
@@ -124,10 +122,10 @@ namespace Friflo.Json.EntityGraph
         public      string      Id      => synced ? id      : (string)  ThrowError();
         public      T           Result  => synced ? entity  : (T)       ThrowError();
 
-        internal Dependency(string parentId, string selector) : base (parentId, selector, true) { }
+        internal Dependency(string parentId) : base (parentId, true) { }
         
         private object ThrowError() {
-            throw new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>, selector: '{selector}'");
+            throw new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>");
         }
     }
     
@@ -139,10 +137,10 @@ namespace Friflo.Json.EntityGraph
         public              List<Dependency<T>> Results         => synced ? results : (List<Dependency<T>>) ThrowError();
         public              Dependency<T>       this[int index] => synced ? results[index] : (Dependency<T>)ThrowError();
 
-        internal Dependencies(string parentId, string selector) : base (parentId, selector, false) { }
+        internal Dependencies(string parentId) : base (parentId, false) { }
         
         private object ThrowError() {
-            throw new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>, selector: '{selector}'");
+            throw new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>");
         }
     }
     
