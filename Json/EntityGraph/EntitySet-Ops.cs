@@ -32,6 +32,8 @@ namespace Friflo.Json.EntityGraph
         // lab - prototype API
         public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
+            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
+                return (Dependency<TValue>)dependency;
             Dependency<TValue> newDependency = new Dependency<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
@@ -39,6 +41,8 @@ namespace Friflo.Json.EntityGraph
         
         public Dependencies<TValue> DependenciesByPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
+            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
+                return (Dependencies<TValue>)dependency;
             Dependencies<TValue> newDependency = new Dependencies<TValue>(id);
             readDeps.dependencies.Add(id, newDependency);
             return newDependency;
@@ -47,13 +51,15 @@ namespace Friflo.Json.EntityGraph
         // lab - expression API
         public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
-            return default;
+            string path = MemberSelector.PathFromExpression(selector);
+            return DependencyByPath<TValue>(path);
         }
         
         // lab - expression API
-        public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity 
-        {
+        public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             return default;
+            string path = MemberSelector.PathFromExpression(selector);
+            return DependenciesByPath<TValue>(path);
         }
 
         // lab - dependencies by Entity Type

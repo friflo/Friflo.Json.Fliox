@@ -131,11 +131,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
             Dependency<Customer>     customer   = order1.DependencyByPath<Customer>(".customer");
+            Dependency<Customer>     customer2  = order1.DependencyByPath<Customer>(".customer");
+            AreSame(customer, customer2);
+            Dependency<Customer>     customer3  = order1.Dependency(o => o.customer);
+            AreSame(customer, customer3);
             
             // lab - test dependency expressions
-            Dependency<Customer>     customers  = order1.Dependency(o => o.customer);
-            Dependencies<Article>    articles   = order1.Dependencies(o => o.items.Select(a => a.article));
-            
             Dependencies<Article>    articles2  = order1.DependenciesOfType<Article>();
             Dependencies<Entity>     allDeps    = order1.AllDependencies();
             
@@ -144,7 +145,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Smith",       customer.Entity.lastName);
             
             order1 =    store.orders.Read("order-1"); // todo assert reusing order1 or implicit read the parent entity
-            Dependencies<Article>    articleDeps = order1.DependenciesByPath<Article>(".items[*].article");
+            Dependencies<Article>    articleDeps    = order1.DependenciesByPath<Article>(".items[*].article");
+            Dependencies<Article>    articleDeps2   = order1.DependenciesByPath<Article>(".items[*].article");
+            AreSame(articleDeps, articleDeps2);
+            Dependencies<Article>    articleDeps3   = order1.Dependencies(o => o.items.Select(a => a.article));
+            // AreSame(articleDeps, articleDeps3);
+            
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);
             AreEqual("Changed name",    articleDeps[0].Entity.name);
