@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AssertWriteRead(m, order.items[1].article);
         }
 
-        
+        private static bool lab = false;
 
         private static async Task AssertStore(Order order, PocStore store) {
             Read<Order> order1 =    store.orders.Read("order-1");
@@ -137,9 +137,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(customer, customer3);
             
             // lab - test dependency expressions
-            Dependencies<Article>    articles2  = order1.DependenciesOfType<Article>();
-            Dependencies<Entity>     allDeps    = order1.AllDependencies();
-            
+            if (lab) {
+                Dependencies<Article> articles2 = order1.DependenciesOfType<Article>();
+                Dependencies<Entity> allDeps = order1.AllDependencies();
+            }
+
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Entity.lastName);

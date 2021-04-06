@@ -29,7 +29,6 @@ namespace Friflo.Json.EntityGraph
             }
         }
         
-        // lab - prototype API
         public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
@@ -48,7 +47,6 @@ namespace Friflo.Json.EntityGraph
             return newDependency;
         }
 
-        // lab - expression API
         public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
@@ -57,7 +55,6 @@ namespace Friflo.Json.EntityGraph
             return DependencyByPath<TValue>(path);
         }
         
-        // lab - expression API
         public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
@@ -66,15 +63,14 @@ namespace Friflo.Json.EntityGraph
         }
 
         // lab - dependencies by Entity Type
-        public Dependencies<TValue> DependenciesOfType<TValue>() where TValue : Entity
-        {
-            return default;
+        public Dependencies<TValue> DependenciesOfType<TValue>() where TValue : Entity {
+            throw new NotImplementedException("DependenciesOfType() planned to be implemented");
         }
         
         // lab - all dependencies
         public Dependencies<Entity> AllDependencies()
         {
-            return default;
+            throw new NotImplementedException("AllDependencies() planned to be implemented");
         }
     }
     
