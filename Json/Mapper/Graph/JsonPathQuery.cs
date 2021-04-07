@@ -64,6 +64,12 @@ namespace Friflo.Json.Mapper.Graph
             value           = boolValue ? "true" : "false";
             this.boolValue  = boolValue;
         }
+        
+        public override string ToString() {
+            var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
 
         public void AppendTo(StringBuilder sb) {
             switch (type) {
