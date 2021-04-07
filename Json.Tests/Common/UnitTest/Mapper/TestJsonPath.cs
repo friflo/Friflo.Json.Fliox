@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 });
                 AreEqual(@"[{""val2"":68}]",    result[0].ToString());
                 AreEqual("[69]",                result[1].ToString());
-                AreEqual("[94.0]",              result[2].ToString());
+                AreEqual("[94]",                result[2].ToString());
                 AreEqual("[true]",              result[3].ToString());
                 AreEqual(@"[""one""]",          result[4].ToString());
                 AreEqual("[null]",              result[5].ToString());

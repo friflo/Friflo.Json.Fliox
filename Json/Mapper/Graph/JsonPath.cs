@@ -71,7 +71,10 @@ namespace Friflo.Json.Mapper.Graph
                     results.items.Add(new SelectorResult(ResultType.String, targetParser.value.ToString()));
                     return;
                 case JsonEvent.ValueNumber:
-                    results.items.Add(new SelectorResult(ResultType.Number, targetParser.value.ToString()));
+                    if (targetParser.isFloat)
+                        results.items.Add(new SelectorResult(targetParser.ValueAsDouble(out bool _)));
+                    else
+                        results.items.Add(new SelectorResult(targetParser.ValueAsLong(out bool _)));
                     return;
                 case JsonEvent.ValueBool:
                     results.items.Add(new SelectorResult(targetParser.boolValue));

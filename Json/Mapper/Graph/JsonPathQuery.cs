@@ -51,6 +51,8 @@ namespace Friflo.Json.Mapper.Graph
     {
         internal    readonly    ResultType      type;
         internal    readonly    string          value;
+        internal    readonly    double          doubleValue;
+        internal    readonly    long            longValue;
         internal    readonly    bool            boolValue;
         
 
@@ -59,9 +61,18 @@ namespace Friflo.Json.Mapper.Graph
             this.value  = value;
         }
         
+        public SelectorResult(double value) {
+            type        = ResultType.Double;
+            doubleValue = value;
+        }
+        
+        public SelectorResult(long value) {
+            type        = ResultType.Long;
+            longValue   = value;
+        }
+
         public SelectorResult(bool boolValue) {
             type            = ResultType.Bool;
-            value           = boolValue ? "true" : "false";
             this.boolValue  = boolValue;
         }
         
@@ -75,8 +86,13 @@ namespace Friflo.Json.Mapper.Graph
             switch (type) {
                 case ResultType.Array:
                 case ResultType.Object:
-                case ResultType.Number:
                     sb.Append(value);
+                    break;
+                case ResultType.Double:
+                    sb.Append(doubleValue);
+                    break;
+                case ResultType.Long:
+                    sb.Append(longValue);
                     break;
                 case ResultType.String:
                     sb.Append('"');
@@ -97,7 +113,8 @@ namespace Friflo.Json.Mapper.Graph
         Array,
         Object,
         String,
-        Number,
+        Double,
+        Long,
         Bool,
         Null
     }
