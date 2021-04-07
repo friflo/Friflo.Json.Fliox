@@ -119,11 +119,11 @@ namespace Friflo.Json.Mapper.Graph
         Null
     }
     
-    public class JsonPathQuery : PathNodeTree<SelectorResults>
+    public class JsonSelectorQuery : PathNodeTree<SelectorResults>
     {
-        internal JsonPathQuery() { }
+        internal JsonSelectorQuery() { }
         
-        public JsonPathQuery(IList<string> pathList) {
+        public JsonSelectorQuery(IList<string> pathList) {
             CreateNodeTree(pathList);
         }
 

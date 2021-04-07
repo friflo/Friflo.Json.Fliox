@@ -118,7 +118,7 @@ namespace Friflo.Json.EntityGraph.Database
                 Dictionary<string, EntityValue> entities,
                 SyncResponse                    syncResponse)
         {
-            var jsonPath    = SyncContext.jsonPath;
+            var jsonPath    = SyncContext.jsonSelector;
             var dependencyResults = new List<ReadDependencyResult>();
             foreach (var dependency in dependencies) {
                 var depContainer = database.GetContainer(dependency.container);

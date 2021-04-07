@@ -7,7 +7,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Mapper.Graph
 {
-    public class JsonPath : IDisposable
+    public class JsonSelector : IDisposable
     {
         private             JsonSerializer                  serializer;
             
@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Graph
         private             JsonParser                      targetParser;
         
         private readonly    List<PathNode<SelectorResults>> nodeStack = new List<PathNode<SelectorResults>>();
-        private readonly    JsonPathQuery                   pathSelectorQuery = new JsonPathQuery();
+        private readonly    JsonSelectorQuery               selectorQuery = new JsonSelectorQuery();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -30,12 +30,12 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public List<SelectorResults> Select(string json, IList<string> pathList, bool pretty = false) {
-            pathSelectorQuery.CreateNodeTree(pathList);
-            Select(json, pathSelectorQuery, pretty);
-            return pathSelectorQuery.GetResult();
+            selectorQuery.CreateNodeTree(pathList);
+            Select(json, selectorQuery, pretty);
+            return selectorQuery.GetResult();
         }
 
-        public JsonPathQuery Select(string json, JsonPathQuery selectorQuery, bool pretty = false) {
+        public JsonSelectorQuery Select(string json, JsonSelectorQuery selectorQuery, bool pretty = false) {
             selectorQuery.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(selectorQuery.rootNode);

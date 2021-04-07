@@ -13,12 +13,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestObjectSelect() {
             using (var typeStore    = new TypeStore()) 
             using (var jsonWriter   = new JsonWriter(typeStore))
-            using (var jsonPath     = new JsonPath())
+            using (var jsonSelector = new JsonSelector())
             {
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
 
-                var result = jsonPath.Select(json, new [] {
+                var result = jsonSelector.Select(json, new [] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
                     ".dbl",
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void TestArraySelect() {
             using (var typeStore    = new TypeStore()) 
             using (var jsonWriter   = new JsonWriter(typeStore))
-            using (var jsonPath     = new JsonPath())
+            using (var jsonSelector = new JsonSelector())
             {
                 var store = new Store();
                 store.InitSample();
@@ -91,13 +91,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 };
                 var result = new List<SelectorResults>();
                 for (int n = 0; n < 2; n++) {
-                    result = jsonPath.Select(json, selectList);
+                    result = jsonSelector.Select(json, selectList);
                 }
                 AssertStoreResult(result);
                 
-                var selector = new JsonPathQuery(selectList);
+                var selector = new JsonSelectorQuery(selectList);
                 for (int n = 0; n < 2; n++) {
-                    jsonPath.Select(json, selector);
+                    jsonSelector.Select(json, selector);
                     result = selector.GetResult();
                 }
                 AssertStoreResult(result);
