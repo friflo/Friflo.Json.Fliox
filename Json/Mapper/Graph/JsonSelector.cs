@@ -58,29 +58,29 @@ namespace Friflo.Json.Mapper.Graph
                     serializer.ObjectStart();
                     serializer.WriteObject(ref targetParser);
                     var json = serializer.json.ToString();
-                    results.items.Add(new SelectorResult(ResultType.Object, json));
+                    results.values.Add(new SelectorValue(ResultType.Object, json));
                     return;
                 case JsonEvent.ArrayStart:
                     serializer.InitSerializer();
                     serializer.ArrayStart(true);
                     serializer.WriteArray(ref targetParser);
                     json = serializer.json.ToString();
-                    results.items.Add(new SelectorResult(ResultType.Array, json));
+                    results.values.Add(new SelectorValue(ResultType.Array, json));
                     return;
                 case JsonEvent.ValueString:
-                    results.items.Add(new SelectorResult(ResultType.String, targetParser.value.ToString()));
+                    results.values.Add(new SelectorValue(ResultType.String, targetParser.value.ToString()));
                     return;
                 case JsonEvent.ValueNumber:
                     if (targetParser.isFloat)
-                        results.items.Add(new SelectorResult(targetParser.ValueAsDouble(out bool _)));
+                        results.values.Add(new SelectorValue(targetParser.ValueAsDouble(out bool _)));
                     else
-                        results.items.Add(new SelectorResult(targetParser.ValueAsLong(out bool _)));
+                        results.values.Add(new SelectorValue(targetParser.ValueAsLong(out bool _)));
                     return;
                 case JsonEvent.ValueBool:
-                    results.items.Add(new SelectorResult(targetParser.boolValue));
+                    results.values.Add(new SelectorValue(targetParser.boolValue));
                     return;
                 case JsonEvent.ValueNull:
-                    results.items.Add(new SelectorResult(ResultType.Null, null));
+                    results.values.Add(new SelectorValue(ResultType.Null, null));
                     return;
             }
         }

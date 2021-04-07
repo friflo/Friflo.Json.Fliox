@@ -8,12 +8,12 @@ namespace Friflo.Json.Mapper.Graph
 {
     public class SelectorResults
     {
-        internal    readonly    List<SelectorResult>    items = new List<SelectorResult>();
+        internal    readonly    List<SelectorValue>    values = new List<SelectorValue>();
 
         public List<string> AsStringList() {
-            var result = new List<string>(items.Count);
-            foreach (var item in items) {
-                result.Add(item.value);
+            var result = new List<string>(values.Count);
+            foreach (var item in values) {
+                result.Add(item.stringValue);
             }
             return result;
         }
@@ -26,21 +26,21 @@ namespace Friflo.Json.Mapper.Graph
 
         /// Format as debug string - not as JSON 
         private void AppendItemAsString(StringBuilder sb) {
-            switch (items.Count) {
+            switch (values.Count) {
                 case 0:
                     sb.Append("[]");
                     break;
                 case 1:
                     sb.Append('[');
-                    items[0].AppendTo(sb);
+                    values[0].AppendTo(sb);
                     sb.Append(']');
                     break;
                 default:
                     sb.Append('[');
-                    items[0].AppendTo(sb);
-                    for (int n = 1; n < items.Count; n++) {
+                    values[0].AppendTo(sb);
+                    for (int n = 1; n < values.Count; n++) {
                         sb.Append(',');
-                        items[n].AppendTo(sb);
+                        values[n].AppendTo(sb);
                     }
                     sb.Append(']');
                     break;
@@ -48,33 +48,33 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
 
-    public class SelectorResult
+    public class SelectorValue
     {
         internal    readonly    ResultType      type;
-        internal    readonly    string          value;
+        internal    readonly    string          stringValue;
         internal    readonly    double          doubleValue;
         internal    readonly    long            longValue;
         internal    readonly    bool            boolValue;
         
 
-        public SelectorResult(ResultType type, string value) {
+        public SelectorValue(ResultType type, string value) {
             this.type   = type;
-            this.value  = value;
+            stringValue = value;
         }
         
-        public SelectorResult(double value) {
+        public SelectorValue(double value) {
             type        = ResultType.Double;
             doubleValue = value;
         }
         
-        public SelectorResult(long value) {
+        public SelectorValue(long value) {
             type        = ResultType.Long;
             longValue   = value;
         }
 
-        public SelectorResult(bool boolValue) {
-            type            = ResultType.Bool;
-            this.boolValue  = boolValue;
+        public SelectorValue(bool value) {
+            type       = ResultType.Bool;
+            boolValue  = value;
         }
         
         public override string ToString() {
@@ -88,7 +88,7 @@ namespace Friflo.Json.Mapper.Graph
             switch (type) {
                 case ResultType.Array:
                 case ResultType.Object:
-                    sb.Append(value);
+                    sb.Append(stringValue);
                     break;
                 case ResultType.Double:
                     sb.Append(doubleValue);
@@ -98,7 +98,7 @@ namespace Friflo.Json.Mapper.Graph
                     break;
                 case ResultType.String:
                     sb.Append('\'');
-                    sb.Append(value);
+                    sb.Append(stringValue);
                     sb.Append('\'');
                     break;
                 case ResultType.Bool:
@@ -138,7 +138,7 @@ namespace Friflo.Json.Mapper.Graph
         
         internal void InitSelectorResults() {
             foreach (var leaf in leafNodes) {
-                leaf.node.result.items.Clear();
+                leaf.node.result.values.Clear();
             }
         }
 
