@@ -48,7 +48,7 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
 
-    public class SelectorValue
+    public readonly struct SelectorValue
     {
         internal    readonly    ResultType      type;
         internal    readonly    string          stringValue;
@@ -60,21 +60,33 @@ namespace Friflo.Json.Mapper.Graph
         public SelectorValue(ResultType type, string value) {
             this.type   = type;
             stringValue = value;
+            doubleValue = 0;
+            longValue   = 0;
+            boolValue   = false;
         }
         
         public SelectorValue(double value) {
             type        = ResultType.Double;
             doubleValue = value;
+            stringValue = null;
+            longValue   = 0;
+            boolValue   = false;
         }
         
         public SelectorValue(long value) {
             type        = ResultType.Long;
             longValue   = value;
+            stringValue = null;
+            doubleValue = 0;
+            boolValue   = false;
         }
 
         public SelectorValue(bool value) {
-            type       = ResultType.Bool;
-            boolValue  = value;
+            type        = ResultType.Bool;
+            boolValue   = value;
+            stringValue = null;
+            doubleValue = 0;
+            longValue   = 0;
         }
         
         public override string ToString() {
