@@ -27,13 +27,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     ".child",
                     ".unknown"
                 });
-                AreEqual(@"[{""val2"":68}]",    result[0]);
-                AreEqual("[69]",                result[1]);
-                AreEqual("[94.0]",              result[2]);
-                AreEqual("[true]",              result[3]);
-                AreEqual(@"[""one""]",          result[4]);
-                AreEqual("[null]",              result[5]);
-                AreEqual("[]",                  result[6]);
+                AreEqual(@"[{""val2"":68}]",    result[0].ToString());
+                AreEqual("[69]",                result[1].ToString());
+                AreEqual("[94.0]",              result[2].ToString());
+                AreEqual("[true]",              result[3].ToString());
+                AreEqual(@"[""one""]",          result[4].ToString());
+                AreEqual("[null]",              result[5].ToString());
+                AreEqual("[]",                  result[6].ToString());
             }
         }
 
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
                 };
-                IList<string> result = new List<string>();
+                var result = new List<SelectorResults>();
                 for (int n = 0; n < 2; n++) {
                     result = jsonPath.Select(json, selectList);
                 }
@@ -104,11 +104,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        private void AssertStoreResult(IList<string> result) {
-            AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0]);
-            AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1]);
-            AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2]);
-            AreEqual(@"[]",                                                                     result[3]);
+        private void AssertStoreResult(List<SelectorResults> result) {
+            AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0].ToString());
+            AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1].ToString());
+            AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2].ToString());
+            AreEqual(@"[]",                                                                     result[3].ToString());
         }
     }
 }

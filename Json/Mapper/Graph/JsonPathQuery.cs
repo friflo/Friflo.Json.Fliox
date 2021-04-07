@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
@@ -10,6 +9,42 @@ namespace Friflo.Json.Mapper.Graph
     public class SelectorResults
     {
         internal    readonly    List<SelectorResult>    items = new List<SelectorResult>();
+
+        public List<string> AsStringList() {
+            var result = new List<string>();
+            foreach (var item in items) {
+                result.Add(item.value);
+            }
+            return result;
+        }
+
+        public override string ToString() {
+            var sb = new StringBuilder();
+            AppendAsJson(sb);
+            return sb.ToString();
+        }
+        
+        public void AppendAsJson(StringBuilder sb) {
+            switch (items.Count) {
+                case 0:
+                    sb.Append("[]");
+                    break;
+                case 1:
+                    sb.Append('[');
+                    items[0].AppendTo(sb);
+                    sb.Append(']');
+                    break;
+                default:
+                    sb.Append('[');
+                    items[0].AppendTo(sb);
+                    for (int n = 1; n < items.Count; n++) {
+                        sb.Append(',');
+                        items[n].AppendTo(sb);
+                    }
+                    sb.Append(']');
+                    break;
+            }
+        }
     }
 
     public class SelectorResult
@@ -63,8 +98,6 @@ namespace Friflo.Json.Mapper.Graph
     
     public class JsonPathQuery : PathNodeTree<SelectorResults>
     {
-        private    readonly    StringBuilder           sb = new StringBuilder();
-
         internal JsonPathQuery() { }
         
         public JsonPathQuery(IList<string> pathList) {
@@ -83,35 +116,12 @@ namespace Friflo.Json.Mapper.Graph
                 leaf.node.result.items.Clear();
             }
         }
-        
-        public IList<string> GetResult() {
-            var results = new List<string>(leafNodes.Count);
+
+        public List<SelectorResults> GetResult() {
+            var results = new List<SelectorResults>(leafNodes.Count);
             foreach (var leaf in leafNodes) {
-                sb.Clear();
-                var items = leaf.node.result.items;
-                switch (items.Count) {
-                    case 0:
-                        sb.Append("[]");
-                        break;
-                    case 1:
-                        sb.Append('[');
-                        items[0].AppendTo(sb);
-                        sb.Append(']');
-                        break;
-                    default:
-                        sb.Append('[');
-                        items[0].AppendTo(sb);
-                        for (int n = 1; n < items.Count; n++) {
-                            sb.Append(',');
-                            items[n].AppendTo(sb);
-                        }
-                        sb.Append(']');
-                        break;
-                }
-                var value = sb.ToString();
-                results.Add(value);
+                results.Add(leaf.node.result);
             }
-            sb.Clear();
             return results;
         }
     }

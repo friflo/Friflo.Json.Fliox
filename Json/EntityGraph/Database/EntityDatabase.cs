@@ -119,7 +119,6 @@ namespace Friflo.Json.EntityGraph.Database
                 SyncResponse                    syncResponse)
         {
             var jsonPath    = SyncContext.jsonPath;
-            var jsonMapper  = SyncContext.jsonMapper;
             var dependencyResults = new List<ReadDependencyResult>();
             foreach (var dependency in dependencies) {
                 var depContainer = database.GetContainer(dependency.container);
@@ -133,8 +132,8 @@ namespace Friflo.Json.EntityGraph.Database
                         throw new InvalidOperationException($"expect entity dependency available: {id}");
                     }
                     // todo call Select() only once with multiple selectors 
-                    var depIdsJson = jsonPath.Select(depEntity.value.json, dependency.refPath);
-                    var depIds = jsonMapper.Read <List<string>>(depIdsJson);
+                    var selectorResults  = jsonPath.Select(depEntity.value.json, dependency.refPath);
+                    var depIds = selectorResults.AsStringList();
                     dependencyResult.ids.AddRange(depIds);
                     
                     // add dependencies to syncDependencies

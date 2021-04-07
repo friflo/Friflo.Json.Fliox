@@ -21,10 +21,8 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public readonly  JsonPatcher    jsonPatcher = new JsonPatcher();
         public readonly  JsonPath       jsonPath    = new JsonPath();
-        public readonly  JsonMapper     jsonMapper  = new JsonMapper();
 
         public void Dispose() {
-            jsonMapper.Dispose();
             jsonPath.Dispose();
             jsonPatcher.Dispose();
         }

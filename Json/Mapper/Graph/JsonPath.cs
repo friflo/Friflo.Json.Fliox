@@ -23,13 +23,13 @@ namespace Friflo.Json.Mapper.Graph
             serializer.Dispose();
         }
 
-        public string Select(string json, string path, bool pretty = false) {
+        public SelectorResults Select(string json, string path, bool pretty = false) {
             var pathList = new [] {path};
             var result = Select(json, pathList, pretty);
             return result[0];
         }
 
-        public IList<string> Select(string json, IList<string> pathList, bool pretty = false) {
+        public List<SelectorResults> Select(string json, IList<string> pathList, bool pretty = false) {
             pathSelectorQuery.CreateNodeTree(pathList);
             Select(json, pathSelectorQuery, pretty);
             return pathSelectorQuery.GetResult();
