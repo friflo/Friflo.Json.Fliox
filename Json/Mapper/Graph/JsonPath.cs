@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Graph
         private             Bytes                           targetJson = new Bytes(128);
         private             JsonParser                      targetParser;
         
-        private readonly    List<PathNode<SelectorResult>>  nodeStack = new List<PathNode<SelectorResult>>();
+        private readonly    List<PathNode<SelectorResults>> nodeStack = new List<PathNode<SelectorResults>>();
         private readonly    JsonPathQuery                   pathSelectorQuery = new JsonPathQuery();
 
         public void Dispose() {
@@ -51,22 +51,46 @@ namespace Friflo.Json.Mapper.Graph
             return selectorQuery;
         }
 
-        private void AddResult(SelectorResult result) {
+        private void AddResult(SelectorResults results) {
             serializer.InitSerializer();
-            serializer.WriteTree(ref targetParser);
-            var json = serializer.json.ToString();
-            if (result.itemCount > 0) {
-                result.arrayResult.Append(',');
+            WriteTree(ref targetParser, results);
+        }
+        
+        public bool WriteTree(ref JsonParser p, SelectorResults results) {
+            switch (p.Event) {
+                case JsonEvent.ObjectStart:
+                    serializer.ObjectStart();
+                    serializer.WriteObject(ref p);
+                    var json = serializer.json.ToString();
+                    results.items.Add(new SelectorResult(ResultType.Object, json));
+                    return true;
+                case JsonEvent.ArrayStart:
+                    serializer.ArrayStart(true);
+                    serializer.WriteArray(ref p);
+                    json = serializer.json.ToString();
+                    results.items.Add(new SelectorResult(ResultType.Array, json));
+                    return true;
+                case JsonEvent.ValueString:
+                    results.items.Add(new SelectorResult(ResultType.String, p.value.ToString()));
+                    return true;
+                case JsonEvent.ValueNumber:
+                    results.items.Add(new SelectorResult(ResultType.Number, p.value.ToString()));
+                    return true;
+                case JsonEvent.ValueBool:
+                    results.items.Add(new SelectorResult(p.boolValue));
+                    return true;
+                case JsonEvent.ValueNull:
+                    results.items.Add(new SelectorResult(ResultType.Null, null));
+                    return true;
             }
-            result.arrayResult.Append(json);
-            result.itemCount++;
+            return false;
         }
 
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.children.TryGetValue(key, out PathNode<SelectorResult> path)) {
+                if (!node.children.TryGetValue(key, out PathNode<SelectorResults> path)) {
                     targetParser.SkipEvent();
                     continue;
                 }
@@ -112,7 +136,7 @@ namespace Friflo.Json.Mapper.Graph
             while (JsonSerializer.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
-                PathNode<SelectorResult> path;
+                PathNode<SelectorResults> path;
                 if (node.wildcardNode != null) {
                     path = node.wildcardNode;
                 } else {
