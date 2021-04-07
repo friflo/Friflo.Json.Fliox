@@ -52,38 +52,34 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         private void AddResult(SelectorResults results) {
-            serializer.InitSerializer();
-            WriteTree(ref targetParser, results);
-        }
-        
-        private bool WriteTree(ref JsonParser p, SelectorResults results) {
-            switch (p.Event) {
+            switch (targetParser.Event) {
                 case JsonEvent.ObjectStart:
+                    serializer.InitSerializer();
                     serializer.ObjectStart();
-                    serializer.WriteObject(ref p);
+                    serializer.WriteObject(ref targetParser);
                     var json = serializer.json.ToString();
                     results.items.Add(new SelectorResult(ResultType.Object, json));
-                    return true;
+                    return;
                 case JsonEvent.ArrayStart:
+                    serializer.InitSerializer();
                     serializer.ArrayStart(true);
-                    serializer.WriteArray(ref p);
+                    serializer.WriteArray(ref targetParser);
                     json = serializer.json.ToString();
                     results.items.Add(new SelectorResult(ResultType.Array, json));
-                    return true;
+                    return;
                 case JsonEvent.ValueString:
-                    results.items.Add(new SelectorResult(ResultType.String, p.value.ToString()));
-                    return true;
+                    results.items.Add(new SelectorResult(ResultType.String, targetParser.value.ToString()));
+                    return;
                 case JsonEvent.ValueNumber:
-                    results.items.Add(new SelectorResult(ResultType.Number, p.value.ToString()));
-                    return true;
+                    results.items.Add(new SelectorResult(ResultType.Number, targetParser.value.ToString()));
+                    return;
                 case JsonEvent.ValueBool:
-                    results.items.Add(new SelectorResult(p.boolValue));
-                    return true;
+                    results.items.Add(new SelectorResult(targetParser.boolValue));
+                    return;
                 case JsonEvent.ValueNull:
                     results.items.Add(new SelectorResult(ResultType.Null, null));
-                    return true;
+                    return;
             }
-            return false;
         }
 
         private bool TraceObject(ref JsonParser p) {
