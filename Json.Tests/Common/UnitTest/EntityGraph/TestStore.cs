@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(customer, customer2);
             Dependency<Customer>     customer3  = order1.Dependency(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("order-1 - .customer", customer.ToString());
+            AreEqual("'order-1' .customer", customer.ToString());
             
             Exception e;
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(articleDeps, articleDeps2);
             Dependencies<Article>    articleDeps3   = order1.Dependencies(o => o.items.Select(a => a.article));
             AreSame(articleDeps, articleDeps3);
-            AreEqual("order-1 - .items[*].article", articleDeps.ToString());
+            AreEqual("'order-1' .items[*].article", articleDeps.ToString());
             
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
             AreEqual("Dependencies not synced. Dependencies<Article>", e.Message);
