@@ -121,7 +121,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   bool        singleResult;
         internal readonly   string      label;
 
-        public   override   string      ToString() => $"'{parentId}' - '{label}'";
+        public   override   string      ToString() => $"{parentId} - {label}";
         
         internal Dependency(string parentId, string label, bool singleResult) {
             this.parentId       = parentId;
