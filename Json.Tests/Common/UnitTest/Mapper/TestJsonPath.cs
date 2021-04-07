@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual("[69]",                result[1].ToString());
                 AreEqual("[94]",                result[2].ToString());
                 AreEqual("[true]",              result[3].ToString());
-                AreEqual(@"[""one""]",          result[4].ToString());
+                AreEqual("['one']",             result[4].ToString());
                 AreEqual("[null]",              result[5].ToString());
                 AreEqual("[]",                  result[6].ToString());
             }
@@ -105,10 +105,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
 
         private void AssertStoreResult(List<SelectorResults> result) {
-            AreEqual(@"[""The Lord of the Rings"",""Moby Dick""]",                              result[0].ToString());
-            AreEqual(@"[""J. R. R. Tolkien"",""Herman Melville""]",                             result[1].ToString());
-            AreEqual(@"[""The Sermon"",""A Long-expected Party"",""The Shadow of the Past""]",  result[2].ToString());
-            AreEqual(@"[]",                                                                     result[3].ToString());
+            AreEqual("['The Lord of the Rings','Moby Dick']",                           result[0].ToString());
+            AreEqual("['J. R. R. Tolkien','Herman Melville']",                          result[1].ToString());
+            AreEqual("['The Sermon','A Long-expected Party','The Shadow of the Past']", result[2].ToString());
+            AreEqual("[]",                                                              result[3].ToString());
         }
     }
 }

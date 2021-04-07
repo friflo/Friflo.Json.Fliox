@@ -20,11 +20,12 @@ namespace Friflo.Json.Mapper.Graph
 
         public override string ToString() {
             var sb = new StringBuilder();
-            AppendAsJson(sb);
+            AppendItemAsString(sb);
             return sb.ToString();
         }
 
-        private void AppendAsJson(StringBuilder sb) {
+        /// Format as debug string - not as JSON 
+        private void AppendItemAsString(StringBuilder sb) {
             switch (items.Count) {
                 case 0:
                     sb.Append("[]");
@@ -82,7 +83,8 @@ namespace Friflo.Json.Mapper.Graph
             return sb.ToString();
         }
 
-        public void AppendTo(StringBuilder sb) {
+        /// Format as debug string - not as JSON
+        internal void AppendTo(StringBuilder sb) {
             switch (type) {
                 case ResultType.Array:
                 case ResultType.Object:
@@ -95,9 +97,9 @@ namespace Friflo.Json.Mapper.Graph
                     sb.Append(longValue);
                     break;
                 case ResultType.String:
-                    sb.Append('"');
+                    sb.Append('\'');
                     sb.Append(value);
-                    sb.Append('"');
+                    sb.Append('\'');
                     break;
                 case ResultType.Bool:
                     sb.Append(boolValue ? "true": "false");
