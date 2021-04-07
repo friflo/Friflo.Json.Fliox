@@ -11,7 +11,7 @@ namespace Friflo.Json.Mapper.Graph
         internal    readonly    List<SelectorResult>    items = new List<SelectorResult>();
 
         public List<string> AsStringList() {
-            var result = new List<string>();
+            var result = new List<string>(items.Count);
             foreach (var item in items) {
                 result.Add(item.value);
             }
@@ -23,8 +23,8 @@ namespace Friflo.Json.Mapper.Graph
             AppendAsJson(sb);
             return sb.ToString();
         }
-        
-        public void AppendAsJson(StringBuilder sb) {
+
+        private void AppendAsJson(StringBuilder sb) {
             switch (items.Count) {
                 case 0:
                     sb.Append("[]");

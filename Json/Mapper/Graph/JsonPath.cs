@@ -56,7 +56,7 @@ namespace Friflo.Json.Mapper.Graph
             WriteTree(ref targetParser, results);
         }
         
-        public bool WriteTree(ref JsonParser p, SelectorResults results) {
+        private bool WriteTree(ref JsonParser p, SelectorResults results) {
             switch (p.Event) {
                 case JsonEvent.ObjectStart:
                     serializer.ObjectStart();
