@@ -172,9 +172,9 @@ namespace Friflo.Json.EntityGraph.Filter
             var evalResult = operand.Eval();
             foreach (var result in evalResult) {
                 if (result.CompareTo(True) == 0)
-                    return SingleTrue;
+                    return SingleFalse;
             }
-            return SingleFalse;
+            return SingleTrue;
         }
     }
     
