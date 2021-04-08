@@ -68,7 +68,7 @@ namespace Friflo.Json.Mapper.Graph
                     result.values.Add(new SelectorValue(ResultType.Array, json));
                     return;
                 case JsonEvent.ValueString:
-                    result.values.Add(new SelectorValue(ResultType.String, targetParser.value.ToString()));
+                    result.values.Add(new SelectorValue(targetParser.value.ToString()));
                     return;
                 case JsonEvent.ValueNumber:
                     if (targetParser.isFloat)

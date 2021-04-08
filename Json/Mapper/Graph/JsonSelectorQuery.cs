@@ -9,7 +9,9 @@ namespace Friflo.Json.Mapper.Graph
 {
     public class SelectorResult
     {
-        internal    readonly    List<SelectorValue>    values = new List<SelectorValue>();
+        public  readonly    List<SelectorValue>     values = new List<SelectorValue>();
+
+        internal SelectorResult() { }
 
         public List<string> AsStringList() {
             var result = new List<string>(values.Count);
@@ -62,6 +64,11 @@ namespace Friflo.Json.Mapper.Graph
 
         public SelectorValue(ResultType type, string value) {
             this.type   = type;
+            stringValue = value;
+        }
+        
+        public SelectorValue(string value) {
+            type        = ResultType.String;
             stringValue = value;
         }
         
