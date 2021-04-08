@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -53,14 +54,19 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => value;
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue> { new SelectorValue(value) };
-            return result;
+            return new List<SelectorValue> { new SelectorValue(value) };
         }
     }
     
     public class NumberLiteral : GraphOp
     {
-        public double       doubleValue;  // or long
+        public              double      value;  // or long
+        
+        public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
+        
+        internal override List<SelectorValue> Eval() {
+            return new List<SelectorValue> { new SelectorValue(value) };
+        }
     }
     
     public class BooleanLiteral : GraphOp
@@ -79,14 +85,12 @@ namespace Friflo.Json.EntityGraph.Filter
 
     
     // -------------------- binary operators --------------------
-
     // op: Equals, NotEquals, Add, Subtract, Multiply, Divide, Remainder, Min, Max, ...
     //     All, Any, Count, Min, Max, ...
-
-    public abstract class BoolOp : GraphOp {
-    }
     
-    public class Equals : BoolOp
+    public abstract class BoolOp : GraphOp { }
+
+    public abstract class BinaryBoolOp : BoolOp
     {
         public GraphOp      left;
         public GraphOp      right;
@@ -95,25 +99,50 @@ namespace Friflo.Json.EntityGraph.Filter
             left.Init(cx);
             right.Init(cx);
         }
-
+    }
+    
+    public class Equals : BinaryBoolOp
+    {
         internal override List<SelectorValue> Eval() {
-            var leftResult  = left.Eval();
-            var rightResult = right.Eval();
-            var opResult = new OpResult(leftResult, rightResult);
-            foreach (var value in opResult.values) {
-                if (opResult.value.CompareTo(value) == 0)
+            var result = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in result.values) {
+                if (result.value.CompareTo(value) == 0)
+                    return SingleTrue;
+            }
+            return SingleFalse;
+        }
+    }
+
+    public class LessThan : BinaryBoolOp
+    {
+        internal override List<SelectorValue> Eval() {
+            var result = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in result.values) {
+                if (result.value.CompareTo(value) > 0)
                     return SingleTrue;
             }
             return SingleFalse;
         }
     }
     
-    internal readonly struct  OpResult
+    public class GreaterThan : BinaryBoolOp
+    {
+        internal override List<SelectorValue> Eval() {
+            var result = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in result.values) {
+                if (result.value.CompareTo(value) < 0)
+                    return SingleTrue;
+            }
+            return SingleFalse;
+        }
+    }
+    
+    internal readonly struct  BinaryResult
     {
         internal readonly SelectorValue          value;
         internal readonly List<SelectorValue>    values;
 
-        internal OpResult(List<SelectorValue> left, List<SelectorValue> right) {
+        internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
             if (left.Count == 1) {
                 value   = left[0];
                 values  = right;
@@ -127,19 +156,8 @@ namespace Friflo.Json.EntityGraph.Filter
             throw new InvalidOperationException("Expect at least an operation result with one element");
         }
     }
-    
-    public class LessThan : BoolOp
-    {
-        public GraphOp      left;
-        public GraphOp      right;
-    }
-    
-    public class GreaterThan : BoolOp
-    {
-        public GraphOp      left;
-        public GraphOp      right;
-    }
 
+    // -------------------------------------------------------------------------------------
     public class Any : BoolOp
     {
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
