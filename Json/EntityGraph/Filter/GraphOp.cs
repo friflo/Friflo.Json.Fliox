@@ -20,6 +20,9 @@ namespace Friflo.Json.EntityGraph.Filter
         internal virtual List<SelectorValue> Eval() {
             throw new NotImplementedException($"Eval() not implemented for: {GetType().Name}");
         }
+        
+        internal static readonly SelectorValue True  = new SelectorValue(true); 
+        internal static readonly SelectorValue False = new SelectorValue(true);
     }
     
     // -------------------- unary operators --------------------
@@ -118,18 +121,30 @@ namespace Friflo.Json.EntityGraph.Filter
         }
         
         internal override List<SelectorValue> Eval() {
-            var trueValue = new SelectorValue(true); 
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
-                if (result.CompareTo(trueValue) == 0)
-                    return new List<SelectorValue>{ new SelectorValue(true) };
+                if (result.CompareTo(True) == 0)
+                    return new List<SelectorValue>{ True };
             }
-            return new List<SelectorValue>{ new SelectorValue(false) };
+            return new List<SelectorValue>{ False };
         }
     }
     
     public class All : BoolOp
     {
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
+        
+        internal override void Init(GraphOpContext cx) {
+            lambda.Init(cx);
+        }
+        
+        internal override List<SelectorValue> Eval() {
+            var evalResult = lambda.Eval();
+            foreach (var result in evalResult) {
+                if (result.CompareTo(True) != 0)
+                    return new List<SelectorValue>{ False };
+            }
+            return new List<SelectorValue>{ True };
+        }
     }
 }
