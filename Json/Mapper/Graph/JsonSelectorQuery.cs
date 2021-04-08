@@ -48,7 +48,8 @@ namespace Friflo.Json.Mapper.Graph
         }
     }
 
-    public readonly struct SelectorValue
+    /// Note: Could be a readonly struct, but performance degrades and API gets unhandy if so.
+    public class SelectorValue
     {
         internal    readonly    ResultType      type;
         internal    readonly    string          stringValue;
