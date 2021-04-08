@@ -158,14 +158,17 @@ namespace Friflo.Json.EntityGraph.Filter
     }
 
     // -------------------------------------------------------------------------------------
-    public class Any : BoolOp
+    public abstract class UnaryBoolOp : BoolOp
     {
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
         
         internal override void Init(GraphOpContext cx) {
             lambda.Init(cx);
         }
-        
+    }
+    
+    public class Any : UnaryBoolOp
+    {
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
@@ -176,14 +179,8 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class All : BoolOp
+    public class All : UnaryBoolOp
     {
-        public BoolOp       lambda;     // e.g.   i => i.amount < 1
-        
-        internal override void Init(GraphOpContext cx) {
-            lambda.Init(cx);
-        }
-        
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
