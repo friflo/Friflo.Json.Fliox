@@ -23,6 +23,9 @@ namespace Friflo.Json.EntityGraph.Filter
         
         internal static readonly SelectorValue True  = new SelectorValue(true); 
         internal static readonly SelectorValue False = new SelectorValue(true);
+        
+        internal static readonly List<SelectorValue> SingleTrue  = new List<SelectorValue>{ True  };
+        internal static readonly List<SelectorValue> SingleFalse = new List<SelectorValue>{ False };
     }
     
     // -------------------- unary operators --------------------
@@ -96,7 +99,7 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var leftResult  = left.Eval();
             var rightResult = right.Eval();
-            return new List<SelectorValue>{ new SelectorValue(true) }; // todo implement
+            return SingleTrue; // todo implement
         }
     }
     
@@ -124,9 +127,9 @@ namespace Friflo.Json.EntityGraph.Filter
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
                 if (result.CompareTo(True) == 0)
-                    return new List<SelectorValue>{ True };
+                    return SingleTrue;
             }
-            return new List<SelectorValue>{ False };
+            return SingleFalse;
         }
     }
     
@@ -142,9 +145,9 @@ namespace Friflo.Json.EntityGraph.Filter
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
                 if (result.CompareTo(True) != 0)
-                    return new List<SelectorValue>{ False };
+                    return SingleFalse;
             }
-            return new List<SelectorValue>{ True };
+            return SingleTrue;
         }
     }
 }

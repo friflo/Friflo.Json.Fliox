@@ -96,6 +96,8 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public long CompareTo(SelectorValue other) {
+            if (this == other)
+                return 0;
             int typeDiff = type - other.type;
             if (typeDiff != 0)
                 return typeDiff;
