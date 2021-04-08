@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Graph
         private             Bytes                           targetJson = new Bytes(128);
         private             JsonParser                      targetParser;
         
-        private readonly    List<PathNode<SelectorResults>> nodeStack = new List<PathNode<SelectorResults>>();
+        private readonly    List<PathNode<SelectorResult>>  nodeStack = new List<PathNode<SelectorResult>>();
         private readonly    JsonSelectorQuery               selectorQuery = new JsonSelectorQuery();
 
         public void Dispose() {
@@ -23,13 +23,13 @@ namespace Friflo.Json.Mapper.Graph
             serializer.Dispose();
         }
 
-        public SelectorResults Select(string json, string path, bool pretty = false) {
+        public SelectorResult Select(string json, string path, bool pretty = false) {
             var pathList = new [] {path};
             var result = Select(json, pathList, pretty);
             return result[0];
         }
 
-        public List<SelectorResults> Select(string json, IList<string> pathList, bool pretty = false) {
+        public List<SelectorResult> Select(string json, IList<string> pathList, bool pretty = false) {
             selectorQuery.CreateNodeTree(pathList);
             Select(json, selectorQuery, pretty);
             return selectorQuery.GetResult();
@@ -51,36 +51,36 @@ namespace Friflo.Json.Mapper.Graph
             return selectorQuery;
         }
 
-        private void AddResult(SelectorResults results) {
+        private void AddResult(SelectorResult result) {
             switch (targetParser.Event) {
                 case JsonEvent.ObjectStart:
                     serializer.InitSerializer();
                     serializer.ObjectStart();
                     serializer.WriteObject(ref targetParser);
                     var json = serializer.json.ToString();
-                    results.values.Add(new SelectorValue(ResultType.Object, json));
+                    result.values.Add(new SelectorValue(ResultType.Object, json));
                     return;
                 case JsonEvent.ArrayStart:
                     serializer.InitSerializer();
                     serializer.ArrayStart(true);
                     serializer.WriteArray(ref targetParser);
                     json = serializer.json.ToString();
-                    results.values.Add(new SelectorValue(ResultType.Array, json));
+                    result.values.Add(new SelectorValue(ResultType.Array, json));
                     return;
                 case JsonEvent.ValueString:
-                    results.values.Add(new SelectorValue(ResultType.String, targetParser.value.ToString()));
+                    result.values.Add(new SelectorValue(ResultType.String, targetParser.value.ToString()));
                     return;
                 case JsonEvent.ValueNumber:
                     if (targetParser.isFloat)
-                        results.values.Add(new SelectorValue(targetParser.ValueAsDouble(out bool _)));
+                        result.values.Add(new SelectorValue(targetParser.ValueAsDouble(out bool _)));
                     else
-                        results.values.Add(new SelectorValue(targetParser.ValueAsLong(out bool _)));
+                        result.values.Add(new SelectorValue(targetParser.ValueAsLong(out bool _)));
                     return;
                 case JsonEvent.ValueBool:
-                    results.values.Add(new SelectorValue(targetParser.boolValue));
+                    result.values.Add(new SelectorValue(targetParser.boolValue));
                     return;
                 case JsonEvent.ValueNull:
-                    results.values.Add(new SelectorValue(ResultType.Null, null));
+                    result.values.Add(new SelectorValue(ResultType.Null, null));
                     return;
             }
         }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Mapper.Graph
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.children.TryGetValue(key, out PathNode<SelectorResults> path)) {
+                if (!node.children.TryGetValue(key, out PathNode<SelectorResult> path)) {
                     targetParser.SkipEvent();
                     continue;
                 }
@@ -135,7 +135,7 @@ namespace Friflo.Json.Mapper.Graph
             while (JsonSerializer.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
-                PathNode<SelectorResults> path;
+                PathNode<SelectorResult> path;
                 if (node.wildcardNode != null) {
                     path = node.wildcardNode;
                 } else {

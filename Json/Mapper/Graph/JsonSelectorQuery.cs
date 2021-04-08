@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
-    public class SelectorResults
+    public class SelectorResult
     {
         internal    readonly    List<SelectorValue>    values = new List<SelectorValue>();
 
@@ -134,7 +134,7 @@ namespace Friflo.Json.Mapper.Graph
         Null
     }
     
-    public class JsonSelectorQuery : PathNodeTree<SelectorResults>
+    public class JsonSelectorQuery : PathNodeTree<SelectorResult>
     {
         internal JsonSelectorQuery() { }
         
@@ -145,7 +145,7 @@ namespace Friflo.Json.Mapper.Graph
         internal new void CreateNodeTree(IList<string> pathList) {
             base.CreateNodeTree(pathList);
             foreach (var leaf in leafNodes) {
-                leaf.node.result = new SelectorResults ();
+                leaf.node.result = new SelectorResult ();
             }
         }
         
@@ -155,8 +155,8 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
 
-        public List<SelectorResults> GetResult() {
-            var results = new List<SelectorResults>(leafNodes.Count);
+        public List<SelectorResult> GetResult() {
+            var results = new List<SelectorResult>(leafNodes.Count);
             foreach (var leaf in leafNodes) {
                 results.Add(leaf.node.result);
             }

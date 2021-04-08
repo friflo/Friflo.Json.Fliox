@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
                 };
-                var result = new List<SelectorResults>();
+                var result = new List<SelectorResult>();
                 for (int n = 0; n < 2; n++) {
                     result = jsonSelector.Select(json, selectList);
                 }
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        private void AssertStoreResult(List<SelectorResults> result) {
+        private void AssertStoreResult(List<SelectorResult> result) {
             AreEqual("['The Lord of the Rings','Moby Dick']",                           result[0].ToString());
             AreEqual("['J. R. R. Tolkien','Herman Melville']",                          result[1].ToString());
             AreEqual("['The Sermon','A Long-expected Party','The Shadow of the Past']", result[2].ToString());
