@@ -32,14 +32,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var johnJson = jsonMapper.Write(john);
 
                 // ---
-                var isPeter = new Equals {
-                    left    = new StringLiteral   { value = "Peter"  },
-                    right   = new Field           { field = ".name"  }
-                };
-                var isAgeGreater35 = new GreaterThan {
-                    left   = new Field           { field = ".age"  },
-                    right  = new NumberLiteral   { value = 35  }
-                };
+                var isPeter         = new Equals( new StringLiteral ("Peter"), new Field (".name"));
+                var isAgeGreater35  = new GreaterThan( new Field (".age"), new NumberLiteral (35));
+            
                 bool IsPeter(Person p) => p.name == "Peter";
                 IsTrue (IsPeter(peter));
                 IsTrue (filter.Filter(peterJson, isPeter));
@@ -52,18 +47,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 
                 // ---
-                var hasChildPaul = new Any {
-                    lambda = new Equals {
-                        left    = new StringLiteral   { value = "Paul"  },    
-                        right   = new Field           { field = ".children[*].name"  },
-                    }
-                };
-                var hasChildAgeLess12 = new Any {
-                    lambda = new LessThan {
-                        left   = new Field           { field = ".children[*].age"  },
-                        right  = new NumberLiteral   { value = 12  },
-                    }
-                };
+                var hasChildPaul = new Any (
+                    new Equals (new StringLiteral ("Paul"), new Field (".children[*].name"))
+                );
+                var hasChildAgeLess12 = new Any (
+                    new LessThan ( new Field (".children[*].age"), new NumberLiteral (12))
+                );
                 bool HasChildPaul(Person p) => p.children.Any((child) => child.name == "Paul");
                 IsTrue (HasChildPaul(peter));
                 IsTrue (filter.Filter(peterJson, hasChildPaul));

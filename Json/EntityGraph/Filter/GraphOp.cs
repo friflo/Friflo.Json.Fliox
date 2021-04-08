@@ -39,6 +39,8 @@ namespace Friflo.Json.EntityGraph.Filter
         public          List<SelectorValue>     values = new List<SelectorValue>();
 
         public override string                  ToString() => field;
+        
+        public Field(string field) { this.field = field; }
 
         internal override void Init(GraphOpContext cx) {
             cx.selectors.TryAdd(field, this);
@@ -52,7 +54,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public              string      value;
         
         public override     string      ToString() => $"\"{value}\"";
-        
+
+        public StringLiteral(string value) { this.value = value; }
+
         internal override List<SelectorValue> Eval() {
             return new List<SelectorValue> { new SelectorValue(value) };
         }
@@ -61,8 +65,10 @@ namespace Friflo.Json.EntityGraph.Filter
     public class NumberLiteral : GraphOp
     {
         public              double      value;  // or long
-        
+
         public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
+        
+        public NumberLiteral(double value) { this.value = value; }
         
         internal override List<SelectorValue> Eval() {
             return new List<SelectorValue> { new SelectorValue(value) };
@@ -94,6 +100,11 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public GraphOp      left;
         public GraphOp      right;
+
+        protected BinaryBoolOp(GraphOp left, GraphOp right) {
+            this.left = left;
+            this.right = right;
+        }
         
         internal override void Init(GraphOpContext cx) {
             left.Init(cx);
@@ -103,6 +114,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class Equals : BinaryBoolOp
     {
+        public Equals(GraphOp left, GraphOp right) : base(left, right) { }
+
         public override     string      ToString() => $"{left} == {right}";
         
         internal override List<SelectorValue> Eval() {
@@ -117,6 +130,8 @@ namespace Friflo.Json.EntityGraph.Filter
 
     public class LessThan : BinaryBoolOp
     {
+        public LessThan(GraphOp left, GraphOp right) : base(left, right) { }
+        
         public override     string      ToString() => $"{left} < {right}";
         
         internal override List<SelectorValue> Eval() {
@@ -131,6 +146,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class GreaterThan : BinaryBoolOp
     {
+        public GreaterThan(GraphOp left, GraphOp right) : base(left, right) { }
+        
         public override     string      ToString() => $"{left} > {right}";
         
         internal override List<SelectorValue> Eval() {
@@ -174,6 +191,8 @@ namespace Friflo.Json.EntityGraph.Filter
     public abstract class UnaryBoolOp : BoolOp
     {
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
+
+        public UnaryBoolOp(BoolOp lambda) { this.lambda = lambda; }
         
         internal override void Init(GraphOpContext cx) {
             lambda.Init(cx);
@@ -183,6 +202,8 @@ namespace Friflo.Json.EntityGraph.Filter
     public class Any : UnaryBoolOp
     {
         public override     string      ToString() => $"Any({lambda})";
+        
+        public Any(BoolOp lambda) : base(lambda) { }
         
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
@@ -197,6 +218,8 @@ namespace Friflo.Json.EntityGraph.Filter
     public class All : UnaryBoolOp
     {
         public override     string      ToString() => $"All({lambda})";
+        
+        public All(BoolOp lambda) : base(lambda) { }
         
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
