@@ -22,7 +22,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
         
         internal static readonly SelectorValue True  = new SelectorValue(true); 
-        internal static readonly SelectorValue False = new SelectorValue(true);
+        internal static readonly SelectorValue False = new SelectorValue(false);
         
         internal static readonly List<SelectorValue> SingleTrue  = new List<SelectorValue>{ True  };
         internal static readonly List<SelectorValue> SingleFalse = new List<SelectorValue>{ False };
@@ -99,7 +99,32 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var leftResult  = left.Eval();
             var rightResult = right.Eval();
-            return SingleTrue; // todo implement
+            var opResult = new OpResult(leftResult, rightResult);
+            foreach (var value in opResult.values) {
+                if (opResult.value.CompareTo(value) == 0)
+                    return SingleTrue;
+            }
+            return SingleFalse;
+        }
+    }
+    
+    internal readonly struct  OpResult
+    {
+        internal readonly SelectorValue          value;
+        internal readonly List<SelectorValue>    values;
+
+        internal OpResult(List<SelectorValue> left, List<SelectorValue> right) {
+            if (left.Count == 1) {
+                value   = left[0];
+                values  = right;
+                return;
+            }
+            if (right.Count == 1) {
+                value   = right[0];
+                values  = left;
+                return;
+            }
+            throw new InvalidOperationException("Expect at least an operation result with one element");
         }
     }
     

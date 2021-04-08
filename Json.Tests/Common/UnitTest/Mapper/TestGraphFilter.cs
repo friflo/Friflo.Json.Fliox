@@ -22,30 +22,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var filter       = new JsonFilter())
             using (var jsonMapper   = new JsonMapper())
             {
-                var person = new Person { name = "Peter" };
-                person.children.Add(new Person { name = "Paul" });
-                person.children.Add(new Person { name = "Marry" });
-                var json = jsonMapper.Write(person);
+                var peter = new Person { name = "Peter" };
+                peter.children.Add(new Person { name = "Paul" });
+                peter.children.Add(new Person { name = "Marry" });
+                var peterJson = jsonMapper.Write(peter);
                 
+                var john = new Person { name = "John" };
+                john.children.Add(new Person { name = "Simon" });
+                var johnJson = jsonMapper.Write(john);
+
                 // ---
                 var isPeter = new Equals {
                     left    = new StringLiteral   { value = "Peter"  },
                     right   = new Field           { field = ".name"  }
                 };
                 bool IsPeter(Person p) => p.name == "Peter";
-                IsTrue(IsPeter(person));
-                filter.Filter(json, isPeter);
+                IsTrue (IsPeter(peter));
+                IsTrue (filter.Filter(peterJson, isPeter));
+                IsFalse(filter.Filter(johnJson,  isPeter));
                 
                 // ---
                 var hasChildPaul = new Any {
                     lambda = new Equals {
-                        right = new StringLiteral   { value = "Paul"  },    
-                        left  = new Field           { field = ".children[*].name"  },
+                        left    = new StringLiteral   { value = "Paul"  },    
+                        right   = new Field           { field = ".children[*].name"  },
                     }
                 };
                 bool HasChildPaul(Person p) => p.children.Any((child) => child.name == "Paul");
-                IsTrue(HasChildPaul(person));
-                filter.Filter(json, hasChildPaul);
+                IsTrue (HasChildPaul(peter));
+                IsTrue (filter.Filter(peterJson, hasChildPaul));
+                IsFalse(filter.Filter(johnJson,  hasChildPaul));
             }
         }
     }
