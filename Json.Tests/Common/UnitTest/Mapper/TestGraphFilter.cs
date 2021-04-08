@@ -23,9 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var jsonMapper   = new JsonMapper())
             {
                 var person = new Person { name = "Peter" };
-                var json = jsonMapper.Write(person);
                 person.children.Add(new Person { name = "Paul" });
                 person.children.Add(new Person { name = "Marry" });
+                var json = jsonMapper.Write(person);
                 
                 // ---
                 var isPeter = new Equals {

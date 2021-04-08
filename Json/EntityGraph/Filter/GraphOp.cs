@@ -28,10 +28,10 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class Field : GraphOp
     {
-        public string               field;
-        public List<SelectorValue>  values = new List<SelectorValue>();
+        public          string                  field;
+        public          List<SelectorValue>     values = new List<SelectorValue>();
 
-        public override string ToString() => field;
+        public override string                  ToString() => field;
 
         internal override void Init(GraphOpContext cx) {
             cx.selectors.TryAdd(field, this);
@@ -42,8 +42,10 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class StringLiteral : GraphOp
     {
-        public string       value;
-
+        public              string      value;
+        
+        public override     string      ToString() => value;
+        
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue> { new SelectorValue(value) };
             return result;
@@ -91,7 +93,7 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var leftResult  = left.Eval();
             var rightResult = right.Eval();
-            return null;
+            return new List<SelectorValue>{ new SelectorValue(true) }; // todo implement
         }
     }
     
@@ -111,8 +113,18 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
         
+        internal override void Init(GraphOpContext cx) {
+            lambda.Init(cx);
+        }
+        
         internal override List<SelectorValue> Eval() {
-            return null;
+            var trueValue = new SelectorValue(true); 
+            var evalResult = lambda.Eval();
+            foreach (var result in evalResult) {
+                if (result.CompareTo(trueValue) == 0)
+                    return new List<SelectorValue>{ new SelectorValue(true) };
+            }
+            return new List<SelectorValue>{ new SelectorValue(false) };
         }
     }
     
