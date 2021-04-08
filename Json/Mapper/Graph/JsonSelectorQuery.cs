@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -52,7 +53,8 @@ namespace Friflo.Json.Mapper.Graph
     public class SelectorValue
     {
         internal    readonly    ResultType      type;
-        internal    readonly    string          stringValue;
+        internal    readonly    string          stringValue; 
+        internal    readonly    bool            isFloat;
         internal    readonly    double          doubleValue;
         internal    readonly    long            longValue;
         internal    readonly    bool            boolValue;
@@ -61,39 +63,56 @@ namespace Friflo.Json.Mapper.Graph
         public SelectorValue(ResultType type, string value) {
             this.type   = type;
             stringValue = value;
-            doubleValue = 0;
-            longValue   = 0;
-            boolValue   = false;
         }
         
         public SelectorValue(double value) {
-            type        = ResultType.Double;
+            type        = ResultType.Number;
+            isFloat     = true;
             doubleValue = value;
-            stringValue = null;
-            longValue   = 0;
-            boolValue   = false;
         }
         
         public SelectorValue(long value) {
-            type        = ResultType.Long;
+            type        = ResultType.Number;
+            isFloat     = false;
             longValue   = value;
-            stringValue = null;
-            doubleValue = 0;
-            boolValue   = false;
         }
 
         public SelectorValue(bool value) {
             type        = ResultType.Bool;
             boolValue   = value;
-            stringValue = null;
-            doubleValue = 0;
-            longValue   = 0;
         }
         
         public override string ToString() {
             var sb = new StringBuilder();
             AppendTo(sb);
             return sb.ToString();
+        }
+
+        public long CompareTo(SelectorValue other) {
+            int typeDiff = type - other.type;
+            if (typeDiff != 0)
+                return typeDiff;
+            switch (type) {
+                case ResultType.String:
+                    return String.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
+                case ResultType.Number:
+                    if (isFloat) {
+                        if (other.isFloat)
+                            return (long) (doubleValue - other.doubleValue);
+                        return (long) (doubleValue - other.longValue);
+                    }
+                    if (other.isFloat)
+                        return (long) (longValue - other.doubleValue);
+                    return longValue - other.longValue;
+                case ResultType.Bool:
+                    long b1 = boolValue ? 1 : 0;
+                    long b2 = other.boolValue ? 1 : 0;
+                    return b1 - b2;
+                case ResultType.Null:
+                    return 0;
+                default:
+                    throw new NotSupportedException($"SelectorValue does not support Compare for: {type}");                
+            }
         }
 
         /// Format as debug string - not as JSON
@@ -103,11 +122,11 @@ namespace Friflo.Json.Mapper.Graph
                 case ResultType.Object:
                     sb.Append(stringValue);
                     break;
-                case ResultType.Double:
-                    sb.Append(doubleValue);
-                    break;
-                case ResultType.Long:
-                    sb.Append(longValue);
+                case ResultType.Number:
+                    if (isFloat)
+                        sb.Append(doubleValue);
+                    else
+                        sb.Append(longValue);
                     break;
                 case ResultType.String:
                     sb.Append('\'');
@@ -125,13 +144,12 @@ namespace Friflo.Json.Mapper.Graph
     }
 
     public enum ResultType {
-        Array,
-        Object,
         String,
-        Double,
-        Long,
+        Number,
         Bool,
-        Null
+        Null,
+        Array,
+        Object
     }
     
     public class JsonSelectorQuery : PathNodeTree<SelectorResult>
