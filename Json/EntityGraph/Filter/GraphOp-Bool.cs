@@ -9,7 +9,7 @@ namespace Friflo.Json.EntityGraph.Filter
 {
     public abstract class BoolOp : GraphOp { }
 
-    // ---------------------------------------- BinaryBoolOp ----------------------------------------
+    // -------------------------------------- comparison operators --------------------------------------
     public abstract class BinaryBoolOp : BoolOp
     {
         public GraphOp      left;
@@ -149,26 +149,43 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
 
-    // ---------------------------------------- UnaryBoolOp ----------------------------------------
+    // -------------------------------------- logical operators --------------------------------------
+    // --- unary logical operators
     public abstract class UnaryBoolOp : BoolOp
     {
-        public BoolOp       lambda;     // e.g.   i => i.amount < 1
+        public BoolOp       operand;     // e.g.   i => i.amount < 1
 
-        public UnaryBoolOp(BoolOp lambda) { this.lambda = lambda; }
+        public UnaryBoolOp(BoolOp operand) { this.operand = operand; }
         
         internal override void Init(GraphOpContext cx) {
-            lambda.Init(cx);
+            operand.Init(cx);
+        }
+    }
+    
+    public class Not : UnaryBoolOp
+    {
+        public override     string      ToString() => $"!({operand})";
+        
+        public Not(BoolOp operand) : base(operand) { }
+        
+        internal override List<SelectorValue> Eval() {
+            var evalResult = operand.Eval();
+            foreach (var result in evalResult) {
+                if (result.CompareTo(True) == 0)
+                    return SingleTrue;
+            }
+            return SingleFalse;
         }
     }
     
     public class Any : UnaryBoolOp
     {
-        public override     string      ToString() => $"Any({lambda})";
+        public override     string      ToString() => $"Any({operand})";
         
-        public Any(BoolOp lambda) : base(lambda) { }
+        public Any(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
-            var evalResult = lambda.Eval();
+            var evalResult = operand.Eval();
             foreach (var result in evalResult) {
                 if (result.CompareTo(True) == 0)
                     return SingleTrue;
@@ -179,12 +196,12 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class All : UnaryBoolOp
     {
-        public override     string      ToString() => $"All({lambda})";
+        public override     string      ToString() => $"All({operand})";
         
-        public All(BoolOp lambda) : base(lambda) { }
+        public All(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
-            var evalResult = lambda.Eval();
+            var evalResult = operand.Eval();
             foreach (var result in evalResult) {
                 if (result.CompareTo(True) != 0)
                     return SingleFalse;
@@ -192,4 +209,59 @@ namespace Friflo.Json.EntityGraph.Filter
             return SingleTrue;
         }
     }
+    
+    // --- (n-ary) group logical operators
+    public abstract class GroupBoolOp : BoolOp
+    {
+        public List<BoolOp>       operands;
+
+        public GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
+        
+        internal override void Init(GraphOpContext cx) {
+            foreach (var operand in operands) {
+                operand.Init(cx);
+            }
+        }
+    }
+    
+    public class And : GroupBoolOp
+    {
+        public override     string      ToString() => string.Join(" && ", operands);
+        
+        public And(List<BoolOp> operands) : base(operands) { }
+        
+        internal override List<SelectorValue> Eval() {
+            var results = new List<SelectorValue>();
+            foreach (var operand in operands) {
+                var result = operand.Eval();
+                results.AddRange(result);
+            }
+            foreach (var result in results) {
+                if (result.CompareTo(True) != 0)
+                    return SingleFalse;
+            }
+            return SingleTrue;
+        }
+    }
+    
+    public class Or : GroupBoolOp
+    {
+        public override     string      ToString() => string.Join(" && ", operands);
+        
+        public Or(List<BoolOp> operands) : base(operands) { }
+        
+        internal override List<SelectorValue> Eval() {
+            var results = new List<SelectorValue>();
+            foreach (var operand in operands) {
+                var result = operand.Eval();
+                results.AddRange(result);
+            }
+            foreach (var result in results) {
+                if (result.CompareTo(True) == 0)
+                    return SingleTrue;
+            }
+            return SingleFalse;
+        }
+    }
+    
 }
