@@ -1,34 +1,51 @@
-﻿using Friflo.Json.EntityGraph.Filter;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Friflo.Json.EntityGraph.Filter;
 using Friflo.Json.Mapper;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
+// ReSharper disable CollectionNeverQueried.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {
-    public class FilterRoot
+    public class Person
     {
-        public string name;
+        public          string       name;
+        public readonly List<Person> children = new List<Person>();
     }
     
     public static class TestGraphFilter
     {
         [Test]
         public static void Test () {
-
-            var equals = new Equals {
-                left  = new Field           { field = ".name"  },
-                right = new StringLiteral   { value = "Smith"  }
-            };
-
-            var root = new FilterRoot {
-                name = "Smith"
-            };
-
             using (var filter       = new JsonFilter())
             using (var jsonMapper   = new JsonMapper())
             {
-                var json = jsonMapper.Write(root);
+                var person = new Person { name = "Peter" };
+                var json = jsonMapper.Write(person);
+                person.children.Add(new Person { name = "Paul" });
+                person.children.Add(new Person { name = "Marry" });
                 
-                filter.Filter(json, equals);
+                // ---
+                var isPeter = new Equals {
+                    left    = new StringLiteral   { value = "Peter"  },
+                    right   = new Field           { field = ".name"  }
+                };
+                bool IsPeter(Person p) => p.name == "Peter";
+                IsTrue(IsPeter(person));
+                filter.Filter(json, isPeter);
+                
+                // ---
+                var hasChildPaul = new Any {
+                    lambda = new Equals {
+                        right = new StringLiteral   { value = "Paul"  },    
+                        left  = new Field           { field = ".children[*].name"  },
+                    }
+                };
+                bool HasChildPaul(Person p) => p.children.Any((child) => child.name == "Paul");
+                IsTrue(HasChildPaul(person));
+                filter.Filter(json, hasChildPaul);
             }
         }
     }

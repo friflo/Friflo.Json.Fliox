@@ -109,13 +109,15 @@ namespace Friflo.Json.EntityGraph.Filter
 
     public class Any : BoolOp
     {
-        public GraphOp      array;      // Field referencing an enumerable
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
+        
+        internal override List<SelectorValue> Eval() {
+            return null;
+        }
     }
     
     public class All : BoolOp
     {
-        public GraphOp      array;      // Field referencing an enumerable
         public BoolOp       lambda;     // e.g.   i => i.amount < 1
     }
 }
