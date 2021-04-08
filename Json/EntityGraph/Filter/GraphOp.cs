@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public              string      value;
         
-        public override     string      ToString() => value;
+        public override     string      ToString() => $"\"{value}\"";
         
         internal override List<SelectorValue> Eval() {
             return new List<SelectorValue> { new SelectorValue(value) };
@@ -103,6 +103,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class Equals : BinaryBoolOp
     {
+        public override     string      ToString() => $"{left} == {right}";
+        
         internal override List<SelectorValue> Eval() {
             var result = new BinaryResult(left.Eval(), right.Eval());
             foreach (var value in result.values) {
@@ -115,10 +117,12 @@ namespace Friflo.Json.EntityGraph.Filter
 
     public class LessThan : BinaryBoolOp
     {
+        public override     string      ToString() => $"{left} < {right}";
+        
         internal override List<SelectorValue> Eval() {
             var result = new BinaryResult(left.Eval(), right.Eval());
             foreach (var value in result.values) {
-                if (result.value.CompareTo(value) > 0)
+                if (result.Order(result.value.CompareTo(value) < 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -127,10 +131,12 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class GreaterThan : BinaryBoolOp
     {
+        public override     string      ToString() => $"{left} > {right}";
+        
         internal override List<SelectorValue> Eval() {
             var result = new BinaryResult(left.Eval(), right.Eval());
             foreach (var value in result.values) {
-                if (result.value.CompareTo(value) < 0)
+                if (result.Order(result.value.CompareTo(value) > 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -139,21 +145,28 @@ namespace Friflo.Json.EntityGraph.Filter
     
     internal readonly struct  BinaryResult
     {
-        internal readonly SelectorValue          value;
-        internal readonly List<SelectorValue>    values;
+        internal readonly SelectorValue         value;
+        internal readonly List<SelectorValue>   values;
+        internal readonly bool                  swap;
 
         internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
             if (left.Count == 1) {
                 value   = left[0];
                 values  = right;
+                swap    = false;
                 return;
             }
             if (right.Count == 1) {
                 value   = right[0];
                 values  = left;
+                swap    = true;
                 return;
             }
             throw new InvalidOperationException("Expect at least an operation result with one element");
+        }
+
+        internal bool Order(bool condition) {
+            return swap ? !condition : condition;
         }
     }
 
@@ -169,6 +182,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class Any : UnaryBoolOp
     {
+        public override     string      ToString() => $"Any({lambda})";
+        
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
@@ -181,6 +196,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class All : UnaryBoolOp
     {
+        public override     string      ToString() => $"All({lambda})";
+        
         internal override List<SelectorValue> Eval() {
             var evalResult = lambda.Eval();
             foreach (var result in evalResult) {
