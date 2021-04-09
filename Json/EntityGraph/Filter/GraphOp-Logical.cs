@@ -6,14 +6,15 @@ using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
-    public abstract class BoolOp : GraphOp { }
+    public abstract class BoolOp : GraphOp
+    {
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+    }
     
     // ----------------------------------- unary logical operators -----------------------------------
     public abstract class UnaryBoolOp : BoolOp
     {
         protected           BoolOp              operand;     // e.g.   i => i.amount < 1
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
-
 
         protected UnaryBoolOp(BoolOp operand) { this.operand = operand; }
         
@@ -75,15 +76,12 @@ namespace Friflo.Json.EntityGraph.Filter
     public abstract class GroupBoolOp : BoolOp
     {
         protected           List<BoolOp>        operands;
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
-
 
         protected GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
         
         internal override void Init(GraphOpContext cx) {
             cx.ValidateReuse(this); // results are reused
             foreach (var operand in operands) {
-                cx.ValidateReuse(operand);
                 operand.Init(cx);
             }
         }

@@ -74,11 +74,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 
                 // ------------------------------ Test runtime assertions ------------------------------
-                var assertTest = new Equals(isAgeGreater35, isAgeGreater35);
-                var e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, assertTest));
+                Exception e;
+                // --- compare operators must not be reused
+                var reuseCompareOp = new Equals(isAgeGreater35, isAgeGreater35);
+                e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, reuseCompareOp));
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
+                
+                // --- group operators must not be reused
+                var testGroupOp = new And(new List<BoolOp> {new Equals(new StringLiteral("A"), new StringLiteral("B"))});
+                var reuseGroupOp = new Equals(testGroupOp, testGroupOp);
+                e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, reuseGroupOp));
+                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: \"A\" == \"B\"", e.Message);
 
-                // literal and field operators are applicable for reuse
+                // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
                 var reuseLiterals = new Equals(testLiteral, testLiteral);
                 filter.Filter(peterJson, reuseLiterals);
