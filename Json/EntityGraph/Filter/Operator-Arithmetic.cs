@@ -6,14 +6,31 @@ using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
+    // ------------------------------------ unary arithmetic operators ------------------------------------
+    public abstract class UnaryArithmeticOp : BoolOp
+    {
+        protected           Operator            operand;
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+
+        protected UnaryArithmeticOp(Operator operand) { this.operand = operand; }
+        
+        internal override void Init(GraphOpContext cx) {
+            cx.ValidateReuse(this); // results are reused
+            operand.Init(cx);
+        }
+    }
+    
+    
+    
+    
     // ------------------------------------ binary arithmetic operators ------------------------------------
-    public abstract class ArithmeticOp : Operator
+    public abstract class BinaryArithmeticOp : Operator
     {
         protected           Operator            left;
         protected           Operator            right;
         protected readonly  List<SelectorValue> results = new List<SelectorValue>();
         
-        protected ArithmeticOp(Operator left, Operator right) {
+        protected BinaryArithmeticOp(Operator left, Operator right) {
             this.left = left;
             this.right = right;
         }
@@ -25,7 +42,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class Add : ArithmeticOp
+    public class Add : BinaryArithmeticOp
     {
         public Add(Operator left, Operator right) : base(left, right) { }
 
@@ -42,7 +59,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class Subtract : ArithmeticOp
+    public class Subtract : BinaryArithmeticOp
     {
         public Subtract(Operator left, Operator right) : base(left, right) { }
 
@@ -59,7 +76,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class Multiply : ArithmeticOp
+    public class Multiply : BinaryArithmeticOp
     {
         public Multiply(Operator left, Operator right) : base(left, right) { }
 
@@ -76,7 +93,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class Divide : ArithmeticOp
+    public class Divide : BinaryArithmeticOp
     {
         public Divide(Operator left, Operator right) : base(left, right) { }
 
