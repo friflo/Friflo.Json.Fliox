@@ -30,9 +30,12 @@ namespace Friflo.Json.EntityGraph.Filter
             }
 
             var evalResult = filter.Eval();
-            if (evalResult.Count == 1 && evalResult[0].CompareTo(Operator.True) == 0)
-                return true;
-            return false;
+            
+            foreach (var result in evalResult) {
+                if (result.CompareTo(Operator.True) != 0)
+                    return false;
+            }
+            return true;
         }
         
         public object Eval(string json, Operator op) {

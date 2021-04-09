@@ -70,7 +70,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var allChildAgeEquals20 = new All (new Equals(new Field (".children[*].age"), new NumberLiteral (20)));
                 IsTrue (filter.Filter(peterJson, allChildAgeEquals20));
                 IsFalse(filter.Filter(johnJson,  allChildAgeEquals20));
-
+                
+                
+                // --- test with arithmetic operations
+                var  isAge40  = new Equals(new Field (".age"), new Add(new NumberLiteral (35), new NumberLiteral(5)));
+                IsTrue  (filter.Filter(peterJson, isAge40));
+                
+                var  isChildAge20  = new Equals(new Field (".children[*].age"), new Add(new NumberLiteral (15), new NumberLiteral(5)));
+                IsTrue  (filter.Filter(peterJson, isChildAge20));
+                
                 
                 
                 // ------------------------------ Test runtime assertions ------------------------------

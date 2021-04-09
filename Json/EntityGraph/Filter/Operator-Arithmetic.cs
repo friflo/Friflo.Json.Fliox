@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public Divide(Operator left, Operator right) : base(left, right) { }
 
-        public override     string      ToString() => $"{left} * {right}";
+        public override     string      ToString() => $"{left} / {right}";
         
         internal override List<SelectorValue> Eval() {
             results.Clear();
