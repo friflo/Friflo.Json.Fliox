@@ -5,20 +5,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Friflo.Json.Mapper.Graph;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.EntityGraph.Filter
 {
     // ------------------------------------- BinaryResult -------------------------------------
-    internal readonly struct BinaryPair {
+    internal readonly struct N_aryPair {
         internal readonly SelectorValue left;
         internal readonly SelectorValue right;
 
-        internal BinaryPair(SelectorValue left, SelectorValue right) {
+        internal N_aryPair(SelectorValue left, SelectorValue right) {
             this.left  = left;
             this.right = right;
         }
     }
     
-    internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>
+    internal struct N_aryResultEnumerator : IEnumerator<N_aryPair>
     {
         private readonly    SelectorValue       singleLeft;
         private readonly    SelectorValue       singleRight;
@@ -27,7 +28,7 @@ namespace Friflo.Json.EntityGraph.Filter
         private readonly    int                 last;
         private             int                 pos;
         
-        internal BinaryResultEnumerator(BinaryResult binaryResult) {
+        internal N_aryResultEnumerator(N_aryResult binaryResult) {
             left  = binaryResult.left;
             right = binaryResult.right;
             singleLeft  = left. Count == 1 ? left [0] : null;
@@ -45,11 +46,11 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public void Reset() { pos = -1; }
 
-        public BinaryPair Current {
+        public N_aryPair Current {
             get {
                 var leftResult  = singleLeft  ?? left [pos];
                 var rightResult = singleRight ?? right[pos];
-                return new BinaryPair(leftResult, rightResult);
+                return new N_aryPair(leftResult, rightResult);
             }
         }
 
@@ -58,12 +59,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public void Dispose() { }
     } 
     
-    internal readonly struct  BinaryResult : IEnumerable<BinaryPair>
+    internal readonly struct  N_aryResult : IEnumerable<N_aryPair>
     {
         internal  readonly List<SelectorValue>   left;
         internal  readonly List<SelectorValue>   right;
 
-        internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
+        internal N_aryResult(List<SelectorValue> left, List<SelectorValue> right) {
             this.left  = left;
             this.right = right;
             if (left.Count == 1 || right.Count == 1)
@@ -71,8 +72,8 @@ namespace Friflo.Json.EntityGraph.Filter
             throw new InvalidOperationException("Expect at least an operation result with one element");
         }
 
-        public IEnumerator<BinaryPair> GetEnumerator() {
-            return new BinaryResultEnumerator(this);
+        public IEnumerator<N_aryPair> GetEnumerator() {
+            return new N_aryResultEnumerator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
