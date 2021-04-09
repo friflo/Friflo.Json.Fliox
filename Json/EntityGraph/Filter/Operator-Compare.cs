@@ -12,7 +12,6 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         protected           Operator            left;
         protected           Operator            right;
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
         
         protected BinaryBoolOp(Operator left, Operator right) {
             this.left = left;
