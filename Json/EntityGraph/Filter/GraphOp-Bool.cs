@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Friflo.Json.Mapper.Graph;
 
@@ -36,8 +35,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.value.CompareTo(value) == 0 ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) == 0 ? True : False);
             }
             return result;
         }
@@ -52,8 +51,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.value.CompareTo(value) != 0 ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) != 0 ? True : False);
             }
             return result;
         }
@@ -69,8 +68,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.Order(eval.value.CompareTo(value) < 0) ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) < 0 ? True : False);
             }
             return result;
         }
@@ -85,8 +84,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.Order(eval.value.CompareTo(value) <= 0) ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) <= 0 ? True : False);
             }
             return result;
         }
@@ -101,8 +100,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.Order(eval.value.CompareTo(value) > 0) ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) > 0 ? True : False);
             }
             return result;
         }
@@ -117,40 +116,14 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var result = new List<SelectorValue>();
             var eval = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in eval.values) {
-                result.Add(eval.Order(eval.value.CompareTo(value) >= 0) ? True : False);
+            foreach (var pair in eval) {
+                result.Add(pair.left.CompareTo(pair.right) >= 0 ? True : False);
             }
             return result;
         }
     }
+
     
-    internal readonly struct  BinaryResult
-    {
-        internal readonly SelectorValue         value;
-        internal readonly List<SelectorValue>   values;
-        internal readonly bool                  swap;
-
-        internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
-            if (left.Count == 1) {
-                value   = left[0];
-                values  = right;
-                swap    = false;
-                return;
-            }
-            if (right.Count == 1) {
-                value   = right[0];
-                values  = left;
-                swap    = true;
-                return;
-            }
-            throw new InvalidOperationException("Expect at least an operation result with one element");
-        }
-
-        internal bool Order(bool condition) {
-            return swap ? !condition : condition;
-        }
-    }
-
     // -------------------------------------- logical operators --------------------------------------
     // --- unary logical operators
     public abstract class UnaryBoolOp : BoolOp

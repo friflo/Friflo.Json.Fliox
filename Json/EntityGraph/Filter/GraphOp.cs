@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Mapper.Graph;
@@ -85,6 +86,76 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public BoolOp       lambda;
     }
+    
+    
+    // ------------------------------------- BinaryResult -------------------------------------
+    internal struct ResultPair {
+        internal SelectorValue left;
+        internal SelectorValue right;
+    }
+    
+    internal struct BinaryResultEnumerator : IEnumerator<ResultPair>
+    {
+        private readonly    SelectorValue       singleLeft;
+        private readonly    SelectorValue       singleRight;
+        private readonly    List<SelectorValue> left;
+        private readonly    List<SelectorValue> right;
+        private readonly    int                 last;
+        private             int                 pos;
+        private             ResultPair          current;
+        
+        internal BinaryResultEnumerator(BinaryResult binaryResult) {
+            left  = binaryResult.left;
+            right = binaryResult.right;
+            singleLeft  = left. Count == 1 ? left [0] : null;
+            singleRight = right.Count == 1 ? right[0] : null;
+            last = Math.Max(left.Count, right.Count) - 1;
+            pos = -1;
+            current = new ResultPair();
+        }
+        
+        public bool MoveNext() {
+            if (pos == last)
+                return false;
+            pos++;
+            return true;
+        }
+
+        public void Reset() { pos = -1; }
+
+        public ResultPair Current {
+            get {
+                current.left  = singleLeft  ?? left [pos]; 
+                current.right = singleRight ?? right[pos];
+                return current;
+            }
+        }
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose() { }
+    } 
+    
+    internal readonly struct  BinaryResult : IEnumerable<ResultPair>
+    {
+        internal  readonly List<SelectorValue>   left;
+        internal  readonly List<SelectorValue>   right;
+
+        internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
+            this.left  = left;
+            this.right = right;
+            if (left.Count == 1 || right.Count == 1)
+                return;
+            throw new InvalidOperationException("Expect at least an operation result with one element");
+        }
+
+        public IEnumerator<ResultPair> GetEnumerator() {
+            return new BinaryResultEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+    }
+
 
 
 }
