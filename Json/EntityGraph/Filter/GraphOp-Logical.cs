@@ -8,8 +8,7 @@ namespace Friflo.Json.EntityGraph.Filter
 {
     public abstract class BoolOp : GraphOp { }
     
-    // -------------------------------------- logical operators --------------------------------------
-    // --- unary logical operators
+    // ----------------------------------- unary logical operators -----------------------------------
     public abstract class UnaryBoolOp : BoolOp
     {
         protected BoolOp       operand;     // e.g.   i => i.amount < 1
@@ -69,7 +68,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    // --- (n-ary) logical group operators
+    // ----------------------------------- (n-ary) logical group operators -----------------------------------
     public abstract class GroupBoolOp : BoolOp
     {
         protected           List<BoolOp>        operands;
