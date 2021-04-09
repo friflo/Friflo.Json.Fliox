@@ -69,7 +69,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    // --- (n-ary) group logical operators
+    // --- (n-ary) logical group operators
     public abstract class GroupBoolOp : BoolOp
     {
         protected           List<BoolOp>        operands;
@@ -90,16 +90,25 @@ namespace Friflo.Json.EntityGraph.Filter
         public And(List<BoolOp> operands) : base(operands) { }
         
         internal override List<SelectorValue> Eval() {
-            results.Clear();
+            var evalList = new List<List<SelectorValue>>(operands.Count);
             foreach (var operand in operands) {
                 var eval = operand.Eval();
-                results.AddRange(eval);
+                evalList.Add(eval);
             }
-            foreach (var result in results) {
-                if (result.CompareTo(True) != 0)
-                    return SingleFalse;
+            
+            results.Clear();
+            var nAryResult = new N_aryResult(evalList);
+            for (int n = 0; n < operands.Count; n++) {
+                var itemResult = True;
+                foreach (var result in nAryResult.values[n]) {
+                    if (result.CompareTo(True) != 0) {
+                        itemResult = False;
+                        break;
+                    }
+                }
+                results.Add(itemResult);
             }
-            return SingleTrue;
+            return results;
         }
     }
     
@@ -110,16 +119,25 @@ namespace Friflo.Json.EntityGraph.Filter
         public Or(List<BoolOp> operands) : base(operands) { }
         
         internal override List<SelectorValue> Eval() {
-            results.Clear();
+            var evalList = new List<List<SelectorValue>>(operands.Count);
             foreach (var operand in operands) {
                 var eval = operand.Eval();
-                results.AddRange(eval);
+                evalList.Add(eval);
             }
-            foreach (var result in results) {
-                if (result.CompareTo(True) == 0)
-                    return SingleTrue;
+            
+            results.Clear();
+            var nAryResult = new N_aryResult(evalList);
+            for (int n = 0; n < operands.Count; n++) {
+                var itemResult = False;
+                foreach (var result in nAryResult.values[n]) {
+                    if (result.CompareTo(True) == 0) {
+                        itemResult = True;
+                        break;
+                    }
+                }
+                results.Add(itemResult);
             }
-            return SingleFalse;
+            return results;
         }
     }
     
