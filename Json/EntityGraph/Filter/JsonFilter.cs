@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph.Filter
             }
 
             var evalResult = filter.Eval();
-            if (evalResult.Count == 1 && evalResult[0].CompareTo(GraphOp.True) == 0)
+            if (evalResult.Count == 1 && evalResult[0].CompareTo(Operator.True) == 0)
                 return true;
             return false;
         }

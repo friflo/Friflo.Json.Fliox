@@ -2,11 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.EntityGraph.Filter.Arity;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
-    public abstract class BoolOp : GraphOp
+    public abstract class BoolOp : Operator
     {
         protected readonly  List<SelectorValue> results = new List<SelectorValue>();
     }

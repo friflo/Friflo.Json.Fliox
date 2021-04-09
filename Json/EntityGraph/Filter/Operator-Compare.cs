@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.EntityGraph.Filter.Arity;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -9,11 +10,11 @@ namespace Friflo.Json.EntityGraph.Filter
     // -------------------------------------- comparison operators --------------------------------------
     public abstract class BinaryBoolOp : BoolOp
     {
-        protected           GraphOp             left;
-        protected           GraphOp             right;
+        protected           Operator            left;
+        protected           Operator            right;
         protected readonly  List<SelectorValue> results = new List<SelectorValue>();
         
-        protected BinaryBoolOp(GraphOp left, GraphOp right) {
+        protected BinaryBoolOp(Operator left, Operator right) {
             this.left = left;
             this.right = right;
         }
@@ -28,7 +29,7 @@ namespace Friflo.Json.EntityGraph.Filter
     // --- associative comparison operators ---
     public class Equals : BinaryBoolOp
     {
-        public Equals(GraphOp left, GraphOp right) : base(left, right) { }
+        public Equals(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} == {right}";
         
@@ -44,7 +45,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class NotEquals : BinaryBoolOp
     {
-        public NotEquals(GraphOp left, GraphOp right) : base(left, right) { }
+        public NotEquals(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} != {right}";
         
@@ -61,7 +62,7 @@ namespace Friflo.Json.EntityGraph.Filter
     // --- non-associative comparison operators -> call Order() --- 
     public class LessThan : BinaryBoolOp
     {
-        public LessThan(GraphOp left, GraphOp right) : base(left, right) { }
+        public LessThan(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} < {right}";
         
@@ -77,7 +78,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class LessThanOrEqual : BinaryBoolOp
     {
-        public LessThanOrEqual(GraphOp left, GraphOp right) : base(left, right) { }
+        public LessThanOrEqual(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} <= {right}";
         
@@ -93,7 +94,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class GreaterThan : BinaryBoolOp
     {
-        public GreaterThan(GraphOp left, GraphOp right) : base(left, right) { }
+        public GreaterThan(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} > {right}";
         
@@ -109,7 +110,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class GreaterThanOrEqual : BinaryBoolOp
     {
-        public GreaterThanOrEqual(GraphOp left, GraphOp right) : base(left, right) { }
+        public GreaterThanOrEqual(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} >= {right}";
         

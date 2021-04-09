@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Mapper.Graph;
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.EntityGraph.Filter.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {

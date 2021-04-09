@@ -9,7 +9,7 @@ using Friflo.Json.Mapper.Graph;
 namespace Friflo.Json.EntityGraph.Filter
 {
     
-    public abstract class GraphOp
+    public abstract class Operator
     {
         internal abstract void Init(GraphOpContext cx);
 
@@ -27,9 +27,9 @@ namespace Friflo.Json.EntityGraph.Filter
     internal class GraphOpContext
     {
         internal readonly Dictionary<string, Field> selectors = new Dictionary<string, Field>();
-        private  readonly HashSet<GraphOp>          operators = new HashSet<GraphOp>();
+        private  readonly HashSet<Operator>         operators = new HashSet<Operator>();
 
-        internal void ValidateReuse(GraphOp op) {
+        internal void ValidateReuse(Operator op) {
             if (!operators.Add(op)) {
                 var msg = $"Used operator instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
                 throw new InvalidOperationException(msg);
@@ -38,7 +38,7 @@ namespace Friflo.Json.EntityGraph.Filter
     }
     
     // ------------------------------------- unary operators -------------------------------------
-    public class Field : GraphOp
+    public class Field : Operator
     {
         public          string                  field;
         public          List<SelectorValue>     values = new List<SelectorValue>();
@@ -57,7 +57,7 @@ namespace Friflo.Json.EntityGraph.Filter
     }
 
     // --- primitive operators ---
-    public abstract class Literal : GraphOp {
+    public abstract class Literal : Operator {
         internal override void Init(GraphOpContext cx) {
         }
     }
