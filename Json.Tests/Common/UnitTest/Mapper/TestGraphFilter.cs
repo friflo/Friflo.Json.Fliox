@@ -33,16 +33,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var johnJson = jsonMapper.Write(john);
 
                 // ---
-                var isPeter         = new Equals( new StringLiteral ("Peter"), new Field (".name"));
-                var isAgeGreater35  = new GreaterThan( new Field (".age"), new NumberLiteral (35));
+                var  isPeter         = new Equals( new StringLiteral ("Peter"), new Field (".name"));
+                bool IsPeter(Person p) => p.name == "Peter";
+                
+                var  isAgeGreater35  = new GreaterThan( new Field (".age"), new NumberLiteral (35));
+                bool IsAgeGreater35(Person p) => p.age > 35;
+                
                 var isNotAgeGreater35  = new Not(isAgeGreater35);
             
-                bool IsPeter(Person p) => p.name == "Peter";
                 IsTrue  (IsPeter(peter));
                 IsTrue  (filter.Filter(peterJson, isPeter));
                 IsFalse (filter.Filter(johnJson,  isPeter));
                 
-                bool IsAgeGreater35(Person p) => p.age > 35;
                 IsTrue  (IsAgeGreater35(peter));
                 IsTrue  (filter.Filter(peterJson, isAgeGreater35));
                 IsFalse (filter.Filter(johnJson,  isAgeGreater35));
@@ -51,13 +53,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue  (filter.Filter(johnJson,  isNotAgeGreater35));
 
                 // --- Any
-                var hasChildPaul = new Any (
-                    new Equals (new StringLiteral ("Paul"), new Field (".children[*].name"))
-                );
-                var hasChildAgeLess12 = new Any (
-                    new LessThan ( new Field (".children[*].age"), new NumberLiteral (12))
-                );
+                var  hasChildPaul = new Any (new Equals (new StringLiteral ("Paul"), new Field (".children[*].name")));
                 bool HasChildPaul(Person p) => p.children.Any((child) => child.name == "Paul");
+                
+                var hasChildAgeLess12 = new Any (new LessThan ( new Field (".children[*].age"), new NumberLiteral (12)));
+                
                 IsTrue (HasChildPaul(peter));
                 IsTrue (filter.Filter(peterJson, hasChildPaul));
                 IsFalse(filter.Filter(johnJson,  hasChildPaul));
@@ -66,9 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue (filter.Filter(johnJson,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (
-                    new Equals(new Field (".children[*].age"), new NumberLiteral (20))
-                );
+                var allChildAgeEquals20 = new All (new Equals(new Field (".children[*].age"), new NumberLiteral (20)));
                 IsTrue (filter.Filter(peterJson, allChildAgeEquals20));
                 IsFalse(filter.Filter(johnJson,  allChildAgeEquals20));
             }
