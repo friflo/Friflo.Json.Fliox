@@ -72,7 +72,7 @@ namespace Friflo.Json.EntityGraph.Filter
     // --- (n-ary) group logical operators
     public abstract class GroupBoolOp : BoolOp
     {
-        protected List<BoolOp>       operands;
+        protected           List<BoolOp>        operands;
 
         protected GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
         
@@ -90,7 +90,7 @@ namespace Friflo.Json.EntityGraph.Filter
         public And(List<BoolOp> operands) : base(operands) { }
         
         internal override List<SelectorValue> Eval() {
-            var results = new List<SelectorValue>();
+            results.Clear();
             foreach (var operand in operands) {
                 var eval = operand.Eval();
                 results.AddRange(eval);
@@ -110,7 +110,7 @@ namespace Friflo.Json.EntityGraph.Filter
         public Or(List<BoolOp> operands) : base(operands) { }
         
         internal override List<SelectorValue> Eval() {
-            var results = new List<SelectorValue>();
+            results.Clear();
             foreach (var operand in operands) {
                 var eval = operand.Eval();
                 results.AddRange(eval);

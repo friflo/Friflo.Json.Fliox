@@ -9,9 +9,9 @@ namespace Friflo.Json.EntityGraph.Filter
     // -------------------------------------- comparison operators --------------------------------------
     public abstract class BinaryBoolOp : BoolOp
     {
-        protected GraphOp      left;
-        protected GraphOp      right;
-
+        protected           GraphOp             left;
+        protected           GraphOp             right;
+        
         protected BinaryBoolOp(GraphOp left, GraphOp right) {
             this.left = left;
             this.right = right;
@@ -31,12 +31,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} == {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) == 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) == 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
     
@@ -47,12 +47,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} != {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) != 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) != 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
 
@@ -64,12 +64,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} < {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) < 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) < 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
     
@@ -80,12 +80,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} <= {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) <= 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) <= 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
     
@@ -96,12 +96,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} > {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) > 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) > 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
     
@@ -112,12 +112,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} >= {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new List<SelectorValue>();
+            results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
-                result.Add(pair.left.CompareTo(pair.right) >= 0 ? True : False);
+                results.Add(pair.left.CompareTo(pair.right) >= 0 ? True : False);
             }
-            return result;
+            return results;
         }
     }
 }

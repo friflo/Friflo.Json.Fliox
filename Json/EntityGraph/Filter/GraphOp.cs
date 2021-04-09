@@ -12,6 +12,8 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public abstract class GraphOp
     {
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+
         internal virtual void Init(GraphOpContext cx) { }
 
         internal virtual List<SelectorValue> Eval() {
