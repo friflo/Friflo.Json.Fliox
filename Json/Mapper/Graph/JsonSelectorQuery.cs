@@ -141,6 +141,17 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
         
+        // --- unary arithmetic operators ---
+        public SelectorValue Abs() {
+            if (type != ResultType.Number)
+                throw new InvalidOperationException($"Expect operand being numeric. operand: {this}");
+            if (isFloat)
+                return new SelectorValue(Math.Abs(doubleValue));
+            return     new SelectorValue(Math.Abs(doubleValue));
+        }
+        
+        
+        // --- binary arithmetic operators ---
         public SelectorValue Add(SelectorValue other) {
             if (type != ResultType.Number || other.type != ResultType.Number)
                 throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");

@@ -116,8 +116,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(true,      filter.Eval("{}", new BooleanLiteral(true)));
                 AreEqual(null,      filter.Eval("{}", new NullLiteral()));
 
+                // unary arithmetic operations
+                var abs      = new Abs(new NumberLiteral(-2));
+                AreEqual(2,         filter.Eval("{}", abs));
+                
 
-                // arithmetic operations
+                // binary arithmetic operations
                 var add      = new Add(new NumberLiteral(1), new NumberLiteral(2));
                 AreEqual(3,         filter.Eval("{}", add));
                 

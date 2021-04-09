@@ -7,7 +7,7 @@ using Friflo.Json.Mapper.Graph;
 namespace Friflo.Json.EntityGraph.Filter
 {
     // ------------------------------------ unary arithmetic operators ------------------------------------
-    public abstract class UnaryArithmeticOp : BoolOp
+    public abstract class UnaryArithmeticOp : Operator
     {
         protected           Operator            operand;
         protected readonly  List<SelectorValue> results = new List<SelectorValue>();
@@ -17,6 +17,23 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override void Init(GraphOpContext cx) {
             cx.ValidateReuse(this); // results are reused
             operand.Init(cx);
+        }
+    }
+    
+    public class Abs : UnaryArithmeticOp
+    {
+        public Abs(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Abs({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Abs();
+                results.Add(result);
+            }
+            return results;
         }
     }
     
