@@ -28,12 +28,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public Not(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
+            results.Clear();
             var eval = operand.Eval();
             foreach (var result in eval) {
-                if (result.CompareTo(True) == 0)
-                    return SingleFalse;
+                results.Add(result.CompareTo(True) == 0 ? False : True);
             }
-            return SingleTrue;
+            return results;
         }
     }
     
