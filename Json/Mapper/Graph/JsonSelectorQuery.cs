@@ -140,6 +140,19 @@ namespace Friflo.Json.Mapper.Graph
                     throw new NotImplementedException($"value type supported. type: {type}");
             }
         }
+        
+        public SelectorValue Add(SelectorValue other) {
+            if (type != ResultType.Number || other.type != ResultType.Number)
+                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
+            if (isFloat) {
+                if (other.isFloat)
+                    return new SelectorValue(doubleValue + other.doubleValue);
+                return     new SelectorValue(doubleValue + other.longValue);
+            }
+            if (other.isFloat)
+                return     new SelectorValue(longValue   + other.doubleValue);
+            return         new SelectorValue(longValue   + other.longValue);
+        }
 
         /// Format as debug string - not as JSON
         internal void AppendTo(StringBuilder sb) {
