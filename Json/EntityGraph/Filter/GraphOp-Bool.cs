@@ -26,6 +26,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
+    // --- associative comparison operators ---
     public class Equals : BinaryBoolOp
     {
         public Equals(GraphOp left, GraphOp right) : base(left, right) { }
@@ -58,6 +59,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
 
+    // --- non-associative comparison operators -> call Order() --- 
     public class LessThan : BinaryBoolOp
     {
         public LessThan(GraphOp left, GraphOp right) : base(left, right) { }
