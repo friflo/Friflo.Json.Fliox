@@ -148,42 +148,42 @@ namespace Friflo.Json.Mapper.Graph
             AssertUnaryNumber();
             if (isFloat)
                 return new SelectorValue(Math.Abs(doubleValue));
-            return     new SelectorValue(Math.Abs(doubleValue));
+            return     new SelectorValue(Math.Abs(longValue));
         }
         
         public SelectorValue Ceiling() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Ceiling(doubleValue));
-            return     new SelectorValue(Math.Ceiling(doubleValue));
+                return new SelectorValue(Math.Ceiling(        doubleValue));
+            return     new SelectorValue(Math.Ceiling((double)longValue));
         }
         
         public SelectorValue Floor() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Floor(doubleValue));
-            return     new SelectorValue(Math.Floor(doubleValue));
+                return new SelectorValue(Math.Floor(        doubleValue));
+            return     new SelectorValue(Math.Floor((double)longValue));
         }
         
         public SelectorValue Exp() {
             AssertUnaryNumber();
             if (isFloat)
                 return new SelectorValue(Math.Exp(doubleValue));
-            return     new SelectorValue(Math.Exp(doubleValue));
+            return     new SelectorValue(Math.Exp(longValue));
         }
         
         public SelectorValue Log() {
             AssertUnaryNumber();
             if (isFloat)
                 return new SelectorValue(Math.Log(doubleValue));
-            return     new SelectorValue(Math.Log(doubleValue));
+            return     new SelectorValue(Math.Log(longValue));
         }
         
         public SelectorValue Sqrt() {
             AssertUnaryNumber();
             if (isFloat)
                 return new SelectorValue(Math.Sqrt(doubleValue));
-            return     new SelectorValue(Math.Sqrt(doubleValue));
+            return     new SelectorValue(Math.Sqrt(longValue));
         }
 
         private void AssertUnaryNumber() {
