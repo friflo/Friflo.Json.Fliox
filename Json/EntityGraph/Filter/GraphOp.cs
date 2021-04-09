@@ -13,7 +13,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         protected readonly  List<SelectorValue> results = new List<SelectorValue>();
 
-        internal virtual void Init(GraphOpContext cx) { }
+        internal abstract void Init(GraphOpContext cx);
 
         internal virtual List<SelectorValue> Eval() {
             throw new NotImplementedException($"Eval() not implemented for: {GetType().Name}");
@@ -29,6 +29,12 @@ namespace Friflo.Json.EntityGraph.Filter
     internal class GraphOpContext
     {
         internal readonly Dictionary<string, Field> selectors = new Dictionary<string, Field>();
+        private  readonly HashSet<GraphOp>          operators = new HashSet<GraphOp>();
+
+        internal void ValidateOperator(GraphOp op) {
+            if (!operators.Add(op))
+                throw new InvalidOperationException($"Same operator cant be using multiple times in a filter: {op}");
+        }
     }
     
     // ------------------------------------- unary operators -------------------------------------
@@ -45,10 +51,18 @@ namespace Friflo.Json.EntityGraph.Filter
             cx.selectors.TryAdd(field, this);
         }
 
-        internal override List<SelectorValue> Eval() { return values; }
+        internal override List<SelectorValue> Eval() {
+            return values;
+        }
     }
-    
-    public class StringLiteral : GraphOp
+
+    // --- primitive operators ---
+    public abstract class Literal : GraphOp {
+        internal override void Init(GraphOpContext cx) {
+        }
+    }
+        
+    public class StringLiteral : Literal
     {
         public              string      value;
         
@@ -61,7 +75,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class NumberLiteral : GraphOp
+    public class NumberLiteral : Literal
     {
         public              double      value;  // or long
 
@@ -74,17 +88,12 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class BooleanLiteral : GraphOp
+    public class BooleanLiteral : Literal
     {
         public bool         value;
     }
 
-    public class NullLiteral : GraphOp
+    public class NullLiteral : Literal
     {
-    }
-    
-    public class NotOp : GraphOp
-    {
-        public BoolOp       lambda;
     }
 }

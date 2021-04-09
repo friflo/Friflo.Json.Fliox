@@ -16,6 +16,7 @@ namespace Friflo.Json.EntityGraph.Filter
         protected UnaryBoolOp(BoolOp operand) { this.operand = operand; }
         
         internal override void Init(GraphOpContext cx) {
+            cx.ValidateOperator(this); // results are reused
             operand.Init(cx);
         }
     }
@@ -76,7 +77,9 @@ namespace Friflo.Json.EntityGraph.Filter
         protected GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
         
         internal override void Init(GraphOpContext cx) {
+            cx.ValidateOperator(this); // results are reused
             foreach (var operand in operands) {
+                cx.ValidateOperator(operand);
                 operand.Init(cx);
             }
         }
