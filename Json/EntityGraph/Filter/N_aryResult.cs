@@ -1,39 +1,32 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Mapper.Graph;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.EntityGraph.Filter
 {
     // ------------------------------------- BinaryResult -------------------------------------
-    internal readonly struct N_aryPair {
-        internal readonly SelectorValue left;
-        internal readonly SelectorValue right;
-
-        internal N_aryPair(SelectorValue left, SelectorValue right) {
-            this.left  = left;
-            this.right = right;
-        }
+    internal readonly struct N_aryList {
+        internal readonly List<SelectorValue> values;
     }
     
-    internal struct N_aryResultEnumerator : IEnumerator<N_aryPair>
+    internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
-        private readonly    SelectorValue       singleLeft;
-        private readonly    SelectorValue       singleRight;
-        private readonly    List<SelectorValue> left;
-        private readonly    List<SelectorValue> right;
-        private readonly    int                 last;
-        private             int                 pos;
+        private readonly    List<SelectorValue>         singleValues;
+        private readonly    List<List<SelectorValue>>   values;
+        private readonly    int                         last;
+        private             int                         pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
-            left  = binaryResult.left;
-            right = binaryResult.right;
-            singleLeft  = left. Count == 1 ? left [0] : null;
-            singleRight = right.Count == 1 ? right[0] : null;
-            last = Math.Max(left.Count, right.Count) - 1;
+            values       = binaryResult.values;
+            singleValues = new List<SelectorValue>(values.Count);
+            foreach (var value in values) {
+                singleValues.Add(value. Count == 1 ? value [0] : null);
+            }
+            last = values.Max(value => value.Count) - 1;
             pos = -1;
         }
         
@@ -46,11 +39,16 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public void Reset() { pos = -1; }
 
-        public N_aryPair Current {
+        public N_aryList Current {
             get {
-                var leftResult  = singleLeft  ?? left [pos];
-                var rightResult = singleRight ?? right[pos];
-                return new N_aryPair(leftResult, rightResult);
+                var results = new N_aryList();
+                results.values.Clear();
+                for (int n = 0; n < singleValues.Count; n++) {
+                    var single = singleValues[n];
+                    var result  = single ?? values[n][pos];
+                    results.values.Add(result);
+                }
+                return results;
             }
         }
 
@@ -59,20 +57,15 @@ namespace Friflo.Json.EntityGraph.Filter
         public void Dispose() { }
     } 
     
-    internal readonly struct  N_aryResult : IEnumerable<N_aryPair>
+    internal readonly struct  N_aryResult : IEnumerable<N_aryList>
     {
-        internal  readonly List<SelectorValue>   left;
-        internal  readonly List<SelectorValue>   right;
+        internal  readonly List<List<SelectorValue>>   values;
 
-        internal N_aryResult(List<SelectorValue> left, List<SelectorValue> right) {
-            this.left  = left;
-            this.right = right;
-            if (left.Count == 1 || right.Count == 1)
-                return;
-            throw new InvalidOperationException("Expect at least an operation result with one element");
+        internal N_aryResult(List<List<SelectorValue>> values) {
+            this.values  = values;
         }
 
-        public IEnumerator<N_aryPair> GetEnumerator() {
+        public IEnumerator<N_aryList> GetEnumerator() {
             return new N_aryResultEnumerator(this);
         }
 
