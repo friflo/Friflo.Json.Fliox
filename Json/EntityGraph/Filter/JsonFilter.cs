@@ -34,6 +34,28 @@ namespace Friflo.Json.EntityGraph.Filter
                 return true;
             return false;
         }
+        
+        public object Eval(string json, Operator op) {
+            var cx = new GraphOpContext();
+            op.Init(cx);
+            var selectorResults = jsonSelector.Select(json, cx.selectors.Keys.ToList());
+            int index = 0;
+            foreach (var selectorPair in cx.selectors) {
+                Field field = selectorPair.Value;
+                field.values = selectorResults[index++].values;
+            }
+
+            var evalResult = op.Eval();
+            if (evalResult.Count == 1)
+                return evalResult[0].AsObject();
+            
+            object[] evalResults = new object[evalResult.Count];
+            for (int n = 0; n < evalResult.Count; n++) {
+                var result = evalResult[n];
+                evalResults[n] = result.AsObject();
+            }
+            return evalResults;
+        }
 
     }
 }

@@ -124,6 +124,23 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
 
+        public object AsObject() {
+            switch (type) {
+                case ResultType.Number:
+                    if (isFloat)
+                        return doubleValue;
+                    return longValue;
+                case ResultType.String:
+                    return stringValue;
+                case ResultType.Bool:
+                    return boolValue;
+                case ResultType.Null:
+                    return null;
+                default:
+                    throw new NotImplementedException($"value type supported. type: {type}");
+            }
+        }
+
         /// Format as debug string - not as JSON
         internal void AppendTo(StringBuilder sb) {
             switch (type) {

@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public static class TestGraphFilter
     {
         [Test]
-        public static void Test () {
+        public static void TestFilter () {
             using (var filter       = new JsonFilter())
             using (var jsonMapper   = new JsonMapper())
             {
@@ -94,6 +94,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var testField = new Field (".name");
                 var reuseField = new Equals(testField, testField);
                 filter.Filter(peterJson, reuseField);
+            }
+        }
+
+        [Test]
+        public static void TestEval() {
+            using (var filter       = new JsonFilter())
+            using (var jsonMapper   = new JsonMapper())
+            {
+                jsonMapper.Pretty = true;
+                AreEqual("hello",   filter.Eval("{}", new StringLiteral("hello")));
+                AreEqual(42.0,      filter.Eval("{}", new NumberLiteral(42.0)));
+                AreEqual(true,      filter.Eval("{}", new BooleanLiteral(true)));
+                AreEqual(null,      filter.Eval("{}", new NullLiteral()));
             }
         }
     }

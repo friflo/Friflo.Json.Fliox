@@ -11,17 +11,14 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public abstract class Operator
     {
-        internal abstract void Init(GraphOpContext cx);
-
-        internal virtual List<SelectorValue> Eval() {
-            throw new NotImplementedException($"Eval() not implemented for: {GetType().Name}");
-        }
+        internal abstract void                  Init(GraphOpContext cx);
+        internal abstract List<SelectorValue>   Eval();
         
-        internal static readonly SelectorValue True  = new SelectorValue(true); 
-        internal static readonly SelectorValue False = new SelectorValue(false);
+        internal static readonly SelectorValue          True  = new SelectorValue(true); 
+        internal static readonly SelectorValue          False = new SelectorValue(false);
         
-        internal static readonly List<SelectorValue> SingleTrue  = new List<SelectorValue>{ True  };
-        internal static readonly List<SelectorValue> SingleFalse = new List<SelectorValue>{ False };
+        internal static readonly List<SelectorValue>    SingleTrue  = new List<SelectorValue>{ True  };
+        internal static readonly List<SelectorValue>    SingleFalse = new List<SelectorValue>{ False };
     }
     
     internal class GraphOpContext
@@ -103,5 +100,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
     public class NullLiteral : Literal
     {
+        public override     string      ToString() => "null";
+        
+        internal override List<SelectorValue> Eval() {
+            return new List<SelectorValue> { new SelectorValue(ResultType.Null, null) };
+        }
     }
 }
