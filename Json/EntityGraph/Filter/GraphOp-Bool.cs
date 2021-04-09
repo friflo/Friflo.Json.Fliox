@@ -33,9 +33,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} == {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.value.CompareTo(value) == 0)
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.value.CompareTo(value) == 0)
                     return SingleTrue;
             }
             return SingleFalse;
@@ -49,9 +49,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} != {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.value.CompareTo(value) != 0)
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.value.CompareTo(value) != 0)
                     return SingleTrue;
             }
             return SingleFalse;
@@ -65,9 +65,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} < {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.Order(result.value.CompareTo(value) < 0))
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.Order(eval.value.CompareTo(value) < 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -81,9 +81,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} <= {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.Order(result.value.CompareTo(value) <= 0))
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.Order(eval.value.CompareTo(value) <= 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -97,9 +97,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} > {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.Order(result.value.CompareTo(value) > 0))
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.Order(eval.value.CompareTo(value) > 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -113,9 +113,9 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} >= {right}";
         
         internal override List<SelectorValue> Eval() {
-            var result = new BinaryResult(left.Eval(), right.Eval());
-            foreach (var value in result.values) {
-                if (result.Order(result.value.CompareTo(value) >= 0))
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var value in eval.values) {
+                if (eval.Order(eval.value.CompareTo(value) >= 0))
                     return SingleTrue;
             }
             return SingleFalse;
@@ -169,8 +169,8 @@ namespace Friflo.Json.EntityGraph.Filter
         public Not(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
-            var evalResult = operand.Eval();
-            foreach (var result in evalResult) {
+            var eval = operand.Eval();
+            foreach (var result in eval) {
                 if (result.CompareTo(True) == 0)
                     return SingleFalse;
             }
@@ -185,8 +185,8 @@ namespace Friflo.Json.EntityGraph.Filter
         public Any(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
-            var evalResult = operand.Eval();
-            foreach (var result in evalResult) {
+            var eval = operand.Eval();
+            foreach (var result in eval) {
                 if (result.CompareTo(True) == 0)
                     return SingleTrue;
             }
@@ -201,8 +201,8 @@ namespace Friflo.Json.EntityGraph.Filter
         public All(BoolOp operand) : base(operand) { }
         
         internal override List<SelectorValue> Eval() {
-            var evalResult = operand.Eval();
-            foreach (var result in evalResult) {
+            var eval = operand.Eval();
+            foreach (var result in eval) {
                 if (result.CompareTo(True) != 0)
                     return SingleFalse;
             }
@@ -233,8 +233,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var results = new List<SelectorValue>();
             foreach (var operand in operands) {
-                var result = operand.Eval();
-                results.AddRange(result);
+                var eval = operand.Eval();
+                results.AddRange(eval);
             }
             foreach (var result in results) {
                 if (result.CompareTo(True) != 0)
@@ -253,8 +253,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override List<SelectorValue> Eval() {
             var results = new List<SelectorValue>();
             foreach (var operand in operands) {
-                var result = operand.Eval();
-                results.AddRange(result);
+                var eval = operand.Eval();
+                results.AddRange(eval);
             }
             foreach (var result in results) {
                 if (result.CompareTo(True) == 0)
