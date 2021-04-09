@@ -110,8 +110,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
 
                 // arithmetic operations
-                var add = new Add(new NumberLiteral(1), new NumberLiteral(2));
+                var add      = new Add(new NumberLiteral(1), new NumberLiteral(2));
                 AreEqual(3,         filter.Eval("{}", add));
+                
+                var subtract = new Subtract(new NumberLiteral(1), new NumberLiteral(2));
+                AreEqual(-1,        filter.Eval("{}", subtract));
+                
+                var multiply = new Multiply(new NumberLiteral(2), new NumberLiteral(3));
+                AreEqual(6,         filter.Eval("{}", multiply));
+                
+                var divide   = new Divide(new NumberLiteral(10), new NumberLiteral(2));
+                AreEqual(5,         filter.Eval("{}", divide));
             }
         }
     }

@@ -6,6 +6,7 @@ using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
+    // ------------------------------------ binary arithmetic operators ------------------------------------
     public abstract class ArithmeticOp : Operator
     {
         protected           Operator            left;
@@ -40,4 +41,56 @@ namespace Friflo.Json.EntityGraph.Filter
             return results;
         }
     }
+    
+    public class Subtract : ArithmeticOp
+    {
+        public Subtract(Operator left, Operator right) : base(left, right) { }
+
+        public override     string      ToString() => $"{left} - {right}";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var pair in eval) {
+                var result = pair.left.Subtract(pair.right);
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Multiply : ArithmeticOp
+    {
+        public Multiply(Operator left, Operator right) : base(left, right) { }
+
+        public override     string      ToString() => $"{left} * {right}";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var pair in eval) {
+                var result = pair.left.Multiply(pair.right);
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Divide : ArithmeticOp
+    {
+        public Divide(Operator left, Operator right) : base(left, right) { }
+
+        public override     string      ToString() => $"{left} * {right}";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = new BinaryResult(left.Eval(), right.Eval());
+            foreach (var pair in eval) {
+                var result = pair.left.Divide(pair.right);
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+
 }
