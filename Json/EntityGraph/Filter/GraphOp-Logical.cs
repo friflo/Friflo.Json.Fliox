@@ -100,7 +100,6 @@ namespace Friflo.Json.EntityGraph.Filter
             foreach (N_aryList result in nAryResult) {
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
-                    itemResult = True;
                     if (result.values[n].CompareTo(True) != 0) {
                         itemResult = False;
                         break;
@@ -128,9 +127,8 @@ namespace Friflo.Json.EntityGraph.Filter
             results.Clear();
             var nAryResult = new N_aryResult(evalList);
             foreach (N_aryList result in nAryResult) {
-                var itemResult = True;
+                var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {
-                    itemResult = False;
                     if (result.values[n].CompareTo(True) == 0) {
                         itemResult = True;
                         break;
