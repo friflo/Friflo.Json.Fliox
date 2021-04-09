@@ -37,6 +37,91 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
+    public class Ceiling : UnaryArithmeticOp
+    {
+        public Ceiling(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Ceiling({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Ceiling();
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Floor : UnaryArithmeticOp
+    {
+        public Floor(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Floor({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Floor();
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Exp : UnaryArithmeticOp
+    {
+        public Exp(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Exp({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Exp();
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Log : UnaryArithmeticOp
+    {
+        public Log(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Log({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Log();
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
+    public class Sqrt : UnaryArithmeticOp
+    {
+        public Sqrt(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Sqrt({operand})";
+        
+        internal override List<SelectorValue> Eval() {
+            results.Clear();
+            var eval = operand.Eval();
+            foreach (var val in eval) {
+                var result = val.Sqrt();
+                results.Add(result);
+            }
+            return results;
+        }
+    }
+    
     
     
     

@@ -117,8 +117,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(null,      filter.Eval("{}", new NullLiteral()));
 
                 // unary arithmetic operations
-                var abs      = new Abs(new NumberLiteral(-2));
+                var abs     = new Abs(new NumberLiteral(-2));
                 AreEqual(2,         filter.Eval("{}", abs));
+                
+                var ceiling = new Ceiling(new NumberLiteral(2.5));
+                AreEqual(3,         filter.Eval("{}", ceiling));
+                
+                var floor   = new Floor(new NumberLiteral(2.5));
+                AreEqual(2,         filter.Eval("{}", floor));
+                
+                var exp     = new Exp(new NumberLiteral(Math.Log(2)));
+                AreEqual(2,         filter.Eval("{}", exp));
+                
+                var log     = new Log(new NumberLiteral(Math.Exp(3)));
+                AreEqual(3,         filter.Eval("{}", log));
+                
+                var sqrt    = new Sqrt(new NumberLiteral(9));
+                AreEqual(3,         filter.Eval("{}", sqrt));
+
                 
 
                 // binary arithmetic operations

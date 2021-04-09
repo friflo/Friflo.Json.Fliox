@@ -140,22 +140,60 @@ namespace Friflo.Json.Mapper.Graph
                     throw new NotImplementedException($"value type supported. type: {type}");
             }
         }
+
+
         
         // --- unary arithmetic operators ---
         public SelectorValue Abs() {
-            if (type != ResultType.Number)
-                throw new InvalidOperationException($"Expect operand being numeric. operand: {this}");
+            AssertUnaryNumber();
             if (isFloat)
                 return new SelectorValue(Math.Abs(doubleValue));
             return     new SelectorValue(Math.Abs(doubleValue));
         }
         
+        public SelectorValue Ceiling() {
+            AssertUnaryNumber();
+            if (isFloat)
+                return new SelectorValue(Math.Ceiling(doubleValue));
+            return     new SelectorValue(Math.Ceiling(doubleValue));
+        }
+        
+        public SelectorValue Floor() {
+            AssertUnaryNumber();
+            if (isFloat)
+                return new SelectorValue(Math.Floor(doubleValue));
+            return     new SelectorValue(Math.Floor(doubleValue));
+        }
+        
+        public SelectorValue Exp() {
+            AssertUnaryNumber();
+            if (isFloat)
+                return new SelectorValue(Math.Exp(doubleValue));
+            return     new SelectorValue(Math.Exp(doubleValue));
+        }
+        
+        public SelectorValue Log() {
+            AssertUnaryNumber();
+            if (isFloat)
+                return new SelectorValue(Math.Log(doubleValue));
+            return     new SelectorValue(Math.Log(doubleValue));
+        }
+        
+        public SelectorValue Sqrt() {
+            AssertUnaryNumber();
+            if (isFloat)
+                return new SelectorValue(Math.Sqrt(doubleValue));
+            return     new SelectorValue(Math.Sqrt(doubleValue));
+        }
+
+        private void AssertUnaryNumber() {
+            if (type != ResultType.Number)
+                throw new InvalidOperationException($"Expect operand being numeric. operand: {this}");
+        }
         
         // --- binary arithmetic operators ---
         public SelectorValue Add(SelectorValue other) {
-            if (type != ResultType.Number || other.type != ResultType.Number)
-                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
-            
+            AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
                     return new SelectorValue(doubleValue + other.doubleValue);
@@ -167,9 +205,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public SelectorValue Subtract(SelectorValue other) {
-            if (type != ResultType.Number || other.type != ResultType.Number)
-                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
-            
+            AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
                     return new SelectorValue(doubleValue - other.doubleValue);
@@ -181,9 +217,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public SelectorValue Multiply(SelectorValue other) {
-            if (type != ResultType.Number || other.type != ResultType.Number)
-                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
-            
+            AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
                     return new SelectorValue(doubleValue * other.doubleValue);
@@ -195,9 +229,7 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public SelectorValue Divide(SelectorValue other) {
-            if (type != ResultType.Number || other.type != ResultType.Number)
-                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
-            
+            AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
                     return new SelectorValue(doubleValue / other.doubleValue);
@@ -207,6 +239,13 @@ namespace Friflo.Json.Mapper.Graph
                 return     new SelectorValue(longValue   / other.doubleValue);
             return         new SelectorValue(longValue   / other.longValue);
         }
+        
+        private void AssertBinaryNumbers(SelectorValue other) {
+            if (type != ResultType.Number || other.type != ResultType.Number)
+                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
+        }
+        
+        // --------
 
         /// Format as debug string - not as JSON
         internal void AppendTo(StringBuilder sb) {
