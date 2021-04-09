@@ -11,6 +11,10 @@ namespace Friflo.Json.EntityGraph.Filter
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {
         internal readonly List<SelectorValue> values;
+
+        internal N_aryList(int capacity) {
+            values = new List<SelectorValue>(capacity);
+        }
     }
     
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
@@ -41,14 +45,13 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public N_aryList Current {
             get {
-                var results = new N_aryList();
-                results.values.Clear();
+                var resultList = new N_aryList(singleValues.Count);
                 for (int n = 0; n < singleValues.Count; n++) {
                     var single = singleValues[n];
                     var result  = single ?? values[n][pos];
-                    results.values.Add(result);
+                    resultList.values.Add(result);
                 }
-                return results;
+                return resultList;
             }
         }
 
