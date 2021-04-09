@@ -11,8 +11,6 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public abstract class GraphOp
     {
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
-
         internal abstract void Init(GraphOpContext cx);
 
         internal virtual List<SelectorValue> Eval() {
@@ -31,9 +29,11 @@ namespace Friflo.Json.EntityGraph.Filter
         internal readonly Dictionary<string, Field> selectors = new Dictionary<string, Field>();
         private  readonly HashSet<GraphOp>          operators = new HashSet<GraphOp>();
 
-        internal void ValidateOperator(GraphOp op) {
-            if (!operators.Add(op))
-                throw new InvalidOperationException($"Same operator cant be using multiple times in a filter: {op}");
+        internal void ValidateReuse(GraphOp op) {
+            if (!operators.Add(op)) {
+                var msg = $"Used operator instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
+                throw new InvalidOperationException(msg);
+            }
         }
     }
     

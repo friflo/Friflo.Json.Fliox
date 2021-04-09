@@ -11,12 +11,14 @@ namespace Friflo.Json.EntityGraph.Filter
     // ----------------------------------- unary logical operators -----------------------------------
     public abstract class UnaryBoolOp : BoolOp
     {
-        protected BoolOp       operand;     // e.g.   i => i.amount < 1
+        protected           BoolOp              operand;     // e.g.   i => i.amount < 1
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+
 
         protected UnaryBoolOp(BoolOp operand) { this.operand = operand; }
         
         internal override void Init(GraphOpContext cx) {
-            cx.ValidateOperator(this); // results are reused
+            cx.ValidateReuse(this); // results are reused
             operand.Init(cx);
         }
     }
@@ -73,13 +75,15 @@ namespace Friflo.Json.EntityGraph.Filter
     public abstract class GroupBoolOp : BoolOp
     {
         protected           List<BoolOp>        operands;
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+
 
         protected GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
         
         internal override void Init(GraphOpContext cx) {
-            cx.ValidateOperator(this); // results are reused
+            cx.ValidateReuse(this); // results are reused
             foreach (var operand in operands) {
-                cx.ValidateOperator(operand);
+                cx.ValidateReuse(operand);
                 operand.Init(cx);
             }
         }

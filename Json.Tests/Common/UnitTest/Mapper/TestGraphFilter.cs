@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Filter;
 using Friflo.Json.Mapper;
@@ -69,6 +70,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var allChildAgeEquals20 = new All (new Equals(new Field (".children[*].age"), new NumberLiteral (20)));
                 IsTrue (filter.Filter(peterJson, allChildAgeEquals20));
                 IsFalse(filter.Filter(johnJson,  allChildAgeEquals20));
+
+                
+                
+                // ------------------------------ Test runtime assertions ------------------------------
+                var assertTest = new Equals(isAgeGreater35, isAgeGreater35);
+                var e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, assertTest));
+                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
+
+                // literal and field operators are applicable for reuse
+                var testLiteral = new StringLiteral("Test");
+                var reuseLiterals = new Equals(testLiteral, testLiteral);
+                filter.Filter(peterJson, reuseLiterals);
+                
+                var testField = new Field (".name");
+                var reuseField = new Equals(testField, testField);
+                filter.Filter(peterJson, reuseField);
             }
         }
     }

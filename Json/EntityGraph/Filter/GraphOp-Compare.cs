@@ -11,6 +11,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         protected           GraphOp             left;
         protected           GraphOp             right;
+        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
         
         protected BinaryBoolOp(GraphOp left, GraphOp right) {
             this.left = left;
@@ -18,7 +19,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
         
         internal override void Init(GraphOpContext cx) {
-            cx.ValidateOperator(this); // results are reused
+            cx.ValidateReuse(this); // results are reused
             left.Init(cx);
             right.Init(cx);
         }
