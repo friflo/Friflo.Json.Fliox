@@ -89,9 +89,14 @@ namespace Friflo.Json.EntityGraph.Filter
     
     
     // ------------------------------------- BinaryResult -------------------------------------
-    internal struct ResultPair {
-        internal SelectorValue left;
-        internal SelectorValue right;
+    internal readonly struct ResultPair {
+        internal readonly SelectorValue left;
+        internal readonly SelectorValue right;
+
+        internal ResultPair(SelectorValue left, SelectorValue right) {
+            this.left  = left;
+            this.right = right;
+        }
     }
     
     internal struct BinaryResultEnumerator : IEnumerator<ResultPair>
@@ -102,7 +107,6 @@ namespace Friflo.Json.EntityGraph.Filter
         private readonly    List<SelectorValue> right;
         private readonly    int                 last;
         private             int                 pos;
-        private             ResultPair          current;
         
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
             left  = binaryResult.left;
@@ -111,7 +115,6 @@ namespace Friflo.Json.EntityGraph.Filter
             singleRight = right.Count == 1 ? right[0] : null;
             last = Math.Max(left.Count, right.Count) - 1;
             pos = -1;
-            current = new ResultPair();
         }
         
         public bool MoveNext() {
@@ -125,9 +128,9 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public ResultPair Current {
             get {
-                current.left  = singleLeft  ?? left [pos]; 
-                current.right = singleRight ?? right[pos];
-                return current;
+                var leftResult  = singleLeft  ?? left [pos];
+                var rightResult = singleRight ?? right[pos];
+                return new ResultPair(leftResult, rightResult);
             }
         }
 
