@@ -68,6 +68,18 @@ namespace Friflo.Json.EntityGraph.Filter
                     return new Any((BoolOp)opArgs[1]);
                 case "All":
                     return new All((BoolOp)opArgs[1]);
+                case "Abs":
+                    return new Abs(opArgs[0]);
+                case "Ceiling":
+                    return new Ceiling(opArgs[0]);
+                case "Floor":
+                    return new Floor(opArgs[0]);
+                case "Exp":
+                    return new Exp(opArgs[0]);
+                case "Log":
+                    return new Log(opArgs[0]);
+                case "Sqrt":
+                    return new Sqrt(opArgs[0]);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
@@ -78,6 +90,8 @@ namespace Friflo.Json.EntityGraph.Filter
             switch (unary.NodeType) {
                 case ExpressionType.Not:
                     return new Not((BoolOp)operand);
+                case ExpressionType.Convert:
+                    return operand;
                 default:
                     throw new NotSupportedException($"UnaryExpression not supported: {unary}");
             }
@@ -109,6 +123,11 @@ namespace Friflo.Json.EntityGraph.Filter
             var type = constant.Type;
             if (type == typeof(string))
                 return new StringLiteral((string)constant.Value);
+            
+            if (type == typeof(double))
+                return new NumberLiteral((double)constant.Value);
+            if (type == typeof(float))
+                return new NumberLiteral((float)constant.Value);
             
             if (type == typeof(long))
                 return new NumberLiteral((long)constant.Value);

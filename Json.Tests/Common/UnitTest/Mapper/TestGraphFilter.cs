@@ -154,7 +154,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public static void TestQueryConversion() {
-            // comparision operators
+            
+            // --- comparision operators
             var isEqual = Operator.FromFilter((Person p) => p.name == "Peter");
             AreEqual("name == \"Peter\"", isEqual.ToString());
             
@@ -173,7 +174,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var isGreaterOrEqual = Operator.FromFilter((Person p) => p.age >= 20);
             AreEqual("age >= 20", isGreaterOrEqual.ToString());
 
-            // unary operators
+            
+            // --- unary operators
             var isNot = Operator.FromFilter((Person p) => !(p.age >= 20));
             AreEqual("!(age >= 20)", isNot.ToString());
                 
@@ -182,6 +184,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             var all = Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
             AreEqual("All(age == 20)", all.ToString()); // todo fix Any
+            
+            
+            // --- unary arithmetic operators
+            var abs = Operator.FromLambda((Person p) => Math.Abs(-1));
+            AreEqual("Abs(-1)", abs.ToString());
+            
+            var ceiling = Operator.FromLambda((Person p) => Math.Ceiling(2.5));
+            AreEqual("Ceiling(2.5)", ceiling.ToString());
+            
+            var floor = Operator.FromLambda((Person p) => Math.Floor(2.5));
+            AreEqual("Floor(2.5)", floor.ToString());
+            
+            var exp = Operator.FromLambda((Person p) => Math.Exp(2.5));
+            AreEqual("Exp(2.5)", exp.ToString());
+            
+            var log = Operator.FromLambda((Person p) => Math.Log(2.5));
+            AreEqual("Log(2.5)", log.ToString());
+            
+            var sqrt = Operator.FromLambda((Person p) => Math.Sqrt(2.5));
+            AreEqual("Sqrt(2.5)", sqrt.ToString());
 
         }
     }
