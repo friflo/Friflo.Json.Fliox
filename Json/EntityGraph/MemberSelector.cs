@@ -27,18 +27,7 @@ namespace Friflo.Json.EntityGraph
                     MemberInfo memberInfo = member.Member;
                     sb.Append('.');
                     sb.Append(memberInfo.Name);
-                    Type type; 
-                    switch (memberInfo) {
-                        case FieldInfo fieldInfo:
-                            type = fieldInfo.FieldType;
-                            break;
-                        case PropertyInfo propertyInfo:
-                            type = propertyInfo.PropertyType;
-                            break;
-                        default:
-                            throw new NotSupportedException($"Member not supported: {member}");
-                    }
-                    if (typeof(IEnumerable).IsAssignableFrom(type)) {
+                    if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         sb.Append("[*]");
                         isArraySelector = true;
                     }

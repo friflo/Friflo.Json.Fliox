@@ -20,21 +20,18 @@ namespace Friflo.Json.EntityGraph.Filter
             switch (expression) {
                 case MemberExpression member:
                     MemberInfo memberInfo = member.Member;
-                    Type type; 
                     string name;
                     switch (memberInfo) {
                         case FieldInfo fieldInfo:
-                            type = fieldInfo.FieldType;
                             name = fieldInfo.Name;
                             break;
                         case PropertyInfo propertyInfo:
-                            type = propertyInfo.PropertyType;
                             name = propertyInfo.Name;
                             break;
                         default:
                             throw new NotSupportedException($"Member not supported: {member}");
                     }
-                    if (typeof(IEnumerable).IsAssignableFrom(type)) {
+                    if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         // sb.Append("[*]");
                         // isArraySelector = true;
                     }
