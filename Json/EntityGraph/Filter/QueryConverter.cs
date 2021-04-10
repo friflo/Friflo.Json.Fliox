@@ -143,18 +143,18 @@ namespace Friflo.Json.EntityGraph.Filter
                 return new StringLiteral((string)   value);
             
             if (type == typeof(double))
-                return new NumberLiteral((double)   value);
+                return new DoubleLiteral((double)   value);
             if (type == typeof(float))
-                return new NumberLiteral((float)    value);
+                return new DoubleLiteral((float)    value);
             
             if (type == typeof(long))
-                return new NumberLiteral((long)     value);
+                return new LongLiteral((long)       value);
             if (type == typeof(int))
-                return new NumberLiteral((int)      value);
+                return new LongLiteral((int)        value);
             if (type == typeof(short))
-                return new NumberLiteral((short)    value);
+                return new LongLiteral((short)      value);
             if (type == typeof(byte))
-                return new NumberLiteral((byte)     value);
+                return new LongLiteral((byte)       value);
             
             if (type == typeof(bool))
                 return new BoolLiteral((bool)    value);

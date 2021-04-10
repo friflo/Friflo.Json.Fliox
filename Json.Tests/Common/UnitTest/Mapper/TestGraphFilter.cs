@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter"));
                 bool IsPeter(Person p) => p.name == "Peter";
                 
-                var  isAgeGreater35  = new GreaterThan(new Field (".age"), new NumberLiteral (35));
+                var  isAgeGreater35  = new GreaterThan(new Field (".age"), new LongLiteral (35));
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
                 var isNotAgeGreater35  = new Not(isAgeGreater35);
@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul")));
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new NumberLiteral (12)));
+                var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12)));
                 
                 IsTrue (HasChildPaul(peter));
                 IsTrue (eval.Filter(peterJson, hasChildPaul));
@@ -67,16 +67,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue (eval.Filter(johnJson,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new NumberLiteral (20)));
+                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20)));
                 IsTrue (eval.Filter(peterJson, allChildAgeEquals20));
                 IsFalse(eval.Filter(johnJson,  allChildAgeEquals20));
                 
                 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equal(new Field (".age"), new Add(new NumberLiteral (35), new NumberLiteral(5)));
+                var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5)));
                 IsTrue  (eval.Filter(peterJson, isAge40));
                 
-                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new NumberLiteral (15), new NumberLiteral(5)));
+                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5)));
                 IsTrue  (eval.Filter(peterJson, isChildAge20));
                 
                 
@@ -112,42 +112,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 jsonMapper.Pretty = true;
                 AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello")));
-                AreEqual(42.0,      eval.Eval("{}", new NumberLiteral(42.0)));
+                AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0)));
                 AreEqual(true,      eval.Eval("{}", new BoolLiteral(true)));
                 AreEqual(null,      eval.Eval("{}", new NullLiteral()));
 
                 // unary arithmetic operations
-                var abs     = new Abs(new NumberLiteral(-2));
+                var abs     = new Abs(new LongLiteral(-2));
                 AreEqual(2,         eval.Eval("{}", abs));
                 
-                var ceiling = new Ceiling(new NumberLiteral(2.5));
+                var ceiling = new Ceiling(new DoubleLiteral(2.5));
                 AreEqual(3,         eval.Eval("{}", ceiling));
                 
-                var floor   = new Floor(new NumberLiteral(2.5));
+                var floor   = new Floor(new DoubleLiteral(2.5));
                 AreEqual(2,         eval.Eval("{}", floor));
                 
-                var exp     = new Exp(new NumberLiteral(Math.Log(2)));
+                var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
                 AreEqual(2,         eval.Eval("{}", exp));
                 
-                var log     = new Log(new NumberLiteral(Math.Exp(3)));
+                var log     = new Log(new DoubleLiteral(Math.Exp(3)));
                 AreEqual(3,         eval.Eval("{}", log));
                 
-                var sqrt    = new Sqrt(new NumberLiteral(9));
+                var sqrt    = new Sqrt(new DoubleLiteral(9));
                 AreEqual(3,         eval.Eval("{}", sqrt));
 
                 
 
                 // binary arithmetic operations
-                var add      = new Add(new NumberLiteral(1), new NumberLiteral(2));
+                var add      = new Add(new LongLiteral(1), new LongLiteral(2));
                 AreEqual(3,         eval.Eval("{}", add));
                 
-                var subtract = new Subtract(new NumberLiteral(1), new NumberLiteral(2));
+                var subtract = new Subtract(new LongLiteral(1), new LongLiteral(2));
                 AreEqual(-1,        eval.Eval("{}", subtract));
                 
-                var multiply = new Multiply(new NumberLiteral(2), new NumberLiteral(3));
+                var multiply = new Multiply(new LongLiteral(2), new LongLiteral(3));
                 AreEqual(6,         eval.Eval("{}", multiply));
                 
-                var divide   = new Divide(new NumberLiteral(10), new NumberLiteral(2));
+                var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
                 AreEqual(5,         eval.Eval("{}", divide));
             }
         }
@@ -194,8 +194,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             
             // --- literals
-            var number  = (NumberLiteral)   Operator.FromLambda((Person p) => 1);
-            AreEqual("1",           number.ToString());
+            var lng     = (LongLiteral)     Operator.FromLambda((Person p) => 1);
+            AreEqual("1",           lng.ToString());
+            
+            var dbl     = (DoubleLiteral)   Operator.FromLambda((Person p) => 1.5);
+            AreEqual("1.5",         dbl.ToString());
 
             var str     = (StringLiteral)   Operator.FromLambda((Person p) => "hello");
             AreEqual("'hello'",     str.ToString());

@@ -81,21 +81,29 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class NumberLiteral : Literal
+    public class DoubleLiteral : Literal
     {
-        private             bool        isFloat;
-        private             double      doubleValue;
-        private             long        longValue;
+        private             double      value;
 
-        public override     string      ToString() {
-            return isFloat ? doubleValue.ToString(CultureInfo.InvariantCulture) : longValue.ToString();
-        }
+        public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
 
-        public NumberLiteral(double value) { doubleValue = value; isFloat = true;  }
-        public NumberLiteral(long value)   { longValue = value;   isFloat = false; }
+        public DoubleLiteral(double value) { this.value = value;  }
         
         internal override List<SelectorValue> Eval() {
-            return new List<SelectorValue> { isFloat ? new SelectorValue(doubleValue) : new SelectorValue(longValue) };
+            return new List<SelectorValue> { new SelectorValue(value) };
+        }
+    }
+    
+    public class LongLiteral : Literal
+    {
+        private             long      value;
+
+        public override     string      ToString() => value.ToString();
+
+        public LongLiteral(long value) { this.value = value;  }
+        
+        internal override List<SelectorValue> Eval() {
+            return new List<SelectorValue> { new SelectorValue(value) };
         }
     }
     
