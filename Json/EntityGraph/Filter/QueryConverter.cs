@@ -101,6 +101,7 @@ namespace Friflo.Json.EntityGraph.Filter
             var leftOp  = TraceExpression(binary.Left);
             var rightOp = TraceExpression(binary.Right);
             switch (binary.NodeType) {
+                // --- binary comparison operators
                 case ExpressionType.Equal:
                     return new Equal(leftOp, rightOp);
                 case ExpressionType.NotEqual:
@@ -112,7 +113,17 @@ namespace Friflo.Json.EntityGraph.Filter
                 case ExpressionType.GreaterThan:
                     return new GreaterThan(leftOp, rightOp);
                 case ExpressionType.GreaterThanOrEqual:
-                    return new GreaterThanOrEqual(leftOp, rightOp);
+                    return new GreaterThanOrEqual(leftOp, rightOp); 
+                
+                // --- binary arithmetic operators
+                case ExpressionType.Add:
+                    return new Add(leftOp, rightOp);
+                case ExpressionType.Subtract:
+                    return new Subtract(leftOp, rightOp);
+                case ExpressionType.Multiply:
+                    return new Multiply(leftOp, rightOp);
+                case ExpressionType.Divide:
+                    return new Divide(leftOp, rightOp);
 
                 default:
                     throw new NotSupportedException($"Method not supported. method: {binary}");

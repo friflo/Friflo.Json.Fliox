@@ -207,8 +207,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             
             // --- binary arithmetic operators
-            // var add =   (Add)       Operator.FromLambda((Person p) => 1 + 2);
-            // AreEqual("1 + 2", add.ToString());
+            var add         = (Add)     Operator.FromLambda((Person p) => 1 + Math.Abs(1));
+            AreEqual("1 + Abs(1)", add.ToString());
+
+            var subtract    = (Subtract)Operator.FromLambda((Person p) => 1 - Math.Abs(1));
+            AreEqual("1 - Abs(1)", subtract.ToString());
+
+            var multiply    = (Multiply)Operator.FromLambda((Person p) => 1 * Math.Abs(1));
+            AreEqual("1 * Abs(1)", multiply.ToString());
+
+            var divide      = (Divide)  Operator.FromLambda((Person p) => 1 / Math.Abs(1));
+            AreEqual("1 / Abs(1)", divide.ToString());
 
         }
     }
