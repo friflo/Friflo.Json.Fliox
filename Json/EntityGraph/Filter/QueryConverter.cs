@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -35,19 +36,16 @@ namespace Friflo.Json.EntityGraph.Filter
                         // isArraySelector = true;
                     }
                     return new Field(name);
-                case MethodCallExpression methodCall: 
-                    var args = methodCall.Arguments;
-                    for (int n = 0; n < args.Count; n++) {
-                        var arg = args[n];
-                        TraceExpression(arg);
-                    }
-                    return null;
+                case MethodCallExpression methodCall:
+                    return OperatorFromMethodCallExpression(methodCall);
                 case LambdaExpression lambda: 
                     var body = lambda.Body;
-                    TraceExpression(body);
-                    return null;
+                    return TraceExpression(body);
+                case UnaryExpression unary:
+                    var op = OperatorFromUnaryExpression(unary);
+                    return op;
                 case BinaryExpression binary:
-                    var op = OperatorFromBinaryMethod(binary, binary.Left, binary.Right);
+                    op = OperatorFromBinaryExpression(binary);
                     return op;
                 case ConstantExpression constant:
                     return OperatorFromConstant(constant);
@@ -55,10 +53,39 @@ namespace Friflo.Json.EntityGraph.Filter
                     throw new NotSupportedException($"Body not supported: {expression}");
             }
         }
+        
+        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall) {
+            var args = methodCall.Arguments;
+            var opArgs = new List<Operator>();
+            for (int n = 0; n < args.Count; n++) {
+                var arg = args[n];
+                var boolOp = TraceExpression(arg); 
+                opArgs.Add(boolOp);
+            }
 
-        private static Operator OperatorFromBinaryMethod(BinaryExpression binary, Expression left, Expression right) {
-            var leftOp  = TraceExpression(left);
-            var rightOp = TraceExpression(right);
+            switch (methodCall.Method.Name) {
+                case "Any":
+                    return new Any((BoolOp)opArgs[1]);
+                case "All":
+                    return new All((BoolOp)opArgs[1]);
+                default:
+                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+            }
+        }
+
+        private static Operator OperatorFromUnaryExpression(UnaryExpression unary) {
+            var operand = TraceExpression(unary.Operand);
+            switch (unary.NodeType) {
+                case ExpressionType.Not:
+                    return new Not((BoolOp)operand);
+                default:
+                    throw new NotSupportedException($"UnaryExpression not supported: {unary}");
+            }
+        }
+
+        private static Operator OperatorFromBinaryExpression(BinaryExpression binary) {
+            var leftOp  = TraceExpression(binary.Left);
+            var rightOp = TraceExpression(binary.Right);
             switch (binary.NodeType) {
                 case ExpressionType.Equal:
                     return new Equal(leftOp, rightOp);
@@ -74,7 +101,7 @@ namespace Friflo.Json.EntityGraph.Filter
                     return new GreaterThanOrEqual(leftOp, rightOp);
 
                 default:
-                    throw new NotSupportedException($"Method not supported. method: {binary.NodeType}, left {left}, right: {right}");
+                    throw new NotSupportedException($"Method not supported. method: {binary}");
             }
         }
 

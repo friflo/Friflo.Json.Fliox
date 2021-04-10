@@ -154,13 +154,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public static void TestQueryConversion() {
-            var isEquals = Operator.FromFilter((Person p) => p.name == "Peter");
-            AreEqual("name == \"Peter\"", isEquals.ToString());
+            // comparision operators
+            var isEqual = Operator.FromFilter((Person p) => p.name == "Peter");
+            AreEqual("name == \"Peter\"", isEqual.ToString());
             
+            var isNotEqual = Operator.FromFilter((Person p) => p.name != "Peter");
+            AreEqual("name != \"Peter\"", isNotEqual.ToString());
+
             var isLess = Operator.FromFilter((Person p) => p.age < 20);
             AreEqual("age < 20", isLess.ToString());
             
+            var isLessOrEqual = Operator.FromFilter((Person p) => p.age <= 20);
+            AreEqual("age <= 20", isLessOrEqual.ToString());
+
+            var isGreater = Operator.FromFilter((Person p) => p.age > 20);
+            AreEqual("age > 20", isGreater.ToString());
             
+            var isGreaterOrEqual = Operator.FromFilter((Person p) => p.age >= 20);
+            AreEqual("age >= 20", isGreaterOrEqual.ToString());
+
+            // unary operators
+            var isNot = Operator.FromFilter((Person p) => !(p.age >= 20));
+            AreEqual("!(age >= 20)", isNot.ToString());
+                
+            var any = Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
+            AreEqual("Any(age == 20)", any.ToString()); // todo fix Any
+            
+            var all = Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
+            AreEqual("All(age == 20)", all.ToString()); // todo fix Any
+
         }
     }
 }
