@@ -72,7 +72,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public              string      value;
         
-        public override     string      ToString() => $"\"{value}\"";
+        public override     string      ToString() => $"'{value}'";
 
         public StringLiteral(string value) { this.value = value; }
 

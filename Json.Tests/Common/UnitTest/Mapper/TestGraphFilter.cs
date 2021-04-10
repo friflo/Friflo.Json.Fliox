@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 var reuseGroupOp = new Equal(testGroupOp, testGroupOp);
                 e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, reuseGroupOp));
-                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: \"A\" == \"B\"", e.Message);
+                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
                 // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
@@ -157,10 +157,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             // --- comparision operators
             var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
-            AreEqual("name == \"Peter\"", isEqual.ToString());
+            AreEqual("name == 'Peter'", isEqual.ToString());
             
             var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
-            AreEqual("name != \"Peter\"", isNotEqual.ToString());
+            AreEqual("name != 'Peter'", isNotEqual.ToString());
 
             var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
             AreEqual("age < 20", isLess.ToString());
@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             AreEqual("1",           number.ToString());
 
             var str     = (StringLiteral)   Operator.FromLambda((Person p) => "hello");
-            AreEqual("\"hello\"",   str.ToString());
+            AreEqual("'hello'",     str.ToString());
             
             var @true   = (BoolLiteral)     Operator.FromLambda((Person p) => true);
             AreEqual("true",        @true.ToString());
