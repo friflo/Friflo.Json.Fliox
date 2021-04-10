@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -18,7 +19,12 @@ namespace Friflo.Json.EntityGraph.Filter
         public bool Filter(string json, string filter) {
             return true;
         }
-        
+
+        public bool Filter<T>(string json, Expression<Func<T, bool>> filter) {
+            var op = Operator.FromFilter(filter);
+            return Filter(json, (BoolOp)op);
+        }
+
         public bool Filter(string json, BoolOp filter) {
             var cx = new GraphOpContext();
             filter.Init(cx);

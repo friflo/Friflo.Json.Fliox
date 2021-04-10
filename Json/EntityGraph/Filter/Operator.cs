@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq.Expressions;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -19,6 +20,10 @@ namespace Friflo.Json.EntityGraph.Filter
         
         internal static readonly List<SelectorValue>    SingleTrue  = new List<SelectorValue>{ True  };
         internal static readonly List<SelectorValue>    SingleFalse = new List<SelectorValue>{ False };
+        
+        public static Operator FromFilter<T>(Expression<Func<T, bool>> filter) {
+            return QueryConverter.OperatorFromExpression(filter);
+        }
     }
     
     internal class GraphOpContext

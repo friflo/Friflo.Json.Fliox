@@ -36,6 +36,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // ---
                 var  isPeter         = new Equals(new Field (".name"), new StringLiteral ("Peter"));
                 bool IsPeter(Person p) => p.name == "Peter";
+                var isPeterOp = Operator.FromFilter((Person p) => p.name == "Peter");
+                AreEqual("name == \"Peter\"", isPeterOp.ToString());
+                
                 
                 var  isAgeGreater35  = new GreaterThan(new Field (".age"), new NumberLiteral (35));
                 bool IsAgeGreater35(Person p) => p.age > 35;
