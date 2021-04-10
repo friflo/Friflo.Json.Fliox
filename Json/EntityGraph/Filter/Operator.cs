@@ -94,13 +94,13 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class BooleanLiteral : Literal
+    public class BoolLiteral : Literal
     {
         public bool         value;
         
         public override     string      ToString() => value ? "true" : "false";
         
-        public BooleanLiteral(bool value) { this.value = value; }
+        public BoolLiteral(bool value) { this.value = value; }
         
         internal override List<SelectorValue> Eval() {
             return new List<SelectorValue> { new SelectorValue(value) };

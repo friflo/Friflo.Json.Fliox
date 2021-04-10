@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 jsonMapper.Pretty = true;
                 AreEqual("hello",   filter.Eval("{}", new StringLiteral("hello")));
                 AreEqual(42.0,      filter.Eval("{}", new NumberLiteral(42.0)));
-                AreEqual(true,      filter.Eval("{}", new BooleanLiteral(true)));
+                AreEqual(true,      filter.Eval("{}", new BoolLiteral(true)));
                 AreEqual(null,      filter.Eval("{}", new NullLiteral()));
 
                 // unary arithmetic operations
@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var str     = (StringLiteral)   Operator.FromLambda((Person p) => "hello");
             AreEqual("\"hello\"",   str.ToString());
             
-            var @true   = (BooleanLiteral)  Operator.FromLambda((Person p) => true);
+            var @true   = (BoolLiteral)     Operator.FromLambda((Person p) => true);
             AreEqual("true",        @true.ToString());
 
             var @null   = (NullLiteral)     Operator.FromLambda((Person p) => null);

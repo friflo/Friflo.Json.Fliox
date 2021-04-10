@@ -151,7 +151,7 @@ namespace Friflo.Json.EntityGraph.Filter
                 return new NumberLiteral((byte)     value);
             
             if (type == typeof(bool))
-                return new BooleanLiteral((bool)    value);
+                return new BoolLiteral((bool)    value);
             
             if (type == typeof(object) && value == null)
                 return new NullLiteral();
