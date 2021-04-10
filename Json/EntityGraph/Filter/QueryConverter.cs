@@ -113,7 +113,13 @@ namespace Friflo.Json.EntityGraph.Filter
                 case ExpressionType.GreaterThan:
                     return new GreaterThan(leftOp, rightOp);
                 case ExpressionType.GreaterThanOrEqual:
-                    return new GreaterThanOrEqual(leftOp, rightOp); 
+                    return new GreaterThanOrEqual(leftOp, rightOp);
+                
+                // --- group operator:
+                case ExpressionType.OrElse:
+                    return new Or(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.AndAlso:
+                    return new And(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
                 
                 // --- binary arithmetic operators
                 case ExpressionType.Add:

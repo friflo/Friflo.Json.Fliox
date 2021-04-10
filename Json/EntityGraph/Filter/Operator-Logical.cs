@@ -90,7 +90,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class And : GroupBoolOp
     {
-        public override     string      ToString() => string.Join(" && ", operands);
+        public override     string      ToString() => '(' + string.Join(" && ", operands) + ')';
         
         public And(List<BoolOp> operands) : base(operands) { }
         
@@ -119,7 +119,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public class Or : GroupBoolOp
     {
-        public override     string      ToString() => string.Join(" || ", operands);
+        public override     string      ToString() => '(' + string.Join(" || ", operands) + ')';
         
         public Or(List<BoolOp> operands) : base(operands) { }
         
