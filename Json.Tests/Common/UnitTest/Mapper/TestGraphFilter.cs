@@ -156,54 +156,59 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public static void TestQueryConversion() {
             
             // --- comparision operators
-            var isEqual = Operator.FromFilter((Person p) => p.name == "Peter");
+            var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
             AreEqual("name == \"Peter\"", isEqual.ToString());
             
-            var isNotEqual = Operator.FromFilter((Person p) => p.name != "Peter");
+            var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
             AreEqual("name != \"Peter\"", isNotEqual.ToString());
 
-            var isLess = Operator.FromFilter((Person p) => p.age < 20);
+            var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
             AreEqual("age < 20", isLess.ToString());
             
-            var isLessOrEqual = Operator.FromFilter((Person p) => p.age <= 20);
+            var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
             AreEqual("age <= 20", isLessOrEqual.ToString());
 
-            var isGreater = Operator.FromFilter((Person p) => p.age > 20);
+            var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
             AreEqual("age > 20", isGreater.ToString());
             
-            var isGreaterOrEqual = Operator.FromFilter((Person p) => p.age >= 20);
+            var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
             AreEqual("age >= 20", isGreaterOrEqual.ToString());
 
             
             // --- unary operators
-            var isNot = Operator.FromFilter((Person p) => !(p.age >= 20));
+            var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
             AreEqual("!(age >= 20)", isNot.ToString());
                 
-            var any = Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
+            var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
             AreEqual("Any(age == 20)", any.ToString()); // todo fix Any
             
-            var all = Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
+            var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
             AreEqual("All(age == 20)", all.ToString()); // todo fix Any
             
             
             // --- unary arithmetic operators
-            var abs = Operator.FromLambda((Person p) => Math.Abs(-1));
+            var abs     = (Abs)     Operator.FromLambda((Person p) => Math.Abs(-1));
             AreEqual("Abs(-1)", abs.ToString());
             
-            var ceiling = Operator.FromLambda((Person p) => Math.Ceiling(2.5));
+            var ceiling = (Ceiling) Operator.FromLambda((Person p) => Math.Ceiling(2.5));
             AreEqual("Ceiling(2.5)", ceiling.ToString());
             
-            var floor = Operator.FromLambda((Person p) => Math.Floor(2.5));
+            var floor   = (Floor)   Operator.FromLambda((Person p) => Math.Floor(2.5));
             AreEqual("Floor(2.5)", floor.ToString());
             
-            var exp = Operator.FromLambda((Person p) => Math.Exp(2.5));
+            var exp     = (Exp)     Operator.FromLambda((Person p) => Math.Exp(2.5));
             AreEqual("Exp(2.5)", exp.ToString());
             
-            var log = Operator.FromLambda((Person p) => Math.Log(2.5));
+            var log     = (Log)     Operator.FromLambda((Person p) => Math.Log(2.5));
             AreEqual("Log(2.5)", log.ToString());
             
-            var sqrt = Operator.FromLambda((Person p) => Math.Sqrt(2.5));
+            var sqrt    = (Sqrt)    Operator.FromLambda((Person p) => Math.Sqrt(2.5));
             AreEqual("Sqrt(2.5)", sqrt.ToString());
+            
+            
+            // --- binary arithmetic operators
+            // var add =   (Add)       Operator.FromLambda((Person p) => 1 + 2);
+            // AreEqual("1 + 2", add.ToString());
 
         }
     }
