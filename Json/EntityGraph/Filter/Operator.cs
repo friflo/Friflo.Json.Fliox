@@ -98,7 +98,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         public bool         value;
         
-        public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
+        public override     string      ToString() => value ? "true" : "false";
         
         public BooleanLiteral(bool value) { this.value = value; }
         

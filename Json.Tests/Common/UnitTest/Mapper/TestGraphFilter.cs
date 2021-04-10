@@ -154,7 +154,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
         [Test]
         public static void TestQueryConversion() {
-            
+
             // --- comparision operators
             var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
             AreEqual("name == \"Peter\"", isEqual.ToString());
@@ -185,6 +185,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
             AreEqual("All(age == 20)", all.ToString()); // todo fix Any
             
+            
+            // --- literals
+            var number  = (NumberLiteral)   Operator.FromLambda((Person p) => 1);
+            AreEqual("1",           number.ToString());
+
+            var str     = (StringLiteral)   Operator.FromLambda((Person p) => "hello");
+            AreEqual("\"hello\"",   str.ToString());
+            
+            var @true   = (BooleanLiteral)  Operator.FromLambda((Person p) => true);
+            AreEqual("true",        @true.ToString());
+
+            var @null   = (NullLiteral)     Operator.FromLambda((Person p) => null);
+            AreEqual("null",        @null.ToString());
+
             
             // --- unary arithmetic operators
             var abs     = (Abs)     Operator.FromLambda((Person p) => Math.Abs(-1));

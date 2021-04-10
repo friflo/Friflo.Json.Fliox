@@ -131,23 +131,30 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         private static Operator OperatorFromConstant(ConstantExpression constant) {
-            var type = constant.Type;
+            Type type = constant.Type;
+            object value = constant.Value;
             if (type == typeof(string))
-                return new StringLiteral((string)constant.Value);
+                return new StringLiteral((string)   value);
             
             if (type == typeof(double))
-                return new NumberLiteral((double)constant.Value);
+                return new NumberLiteral((double)   value);
             if (type == typeof(float))
-                return new NumberLiteral((float)constant.Value);
+                return new NumberLiteral((float)    value);
             
             if (type == typeof(long))
-                return new NumberLiteral((long)constant.Value);
+                return new NumberLiteral((long)     value);
             if (type == typeof(int))
-                return new NumberLiteral((int)constant.Value);
+                return new NumberLiteral((int)      value);
             if (type == typeof(short))
-                return new NumberLiteral((short)constant.Value);
+                return new NumberLiteral((short)    value);
             if (type == typeof(byte))
-                return new NumberLiteral((byte)constant.Value);
+                return new NumberLiteral((byte)     value);
+            
+            if (type == typeof(bool))
+                return new BooleanLiteral((bool)    value);
+            
+            if (type == typeof(object) && value == null)
+                return new NullLiteral();
 
             throw new NotSupportedException($"Constant not supported: {constant}");
         }
