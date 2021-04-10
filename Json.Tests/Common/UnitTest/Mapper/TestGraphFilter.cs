@@ -34,11 +34,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var johnJson = jsonMapper.Write(john);
 
                 // ---
-                var  isPeter         = new Equals(new Field (".name"), new StringLiteral ("Peter"));
+                var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter"));
                 bool IsPeter(Person p) => p.name == "Peter";
-                var isPeterOp = Operator.FromFilter((Person p) => p.name == "Peter");
-                AreEqual("name == \"Peter\"", isPeterOp.ToString());
-                
                 
                 var  isAgeGreater35  = new GreaterThan(new Field (".age"), new NumberLiteral (35));
                 bool IsAgeGreater35(Person p) => p.age > 35;
@@ -57,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue  (filter.Filter(johnJson,  isNotAgeGreater35));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Equals (new Field (".children[*].name"), new StringLiteral ("Paul")));
+                var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul")));
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
                 var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new NumberLiteral (12)));
@@ -70,16 +67,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 IsTrue (filter.Filter(johnJson,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Equals(new Field (".children[*].age"), new NumberLiteral (20)));
+                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new NumberLiteral (20)));
                 IsTrue (filter.Filter(peterJson, allChildAgeEquals20));
                 IsFalse(filter.Filter(johnJson,  allChildAgeEquals20));
                 
                 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equals(new Field (".age"), new Add(new NumberLiteral (35), new NumberLiteral(5)));
+                var  isAge40  = new Equal(new Field (".age"), new Add(new NumberLiteral (35), new NumberLiteral(5)));
                 IsTrue  (filter.Filter(peterJson, isAge40));
                 
-                var  isChildAge20  = new Equals(new Field (".children[*].age"), new Add(new NumberLiteral (15), new NumberLiteral(5)));
+                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new NumberLiteral (15), new NumberLiteral(5)));
                 IsTrue  (filter.Filter(peterJson, isChildAge20));
                 
                 
@@ -87,23 +84,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 // ------------------------------ Test runtime assertions ------------------------------
                 Exception e;
                 // --- compare operators must not be reused
-                var reuseCompareOp = new Equals(isAgeGreater35, isAgeGreater35);
+                var reuseCompareOp = new Equal(isAgeGreater35, isAgeGreater35);
                 e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, reuseCompareOp));
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
                 // --- group operators must not be reused
-                var testGroupOp = new And(new List<BoolOp> {new Equals(new StringLiteral("A"), new StringLiteral("B"))});
-                var reuseGroupOp = new Equals(testGroupOp, testGroupOp);
+                var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
+                var reuseGroupOp = new Equal(testGroupOp, testGroupOp);
                 e = Throws<InvalidOperationException>(() => filter.Filter(peterJson, reuseGroupOp));
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: \"A\" == \"B\"", e.Message);
 
                 // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
-                var reuseLiterals = new Equals(testLiteral, testLiteral);
+                var reuseLiterals = new Equal(testLiteral, testLiteral);
                 filter.Filter(peterJson, reuseLiterals);
                 
                 var testField = new Field (".name");
-                var reuseField = new Equals(testField, testField);
+                var reuseField = new Equal(testField, testField);
                 filter.Filter(peterJson, reuseField);
             }
         }
@@ -153,6 +150,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var divide   = new Divide(new NumberLiteral(10), new NumberLiteral(2));
                 AreEqual(5,         filter.Eval("{}", divide));
             }
+        }
+
+        [Test]
+        public static void TestQueryConversion() {
+            var isEquals = Operator.FromFilter((Person p) => p.name == "Peter");
+            AreEqual("name == \"Peter\"", isEquals.ToString());
+            
+            var isLess = Operator.FromFilter((Person p) => p.age < 20);
+            AreEqual("age < 20", isLess.ToString());
+            
+            
         }
     }
 }

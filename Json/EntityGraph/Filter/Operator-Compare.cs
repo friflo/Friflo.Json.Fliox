@@ -26,9 +26,9 @@ namespace Friflo.Json.EntityGraph.Filter
     }
     
     // --- associative comparison operators ---
-    public class Equals : BinaryBoolOp
+    public class Equal : BinaryBoolOp
     {
-        public Equals(Operator left, Operator right) : base(left, right) { }
+        public Equal(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} == {right}";
         
@@ -42,9 +42,9 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
     
-    public class NotEquals : BinaryBoolOp
+    public class NotEqual : BinaryBoolOp
     {
-        public NotEquals(Operator left, Operator right) : base(left, right) { }
+        public NotEqual(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} != {right}";
         
