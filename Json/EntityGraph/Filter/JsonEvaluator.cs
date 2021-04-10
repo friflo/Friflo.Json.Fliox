@@ -8,7 +8,7 @@ using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
-    public class JsonFilter : IDisposable
+    public class JsonEvaluator : IDisposable
     {
         private readonly JsonSelector jsonSelector = new JsonSelector();
 
