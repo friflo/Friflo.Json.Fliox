@@ -23,16 +23,16 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     {
         private readonly    SelectorValue       singleLeft;
         private readonly    SelectorValue       singleRight;
-        private readonly    List<SelectorValue> left;
-        private readonly    List<SelectorValue> right;
+        private readonly    EvalResult          left;
+        private readonly    EvalResult          right;
         private readonly    int                 last;
         private             int                 pos;
         
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
             left  = binaryResult.left;
             right = binaryResult.right;
-            singleLeft  = left. Count == 1 ? left [0] : null;
-            singleRight = right.Count == 1 ? right[0] : null;
+            singleLeft  = left. Count == 1 ? left.values [0] : null;
+            singleRight = right.Count == 1 ? right.values[0] : null;
             last = Math.Max(left.Count, right.Count) - 1;
             pos = -1;
         }
@@ -48,8 +48,8 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 
         public BinaryPair Current {
             get {
-                var leftResult  = singleLeft  ?? left [pos];
-                var rightResult = singleRight ?? right[pos];
+                var leftResult  = singleLeft  ?? left.values [pos];
+                var rightResult = singleRight ?? right.values[pos];
                 return new BinaryPair(leftResult, rightResult);
             }
         }
@@ -61,10 +61,10 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal readonly struct  BinaryResult : IEnumerable<BinaryPair>
     {
-        internal  readonly List<SelectorValue>   left;
-        internal  readonly List<SelectorValue>   right;
+        internal  readonly EvalResult   left;
+        internal  readonly EvalResult   right;
 
-        internal BinaryResult(List<SelectorValue> left, List<SelectorValue> right) {
+        internal BinaryResult(EvalResult left, EvalResult right) {
             this.left  = left;
             this.right = right;
             if (left.Count == 1 || right.Count == 1)

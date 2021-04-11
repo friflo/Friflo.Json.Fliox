@@ -32,7 +32,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} == {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -48,7 +48,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} != {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public override     string      ToString() => $"{left} < {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public override     string      ToString() => $"{left} <= {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -97,7 +97,7 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public override     string      ToString() => $"{left} > {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -113,7 +113,7 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public override     string      ToString() => $"{left} >= {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {

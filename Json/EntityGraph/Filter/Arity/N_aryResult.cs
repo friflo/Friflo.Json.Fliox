@@ -11,25 +11,25 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {
-        internal readonly List<SelectorValue> values;
+        internal readonly EvalResult values;
 
         internal N_aryList(int capacity) {
-            values = new List<SelectorValue>(capacity);
+            values = new EvalResult(new List<SelectorValue>(capacity));
         }
     }
     
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
-        private readonly    List<SelectorValue>         singleValues;
-        private readonly    List<List<SelectorValue>>   values;
+        private readonly    EvalResult                  singleValues;
+        private readonly    List<EvalResult>            values;
         private readonly    int                         last;
         private             int                         pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
             values       = binaryResult.values;
-            singleValues = new List<SelectorValue>(values.Count);
+            singleValues = new EvalResult(new List<SelectorValue>(values.Count));
             foreach (var value in values) {
-                singleValues.Add(value. Count == 1 ? value [0] : null);
+                singleValues.Add(value. Count == 1 ? value.values [0] : null);
             }
             last = values.Max(value => value.Count) - 1;
             pos = -1;
@@ -48,8 +48,8 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
             get {
                 var resultList = new N_aryList(singleValues.Count);
                 for (int n = 0; n < singleValues.Count; n++) {
-                    var single = singleValues[n];
-                    var result  = single ?? values[n][pos];
+                    var single = singleValues.values[n];
+                    var result  = single ?? values[n].values[pos];
                     resultList.values.Add(result);
                 }
                 return resultList;
@@ -63,9 +63,9 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal readonly struct  N_aryResult : IEnumerable<N_aryList>
     {
-        internal  readonly List<List<SelectorValue>>   values;
+        internal  readonly List<EvalResult>   values;
 
-        internal N_aryResult(List<List<SelectorValue>> values) {
+        internal N_aryResult(List<EvalResult> values) {
             this.values  = values;
         }
 

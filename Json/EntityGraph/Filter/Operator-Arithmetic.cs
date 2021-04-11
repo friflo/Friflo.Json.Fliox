@@ -10,7 +10,7 @@ namespace Friflo.Json.EntityGraph.Filter
     public abstract class UnaryArithmeticOp : Operator
     {
         protected           Operator            operand;
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+        internal  readonly  EvalResult          results = new EvalResult(new List<SelectorValue>());
 
         protected UnaryArithmeticOp(Operator operand) { this.operand = operand; }
         
@@ -26,10 +26,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Abs({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Abs();
                 results.Add(result);
             }
@@ -43,10 +43,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Ceiling({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Ceiling();
                 results.Add(result);
             }
@@ -60,10 +60,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Floor({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Floor();
                 results.Add(result);
             }
@@ -77,10 +77,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Exp({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Exp();
                 results.Add(result);
             }
@@ -94,10 +94,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Log({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Log();
                 results.Add(result);
             }
@@ -111,10 +111,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"Sqrt({operand})";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var val in eval) {
+            foreach (var val in eval.values) {
                 var result = val.Sqrt();
                 results.Add(result);
             }
@@ -130,7 +130,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         protected           Operator            left;
         protected           Operator            right;
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+        internal readonly   EvalResult          results = new EvalResult(new List<SelectorValue>());
         
         protected BinaryArithmeticOp(Operator left, Operator right) {
             this.left = left;
@@ -150,7 +150,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} + {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -167,7 +167,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} - {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -184,7 +184,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} * {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
@@ -201,7 +201,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => $"{left} / {right}";
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {

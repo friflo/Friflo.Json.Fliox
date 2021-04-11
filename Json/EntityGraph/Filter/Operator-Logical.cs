@@ -9,7 +9,7 @@ namespace Friflo.Json.EntityGraph.Filter
 {
     public abstract class BoolOp : Operator
     {
-        protected readonly  List<SelectorValue> results = new List<SelectorValue>();
+        internal readonly  EvalResult          results = new EvalResult(new List<SelectorValue>());
     }
     
     // ----------------------------------- unary logical operators -----------------------------------
@@ -31,10 +31,10 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public Not(BoolOp operand) : base(operand) { }
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var result in eval) {
+            foreach (var result in eval.values) {
                 results.Add(result.CompareTo(True) == 0 ? False : True);
             }
             return results;
@@ -47,9 +47,9 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public Any(BoolOp operand) : base(operand) { }
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             var eval = operand.Eval();
-            foreach (var result in eval) {
+            foreach (var result in eval.values) {
                 if (result.CompareTo(True) == 0)
                     return SingleTrue;
             }
@@ -63,9 +63,9 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public All(BoolOp operand) : base(operand) { }
         
-        internal override List<SelectorValue> Eval() {
+        internal override EvalResult Eval() {
             var eval = operand.Eval();
-            foreach (var result in eval) {
+            foreach (var result in eval.values) {
                 if (result.CompareTo(True) != 0)
                     return SingleFalse;
             }
@@ -94,8 +94,8 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public And(List<BoolOp> operands) : base(operands) { }
         
-        internal override List<SelectorValue> Eval() {
-            var evalList = new List<List<SelectorValue>>(operands.Count);
+        internal override EvalResult Eval() {
+            var evalList = new List<EvalResult>(operands.Count);
             foreach (var operand in operands) {
                 var eval = operand.Eval();
                 evalList.Add(eval);
@@ -106,7 +106,7 @@ namespace Friflo.Json.EntityGraph.Filter
             foreach (N_aryList result in nAryResult) {
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.values[n].CompareTo(True) != 0) {
+                    if (result.values.values[n].CompareTo(True) != 0) {
                         itemResult = False;
                         break;
                     }
@@ -123,8 +123,8 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public Or(List<BoolOp> operands) : base(operands) { }
         
-        internal override List<SelectorValue> Eval() {
-            var evalList = new List<List<SelectorValue>>(operands.Count);
+        internal override EvalResult Eval() {
+            var evalList = new List<EvalResult>(operands.Count);
             foreach (var operand in operands) {
                 var eval = operand.Eval();
                 evalList.Add(eval);
@@ -135,7 +135,7 @@ namespace Friflo.Json.EntityGraph.Filter
             foreach (N_aryList result in nAryResult) {
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.values[n].CompareTo(True) == 0) {
+                    if (result.values.values[n].CompareTo(True) == 0) {
                         itemResult = True;
                         break;
                     }
