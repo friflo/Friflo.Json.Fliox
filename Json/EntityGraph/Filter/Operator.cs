@@ -94,7 +94,7 @@ namespace Friflo.Json.EntityGraph.Filter
 
     // --- primitive operators ---
     public abstract class Literal : Operator {
-        // is set always to the same value in Eval()
+        // is set always to the same value in Eval() so it can be reused
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         internal override void Init(GraphOpContext cx) { }
