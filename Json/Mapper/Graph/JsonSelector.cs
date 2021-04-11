@@ -58,14 +58,14 @@ namespace Friflo.Json.Mapper.Graph
                     serializer.ObjectStart();
                     serializer.WriteObject(ref targetParser);
                     var json = serializer.json.ToString();
-                    result.values.Add(new Scalar(ResultType.Object, json));
+                    result.values.Add(new Scalar(ScalarType.Object, json));
                     return;
                 case JsonEvent.ArrayStart:
                     serializer.InitSerializer();
                     serializer.ArrayStart(true);
                     serializer.WriteArray(ref targetParser);
                     json = serializer.json.ToString();
-                    result.values.Add(new Scalar(ResultType.Array, json));
+                    result.values.Add(new Scalar(ScalarType.Array, json));
                     return;
                 case JsonEvent.ValueString:
                     result.values.Add(new Scalar(targetParser.value.ToString()));
@@ -80,7 +80,7 @@ namespace Friflo.Json.Mapper.Graph
                     result.values.Add(new Scalar(targetParser.boolValue));
                     return;
                 case JsonEvent.ValueNull:
-                    result.values.Add(new Scalar(ResultType.Null, null));
+                    result.values.Add(new Scalar(ScalarType.Null, null));
                     return;
             }
         }
@@ -201,6 +201,4 @@ namespace Friflo.Json.Mapper.Graph
         }
 
     }
-
-
 }

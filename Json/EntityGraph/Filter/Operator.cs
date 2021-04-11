@@ -149,7 +149,7 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => "null";
         
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(ResultType.Null, null));
+            return new EvalResult(new Scalar(ScalarType.Null, null));
         }
     }
 }
