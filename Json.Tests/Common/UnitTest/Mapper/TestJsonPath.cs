@@ -23,6 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             
             var bln = new Scalar(true);
             AreEqual(true, bln.AsBool());
+
+            var undef = new Scalar();
+            AreEqual(ScalarType.Undefined, undef.type);
         }
 
         [Test]

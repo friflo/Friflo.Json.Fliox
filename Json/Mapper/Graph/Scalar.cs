@@ -6,6 +6,7 @@ using System.Text;
 namespace Friflo.Json.Mapper.Graph
 {
     public enum ScalarType : byte {
+        Undefined,
         String,
         Number,
         Bool,
@@ -138,7 +139,7 @@ namespace Friflo.Json.Mapper.Graph
                 case ScalarType.Null:
                     return 0;
                 default:
-                    throw new NotSupportedException($"SelectorValue does not support Compare for: {type}");                
+                    throw new NotSupportedException($"SelectorValue does not support CompareTo() for: {type}");                
             }
         }
 
@@ -269,6 +270,9 @@ namespace Friflo.Json.Mapper.Graph
                     break;
                 case ScalarType.Null:
                     sb.Append("null");
+                    break;
+                case ScalarType.Undefined:
+                    sb.Append("(Undefined)");
                     break;
             }
         }
