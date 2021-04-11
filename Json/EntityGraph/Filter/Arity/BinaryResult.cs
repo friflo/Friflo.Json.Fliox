@@ -48,9 +48,9 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 
         public BinaryPair Current {
             get {
-                var leftResult  = singleLeft  ?? left.values [pos];
-                var rightResult = singleRight ?? right.values[pos];
-                return new BinaryPair(leftResult, rightResult);
+                var leftValue  = singleLeft  ?? left.values [pos];
+                var rightValue = singleRight ?? right.values[pos];
+                return new BinaryPair(leftValue, rightValue);
             }
         }
 

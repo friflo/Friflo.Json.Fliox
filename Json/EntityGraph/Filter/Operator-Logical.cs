@@ -34,8 +34,8 @@ namespace Friflo.Json.EntityGraph.Filter
         internal override EvalResult Eval() {
             results.Clear();
             var eval = operand.Eval();
-            foreach (var result in eval.values) {
-                results.Add(result.CompareTo(True) == 0 ? False : True);
+            foreach (var val in eval.values) {
+                results.Add(val.CompareTo(True) == 0 ? False : True);
             }
             return results;
         }
@@ -49,8 +49,8 @@ namespace Friflo.Json.EntityGraph.Filter
         
         internal override EvalResult Eval() {
             var eval = operand.Eval();
-            foreach (var result in eval.values) {
-                if (result.CompareTo(True) == 0)
+            foreach (var val in eval.values) {
+                if (val.CompareTo(True) == 0)
                     return SingleTrue;
             }
             return SingleFalse;
@@ -65,8 +65,8 @@ namespace Friflo.Json.EntityGraph.Filter
         
         internal override EvalResult Eval() {
             var eval = operand.Eval();
-            foreach (var result in eval.values) {
-                if (result.CompareTo(True) != 0)
+            foreach (var val in eval.values) {
+                if (val.CompareTo(True) != 0)
                     return SingleFalse;
             }
             return SingleTrue;
@@ -106,7 +106,7 @@ namespace Friflo.Json.EntityGraph.Filter
             foreach (N_aryList result in nAryResult) {
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.values.values[n].CompareTo(True) != 0) {
+                    if (result.result.values[n].CompareTo(True) != 0) {
                         itemResult = False;
                         break;
                     }
@@ -135,7 +135,7 @@ namespace Friflo.Json.EntityGraph.Filter
             foreach (N_aryList result in nAryResult) {
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.values.values[n].CompareTo(True) == 0) {
+                    if (result.result.values[n].CompareTo(True) == 0) {
                         itemResult = True;
                         break;
                     }
