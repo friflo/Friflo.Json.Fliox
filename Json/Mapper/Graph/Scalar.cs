@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Friflo.Json.Mapper.Graph
 {
-    public enum ScalarType {
+    public enum ScalarType : byte {
         String,
         Number,
         Bool,
