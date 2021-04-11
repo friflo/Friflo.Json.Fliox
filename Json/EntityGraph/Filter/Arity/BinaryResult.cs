@@ -21,8 +21,8 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>
     {
-        private readonly    Scalar       leftValue;
-        private readonly    Scalar       rightValue;
+        private readonly    Scalar?      leftValue;
+        private readonly    Scalar?      rightValue;
         private readonly    EvalResult   leftResult;
         private readonly    EvalResult   rightResult;
         private readonly    int          last;
@@ -31,8 +31,15 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
             leftResult  = binaryResult.leftResult;
             rightResult = binaryResult.rightResult;
-            leftValue  = leftResult. Count == 1 ? leftResult.values [0] : null;
-            rightValue = rightResult.Count == 1 ? rightResult.values[0] : null;
+            if (leftResult.Count == 1)
+                leftValue = leftResult.values[0];
+            else {
+                leftValue = null;
+            }
+            if (rightResult.Count == 1)
+                rightValue = rightResult.values[0];
+            else
+                rightValue = null;
             last = Math.Max(leftResult.Count, rightResult.Count) - 1;
             pos = -1;
         }

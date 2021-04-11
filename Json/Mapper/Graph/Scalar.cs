@@ -14,8 +14,7 @@ namespace Friflo.Json.Mapper.Graph
         Object
     }
 
-    /// Note: Could be a readonly struct, but performance degrades and API gets unhandy if so.
-    public class Scalar
+    public readonly struct Scalar
     {
         internal    readonly    ScalarType      type;
         internal    readonly    string          stringValue; 
@@ -28,28 +27,51 @@ namespace Friflo.Json.Mapper.Graph
         public Scalar(ScalarType type, string value) {
             this.type   = type;
             stringValue = value;
+            //
+            isFloat = false;
+            doubleValue = 0;
+            longValue = 0;
+            boolValue = false;
         }
         
         public Scalar(string value) {
             type        = ScalarType.String;
             stringValue = value;
+            //
+            isFloat = false;
+            doubleValue = 0;
+            longValue = 0;
+            boolValue = false;
         }
         
         public Scalar(double value) {
             type        = ScalarType.Number;
             isFloat     = true;
             doubleValue = value;
+            //
+            stringValue = null;
+            longValue = 0;
+            boolValue = false;
         }
         
         public Scalar(long value) {
             type        = ScalarType.Number;
             isFloat     = false;
             longValue   = value;
+            //
+            stringValue = null;
+            doubleValue = 0;
+            boolValue = false;
         }
 
         public Scalar(bool value) {
             type        = ScalarType.Bool;
             boolValue   = value;
+            //
+            isFloat = false;
+            doubleValue = 0;
+            longValue = 0;
+            stringValue = null;
         }
         
         public override string ToString() {
@@ -59,8 +81,6 @@ namespace Friflo.Json.Mapper.Graph
         }
 
         public long CompareTo(Scalar other) {
-            if (this == other)
-                return 0;
             int typeDiff = type - other.type;
             if (typeDiff != 0)
                 return typeDiff;

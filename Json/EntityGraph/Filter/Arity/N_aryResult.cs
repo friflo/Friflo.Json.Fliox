@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +21,19 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
-        private readonly    EvalResult          evalResult;
+        private readonly    List<Scalar?>       values;
         private readonly    List<EvalResult>    evalResults;
         private readonly    int                 last;
         private             int                 pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
-            evalResults       = binaryResult.results;
-            evalResult = new EvalResult(new List<Scalar>(evalResults.Count));
+            evalResults     = binaryResult.results;
+            values          = new List<Scalar?>(evalResults.Count);
             foreach (var result in evalResults) {
-                evalResult.Add(result. Count == 1 ? result.values [0] : null);
+                if (result.Count == 1)
+                    values.Add(result.values[0]);
+                else
+                    values.Add(null);
             }
             last = evalResults.Max(value => value.Count) - 1;
             pos = -1;
@@ -46,9 +50,9 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 
         public N_aryList Current {
             get {
-                var resultList = new N_aryList(evalResult.Count);
-                for (int n = 0; n < evalResult.Count; n++) {
-                    var single = evalResult.values[n];
+                var resultList = new N_aryList(values.Count);
+                for (int n = 0; n < values.Count; n++) {
+                    var single = values[n];
                     var result  = single ?? evalResults[n].values[pos];
                     resultList.evalResult.Add(result);
                 }
