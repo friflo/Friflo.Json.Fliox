@@ -119,7 +119,7 @@ namespace Friflo.Json.Mapper.Graph
             int typeDiff;
             switch (type) {
                 case ScalarType.String:
-                    typeDiff = type - other.type;
+                    typeDiff = ScalarType.String - other.type;
                     if (typeDiff != 0)
                         return typeDiff;
                     return String.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
@@ -128,19 +128,19 @@ namespace Friflo.Json.Mapper.Graph
                         return (long) (DoubleValue - other.DoubleValue);
                     if (other.IsLong)
                         return (long) (DoubleValue - other.LongValue);
-                    return type - other.type;
+                    return ScalarType.Double - other.type;
                 case ScalarType.Long:
                     if (other.IsDouble)
                         return (long) (LongValue - other.DoubleValue);
                     if (other.IsLong)
                         return LongValue - other.LongValue;
-                    return type - other.type;
+                    return ScalarType.Long - other.type;
                 case ScalarType.Bool:
-                    typeDiff = type - other.type;
+                    typeDiff = ScalarType.Bool - other.type;
                     // possible primitive values: 0 or 1
                     return typeDiff != 0 ? typeDiff : primitiveValue - other.primitiveValue;
                 case ScalarType.Null:
-                    typeDiff = type - other.type;
+                    typeDiff = ScalarType.Bool - other.type;
                     return typeDiff != 0 ? typeDiff : 0;
                 default:
                     throw new NotSupportedException($"SelectorValue does not support CompareTo() for: {type}");                
