@@ -26,6 +26,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             var undef = new Scalar();
             AreEqual(ScalarType.Undefined, undef.type);
+
+            var dbl2 = new Scalar(2.0);
+            
+            var lng2 = new Scalar(2);
+            
+            AreEqual(0, lng2.CompareTo(lng2));
+            AreEqual(0, dbl2.CompareTo(dbl2));
+            AreEqual(0, dbl2.CompareTo(lng2));
+            AreEqual(0, lng2.CompareTo(dbl2));
+            
+            var @true  = new Scalar(true);
+            var @false = new Scalar(false);
+            AreEqual( 0, @true.CompareTo(@true));
+            AreEqual( 1, @true.CompareTo(@false));
+            AreEqual(-1, @false.CompareTo(@true));
         }
 
         [Test]

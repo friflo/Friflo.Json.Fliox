@@ -26,8 +26,9 @@ namespace Friflo.Json.Mapper.Graph
         private                 long            LongValue => primitiveValue;
         private                 bool            BoolValue => primitiveValue != 0;
 
-        public                  bool            IsNumber => type == ScalarType.Double || type == ScalarType.Long;
-        public                  bool            IsDouble => type == ScalarType.Double;
+        private                 bool            IsNumber => type == ScalarType.Double || type == ScalarType.Long;
+        private                 bool            IsDouble => type == ScalarType.Double;
+        private                 bool            IsLong   => type == ScalarType.Long;
 
 
         public Scalar(ScalarType type, string value) {
@@ -115,26 +116,32 @@ namespace Friflo.Json.Mapper.Graph
 
         // --- compare two scalars ---
         public long CompareTo(Scalar other) {
-            int typeDiff = type - other.type;
-            if (typeDiff != 0)
-                return typeDiff;
+            int typeDiff;
             switch (type) {
                 case ScalarType.String:
+                    typeDiff = type - other.type;
+                    if (typeDiff != 0)
+                        return typeDiff;
                     return String.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                 case ScalarType.Double:
-                        if (other.IsDouble)
-                            return (long) (DoubleValue - other.DoubleValue);
+                    if (other.IsDouble)
+                        return (long) (DoubleValue - other.DoubleValue);
+                    if (other.IsLong)
                         return (long) (DoubleValue - other.LongValue);
+                    return type - other.type;
                 case ScalarType.Long:
                     if (other.IsDouble)
                         return (long) (LongValue - other.DoubleValue);
-                    return LongValue - other.LongValue;
+                    if (other.IsLong)
+                        return LongValue - other.LongValue;
+                    return type - other.type;
                 case ScalarType.Bool:
-                    long b1 = BoolValue ? 1 : 0;
-                    long b2 = other.BoolValue ? 1 : 0;
-                    return b1 - b2;
+                    typeDiff = type - other.type;
+                    // possible primitive values: 0 or 1
+                    return typeDiff != 0 ? typeDiff : primitiveValue - other.primitiveValue;
                 case ScalarType.Null:
-                    return 0;
+                    typeDiff = type - other.type;
+                    return typeDiff != 0 ? typeDiff : 0;
                 default:
                     throw new NotSupportedException($"SelectorValue does not support CompareTo() for: {type}");                
             }
