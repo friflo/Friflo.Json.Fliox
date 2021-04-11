@@ -52,6 +52,11 @@ namespace Friflo.Json.EntityGraph.Filter
         internal void Add(Scalar value) {
             values.Add(value);
         }
+        
+        internal void SetSingle(Scalar value) {
+            values[0] = value;
+        }
+        
     }
     
     
@@ -89,8 +94,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
     // --- primitive operators ---
     public abstract class Literal : Operator {
-        internal override void Init(GraphOpContext cx) {
-        }
+        // is set always to the same value in Eval()
+        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        
+        internal override void Init(GraphOpContext cx) { }
     }
         
     public class StringLiteral : Literal
@@ -102,7 +109,8 @@ namespace Friflo.Json.EntityGraph.Filter
         public StringLiteral(string value) { this.value = value; }
 
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(value));
+            evalResult.SetSingle(new Scalar(value));
+            return evalResult;
         }
     }
     
@@ -112,10 +120,11 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
 
-        public DoubleLiteral(double value) { this.value = value;  }
-        
+        public DoubleLiteral(double value) { this.value = value; }
+
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(value));
+            evalResult.SetSingle(new Scalar(value));
+            return evalResult;
         }
     }
     
@@ -125,10 +134,11 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public override     string      ToString() => value.ToString();
 
-        public LongLiteral(long value) { this.value = value;  }
-        
+        public LongLiteral(long value) { this.value = value; }
+
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(value));
+            evalResult.SetSingle(new Scalar(value));
+            return evalResult;
         }
     }
     
@@ -137,20 +147,25 @@ namespace Friflo.Json.EntityGraph.Filter
         public bool         value;
         
         public override     string      ToString() => value ? "true" : "false";
-        
-        public BoolLiteral(bool value) { this.value = value; }
-        
+
+        public BoolLiteral(bool value) {
+            this.value = value;
+        }
+
         internal override EvalResult Eval() {
-            return new EvalResult(value ? True : False);
+            evalResult.SetSingle(value ? True : False);
+            return evalResult;
         }
     }
 
     public class NullLiteral : Literal
     {
         public override     string      ToString() => "null";
-        
+
+
         internal override EvalResult Eval() {
-            return new EvalResult(Null);
+            evalResult.SetSingle(Null);
+            return evalResult;
         }
     }
 }
