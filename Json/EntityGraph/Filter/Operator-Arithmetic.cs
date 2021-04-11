@@ -130,7 +130,7 @@ namespace Friflo.Json.EntityGraph.Filter
     {
         protected           Operator            left;
         protected           Operator            right;
-        internal readonly   EvalResult          results = new EvalResult(new List<SelectorValue>());
+        internal readonly   EvalResult          evalResult = new EvalResult(new List<SelectorValue>());
         
         protected BinaryArithmeticOp(Operator left, Operator right) {
             this.left = left;
@@ -151,13 +151,13 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} + {right}";
         
         internal override EvalResult Eval() {
-            results.Clear();
+            evalResult.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
                 var result = pair.left.Add(pair.right);
-                results.Add(result);
+                evalResult.Add(result);
             }
-            return results;
+            return evalResult;
         }
     }
     
@@ -168,13 +168,13 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} - {right}";
         
         internal override EvalResult Eval() {
-            results.Clear();
+            evalResult.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
                 var result = pair.left.Subtract(pair.right);
-                results.Add(result);
+                evalResult.Add(result);
             }
-            return results;
+            return evalResult;
         }
     }
     
@@ -185,13 +185,13 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} * {right}";
         
         internal override EvalResult Eval() {
-            results.Clear();
+            evalResult.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
                 var result = pair.left.Multiply(pair.right);
-                results.Add(result);
+                evalResult.Add(result);
             }
-            return results;
+            return evalResult;
         }
     }
     
@@ -202,13 +202,13 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => $"{left} / {right}";
         
         internal override EvalResult Eval() {
-            results.Clear();
+            evalResult.Clear();
             var eval = new BinaryResult(left.Eval(), right.Eval());
             foreach (var pair in eval) {
                 var result = pair.left.Divide(pair.right);
-                results.Add(result);
+                evalResult.Add(result);
             }
-            return results;
+            return evalResult;
         }
     }
 

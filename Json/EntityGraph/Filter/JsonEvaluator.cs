@@ -32,7 +32,7 @@ namespace Friflo.Json.EntityGraph.Filter
             int index = 0;
             foreach (var selectorPair in cx.selectors) {
                 Field field = selectorPair.Value;
-                field.results = new EvalResult(selectorResults[index++].values);
+                field.evalResult = new EvalResult(selectorResults[index++].values);
             }
 
             var evalResult = filter.Eval();
@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph.Filter
             int index = 0;
             foreach (var selectorPair in cx.selectors) {
                 Field field = selectorPair.Value;
-                field.results = new EvalResult(selectorResults[index++].values);
+                field.evalResult = new EvalResult(selectorResults[index++].values);
             }
 
             var evalResult = op.Eval();

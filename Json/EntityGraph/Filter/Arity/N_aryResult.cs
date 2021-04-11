@@ -11,27 +11,27 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {
-        internal readonly EvalResult result;
+        internal readonly EvalResult evalResult;
 
         internal N_aryList(int capacity) {
-            result = new EvalResult(new List<SelectorValue>(capacity));
+            evalResult = new EvalResult(new List<SelectorValue>(capacity));
         }
     }
     
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
-        private readonly    EvalResult                  singleResult;
-        private readonly    List<EvalResult>            results;
+        private readonly    EvalResult                  evalResult;
+        private readonly    List<EvalResult>            evalResults;
         private readonly    int                         last;
         private             int                         pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
-            results       = binaryResult.values;
-            singleResult = new EvalResult(new List<SelectorValue>(results.Count));
-            foreach (var result in results) {
-                singleResult.Add(result. Count == 1 ? result.values [0] : null);
+            evalResults       = binaryResult.values;
+            evalResult = new EvalResult(new List<SelectorValue>(evalResults.Count));
+            foreach (var result in evalResults) {
+                evalResult.Add(result. Count == 1 ? result.values [0] : null);
             }
-            last = results.Max(value => value.Count) - 1;
+            last = evalResults.Max(value => value.Count) - 1;
             pos = -1;
         }
         
@@ -46,11 +46,11 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 
         public N_aryList Current {
             get {
-                var resultList = new N_aryList(singleResult.Count);
-                for (int n = 0; n < singleResult.Count; n++) {
-                    var single = singleResult.values[n];
-                    var result  = single ?? results[n].values[pos];
-                    resultList.result.Add(result);
+                var resultList = new N_aryList(evalResult.Count);
+                for (int n = 0; n < evalResult.Count; n++) {
+                    var single = evalResult.values[n];
+                    var result  = single ?? evalResults[n].values[pos];
+                    resultList.evalResult.Add(result);
                 }
                 return resultList;
             }

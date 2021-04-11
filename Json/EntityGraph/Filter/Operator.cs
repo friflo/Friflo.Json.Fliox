@@ -71,7 +71,7 @@ namespace Friflo.Json.EntityGraph.Filter
     public class Field : Operator
     {
         public          string                  field;
-        internal        EvalResult              results;
+        internal        EvalResult              evalResult;
 
         public override string                  ToString() => field;
         
@@ -82,7 +82,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         internal override EvalResult Eval() {
-            return results;
+            return evalResult;
         }
     }
 

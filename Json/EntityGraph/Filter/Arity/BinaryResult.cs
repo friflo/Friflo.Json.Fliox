@@ -21,19 +21,19 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>
     {
-        private readonly    SelectorValue       singleLeft;
-        private readonly    SelectorValue       singleRight;
-        private readonly    EvalResult          left;
-        private readonly    EvalResult          right;
+        private readonly    SelectorValue       leftValue;
+        private readonly    SelectorValue       rightValue;
+        private readonly    EvalResult          leftResult;
+        private readonly    EvalResult          rightResult;
         private readonly    int                 last;
         private             int                 pos;
         
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
-            left  = binaryResult.left;
-            right = binaryResult.right;
-            singleLeft  = left. Count == 1 ? left.values [0] : null;
-            singleRight = right.Count == 1 ? right.values[0] : null;
-            last = Math.Max(left.Count, right.Count) - 1;
+            leftResult  = binaryResult.left;
+            rightResult = binaryResult.right;
+            leftValue  = leftResult. Count == 1 ? leftResult.values [0] : null;
+            rightValue = rightResult.Count == 1 ? rightResult.values[0] : null;
+            last = Math.Max(leftResult.Count, rightResult.Count) - 1;
             pos = -1;
         }
         
@@ -48,9 +48,9 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 
         public BinaryPair Current {
             get {
-                var leftValue  = singleLeft  ?? left.values [pos];
-                var rightValue = singleRight ?? right.values[pos];
-                return new BinaryPair(leftValue, rightValue);
+                var left  = leftValue  ?? leftResult.values [pos];
+                var right = rightValue ?? rightResult.values[pos];
+                return new BinaryPair(left, right);
             }
         }
 
