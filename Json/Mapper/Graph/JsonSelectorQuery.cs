@@ -15,7 +15,7 @@ namespace Friflo.Json.Mapper.Graph
         public List<string> AsStringList() {
             var result = new List<string>(values.Count);
             foreach (var item in values) {
-                result.Add(item.stringValue);
+                result.Add(item.AsString());
             }
             return result;
         }

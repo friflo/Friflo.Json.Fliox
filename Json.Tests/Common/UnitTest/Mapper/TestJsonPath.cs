@@ -10,6 +10,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     public class TestJsonPath : LeakTestsFixture
     {
         [Test]
+        public void TestScalar() {
+            var str = new Scalar("hello");
+            AreEqual("hello", str.AsString());
+            AreEqual(ScalarType.String, str.type);
+            
+            var dbl = new Scalar(1.5);
+            AreEqual(1.5, dbl.AsDouble());
+
+            var lng = new Scalar(2);
+            AreEqual(2, lng.AsLong());
+            
+            var bln = new Scalar(true);
+            AreEqual(true, bln.AsBool());
+        }
+
+        [Test]
         public void TestObjectSelect() {
             using (var typeStore    = new TypeStore()) 
             using (var jsonWriter   = new JsonWriter(typeStore))

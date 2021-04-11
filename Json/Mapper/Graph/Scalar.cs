@@ -16,15 +16,15 @@ namespace Friflo.Json.Mapper.Graph
 
     public readonly struct Scalar
     {
-        private     readonly    ScalarType      type;           // 1 byte - underlying type set to byte
+        public      readonly    ScalarType      type;           // 1 byte - underlying type set to byte
         private     readonly    bool            isFloat;        // 1 byte - usually)
         private     readonly    long            primitiveValue; // 8 bytes
-        internal    readonly    string          stringValue;    // 8 bytes
+        private     readonly    string          stringValue;    // 8 bytes
 
         private                 double          DoubleValue => BitConverter.Int64BitsToDouble(primitiveValue);
         private                 long            LongValue => primitiveValue;
         private                 bool            BoolValue => primitiveValue != 0;
-        
+
 
         public Scalar(ScalarType type, string value) {
             this.type       = type;
@@ -71,7 +71,50 @@ namespace Friflo.Json.Mapper.Graph
             AppendTo(sb);
             return sb.ToString();
         }
+        
+        // --- value access methods ---
+        public string AsString() {
+            if (type == ScalarType.String)
+                return stringValue;
+            throw new InvalidOperationException($"Scalar cannot be returned as string. type: {type}, value: {this}");
+        }
+        
+        public double AsDouble() {
+            if (type == ScalarType.Number && isFloat)
+                return DoubleValue;
+            throw new InvalidOperationException($"Scalar cannot be returned as double. type: {type}, value: {this}");
+        }
+        
+        public long AsLong() {
+            if (type == ScalarType.Number && !isFloat)
+                return LongValue;
+            throw new InvalidOperationException($"Scalar cannot be returned as long. type: {type}, value: {this}");
+        }
+        
+        public bool AsBool() {
+            if (type == ScalarType.Bool)
+                return BoolValue;
+            throw new InvalidOperationException($"Scalar cannot be returned as bool. type: {type}, value: {this}");
+        }
 
+        public object AsObject() {
+            switch (type) {
+                case ScalarType.Number:
+                    if (isFloat)
+                        return DoubleValue;
+                    return LongValue;
+                case ScalarType.String:
+                    return stringValue;
+                case ScalarType.Bool:
+                    return BoolValue;
+                case ScalarType.Null:
+                    return null;
+                default:
+                    throw new NotImplementedException($"value type supported. type: {type}");
+            }
+        }
+
+        // --- compare two scalars ---
         public long CompareTo(Scalar other) {
             int typeDiff = type - other.type;
             if (typeDiff != 0)
@@ -99,25 +142,6 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
 
-        public object AsObject() {
-            switch (type) {
-                case ScalarType.Number:
-                    if (isFloat)
-                        return DoubleValue;
-                    return LongValue;
-                case ScalarType.String:
-                    return stringValue;
-                case ScalarType.Bool:
-                    return BoolValue;
-                case ScalarType.Null:
-                    return null;
-                default:
-                    throw new NotImplementedException($"value type supported. type: {type}");
-            }
-        }
-
-
-        
         // --- unary arithmetic operators ---
         public Scalar Abs() {
             AssertUnaryNumber();
