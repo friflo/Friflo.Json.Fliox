@@ -140,7 +140,7 @@ namespace Friflo.Json.Mapper.Graph
                     // possible primitive values: 0 or 1
                     return typeDiff != 0 ? typeDiff : primitiveValue - other.primitiveValue;
                 case ScalarType.Null:
-                    typeDiff = ScalarType.Bool - other.type;
+                    typeDiff = ScalarType.Null - other.type;
                     return typeDiff != 0 ? typeDiff : 0;
                 default:
                     throw new NotSupportedException($"SelectorValue does not support CompareTo() for: {type}");                
