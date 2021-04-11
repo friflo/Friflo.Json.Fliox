@@ -29,6 +29,11 @@ namespace Friflo.Json.Mapper.Graph
         private                 bool            IsNumber => type == ScalarType.Double || type == ScalarType.Long;
         private                 bool            IsDouble => type == ScalarType.Double;
         private                 bool            IsLong   => type == ScalarType.Long;
+        
+        public static readonly Scalar           True  = new Scalar(true); 
+        public static readonly Scalar           False = new Scalar(false);
+        
+        public static readonly Scalar           Null  = new Scalar(ScalarType.Null, null);
 
 
         public Scalar(ScalarType type, string value) {

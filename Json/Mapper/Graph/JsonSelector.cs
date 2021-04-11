@@ -77,10 +77,10 @@ namespace Friflo.Json.Mapper.Graph
                         result.values.Add(new Scalar(targetParser.ValueAsLong(out bool _)));
                     return;
                 case JsonEvent.ValueBool:
-                    result.values.Add(new Scalar(targetParser.boolValue));
+                    result.values.Add(targetParser.boolValue ? Scalar.True : Scalar.False);
                     return;
                 case JsonEvent.ValueNull:
-                    result.values.Add(new Scalar(ScalarType.Null, null));
+                    result.values.Add(Scalar.Null);
                     return;
             }
         }

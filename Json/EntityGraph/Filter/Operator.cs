@@ -15,9 +15,10 @@ namespace Friflo.Json.EntityGraph.Filter
         internal abstract void                  Init(GraphOpContext cx);
         internal abstract EvalResult            Eval();
         
-        internal static readonly Scalar         True  = new Scalar(true); 
-        internal static readonly Scalar         False = new Scalar(false);
-        
+        internal static readonly Scalar         True  = Scalar.True; 
+        internal static readonly Scalar         False = Scalar.False;
+        internal static readonly Scalar         Null  = Scalar.Null;
+
         internal static readonly EvalResult     SingleTrue  = new EvalResult(True);
         internal static readonly EvalResult     SingleFalse = new EvalResult(False);
         
@@ -140,7 +141,7 @@ namespace Friflo.Json.EntityGraph.Filter
         public BoolLiteral(bool value) { this.value = value; }
         
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(value));
+            return new EvalResult(value ? True : False);
         }
     }
 
@@ -149,7 +150,7 @@ namespace Friflo.Json.EntityGraph.Filter
         public override     string      ToString() => "null";
         
         internal override EvalResult Eval() {
-            return new EvalResult(new Scalar(ScalarType.Null, null));
+            return new EvalResult(Null);
         }
     }
 }
