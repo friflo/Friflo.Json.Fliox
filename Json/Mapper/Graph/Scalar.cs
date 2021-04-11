@@ -36,7 +36,7 @@ namespace Friflo.Json.Mapper.Graph
         public static readonly Scalar           Null  = new Scalar(ScalarType.Null, null);
 
 
-        public Scalar(ScalarType type, string value) {
+        internal Scalar(ScalarType type, string value) {
             this.type       = type;
             stringValue     = value;
             //
