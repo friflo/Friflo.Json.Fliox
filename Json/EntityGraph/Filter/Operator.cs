@@ -30,9 +30,9 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
 
-    internal struct EvalResult
+    internal readonly struct EvalResult
     {
-        internal List<SelectorValue> values;
+        internal readonly  List<SelectorValue> values;
 
         internal EvalResult (SelectorValue singleValue) {
             values = new List<SelectorValue> { singleValue };
@@ -71,7 +71,7 @@ namespace Friflo.Json.EntityGraph.Filter
     public class Field : Operator
     {
         public          string                  field;
-        internal        EvalResult              results = new EvalResult(new List<SelectorValue>());
+        internal        EvalResult              results;
 
         public override string                  ToString() => field;
         
