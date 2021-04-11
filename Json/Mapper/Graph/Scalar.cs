@@ -16,62 +16,54 @@ namespace Friflo.Json.Mapper.Graph
 
     public readonly struct Scalar
     {
-        internal    readonly    ScalarType      type;
-        internal    readonly    string          stringValue; 
-        internal    readonly    bool            isFloat;
-        internal    readonly    double          doubleValue;
-        internal    readonly    long            longValue;
-        internal    readonly    bool            boolValue;
+        private     readonly    ScalarType      type;           // 1 byte - underlying type set to byte
+        private     readonly    bool            isFloat;        // 1 byte - usually)
+        private     readonly    long            primitiveValue; // 8 bytes
+        internal    readonly    string          stringValue;    // 8 bytes
+
+        private                 double          DoubleValue => BitConverter.Int64BitsToDouble(primitiveValue);
+        private                 long            LongValue => primitiveValue;
+        private                 bool            BoolValue => primitiveValue != 0;
         
 
         public Scalar(ScalarType type, string value) {
-            this.type   = type;
-            stringValue = value;
+            this.type       = type;
+            stringValue     = value;
             //
             isFloat = false;
-            doubleValue = 0;
-            longValue = 0;
-            boolValue = false;
+            primitiveValue  = 0;
         }
         
         public Scalar(string value) {
-            type        = ScalarType.String;
-            stringValue = value;
+            type            = ScalarType.String;
+            stringValue     = value;
             //
             isFloat = false;
-            doubleValue = 0;
-            longValue = 0;
-            boolValue = false;
+            primitiveValue  = 0;
         }
         
         public Scalar(double value) {
-            type        = ScalarType.Number;
-            isFloat     = true;
-            doubleValue = value;
+            type            = ScalarType.Number;
+            isFloat         = true;
+            primitiveValue  = BitConverter.DoubleToInt64Bits(value);
             //
-            stringValue = null;
-            longValue = 0;
-            boolValue = false;
+            stringValue     = null;
         }
         
         public Scalar(long value) {
-            type        = ScalarType.Number;
-            isFloat     = false;
-            longValue   = value;
+            type            = ScalarType.Number;
+            isFloat         = false;
+            primitiveValue  = value;
             //
-            stringValue = null;
-            doubleValue = 0;
-            boolValue = false;
+            stringValue     = null;
         }
 
         public Scalar(bool value) {
-            type        = ScalarType.Bool;
-            boolValue   = value;
+            type            = ScalarType.Bool;
+            primitiveValue  = value ? 1 : 0;
             //
-            isFloat = false;
-            doubleValue = 0;
-            longValue = 0;
-            stringValue = null;
+            isFloat         = false;
+            stringValue     = null;
         }
         
         public override string ToString() {
@@ -90,15 +82,15 @@ namespace Friflo.Json.Mapper.Graph
                 case ScalarType.Number:
                     if (isFloat) {
                         if (other.isFloat)
-                            return (long) (doubleValue - other.doubleValue);
-                        return (long) (doubleValue - other.longValue);
+                            return (long) (DoubleValue - other.DoubleValue);
+                        return (long) (DoubleValue - other.LongValue);
                     }
                     if (other.isFloat)
-                        return (long) (longValue - other.doubleValue);
-                    return longValue - other.longValue;
+                        return (long) (LongValue - other.DoubleValue);
+                    return LongValue - other.LongValue;
                 case ScalarType.Bool:
-                    long b1 = boolValue ? 1 : 0;
-                    long b2 = other.boolValue ? 1 : 0;
+                    long b1 = BoolValue ? 1 : 0;
+                    long b2 = other.BoolValue ? 1 : 0;
                     return b1 - b2;
                 case ScalarType.Null:
                     return 0;
@@ -111,12 +103,12 @@ namespace Friflo.Json.Mapper.Graph
             switch (type) {
                 case ScalarType.Number:
                     if (isFloat)
-                        return doubleValue;
-                    return longValue;
+                        return DoubleValue;
+                    return LongValue;
                 case ScalarType.String:
                     return stringValue;
                 case ScalarType.Bool:
-                    return boolValue;
+                    return BoolValue;
                 case ScalarType.Null:
                     return null;
                 default:
@@ -130,43 +122,43 @@ namespace Friflo.Json.Mapper.Graph
         public Scalar Abs() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Abs(doubleValue));
-            return     new Scalar(Math.Abs(longValue));
+                return new Scalar(Math.Abs(DoubleValue));
+            return     new Scalar(Math.Abs(LongValue));
         }
         
         public Scalar Ceiling() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Ceiling(        doubleValue));
-            return     new Scalar(Math.Ceiling((double)longValue));
+                return new Scalar(Math.Ceiling(        DoubleValue));
+            return     new Scalar(Math.Ceiling((double)LongValue));
         }
         
         public Scalar Floor() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Floor(        doubleValue));
-            return     new Scalar(Math.Floor((double)longValue));
+                return new Scalar(Math.Floor(        DoubleValue));
+            return     new Scalar(Math.Floor((double)LongValue));
         }
         
         public Scalar Exp() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Exp(doubleValue));
-            return     new Scalar(Math.Exp(longValue));
+                return new Scalar(Math.Exp(DoubleValue));
+            return     new Scalar(Math.Exp(LongValue));
         }
         
         public Scalar Log() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Log(doubleValue));
-            return     new Scalar(Math.Log(longValue));
+                return new Scalar(Math.Log(DoubleValue));
+            return     new Scalar(Math.Log(LongValue));
         }
         
         public Scalar Sqrt() {
             AssertUnaryNumber();
             if (isFloat)
-                return new Scalar(Math.Sqrt(doubleValue));
-            return     new Scalar(Math.Sqrt(longValue));
+                return new Scalar(Math.Sqrt(DoubleValue));
+            return     new Scalar(Math.Sqrt(LongValue));
         }
 
         private void AssertUnaryNumber() {
@@ -179,48 +171,48 @@ namespace Friflo.Json.Mapper.Graph
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new Scalar(doubleValue + other.doubleValue);
-                return     new Scalar(doubleValue + other.longValue);
+                    return new Scalar(DoubleValue + other.DoubleValue);
+                return     new Scalar(DoubleValue + other.LongValue);
             }
             if (other.isFloat)
-                return     new Scalar(longValue   + other.doubleValue);
-            return         new Scalar(longValue   + other.longValue);
+                return     new Scalar(LongValue   + other.DoubleValue);
+            return         new Scalar(LongValue   + other.LongValue);
         }
         
         public Scalar Subtract(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new Scalar(doubleValue - other.doubleValue);
-                return     new Scalar(doubleValue - other.longValue);
+                    return new Scalar(DoubleValue - other.DoubleValue);
+                return     new Scalar(DoubleValue - other.LongValue);
             }
             if (other.isFloat)
-                return     new Scalar(longValue   - other.doubleValue);
-            return         new Scalar(longValue   - other.longValue);
+                return     new Scalar(LongValue   - other.DoubleValue);
+            return         new Scalar(LongValue   - other.LongValue);
         }
         
         public Scalar Multiply(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new Scalar(doubleValue * other.doubleValue);
-                return     new Scalar(doubleValue * other.longValue);
+                    return new Scalar(DoubleValue * other.DoubleValue);
+                return     new Scalar(DoubleValue * other.LongValue);
             }
             if (other.isFloat)
-                return     new Scalar(longValue   * other.doubleValue);
-            return         new Scalar(longValue   * other.longValue);
+                return     new Scalar(LongValue   * other.DoubleValue);
+            return         new Scalar(LongValue   * other.LongValue);
         }
         
         public Scalar Divide(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new Scalar(doubleValue / other.doubleValue);
-                return     new Scalar(doubleValue / other.longValue);
+                    return new Scalar(DoubleValue / other.DoubleValue);
+                return     new Scalar(DoubleValue / other.LongValue);
             }
             if (other.isFloat)
-                return     new Scalar(longValue   / other.doubleValue);
-            return         new Scalar(longValue   / other.longValue);
+                return     new Scalar(LongValue   / other.DoubleValue);
+            return         new Scalar(LongValue   / other.LongValue);
         }
         
         private void AssertBinaryNumbers(Scalar other) {
@@ -239,9 +231,9 @@ namespace Friflo.Json.Mapper.Graph
                     break;
                 case ScalarType.Number:
                     if (isFloat)
-                        sb.Append(doubleValue);
+                        sb.Append(DoubleValue);
                     else
-                        sb.Append(longValue);
+                        sb.Append(LongValue);
                     break;
                 case ScalarType.String:
                     sb.Append('\'');
@@ -249,7 +241,7 @@ namespace Friflo.Json.Mapper.Graph
                     sb.Append('\'');
                     break;
                 case ScalarType.Bool:
-                    sb.Append(boolValue ? "true": "false");
+                    sb.Append(BoolValue ? "true": "false");
                     break;
                 case ScalarType.Null:
                     sb.Append("null");
