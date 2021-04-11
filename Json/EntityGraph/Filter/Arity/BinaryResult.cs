@@ -10,10 +10,10 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct BinaryPair {
-        internal readonly SelectorValue left;
-        internal readonly SelectorValue right;
+        internal readonly   Scalar left;
+        internal readonly   Scalar right;
 
-        internal BinaryPair(SelectorValue left, SelectorValue right) {
+        internal BinaryPair(Scalar left, Scalar right) {
             this.left  = left;
             this.right = right;
         }
@@ -21,12 +21,12 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>
     {
-        private readonly    SelectorValue       leftValue;
-        private readonly    SelectorValue       rightValue;
-        private readonly    EvalResult          leftResult;
-        private readonly    EvalResult          rightResult;
-        private readonly    int                 last;
-        private             int                 pos;
+        private readonly    Scalar       leftValue;
+        private readonly    Scalar       rightValue;
+        private readonly    EvalResult   leftResult;
+        private readonly    EvalResult   rightResult;
+        private readonly    int          last;
+        private             int          pos;
         
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
             leftResult  = binaryResult.leftResult;

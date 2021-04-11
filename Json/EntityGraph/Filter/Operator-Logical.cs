@@ -9,7 +9,7 @@ namespace Friflo.Json.EntityGraph.Filter
 {
     public abstract class BoolOp : Operator
     {
-        internal readonly  EvalResult          evalResult = new EvalResult(new List<SelectorValue>());
+        internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
     }
     
     // ----------------------------------- unary logical operators -----------------------------------

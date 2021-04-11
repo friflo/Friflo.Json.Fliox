@@ -10,7 +10,7 @@ namespace Friflo.Json.EntityGraph.Filter
     public abstract class UnaryArithmeticOp : Operator
     {
         protected           Operator            operand;
-        internal  readonly  EvalResult          evalResult = new EvalResult(new List<SelectorValue>());
+        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar>());
 
         protected UnaryArithmeticOp(Operator operand) { this.operand = operand; }
         
@@ -128,9 +128,9 @@ namespace Friflo.Json.EntityGraph.Filter
     // ------------------------------------ binary arithmetic operators ------------------------------------
     public abstract class BinaryArithmeticOp : Operator
     {
-        protected           Operator            left;
-        protected           Operator            right;
-        internal readonly   EvalResult          evalResult = new EvalResult(new List<SelectorValue>());
+        protected           Operator    left;
+        protected           Operator    right;
+        internal readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
         
         protected BinaryArithmeticOp(Operator left, Operator right) {
             this.left = left;

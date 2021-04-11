@@ -14,20 +14,20 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
         internal readonly EvalResult evalResult;
 
         internal N_aryList(int capacity) {
-            evalResult = new EvalResult(new List<SelectorValue>(capacity));
+            evalResult = new EvalResult(new List<Scalar>(capacity));
         }
     }
     
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
-        private readonly    EvalResult                  evalResult;
-        private readonly    List<EvalResult>            evalResults;
-        private readonly    int                         last;
-        private             int                         pos;
+        private readonly    EvalResult          evalResult;
+        private readonly    List<EvalResult>    evalResults;
+        private readonly    int                 last;
+        private             int                 pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
             evalResults       = binaryResult.results;
-            evalResult = new EvalResult(new List<SelectorValue>(evalResults.Count));
+            evalResult = new EvalResult(new List<Scalar>(evalResults.Count));
             foreach (var result in evalResults) {
                 evalResult.Add(result. Count == 1 ? result.values [0] : null);
             }

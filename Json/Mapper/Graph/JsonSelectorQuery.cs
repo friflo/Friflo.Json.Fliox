@@ -9,7 +9,7 @@ namespace Friflo.Json.Mapper.Graph
 {
     public class SelectorResult
     {
-        public  readonly    List<SelectorValue>     values = new List<SelectorValue>();
+        public  readonly    List<Scalar>    values = new List<Scalar>();
 
         internal SelectorResult() { }
 
@@ -52,7 +52,7 @@ namespace Friflo.Json.Mapper.Graph
     }
 
     /// Note: Could be a readonly struct, but performance degrades and API gets unhandy if so.
-    public class SelectorValue
+    public class Scalar
     {
         internal    readonly    ResultType      type;
         internal    readonly    string          stringValue; 
@@ -62,29 +62,29 @@ namespace Friflo.Json.Mapper.Graph
         internal    readonly    bool            boolValue;
         
 
-        public SelectorValue(ResultType type, string value) {
+        public Scalar(ResultType type, string value) {
             this.type   = type;
             stringValue = value;
         }
         
-        public SelectorValue(string value) {
+        public Scalar(string value) {
             type        = ResultType.String;
             stringValue = value;
         }
         
-        public SelectorValue(double value) {
+        public Scalar(double value) {
             type        = ResultType.Number;
             isFloat     = true;
             doubleValue = value;
         }
         
-        public SelectorValue(long value) {
+        public Scalar(long value) {
             type        = ResultType.Number;
             isFloat     = false;
             longValue   = value;
         }
 
-        public SelectorValue(bool value) {
+        public Scalar(bool value) {
             type        = ResultType.Bool;
             boolValue   = value;
         }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Mapper.Graph
             return sb.ToString();
         }
 
-        public long CompareTo(SelectorValue other) {
+        public long CompareTo(Scalar other) {
             if (this == other)
                 return 0;
             int typeDiff = type - other.type;
@@ -144,46 +144,46 @@ namespace Friflo.Json.Mapper.Graph
 
         
         // --- unary arithmetic operators ---
-        public SelectorValue Abs() {
+        public Scalar Abs() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Abs(doubleValue));
-            return     new SelectorValue(Math.Abs(longValue));
+                return new Scalar(Math.Abs(doubleValue));
+            return     new Scalar(Math.Abs(longValue));
         }
         
-        public SelectorValue Ceiling() {
+        public Scalar Ceiling() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Ceiling(        doubleValue));
-            return     new SelectorValue(Math.Ceiling((double)longValue));
+                return new Scalar(Math.Ceiling(        doubleValue));
+            return     new Scalar(Math.Ceiling((double)longValue));
         }
         
-        public SelectorValue Floor() {
+        public Scalar Floor() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Floor(        doubleValue));
-            return     new SelectorValue(Math.Floor((double)longValue));
+                return new Scalar(Math.Floor(        doubleValue));
+            return     new Scalar(Math.Floor((double)longValue));
         }
         
-        public SelectorValue Exp() {
+        public Scalar Exp() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Exp(doubleValue));
-            return     new SelectorValue(Math.Exp(longValue));
+                return new Scalar(Math.Exp(doubleValue));
+            return     new Scalar(Math.Exp(longValue));
         }
         
-        public SelectorValue Log() {
+        public Scalar Log() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Log(doubleValue));
-            return     new SelectorValue(Math.Log(longValue));
+                return new Scalar(Math.Log(doubleValue));
+            return     new Scalar(Math.Log(longValue));
         }
         
-        public SelectorValue Sqrt() {
+        public Scalar Sqrt() {
             AssertUnaryNumber();
             if (isFloat)
-                return new SelectorValue(Math.Sqrt(doubleValue));
-            return     new SelectorValue(Math.Sqrt(longValue));
+                return new Scalar(Math.Sqrt(doubleValue));
+            return     new Scalar(Math.Sqrt(longValue));
         }
 
         private void AssertUnaryNumber() {
@@ -192,55 +192,55 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         // --- binary arithmetic operators ---
-        public SelectorValue Add(SelectorValue other) {
+        public Scalar Add(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new SelectorValue(doubleValue + other.doubleValue);
-                return     new SelectorValue(doubleValue + other.longValue);
+                    return new Scalar(doubleValue + other.doubleValue);
+                return     new Scalar(doubleValue + other.longValue);
             }
             if (other.isFloat)
-                return     new SelectorValue(longValue   + other.doubleValue);
-            return         new SelectorValue(longValue   + other.longValue);
+                return     new Scalar(longValue   + other.doubleValue);
+            return         new Scalar(longValue   + other.longValue);
         }
         
-        public SelectorValue Subtract(SelectorValue other) {
+        public Scalar Subtract(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new SelectorValue(doubleValue - other.doubleValue);
-                return     new SelectorValue(doubleValue - other.longValue);
+                    return new Scalar(doubleValue - other.doubleValue);
+                return     new Scalar(doubleValue - other.longValue);
             }
             if (other.isFloat)
-                return     new SelectorValue(longValue   - other.doubleValue);
-            return         new SelectorValue(longValue   - other.longValue);
+                return     new Scalar(longValue   - other.doubleValue);
+            return         new Scalar(longValue   - other.longValue);
         }
         
-        public SelectorValue Multiply(SelectorValue other) {
+        public Scalar Multiply(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new SelectorValue(doubleValue * other.doubleValue);
-                return     new SelectorValue(doubleValue * other.longValue);
+                    return new Scalar(doubleValue * other.doubleValue);
+                return     new Scalar(doubleValue * other.longValue);
             }
             if (other.isFloat)
-                return     new SelectorValue(longValue   * other.doubleValue);
-            return         new SelectorValue(longValue   * other.longValue);
+                return     new Scalar(longValue   * other.doubleValue);
+            return         new Scalar(longValue   * other.longValue);
         }
         
-        public SelectorValue Divide(SelectorValue other) {
+        public Scalar Divide(Scalar other) {
             AssertBinaryNumbers(other);
             if (isFloat) {
                 if (other.isFloat)
-                    return new SelectorValue(doubleValue / other.doubleValue);
-                return     new SelectorValue(doubleValue / other.longValue);
+                    return new Scalar(doubleValue / other.doubleValue);
+                return     new Scalar(doubleValue / other.longValue);
             }
             if (other.isFloat)
-                return     new SelectorValue(longValue   / other.doubleValue);
-            return         new SelectorValue(longValue   / other.longValue);
+                return     new Scalar(longValue   / other.doubleValue);
+            return         new Scalar(longValue   / other.longValue);
         }
         
-        private void AssertBinaryNumbers(SelectorValue other) {
+        private void AssertBinaryNumbers(Scalar other) {
             if (type != ResultType.Number || other.type != ResultType.Number)
                 throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
         }

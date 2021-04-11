@@ -58,29 +58,29 @@ namespace Friflo.Json.Mapper.Graph
                     serializer.ObjectStart();
                     serializer.WriteObject(ref targetParser);
                     var json = serializer.json.ToString();
-                    result.values.Add(new SelectorValue(ResultType.Object, json));
+                    result.values.Add(new Scalar(ResultType.Object, json));
                     return;
                 case JsonEvent.ArrayStart:
                     serializer.InitSerializer();
                     serializer.ArrayStart(true);
                     serializer.WriteArray(ref targetParser);
                     json = serializer.json.ToString();
-                    result.values.Add(new SelectorValue(ResultType.Array, json));
+                    result.values.Add(new Scalar(ResultType.Array, json));
                     return;
                 case JsonEvent.ValueString:
-                    result.values.Add(new SelectorValue(targetParser.value.ToString()));
+                    result.values.Add(new Scalar(targetParser.value.ToString()));
                     return;
                 case JsonEvent.ValueNumber:
                     if (targetParser.isFloat)
-                        result.values.Add(new SelectorValue(targetParser.ValueAsDouble(out bool _)));
+                        result.values.Add(new Scalar(targetParser.ValueAsDouble(out bool _)));
                     else
-                        result.values.Add(new SelectorValue(targetParser.ValueAsLong(out bool _)));
+                        result.values.Add(new Scalar(targetParser.ValueAsLong(out bool _)));
                     return;
                 case JsonEvent.ValueBool:
-                    result.values.Add(new SelectorValue(targetParser.boolValue));
+                    result.values.Add(new Scalar(targetParser.boolValue));
                     return;
                 case JsonEvent.ValueNull:
-                    result.values.Add(new SelectorValue(ResultType.Null, null));
+                    result.values.Add(new Scalar(ResultType.Null, null));
                     return;
             }
         }
