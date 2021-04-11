@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
         private             int                         pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
-            evalResults       = binaryResult.values;
+            evalResults       = binaryResult.results;
             evalResult = new EvalResult(new List<SelectorValue>(evalResults.Count));
             foreach (var result in evalResults) {
                 evalResult.Add(result. Count == 1 ? result.values [0] : null);
@@ -63,10 +63,10 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal readonly struct  N_aryResult : IEnumerable<N_aryList>
     {
-        internal  readonly List<EvalResult>   values;
+        internal  readonly List<EvalResult>   results;
 
-        internal N_aryResult(List<EvalResult> values) {
-            this.values  = values;
+        internal N_aryResult(List<EvalResult> results) {
+            this.results  = results;
         }
 
         public IEnumerator<N_aryList> GetEnumerator() {

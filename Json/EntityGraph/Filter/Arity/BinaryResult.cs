@@ -29,8 +29,8 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
         private             int                 pos;
         
         internal BinaryResultEnumerator(BinaryResult binaryResult) {
-            leftResult  = binaryResult.left;
-            rightResult = binaryResult.right;
+            leftResult  = binaryResult.leftResult;
+            rightResult = binaryResult.rightResult;
             leftValue  = leftResult. Count == 1 ? leftResult.values [0] : null;
             rightValue = rightResult.Count == 1 ? rightResult.values[0] : null;
             last = Math.Max(leftResult.Count, rightResult.Count) - 1;
@@ -61,13 +61,13 @@ namespace Friflo.Json.EntityGraph.Filter.Arity
     
     internal readonly struct  BinaryResult : IEnumerable<BinaryPair>
     {
-        internal  readonly EvalResult   left;
-        internal  readonly EvalResult   right;
+        internal  readonly EvalResult   leftResult;
+        internal  readonly EvalResult   rightResult;
 
-        internal BinaryResult(EvalResult left, EvalResult right) {
-            this.left  = left;
-            this.right = right;
-            if (left.Count == 1 || right.Count == 1)
+        internal BinaryResult(EvalResult leftResult, EvalResult rightResult) {
+            this.leftResult  = leftResult;
+            this.rightResult = rightResult;
+            if (leftResult.Count == 1 || rightResult.Count == 1)
                 return;
             throw new InvalidOperationException("Expect at least an operation result with one element");
         }
