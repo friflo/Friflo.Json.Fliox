@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph
 
         public   override   string              ToString() => op != null ? op.ToString() : "not initialized";
 
-        internal JsonLambda() {}
+        internal JsonLambda() { }
 
         public JsonLambda(Operator op) {
             InitLambda(op);
@@ -41,6 +41,17 @@ namespace Friflo.Json.Flow.Graph
                 fields.Add(selectorPair.Value);
             }
             jsonSelect.CreateNodeTree(selectors);
+        }
+    }
+
+    public class JsonFilter : JsonLambda
+    {
+        public JsonFilter(BoolOp op) : base(op) { }
+        
+        public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
+            var op = (BoolOp)Operator.FromFilter(filter);
+            var jsonLambda = new JsonFilter(op);
+            return jsonLambda;
         }
     }
 }

@@ -27,12 +27,12 @@ namespace Friflo.Json.Flow.Graph.Query
             return new JsonLambda(this);
         }
         
-        public static Operator FromFilter<T>(Expression<Func<T, bool>> filter) {
-            return QueryConverter.OperatorFromExpression(filter);
-        }
-        
         public static Operator FromLambda<T>(Expression<Func<T, object>> lambda) {
             return QueryConverter.OperatorFromExpression(lambda);
+        }
+        
+        public static Operator FromFilter<T>(Expression<Func<T, bool>> filter) {
+            return QueryConverter.OperatorFromExpression(filter);
         }
     }
 
