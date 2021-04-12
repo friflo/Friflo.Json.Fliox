@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Friflo.Json.Flow.Query
+namespace Friflo.Json.Flow.Graph.Query
 {
     internal static class QueryConverter
     {

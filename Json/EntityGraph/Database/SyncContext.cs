@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Flow.Patch;
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph.Database
 {

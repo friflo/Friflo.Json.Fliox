@@ -5,10 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
-using Friflo.Json.Burst;  // UnityExtension.TryAdd()
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph.Select;
 
-namespace Friflo.Json.Flow.Query
+namespace Friflo.Json.Flow.Graph.Query
 {
     
     public abstract class Operator

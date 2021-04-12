@@ -4,8 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Graph.Select;
 
-namespace Friflo.Json.Flow.Select
+namespace Friflo.Json.Flow.Graph
 {
     public class JsonSelector : IDisposable
     {

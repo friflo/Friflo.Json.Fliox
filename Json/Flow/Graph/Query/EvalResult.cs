@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph.Select;
 
-namespace Friflo.Json.Flow.Query
+namespace Friflo.Json.Flow.Graph.Query
 {
     internal readonly struct EvalResult
     {

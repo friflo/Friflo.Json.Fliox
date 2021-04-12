@@ -4,9 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph.Select;
 
-namespace Friflo.Json.Flow.Query.Arity
+namespace Friflo.Json.Flow.Graph.Query.Arity
 {
     // ------------------------------------- UnaryResult -------------------------------------
     internal readonly struct UnaryValue {

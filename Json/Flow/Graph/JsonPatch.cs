@@ -4,7 +4,7 @@
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Graph
 {
     /// <summary>
     /// Implement models of RFC 6902 - "JavaScript Object Notation (JSON) Patch"

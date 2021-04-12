@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Flow.Select
+namespace Friflo.Json.Flow.Graph.Select
 {
     /// Each leaf node in a <see cref="PathNode{TResult}"/> hierarchy has <see cref="result"/> not null.
     /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path. 

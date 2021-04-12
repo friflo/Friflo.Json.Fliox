@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Graph.Query;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Query;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable CollectionNeverQueried.Global
-namespace Friflo.Json.Tests.Common.UnitTest.Query
+namespace Friflo.Json.Tests.Common.UnitTest.Graph
 {
     public class Person
     {

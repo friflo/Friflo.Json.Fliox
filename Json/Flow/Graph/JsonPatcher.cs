@@ -4,8 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Graph.Patch;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Graph
 {
     public class JsonPatcher : IDisposable
     {

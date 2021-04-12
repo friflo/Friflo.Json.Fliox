@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Diff;
-using Friflo.Json.Flow.Patch;
 using Friflo.Json.Tests.Common.UnitTest.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Patch
+namespace Friflo.Json.Tests.Common.UnitTest.Graph
 {
     public class TestPatcher : LeakTestsFixture
     {

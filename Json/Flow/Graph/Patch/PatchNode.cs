@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph.Select;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Graph.Patch
 {
     internal class PatchNode {
         internal            PatchType?                      patchType;

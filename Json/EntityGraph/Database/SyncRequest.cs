@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Patch;
 
 namespace Friflo.Json.EntityGraph.Database
 {

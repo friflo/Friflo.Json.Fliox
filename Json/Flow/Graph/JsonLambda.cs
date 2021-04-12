@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Flow.Select;
+using Friflo.Json.Flow.Graph.Query;
 
-namespace Friflo.Json.Flow.Query
+namespace Friflo.Json.Flow.Graph
 {
     public class JsonLambda
     {
