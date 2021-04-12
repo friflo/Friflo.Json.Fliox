@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Select
         }
     }
 
-    public static class PathTools
+    internal static class PathTools
     {
         public static string PathToPathTokens(string path, List<string> pathTokens) {
             pathTokens.Clear();
