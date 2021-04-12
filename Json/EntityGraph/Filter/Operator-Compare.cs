@@ -18,7 +18,7 @@ namespace Friflo.Json.EntityGraph.Filter
             this.right = right;
         }
         
-        internal override void Init(GraphOpContext cx) {
+        internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
             left.Init(cx);
             right.Init(cx);

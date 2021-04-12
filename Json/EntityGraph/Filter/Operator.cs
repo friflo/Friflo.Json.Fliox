@@ -12,7 +12,7 @@ namespace Friflo.Json.EntityGraph.Filter
     
     public abstract class Operator
     {
-        internal abstract void                  Init(GraphOpContext cx);
+        internal abstract void                  Init(OperatorContext cx);
         internal abstract EvalResult            Eval();
         
         internal static readonly Scalar         True  = Scalar.True; 
@@ -31,10 +31,15 @@ namespace Friflo.Json.EntityGraph.Filter
         }
     }
 
-    internal class GraphOpContext
+    internal class OperatorContext
     {
         internal readonly Dictionary<string, Field> selectors = new Dictionary<string, Field>();
         private  readonly HashSet<Operator>         operators = new HashSet<Operator>();
+
+        internal void Init() {
+            selectors.Clear();
+            operators.Clear();
+        }
 
         internal void ValidateReuse(Operator op) {
             if (operators.Add(op))
@@ -54,7 +59,7 @@ namespace Friflo.Json.EntityGraph.Filter
         
         public Field(string field) { this.field = field; }
 
-        internal override void Init(GraphOpContext cx) {
+        internal override void Init(OperatorContext cx) {
             cx.selectors.TryAdd(field, this);
         }
 
@@ -68,7 +73,7 @@ namespace Friflo.Json.EntityGraph.Filter
         // is set always to the same value in Eval() so it can be reused
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
-        internal override void Init(GraphOpContext cx) { }
+        internal override void Init(OperatorContext cx) { }
     }
         
     public class StringLiteral : Literal
