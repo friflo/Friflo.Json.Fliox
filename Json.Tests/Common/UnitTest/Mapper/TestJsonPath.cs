@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Graph;
+using Friflo.Json.Mapper.Patch;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

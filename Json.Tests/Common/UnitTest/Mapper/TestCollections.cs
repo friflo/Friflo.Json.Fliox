@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Graph;
+using Friflo.Json.Mapper.Diff;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

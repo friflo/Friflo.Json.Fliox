@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Graph;
+using Friflo.Json.Mapper.Diff;
+using Friflo.Json.Mapper.Patch;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -340,10 +341,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private static void PatchObject<T>(ObjectPatcher objectPatcher, T left, T right)
         {
-            List<Patch> patches = objectPatcher.GetPatches(left, right);
+            List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
 
             var jsonPatches = objectPatcher.mapper.Write(patches);
-            var destPatches = objectPatcher.mapper.Read<List<Patch>>(jsonPatches);
+            var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
                     
             objectPatcher.ApplyPatches(left, destPatches);
@@ -351,11 +352,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right)
         {
-            List<Patch> patches = objectPatcher.GetPatches(left, right);
+            List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
             var leftJson = objectPatcher.mapper.Write(left);
             
             var jsonPatches = objectPatcher.mapper.Write(patches);
-            var destPatches = objectPatcher.mapper.Read<List<Patch>>(jsonPatches);
+            var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
             
             var leftPatched = jsonPatcher.ApplyPatches(leftJson, patches, true);
