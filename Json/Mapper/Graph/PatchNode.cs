@@ -14,7 +14,7 @@ namespace Friflo.Json.Mapper.Graph
         public override     string                          ToString() => patchType != null ? patchType.ToString() : "---";
         
 
-        private void InitPatchNode(Patch patch) {
+        private void InitPatchNode(JsonPatch patch) {
             patchType = patch.PatchType;
             switch (patchType) {
                 case PatchType.Replace:
@@ -32,7 +32,7 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
         
-        private static void GetPathNodes(Patch patch, List<string> pathTokens) {
+        private static void GetPathNodes(JsonPatch patch, List<string> pathTokens) {
             pathTokens.Clear();
             var patchType = patch.PatchType;
             switch (patchType) {
@@ -53,7 +53,7 @@ namespace Friflo.Json.Mapper.Graph
             }
         }
 
-        internal static void CreatePatchTree(PatchNode rootNode, IList<Patch> patches, List<string> pathTokens) {
+        internal static void CreatePatchTree(PatchNode rootNode, IList<JsonPatch> patches, List<string> pathTokens) {
             rootNode.children.Clear();
             rootNode.patchType = null;
             var count = patches.Count;

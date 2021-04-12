@@ -35,20 +35,20 @@ namespace Friflo.Json.Mapper.Graph
             mapper.Dispose();
         }
 
-        public List<Patch> CreatePatches(DiffNode diff) {
-            var patches = new List<Patch>();
+        public List<JsonPatch> CreatePatches(DiffNode diff) {
+            var patches = new List<JsonPatch>();
             if (diff != null)
                 TraceDiff(diff, patches);
             return patches;
         }
         
-        public List<Patch> GetPatches<T>(T left, T right) {
+        public List<JsonPatch> GetPatches<T>(T left, T right) {
             var diff = differ.GetDiff(left, right);
             var patches = CreatePatches(diff);
             return patches;
         }
 
-        public void ApplyPatches<T>(T root, IList<Patch> patches) {
+        public void ApplyPatches<T>(T root, IList<JsonPatch> patches) {
             var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var count = patches.Count;
             for (int n = 0; n < count; n++) {
@@ -58,17 +58,17 @@ namespace Friflo.Json.Mapper.Graph
         }
         
         public void ApplyDiff<T>(T root, DiffNode diff) {
-            List<Patch> patches = CreatePatches(diff);
+            List<JsonPatch> patches = CreatePatches(diff);
             ApplyPatches(root, patches);
         }
 
-        private void TraceDiff(DiffNode diff, List<Patch> patches) {
+        private void TraceDiff(DiffNode diff, List<JsonPatch> patches) {
             switch (diff.diffType) {
                 case DiffType.NotEqual:
                     sb.Clear();
                     diff.AddPath(sb);
                     var json = mapper.WriteObject(diff.right);
-                    Patch patch = new PatchReplace {
+                    JsonPatch patch = new PatchReplace {
                         path = sb.ToString(),
                         value = { json = json }
                     };

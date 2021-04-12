@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.Graph
 
         public void Dispose() { }
 
-        public void Patch<T>(TypeMapper<T> mapper, T root, Patch patch) {
+        public void Patch<T>(TypeMapper<T> mapper, T root, JsonPatch patch) {
             pathPos = 0;
             patchType = patch.PatchType;
             switch (patchType) {

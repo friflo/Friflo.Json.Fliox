@@ -31,7 +31,7 @@ namespace Friflo.Json.Mapper.Graph
             serializer.Dispose();
         }
         
-        public string ApplyPatches(string root, IList<Patch> patches, bool pretty = false) {
+        public string ApplyPatches(string root, IList<JsonPatch> patches, bool pretty = false) {
             PatchNode.CreatePatchTree(rootNode, patches, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);

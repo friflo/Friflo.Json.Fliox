@@ -106,7 +106,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class EntityPatch
     {
         public string               id;
-        public List<Patch>          patches;
+        public List<JsonPatch>      patches;
     }
 
     public class PatchEntitiesResult : CommandResult

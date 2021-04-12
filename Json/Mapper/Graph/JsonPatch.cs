@@ -16,12 +16,12 @@ namespace Friflo.Json.Mapper.Graph
     [Fri.Polymorph(typeof(PatchCopy),       Discriminant = "copy")]
     [Fri.Polymorph(typeof(PatchMove),       Discriminant = "move")]
     [Fri.Polymorph(typeof(PatchTest),       Discriminant = "test")]
-    public abstract class Patch
+    public abstract class JsonPatch
     {
         public abstract PatchType PatchType { get; }
     }
 
-    public class PatchReplace : Patch
+    public class PatchReplace : JsonPatch
     {
         public string       path;
         public JsonValue    value;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Mapper.Graph
         public override string      ToString()  => path;
     }
     
-    public class PatchAdd : Patch
+    public class PatchAdd : JsonPatch
     {
         public string       path;
         public JsonValue    value;
@@ -39,7 +39,7 @@ namespace Friflo.Json.Mapper.Graph
         public override string      ToString()  => path;
     }
     
-    public class PatchRemove : Patch
+    public class PatchRemove : JsonPatch
     {
         public string       path;
 
@@ -47,7 +47,7 @@ namespace Friflo.Json.Mapper.Graph
         public override string      ToString()  => path;
     }
     
-    public class PatchCopy : Patch
+    public class PatchCopy : JsonPatch
     {
         public string       path;
         public string       from;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Mapper.Graph
         public override string      ToString()  => path;
     }
     
-    public class PatchMove : Patch
+    public class PatchMove : JsonPatch
     {
         public string       path;
         public string       from;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Mapper.Graph
 
     }
     
-    public class PatchTest : Patch
+    public class PatchTest : JsonPatch
     {
         public string       path;
         public JsonValue    value;
