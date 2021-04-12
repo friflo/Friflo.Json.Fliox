@@ -4,7 +4,7 @@
 using System;
 using System.Text;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Select
 {
     public enum ScalarType : byte {
         Undefined,

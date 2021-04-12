@@ -4,7 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.Flow.Patch;
+using Friflo.Json.Flow.Select;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Query.Arity

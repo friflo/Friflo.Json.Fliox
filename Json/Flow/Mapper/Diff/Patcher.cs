@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
 using Friflo.Json.Flow.Patch;
+using Friflo.Json.Flow.Select;
 
 namespace Friflo.Json.Flow.Mapper.Diff
 {

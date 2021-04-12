@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Select;
 
 namespace Friflo.Json.Flow.Patch
 {

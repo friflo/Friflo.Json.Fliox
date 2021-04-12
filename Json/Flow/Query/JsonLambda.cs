@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Flow.Patch;
+using Friflo.Json.Flow.Select;
 
 namespace Friflo.Json.Flow.Query
 {

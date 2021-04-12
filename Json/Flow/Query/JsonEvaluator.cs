@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Flow.Patch;
+using Friflo.Json.Flow.Select;
 
 namespace Friflo.Json.Flow.Query
 {

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Select
 {
     public class SelectorResult
     {

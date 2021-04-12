@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Flow.Patch
+namespace Friflo.Json.Flow.Select
 {
     public class JsonSelector : IDisposable
     {

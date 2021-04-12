@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Flow.Patch;
 using Friflo.Json.Flow.Query.Arity;
+using Friflo.Json.Flow.Select;
 
 namespace Friflo.Json.Flow.Query
 {
