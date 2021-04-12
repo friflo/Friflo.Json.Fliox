@@ -7,7 +7,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable CollectionNeverQueried.Global
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Query
 {
     public class Person
     {
@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
     }
     
     
-    public static class TestGraphFilter
+    public static class TestQuery
     {
         static readonly Person Peter =         new Person {
             name = "Peter", age = 40,

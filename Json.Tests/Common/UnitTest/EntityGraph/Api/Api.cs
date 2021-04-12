@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
 
     public static class Graph
     {
-        public static TSource Query<TSource, TOrderBy>(
+        public static TSource TestQuery<TSource, TOrderBy>(
             int                     limit   = 0,
             Func<TSource, TOrderBy> orderBy = null,
             Order                   order   = Order.None,

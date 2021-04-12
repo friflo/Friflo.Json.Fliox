@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]
         public void ElaborateQueryApi() {
            
-            var query1 = Query(
+            var query1 = TestQuery(
                 limit:      10,
                 orderBy:    c => c.lastName,
                 order:      Api.Order.Asc,
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                     id          = default }
             );
 
-            var query2 = Query(
+            var query2 = TestQuery(
                 limit:      10,
                 orderBy:    o => o.customer.Entity.lastName,
                 order:      Api.Order.Desc,
