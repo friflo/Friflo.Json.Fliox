@@ -37,10 +37,10 @@ namespace Friflo.Json.EntityGraph.Filter
         private  readonly HashSet<Operator>         operators = new HashSet<Operator>();
 
         internal void ValidateReuse(Operator op) {
-            if (!operators.Add(op)) {
-                var msg = $"Used operator instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
-                throw new InvalidOperationException(msg);
-            }
+            if (operators.Add(op))
+                return;
+            var msg = $"Used operator instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
+            throw new InvalidOperationException(msg);
         }
     }
     
