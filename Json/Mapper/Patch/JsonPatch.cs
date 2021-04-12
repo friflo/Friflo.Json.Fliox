@@ -3,7 +3,7 @@
 
 using Friflo.Json.Mapper.Map.Val;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Patch
 {
     /// <summary>
     /// Implement models of RFC 6902 - "JavaScript Object Notation (JSON) Patch"

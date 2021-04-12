@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
-using Friflo.Json.Mapper.Graph;
+using Friflo.Json.Mapper.Patch;
 
 namespace Friflo.Json.EntityGraph.Filter
 {

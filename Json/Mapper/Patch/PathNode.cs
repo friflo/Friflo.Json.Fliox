@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Patch
 {
     /// Each leaf node in a <see cref="PathNode{TResult}"/> hierarchy has <see cref="result"/> not null.
     /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path. 

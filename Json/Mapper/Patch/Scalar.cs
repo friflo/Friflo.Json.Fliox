@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Text;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Patch
 {
     public enum ScalarType : byte {
         Undefined,

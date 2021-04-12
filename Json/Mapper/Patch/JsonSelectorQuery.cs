@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Patch
 {
     public class SelectorResult
     {
