@@ -13,8 +13,9 @@ namespace Friflo.Json.EntityGraph.Filter
         internal readonly   JsonSelectorQuery   selectorQuery   = new JsonSelectorQuery();
         internal            Operator            op;
         private  readonly   OperatorContext     operatorContext = new OperatorContext();
-        
-        
+
+        public   override   string              ToString() => op != null ? op.ToString() : "not initialized";
+
         internal JsonLambda() {}
 
         public JsonLambda(Operator op) {
