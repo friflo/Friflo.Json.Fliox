@@ -40,13 +40,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         };
         
+        [Test]
         public static void TestFilter () {
             using (var eval         = new JsonEvaluator())
             using (var jsonMapper   = new JsonMapper())
             {
                 jsonMapper.Pretty = true;
-                var peterJson = jsonMapper.Write(Peter);
-                var johnJson = jsonMapper.Write(John);
+                var peter = jsonMapper.Write(Peter);
+                var john  = jsonMapper.Write(John);
 
                 // ---
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter"));
@@ -58,15 +59,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var isNotAgeGreater35  = new Not(isAgeGreater35);
             
                 IsTrue  (IsPeter(Peter));
-                IsTrue  (eval.Filter(peterJson, isPeter));
-                IsFalse (eval.Filter(johnJson,  isPeter));
+                IsTrue  (eval.Filter(peter, isPeter));
+                IsFalse (eval.Filter(john,  isPeter));
                 
                 IsTrue  (IsAgeGreater35(Peter));
-                IsTrue  (eval.Filter(peterJson, isAgeGreater35));
-                IsFalse (eval.Filter(johnJson,  isAgeGreater35));
+                IsTrue  (eval.Filter(peter, isAgeGreater35));
+                IsFalse (eval.Filter(john,  isAgeGreater35));
                 // Not
-                IsFalse (eval.Filter(peterJson, isNotAgeGreater35));
-                IsTrue  (eval.Filter(johnJson,  isNotAgeGreater35));
+                IsFalse (eval.Filter(peter, isNotAgeGreater35));
+                IsTrue  (eval.Filter(john,  isNotAgeGreater35));
 
                 // --- Any
                 var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul")));
@@ -75,24 +76,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12)));
                 
                 IsTrue (HasChildPaul(Peter));
-                IsTrue (eval.Filter(peterJson, hasChildPaul));
-                IsFalse(eval.Filter(johnJson,  hasChildPaul));
+                IsTrue (eval.Filter(peter, hasChildPaul));
+                IsFalse(eval.Filter(john,  hasChildPaul));
                 
-                IsFalse(eval.Filter(peterJson, hasChildAgeLess12));
-                IsTrue (eval.Filter(johnJson,  hasChildAgeLess12));
+                IsFalse(eval.Filter(peter, hasChildAgeLess12));
+                IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
                 var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20)));
-                IsTrue (eval.Filter(peterJson, allChildAgeEquals20));
-                IsFalse(eval.Filter(johnJson,  allChildAgeEquals20));
+                IsTrue (eval.Filter(peter, allChildAgeEquals20));
+                IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
                 
                 // --- test with arithmetic operations
                 var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5)));
-                IsTrue  (eval.Filter(peterJson, isAge40));
+                IsTrue  (eval.Filter(peter, isAge40));
                 
                 var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5)));
-                IsTrue  (eval.Filter(peterJson, isChildAge20));
+                IsTrue  (eval.Filter(peter, isChildAge20));
                 
                 
                 
@@ -100,23 +101,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 Exception e;
                 // --- compare operators must not be reused
                 var reuseCompareOp = new Equal(isAgeGreater35, isAgeGreater35);
-                e = Throws<InvalidOperationException>(() => eval.Filter(peterJson, reuseCompareOp));
+                e = Throws<InvalidOperationException>(() => eval.Filter(peter, reuseCompareOp));
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
                 // --- group operators must not be reused
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 var reuseGroupOp = new Equal(testGroupOp, testGroupOp);
-                e = Throws<InvalidOperationException>(() => eval.Filter(peterJson, reuseGroupOp));
+                e = Throws<InvalidOperationException>(() => eval.Filter(peter, reuseGroupOp));
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: ('A' == 'B')", e.Message);
 
                 // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
                 var reuseLiterals = new Equal(testLiteral, testLiteral);
-                eval.Filter(peterJson, reuseLiterals);
+                eval.Filter(peter, reuseLiterals);
                 
                 var testField = new Field (".name");
                 var reuseField = new Equal(testField, testField);
-                eval.Filter(peterJson, reuseField);
+                eval.Filter(peter, reuseField);
             }
         }
 
