@@ -131,7 +131,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 }
                 AssertStoreResult(result);
                 
-                var selector = new JsonSelectorQuery(selectList);
+                var selector = new JsonSelect(selectList);
                 for (int n = 0; n < 2; n++) {
                     jsonSelector.Select(json, selector);
                     result = selector.GetResult();

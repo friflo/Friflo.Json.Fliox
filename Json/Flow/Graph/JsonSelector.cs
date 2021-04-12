@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph
         private             JsonParser                      targetParser;
         
         private readonly    List<PathNode<SelectorResult>>  nodeStack = new List<PathNode<SelectorResult>>();
-        private readonly    JsonSelectorQuery               selectorQuery = new JsonSelectorQuery();
+        private readonly    JsonSelect                      reusedSelect = new JsonSelect();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -31,15 +31,15 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public List<SelectorResult> Select(string json, IList<string> pathList, bool pretty = false) {
-            selectorQuery.CreateNodeTree(pathList);
-            Select(json, selectorQuery, pretty);
-            return selectorQuery.GetResult();
+            reusedSelect.CreateNodeTree(pathList);
+            Select(json, reusedSelect, pretty);
+            return reusedSelect.GetResult();
         }
 
-        public JsonSelectorQuery Select(string json, JsonSelectorQuery selectorQuery, bool pretty = false) {
-            selectorQuery.InitSelectorResults();
+        public JsonSelect Select(string json, JsonSelect jsonSelect, bool pretty = false) {
+            jsonSelect.InitSelectorResults();
             nodeStack.Clear();
-            nodeStack.Add(selectorQuery.rootNode);
+            nodeStack.Add(jsonSelect.rootNode);
             targetJson.Clear();
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
-            return selectorQuery;
+            return jsonSelect;
         }
 
         private void AddResult(SelectorResult result) {

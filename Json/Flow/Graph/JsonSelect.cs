@@ -52,11 +52,11 @@ namespace Friflo.Json.Flow.Graph
     }
     
 
-    public class JsonSelectorQuery : PathNodeTree<SelectorResult>
+    public class JsonSelect : PathNodeTree<SelectorResult>
     {
-        internal JsonSelectorQuery() { }
+        internal JsonSelect() { }
         
-        public JsonSelectorQuery(IList<string> pathList) {
+        public JsonSelect(IList<string> pathList) {
             CreateNodeTree(pathList);
         }
 

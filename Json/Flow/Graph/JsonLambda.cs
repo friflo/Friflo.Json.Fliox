@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
     {
         private  readonly   List<string>        selectors       = new List<string>();
         internal readonly   List<Field>         fields          = new List<Field>();
-        internal readonly   JsonSelectorQuery   selectorQuery   = new JsonSelectorQuery();
+        internal readonly   JsonSelect          jsonSelect      = new JsonSelect();
         internal            Operator            op;
         private  readonly   OperatorContext     operatorContext = new OperatorContext();
 
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph
                 selectors.Add(selectorPair.Key);
                 fields.Add(selectorPair.Value);
             }
-            selectorQuery.CreateNodeTree(selectors);
+            jsonSelect.CreateNodeTree(selectors);
         }
     }
 }
