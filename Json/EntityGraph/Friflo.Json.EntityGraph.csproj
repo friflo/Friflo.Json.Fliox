@@ -33,7 +33,7 @@
 	
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
-      <ProjectReference Include="..\Mapper\Friflo.Json.Mapper.csproj" />
+      <ProjectReference Include="..\Flow\Friflo.Json.Flow.csproj" />
     </ItemGroup>
 
 </Project>

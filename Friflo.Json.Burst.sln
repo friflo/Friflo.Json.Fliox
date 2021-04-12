@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Tests", "Json.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Json\Burst\Friflo.Json.Burst.csproj", "{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Mapper", "Json\Mapper\Friflo.Json.Mapper.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Flow", "Json\Flow\Friflo.Json.Flow.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.EntityGraph", "Json\EntityGraph\Friflo.Json.EntityGraph.csproj", "{738EDB04-B367-4FCE-8873-3F438DE4CC21}"
 EndProject

@@ -28,7 +28,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Json\EntityGraph\Friflo.Json.EntityGraph.csproj" />
-      <ProjectReference Include="..\Json\Mapper\Friflo.Json.Mapper.csproj" />
+      <ProjectReference Include="..\Json\Flow\Friflo.Json.Flow.csproj" />
     </ItemGroup>
 	
     <ItemGroup>
