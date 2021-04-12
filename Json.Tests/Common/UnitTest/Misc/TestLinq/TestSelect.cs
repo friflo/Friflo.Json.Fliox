@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api;
+using Friflo.Json.Tests.Common.UnitTest.EntityGraph;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api.Graph;
+using static Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq.Graph;
 
 
 
-namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
+namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 {
 
     public class TestSelect : LeakTestsFixture
@@ -25,9 +25,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var query1 = TestQuery(
                 limit:      10,
                 orderBy:    c => c.lastName,
-                order:      Api.Order.Asc,
-                where:      c => c.lastName == "dddd",
-                select:  () => new Customer {
+                order:      Misc.TestLinq.Order.Asc,
+                @where:      c => c.lastName == "dddd",
+                @select:  () => new Customer {
                     lastName    = default,
                     id          = default }
             );
@@ -35,8 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var query2 = TestQuery(
                 limit:      10,
                 orderBy:    o => o.customer.Entity.lastName,
-                order:      Api.Order.Desc,
-                select: () => new Order {
+                order:      Misc.TestLinq.Order.Desc,
+                @select: () => new EntityGraph.Order {
                     customer = {
                         Entity = {
                             id          = default,
@@ -55,12 +55,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 var order1 = store.orders.Read("order-1");
                 store.SyncWait();
                 var orderResult = order1.Result;
-                var orders = new List<Order> { orderResult };
+                var orders = new List<EntityGraph.Order> { orderResult };
 
                 var orderQuery =
                     from order in orders
                     // where order.id == "order-1"
-                    select new Order {
+                    select new EntityGraph.Order {
                         id = order.id,
                         customer =  order.customer,
                         items = order.items
@@ -92,15 +92,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
 
-        private static bool WhereOrderEqual(Order order, string test) {
+        private static bool WhereOrderEqual(EntityGraph.Order order, string test) {
             return order.id == test;
         }
 
-        private static Order SelectOrder(Order order) {
+        private static EntityGraph.Order SelectOrder(EntityGraph.Order order) {
             return order;
         }
         
-        private static Order GetOrder(string id) {
+        private static EntityGraph.Order GetOrder(string id) {
             using (var database = new MemoryDatabase())
             using (var store = TestRelationPoC.CreateStore(database).Result) {
                 var order = store.orders.Read(id);
@@ -114,11 +114,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             var order1 = GetOrder("order-1");
 
-            var orders = new List<Order> {order1};
+            var orders = new List<EntityGraph.Order> {order1};
 
-            IQueryable<Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
+            IQueryable<EntityGraph.Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
-            var gqlOrders = new GqlEnumerable<Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
+            var gqlOrders = new GqlEnumerable<EntityGraph.Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
             // var gqlOrders = new GqlEnumerable<Order>(orders);
 
 
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 var order1 = store.orders.Read("order-1");
                 await store.Sync();
-                var orders = new List<Order> {order1.Result};
+                var orders = new List<EntityGraph.Order> {order1.Result};
 
                 var orderQuery =
                     from order in orders
@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         [Test]
         public void TestUpdateField() {
-            var order = new Order();
+            var order = new EntityGraph.Order();
             order.customer = new Ref<Customer>();
 
             Update (order, o => o.customer.Entity.lastName);
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 }),
             });
             
-            Update3 (order, () => new Order{ customer = null, items = null});
+            Update3 (order, () => new EntityGraph.Order{ customer = null, items = null});
 
 
             int index = 3;

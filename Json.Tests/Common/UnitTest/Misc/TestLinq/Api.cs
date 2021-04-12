@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph;
 
-namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
+namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 {
 
     public enum Order

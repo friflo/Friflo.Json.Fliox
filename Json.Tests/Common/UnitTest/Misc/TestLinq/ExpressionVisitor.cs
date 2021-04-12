@@ -43,7 +43,7 @@ Requires:
 
 // [c# - How to convert an expression tree to a partial SQL query? - Stack Overflow]
 //    https://stackoverflow.com/questions/7731905/how-to-convert-an-expression-tree-to-a-partial-sql-query
-namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api
+namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 {
     public class MyQueryTranslator : ExpressionVisitor
     {
