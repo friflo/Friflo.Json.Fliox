@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -20,6 +22,12 @@ namespace Friflo.Json.EntityGraph.Filter
 
         public JsonLambda(Operator op) {
             InitLambda(op);
+        }
+        
+        public static JsonLambda Create<T> (Expression<Func<T, bool>> filter) {
+            var op = Operator.FromFilter(filter);
+            var lambda = new JsonLambda(op);
+            return lambda;
         }
 
         internal void InitLambda(Operator op) {

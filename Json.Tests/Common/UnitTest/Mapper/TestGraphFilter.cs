@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var john  = jsonMapper.Write(John);
 
                 // ---
-                var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter"));
+                var  isPeter         = new JsonLambda(new Equal(new Field (".name"), new StringLiteral ("Peter")));
                 bool IsPeter(Person p) => p.name == "Peter";
                 
                 var  isAgeGreater35  = new GreaterThan(new Field (".age"), new LongLiteral (35));

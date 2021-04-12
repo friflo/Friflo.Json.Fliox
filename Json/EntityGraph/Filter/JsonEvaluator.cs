@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq.Expressions;
 using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
@@ -10,7 +9,7 @@ namespace Friflo.Json.EntityGraph.Filter
     public class JsonEvaluator : IDisposable
     {
         private readonly JsonSelector   jsonSelector    = new JsonSelector();
-        private readonly JsonLambda     jsonLambda      = new JsonLambda();       
+        private readonly JsonLambda     jsonLambda      = new JsonLambda(); // for reuse
 
         public void Dispose() {
             jsonSelector.Dispose();
@@ -21,19 +20,13 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         // --- Filter
-        // Filter(Expression) variant only for development
-        public bool Filter<T>(string json, Expression<Func<T, bool>> filter) {
-            var op = Operator.FromFilter(filter);
-            return Filter(json, (BoolOp)op);
-        }
-
         public bool Filter(string json, BoolOp filter) {
             jsonLambda.InitLambda(filter);
             return Filter(json, jsonLambda);
         }
 
         public bool Filter(string json, JsonLambda filter) {
-            ReadJsonFields(json, jsonLambda);
+            ReadJsonFields(json, filter);
             
             var evalResult = filter.op.Eval();
             
@@ -51,7 +44,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         public object Eval(string json, JsonLambda lambda) {
-            ReadJsonFields(json, jsonLambda);
+            ReadJsonFields(json, lambda);
 
             var evalResult = lambda.op.Eval();
             
