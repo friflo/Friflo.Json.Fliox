@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
         private readonly    List<TypeNode>  path        = new List<TypeNode>();
         private readonly    List<Parent>    parentStack = new List<Parent>();
 
-        protected Differ(TypeStore typeStore) {
+        internal Differ(TypeStore typeStore) {
             this.jsonWriter = new ObjectWriter(typeStore);
             this.typeCache = jsonWriter.TypeCache;
         }
