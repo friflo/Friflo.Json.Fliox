@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonReader : IJsonReader, IDisposable
+    public class ObjectReader : IJsonReader, IDisposable
     {
         private             int                 maxDepth;
         private             Reader              intern;
@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Mapper
             set => intern.tracerContext = value;
         }
 
-        public JsonReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
+        public ObjectReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
             intern = new Reader (typeStore, errorHandler);
             maxDepth    = JsonParser.DefaultMaxDepth;
         }

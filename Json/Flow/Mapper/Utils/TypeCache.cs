@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Mapper.Utils
 {
     /// <summary>
     /// In contrast to <see cref="typeStore"/> this Cache is by intention not thread safe.
-    /// It is created within a <see cref="Reader"/> and <see cref="JsonWriter"/> to access type information
+    /// It is created within a <see cref="Reader"/> and <see cref="ObjectWriter"/> to access type information
     /// without locking if already cached.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER

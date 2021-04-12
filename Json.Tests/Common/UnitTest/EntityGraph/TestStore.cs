@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             IsNull(unknown.Result);
         }
 
-        private static void AssertWriteRead<T>(JsonMapper m, T entity) {
+        private static void AssertWriteRead<T>(ObjectMapper m, T entity) {
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
             AssertUtils.Equivalent(entity, result);

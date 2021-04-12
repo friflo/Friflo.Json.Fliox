@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public void Run() {
             string json = "\"Hello World 🌎\"";  // valid JSON :) - but unusual to use only a single value
             
-            using (var mapper = new JsonMapper()) {
+            using (var mapper = new ObjectMapper()) {
                 StringTokens result = mapper.Read<StringTokens>(json);
                 AreEqual(new [] {"Hello", "World", "🌎"}, result.tokens);
                 

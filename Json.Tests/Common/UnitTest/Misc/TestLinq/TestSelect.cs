@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public void RunLinq() {
             using (var database = new MemoryDatabase())
             using (var store = TestRelationPoC.CreateStore(database).Result)
-            using (var m = new JsonMapper(store.intern.typeStore)) {
+            using (var m = new ObjectMapper(store.intern.typeStore)) {
                 var order1 = store.orders.Read("order-1");
                 store.SyncWait();
                 var orderResult = order1.Result;

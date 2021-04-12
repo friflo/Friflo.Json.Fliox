@@ -98,9 +98,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
              // --- class/map
             var testClass =     testClassJson; 
             
-            using (TypeStore typeStore = new TypeStore(new StoreConfig(TypeAccess.IL)))
-            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter write = new JsonWriter(typeStore))
+            using (var typeStore    = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var write        = new ObjectWriter(typeStore))
             {
                 int iterations = 1000;
                 for (int n = 0; n < iterations; n++) {

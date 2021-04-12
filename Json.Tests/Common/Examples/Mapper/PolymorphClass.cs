@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
                     ""hasLuggageRack"": true
                 }
             ]";
-            using (var m = new JsonMapper()) {
+            using (var m = new ObjectMapper()) {
                 var vehicles = m.Read<Vehicle[]>(json);
 
                 var result = m.Write(vehicles);

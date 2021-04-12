@@ -24,7 +24,7 @@ namespace Friflo.Json.EntityGraph
     {
         public   readonly   TypeStore                       typeStore;
         public   readonly   TypeCache                       typeCache;
-        public   readonly   JsonMapper                      jsonMapper;
+        public   readonly   ObjectMapper                      jsonMapper;
 
         internal readonly   ObjectPatcher                   objectPatcher;
         
@@ -32,7 +32,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
 
-        internal StoreIntern(TypeStore typeStore, EntityDatabase database, JsonMapper jsonMapper) {
+        internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore  = typeStore;
             this.database   = database;
             this.jsonMapper = jsonMapper;
@@ -55,7 +55,7 @@ namespace Friflo.Json.EntityGraph
             var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            var jsonMapper = new JsonMapper(typeStore) {
+            var jsonMapper = new ObjectMapper(typeStore) {
                 TracerContext = this
             };
             intern = new StoreIntern(typeStore, database, jsonMapper);

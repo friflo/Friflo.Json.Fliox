@@ -25,10 +25,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public void ReadWriteBoxed() {
             string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
             
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (Bytes        json        = new Bytes(payloadTrimmed))
+            using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var json        = new Bytes(payloadTrimmed))
             {
                 var result = reader.Read<BoxedIL>(json);
                 if (reader.Error.ErrSet)
@@ -58,8 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        WriteStruct(TypeAccess typeAccess) {
             string payloadTrimmed = string.Concat(structJson.Where(c => !char.IsWhiteSpace(c)));
             
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var writer      = new ObjectWriter(typeStore))
             {
                 var sample = new StructIL();
                 sample.Init();
@@ -82,8 +82,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test] public void  ReadStructIL()        { ReadStruct(TypeAccess.IL); }
         
         private void        ReadStruct(TypeAccess typeAccess) {
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
             {
                 var result = reader.Read<StructIL>(structJson);
                 if (reader.Error.ErrSet)
@@ -188,8 +188,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        WriteJson(TypeAccess typeAccess) {
             string payloadTrimmed = string.Concat(payloadStr.Where(c => !char.IsWhiteSpace(c)));
             
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var writer      = new ObjectWriter(typeStore))
             {
                 var sample = new SampleIL();
                 sample.Init();
@@ -202,8 +202,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test] public void  ReadClassIL()        { ReadClassIL(TypeAccess.IL); }
         
         private void        ReadClassIL(TypeAccess typeAccess) {
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
             {
                 var result = reader.Read<SampleIL>(payloadStr);
                 if (reader.Error.ErrSet)
@@ -220,9 +220,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var obj = new SampleIL();
                 int iterations = 1000;
@@ -241,9 +241,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        NoAllocReadClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (Bytes        json        = new Bytes(payloadStr))
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var json        = new Bytes(payloadStr))
             {
                 var obj = new SampleIL();
                 obj.Init();
@@ -264,10 +264,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test] public void  ReadWriteStructIL()        { ReadWriteStruct(TypeAccess.IL); }
         
         private void        ReadWriteStruct (TypeAccess typeAccess) {
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var obj = new ChildStructIL();
                 writer.Write(obj, ref dst.bytes);
@@ -284,10 +284,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        NoAllocListClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var list = new List<SampleIL>() { new SampleIL() };
                 list[0].Init();
@@ -311,10 +311,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        NoAllocListStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var list = new List<ChildStructIL>() { new ChildStructIL{val2 = 42} };
                 int iterations = 1000;
@@ -338,10 +338,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        NoAllocArrayClass (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var arr = new [] { new SampleIL() };
                 arr[0].Init();
@@ -365,10 +365,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void        NoAllocArrayStruct (TypeAccess typeAccess) {
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
-            using (TypeStore    typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (JsonReader   reader      = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter   writer      = new JsonWriter(typeStore))
-            using (var          dst         = new TestBytes())
+            using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
+            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer      = new ObjectWriter(typeStore))
+            using (var dst         = new TestBytes())
             {
                 var arr = new [] { new ChildStructIL{val2 = 42} };
                 int iterations = 1000;

@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public void TestObjectSelect() {
             using (var typeStore    = new TypeStore()) 
-            using (var jsonWriter   = new JsonWriter(typeStore))
+            using (var jsonWriter   = new ObjectWriter(typeStore))
             using (var jsonSelector = new JsonSelector())
             {
                 var sample = new SampleIL();
@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public void TestArraySelect() {
             using (var typeStore    = new TypeStore()) 
-            using (var jsonWriter   = new JsonWriter(typeStore))
+            using (var jsonWriter   = new ObjectWriter(typeStore))
             using (var jsonSelector = new JsonSelector())
             {
                 var store = new Store();

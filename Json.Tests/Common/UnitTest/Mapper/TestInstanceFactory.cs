@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void TestInterface(TypeAccess typeAccess) {
             var json = "{\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (var writer = new JsonWriter(typeStore))
+            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<IBook>(json);
@@ -99,8 +99,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void TestPolymorphic(TypeAccess typeAccess) {
             var json = "{\"animalType\":\"lion\",\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (var writer = new JsonWriter(typeStore))
+            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<IAnimal>(json);
@@ -145,8 +145,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         private void TestAbstract(TypeAccess typeAccess) {
             var json = "{\"personType\":\"Employee\",\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (var writer = new JsonWriter(typeStore))
+            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<Person>(json);
@@ -186,8 +186,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (var writer = new JsonWriter(typeStore))
+            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
                 var result = reader.Read<FactoryCollection>(json);

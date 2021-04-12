@@ -12,16 +12,16 @@ namespace Friflo.Json.Flow.Mapper.Diff
     public class Differ : IDisposable
     {
         public  readonly    TypeCache       typeCache;
-        private readonly    JsonWriter      jsonWriter;
+        private readonly    ObjectWriter      jsonWriter;
         private readonly    List<TypeNode>  path        = new List<TypeNode>();
         private readonly    List<Parent>    parentStack = new List<Parent>();
 
         protected Differ(TypeStore typeStore) {
-            this.jsonWriter = new JsonWriter(typeStore);
+            this.jsonWriter = new ObjectWriter(typeStore);
             this.typeCache = jsonWriter.TypeCache;
         }
         
-        public Differ(JsonWriter jsonWriter) {
+        public Differ(ObjectWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
             this.typeCache = jsonWriter.TypeCache;
         }

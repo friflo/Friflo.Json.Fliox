@@ -126,12 +126,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             var mapNum2 =    "{\"str\":44}";
             var invalid =    "invalid";
                 
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter write = new JsonWriter(typeStore))
+            using (var typeStore    = new TypeStore())
+            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var write        = new ObjectWriter(typeStore))
             //
-            using (JsonReader read2 = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (JsonWriter write2 = new JsonWriter(typeStore))
+            using (var read2        = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var write2       = new ObjectWriter(typeStore))
             {
                 reader = enc;
                 cmpRead = read2; 
@@ -505,10 +505,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             }
         }
 
-        private JsonReader reader;
+        private ObjectReader reader;
         
-        private JsonReader cmpRead;
-        private JsonWriter cmpWrite;
+        private ObjectReader cmpRead;
+        private ObjectWriter cmpWrite;
 
         private T Read<T>(string json) {
             // return reader.Read<T>(bytes);

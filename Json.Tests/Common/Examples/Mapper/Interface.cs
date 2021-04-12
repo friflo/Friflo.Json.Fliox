@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
             {
                 ""employeeId"":   123
             }";
-            using (var m = new JsonMapper()) {
+            using (var m = new ObjectMapper()) {
                 var person = m.Read<IPerson>(json);
 
                 var result = m.Write(person);

@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""field"":      13
             }";
             using (var typeStore =  new TypeStore(new StoreConfig(typeAccess, new CamelCaseNaming())))
-            using (var m = new JsonMapper(typeStore)) {
+            using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
                 string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 ""field"":      13
             }";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess, new PascalCaseNaming())))
-            using (var m = new JsonMapper(typeStore)) {
+            using (var m = new ObjectMapper(typeStore)) {
                 var naming = m.Read<Naming>(json);
                 var result = m.Write(naming);
                 string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));

@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Mapper
     
     /// <summary>
     /// Thread safe store containing the required <see cref="Type"/> information for marshalling and unmarshalling.
-    /// Can be shared across threads by <see cref="Reader"/> and <see cref="JsonWriter"/> instances.
+    /// Can be shared across threads by <see cref="Reader"/> and <see cref="ObjectWriter"/> instances.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         private T EncodeJson<T>(Bytes json, TypeStore typeStore) {
             T ret = default;
-            using (var enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
+            using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.Read<T>(json);
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private bool EncodeJsonTo<T>(Bytes json, T obj, TypeStore typeStore) {
-            using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
+            using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     enc.ReadTo(json, obj);
@@ -204,8 +204,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         [Test]
         public void Pretty()   {
             using (var typeStore = createStore())
-            using (var reader   = new JsonReader(typeStore))
-            using (var writer   = new JsonWriter(typeStore))
+            using (var reader   = new ObjectReader(typeStore))
+            using (var writer   = new ObjectWriter(typeStore))
             using (var json     = new TestBytes())
             using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
                 var complex = reader.Read<JsonComplex>(bytes);
@@ -223,10 +223,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             {
                 JsonComplex obj = new JsonComplex();
                 SetComplex(obj);
-                using (JsonWriter writer = new JsonWriter(typeStore)) {
+                using (var writer = new ObjectWriter(typeStore)) {
                     writer.Write(obj, ref dst.bytes);
 
-                    using (JsonReader enc = new JsonReader(typeStore, JsonReader.NoThrow)) {
+                    using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
                         JsonComplex res = enc.Read<JsonComplex>(dst.bytes);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());

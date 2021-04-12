@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public static void TestFilter () {
             using (var eval         = new JsonEvaluator())
-            using (var jsonMapper   = new JsonMapper())
+            using (var jsonMapper   = new ObjectMapper())
             {
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(Peter);
@@ -141,7 +141,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public static void TestGroupFilter () {
             using (var eval         = new JsonEvaluator())
-            using (var jsonMapper   = new JsonMapper())
+            using (var jsonMapper   = new ObjectMapper())
             {
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(Peter);
@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public static void TestEval() {
             using (var eval         = new JsonEvaluator())
-            using (var jsonMapper   = new JsonMapper())
+            using (var jsonMapper   = new ObjectMapper())
             {
                 jsonMapper.Pretty = true;
                 // use expression

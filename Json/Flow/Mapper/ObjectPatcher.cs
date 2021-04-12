@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Mapper
 {
     public class ObjectPatcher : IDisposable
     {
-        public  readonly    JsonMapper      mapper;
+        public  readonly    ObjectMapper      mapper;
         public  readonly    Differ          differ;
         
         private readonly    StringBuilder   sb = new StringBuilder();
@@ -21,10 +21,10 @@ namespace Friflo.Json.Flow.Mapper
         private readonly    Patcher         patcher;
 
         public ObjectPatcher(TypeStore typeStore) 
-            : this (new JsonMapper(typeStore))
+            : this (new ObjectMapper(typeStore))
         { }
         
-        public ObjectPatcher(JsonMapper mapper) {
+        public ObjectPatcher(ObjectMapper mapper) {
             this.mapper = mapper;
             typeCache   = mapper.reader.TypeCache;
             patcher     = new Patcher(mapper.reader);

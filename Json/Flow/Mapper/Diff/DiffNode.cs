@@ -23,9 +23,9 @@ namespace Friflo.Json.Flow.Mapper.Diff
         public  readonly    object          left;
         public  readonly    object          right;
         public  readonly    List<DiffNode>  children;
-        private readonly    JsonWriter      jsonWriter;
+        private readonly    ObjectWriter      jsonWriter;
         
-        public DiffNode(DiffType diffType, JsonWriter jsonWriter, DiffNode parent, TypeNode pathNode, object left, object right, List<DiffNode> children) {
+        public DiffNode(DiffType diffType, ObjectWriter jsonWriter, DiffNode parent, TypeNode pathNode, object left, object right, List<DiffNode> children) {
             this.diffType   = diffType;
             this.parent     = parent;
             this.pathNode   = pathNode;

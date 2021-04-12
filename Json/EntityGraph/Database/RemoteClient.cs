@@ -10,13 +10,13 @@ namespace Friflo.Json.EntityGraph.Database
 {
     public class RemoteClient : EntityDatabase
     {
-        private readonly JsonMapper     jsonMapper;
+        private readonly ObjectMapper     jsonMapper;
         private readonly string         endpoint;
         private readonly HttpClient     httpClient;
         
         public RemoteClient(string endpoint) {
             this.endpoint = endpoint;
-            jsonMapper = new JsonMapper { Pretty = true };
+            jsonMapper = new ObjectMapper { Pretty = true };
             httpClient = new HttpClient();
         }
         

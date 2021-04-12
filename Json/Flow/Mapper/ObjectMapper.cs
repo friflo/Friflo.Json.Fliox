@@ -11,17 +11,17 @@ namespace Friflo.Json.Flow.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonMapper : IJsonReader, IJsonWriter, IDisposable
+    public class ObjectMapper : IJsonReader, IJsonWriter, IDisposable
     {
-        public readonly TypeStore   typeStore;
-        public readonly JsonReader  reader;
-        public readonly JsonWriter  writer;
+        public readonly TypeStore       typeStore;
+        public readonly ObjectReader    reader;
+        public readonly ObjectWriter    writer;
         
-        private readonly TypeStore  autoStore;
+        private readonly TypeStore      autoStore;
 
-        private         int         maxDepth;
+        private         int             maxDepth;
         
-        public          int         MaxDepth {
+        public          int             MaxDepth {
             get => maxDepth;
             set {
                 maxDepth = value;
@@ -48,11 +48,11 @@ namespace Friflo.Json.Flow.Mapper
             }
         }
 
-        public JsonMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
+        public ObjectMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
             typeStore       = typeStore ?? (autoStore = new TypeStore());
             this.typeStore  = typeStore;
-            reader          = new JsonReader(typeStore, errorHandler);
-            writer          = new JsonWriter(typeStore);
+            reader          = new ObjectReader(typeStore, errorHandler);
+            writer          = new ObjectWriter(typeStore);
             MaxDepth        = JsonParser.DefaultMaxDepth;
         }
 

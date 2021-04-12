@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph
         public  readonly    Type                                type;
         private readonly    EntityStore                         store;
         private readonly    TypeMapper<T>                       typeMapper;
-        private readonly    JsonMapper                          jsonMapper;
+        private readonly    ObjectMapper                          jsonMapper;
         private readonly    EntityContainer                     container;
         private readonly    ObjectPatcher                       objectPatcher;
         private readonly    Tracer                              tracer;

@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonWriter : IJsonWriter, IDisposable
+    public class ObjectWriter : IJsonWriter, IDisposable
     {
         private     Writer      intern;
 
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Mapper
         
         public      TypeCache TypeCache => intern.typeCache;
 
-        public JsonWriter(TypeStore typeStore) {
+        public ObjectWriter(TypeStore typeStore) {
             intern = new Writer(typeStore);
         }
         

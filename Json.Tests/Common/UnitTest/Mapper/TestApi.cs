@@ -16,9 +16,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // ------------------------------------ JsonReader / JsonWriter ------------------------------------
         [Test]
         public void ReaderWriter() {
-            using (TypeStore    typeStore   = new TypeStore())
-            using (JsonReader   read        = new JsonReader(typeStore))
-            using (JsonWriter   write       = new JsonWriter(typeStore)) {
+            using (var typeStore   = new TypeStore())
+            using (var read        = new ObjectReader(typeStore))
+            using (var write       = new ObjectWriter(typeStore)) {
                 AssertReaderBytes(read);
                 AssertWriterBytes(write);
                 
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         // --------------------------------------- Formatter ---------------------------------------
         [Test]
         public void JsonMapper() {
-            using (var  formatter   = new JsonMapper())
+            using (var  formatter   = new ObjectMapper())
             {
                 AssertReaderBytes(formatter);
                 AssertWriterBytes(formatter);
@@ -63,9 +63,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReaderException() {
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore))
-            using (var invalid = new Bytes("invalid"))
+            using (var typeStore    = new TypeStore())
+            using (var read         = new ObjectReader(typeStore))
+            using (var invalid      = new Bytes("invalid"))
             {
                 var e = Throws<JsonReaderException>(() => read.Read<string>(invalid));
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", e.Message);
@@ -75,9 +75,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         
         [Test]
         public void ReaderError() {
-            using (TypeStore typeStore = new TypeStore())
-            using (JsonReader read = new JsonReader(typeStore, JsonReader.NoThrow))
-            using (var invalid = new Bytes("invalid"))
+            using (var typeStore    = new TypeStore())
+            using (var read         = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var invalid      = new Bytes("invalid"))
             {
                 read.Read<string>(invalid);
                 IsFalse(read.Success);
