@@ -10,6 +10,10 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class BoolOp : Operator
     {
         internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
+
+        public JsonFilter Filter() {
+            return new JsonFilter(this);
+        }
     }
     
     // ----------------------------------- unary logical operators -----------------------------------

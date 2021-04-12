@@ -9,23 +9,13 @@ namespace Friflo.Json.Flow.Graph
     public class JsonEvaluator : IDisposable
     {
         private readonly JsonSelector   jsonSelector    = new JsonSelector();
-        private readonly JsonLambda     jsonLambda      = new JsonLambda(); // for reuse
 
         public void Dispose() {
             jsonSelector.Dispose();
         }
 
-        public bool Filter(string json, string filter) {
-            return true;
-        }
-
         // --- Filter
-        public bool Filter(string json, BoolOp filter) {
-            jsonLambda.InitLambda(filter);
-            return Filter(json, jsonLambda);
-        }
-
-        public bool Filter(string json, JsonLambda filter) {
+        public bool Filter(string json, JsonFilter filter) {
             ReadJsonFields(json, filter);
             
             var evalResult = filter.op.Eval();
@@ -38,11 +28,6 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --- Eval
-        public object Eval(string json, Operator op) {
-            jsonLambda.InitLambda(op);
-            return Eval(json, jsonLambda);
-        }
-
         public object Eval(string json, JsonLambda lambda) {
             ReadJsonFields(json, lambda);
 

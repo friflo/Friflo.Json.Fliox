@@ -67,17 +67,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john  = jsonMapper.Write(John);
 
                 // ---
-                var  isPeter         = new JsonFilter(new Equal(new Field (".name"), new StringLiteral ("Peter")));
+                var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
                 AreEqual(".name == 'Peter'", isPeter.ToString());
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual("name == 'Peter'", isPeter2.ToString());
                 
                 bool IsPeter(Person p) => p.name == "Peter";
-                
-                var  isAgeGreater35  = new GreaterThan(new Field (".age"), new LongLiteral (35));
+
+                var  isAgeGreater35Op = new GreaterThan(new Field(".age"), new LongLiteral(35));
+                var  isAgeGreater35  = isAgeGreater35Op.Filter();
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
-                var isNotAgeGreater35  = new Not(isAgeGreater35);
+                var isNotAgeGreater35  = new Not(isAgeGreater35Op).Filter();
             
                 IsTrue  (IsPeter(Peter));
                 IsTrue  (eval.Filter(peter, isPeter));
@@ -91,10 +92,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul")));
+                var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul"))).Filter();
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12)));
+                var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12))).Filter();
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -104,16 +105,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20)));
+                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
                 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5)));
+                var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
                 IsTrue  (eval.Filter(peter, isAge40));
                 
-                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5)));
+                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
                 IsTrue  (eval.Filter(peter, isChildAge20));
                 
                 
@@ -121,23 +122,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 // ------------------------------ Test runtime assertions ------------------------------
                 Exception e;
                 // --- compare operators must not be reused
-                var reuseCompareOp = new Equal(isAgeGreater35, isAgeGreater35);
-                e = Throws<InvalidOperationException>(() => eval.Filter(peter, reuseCompareOp));
+                e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter());
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
                 // --- group operators must not be reused
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
-                var reuseGroupOp = new Equal(testGroupOp, testGroupOp);
-                e = Throws<InvalidOperationException>(() => eval.Filter(peter, reuseGroupOp));
+                e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
                 AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: ('A' == 'B')", e.Message);
 
                 // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
-                var reuseLiterals = new Equal(testLiteral, testLiteral);
+                var reuseLiterals = new Equal(testLiteral, testLiteral).Filter();
                 eval.Filter(peter, reuseLiterals);
                 
                 var testField = new Field (".name");
-                var reuseField = new Equal(testField, testField);
+                var reuseField = new Equal(testField, testField).Filter();
                 eval.Filter(peter, reuseField);
             }
         }
@@ -152,7 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john  = jsonMapper.Write(John);
 
                 // --- Any
-                var  hasChildHobbySurfing = new Any (new Equal (new Field (".children[*].hobbies[*].name"), new StringLiteral ("Surfing")));
+                var  hasChildHobbySurfing = new Any (new Equal (new Field (".children[*].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
                 AreEqual("Any(.children[*].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
@@ -173,44 +172,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 // use lambda
                 AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
                 // use operator
-                AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello")));
-                AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0)));
-                AreEqual(true,      eval.Eval("{}", new BoolLiteral(true)));
-                AreEqual(null,      eval.Eval("{}", new NullLiteral()));
+                AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
+                AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0).Lambda()));
+                AreEqual(true,      eval.Eval("{}", new BoolLiteral(true).Lambda()));
+                AreEqual(null,      eval.Eval("{}", new NullLiteral().Lambda()));
 
                 // unary arithmetic operations
                 var abs     = new Abs(new LongLiteral(-2));
-                AreEqual(2,         eval.Eval("{}", abs));
+                AreEqual(2,         eval.Eval("{}", abs.Lambda()));
                 
                 var ceiling = new Ceiling(new DoubleLiteral(2.5));
-                AreEqual(3,         eval.Eval("{}", ceiling));
+                AreEqual(3,         eval.Eval("{}", ceiling.Lambda()));
                 
                 var floor   = new Floor(new DoubleLiteral(2.5));
-                AreEqual(2,         eval.Eval("{}", floor));
+                AreEqual(2,         eval.Eval("{}", floor.Lambda()));
                 
                 var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
-                AreEqual(2,         eval.Eval("{}", exp));
+                AreEqual(2,         eval.Eval("{}", exp.Lambda()));
                 
                 var log     = new Log(new DoubleLiteral(Math.Exp(3)));
-                AreEqual(3,         eval.Eval("{}", log));
+                AreEqual(3,         eval.Eval("{}", log.Lambda()));
                 
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
-                AreEqual(3,         eval.Eval("{}", sqrt));
+                AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
 
                 
 
                 // binary arithmetic operations
                 var add      = new Add(new LongLiteral(1), new LongLiteral(2));
-                AreEqual(3,         eval.Eval("{}", add));
+                AreEqual(3,         eval.Eval("{}", add.Lambda()));
                 
                 var subtract = new Subtract(new LongLiteral(1), new LongLiteral(2));
-                AreEqual(-1,        eval.Eval("{}", subtract));
+                AreEqual(-1,        eval.Eval("{}", subtract.Lambda()));
                 
                 var multiply = new Multiply(new LongLiteral(2), new LongLiteral(3));
-                AreEqual(6,         eval.Eval("{}", multiply));
+                AreEqual(6,         eval.Eval("{}", multiply.Lambda()));
                 
                 var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
-                AreEqual(5,         eval.Eval("{}", divide));
+                AreEqual(5,         eval.Eval("{}", divide.Lambda()));
             }
         }
 
