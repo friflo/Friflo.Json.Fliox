@@ -8,7 +8,7 @@ namespace Friflo.Json.EntityGraph.Filter
 {
     public class JsonLambda
     {
-        internal readonly   List<string>        selectors       = new List<string>();
+        private  readonly   List<string>        selectors       = new List<string>();
         internal readonly   List<Field>         fields          = new List<Field>();
         internal readonly   JsonSelectorQuery   selectorQuery   = new JsonSelectorQuery();
         internal            Operator            op;
