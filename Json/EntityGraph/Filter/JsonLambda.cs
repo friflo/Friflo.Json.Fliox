@@ -2,15 +2,18 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Mapper.Graph;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
     public class JsonLambda
     {
-        internal readonly   List<string>    selectors       = new List<string>();
-        internal readonly   List<Field>     fields          = new List<Field>();
-        internal            Operator        op;
-        private  readonly   OperatorContext operatorContext = new OperatorContext();
+        internal readonly   List<string>        selectors       = new List<string>();
+        internal readonly   List<Field>         fields          = new List<Field>();
+        internal readonly   JsonSelectorQuery   selectorQuery   = new JsonSelectorQuery();
+        internal            Operator            op;
+        private  readonly   OperatorContext     operatorContext = new OperatorContext();
+        
         
         internal JsonLambda() {}
 
@@ -28,6 +31,7 @@ namespace Friflo.Json.EntityGraph.Filter
                 selectors.Add(selectorPair.Key);
                 fields.Add(selectorPair.Value);
             }
+            selectorQuery.CreateNodeTree(selectors);
         }
     }
 }

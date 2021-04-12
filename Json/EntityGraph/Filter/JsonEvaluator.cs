@@ -33,7 +33,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         public bool Filter(string json, JsonLambda filter) {
-            ReadOperatorFields(json, jsonLambda);
+            ReadJsonFields(json, jsonLambda);
             
             var evalResult = filter.op.Eval();
             
@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph.Filter
         }
 
         public object Eval(string json, JsonLambda lambda) {
-            ReadOperatorFields(json, jsonLambda);
+            ReadJsonFields(json, jsonLambda);
 
             var evalResult = lambda.op.Eval();
             
@@ -66,8 +66,10 @@ namespace Friflo.Json.EntityGraph.Filter
             return evalResults;
         }
 
-        private void ReadOperatorFields(string json, JsonLambda lambda) {
-            var selectorResults = jsonSelector.Select(json, lambda.selectors);
+        private void ReadJsonFields(string json, JsonLambda lambda) {
+            var query = lambda.selectorQuery;
+            jsonSelector.Select(json, query);
+            var selectorResults = query.GetResult();
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
                 Field field = fields[n];
