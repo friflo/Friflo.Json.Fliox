@@ -7,7 +7,7 @@ using Friflo.Json.Mapper.Map;
 using Friflo.Json.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Diff
 {
     public class Differ : IDisposable
     {

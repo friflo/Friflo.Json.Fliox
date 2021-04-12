@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Mapper.Map;
 
-namespace Friflo.Json.Mapper.Graph
+namespace Friflo.Json.Mapper.Diff
 {
     public enum DiffType
     {
