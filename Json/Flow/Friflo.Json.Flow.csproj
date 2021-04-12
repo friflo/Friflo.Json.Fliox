@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Friflo.Json.Mapper</RootNamespace>
         <LangVersion>7.3</LangVersion>
         <Title>friflo Json.Mapper</Title>
         <Authors>Ullrich Praetz</Authors>
@@ -33,10 +32,6 @@
 	
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
-    </ItemGroup>
-	
-    <ItemGroup>
-      <Folder Include="Flow" />
     </ItemGroup>
 
 </Project>
