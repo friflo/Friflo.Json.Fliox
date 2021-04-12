@@ -25,6 +25,27 @@ namespace Friflo.Json.Mapper.Patch
         }
     }
 
+    public static class PathTools
+    {
+        public static string PathToPathTokens(string path, List<string> pathTokens) {
+            pathTokens.Clear();
+            int last = 1;
+            int len = path.Length;
+            if (len == 0)
+                return path;
+            for (int n = 1; n < len; n++) {
+                if (path[n] == '/') {
+                    var token = path.Substring(last, n - last);
+                    pathTokens.Add(token);
+                    last = n + 1;
+                }
+            }
+            var lastToken = path.Substring(last, len - last);
+            pathTokens.Add(lastToken);
+            return path;
+        }
+    }
+
     public enum SelectorType
     {
         Root,

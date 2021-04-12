@@ -3,9 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Mapper.Patch;
 
-namespace Friflo.Json.Mapper.Diff
+namespace Friflo.Json.Mapper.Patch
 {
     internal class PatchNode {
         internal            PatchType?                      patchType;
@@ -39,15 +38,15 @@ namespace Friflo.Json.Mapper.Diff
             switch (patchType) {
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
-                    Patcher.PathToPathTokens(replace.path, pathTokens);
+                    PathTools.PathToPathTokens(replace.path, pathTokens);
                     break;
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
-                    Patcher.PathToPathTokens(add.path, pathTokens);
+                    PathTools.PathToPathTokens(add.path, pathTokens);
                     break;
                 case PatchType.Remove:
                     var remove = (PatchRemove) patch;
-                    Patcher.PathToPathTokens(remove.path, pathTokens);
+                    PathTools.PathToPathTokens(remove.path, pathTokens);
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");

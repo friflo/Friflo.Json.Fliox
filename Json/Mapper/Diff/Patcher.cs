@@ -33,7 +33,7 @@ namespace Friflo.Json.Mapper.Diff
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
                     json = replace.value.json;
-                    path = PathToPathTokens(replace.path, pathNodes);
+                    path = PathTools.PathToPathTokens(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
                         jsonReader.ReadTo(json, root);
                         return;
@@ -42,11 +42,11 @@ namespace Friflo.Json.Mapper.Diff
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
                     json = add.value.json;
-                    path = PathToPathTokens(add.path, pathNodes);
+                    path = PathTools.PathToPathTokens(add.path, pathNodes);
                     break;
                 case PatchType.Remove:
                     var remove = (PatchRemove) patch;
-                    path = PathToPathTokens(remove.path, pathNodes);
+                    path = PathTools.PathToPathTokens(remove.path, pathNodes);
                     break;
                 default:
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
@@ -97,24 +97,6 @@ namespace Friflo.Json.Mapper.Diff
             if (index >= count)
                 throw new InvalidOperationException($"Element index out of range. Count: {count} index: {index} path: {path}");
             return index;
-        }
-
-        public static string PathToPathTokens(string path, List<string> pathTokens) {
-            pathTokens.Clear();
-            int last = 1;
-            int len = path.Length;
-            if (len == 0)
-                return path;
-            for (int n = 1; n < len; n++) {
-                if (path[n] == '/') {
-                    var token = path.Substring(last, n - last);
-                    pathTokens.Add(token);
-                    last = n + 1;
-                }
-            }
-            var lastToken = path.Substring(last, len - last);
-            pathTokens.Add(lastToken);
-            return path;
         }
     }
 
