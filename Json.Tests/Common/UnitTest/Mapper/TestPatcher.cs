@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Patch;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Patch;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

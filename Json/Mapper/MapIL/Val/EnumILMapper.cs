@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.MapIL.Obj;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.MapIL.Val
+namespace Friflo.Json.Flow.Mapper.MapIL.Val
 {
     public struct EnumString {
         public  BytesString name;

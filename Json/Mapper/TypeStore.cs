@@ -2,14 +2,14 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
     [assembly: CLSCompliant(true)]
 #endif
 
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Flow.Mapper
 {
     /// <summary>
     /// An immutable configuration class for settings which are used by the lifetime of a <see cref="TypeStore"/>  

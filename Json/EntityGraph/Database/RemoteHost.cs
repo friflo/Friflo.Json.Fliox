@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 
 
 namespace Friflo.Json.EntityGraph.Database

@@ -2,12 +2,12 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Mapper.Map.Arr;
-using Friflo.Json.Mapper.Map.Obj;
-using Friflo.Json.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper.Map.Arr;
+using Friflo.Json.Flow.Mapper.Map.Obj;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 // ReSharper disable InlineOutVariableDeclaration
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

@@ -3,7 +3,7 @@
 using Friflo.Json.Burst;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
 
     public partial struct Reader

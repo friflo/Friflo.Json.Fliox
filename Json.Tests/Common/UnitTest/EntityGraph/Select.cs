@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.EntityGraph.Api;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

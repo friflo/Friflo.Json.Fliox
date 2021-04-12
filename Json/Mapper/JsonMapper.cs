@@ -3,10 +3,10 @@
 using System;
 using System.IO;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Flow.Mapper
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

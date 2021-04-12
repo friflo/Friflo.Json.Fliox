@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using NUnit.Framework;
 #pragma warning disable 649 // Field 'field' is never assigned
 

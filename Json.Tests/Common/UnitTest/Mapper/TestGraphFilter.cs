@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Filter;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

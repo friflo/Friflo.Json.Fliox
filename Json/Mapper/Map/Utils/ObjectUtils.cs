@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
-using Friflo.Json.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
     public partial struct Reader
     {

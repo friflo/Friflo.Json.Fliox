@@ -1,5 +1,5 @@
 ﻿using System;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.Examples.Mapper

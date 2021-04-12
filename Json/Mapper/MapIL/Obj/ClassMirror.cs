@@ -3,13 +3,13 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.MapIL.Obj
+namespace Friflo.Json.Flow.Mapper.MapIL.Obj
 {
 
     /// <summary>

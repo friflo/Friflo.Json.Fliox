@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Mapper.Patch;
+using Friflo.Json.Flow.Mapper.Patch;
 
 namespace Friflo.Json.EntityGraph.Filter
 {

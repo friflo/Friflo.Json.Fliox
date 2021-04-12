@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map;
 
-namespace Friflo.Json.Mapper.Diff
+namespace Friflo.Json.Flow.Mapper.Diff
 {
     public enum DiffType
     {

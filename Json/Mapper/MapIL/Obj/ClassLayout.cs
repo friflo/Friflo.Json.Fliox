@@ -4,10 +4,10 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.MapIL.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.MapIL.Utils;
 
-namespace Friflo.Json.Mapper.MapIL.Obj
+namespace Friflo.Json.Flow.Mapper.MapIL.Obj
 {
     public abstract class ClassLayout {
 

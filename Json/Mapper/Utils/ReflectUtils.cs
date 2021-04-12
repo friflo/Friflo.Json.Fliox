@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Friflo.Json.Mapper.Utils
+namespace Friflo.Json.Flow.Mapper.Utils
 {
     // Reflect
     public static class ReflectUtils

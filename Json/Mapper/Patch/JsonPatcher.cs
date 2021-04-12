@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Patch
+namespace Friflo.Json.Flow.Mapper.Patch
 {
     public class JsonPatcher : IDisposable
     {

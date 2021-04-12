@@ -1,6 +1,6 @@
-﻿using Friflo.Json.Mapper.Utils;
+﻿using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
     public interface ITracerContext
     {

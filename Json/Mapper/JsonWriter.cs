@@ -4,10 +4,10 @@ using System;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Flow.Mapper
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

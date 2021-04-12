@@ -3,13 +3,13 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.MapIL.Obj
+namespace Friflo.Json.Flow.Mapper.MapIL.Obj
 {
    
     internal class ClassILMapper<T> : ClassMapper<T> {

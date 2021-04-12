@@ -3,7 +3,7 @@
 using System;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Utils
+namespace Friflo.Json.Flow.Mapper.Utils
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

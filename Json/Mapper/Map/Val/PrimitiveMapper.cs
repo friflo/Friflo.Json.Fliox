@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.MapIL.Val;
+using Friflo.Json.Flow.Mapper.MapIL.Val;
 
 // ReSharper disable PossibleInvalidOperationException
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     public class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();

@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     public struct JsonValue
     {

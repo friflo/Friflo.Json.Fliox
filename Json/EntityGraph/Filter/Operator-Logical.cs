@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.EntityGraph.Filter.Arity;
-using Friflo.Json.Mapper.Patch;
+using Friflo.Json.Flow.Mapper.Patch;
 
 namespace Friflo.Json.EntityGraph.Filter
 {

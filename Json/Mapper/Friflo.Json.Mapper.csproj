@@ -34,5 +34,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <Folder Include="Flow" />
+    </ItemGroup>
 
 </Project>

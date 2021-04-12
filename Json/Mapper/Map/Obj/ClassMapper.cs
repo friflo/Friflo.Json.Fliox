@@ -4,14 +4,14 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
-using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Map.Val;
-using Friflo.Json.Mapper.MapIL.Obj;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Obj
+namespace Friflo.Json.Flow.Mapper.Map.Obj
 {
     public class ClassMatcher : ITypeMatcher {
         public static readonly ClassMatcher Instance = new ClassMatcher();

@@ -1,6 +1,6 @@
 ﻿using Friflo.Json.Burst;
-using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

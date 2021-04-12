@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
     using FluentAssertions;

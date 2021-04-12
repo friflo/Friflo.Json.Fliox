@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Map;
-using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.EntityGraph
 {

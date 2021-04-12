@@ -3,9 +3,9 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

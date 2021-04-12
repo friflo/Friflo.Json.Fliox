@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Mapper
 {

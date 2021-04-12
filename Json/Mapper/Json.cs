@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Flow.Mapper
 {
     internal static class Convert
     {

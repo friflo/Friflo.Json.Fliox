@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Arr
+namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
     public class GenericIEnumerableMatcher : ITypeMatcher {
         public static readonly GenericIEnumerableMatcher Instance = new GenericIEnumerableMatcher();

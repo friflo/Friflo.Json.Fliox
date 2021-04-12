@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

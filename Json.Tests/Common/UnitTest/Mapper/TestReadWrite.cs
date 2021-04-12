@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

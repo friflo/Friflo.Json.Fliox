@@ -2,13 +2,13 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Runtime.CompilerServices;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Val;
-using Friflo.Json.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper.MapIL.Obj;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Mapper.MapIL.Val
+namespace Friflo.Json.Flow.Mapper.MapIL.Val
 {
     static class NullableMapper {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

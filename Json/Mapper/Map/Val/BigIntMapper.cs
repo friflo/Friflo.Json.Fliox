@@ -4,7 +4,7 @@ using System;
 using System.Numerics;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     public class BigIntMatcher : ITypeMatcher {
         public static readonly BigIntMatcher Instance = new BigIntMatcher();

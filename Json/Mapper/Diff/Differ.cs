@@ -3,11 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Mapper.Map;
-using Friflo.Json.Mapper.Map.Obj.Reflect;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Diff
+namespace Friflo.Json.Flow.Mapper.Diff
 {
     public class Differ : IDisposable
     {

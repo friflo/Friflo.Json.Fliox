@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Arr
+namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
     public class GenericICollectionMatcher : ITypeMatcher {
         public static readonly GenericICollectionMatcher Instance = new GenericICollectionMatcher();

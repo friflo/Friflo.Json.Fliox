@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-namespace Friflo.Json.Mapper.Map
+namespace Friflo.Json.Flow.Mapper.Map
 {
     public class TypeNotSupportedMatcher : ITypeMatcher {
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();

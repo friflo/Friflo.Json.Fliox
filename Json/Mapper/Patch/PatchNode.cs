@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Mapper.Patch
+namespace Friflo.Json.Flow.Mapper.Patch
 {
     internal class PatchNode {
         internal            PatchType?                      patchType;

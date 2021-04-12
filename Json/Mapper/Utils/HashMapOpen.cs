@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Mapper.Utils
+namespace Friflo.Json.Flow.Mapper.Utils
 {
     /// <summary>
     /// Requirement/feature: Allocation free hash map when using Get()

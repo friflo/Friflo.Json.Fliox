@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 {
     // PropertyFields
 #if !UNITY_5_3_OR_NEWER

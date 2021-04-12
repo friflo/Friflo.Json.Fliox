@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
-namespace Friflo.Json.Mapper
+namespace Friflo.Json.Flow.Mapper
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Utils;
-using Friflo.Json.Mapper.MapIL.Val;
-using Friflo.Json.Mapper.Utils;
+using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.MapIL.Val;
+using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     public class EnumMatcher : ITypeMatcher {
         public static readonly EnumMatcher Instance = new EnumMatcher();

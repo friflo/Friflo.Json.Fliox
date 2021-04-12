@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
-using Friflo.Json.Mapper;
-using Friflo.Json.Mapper.Diff;
-using Friflo.Json.Mapper.Map;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Diff;
+using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.EntityGraph
 {

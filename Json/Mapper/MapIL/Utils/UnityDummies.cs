@@ -4,9 +4,9 @@
 #if UNITY_5_3_OR_NEWER
 
 using System;
-using Friflo.Json.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
-namespace Friflo.Json.Mapper.MapIL.Val
+namespace Friflo.Json.Flow.Mapper.MapIL.Val
 {
     class DoubleFieldMapper : DoubleMapper  { public DoubleFieldMapper  (StoreConfig config, Type type) : base(config, type) { } }
     class FloatFieldMapper  : FloatMapper   { public FloatFieldMapper   (StoreConfig config, Type type) : base(config, type) { } }
@@ -25,7 +25,7 @@ namespace Friflo.Json.Mapper.MapIL.Val
     class NullableBoolFieldMapper   : NullableBoolMapper    { public NullableBoolFieldMapper    (StoreConfig config, Type type) : base(config, type) { } }
 }
 
-namespace Friflo.Json.Mapper.MapIL.Obj
+namespace Friflo.Json.Flow.Mapper.MapIL.Obj
 {
     public          class ClassMirror { }
     public abstract class ClassLayout { }

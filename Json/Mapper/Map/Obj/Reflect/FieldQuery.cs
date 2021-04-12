@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Map.Utils;
 
-namespace Friflo.Json.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 {
     public class  FieldQuery
     {

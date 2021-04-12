@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Map.Utils;
 
-namespace Friflo.Json.Mapper.Map.Val
+namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     
     public class DateTimeMatcher  : ITypeMatcher {
