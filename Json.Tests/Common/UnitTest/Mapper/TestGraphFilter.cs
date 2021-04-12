@@ -28,15 +28,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         static readonly Person Peter =         new Person {
             name = "Peter", age = 40,
             children = {
-                new Person { name = "Paul" , age = 20 },
-                new Person { name = "Marry", age = 20 }
+                new Person {
+                    name = "Paul" , age = 20,
+                    hobbies = {
+                        new Hobby{ name= "Biking"},
+                        new Hobby{ name= "Surfing"}
+                    }
+                },
+                new Person {
+                    name = "Marry", age = 20,
+                    hobbies = {
+                        new Hobby{ name= "Biking"}
+                    }
+                }
             }
         };
         
         static readonly Person John =         new Person {
             name = "John",  age = 30,
             children = {
-                new Person { name = "Simon", age = 10 }
+                new Person {
+                    name = "Simon", age = 10,
+                    hobbies = {
+                        new Hobby{ name= "Biking"}
+                    }
+                }
             }
         };
         
@@ -118,6 +134,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 var testField = new Field (".name");
                 var reuseField = new Equal(testField, testField);
                 eval.Filter(peter, reuseField);
+            }
+        }
+        
+        [Test]
+        public static void TestGroupFilter () {
+            using (var eval         = new JsonEvaluator())
+            using (var jsonMapper   = new JsonMapper())
+            {
+                jsonMapper.Pretty = true;
+                var peter = jsonMapper.Write(Peter);
+                var john  = jsonMapper.Write(John);
+
+                // --- Any
+                var  hasChildHobbySurfing = new Any (new Equal (new Field (".children[*].hobbies[*].name"), new StringLiteral ("Surfing")));
+                bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
+                
+                IsTrue (HasChildHobbySurfing(Peter));
+                IsTrue (eval.Filter(peter, hasChildHobbySurfing));
+                IsFalse(eval.Filter(john,  hasChildHobbySurfing));
             }
         }
 
