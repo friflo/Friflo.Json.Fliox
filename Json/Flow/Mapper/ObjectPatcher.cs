@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.Flow.Mapper.Diff
+namespace Friflo.Json.Flow.Mapper
 {
     public class ObjectPatcher : IDisposable
     {

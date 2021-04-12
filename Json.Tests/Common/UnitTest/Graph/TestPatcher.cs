@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Tests.Common.UnitTest.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -31,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore()) 
             using (var objectPatcher    = new ObjectPatcher(typeStore))
-            using (var differ           = new Differ(typeStore))
+            using (var differ           = new ObjectDiffer(typeStore))
             {
                 objectPatcher.mapper.Pretty = true;
                 {
@@ -139,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
         [Test]
         public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
-            using (var differ       = new Differ(typeStore)) {
+            using (var differ       = new ObjectDiffer(typeStore)) {
                 var left  = new List<int> { 1,  2,  3 };
                 var right = new List<int> { 1,  2 };
                 var diff = differ.GetDiff(left, right);

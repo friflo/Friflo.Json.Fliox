@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -24,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         }
         
         private void AssertCompare<T>(TypeStore typeStore, T left, T right) {
-            using (var differ = new Differ(typeStore)) {
+            using (var differ = new ObjectDiffer(typeStore)) {
                 var diff = differ.GetDiff(left, right);
                 IsNull(diff);
             }
