@@ -53,15 +53,13 @@ namespace Friflo.Json.Flow.Patch
 
     public class JsonSelectorQuery : PathNodeTree<SelectorResult>
     {
-        // public because used by JsonLambda in a separate library
-        public JsonSelectorQuery() { }
+        internal JsonSelectorQuery() { }
         
         public JsonSelectorQuery(IList<string> pathList) {
             CreateNodeTree(pathList);
         }
 
-        // public because used by JsonLambda in a separate library
-        public new void CreateNodeTree(IList<string> pathList) {
+        internal new void CreateNodeTree(IList<string> pathList) {
             base.CreateNodeTree(pathList);
             foreach (var leaf in leafNodes) {
                 leaf.node.result = new SelectorResult ();
