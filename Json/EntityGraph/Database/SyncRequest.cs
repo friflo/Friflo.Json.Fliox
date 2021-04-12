@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Mapper.Patch;
+using Friflo.Json.Flow.Patch;
 
 namespace Friflo.Json.EntityGraph.Database
 {

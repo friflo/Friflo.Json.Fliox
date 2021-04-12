@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Diff;
-using Friflo.Json.Flow.Mapper.Patch;
+using Friflo.Json.Flow.Patch;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

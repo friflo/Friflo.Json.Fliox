@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
-using Friflo.Json.Burst; // UnityExtension.TryAdd()
-using Friflo.Json.Flow.Mapper.Patch;
+using Friflo.Json.Burst;  // UnityExtension.TryAdd()
+using Friflo.Json.Flow.Patch;
 
 namespace Friflo.Json.EntityGraph.Filter
 {

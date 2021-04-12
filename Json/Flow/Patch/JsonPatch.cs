@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
-namespace Friflo.Json.Flow.Mapper.Patch
+namespace Friflo.Json.Flow.Patch
 {
     /// <summary>
     /// Implement models of RFC 6902 - "JavaScript Object Notation (JSON) Patch"

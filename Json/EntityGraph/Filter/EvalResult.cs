@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
-using Friflo.Json.Flow.Mapper.Patch;
+using Friflo.Json.Flow.Patch;
 
 namespace Friflo.Json.EntityGraph.Filter
 {
