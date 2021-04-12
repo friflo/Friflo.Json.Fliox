@@ -14,24 +14,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
         public          string          name;
         public          int             age;
         public readonly List<Person>    children = new List<Person>();
+        public readonly List<Hobby>     hobbies = new List<Hobby>();
     }
+    
+    public class Hobby
+    {
+        public          string          name;
+    }
+    
     
     public static class TestGraphFilter
     {
-        [Test]
+        static readonly Person Peter =         new Person {
+            name = "Peter", age = 40,
+            children = {
+                new Person { name = "Paul" , age = 20 },
+                new Person { name = "Marry", age = 20 }
+            }
+        };
+        
+        static readonly Person John =         new Person {
+            name = "John",  age = 30,
+            children = {
+                new Person { name = "Simon", age = 10 }
+            }
+        };
+        
         public static void TestFilter () {
             using (var eval         = new JsonEvaluator())
             using (var jsonMapper   = new JsonMapper())
             {
                 jsonMapper.Pretty = true;
-                var peter =         new Person { name = "Peter", age = 40 };
-                peter.children.Add( new Person { name = "Paul" , age = 20 });
-                peter.children.Add( new Person { name = "Marry", age = 20 });
-                var peterJson = jsonMapper.Write(peter);
-                
-                var john =          new Person { name = "John",  age = 30 };
-                john.children.Add(  new Person { name = "Simon", age = 10 });
-                var johnJson = jsonMapper.Write(john);
+                var peterJson = jsonMapper.Write(Peter);
+                var johnJson = jsonMapper.Write(John);
 
                 // ---
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter"));
@@ -42,11 +57,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 var isNotAgeGreater35  = new Not(isAgeGreater35);
             
-                IsTrue  (IsPeter(peter));
+                IsTrue  (IsPeter(Peter));
                 IsTrue  (eval.Filter(peterJson, isPeter));
                 IsFalse (eval.Filter(johnJson,  isPeter));
                 
-                IsTrue  (IsAgeGreater35(peter));
+                IsTrue  (IsAgeGreater35(Peter));
                 IsTrue  (eval.Filter(peterJson, isAgeGreater35));
                 IsFalse (eval.Filter(johnJson,  isAgeGreater35));
                 // Not
@@ -59,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 
                 var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12)));
                 
-                IsTrue (HasChildPaul(peter));
+                IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peterJson, hasChildPaul));
                 IsFalse(eval.Filter(johnJson,  hasChildPaul));
                 
