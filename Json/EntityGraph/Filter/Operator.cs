@@ -21,6 +21,10 @@ namespace Friflo.Json.EntityGraph.Filter
 
         internal static readonly EvalResult     SingleTrue  = new EvalResult(True);
         internal static readonly EvalResult     SingleFalse = new EvalResult(False);
+
+        public JsonLambda Lambda() {
+            return new JsonLambda(this);
+        }
         
         public static Operator FromFilter<T>(Expression<Func<T, bool>> filter) {
             return QueryConverter.OperatorFromExpression(filter);

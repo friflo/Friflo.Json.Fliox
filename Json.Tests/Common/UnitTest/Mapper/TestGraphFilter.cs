@@ -163,6 +163,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
             using (var jsonMapper   = new JsonMapper())
             {
                 jsonMapper.Pretty = true;
+                // use expression
+                AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<Person>(p => "hello")));
+                // use lambda
+                AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
+                // use operator
                 AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello")));
                 AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0)));
                 AreEqual(true,      eval.Eval("{}", new BoolLiteral(true)));

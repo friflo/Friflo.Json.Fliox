@@ -24,10 +24,10 @@ namespace Friflo.Json.EntityGraph.Filter
             InitLambda(op);
         }
         
-        public static JsonLambda Create<T> (Expression<Func<T, bool>> filter) {
-            var op = Operator.FromFilter(filter);
-            var lambda = new JsonLambda(op);
-            return lambda;
+        public static JsonLambda Create<T> (Expression<Func<T, object>> lambda) {
+            var op = Operator.FromLambda(lambda);
+            var jsonLambda = new JsonLambda(op);
+            return jsonLambda;
         }
 
         internal void InitLambda(Operator op) {
