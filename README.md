@@ -84,7 +84,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Object Mapper Reader/Writer
 
-## **`Friflo.Json.Mapper`**
+## **`Friflo.Json.Flow`**
 
 - Support deserialization in two ways:
 
@@ -97,10 +97,10 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 - **Support polymorphism**: Currently by a discriminator name `$type` as the first member: e.g. `{ "$type": "Tiger", ... }`
 
-- `JsonReader` support **two error handling modes** while parsing and deserialization (unmarshalling) -
+- `ObjectReader` support **two error handling modes** while parsing and deserialization (unmarshalling) -
     e.g. JSON validation errors.  
     By avoiding exceptions performance increases by the fact that throwing exceptions is an expensive operation
-    because of object creation the heap. The error mode is set via `JsonReader.ThrowException`:  
+    because of object creation the heap. The error mode is set via `ObjectReader.ThrowException`:  
 
     1. **Don't throw exception** and provide the error state via a boolean and a message.
 
@@ -118,7 +118,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
       Mapping data structures via reflection is inherent slower as is requires heap allocation caused by
       boxing & unboxing.
 
-    - **Reusing** of `JsonReader` & `JsonWriter` instance to avoid unnecessary allocations on the heap
+    - **Reusing** of `ObjectReader` & `ObjectWriter` instance to avoid unnecessary allocations on the heap
 
     - **No heap allocations** are performed when using `ReadTo()` and using a subset of supported types:
         arrays, `Lists` and classes ensured by [unit test](Json.Tests/Common/UnitTest/Mapper/TestNoAllocation.cs)
@@ -159,13 +159,13 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - **Ensuring a maximum depth** (`maxDepth`) of nested JSON objects and arrays. E.g. a JSON like `[[[...]]]`.
   The default `maxDepth` is set 100.  
   A limit of 3000 (Windows 10) is possible without getting a stack overflow.
-  The reason for the limit is that both `JsonReader` & `JsonWriter` are using a recursive implementation.
+  The reason for the limit is that both `ObjectReader` & `ObjectWriter` are using a recursive implementation.
   The low level parser itself  can be used without any limit as it is an iterator used by `JsonParser.NextEvent()`.
 
-    - Reading JSON exceeding `maxDepth` with `JsonParser` or `JsonReader` will result in an JSON error.
+    - Reading JSON exceeding `maxDepth` with `JsonParser` or `ObjectReader` will result in an JSON error.
       This avoid application issues in case of a DDoS attack doing this intentionally.
 
-    - When writing JSON the `JsonSerializer` and `JsonWriter` ensures this constrain via a runtime exception
+    - When writing JSON the `JsonSerializer` and `ObjectWriter` ensures this constrain via a runtime exception
       to avoid accidentally raising this limit.
 
 - **No dependencies** to 3rd party libraries. The used .NET API namespaces are mentioned above.  
@@ -173,7 +173,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 
-- Small library: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Mapper.dll` ~ **60 kb**
+- Small library: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Flow.dll` ~ **150 kb**
 
 - **Expressive error messages** when parsing invalid JSON. E.g.  
     ```
@@ -254,22 +254,22 @@ An Object Mapper maps a class to a JSON string and vise vera. Given the followin
         }
 ```
 
-Use `JsonMapper` to deserialize / unmarshal a JSON string to a class instance.
+Use `ObjectMapper` to deserialize / unmarshal a JSON string to a class instance.
 
 ```csharp
         public void HelloWorldReader() {
-            var m = new JsonMapper();
+            var m = new ObjectMapper();
             var msg = m.Read<Message>(@"{""say"": ""Hello 👋"", ""to"": ""World""}");
             Console.WriteLine($"Output: {msg.say}, {msg.to}");
             // Output: Hello 👋, World
         }
 ```
 
-Use `JsonMapper` to serialize / marshal a class instance to a JSON string.
+Use `ObjectMapper` to serialize / marshal a class instance to a JSON string.
 
 ```csharp
         public void HelloWorldWriter() {
-            var m = new JsonMapper();
+            var m = new ObjectMapper();
             var json = m.Write(new Message {say = "Hello 👋", to = "World"});
             Console.WriteLine($"Output: {json}");
             // Output: {"say":"Hello 👋","to":"World"}
