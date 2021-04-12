@@ -68,13 +68,17 @@ namespace Friflo.Json.Mapper.Graph
                     result.values.Add(new Scalar(ScalarType.Array, json));
                     return;
                 case JsonEvent.ValueString:
-                    result.values.Add(new Scalar(targetParser.value.ToString()));
+                    var str = targetParser.value.ToString();
+                    result.values.Add(new Scalar(str));
                     return;
                 case JsonEvent.ValueNumber:
-                    if (targetParser.isFloat)
-                        result.values.Add(new Scalar(targetParser.ValueAsDouble(out bool _)));
-                    else
-                        result.values.Add(new Scalar(targetParser.ValueAsLong(out bool _)));
+                    if (targetParser.isFloat) {
+                        var dbl = targetParser.ValueAsDouble(out bool _);
+                        result.values.Add(new Scalar(dbl));
+                        return;
+                    }
+                    var lng = targetParser.ValueAsLong(out bool _);
+                    result.values.Add(new Scalar(lng));
                     return;
                 case JsonEvent.ValueBool:
                     result.values.Add(targetParser.boolValue ? Scalar.True : Scalar.False);
