@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Patch;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     public class JsonLambda
     {

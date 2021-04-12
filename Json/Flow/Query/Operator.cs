@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Patch;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     
     public abstract class Operator

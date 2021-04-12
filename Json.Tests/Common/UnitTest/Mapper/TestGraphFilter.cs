@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.EntityGraph.Filter;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Query;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

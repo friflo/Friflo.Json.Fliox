@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.EntityGraph.Filter.Arity;
+using Friflo.Json.Flow.Query.Arity;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     // -------------------------------------- comparison operators --------------------------------------
     public abstract class BinaryBoolOp : BoolOp

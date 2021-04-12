@@ -4,7 +4,7 @@
 using System;
 using Friflo.Json.Flow.Patch;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     public class JsonEvaluator : IDisposable
     {

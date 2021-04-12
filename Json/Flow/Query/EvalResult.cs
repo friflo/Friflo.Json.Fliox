@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using Friflo.Json.Flow.Patch;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     internal readonly struct EvalResult
     {

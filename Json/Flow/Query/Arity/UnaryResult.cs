@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Patch;
 
-namespace Friflo.Json.EntityGraph.Filter.Arity
+namespace Friflo.Json.Flow.Query.Arity
 {
     // ------------------------------------- UnaryResult -------------------------------------
     internal readonly struct UnaryValue {

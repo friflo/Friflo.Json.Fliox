@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.EntityGraph.Filter.Arity;
 using Friflo.Json.Flow.Patch;
+using Friflo.Json.Flow.Query.Arity;
 
-namespace Friflo.Json.EntityGraph.Filter
+namespace Friflo.Json.Flow.Query
 {
     public abstract class BoolOp : Operator
     {

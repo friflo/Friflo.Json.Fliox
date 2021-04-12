@@ -7,7 +7,7 @@ using System.Linq;
 using Friflo.Json.Flow.Patch;
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.EntityGraph.Filter.Arity
+namespace Friflo.Json.Flow.Query.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {
