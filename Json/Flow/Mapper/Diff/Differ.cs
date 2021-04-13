@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
             this.typeCache = jsonWriter.TypeCache;
         }
         
-        public Differ(ObjectWriter jsonWriter) {
+        internal Differ(ObjectWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
             this.typeCache = jsonWriter.TypeCache;
         }
