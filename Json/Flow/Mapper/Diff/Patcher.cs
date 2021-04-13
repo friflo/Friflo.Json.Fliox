@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
     public class Patcher : IDisposable
     {
         public  readonly    TypeCache       typeCache;
-        private readonly    ObjectReader      jsonReader;
+        private readonly    ObjectReader    jsonReader;
         private             PatchType       patchType;
         private             string          json;
         private             int             pathPos;
