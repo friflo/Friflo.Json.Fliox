@@ -16,8 +16,8 @@ namespace Friflo.Json.Flow.Graph.Select
         internal            TResult                                 result;
         /// direct access to <see cref="children"/>[*]
         internal            PathNode<TResult>                       wildcardNode;   
-        private  readonly   SelectorNode                            selectorNode;
-        private  readonly   PathNode<TResult>                       parent;
+        internal readonly   SelectorNode                            selectorNode;
+        internal readonly   PathNode<TResult>                       parent;
         internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         
         public override string ToString() {
@@ -129,13 +129,15 @@ namespace Friflo.Json.Flow.Graph.Select
         private  readonly   string      path;
         internal readonly   PathNode<T> node;
         private  readonly   bool        isArrayResult;
+        private readonly    PathNode<T> parentGroup;
 
         public override string ToString() => path;
         
-        internal LeafNode(string path, PathNode<T> node, bool isArrayResult) {
+        internal LeafNode(string path, PathNode<T> node, bool isArrayResult, PathNode<T> parentGroup) {
             this.path           = path;
             this.node           = node;
             this.isArrayResult  = isArrayResult;
+            this.parentGroup    = parentGroup;
         }
     }
 
@@ -167,9 +169,19 @@ namespace Friflo.Json.Flow.Graph.Select
                     }
                     curNode = childNode;
                 }
-                var leaf = new LeafNode<T>(path, curNode, isArrayResult);
+                var parentGroup = GetParentGroup(curNode);
+                var leaf = new LeafNode<T>(path, curNode, isArrayResult, parentGroup);
                 leafNodes.Add(leaf);
             }
+        }
+
+        private PathNode<T> GetParentGroup(PathNode<T> node) {
+            while (node != null) {
+                if (node.selectorNode.selectorType == SelectorType.ArrayGroup)
+                    return node;
+                node = node.parent;
+            }
+            return null;
         }
     }
 
