@@ -65,7 +65,8 @@ namespace Friflo.Json.Flow.Graph.Select
     {
         Root,
         Member,
-        ArrayWildcard
+        ArrayWildcard,
+        ArrayGroup
     }
     
     internal readonly struct SelectorNode
@@ -88,11 +89,17 @@ namespace Friflo.Json.Flow.Graph.Select
             var arrayEnd   = path.IndexOf(']', start);
             if (arrayStart != -1 || arrayEnd != -1) {
                 if (arrayStart + 2 == arrayEnd) {
-                    if (path[arrayStart + 1] != '*')
-                        throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
+                    SelectorType indexType;
+                    var indexChar = path[arrayStart + 1];
+                    switch (indexChar) {
+                        case '*': indexType = SelectorType.ArrayWildcard;   break;
+                        case '.': indexType = SelectorType.ArrayGroup;      break;
+                        default:
+                            throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
+                    }
                     var token = path.Substring(start, arrayStart - start);
                     selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
-                    selectorNodes.Add(new SelectorNode (Wildcard, SelectorType.ArrayWildcard));
+                    selectorNodes.Add(new SelectorNode (Wildcard, indexType));
                     return;
                 }
                 throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, len)}");
@@ -153,7 +160,8 @@ namespace Friflo.Json.Flow.Graph.Select
                         childNode = new PathNode<T>(selectorNode, curNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
-                    if (selectorNode.selectorType == SelectorType.ArrayWildcard) {
+                    var type = selectorNode.selectorType;
+                    if (type == SelectorType.ArrayWildcard || type == SelectorType.ArrayGroup) {
                         isArrayResult = true;
                         curNode.wildcardNode = childNode;
                     }
