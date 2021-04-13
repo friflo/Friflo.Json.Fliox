@@ -155,18 +155,25 @@ namespace Friflo.Json.Flow.Mapper.Diff
         }
     }
     
-    internal enum NodeType
+    public enum NodeType
     {
         Root,
         Element,
         Member,
     }
 
-    public struct TypeNode
+    public readonly struct TypeNode
     {
-        internal    NodeType    nodeType;
-        public      string      name;
-        public      int         index;
-        public      TypeMapper  typeMapper;
+        public   readonly   NodeType    nodeType;
+        public   readonly   string      name;
+        public   readonly   int         index;
+        public   readonly   TypeMapper  typeMapper;
+
+        internal TypeNode(NodeType nodeType, string name, int index, TypeMapper typeMapper) {
+            this.nodeType   = nodeType;
+            this.name       = name;
+            this.index      = index;
+            this.typeMapper = typeMapper;
+        }
     }
 }
