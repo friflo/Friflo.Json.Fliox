@@ -80,6 +80,8 @@ namespace Friflo.Json.Flow.Graph.Select
 
         private         const       string          Wildcard = "[*]";
 
+        public   override           string          ToString() => name;
+
         private static void PathNodeToSelectorNode(string path, int start, int end, List<SelectorNode> selectorNodes) {
             int len = end - start;
             var arrayStart = path.IndexOf('[', start);
