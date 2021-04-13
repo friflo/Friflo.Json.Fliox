@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.EntityGraph
@@ -14,6 +13,8 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
+        internal  abstract  Type            Type { get;  }
+        
         internal  abstract  void            AddCommands           (List<DatabaseCommand> commands);
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
@@ -23,6 +24,7 @@ namespace Friflo.Json.EntityGraph
 
         public    abstract  int             LogSetChanges();
         internal  abstract  void            SyncDependencies      (ContainerEntities containerResults);
+
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -44,6 +46,7 @@ namespace Friflo.Json.EntityGraph
         private             Dictionary<string, ReadDeps>        syncReadDeps;
 
 
+        internal override   Type                                Type => type;
         
         public EntitySet(EntityStore store) {
             this.store = store;
@@ -268,7 +271,7 @@ namespace Friflo.Json.EntityGraph
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new Dependency<T>(dependency.parentId, dependency.label) {
+                        var dep = new Dependency<T>(dependency.parentId, dependency.parentSet, dependency.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true
