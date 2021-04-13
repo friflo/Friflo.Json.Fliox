@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph.Select
         internal            TResult                                 result;
         /// direct access to <see cref="children"/>[*]
         internal            PathNode<TResult>                       wildcardNode;   
-        internal readonly   SelectorNode                            selectorNode;
+        private  readonly   SelectorNode                            selectorNode;
         internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         
         public   override   string                                  ToString() => selectorNode.name;
@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Graph.Select
     {
         private  readonly   string      path;
         internal readonly   PathNode<T> node;
-        internal readonly   bool        isArrayResult;
+        private  readonly   bool        isArrayResult;
 
         public override string ToString() => path;
         

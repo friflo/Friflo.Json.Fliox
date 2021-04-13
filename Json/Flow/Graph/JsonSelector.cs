@@ -52,7 +52,8 @@ namespace Friflo.Json.Flow.Graph
             return jsonSelect;
         }
 
-        private void AddResult(SelectorResult result) {
+        private void AddPathNodeResult(PathNode<SelectorResult> node) {
+            var result = node.result;
             switch (targetParser.Event) {
                 case JsonEvent.ObjectStart:
                     serializer.InitSerializer();
@@ -89,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
                     return;
             }
         }
-
+        
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
                 string key = p.key.ToString();
@@ -100,7 +101,7 @@ namespace Friflo.Json.Flow.Graph
                 }
                 // found node
                 if (path.result != null) {
-                    AddResult(path.result);
+                    AddPathNodeResult(path);
                     continue;
                 }
                 switch (p.Event) {
@@ -152,7 +153,7 @@ namespace Friflo.Json.Flow.Graph
                     // found node
                 }
                 if (path.result != null) {
-                    AddResult(path.result);
+                    AddPathNodeResult(path);
                     continue;
                 }
                 switch (p.Event) {
