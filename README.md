@@ -10,7 +10,7 @@ As of now no other JSON library provide this possibility.
 This supports running the parser/serializer within a separate thread of a bursted Job while leaving
 CPU/memory resources to the main thread being the critical path in game loops.
 
-![Logo](docs/images/Friflo.Json.Burst-128.png) 
+![Logo](docs/images/Friflo.Json.Flow-128.png) 
  
 
 
