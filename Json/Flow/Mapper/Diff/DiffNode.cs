@@ -136,10 +136,13 @@ namespace Friflo.Json.Flow.Mapper.Diff
             }
             var str = jsonWriter.WriteObject(value);
             var len = str.Length;
-            if (len >= 2 && str[0] == '"' && str[len - 1] == '"')
+            if (len >= 2 && str[0] == '"' && str[len - 1] == '"') {
+                sb.Append('\'');
                 sb.Append(str, 1, len - 2);
-            else
+                sb.Append('\'');
+            } else {
                 sb.Append(str);
+            }
         }
         
         public string AsString(int indent) {

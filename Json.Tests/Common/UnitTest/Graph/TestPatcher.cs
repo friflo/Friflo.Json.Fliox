@@ -51,8 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                     var childrenDiff = diff.children[0].AsString(20);
                     var expect =
 @"/child/childVal     1 != 2
-/child/bigInt       111 != 222
-/child/dateTime     2021-03-18T16:30:00.000Z != 2021-03-18T16:40:00.000Z
+/child/bigInt       '111' != '222'
+/child/dateTime     '2021-03-18T16:30:00.000Z' != '2021-03-18T16:40:00.000Z'
 "; 
                     AreEqual(expect, childrenDiff);
                     
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 {
                     var diff = differ.GetDiff("A", "B");
                     IsNotNull(diff);
-                    AreEqual("A != B", diff.ToString());
+                    AreEqual("'A' != 'B'", diff.ToString());
                     var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff("A", diff); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueString path: '(root)'", e.Message);
                 }
@@ -98,8 +98,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                     AreEqual(29, diff.children.Count);
                     var childrenDiff = diff.AsString(20);
                     var expect =
-@"/enumIL1            three != one
-/enumIL2            null != two
+@"/enumIL1            'three' != 'one'
+/enumIL2            null != 'two'
 /childStructNull1   null != (object)
 /childStructNull2   (object) != (object)
 /nulDouble          20.0 != 70.0
