@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
@@ -16,12 +17,26 @@ namespace Friflo.Json.Flow.Graph.Select
         /// direct access to <see cref="children"/>[*]
         internal            PathNode<TResult>                       wildcardNode;   
         private  readonly   SelectorNode                            selectorNode;
+        private  readonly   PathNode<TResult>                       parent;
         internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         
-        public   override   string                                  ToString() => selectorNode.name;
+        public override string ToString() {
+            var sb = new StringBuilder();
+            AscendToString(sb);
+            return sb.ToString();
+        }
 
-        internal PathNode(SelectorNode selectorNode) {
+        private void AscendToString(StringBuilder sb) {
+            if (parent != null)
+                parent.AscendToString(sb);
+            if (selectorNode.selectorType == SelectorType.Member)
+                sb.Append('.');
+            sb.Append(selectorNode.name);
+        }
+
+        internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
             this.selectorNode   = selectorNode;
+            this.parent         = parent;
         }
     }
 
@@ -117,7 +132,7 @@ namespace Friflo.Json.Flow.Graph.Select
 
     public class PathNodeTree<T>
     {
-        internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("root", SelectorType.Root));
+        internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
         internal readonly   List<LeafNode<T>>   leafNodes       = new List<LeafNode<T>>();
         private  readonly   List<SelectorNode>  selectorNodes   = new List<SelectorNode>(); // reused buffer
 
@@ -133,7 +148,7 @@ namespace Friflo.Json.Flow.Graph.Select
                 for (int i = 0; i < selectorNodes.Count; i++) {
                     var selectorNode = selectorNodes[i];
                     if (!curNode.children.TryGetValue(selectorNode.name, out PathNode<T> childNode)) {
-                        childNode = new PathNode<T>(selectorNode);
+                        childNode = new PathNode<T>(selectorNode, curNode);
                         curNode.children.Add(selectorNode.name, childNode);
                     }
                     if (selectorNode.selectorType == SelectorType.ArrayWildcard) {
