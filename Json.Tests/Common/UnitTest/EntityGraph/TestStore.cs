@@ -148,9 +148,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             Exception e;
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("Dependency not synced. Dependency<Customer>", e.Message);
+            AreEqual("Dependency not synced: customer - Order['order-1']", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("Dependency not synced. Dependency<Customer>", e.Message);
+            AreEqual("Dependency not synced: customer - Order['order-1']", e.Message);
             
             // lab - test dependency expressions
             if (lab) {
@@ -177,9 +177,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("items[*].article - Order['order-1']", articleDeps.ToString());
             
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
-            AreEqual("Dependencies not synced. Dependencies<Article>", e.Message);
+            AreEqual("Dependencies not synced: items[*].article - Order['order-1']", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
-            AreEqual("Dependencies not synced. Dependencies<Article>", e.Message);
+            AreEqual("Dependencies not synced: items[*].article - Order['order-1']", e.Message);
 
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);

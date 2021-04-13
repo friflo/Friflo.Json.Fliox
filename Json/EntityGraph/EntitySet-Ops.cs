@@ -144,7 +144,7 @@ namespace Friflo.Json.EntityGraph
         internal Dependency(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
         private Exception Error() {
-            return new PeerNotSyncedException($"Dependency not synced. Dependency<{typeof(T).Name}>");
+            return new PeerNotSyncedException($"Dependency not synced: {ToString()}");
         }
     }
     
@@ -159,7 +159,7 @@ namespace Friflo.Json.EntityGraph
         internal Dependencies(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
         private Exception Error() {
-            return new PeerNotSyncedException($"Dependencies not synced. Dependencies<{typeof(T).Name}>");
+            return new PeerNotSyncedException($"Dependencies not synced: {ToString()}");
         }
     }
     
