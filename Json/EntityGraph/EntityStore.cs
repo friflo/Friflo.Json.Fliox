@@ -24,7 +24,7 @@ namespace Friflo.Json.EntityGraph
     {
         public   readonly   TypeStore                       typeStore;
         public   readonly   TypeCache                       typeCache;
-        public   readonly   ObjectMapper                      jsonMapper;
+        public   readonly   ObjectMapper                    jsonMapper;
 
         internal readonly   ObjectPatcher                   objectPatcher;
         

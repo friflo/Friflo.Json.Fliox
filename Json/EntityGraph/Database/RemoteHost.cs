@@ -15,7 +15,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class RemoteHost : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    ObjectMapper      jsonMapper;
+        private readonly    ObjectMapper    jsonMapper;
         private readonly    string          endpoint;
         private readonly    HttpListener    listener;
         private             bool            runServer;

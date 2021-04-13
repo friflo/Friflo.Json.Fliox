@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Mapper
 {
     public class ObjectPatcher : IDisposable
     {
-        public  readonly    ObjectMapper      mapper;
+        public  readonly    ObjectMapper    mapper;
         public  readonly    Differ          differ;
         
         private readonly    StringBuilder   sb = new StringBuilder();
