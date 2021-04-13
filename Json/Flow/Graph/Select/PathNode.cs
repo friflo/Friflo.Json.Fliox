@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Graph.Select
                     var indexChar = path[arrayStart + 1];
                     switch (indexChar) {
                         case '*': indexType = SelectorType.ArrayWildcard;   break;
-                        case '.': indexType = SelectorType.ArrayGroup;      break;
+                        case '@': indexType = SelectorType.ArrayGroup;      break;
                         default:
                             throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     }

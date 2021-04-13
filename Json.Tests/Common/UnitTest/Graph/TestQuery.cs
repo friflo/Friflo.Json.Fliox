@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
     
     public static class TestQuery
     {
-        static readonly Person Peter =         new Person {
+        public static readonly Person Peter =         new Person {
             name = "Peter", age = 40,
             children = {
                 new Person {
@@ -44,8 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 }
             }
         };
-        
-        static readonly Person John =         new Person {
+
+        public static readonly Person John =         new Person {
             name = "John",  age = 30,
             children = {
                 new Person {

@@ -111,5 +111,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             AreEqual("['The Sermon','A Long-expected Party','The Shadow of the Past']", result[2].ToString());
             AreEqual("[]",                                                              result[3].ToString());
         }
+
+        [Test]
+        public void TestArrayGroupSelect() {
+            var selectList = new[] {
+                ".children[@].hobbies[*].name",
+            };
+            var select = new JsonSelect(selectList);
+            
+            using (var jsonMapper = new ObjectMapper())
+            using (var jsonSelector = new JsonSelector())
+            {
+                jsonMapper.Pretty = true;
+                var peter = jsonMapper.Write(TestQuery.Peter);
+                var john = jsonMapper.Write(TestQuery.John);
+                jsonSelector.Select(peter, select);
+                var result = select.GetResult();
+                AreEqual("['Biking','Surfing','Biking']", result[0].ToString());
+            }
+        }
     }
 }
