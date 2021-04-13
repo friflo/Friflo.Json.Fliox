@@ -1,6 +1,6 @@
-![.NET Tests](https://github.com/friflo/Friflo.Json.Burst/workflows/.NET/badge.svg)
+![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
 
-# friflo Json.Burst
+# friflo Json.Flow
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
@@ -144,7 +144,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - Compatible to **.NET Standard**.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 
-- **CLS compliant API**. Meaning the API of the **Friflo.Json.Burst** library is compatible to all languages targeting .NET. These are:
+- **CLS compliant API**. Meaning the API of the **Friflo.Json.Flow** library is compatible to all languages targeting .NET. These are:
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:
   [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/language-independence-and-language-independent-components)
 
@@ -173,7 +173,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 
-- Small library: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Flow.dll` ~ **150 kb**
+- Small libraries: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Flow.dll` ~ **150 kb**
 
 - **Expressive error messages** when parsing invalid JSON. E.g.  
     ```
@@ -184,7 +184,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 # **Unit tests**
 
 The current result of the unit test are available as **CI tests** at
-[Github actions](https://github.com/friflo/Friflo.Json.Burst/actions).
+[Github actions](https://github.com/friflo/Friflo.Json.Flow/actions).
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```
