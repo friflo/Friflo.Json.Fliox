@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                     var diff = differ.GetDiff(left, right);
                     AreEqual(1, diff.children.Count);
 
-                    var childrenDiff = diff.children[0].GetChildrenDiff(20);
+                    var childrenDiff = diff.children[0].AsString(20);
                     var expect =
 @"/child/childVal     1 != 2
 /child/bigInt       111 != 222
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                     var diff = differ.GetDiff(left, right);
                     IsNotNull(diff);
                     AreEqual(29, diff.children.Count);
-                    var childrenDiff = diff.GetChildrenDiff(20);
+                    var childrenDiff = diff.AsString(20);
                     var expect =
 @"/enumIL1            three != one
 /enumIL2            null != two
@@ -307,7 +307,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             AreEqual(2, diff.children.Count);
-            var childrenDiff = diff.GetChildrenDiff(10);
+            var childrenDiff = diff.AsString(10);
             var expect =
 @"/1        2 != 12
 /2        3 != 13
@@ -328,7 +328,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             var diff = objectPatcher.differ.GetDiff(left, right);
             IsNotNull(diff);
             AreEqual(3, diff.children.Count);
-            var childrenDiff = diff.GetChildrenDiff(10);
+            var childrenDiff = diff.AsString(10);
             var expect =
                 @"/A        1 != 2
 /C        3 != (missing)

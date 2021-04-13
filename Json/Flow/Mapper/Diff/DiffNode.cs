@@ -142,7 +142,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
                 sb.Append(str);
         }
         
-        public string GetChildrenDiff(int indent) {
+        public string AsString(int indent) {
             var sb = new StringBuilder();
             sb.Append((object)null);
             if (children != null) {
