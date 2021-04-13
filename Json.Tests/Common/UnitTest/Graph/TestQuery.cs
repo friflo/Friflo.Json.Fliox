@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 // --- group operators must not be reused
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
-                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: ('A' == 'B')", e.Message);
+                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
                 // --- literal and field operators are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
@@ -237,10 +237,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             
             // --- group operators
             var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-            AreEqual("(.age >= 20 || .name == 'Peter')", or.ToString());
+            AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
             
             var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-            AreEqual("(.age >= 20 && .name == 'Peter')", and.ToString());
+            AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
 
             
             // --- unary operators

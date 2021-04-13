@@ -94,7 +94,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class And : GroupBoolOp
     {
-        public override     string      ToString() => '(' + string.Join(" && ", operands) + ')';
+        public override     string      ToString() => string.Join(" && ", operands);
         
         public And(List<BoolOp> operands) : base(operands) { }
         
@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Or : GroupBoolOp
     {
-        public override     string      ToString() => '(' + string.Join(" || ", operands) + ')';
+        public override     string      ToString() => string.Join(" || ", operands);
         
         public Or(List<BoolOp> operands) : base(operands) { }
         
