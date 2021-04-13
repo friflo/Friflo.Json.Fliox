@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Graph.Query
                     if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         // isArraySelector = true;
                     }
-                    return new Field(name);
+                    return new Field("." + name);
                 case MethodCallExpression methodCall:
                     return OperatorFromMethodCallExpression(methodCall);
                 case LambdaExpression lambda: 

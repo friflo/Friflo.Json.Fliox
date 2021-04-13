@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
                 AreEqual(".name == 'Peter'", isPeter.ToString());
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
-                AreEqual("name == 'Peter'", isPeter2.ToString());
+                AreEqual(".name == 'Peter'", isPeter2.ToString());
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
@@ -218,40 +218,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
 
             // --- comparision operators
             var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
-            AreEqual("name == 'Peter'", isEqual.ToString());
+            AreEqual(".name == 'Peter'", isEqual.ToString());
             
             var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
-            AreEqual("name != 'Peter'", isNotEqual.ToString());
+            AreEqual(".name != 'Peter'", isNotEqual.ToString());
 
             var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
-            AreEqual("age < 20", isLess.ToString());
+            AreEqual(".age < 20", isLess.ToString());
             
             var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
-            AreEqual("age <= 20", isLessOrEqual.ToString());
+            AreEqual(".age <= 20", isLessOrEqual.ToString());
 
             var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
-            AreEqual("age > 20", isGreater.ToString());
+            AreEqual(".age > 20", isGreater.ToString());
             
             var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
-            AreEqual("age >= 20", isGreaterOrEqual.ToString());
+            AreEqual(".age >= 20", isGreaterOrEqual.ToString());
             
             // --- group operators
             var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-            AreEqual("(age >= 20 || name == 'Peter')", or.ToString());
+            AreEqual("(.age >= 20 || .name == 'Peter')", or.ToString());
             
             var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-            AreEqual("(age >= 20 && name == 'Peter')", and.ToString());
+            AreEqual("(.age >= 20 && .name == 'Peter')", and.ToString());
 
             
             // --- unary operators
             var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
-            AreEqual("!(age >= 20)", isNot.ToString());
+            AreEqual("!(.age >= 20)", isNot.ToString());
                 
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual("Any(age == 20)", any.ToString()); // todo fix Any
+            AreEqual("Any(.age == 20)", any.ToString()); // todo fix Any
             
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual("All(age == 20)", all.ToString()); // todo fix Any
+            AreEqual("All(.age == 20)", all.ToString()); // todo fix Any
             
             
             // --- literals
