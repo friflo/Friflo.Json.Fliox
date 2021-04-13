@@ -67,14 +67,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john  = jsonMapper.Write(John);
 
                 // ---
-                var  isPeter         = new Equal(new Field ("name"), new StringLiteral ("Peter")).Filter();
-                AreEqual("name == 'Peter'", isPeter.ToString());
+                var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
+                AreEqual(".name == 'Peter'", isPeter.ToString());
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual("name == 'Peter'", isPeter2.ToString());
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
-                var  isAgeGreater35Op = new GreaterThan(new Field("age"), new LongLiteral(35));
+                var  isAgeGreater35Op = new GreaterThan(new Field(".age"), new LongLiteral(35));
                 var  isAgeGreater35  = isAgeGreater35Op.Filter();
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
@@ -92,10 +92,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Equal (new Field ("children[*].name"), new StringLiteral ("Paul"))).Filter();
+                var  hasChildPaul = new Any (new Equal (new Field (".children[*].name"), new StringLiteral ("Paul"))).Filter();
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new LessThan (new Field ("children[*].age"), new LongLiteral (12))).Filter();
+                var hasChildAgeLess12 = new Any (new LessThan (new Field (".children[*].age"), new LongLiteral (12))).Filter();
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -105,16 +105,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Equal(new Field ("children[*].age"), new LongLiteral (20))).Filter();
+                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
                 
                 // --- test with arithmetic operations
-                var  isAge40  = new Equal(new Field ("age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
+                var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
                 IsTrue  (eval.Filter(peter, isAge40));
                 
-                var  isChildAge20  = new Equal(new Field ("children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
+                var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
                 IsTrue  (eval.Filter(peter, isChildAge20));
                 
                 
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 Exception e;
                 // --- compare operators must not be reused
                 e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter());
-                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: age > 35", e.Message);
+                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
                 // --- group operators must not be reused
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var reuseLiterals = new Equal(testLiteral, testLiteral).Filter();
                 eval.Filter(peter, reuseLiterals);
                 
-                var testField = new Field ("name");
+                var testField = new Field (".name");
                 var reuseField = new Equal(testField, testField).Filter();
                 eval.Filter(peter, reuseField);
             }
@@ -151,10 +151,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john  = jsonMapper.Write(John);
 
                 // --- Any
-                var  hasChildHobbySurfing = new Any (new Equal (new Field ("children[*].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
+                var  hasChildHobbySurfing = new Any (new Equal (new Field (".children[*].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual("Any(children[*].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
+                AreEqual("Any(.children[*].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
                 IsTrue (HasChildHobbySurfing(Peter));
                 IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));

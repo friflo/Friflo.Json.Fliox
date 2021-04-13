@@ -20,13 +20,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var json = jsonWriter.Write(sample);
 
                 var result = jsonSelector.Select(json, new [] {
-                    "childStructNull1",
-                    "childStructNull2.val2",
-                    "dbl",
-                    "bln",
-                    "enumIL1",
-                    "child",
-                    "unknown"
+                    ".childStructNull1",
+                    ".childStructNull2.val2",
+                    ".dbl",
+                    ".bln",
+                    ".enumIL1",
+                    ".child",
+                    ".unknown"
                 });
                 AreEqual(@"[{""val2"":68}]",    result[0].ToString());
                 AreEqual("[69]",                result[1].ToString());
@@ -85,10 +85,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 store.InitSample();
                 var json = jsonWriter.Write(store);
                 var selectList = new[] {
-                    "books[*].title",
-                    "books[*].author",
-                    "books[*].chapters[*].name",
-                    "books[*].unknown"
+                    ".books[*].title",
+                    ".books[*].author",
+                    ".books[*].chapters[*].name",
+                    ".books[*].unknown"
                 };
                 var result = new List<SelectorResult>();
                 for (int n = 0; n < 2; n++) {

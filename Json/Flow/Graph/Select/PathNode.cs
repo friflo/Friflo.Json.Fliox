@@ -86,11 +86,11 @@ namespace Friflo.Json.Flow.Graph.Select
 
         internal static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {
             selectorNodes.Clear();
-            int last = 0;
+            int last = 1;
             int len = path.Length;
             if (len == 0)
                 return;
-            for (int n = 0; n < len; n++) {
+            for (int n = 1; n < len; n++) {
                 if (path[n] == '.') {
                     PathNodeToSelectorNode(path, last, n, selectorNodes);
                     last = n + 1;
