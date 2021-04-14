@@ -65,7 +65,8 @@ namespace Friflo.Json.Flow.Graph.Query
 
             switch (methodCall.Method.Name) {
                 case "Any":
-                    return new Any((BoolOp)opArgs[1]);
+                    // todo - provide Any group parameter
+                    return new Any(null, (BoolOp)opArgs[1]); 
                 case "All":
                     return new All((BoolOp)opArgs[1]);
                 case "Abs":

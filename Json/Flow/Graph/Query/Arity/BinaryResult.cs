@@ -73,7 +73,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
         internal  readonly EvalResult   leftResult;
         internal  readonly EvalResult   rightResult;
 
-        internal BinaryResult(EvalResult leftResult, EvalResult rightResult) {
+        internal BinaryResult(EvalResult leftResult, EvalResult rightResult, EvalCx cx) {
             this.leftResult  = leftResult;
             this.rightResult = rightResult;
             if (leftResult.Count == 1 || rightResult.Count == 1)

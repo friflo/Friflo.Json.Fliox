@@ -35,9 +35,9 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public Not(BoolOp operand) : base(operand) { }
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 evalResult.Add(val.CompareTo(True) == 0 ? False : True);
             }
@@ -47,12 +47,16 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Any : UnaryBoolOp
     {
+        private         Field   group;
+        
         public override     string      ToString() => $"Any({operand})";
+
+        public Any(Field group, BoolOp operand) : base(operand) {
+            this.group = group;
+        }
         
-        public Any(BoolOp operand) : base(operand) { }
-        
-        internal override EvalResult Eval() {
-            var eval = operand.Eval();
+        internal override EvalResult Eval(EvalCx cx) {
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 if (val.CompareTo(True) == 0)
                     return SingleTrue;
@@ -67,8 +71,8 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public All(BoolOp operand) : base(operand) { }
         
-        internal override EvalResult Eval() {
-            var eval = operand.Eval();
+        internal override EvalResult Eval(EvalCx cx) {
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 if (val.CompareTo(True) != 0)
                     return SingleFalse;
@@ -98,15 +102,15 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public And(List<BoolOp> operands) : base(operands) { }
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             var evalList = new List<EvalResult>(operands.Count);
             foreach (var operand in operands) {
-                var eval = operand.Eval();
+                var eval = operand.Eval(cx);
                 evalList.Add(eval);
             }
             
             evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList);
+            var nAryResult = new N_aryResult(evalList, cx);
             foreach (N_aryList result in nAryResult) {
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
@@ -127,15 +131,15 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public Or(List<BoolOp> operands) : base(operands) { }
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             var evalList = new List<EvalResult>(operands.Count);
             foreach (var operand in operands) {
-                var eval = operand.Eval();
+                var eval = operand.Eval(cx);
                 evalList.Add(eval);
             }
             
             evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList);
+            var nAryResult = new N_aryResult(evalList, cx);
             foreach (N_aryList result in nAryResult) {
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {

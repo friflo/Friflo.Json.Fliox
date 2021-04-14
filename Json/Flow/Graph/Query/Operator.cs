@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class Operator
     {
         internal abstract void                  Init(OperatorContext cx);
-        internal abstract EvalResult            Eval();
+        internal abstract EvalResult            Eval(EvalCx cx);
         
         internal static readonly Scalar         True  = Scalar.True; 
         internal static readonly Scalar         False = Scalar.False;
@@ -35,6 +35,8 @@ namespace Friflo.Json.Flow.Graph.Query
             return QueryConverter.OperatorFromExpression(filter);
         }
     }
+
+    internal struct EvalCx { }
 
     internal class OperatorContext
     {
@@ -68,7 +70,7 @@ namespace Friflo.Json.Flow.Graph.Query
             cx.selectors.TryAdd(field, this);
         }
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             return evalResult;
         }
     }
@@ -89,7 +91,7 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public StringLiteral(string value) { this.value = value; }
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(new Scalar(value));
             return evalResult;
         }
@@ -103,7 +105,7 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public DoubleLiteral(double value) { this.value = value; }
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(new Scalar(value));
             return evalResult;
         }
@@ -117,7 +119,7 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public LongLiteral(long value) { this.value = value; }
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(new Scalar(value));
             return evalResult;
         }
@@ -133,7 +135,7 @@ namespace Friflo.Json.Flow.Graph.Query
             this.value = value;
         }
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(value ? True : False);
             return evalResult;
         }
@@ -144,7 +146,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => "null";
 
 
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(Null);
             return evalResult;
         }

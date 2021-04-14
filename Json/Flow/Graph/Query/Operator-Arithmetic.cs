@@ -27,9 +27,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Abs({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Abs();
                 evalResult.Add(result);
@@ -44,9 +44,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Ceiling({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Ceiling();
                 evalResult.Add(result);
@@ -61,9 +61,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Floor({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Floor();
                 evalResult.Add(result);
@@ -78,9 +78,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Exp({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Exp();
                 evalResult.Add(result);
@@ -95,9 +95,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Log({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Log();
                 evalResult.Add(result);
@@ -112,9 +112,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"Sqrt({operand})";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval();
+            var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Sqrt();
                 evalResult.Add(result);
@@ -151,9 +151,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"{left} + {right}";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(), right.Eval());
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
             foreach (var pair in eval) {
                 var result = pair.left.Add(pair.right);
                 evalResult.Add(result);
@@ -168,9 +168,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"{left} - {right}";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(), right.Eval());
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
             foreach (var pair in eval) {
                 var result = pair.left.Subtract(pair.right);
                 evalResult.Add(result);
@@ -185,9 +185,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"{left} * {right}";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(), right.Eval());
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
             foreach (var pair in eval) {
                 var result = pair.left.Multiply(pair.right);
                 evalResult.Add(result);
@@ -202,9 +202,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         public override     string      ToString() => $"{left} / {right}";
         
-        internal override EvalResult Eval() {
+        internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(), right.Eval());
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
             foreach (var pair in eval) {
                 var result = pair.left.Divide(pair.right);
                 evalResult.Add(result);

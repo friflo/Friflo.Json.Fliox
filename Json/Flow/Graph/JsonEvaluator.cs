@@ -19,8 +19,8 @@ namespace Friflo.Json.Flow.Graph
         // --- Filter
         public bool Filter(string json, JsonFilter filter) {
             ReadJsonFields(json, filter);
-            
-            var evalResult = filter.op.Eval();
+            var cx = new EvalCx();
+            var evalResult = filter.op.Eval(cx);
             
             foreach (var result in evalResult.values) {
                 if (result.CompareTo(Operator.True) != 0)
@@ -32,8 +32,8 @@ namespace Friflo.Json.Flow.Graph
         // --- Eval
         public object Eval(string json, JsonLambda lambda) {
             ReadJsonFields(json, lambda);
-
-            var evalResult = lambda.op.Eval();
+            var cx = new EvalCx();
+            var evalResult = lambda.op.Eval(cx);
             
             if (evalResult.values.Count == 1)
                 return evalResult.values[0].AsObject();
