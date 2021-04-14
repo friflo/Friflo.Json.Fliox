@@ -53,41 +53,43 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private void AddPathNodeResult(PathNode<SelectorResult> node) {
-            var result = node.result;
-            switch (targetParser.Event) {
-                case JsonEvent.ObjectStart:
-                    serializer.InitSerializer();
-                    serializer.ObjectStart();
-                    serializer.WriteObject(ref targetParser);
-                    var json = serializer.json.ToString();
-                    result.values.Add(new Scalar(ScalarType.Object, json));
-                    return;
-                case JsonEvent.ArrayStart:
-                    serializer.InitSerializer();
-                    serializer.ArrayStart(true);
-                    serializer.WriteArray(ref targetParser);
-                    json = serializer.json.ToString();
-                    result.values.Add(new Scalar(ScalarType.Array, json));
-                    return;
-                case JsonEvent.ValueString:
-                    var str = targetParser.value.ToString();
-                    result.values.Add(new Scalar(str));
-                    return;
-                case JsonEvent.ValueNumber:
-                    if (targetParser.isFloat) {
-                        var dbl = targetParser.ValueAsDouble(out bool _);
-                        result.values.Add(new Scalar(dbl));
+            foreach (var selector in node.selectors) {
+                var result = selector.result;
+                switch (targetParser.Event) {
+                    case JsonEvent.ObjectStart:
+                        serializer.InitSerializer();
+                        serializer.ObjectStart();
+                        serializer.WriteObject(ref targetParser);
+                        var json = serializer.json.ToString();
+                        result.values.Add(new Scalar(ScalarType.Object, json));
                         return;
-                    }
-                    var lng = targetParser.ValueAsLong(out bool _);
-                    result.values.Add(new Scalar(lng));
-                    return;
-                case JsonEvent.ValueBool:
-                    result.values.Add(targetParser.boolValue ? Scalar.True : Scalar.False);
-                    return;
-                case JsonEvent.ValueNull:
-                    result.values.Add(Scalar.Null);
-                    return;
+                    case JsonEvent.ArrayStart:
+                        serializer.InitSerializer();
+                        serializer.ArrayStart(true);
+                        serializer.WriteArray(ref targetParser);
+                        json = serializer.json.ToString();
+                        result.values.Add(new Scalar(ScalarType.Array, json));
+                        return;
+                    case JsonEvent.ValueString:
+                        var str = targetParser.value.ToString();
+                        result.values.Add(new Scalar(str));
+                        return;
+                    case JsonEvent.ValueNumber:
+                        if (targetParser.isFloat) {
+                            var dbl = targetParser.ValueAsDouble(out bool _);
+                            result.values.Add(new Scalar(dbl));
+                            return;
+                        }
+                        var lng = targetParser.ValueAsLong(out bool _);
+                        result.values.Add(new Scalar(lng));
+                        return;
+                    case JsonEvent.ValueBool:
+                        result.values.Add(targetParser.boolValue ? Scalar.True : Scalar.False);
+                        return;
+                    case JsonEvent.ValueNull:
+                        result.values.Add(Scalar.Null);
+                        return;
+                }
             }
         }
         
@@ -100,7 +102,7 @@ namespace Friflo.Json.Flow.Graph
                     continue;
                 }
                 // found node
-                if (path.result != null) {
+                if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
                     continue;
                 }
@@ -144,6 +146,7 @@ namespace Friflo.Json.Flow.Graph
                 PathNode<SelectorResult> path;
                 if (node.wildcardNode != null) {
                     path = node.wildcardNode;
+                    path.arrayIndex = index;
                 } else {
                     string key = index.ToString();
                     if (!node.children.TryGetValue(key, out path)) {
@@ -152,7 +155,7 @@ namespace Friflo.Json.Flow.Graph
                     }
                     // found node
                 }
-                if (path.result != null) {
+                if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
                     continue;
                 }

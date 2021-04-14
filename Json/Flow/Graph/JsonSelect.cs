@@ -62,21 +62,21 @@ namespace Friflo.Json.Flow.Graph
 
         internal new void CreateNodeTree(IList<string> pathList) {
             base.CreateNodeTree(pathList);
-            foreach (var leaf in leafNodes) {
-                leaf.node.result = new SelectorResult ();
+            foreach (var selector in selectors) {
+                selector.result = new SelectorResult ();
             }
         }
         
         internal void InitSelectorResults() {
-            foreach (var leaf in leafNodes) {
-                leaf.node.result.values.Clear();
+            foreach (var selector in selectors) {
+                selector.result.values.Clear();
             }
         }
 
         public List<SelectorResult> GetResult() {
-            var results = new List<SelectorResult>(leafNodes.Count);
-            foreach (var leaf in leafNodes) {
-                results.Add(leaf.node.result);
+            var results = new List<SelectorResult>(selectors.Count);
+            foreach (var selector in selectors) {
+                results.Add(selector.result);
             }
             return results;
         }
