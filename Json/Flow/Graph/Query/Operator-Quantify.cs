@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Any : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"Any({operand})";
+        public override     string      ToString() => $"Any({group}, {operand})";
 
         public Any(Field group, BoolOp operand) : base(group, operand) { }
         
@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class All : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"All({operand})";
+        public override     string      ToString() => $"All({group}, {operand})";
         
         public All(Field group, BoolOp operand) : base(group, operand) { }
         

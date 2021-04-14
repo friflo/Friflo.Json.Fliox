@@ -154,7 +154,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var  hasChildHobbySurfing = new Any (new Field (".children[@]"), new Equal (new Field (".children[@].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual("Any(.children[@].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
+                AreEqual("Any(.children[@], .children[@].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
                 IsTrue (HasChildHobbySurfing(Peter));
                 IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));
@@ -248,10 +248,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             AreEqual("!(.age >= 20)", isNot.ToString());
                 
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual("Any(.age == 20)", any.ToString()); // todo fix Any
+            AreEqual("Any(, .age == 20)", any.ToString()); // todo fix Any
             
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual("All(.age == 20)", all.ToString()); // todo fix Any
+            AreEqual("All(, .age == 20)", all.ToString()); // todo fix All
             
             
             // --- literals
