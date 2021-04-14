@@ -9,13 +9,11 @@ namespace Friflo.Json.Flow.Graph
 {
     public class SelectorResult
     {
-        public  readonly    List<Scalar>    values = new List<Scalar>();
-        private readonly    List<int>       startIndices = new List<int>();
+        internal readonly   List<Scalar>    values = new List<Scalar>();
+        private  readonly   List<int>       startIndices = new List<int>();
         private             int             lastGroupIndex;
 
-        internal SelectorResult() { }
-        
-        public void Init() {
+        internal void Init() {
             values.Clear();
             startIndices.Clear();
             lastGroupIndex = -1;
@@ -82,6 +80,7 @@ namespace Friflo.Json.Flow.Graph
         internal new void CreateNodeTree(IList<string> pathList) {
             base.CreateNodeTree(pathList);
             foreach (var selector in selectors) {
+                // could pool SelectorResult instances to avoid allocations 
                 selector.result = new SelectorResult ();
             }
         }

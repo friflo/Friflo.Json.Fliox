@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Graph
                             return;
                         }
                         var lng = targetParser.ValueAsLong(out bool _);
-                        result.values.Add(new Scalar(lng));
+                        result.Add(new Scalar(lng), selector.parentGroup);
                         return;
                     case JsonEvent.ValueBool:
                         result.Add(targetParser.boolValue ? Scalar.True : Scalar.False, selector.parentGroup);
