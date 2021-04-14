@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Graph
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
                 Field field = fields[n];
-                field.evalResult = new EvalResult(selectorResults[n].values);
+                field.evalResult = new EvalResult(selectorResults[n].values, selectorResults[n].groupIndices);
             }
         }
     }

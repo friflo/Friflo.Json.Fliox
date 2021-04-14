@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph
     public class SelectorResult
     {
         internal readonly   List<Scalar>    values = new List<Scalar>();
-        private  readonly   List<int>       groupIndices = new List<int>();
+        internal readonly   List<int>       groupIndices = new List<int>();
         private             int             lastGroupIndex;
 
         internal void Init() {
