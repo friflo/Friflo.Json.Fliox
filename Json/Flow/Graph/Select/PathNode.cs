@@ -7,27 +7,46 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
-    internal static class PathTools
+    /// <see cref="PathNode{TResult}"/>'s build a tree of nodes starting from <see cref="PathNodeTree{T}.rootNode"/>.
+    /// The tree is build based on a given list of <see cref="string"/> paths.
+    /// 
+    /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path.
+    /// For each path a <see cref="PathSelector{T}"/> is created. The <see cref="PathSelector{T}"/> is then added
+    /// to <see cref="selectors"/>.
+    /// 
+    /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
+    /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node having <see cref="selectors"/>.
+    internal class PathNode<TResult>
     {
-        public static string PathToPathTokens(string path, List<string> pathTokens) {
-            pathTokens.Clear();
-            int last = 1;
-            int len = path.Length;
-            if (len == 0)
-                return path;
-            for (int n = 1; n < len; n++) {
-                if (path[n] == '/') {
-                    var token = path.Substring(last, n - last);
-                    pathTokens.Add(token);
-                    last = n + 1;
-                }
-            }
-            var lastToken = path.Substring(last, len - last);
-            pathTokens.Add(lastToken);
-            return path;
+        /// direct access to <see cref="children"/>[*]
+        internal            PathNode<TResult>                       wildcardNode;
+        internal            int                                     arrayIndex;
+        
+        internal readonly   List<PathSelector<TResult>>             selectors = new List<PathSelector<TResult>>();
+        internal readonly   SelectorNode                            selectorNode;
+        internal readonly   PathNode<TResult>                       parent;
+        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
+        
+        public override string ToString() {
+            var sb = new StringBuilder();
+            AscendToString(sb);
+            return sb.ToString();
+        }
+
+        private void AscendToString(StringBuilder sb) {
+            if (parent != null)
+                parent.AscendToString(sb);
+            if (selectorNode.selectorType == SelectorType.Member)
+                sb.Append('.');
+            sb.Append(selectorNode.name);
+        }
+
+        internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
+            this.selectorNode   = selectorNode;
+            this.parent         = parent;
         }
     }
-
+    
     public enum SelectorType
     {
         Root,
@@ -90,44 +109,25 @@ namespace Friflo.Json.Flow.Graph.Select
             PathNodeToSelectorNode(path, last, len, selectorNodes);
         }
     }
-
-    /// <see cref="PathNode{TResult}"/>'s build a tree of nodes starting from <see cref="PathNodeTree{T}.rootNode"/>.
-    /// The tree is build based on a given list of <see cref="string"/> paths.
-    /// 
-    /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path.
-    /// For each path a <see cref="PathSelector{T}"/> is created. The <see cref="PathSelector{T}"/> is then added
-    /// to <see cref="selectors"/>.
-    /// 
-    /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
-    /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node having <see cref="selectors"/>.
-    internal class PathNode<TResult>
+    
+    internal static class PathTools
     {
-        /// direct access to <see cref="children"/>[*]
-        internal            PathNode<TResult>                       wildcardNode;
-        internal            int                                     arrayIndex;
-        
-        internal readonly   List<PathSelector<TResult>>             selectors = new List<PathSelector<TResult>>();
-        internal readonly   SelectorNode                            selectorNode;
-        internal readonly   PathNode<TResult>                       parent;
-        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
-        
-        public override string ToString() {
-            var sb = new StringBuilder();
-            AscendToString(sb);
-            return sb.ToString();
-        }
-
-        private void AscendToString(StringBuilder sb) {
-            if (parent != null)
-                parent.AscendToString(sb);
-            if (selectorNode.selectorType == SelectorType.Member)
-                sb.Append('.');
-            sb.Append(selectorNode.name);
-        }
-
-        internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
-            this.selectorNode   = selectorNode;
-            this.parent         = parent;
+        public static string PathToPathTokens(string path, List<string> pathTokens) {
+            pathTokens.Clear();
+            int last = 1;
+            int len = path.Length;
+            if (len == 0)
+                return path;
+            for (int n = 1; n < len; n++) {
+                if (path[n] == '/') {
+                    var token = path.Substring(last, n - last);
+                    pathTokens.Add(token);
+                    last = n + 1;
+                }
+            }
+            var lastToken = path.Substring(last, len - last);
+            pathTokens.Add(lastToken);
+            return path;
         }
     }
 }
