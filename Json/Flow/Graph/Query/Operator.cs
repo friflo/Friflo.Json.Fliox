@@ -36,7 +36,14 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
 
-    internal struct EvalCx { }
+    internal struct EvalCx
+    {
+        private int groupIndex;
+        
+        internal EvalCx(int groupIndex) {
+            this.groupIndex = groupIndex;
+        }
+    }
 
     internal class OperatorContext
     {

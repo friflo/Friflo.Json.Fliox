@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john = jsonMapper.Write(TestQuery.John);
                 jsonSelector.Select(peter, select);
                 var result = select.GetResult();
-                AreEqual("['Biking','Surfing','Biking']", result[0].ToString());
+                AreEqual("['Biking','Biking','Surfing']", result[0].ToString());
                 AreEqual("[(object),(object)]", result[1].ToString());
             }
         }

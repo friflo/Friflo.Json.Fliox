@@ -32,14 +32,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 new Person {
                     name = "Paul" , age = 20,
                     hobbies = {
-                        new Hobby{ name= "Biking"},
-                        new Hobby{ name= "Surfing"}
+                        new Hobby{ name= "Biking"}
                     }
                 },
                 new Person {
                     name = "Marry", age = 20,
                     hobbies = {
-                        new Hobby{ name= "Biking"}
+                        new Hobby{ name= "Biking"},
+                        new Hobby{ name= "Surfing"}
                     }
                 }
             }
