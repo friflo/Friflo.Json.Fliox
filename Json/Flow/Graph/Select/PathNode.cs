@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph.Select
         }
     }
     
-    public enum SelectorType
+    internal enum SelectorType
     {
         Root,
         Member,

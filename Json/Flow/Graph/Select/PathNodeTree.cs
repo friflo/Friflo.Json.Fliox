@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
-    public class PathNodeTree<T>
+    internal class PathNodeTree<T>
     {
         internal readonly   PathNode<T>             rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
         internal readonly   List<PathSelector<T>>   selectors       = new List<PathSelector<T>>();
         private  readonly   List<SelectorNode>      selectorNodes   = new List<SelectorNode>(); // reused buffer
 
-        protected void CreateNodeTree(IList<string> pathList) {
+        internal void CreateNodeTree(IList<string> pathList) {
             selectors.Clear();
             rootNode.children.Clear();
             var count = pathList.Count;

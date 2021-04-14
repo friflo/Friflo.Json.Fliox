@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Graph
         public JsonSelect Select(string json, JsonSelect jsonSelect, bool pretty = false) {
             jsonSelect.InitSelectorResults();
             nodeStack.Clear();
-            nodeStack.Add(jsonSelect.rootNode);
+            nodeStack.Add(jsonSelect.nodeTree.rootNode);
             targetJson.Clear();
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);

@@ -69,29 +69,32 @@ namespace Friflo.Json.Flow.Graph
     }
     
 
-    public class JsonSelect : PathNodeTree<SelectorResult>
+    public class JsonSelect
     {
+        internal readonly PathNodeTree<SelectorResult> nodeTree = new PathNodeTree<SelectorResult>();
+        
         internal JsonSelect() { }
         
         public JsonSelect(IList<string> pathList) {
             CreateNodeTree(pathList);
         }
 
-        internal new void CreateNodeTree(IList<string> pathList) {
-            base.CreateNodeTree(pathList);
-            foreach (var selector in selectors) {
+        internal void CreateNodeTree(IList<string> pathList) {
+            nodeTree.CreateNodeTree(pathList);
+            foreach (var selector in nodeTree.selectors) {
                 // could pool SelectorResult instances to avoid allocations 
                 selector.result = new SelectorResult ();
             }
         }
         
         internal void InitSelectorResults() {
-            foreach (var selector in selectors) {
+            foreach (var selector in nodeTree.selectors) {
                 selector.result.Init();
             }
         }
 
         public List<SelectorResult> GetResult() {
+            var selectors = nodeTree.selectors;
             var results = new List<SelectorResult>(selectors.Count);
             foreach (var selector in selectors) {
                 results.Add(selector.result);
