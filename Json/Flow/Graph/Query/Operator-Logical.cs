@@ -17,11 +17,11 @@ namespace Friflo.Json.Flow.Graph.Query
     }
     
     // ----------------------------------- unary logical operators -----------------------------------
-    public abstract class UnaryBoolOp : BoolOp
+    public abstract class UnaryLogicalOp : BoolOp
     {
         protected           BoolOp              operand;     // e.g.   i => i.amount < 1
 
-        protected UnaryBoolOp(BoolOp operand) { this.operand = operand; }
+        protected UnaryLogicalOp(BoolOp operand) { this.operand = operand; }
         
         internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
-    public class Not : UnaryBoolOp
+    public class Not : UnaryLogicalOp
     {
         public override     string      ToString() => $"!({operand})";
         
@@ -45,48 +45,14 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
-    public class Any : UnaryBoolOp
-    {
-        private         Field   group;
-        
-        public override     string      ToString() => $"Any({operand})";
 
-        public Any(Field group, BoolOp operand) : base(operand) {
-            this.group = group;
-        }
-        
-        internal override EvalResult Eval(EvalCx cx) {
-            var eval = operand.Eval(cx);
-            foreach (var val in eval.values) {
-                if (val.CompareTo(True) == 0)
-                    return SingleTrue;
-            }
-            return SingleFalse;
-        }
-    }
-    
-    public class All : UnaryBoolOp
-    {
-        public override     string      ToString() => $"All({operand})";
-        
-        public All(BoolOp operand) : base(operand) { }
-        
-        internal override EvalResult Eval(EvalCx cx) {
-            var eval = operand.Eval(cx);
-            foreach (var val in eval.values) {
-                if (val.CompareTo(True) != 0)
-                    return SingleFalse;
-            }
-            return SingleTrue;
-        }
-    }
     
     // ----------------------------------- (n-ary) logical group operators -----------------------------------
-    public abstract class GroupBoolOp : BoolOp
+    public abstract class BinaryLogicalOp : BoolOp
     {
         protected           List<BoolOp>        operands;
 
-        protected GroupBoolOp(List<BoolOp> operands) { this.operands = operands; }
+        protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
         
         internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
@@ -96,7 +62,7 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
-    public class And : GroupBoolOp
+    public class And : BinaryLogicalOp
     {
         public override     string      ToString() => string.Join(" && ", operands);
         
@@ -125,7 +91,7 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
-    public class Or : GroupBoolOp
+    public class Or : BinaryLogicalOp
     {
         public override     string      ToString() => string.Join(" || ", operands);
         

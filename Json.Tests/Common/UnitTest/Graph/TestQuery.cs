@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Equal(new Field (".children[*].age"), new LongLiteral (20))).Filter();
+                var allChildAgeEquals20 = new All (new Field (".children[*]"), new Equal(new Field (".children[*].age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
@@ -151,10 +151,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
                 var john  = jsonMapper.Write(John);
 
                 // --- Any
-                var  hasChildHobbySurfing = new Any (new Field (".children[*]"), new Equal (new Field (".children[*].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
+                var  hasChildHobbySurfing = new Any (new Field (".children[@]"), new Equal (new Field (".children[@].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual("Any(.children[*].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
+                AreEqual("Any(.children[@].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
                 IsTrue (HasChildHobbySurfing(Peter));
                 IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));

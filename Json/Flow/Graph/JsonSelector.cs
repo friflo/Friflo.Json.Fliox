@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public class JsonSelector : IDisposable
     {
-        private             JsonSerializer                  serializer;
+        // private          JsonSerializer                  serializer;
             
         private             Bytes                           targetJson = new Bytes(128);
         private             JsonParser                      targetParser;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph
         public void Dispose() {
             targetParser.Dispose();
             targetJson.Dispose();
-            serializer.Dispose();
+            // serializer.Dispose();
         }
 
         public SelectorResult Select(string json, string path, bool pretty = false) {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
-            serializer.SetPretty(pretty);
+            //serializer.SetPretty(pretty);
             
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
@@ -57,18 +57,18 @@ namespace Friflo.Json.Flow.Graph
                 var result = selector.result;
                 switch (targetParser.Event) {
                     case JsonEvent.ObjectStart:
-                        serializer.InitSerializer();
-                        serializer.ObjectStart();
-                        serializer.WriteObject(ref targetParser);
-                        var json = serializer.json.ToString();
-                        result.Add(new Scalar(ScalarType.Object, json), selector.parentGroup);
+                        //serializer.InitSerializer();
+                        //serializer.ObjectStart();
+                        //serializer.WriteObject(ref targetParser);
+                        //var json = serializer.json.ToString();
+                        result.Add(new Scalar(ScalarType.Object, "(object)"), selector.parentGroup);
                         return;
                     case JsonEvent.ArrayStart:
-                        serializer.InitSerializer();
-                        serializer.ArrayStart(true);
-                        serializer.WriteArray(ref targetParser);
-                        json = serializer.json.ToString();
-                        result.Add(new Scalar(ScalarType.Array, json), selector.parentGroup);
+                        //serializer.InitSerializer();
+                        //serializer.ArrayStart(true);
+                        //serializer.WriteArray(ref targetParser);
+                        //json = serializer.json.ToString();
+                        result.Add(new Scalar(ScalarType.Array, "(array)"), selector.parentGroup);
                         return;
                     case JsonEvent.ValueString:
                         var str = targetParser.value.ToString();
@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Graph
                 // found node
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    continue;
+                    // continue;
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -157,7 +157,7 @@ namespace Friflo.Json.Flow.Graph
                 }
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    continue;
+                    // continue;
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:

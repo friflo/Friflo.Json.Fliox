@@ -68,7 +68,8 @@ namespace Friflo.Json.Flow.Graph.Query
                     // todo - provide Any group parameter
                     return new Any(null, (BoolOp)opArgs[1]); 
                 case "All":
-                    return new All((BoolOp)opArgs[1]);
+                    // todo - provide Any group parameter
+                    return new All(null, (BoolOp)opArgs[1]);
                 case "Abs":
                     return new Abs(opArgs[0]);
                 case "Ceiling":
