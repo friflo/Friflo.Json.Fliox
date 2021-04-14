@@ -10,12 +10,12 @@ namespace Friflo.Json.Flow.Graph
     public class SelectorResult
     {
         internal readonly   List<Scalar>    values = new List<Scalar>();
-        private  readonly   List<int>       startIndices = new List<int>();
+        private  readonly   List<int>       groupIndices = new List<int>();
         private             int             lastGroupIndex;
 
         internal void Init() {
             values.Clear();
-            startIndices.Clear();
+            groupIndices.Clear();
             lastGroupIndex = -1;
         }
 
@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph
                 var index = parentGroup.arrayIndex;
                 if (index != lastGroupIndex) {
                     lastGroupIndex = index;
-                    startIndices.Add(values.Count);
+                    groupIndices.Add(values.Count);
                 }
             }
             values.Add(scalar);

@@ -17,6 +17,8 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
             this.left  = left;
             this.right = right;
         }
+
+        public override string ToString() => $"({left}, {right})";
     }
     
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>

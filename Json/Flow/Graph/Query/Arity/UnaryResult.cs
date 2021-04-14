@@ -10,8 +10,10 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
 {
     // ------------------------------------- UnaryResult -------------------------------------
     internal readonly struct UnaryValue {
-        internal readonly   Scalar value;
+        internal    readonly    Scalar  value;
 
+        public      override    string  ToString() => $"({value})";
+        
         internal UnaryValue(Scalar value) {
             this.value  = value;
         }
@@ -59,8 +61,8 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
     
     internal readonly struct  UnaryResult : IEnumerable<UnaryValue>
     {
-        internal  readonly EvalResult   result;
-
+        internal  readonly  EvalResult  result;
+        
         internal UnaryResult(EvalResult result) {
             this.result  = result;
             if (result.Count == 1)

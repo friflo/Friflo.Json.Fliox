@@ -11,7 +11,9 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
 {
     // ------------------------------------- BinaryResult -------------------------------------
     internal readonly struct N_aryList {
-        internal readonly EvalResult evalResult;
+        internal  readonly  EvalResult  evalResult;
+        
+        public    override  string      ToString() => $"({string.Join(", ", evalResult.values)})";
 
         internal N_aryList(int capacity) {
             evalResult = new EvalResult(new List<Scalar>(capacity));
@@ -66,8 +68,8 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
     
     internal readonly struct  N_aryResult : IEnumerable<N_aryList>
     {
-        internal  readonly List<EvalResult>   results;
-
+        internal  readonly  List<EvalResult>    results;
+        
         internal N_aryResult(List<EvalResult> results) {
             this.results  = results;
         }
