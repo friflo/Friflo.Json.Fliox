@@ -136,7 +136,7 @@ namespace Friflo.Json.Flow.Graph.Select
         private  readonly   string          path;
         private  readonly   PathNode<T>     node;
         private  readonly   bool            isArrayResult;
-        private  readonly   PathNode<T>     parentGroup;
+        internal readonly   PathNode<T>     parentGroup;
         internal            T               result;
 
         public override string ToString() => path;
@@ -151,9 +151,9 @@ namespace Friflo.Json.Flow.Graph.Select
 
     public class PathNodeTree<T>
     {
-        internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
+        internal readonly   PathNode<T>             rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
         internal readonly   List<PathSelector<T>>   selectors       = new List<PathSelector<T>>();
-        private  readonly   List<SelectorNode>  selectorNodes   = new List<SelectorNode>(); // reused buffer
+        private  readonly   List<SelectorNode>      selectorNodes   = new List<SelectorNode>(); // reused buffer
 
         protected void CreateNodeTree(IList<string> pathList) {
             selectors.Clear();

@@ -10,8 +10,27 @@ namespace Friflo.Json.Flow.Graph
     public class SelectorResult
     {
         public  readonly    List<Scalar>    values = new List<Scalar>();
+        private readonly    List<int>       startIndices = new List<int>();
+        private             int             lastGroupIndex;
 
         internal SelectorResult() { }
+        
+        public void Init() {
+            values.Clear();
+            startIndices.Clear();
+            lastGroupIndex = -1;
+        }
+
+        internal void Add(Scalar scalar, PathNode<SelectorResult> parentGroup) {
+            if (parentGroup != null) {
+                var index = parentGroup.arrayIndex;
+                if (index != lastGroupIndex) {
+                    lastGroupIndex = index;
+                    startIndices.Add(values.Count);
+                }
+            }
+            values.Add(scalar);
+        }
 
         public List<string> AsStringList() {
             var result = new List<string>(values.Count);
@@ -69,7 +88,7 @@ namespace Friflo.Json.Flow.Graph
         
         internal void InitSelectorResults() {
             foreach (var selector in selectors) {
-                selector.result.values.Clear();
+                selector.result.Init();
             }
         }
 

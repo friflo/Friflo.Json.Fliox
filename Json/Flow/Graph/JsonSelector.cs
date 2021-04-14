@@ -61,33 +61,33 @@ namespace Friflo.Json.Flow.Graph
                         serializer.ObjectStart();
                         serializer.WriteObject(ref targetParser);
                         var json = serializer.json.ToString();
-                        result.values.Add(new Scalar(ScalarType.Object, json));
+                        result.Add(new Scalar(ScalarType.Object, json), selector.parentGroup);
                         return;
                     case JsonEvent.ArrayStart:
                         serializer.InitSerializer();
                         serializer.ArrayStart(true);
                         serializer.WriteArray(ref targetParser);
                         json = serializer.json.ToString();
-                        result.values.Add(new Scalar(ScalarType.Array, json));
+                        result.Add(new Scalar(ScalarType.Array, json), selector.parentGroup);
                         return;
                     case JsonEvent.ValueString:
                         var str = targetParser.value.ToString();
-                        result.values.Add(new Scalar(str));
+                        result.Add(new Scalar(str), selector.parentGroup);
                         return;
                     case JsonEvent.ValueNumber:
                         if (targetParser.isFloat) {
                             var dbl = targetParser.ValueAsDouble(out bool _);
-                            result.values.Add(new Scalar(dbl));
+                            result.Add(new Scalar(dbl), selector.parentGroup);
                             return;
                         }
                         var lng = targetParser.ValueAsLong(out bool _);
                         result.values.Add(new Scalar(lng));
                         return;
                     case JsonEvent.ValueBool:
-                        result.values.Add(targetParser.boolValue ? Scalar.True : Scalar.False);
+                        result.Add(targetParser.boolValue ? Scalar.True : Scalar.False, selector.parentGroup);
                         return;
                     case JsonEvent.ValueNull:
-                        result.values.Add(Scalar.Null);
+                        result.Add(Scalar.Null, selector.parentGroup);
                         return;
                 }
             }
