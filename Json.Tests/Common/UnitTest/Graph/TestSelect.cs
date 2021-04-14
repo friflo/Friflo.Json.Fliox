@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Tests.Common.UnitTest.Mapper;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Graph
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestSelect : LeakTestsFixture
     {

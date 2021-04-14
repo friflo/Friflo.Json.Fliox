@@ -9,7 +9,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     
     public class TestJsonComplex : LeakTestsFixture

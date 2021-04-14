@@ -8,7 +8,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     public enum EnumClass {
         Value1 = 11,
@@ -41,12 +41,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value3));
                 
                 enc.Read<EnumClass>(hello);
-                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 'hello'", enc.Error.msg.ToString());
+                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.EnumClass, got: 'hello'", enc.Error.msg.ToString());
 
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(num11));
                 
                 enc.Read<EnumClass>(num999);
-                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
+                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
 
                 var result = write.Write(EnumClass.Value1);
                 AreEqual("\"Value1\"", result);

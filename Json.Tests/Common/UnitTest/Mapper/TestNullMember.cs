@@ -5,7 +5,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 #pragma warning disable 649 // Field 'field' is never assigned
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     public class TestMemberNull : LeakTestsFixture
     {

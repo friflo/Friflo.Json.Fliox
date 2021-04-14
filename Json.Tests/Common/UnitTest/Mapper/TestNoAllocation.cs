@@ -13,7 +13,7 @@ using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 // ReSharper disable UnassignedField.Global
 // ReSharper disable UnusedVariable
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     public struct NoAllocStruct {
         public int              key;

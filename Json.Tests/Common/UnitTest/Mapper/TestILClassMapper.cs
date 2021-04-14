@@ -10,7 +10,7 @@ using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
 
     public class TestILClassMapper : LeakTestsFixture

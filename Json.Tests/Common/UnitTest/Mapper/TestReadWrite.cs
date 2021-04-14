@@ -11,7 +11,7 @@ using static NUnit.Framework.Assert;
 // using static Friflo.Json.Tests.Common.Utils.SimpleAssert;
 
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     public struct TestStruct {
         public int key;
@@ -271,7 +271,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     AreEqual(null,                Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     
                     enc.Read<TestStruct[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.TestStruct, got: null", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrNull);
                     StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
                     enc.Read<int[]>(arrStr);
@@ -464,7 +464,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Mapper
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt.ToString());
                         AreEqual(expect, Read<BigInteger>(bigIntStr));

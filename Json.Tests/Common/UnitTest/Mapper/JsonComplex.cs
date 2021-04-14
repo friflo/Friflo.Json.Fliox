@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     public class JsonComplex
     {

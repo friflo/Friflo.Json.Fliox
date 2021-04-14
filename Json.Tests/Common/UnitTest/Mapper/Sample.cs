@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     enum EnumIL {
         one,

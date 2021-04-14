@@ -8,7 +8,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 
-namespace Friflo.Json.Tests.Common.UnitTest.Mapper
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
     // Ensure existence of basic API methods
     public class TestApi : LeakTestsFixture

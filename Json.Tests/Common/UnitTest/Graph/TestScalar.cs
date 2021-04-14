@@ -3,7 +3,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 
-namespace Friflo.Json.Tests.Common.UnitTest.Graph
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestScalar
     {

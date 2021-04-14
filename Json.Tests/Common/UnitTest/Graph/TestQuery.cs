@@ -8,7 +8,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // ReSharper disable CollectionNeverQueried.Global
-namespace Friflo.Json.Tests.Common.UnitTest.Graph
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class Person
     {
