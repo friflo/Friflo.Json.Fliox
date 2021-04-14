@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Select;
 
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Flow.Graph.Query
 {
     internal class EvalResult

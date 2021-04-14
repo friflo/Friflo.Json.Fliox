@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Graph.Select;
 
+// ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Flow.Graph.Query
 {
     
@@ -36,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
 
-    internal struct EvalCx
+    internal readonly struct EvalCx
     {
         private readonly    int     groupIndex;
 
