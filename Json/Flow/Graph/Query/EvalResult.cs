@@ -13,6 +13,8 @@ namespace Friflo.Json.Flow.Graph.Query
         private             int             startIndex;
         private             int             endIndex;
 
+        internal            int             StartIndex => startIndex;
+
         internal EvalResult (Scalar singleValue) {
             values              = new List<Scalar> { singleValue };
             this.groupIndices   = null;

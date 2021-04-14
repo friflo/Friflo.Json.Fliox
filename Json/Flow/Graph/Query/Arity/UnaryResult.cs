@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
 
         public UnaryValue Current {
             get {
-                var val  = value  ?? result.values [pos];
+                var val  = value  ?? result.values [result.StartIndex + pos];
                 return new UnaryValue(val);
             }
         }

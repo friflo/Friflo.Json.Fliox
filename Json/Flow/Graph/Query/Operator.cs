@@ -38,7 +38,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
     internal struct EvalCx
     {
-        private int groupIndex;
+        private readonly    int     groupIndex;
+
+        public              int     GroupIndex => groupIndex;
         
         internal EvalCx(int groupIndex) {
             this.groupIndex = groupIndex;
@@ -78,6 +80,19 @@ namespace Friflo.Json.Flow.Graph.Query
         }
 
         internal override EvalResult Eval(EvalCx cx) {
+            int groupIndex = cx.GroupIndex;
+            if (groupIndex == -1)
+                return evalResult;
+            
+            var groupIndices = evalResult.groupIndices;
+            int startIndex = groupIndices[groupIndex];
+            int endIndex;
+            if (groupIndex + 1 < groupIndices.Count) {
+                endIndex = groupIndices[groupIndex + 1];
+            } else {
+                endIndex = evalResult.values.Count;
+            }
+            evalResult.SetRange(startIndex, endIndex);
             return evalResult;
         }
     }

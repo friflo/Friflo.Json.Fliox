@@ -57,8 +57,8 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
 
         public BinaryPair Current {
             get {
-                var left  = leftValue  ?? leftResult.values [pos];
-                var right = rightValue ?? rightResult.values[pos];
+                var left  = leftValue  ?? leftResult.values [leftResult.StartIndex  + pos];
+                var right = rightValue ?? rightResult.values[rightResult.StartIndex + pos];
                 return new BinaryPair(left, right);
             }
         }

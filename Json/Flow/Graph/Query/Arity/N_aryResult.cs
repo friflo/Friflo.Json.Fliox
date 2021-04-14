@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
                 var resultList = new N_aryList(values.Count);
                 for (int n = 0; n < values.Count; n++) {
                     var single = values[n];
-                    var result  = single ?? evalResults[n].values[pos];
+                    var result  = single ?? evalResults[n].values[evalResults[n].StartIndex + pos];
                     resultList.evalResult.Add(result);
                 }
                 return resultList;
