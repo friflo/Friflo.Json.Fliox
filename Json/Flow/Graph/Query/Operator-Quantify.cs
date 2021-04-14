@@ -28,8 +28,8 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = group.Eval(cx);
-            for (int n = 0; n < groupEval.Count; n++) {
-                var groupCx = new EvalCx(n);
+            for (int groupIndex = 0; groupIndex < groupEval.Count; groupIndex++) {
+                var groupCx = new EvalCx(groupIndex);
                 var eval = operand.Eval(groupCx);
                 foreach (var val in eval.values) {
                     if (val.CompareTo(True) == 0)
@@ -48,8 +48,8 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = group.Eval(cx);
-            for (int n = 0; n < groupEval.Count; n++) {
-                var groupCx = new EvalCx(n);
+            for (int groupIndex = 0; groupIndex < groupEval.Count; groupIndex++) {
+                var groupCx = new EvalCx(groupIndex);
                 var eval = operand.Eval(groupCx);
                 foreach (var val in eval.values) {
                     if (val.CompareTo(True) != 0)
