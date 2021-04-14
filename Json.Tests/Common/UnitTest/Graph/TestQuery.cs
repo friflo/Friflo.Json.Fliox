@@ -248,10 +248,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Graph
             AreEqual("!(.age >= 20)", isNot.ToString());
                 
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual("Any(, .age == 20)", any.ToString()); // todo fix Any
+            AreEqual("Any(.children[@], .age == 20)", any.ToString()); // todo fix Any
             
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual("All(, .age == 20)", all.ToString()); // todo fix All
+            AreEqual("All(.children[@], .age == 20)", all.ToString()); // todo fix All
             
             
             // --- literals

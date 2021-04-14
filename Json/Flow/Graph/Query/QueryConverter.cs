@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -53,23 +56,29 @@ namespace Friflo.Json.Flow.Graph.Query
                     throw new NotSupportedException($"Body not supported: {expression}");
             }
         }
-        
-        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall) {
-            var args = methodCall.Arguments;
+
+        private static List<Operator> GetMethodArgs(IList<Expression> args) {
             var opArgs = new List<Operator>();
             for (int n = 0; n < args.Count; n++) {
                 var arg = args[n];
-                var boolOp = TraceExpression(arg); 
+                var boolOp = TraceExpression(arg);
                 opArgs.Add(boolOp);
             }
+            return opArgs;
+        }
 
+        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall) {
+            List<Operator> opArgs;
+            opArgs = GetMethodArgs(methodCall.Arguments);
             switch (methodCall.Method.Name) {
                 case "Any":
+                    string enumerableField = $"{opArgs[0]}[@]";
                     // todo - provide Any group parameter
-                    return new Any(null, (BoolOp)opArgs[1]); 
+                    return new Any(new Field(enumerableField), (BoolOp)opArgs[1]); 
                 case "All":
-                    // todo - provide Any group parameter
-                    return new All(null, (BoolOp)opArgs[1]);
+                    // todo - provide All group parameter
+                    enumerableField = $"{opArgs[0]}[@]";
+                    return new All(new Field(enumerableField), (BoolOp)opArgs[1]);
                 case "Abs":
                     return new Abs(opArgs[0]);
                 case "Ceiling":
