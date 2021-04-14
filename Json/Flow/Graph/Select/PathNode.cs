@@ -7,41 +7,6 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
-    /// Each leaf node in a <see cref="PathNode{TResult}"/> hierarchy has <see cref="selectors"/> not null.
-    /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path. 
-    /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
-    /// The <see cref="selectors"/> is intended to store the result when reaching as leaf node.
-    internal class PathNode<TResult>
-    {
-        /// direct access to <see cref="children"/>[*]
-        internal            PathNode<TResult>                       wildcardNode;
-        internal            int                                     arrayIndex;
-        
-        internal readonly   List<Selector<TResult>>                 selectors = new List<Selector<TResult>>();
-        internal readonly   SelectorNode                            selectorNode;
-        internal readonly   PathNode<TResult>                       parent;
-        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
-        
-        public override string ToString() {
-            var sb = new StringBuilder();
-            AscendToString(sb);
-            return sb.ToString();
-        }
-
-        private void AscendToString(StringBuilder sb) {
-            if (parent != null)
-                parent.AscendToString(sb);
-            if (selectorNode.selectorType == SelectorType.Member)
-                sb.Append('.');
-            sb.Append(selectorNode.name);
-        }
-
-        internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
-            this.selectorNode   = selectorNode;
-            this.parent         = parent;
-        }
-    }
-
     internal static class PathTools
     {
         public static string PathToPathTokens(string path, List<string> pathTokens) {
@@ -70,7 +35,7 @@ namespace Friflo.Json.Flow.Graph.Select
         ArrayWildcard,
         ArrayGroup
     }
-    
+
     internal readonly struct SelectorNode
     {
         internal SelectorNode(string name, SelectorType selectorType) {
@@ -126,7 +91,47 @@ namespace Friflo.Json.Flow.Graph.Select
         }
     }
 
-    internal class Selector<T>
+    /// <see cref="PathNode{TResult}"/>'s build a tree of nodes starting from <see cref="PathNodeTree{T}.rootNode"/>.
+    /// The tree is build based on a given list of <see cref="string"/> paths.
+    /// 
+    /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path.
+    /// For each path a <see cref="PathSelector{T}"/> is created. The <see cref="PathSelector{T}"/> is then added
+    /// to <see cref="selectors"/>.
+    /// 
+    /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
+    /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node having <see cref="selectors"/>.
+    internal class PathNode<TResult>
+    {
+        /// direct access to <see cref="children"/>[*]
+        internal            PathNode<TResult>                       wildcardNode;
+        internal            int                                     arrayIndex;
+        
+        internal readonly   List<PathSelector<TResult>>             selectors = new List<PathSelector<TResult>>();
+        internal readonly   SelectorNode                            selectorNode;
+        internal readonly   PathNode<TResult>                       parent;
+        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
+        
+        public override string ToString() {
+            var sb = new StringBuilder();
+            AscendToString(sb);
+            return sb.ToString();
+        }
+
+        private void AscendToString(StringBuilder sb) {
+            if (parent != null)
+                parent.AscendToString(sb);
+            if (selectorNode.selectorType == SelectorType.Member)
+                sb.Append('.');
+            sb.Append(selectorNode.name);
+        }
+
+        internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
+            this.selectorNode   = selectorNode;
+            this.parent         = parent;
+        }
+    }
+
+    internal class PathSelector<T>
     {
         private  readonly   string          path;
         private  readonly   PathNode<T>     node;
@@ -136,7 +141,7 @@ namespace Friflo.Json.Flow.Graph.Select
 
         public override string ToString() => path;
         
-        internal Selector(string path, PathNode<T> node, bool isArrayResult, PathNode<T> parentGroup) {
+        internal PathSelector(string path, PathNode<T> node, bool isArrayResult, PathNode<T> parentGroup) {
             this.path           = path;
             this.node           = node;
             this.isArrayResult  = isArrayResult;
@@ -147,7 +152,7 @@ namespace Friflo.Json.Flow.Graph.Select
     public class PathNodeTree<T>
     {
         internal readonly   PathNode<T>         rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
-        internal readonly   List<Selector<T>>   selectors       = new List<Selector<T>>();
+        internal readonly   List<PathSelector<T>>   selectors       = new List<PathSelector<T>>();
         private  readonly   List<SelectorNode>  selectorNodes   = new List<SelectorNode>(); // reused buffer
 
         protected void CreateNodeTree(IList<string> pathList) {
@@ -173,7 +178,7 @@ namespace Friflo.Json.Flow.Graph.Select
                     curNode = childNode;
                 }
                 var parentGroup = GetParentGroup(curNode);
-                var selector = new Selector<T>(path, curNode, isArrayResult, parentGroup);
+                var selector = new PathSelector<T>(path, curNode, isArrayResult, parentGroup);
                 curNode.selectors.Add(selector);
                 selectors.Add(selector);
             }
