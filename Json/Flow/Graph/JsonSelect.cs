@@ -19,15 +19,19 @@ namespace Friflo.Json.Flow.Graph
             lastGroupIndex = -1;
         }
 
-        internal void Add(Scalar scalar, PathNode<SelectorResult> parentGroup) {
-            if (parentGroup != null) {
-                var index = parentGroup.arrayIndex;
-                if (index != lastGroupIndex) {
-                    lastGroupIndex = index;
-                    groupIndices.Add(values.Count);
+        internal static void Add(Scalar scalar, List<PathSelector<SelectorResult>> selectors) {
+            foreach (var selector in selectors) {
+                var parentGroup = selector.parentGroup;
+                var result = selector.result;
+                if (parentGroup != null) {
+                    var index = parentGroup.arrayIndex;
+                    if (index != result.lastGroupIndex) {
+                        result.lastGroupIndex = index;
+                        result.groupIndices.Add(result.values.Count);
+                    }
                 }
+                result.values.Add(scalar);
             }
-            values.Add(scalar);
         }
 
         public List<string> AsStringList() {

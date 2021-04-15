@@ -53,43 +53,41 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private void AddPathNodeResult(PathNode<SelectorResult> node) {
-            foreach (var selector in node.selectors) {
-                var result = selector.result;
-                switch (targetParser.Event) {
-                    case JsonEvent.ObjectStart:
-                        //serializer.InitSerializer();
-                        //serializer.ObjectStart();
-                        //serializer.WriteObject(ref targetParser);
-                        //var json = serializer.json.ToString();
-                        result.Add(new Scalar(ScalarType.Object, "(object)"), selector.parentGroup);
-                        continue;
-                    case JsonEvent.ArrayStart:
-                        //serializer.InitSerializer();
-                        //serializer.ArrayStart(true);
-                        //serializer.WriteArray(ref targetParser);
-                        //json = serializer.json.ToString();
-                        result.Add(new Scalar(ScalarType.Array, "(array)"), selector.parentGroup);
-                        continue;
-                    case JsonEvent.ValueString:
-                        var str = targetParser.value.ToString();
-                        result.Add(new Scalar(str), selector.parentGroup);
-                        continue;
-                    case JsonEvent.ValueNumber:
-                        if (targetParser.isFloat) {
-                            var dbl = targetParser.ValueAsDouble(out bool _);
-                            result.Add(new Scalar(dbl), selector.parentGroup);
-                            continue;
-                        }
-                        var lng = targetParser.ValueAsLong(out bool _);
-                        result.Add(new Scalar(lng), selector.parentGroup);
-                        continue;
-                    case JsonEvent.ValueBool:
-                        result.Add(targetParser.boolValue ? Scalar.True : Scalar.False, selector.parentGroup);
-                        continue;
-                    case JsonEvent.ValueNull:
-                        result.Add(Scalar.Null, selector.parentGroup);
-                        continue;
-                }
+            var selectors = node.selectors;
+            switch (targetParser.Event) {
+                case JsonEvent.ObjectStart:
+                    //serializer.InitSerializer();
+                    //serializer.ObjectStart();
+                    //serializer.WriteObject(ref targetParser);
+                    //var json = serializer.json.ToString();
+                    SelectorResult.Add(new Scalar(ScalarType.Object, "(object)"), selectors);
+                    return;
+                case JsonEvent.ArrayStart:
+                    //serializer.InitSerializer();
+                    //serializer.ArrayStart(true);
+                    //serializer.WriteArray(ref targetParser);
+                    //json = serializer.json.ToString();
+                    SelectorResult.Add(new Scalar(ScalarType.Array, "(array)"), selectors);
+                    return;
+                case JsonEvent.ValueString:
+                    var str = targetParser.value.ToString();
+                    SelectorResult.Add(new Scalar(str), selectors);
+                    return;
+                case JsonEvent.ValueNumber:
+                    if (targetParser.isFloat) {
+                        var dbl = targetParser.ValueAsDouble(out bool _);
+                        SelectorResult.Add(new Scalar(dbl), selectors);
+                        return;
+                    }
+                    var lng = targetParser.ValueAsLong(out bool _);
+                    SelectorResult.Add(new Scalar(lng), selectors);
+                    return;
+                case JsonEvent.ValueBool:
+                    SelectorResult.Add(targetParser.boolValue ? Scalar.True : Scalar.False, selectors);
+                    return;
+                case JsonEvent.ValueNull:
+                    SelectorResult.Add(Scalar.Null, selectors);
+                    return;
             }
         }
         
