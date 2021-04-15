@@ -62,33 +62,33 @@ namespace Friflo.Json.Flow.Graph
                         //serializer.WriteObject(ref targetParser);
                         //var json = serializer.json.ToString();
                         result.Add(new Scalar(ScalarType.Object, "(object)"), selector.parentGroup);
-                        return;
+                        continue;
                     case JsonEvent.ArrayStart:
                         //serializer.InitSerializer();
                         //serializer.ArrayStart(true);
                         //serializer.WriteArray(ref targetParser);
                         //json = serializer.json.ToString();
                         result.Add(new Scalar(ScalarType.Array, "(array)"), selector.parentGroup);
-                        return;
+                        continue;
                     case JsonEvent.ValueString:
                         var str = targetParser.value.ToString();
                         result.Add(new Scalar(str), selector.parentGroup);
-                        return;
+                        continue;
                     case JsonEvent.ValueNumber:
                         if (targetParser.isFloat) {
                             var dbl = targetParser.ValueAsDouble(out bool _);
                             result.Add(new Scalar(dbl), selector.parentGroup);
-                            return;
+                            continue;
                         }
                         var lng = targetParser.ValueAsLong(out bool _);
                         result.Add(new Scalar(lng), selector.parentGroup);
-                        return;
+                        continue;
                     case JsonEvent.ValueBool:
                         result.Add(targetParser.boolValue ? Scalar.True : Scalar.False, selector.parentGroup);
-                        return;
+                        continue;
                     case JsonEvent.ValueNull:
                         result.Add(Scalar.Null, selector.parentGroup);
-                        return;
+                        continue;
                 }
             }
         }
