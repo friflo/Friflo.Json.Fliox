@@ -60,22 +60,34 @@ namespace Friflo.Json.Flow.Graph.Query
 
         private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
             switch (methodCall.Method.Name) {
+                // quantify operators
                 case "Any":
                 case "All":
-                    return OperatorFromBinaryLambda(methodCall, cx);
+                    return OperatorFromBinaryQuantifier(methodCall, cx);
+                
+                // arithmetic operators
                 case "Abs":
                 case "Ceiling":
                 case "Floor":
                 case "Exp":
                 case "Log":
                 case "Sqrt":
-                    return OperatorFromUnaryMethodCall(methodCall, cx);
+                    return OperatorFromUnaryArithmetic(methodCall, cx);
+                
+                // aggregate operators
+                case "Min":
+                case "Max":
+                case "Sum":
+                case "Count":
+                case "Average":
+                    return OperatorFromUnaryAggregate(methodCall, cx);
+                
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
         }
 
-        private static Operator OperatorFromBinaryLambda(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operator OperatorFromBinaryQuantifier(MethodCallExpression methodCall, QueryCx cx) {
             var args = methodCall.Arguments;
             var source      = args[0];
             var predicate   = args[1];
@@ -86,31 +98,38 @@ namespace Friflo.Json.Flow.Graph.Query
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
-                case "Any":
-                    return new Any(new Field(sourceField), predicateOp);
-                case "All":
-                    return new All(new Field(sourceField), predicateOp);
+                case "Any":     return new Any(new Field(sourceField), predicateOp);
+                case "All":     return new All(new Field(sourceField), predicateOp);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
         }
         
-        private static Operator OperatorFromUnaryMethodCall(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operator OperatorFromUnaryArithmetic(MethodCallExpression methodCall, QueryCx cx) {
             var value = methodCall.Arguments[0];
             var valueOp = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
-                case "Abs":
-                    return new Abs(valueOp);
-                case "Ceiling":
-                    return new Ceiling(valueOp);
-                case "Floor":
-                    return new Floor(valueOp);
-                case "Exp":
-                    return new Exp(valueOp);
-                case "Log":
-                    return new Log(valueOp);
-                case "Sqrt":
-                    return new Sqrt(valueOp);
+                // --- arithmetic operators
+                case "Abs":     return new Abs(valueOp);
+                case "Ceiling": return new Ceiling(valueOp);
+                case "Floor":   return new Floor(valueOp);
+                case "Exp":     return new Exp(valueOp);
+                case "Log":     return new Log(valueOp);
+                case "Sqrt":    return new Sqrt(valueOp);
+                default:
+                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+            }
+        }
+        
+        private static Operator OperatorFromUnaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
+            var value = methodCall.Arguments[0];
+            var valueOp = TraceExpression(value, cx);
+            switch (methodCall.Method.Name) {
+                case "Min":     return new Min(valueOp);
+                case "Max":     return new Max(valueOp);
+                case "Sum":     return new Sum(valueOp);
+                case "Average": return new Average(valueOp);
+                case "Count":   return new Count(valueOp);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
@@ -119,10 +138,8 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operator OperatorFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
             var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
-                case ExpressionType.Not:
-                    return new Not((BoolOp)operand);
-                case ExpressionType.Convert:
-                    return operand;
+                case ExpressionType.Not:        return new Not((BoolOp)operand);
+                case ExpressionType.Convert:    return operand;
                 default:
                     throw new NotSupportedException($"UnaryExpression not supported: {unary}");
             }
@@ -133,34 +150,22 @@ namespace Friflo.Json.Flow.Graph.Query
             var rightOp = TraceExpression(binary.Right, cx);
             switch (binary.NodeType) {
                 // --- binary comparison operators
-                case ExpressionType.Equal:
-                    return new Equal(leftOp, rightOp);
-                case ExpressionType.NotEqual:
-                    return new NotEqual(leftOp, rightOp);
-                case ExpressionType.LessThan:
-                    return new LessThan(leftOp, rightOp);
-                case ExpressionType.LessThanOrEqual:
-                    return new LessThanOrEqual(leftOp, rightOp);
-                case ExpressionType.GreaterThan:
-                    return new GreaterThan(leftOp, rightOp);
-                case ExpressionType.GreaterThanOrEqual:
-                    return new GreaterThanOrEqual(leftOp, rightOp);
+                case ExpressionType.Equal:              return new Equal(leftOp, rightOp);
+                case ExpressionType.NotEqual:           return new NotEqual(leftOp, rightOp);
+                case ExpressionType.LessThan:           return new LessThan(leftOp, rightOp);
+                case ExpressionType.LessThanOrEqual:    return new LessThanOrEqual(leftOp, rightOp);
+                case ExpressionType.GreaterThan:        return new GreaterThan(leftOp, rightOp);
+                case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual(leftOp, rightOp);
                 
                 // --- group operator:
-                case ExpressionType.OrElse:
-                    return new Or(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
-                case ExpressionType.AndAlso:
-                    return new And(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.OrElse:             return new Or(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.AndAlso:            return new And(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
                 
                 // --- binary arithmetic operators
-                case ExpressionType.Add:
-                    return new Add(leftOp, rightOp);
-                case ExpressionType.Subtract:
-                    return new Subtract(leftOp, rightOp);
-                case ExpressionType.Multiply:
-                    return new Multiply(leftOp, rightOp);
-                case ExpressionType.Divide:
-                    return new Divide(leftOp, rightOp);
+                case ExpressionType.Add:                return new Add(leftOp, rightOp);
+                case ExpressionType.Subtract:           return new Subtract(leftOp, rightOp);
+                case ExpressionType.Multiply:           return new Multiply(leftOp, rightOp);
+                case ExpressionType.Divide:             return new Divide(leftOp, rightOp);
 
                 default:
                     throw new NotSupportedException($"Method not supported. method: {binary}");

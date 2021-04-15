@@ -217,18 +217,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 // --- unary aggregate operations
                 var min         = new Min(new Field(".children[*].age"));
                 AreEqual(20,         eval.Eval(peter, min.Lambda()));
+                AreEqual("Min(.children[*].age)", min.ToString());
                 
                 var max         = new Max(new Field(".children[*].age"));
                 AreEqual(20,         eval.Eval(peter, max.Lambda()));
+                AreEqual("Max(.children[*].age)", max.ToString());
                 
                 var sum         = new Sum(new Field(".children[*].age"));
                 AreEqual(40,         eval.Eval(peter, sum.Lambda()));
+                AreEqual("Sum(.children[*].age)", sum.ToString());
                 
                 var average     = new Average(new Field(".children[*].age"));
                 AreEqual(20,         eval.Eval(peter, average.Lambda()));
+                AreEqual("Average(.children[*].age)", average.ToString());
                 
                 var count       = new Count(new Field(".children[*].age"));
                 AreEqual(2,          eval.Eval(peter, count.Lambda()));
+                AreEqual("Count(.children[*].age)", count.ToString());
             }
         }
 
@@ -328,8 +333,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             
             // --- unary aggregate operators
-            // todo            
+            var min      = (Min)  Operator.FromLambda((Person p) => p.children.Min(child => child.age));
+            AreEqual("Min(.children)", min.ToString());
+            
+            var max      = (Max)  Operator.FromLambda((Person p) => p.children.Max(child => child.age));
+            AreEqual("Max(.children)", max.ToString());
 
+            var sum      = (Sum)  Operator.FromLambda((Person p) => p.children.Sum(child => child.age));
+            AreEqual("Sum(.children)", sum.ToString());
+
+            var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count());
+            AreEqual("Count(.children)", count.ToString());
+            
+            var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
+            AreEqual("Average(.children)", average.ToString());
         }
     }
 }
