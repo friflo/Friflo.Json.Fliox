@@ -123,6 +123,24 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
+    public class Negate : UnaryArithmeticOp
+    {
+        public Negate(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Negate({operand})";
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            var zero = new Scalar(0);
+            evalResult.Clear();
+            var eval = operand.Eval(cx);
+            foreach (var val in eval.values) {
+                var result = zero.Subtract(val);
+                evalResult.Add(result);
+            }
+            return evalResult;
+        }
+    }
+    
     
     
     

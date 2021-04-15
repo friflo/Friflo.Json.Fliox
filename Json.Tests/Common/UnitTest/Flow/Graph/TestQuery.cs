@@ -206,6 +206,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
                 AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
                 
+                var negate  = new Negate(new DoubleLiteral(1));
+                AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
+                
 
                 // --- binary arithmetic operations
                 var add      = new Add(new LongLiteral(1), new LongLiteral(2));
@@ -323,6 +326,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var sqrt    = (Sqrt)    Operator.FromLambda((object p) => Math.Sqrt(2.5));
             AreEqual("Sqrt(2.5)", sqrt.ToString());
+            
+            var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
+            AreEqual("Negate(Abs(-1))", negate.ToString());
+
             
             
             // --- binary arithmetic operators

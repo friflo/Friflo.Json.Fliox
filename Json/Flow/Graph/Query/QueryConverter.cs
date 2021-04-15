@@ -152,6 +152,9 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.Not:
                     var operand = TraceExpression(unary.Operand, cx);
                     return new Not((BoolOp)operand);
+                case ExpressionType.Negate:
+                    operand = TraceExpression(unary.Operand, cx);
+                    return new Negate(operand);
                 case ExpressionType.Convert:
                     return OperatorFromConvert(unary, cx);
                 default:
@@ -168,6 +171,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.Subtract:
                 case ExpressionType.Multiply:
                 case ExpressionType.Divide:
+                case ExpressionType.Negate:
                     return TraceExpression(unary.Operand, cx);
                 case ExpressionType.MemberAccess:
                     var member = (MemberExpression)unary.Operand;
