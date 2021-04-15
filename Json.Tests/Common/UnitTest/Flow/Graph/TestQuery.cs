@@ -288,53 +288,53 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
 
             // --- literals
-            var lng     = (LongLiteral)     Operator.FromLambda((Person p) => 1);
+            var lng     = (LongLiteral)     Operator.FromLambda((object p) => 1);
             AreEqual("1",           lng.ToString());
             
-            var dbl     = (DoubleLiteral)   Operator.FromLambda((Person p) => 1.5);
+            var dbl     = (DoubleLiteral)   Operator.FromLambda((object p) => 1.5);
             AreEqual("1.5",         dbl.ToString());
 
-            var str     = (StringLiteral)   Operator.FromLambda((Person p) => "hello");
+            var str     = (StringLiteral)   Operator.FromLambda((object p) => "hello");
             AreEqual("'hello'",     str.ToString());
             
-            var @true   = (BoolLiteral)     Operator.FromLambda((Person p) => true);
+            var @true   = (BoolLiteral)     Operator.FromLambda((object p) => true);
             AreEqual("true",        @true.ToString());
 
-            var @null   = (NullLiteral)     Operator.FromLambda((Person p) => null);
+            var @null   = (NullLiteral)     Operator.FromLambda((object p) => null);
             AreEqual("null",        @null.ToString());
 
             
             // --- unary arithmetic operators
-            var abs     = (Abs)     Operator.FromLambda((Person p) => Math.Abs(-1));
+            var abs     = (Abs)     Operator.FromLambda((object p) => Math.Abs(-1));
             AreEqual("Abs(-1)", abs.ToString());
             
-            var ceiling = (Ceiling) Operator.FromLambda((Person p) => Math.Ceiling(2.5));
+            var ceiling = (Ceiling) Operator.FromLambda((object p) => Math.Ceiling(2.5));
             AreEqual("Ceiling(2.5)", ceiling.ToString());
             
-            var floor   = (Floor)   Operator.FromLambda((Person p) => Math.Floor(2.5));
+            var floor   = (Floor)   Operator.FromLambda((object p) => Math.Floor(2.5));
             AreEqual("Floor(2.5)", floor.ToString());
             
-            var exp     = (Exp)     Operator.FromLambda((Person p) => Math.Exp(2.5));
+            var exp     = (Exp)     Operator.FromLambda((object p) => Math.Exp(2.5));
             AreEqual("Exp(2.5)", exp.ToString());
             
-            var log     = (Log)     Operator.FromLambda((Person p) => Math.Log(2.5));
+            var log     = (Log)     Operator.FromLambda((object p) => Math.Log(2.5));
             AreEqual("Log(2.5)", log.ToString());
             
-            var sqrt    = (Sqrt)    Operator.FromLambda((Person p) => Math.Sqrt(2.5));
+            var sqrt    = (Sqrt)    Operator.FromLambda((object p) => Math.Sqrt(2.5));
             AreEqual("Sqrt(2.5)", sqrt.ToString());
             
             
             // --- binary arithmetic operators
-            var add         = (Add)     Operator.FromLambda((Person p) => 1 + Math.Abs(1.0));
+            var add         = (Add)     Operator.FromLambda((object p) => 1 + Math.Abs(1.0));
             AreEqual("1 + Abs(1)", add.ToString());
 
-            var subtract    = (Subtract)Operator.FromLambda((Person p) => 1 - Math.Abs(1.0));
+            var subtract    = (Subtract)Operator.FromLambda((object p) => 1 - Math.Abs(1.0));
             AreEqual("1 - Abs(1)", subtract.ToString());
 
-            var multiply    = (Multiply)Operator.FromLambda((Person p) => 1 * Math.Abs(1.0));
+            var multiply    = (Multiply)Operator.FromLambda((object p) => 1 * Math.Abs(1.0));
             AreEqual("1 * Abs(1)", multiply.ToString());
 
-            var divide      = (Divide)  Operator.FromLambda((Person p) => 1 / Math.Abs(1.0));
+            var divide      = (Divide)  Operator.FromLambda((object p) => 1 / Math.Abs(1.0));
             AreEqual("1 / Abs(1)", divide.ToString());
             
             
