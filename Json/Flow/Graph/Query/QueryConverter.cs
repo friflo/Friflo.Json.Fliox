@@ -14,13 +14,14 @@ namespace Friflo.Json.Flow.Graph.Query
         public static Operator OperatorFromExpression(Expression query) {
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
-                var op = TraceExpression(body);
+                var cx = new QueryCx ("");
+                var op = TraceExpression(body, cx);
                 return op;
             }
             throw new NotSupportedException($"query not supported: {query}");
         }
         
-        private static Operator TraceExpression(Expression expression) {
+        private static Operator TraceExpression(Expression expression, QueryCx cx) {
             switch (expression) {
                 case MemberExpression member:
                     MemberInfo memberInfo = member.Member;
@@ -38,17 +39,17 @@ namespace Friflo.Json.Flow.Graph.Query
                     if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         // isArraySelector = true;
                     }
-                    return new Field("." + name);
+                    return new Field(cx.path + "." + name);
                 case MethodCallExpression methodCall:
-                    return OperatorFromMethodCallExpression(methodCall);
+                    return OperatorFromMethodCallExpression(methodCall, cx);
                 case LambdaExpression lambda: 
                     var body = lambda.Body;
-                    return TraceExpression(body);
+                    return TraceExpression(body, cx);
                 case UnaryExpression unary:
-                    var op = OperatorFromUnaryExpression(unary);
+                    var op = OperatorFromUnaryExpression(unary, cx);
                     return op;
                 case BinaryExpression binary:
-                    op = OperatorFromBinaryExpression(binary);
+                    op = OperatorFromBinaryExpression(binary, cx);
                     return op;
                 case ConstantExpression constant:
                     return OperatorFromConstant(constant);
@@ -57,28 +58,21 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static List<Operator> GetMethodArgs(IList<Expression> args) {
+        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
+            switch (methodCall.Method.Name) {
+                case "Any":
+                case "All":
+                    return OperatorFromBinaryLambda(methodCall, cx);
+            }
+
+            var args = methodCall.Arguments;
             var opArgs = new List<Operator>();
             for (int n = 0; n < args.Count; n++) {
                 var arg = args[n];
-                var boolOp = TraceExpression(arg);
-                opArgs.Add(boolOp);
+                var op = TraceExpression(arg, cx);
+                opArgs.Add(op);
             }
-            return opArgs;
-        }
-
-        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall) {
-            List<Operator> opArgs;
-            opArgs = GetMethodArgs(methodCall.Arguments);
             switch (methodCall.Method.Name) {
-                case "Any":
-                    string enumerableField = $"{opArgs[0]}[@]";
-                    // todo - provide Any group parameter
-                    return new Any(new Field(enumerableField), (BoolOp)opArgs[1]); 
-                case "All":
-                    // todo - provide All group parameter
-                    enumerableField = $"{opArgs[0]}[@]";
-                    return new All(new Field(enumerableField), (BoolOp)opArgs[1]);
                 case "Abs":
                     return new Abs(opArgs[0]);
                 case "Ceiling":
@@ -96,8 +90,27 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static Operator OperatorFromUnaryExpression(UnaryExpression unary) {
-            var operand = TraceExpression(unary.Operand);
+        private static Operator OperatorFromBinaryLambda(MethodCallExpression methodCall, QueryCx cx) {
+            var args = methodCall.Arguments;
+            var source      = args[0];
+            var predicate   = args[1];
+            var sourceOp = TraceExpression(source, cx);
+            string enumerableField = $"{sourceOp}[@]";
+            var lambdaCx = new QueryCx(cx.path + enumerableField);
+            var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
+            
+            switch (methodCall.Method.Name) {
+                case "Any":
+                    return new Any(new Field(enumerableField), predicateOp);
+                case "All":
+                    return new All(new Field(enumerableField), predicateOp);
+                default:
+                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+            }
+        }
+
+        private static Operator OperatorFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
+            var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
                 case ExpressionType.Not:
                     return new Not((BoolOp)operand);
@@ -108,9 +121,9 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static Operator OperatorFromBinaryExpression(BinaryExpression binary) {
-            var leftOp  = TraceExpression(binary.Left);
-            var rightOp = TraceExpression(binary.Right);
+        private static Operator OperatorFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
+            var leftOp  = TraceExpression(binary.Left,  cx);
+            var rightOp = TraceExpression(binary.Right, cx);
             switch (binary.NodeType) {
                 // --- binary comparison operators
                 case ExpressionType.Equal:
@@ -175,6 +188,14 @@ namespace Friflo.Json.Flow.Graph.Query
 
             throw new NotSupportedException($"Constant not supported: {constant}");
         }
+    }
 
+    internal class QueryCx
+    {
+        internal readonly string path;
+
+        internal QueryCx(string path) {
+            this.path = path;
+        }
     }
 }
