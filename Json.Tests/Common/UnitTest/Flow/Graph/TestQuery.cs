@@ -339,6 +339,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
             AreEqual("-(Abs(-1))", negate.ToString());
             
+            var plus    = (Abs)     Operator.FromLambda((object p) => +Math.Abs(-1)); // + will be eliminated
+            AreEqual("Abs(-1)", plus.ToString());
+            
             
             // --- binary arithmetic operators
             var add         = (Add)     Operator.FromLambda((object p) => 1 + Math.Abs(1.0));
