@@ -15,8 +15,7 @@ namespace Friflo.Json.Flow.Graph.Query
             var cx = new QueryCx ("", query);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
-                var op = TraceExpression(body, cx);
-                return op;
+                return TraceExpression(body, cx);
             }
             throw NotSupported($"query not supported: {query}", cx);
         }
@@ -25,9 +24,6 @@ namespace Friflo.Json.Flow.Graph.Query
             switch (expression) {
                 case MemberExpression member:
                     string name = GetMemberName(member, cx);
-                    if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
-                        // isArraySelector = true;
-                    }
                     return new Field(cx.path + "." + name);
                 case MethodCallExpression methodCall:
                     return OperatorFromMethodCallExpression(methodCall, cx);
@@ -35,11 +31,9 @@ namespace Friflo.Json.Flow.Graph.Query
                     var body = lambda.Body;
                     return TraceExpression(body, cx);
                 case UnaryExpression unary:
-                    var op = OperatorFromUnaryExpression(unary, cx);
-                    return op;
+                    return OperatorFromUnaryExpression(unary, cx);
                 case BinaryExpression binary:
-                    op = OperatorFromBinaryExpression(binary, cx);
-                    return op;
+                    return OperatorFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
                     return OperatorFromConstant(constant, cx);
                 default:
@@ -50,10 +44,8 @@ namespace Friflo.Json.Flow.Graph.Query
         private static string GetMemberName(MemberExpression member, QueryCx cx) {
             MemberInfo memberInfo = member.Member;
             switch (memberInfo) {
-                case FieldInfo fieldInfo:
-                    return fieldInfo.Name;
-                case PropertyInfo propertyInfo:
-                    return propertyInfo.Name;
+                case FieldInfo fieldInfo:           return fieldInfo.Name;
+                case PropertyInfo propertyInfo:     return propertyInfo.Name;
                 default:
                     throw NotSupported($"Member not supported: {member}", cx);
             }
@@ -111,12 +103,12 @@ namespace Friflo.Json.Flow.Graph.Query
             var valueOp = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
                 // --- arithmetic operators
-                case "Abs":     return new Abs(valueOp);
-                case "Ceiling": return new Ceiling(valueOp);
-                case "Floor":   return new Floor(valueOp);
-                case "Exp":     return new Exp(valueOp);
-                case "Log":     return new Log(valueOp);
-                case "Sqrt":    return new Sqrt(valueOp);
+                case "Abs":     return new Abs      (valueOp);
+                case "Ceiling": return new Ceiling  (valueOp);
+                case "Floor":   return new Floor    (valueOp);
+                case "Exp":     return new Exp      (valueOp);
+                case "Log":     return new Log      (valueOp);
+                case "Sqrt":    return new Sqrt     (valueOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
@@ -147,10 +139,10 @@ namespace Friflo.Json.Flow.Graph.Query
             var valueOp = TraceExpression(predicate, cx);
             
             switch (methodCall.Method.Name) {
-                case "Min":     return new Min(valueOp);
-                case "Max":     return new Max(valueOp);
-                case "Sum":     return new Sum(valueOp);
-                case "Average": return new Average(valueOp);
+                case "Min":     return new Min      (valueOp);
+                case "Max":     return new Max      (valueOp);
+                case "Sum":     return new Sum      (valueOp);
+                case "Average": return new Average  (valueOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
@@ -202,22 +194,22 @@ namespace Friflo.Json.Flow.Graph.Query
             var rightOp = TraceExpression(binary.Right, cx);
             switch (binary.NodeType) {
                 // --- binary comparison operators
-                case ExpressionType.Equal:              return new Equal(leftOp, rightOp);
-                case ExpressionType.NotEqual:           return new NotEqual(leftOp, rightOp);
-                case ExpressionType.LessThan:           return new LessThan(leftOp, rightOp);
-                case ExpressionType.LessThanOrEqual:    return new LessThanOrEqual(leftOp, rightOp);
-                case ExpressionType.GreaterThan:        return new GreaterThan(leftOp, rightOp);
-                case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual(leftOp, rightOp);
+                case ExpressionType.Equal:              return new Equal                (leftOp, rightOp);
+                case ExpressionType.NotEqual:           return new NotEqual             (leftOp, rightOp);
+                case ExpressionType.LessThan:           return new LessThan             (leftOp, rightOp);
+                case ExpressionType.LessThanOrEqual:    return new LessThanOrEqual      (leftOp, rightOp);
+                case ExpressionType.GreaterThan:        return new GreaterThan          (leftOp, rightOp);
+                case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual   (leftOp, rightOp);
                 
                 // --- group operator:
-                case ExpressionType.OrElse:             return new Or(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
-                case ExpressionType.AndAlso:            return new And(new List<BoolOp>{(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.OrElse:             return new Or(new List<BoolOp>  {(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.AndAlso:            return new And(new List<BoolOp> {(BoolOp)leftOp, (BoolOp)rightOp});
                 
                 // --- binary arithmetic operators
-                case ExpressionType.Add:                return new Add(leftOp, rightOp);
-                case ExpressionType.Subtract:           return new Subtract(leftOp, rightOp);
-                case ExpressionType.Multiply:           return new Multiply(leftOp, rightOp);
-                case ExpressionType.Divide:             return new Divide(leftOp, rightOp);
+                case ExpressionType.Add:                return new Add                  (leftOp, rightOp);
+                case ExpressionType.Subtract:           return new Subtract             (leftOp, rightOp);
+                case ExpressionType.Multiply:           return new Multiply             (leftOp, rightOp);
+                case ExpressionType.Divide:             return new Divide               (leftOp, rightOp);
 
                 default:
                     throw NotSupported($"Method not supported. method: {binary}", cx);
@@ -245,7 +237,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 return new LongLiteral((byte)       value);
             
             if (type == typeof(bool))
-                return new BoolLiteral((bool)    value);
+                return new BoolLiteral((bool)       value);
             
             if (type == typeof(object) && value == null)
                 return new NullLiteral();
