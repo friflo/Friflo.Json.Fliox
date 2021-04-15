@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Flow.Graph.Select;
 
-// ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Flow.Graph.Query
 {
     // --- literals
