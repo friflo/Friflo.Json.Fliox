@@ -167,7 +167,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var jsonMapper   = new ObjectMapper())
             {
                 jsonMapper.Pretty = true;
-                // use expression
+                var peter = jsonMapper.Write(Peter);
+                
+                // --- use expression
                 AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<Person>(p => "hello")));
                 // use lambda
                 AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
@@ -177,7 +179,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(true,      eval.Eval("{}", new BoolLiteral(true).Lambda()));
                 AreEqual(null,      eval.Eval("{}", new NullLiteral().Lambda()));
 
-                // unary arithmetic operations
+                
+                // --- unary arithmetic operations
                 var abs     = new Abs(new LongLiteral(-2));
                 AreEqual(2,         eval.Eval("{}", abs.Lambda()));
                 
@@ -195,10 +198,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
                 AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
-
                 
 
-                // binary arithmetic operations
+                // --- binary arithmetic operations
                 var add      = new Add(new LongLiteral(1), new LongLiteral(2));
                 AreEqual(3,         eval.Eval("{}", add.Lambda()));
                 
@@ -210,6 +212,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
                 AreEqual(5,         eval.Eval("{}", divide.Lambda()));
+                
+                
+                // --- unary aggregate operations
+                var min         = new Min(new Field(".children[*].age"));
+                AreEqual(20,         eval.Eval(peter, min.Lambda()));
+                
+                var max         = new Max(new Field(".children[*].age"));
+                AreEqual(20,         eval.Eval(peter, max.Lambda()));
+                
+                var sum         = new Sum(new Field(".children[*].age"));
+                AreEqual(40,         eval.Eval(peter, sum.Lambda()));
+                
+                var average     = new Average(new Field(".children[*].age"));
+                AreEqual(20,         eval.Eval(peter, average.Lambda()));
+                
+                var count       = new Count(new Field(".children[*].age"));
+                AreEqual(2,          eval.Eval(peter, count.Lambda()));
             }
         }
 
@@ -306,6 +325,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var divide      = (Divide)  Operator.FromLambda((Person p) => 1 / Math.Abs(1.0));
             AreEqual("1 / Abs(1)", divide.ToString());
+            
+            
+            // --- unary aggregate operators
+            // todo            
 
         }
     }

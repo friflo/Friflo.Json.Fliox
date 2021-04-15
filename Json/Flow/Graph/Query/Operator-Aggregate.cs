@@ -40,4 +40,77 @@ namespace Friflo.Json.Flow.Graph.Query
             return evalResult;
         }
     }
+    
+    public class Max : UnaryAggregateOp
+    {
+        public Max(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Max({operand})";
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            Scalar currentMin = new Scalar();
+            var eval = operand.Eval(cx);
+            foreach (var val in eval.values) {
+                if (currentMin.type != ScalarType.Undefined) {
+                    if (val.CompareTo(currentMin) > 0)
+                        currentMin = val;
+                } else {
+                    currentMin = val;
+                }
+            }
+            evalResult.SetSingle(currentMin);
+            return evalResult;
+        }
+    }
+    
+    public class Sum : UnaryAggregateOp
+    {
+        public Sum(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Sum({operand})";
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            Scalar sum = new Scalar(0);
+            var eval = operand.Eval(cx);
+            foreach (var val in eval.values) {
+                sum = sum.Add(val);
+            }
+            evalResult.SetSingle(sum);
+            return evalResult;
+        }
+    }
+    
+    public class Average : UnaryAggregateOp
+    {
+        public Average(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Average({operand})";
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            Scalar sum = new Scalar(0);
+            var eval = operand.Eval(cx);
+            int count = 0;
+            foreach (var val in eval.values) {
+                sum = sum.Add(val);
+                count++;
+            }
+            var average = sum.Divide(new Scalar(count)); 
+            evalResult.SetSingle(average);
+            return evalResult;
+        }
+    }
+    
+    public class Count : UnaryAggregateOp
+    {
+        public Count(Operator operand) : base(operand) { }
+
+        public override     string      ToString() => $"Count({operand})";
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            var eval = operand.Eval(cx);
+            int count = eval.values.Count;
+            evalResult.SetSingle(new Scalar(count));
+            return evalResult;
+        }
+    }
 }
