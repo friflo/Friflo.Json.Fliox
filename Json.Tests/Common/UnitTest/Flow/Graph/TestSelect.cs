@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
 
-                var result = jsonSelector.Select(json, new [] {
+                var select = new JsonSelect(new[] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
                     ".dbl",
@@ -28,6 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     ".child",
                     ".unknown"
                 });
+                var result = jsonSelector.Select(json, select);
+                
                 // AreEqual(@"[{""val2"":68}]",    result[0].ToString());
                 AreEqual("[69]",                result[1].ToString());
                 AreEqual("[94]",                result[2].ToString());
@@ -84,22 +86,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var store = new Store();
                 store.InitSample();
                 var json = jsonWriter.Write(store);
-                var selectList = new[] {
+                var select = new JsonSelect(new[] {
                     ".books[*].title",
                     ".books[*].author",
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
-                };
+                });
                 var result = new List<SelectorResult>();
                 for (int n = 0; n < 2; n++) {
-                    result = jsonSelector.Select(json, selectList);
+                    result = jsonSelector.Select(json, select);
                 }
                 AssertStoreResult(result);
                 
-                var selector = new JsonSelect(selectList);
                 for (int n = 0; n < 2; n++) {
-                     jsonSelector.Select(json, selector);
-                     result = selector.Results; // alternative access to results
+                     jsonSelector.Select(json, select);
+                     result = select.Results; // alternative access to results
                 }
                 AssertStoreResult(result);
             }

@@ -25,14 +25,9 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public SelectorResult Select(string json, string selector, bool pretty = false) {
-            var selectors = new [] {selector};
-            var result = Select(json, selectors, pretty);
+            var select = new JsonSelect(new [] {selector});
+            var result = Select(json, select, pretty);
             return result[0];
-        }
-
-        public List<SelectorResult> Select(string json, IList<string> pathList, bool pretty = false) {
-            reusedSelect.CreateNodeTree(pathList);
-            return Select(json, reusedSelect, pretty);
         }
 
         public List<SelectorResult> Select(string json, JsonSelect jsonSelect, bool pretty = false) {
