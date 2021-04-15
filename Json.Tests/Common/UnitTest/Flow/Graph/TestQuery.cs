@@ -53,6 +53,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     hobbies = {
                         new Hobby{ name= "Biking"}
                     }
+                },
+                new Person {
+                    name = "Garfunkel", age = 16,
+                    hobbies = {
+                        new Hobby{ name= "Biking"}
+                    }
                 }
             }
         };
@@ -167,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var jsonMapper   = new ObjectMapper())
             {
                 jsonMapper.Pretty = true;
-                var peter = jsonMapper.Write(Peter);
+                var john  = jsonMapper.Write(John);
                 
                 // --- use expression
                 AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<Person>(p => "hello")));
@@ -216,23 +222,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // --- unary aggregate operations
                 var min         = new Min(new Field(".children[@].age"));
-                AreEqual(20,         eval.Eval(peter, min.Lambda()));
+                AreEqual(10,         eval.Eval(john, min.Lambda()));
                 AreEqual("Min(.children[@].age)", min.ToString());
                 
                 var max         = new Max(new Field(".children[@].age"));
-                AreEqual(20,         eval.Eval(peter, max.Lambda()));
+                AreEqual(16,         eval.Eval(john, max.Lambda()));
                 AreEqual("Max(.children[@].age)", max.ToString());
                 
                 var sum         = new Sum(new Field(".children[@].age"));
-                AreEqual(40,         eval.Eval(peter, sum.Lambda()));
+                AreEqual(26,         eval.Eval(john, sum.Lambda()));
                 AreEqual("Sum(.children[@].age)", sum.ToString());
                 
                 var average     = new Average(new Field(".children[@].age"));
-                AreEqual(20,         eval.Eval(peter, average.Lambda()));
+                AreEqual(13,         eval.Eval(john, average.Lambda()));
                 AreEqual("Average(.children[@].age)", average.ToString());
                 
                 var count       = new Count(new Field(".children[@]"));
-                AreEqual(2,          eval.Eval(peter, count.Lambda()));
+                AreEqual(2,          eval.Eval(john, count.Lambda()));
                 AreEqual("Count(.children[@])", count.ToString());
             }
         }
@@ -342,6 +348,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var sum      = (Sum)  Operator.FromLambda((Person p) => p.children.Sum(child => child.age));
             AreEqual("Sum(.children[@].age)", sum.ToString());
 
+            // todo
             // var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count);
             // AreEqual("Count(.children[@].age)", count.ToString());
             
