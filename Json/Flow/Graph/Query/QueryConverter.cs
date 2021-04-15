@@ -63,28 +63,13 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Any":
                 case "All":
                     return OperatorFromBinaryLambda(methodCall, cx);
-            }
-
-            var args = methodCall.Arguments;
-            var opArgs = new List<Operator>();
-            for (int n = 0; n < args.Count; n++) {
-                var arg = args[n];
-                var op = TraceExpression(arg, cx);
-                opArgs.Add(op);
-            }
-            switch (methodCall.Method.Name) {
                 case "Abs":
-                    return new Abs(opArgs[0]);
                 case "Ceiling":
-                    return new Ceiling(opArgs[0]);
                 case "Floor":
-                    return new Floor(opArgs[0]);
                 case "Exp":
-                    return new Exp(opArgs[0]);
                 case "Log":
-                    return new Log(opArgs[0]);
                 case "Sqrt":
-                    return new Sqrt(opArgs[0]);
+                    return OperatorFromBinaryMethodCall(methodCall, cx);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
@@ -95,15 +80,37 @@ namespace Friflo.Json.Flow.Graph.Query
             var source      = args[0];
             var predicate   = args[1];
             var sourceOp = TraceExpression(source, cx);
-            string enumerableField = $"{sourceOp}[@]";
-            var lambdaCx = new QueryCx(cx.path + enumerableField);
+            
+            string sourceField = $"{sourceOp}[@]";
+            var lambdaCx = new QueryCx(cx.path + sourceField);
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
                 case "Any":
-                    return new Any(new Field(enumerableField), predicateOp);
+                    return new Any(new Field(sourceField), predicateOp);
                 case "All":
-                    return new All(new Field(enumerableField), predicateOp);
+                    return new All(new Field(sourceField), predicateOp);
+                default:
+                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+            }
+        }
+        
+        private static Operator OperatorFromBinaryMethodCall(MethodCallExpression methodCall, QueryCx cx) {
+            var value = methodCall.Arguments[0];
+            var valueOp = TraceExpression(value, cx);
+            switch (methodCall.Method.Name) {
+                case "Abs":
+                    return new Abs(valueOp);
+                case "Ceiling":
+                    return new Ceiling(valueOp);
+                case "Floor":
+                    return new Floor(valueOp);
+                case "Exp":
+                    return new Exp(valueOp);
+                case "Log":
+                    return new Log(valueOp);
+                case "Sqrt":
+                    return new Sqrt(valueOp);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
