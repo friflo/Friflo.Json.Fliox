@@ -180,17 +180,21 @@ namespace Friflo.Json.Flow.Graph.Query
                     return TraceExpression(unary.Operand, cx);
                 case ExpressionType.MemberAccess:
                     var member = (MemberExpression)unary.Operand;
-                    var name = GetMemberName(member, cx);
-                    var field = (Field)TraceExpression(member.Expression, cx);
-                    switch (name) {
-                        case "Count":
-                            field.field = field.field + "[@]";
-                            return new Count(field);
-                    }
-                    throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
+                    return OperatorFromMember(member, cx);
                 default:
                     throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
             }
+        }
+
+        private static Operator OperatorFromMember(MemberExpression member, QueryCx cx) {
+            var name = GetMemberName(member, cx);
+            var field = (Field)TraceExpression(member.Expression, cx);
+            switch (name) {
+                case "Count":
+                    field.field = field.field + "[@]";
+                    return new Count(field);
+            }
+            throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
         }
 
         private static Operator OperatorFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
