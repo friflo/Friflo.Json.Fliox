@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public Negate(Operator operand) : base(operand) { }
 
-        public override     string      ToString() => $"Negate({operand})";
+        public override     string      ToString() => $"-({operand})";
         
         internal override EvalResult Eval(EvalCx cx) {
             var zero = new Scalar(0);

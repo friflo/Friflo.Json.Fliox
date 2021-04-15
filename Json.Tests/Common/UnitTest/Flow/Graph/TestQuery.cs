@@ -328,7 +328,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Sqrt(2.5)", sqrt.ToString());
             
             var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
-            AreEqual("Negate(Abs(-1))", negate.ToString());
+            AreEqual("-(Abs(-1))", negate.ToString());
 
             
             
