@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
         private void ReadJsonFields(string json, JsonLambda lambda) {
             var query = lambda.jsonSelect;
             jsonSelector.Select(json, query);
-            var selectorResults = query.GetResult();
+            var selectorResults = query.Results;
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
                 Field field = fields[n];

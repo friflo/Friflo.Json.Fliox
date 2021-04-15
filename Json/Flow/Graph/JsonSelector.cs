@@ -33,10 +33,10 @@ namespace Friflo.Json.Flow.Graph
         public List<SelectorResult> Select(string json, IList<string> pathList, bool pretty = false) {
             reusedSelect.CreateNodeTree(pathList);
             Select(json, reusedSelect, pretty);
-            return reusedSelect.GetResult();
+            return reusedSelect.Results;
         }
 
-        public JsonSelect Select(string json, JsonSelect jsonSelect, bool pretty = false) {
+        public List<SelectorResult> Select(string json, JsonSelect jsonSelect, bool pretty = false) {
             jsonSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(jsonSelect.nodeTree.rootNode);
@@ -49,7 +49,14 @@ namespace Friflo.Json.Flow.Graph
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
-            return jsonSelect;
+            
+            // refill result list cause application code may mutate between Select() calls
+            var results = jsonSelect.results; 
+            results.Clear();
+            foreach (var selector in jsonSelect.nodeTree.selectors) {
+                results.Add(selector.result);
+            }
+            return results;
         }
 
         private void AddPathNodeResult(PathNode<SelectorResult> node) {

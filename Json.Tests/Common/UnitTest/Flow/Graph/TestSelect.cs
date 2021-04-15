@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var selector = new JsonSelect(selectList);
                 for (int n = 0; n < 2; n++) {
                     jsonSelector.Select(json, selector);
-                    result = selector.GetResult();
+                    result = selector.Results;
                 }
                 AssertStoreResult(result);
             }
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(TestQuery.Peter);
                 jsonSelector.Select(peter, select);
-                var result = select.GetResult();
+                var result = select.Results;
                 
                 // --- path[0]  group by using [@]
                 AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[0].ToString());
