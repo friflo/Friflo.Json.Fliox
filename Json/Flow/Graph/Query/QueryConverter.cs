@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Sum":
                 case "Count":
                 case "Average":
-                    return OperatorFromUnaryAggregate(methodCall, cx);
+                    return OperatorFromAggregate(methodCall, cx);
                 
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
@@ -90,9 +90,9 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operator OperatorFromBinaryQuantifier(MethodCallExpression methodCall, QueryCx cx) {
             var args = methodCall.Arguments;
             var source      = args[0];
-            var predicate   = args[1];
             var sourceOp = TraceExpression(source, cx);
             
+            var predicate   = args[1];
             string sourceField = $"{sourceOp}[@]";
             var lambdaCx = new QueryCx(cx.path + sourceField);
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
@@ -121,9 +121,16 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
         
-        private static Operator OperatorFromUnaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
-            var value = methodCall.Arguments[0];
-            var valueOp = TraceExpression(value, cx);
+        private static Operator OperatorFromAggregate(MethodCallExpression methodCall, QueryCx cx) {
+            var args = methodCall.Arguments;
+            var source   = args[0];
+            var sourceOp = TraceExpression(source, cx);
+            
+            var predicate   = args[1];
+            string sourceField = $"{sourceOp}[@]";
+            var lambdaCx = new QueryCx(cx.path + sourceField);
+            var valueOp = TraceExpression(predicate, lambdaCx);
+            
             switch (methodCall.Method.Name) {
                 case "Min":     return new Min(valueOp);
                 case "Max":     return new Max(valueOp);
