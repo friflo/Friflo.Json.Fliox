@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
             
             evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList, cx);
+            var nAryResult = new N_aryResult(evalList);
             foreach (N_aryList result in nAryResult) {
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
@@ -105,7 +105,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
             
             evalResult.Clear();
-            var nAryResult = new N_aryResult(evalList, cx);
+            var nAryResult = new N_aryResult(evalList);
             foreach (N_aryList result in nAryResult) {
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {

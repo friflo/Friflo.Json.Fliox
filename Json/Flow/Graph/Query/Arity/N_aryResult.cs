@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
     {
         internal  readonly  List<EvalResult>    results;
         
-        internal N_aryResult(List<EvalResult> results, EvalCx cx) {
+        internal N_aryResult(List<EvalResult> results) {
             this.results  = results;
         }
 

@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
     {
         internal  readonly  EvalResult  result;
         
-        internal UnaryResult(EvalResult result, EvalCx cx) {
+        internal UnaryResult(EvalResult result) {
             this.result  = result;
             if (result.Count == 1)
                 return;

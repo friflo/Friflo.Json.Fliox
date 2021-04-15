@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) == 0 ? True : False);
             }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) != 0 ? True : False);
             }
@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) < 0 ? True : False);
             }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) <= 0 ? True : False);
             }
@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) > 0 ? True : False);
             }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx), cx);
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
                 evalResult.Add(pair.left.CompareTo(pair.right) >= 0 ? True : False);
             }
