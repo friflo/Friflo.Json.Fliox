@@ -94,7 +94,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 sum = sum.Add(val);
                 count++;
             }
-            var average = sum.Divide(new Scalar(count)); 
+            var average = sum.Divide(new Scalar((double)count)); 
             evalResult.SetSingle(average);
             return evalResult;
         }

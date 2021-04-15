@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     }
                 },
                 new Person {
-                    name = "Garfunkel", age = 16,
+                    name = "Garfunkel", age = 11,
                     hobbies = {
                         new Hobby{ name= "Biking"}
                     }
@@ -226,15 +226,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("Min(.children[@].age)", min.ToString());
                 
                 var max         = new Max(new Field(".children[@].age"));
-                AreEqual(16,         eval.Eval(john, max.Lambda()));
+                AreEqual(11,         eval.Eval(john, max.Lambda()));
                 AreEqual("Max(.children[@].age)", max.ToString());
                 
                 var sum         = new Sum(new Field(".children[@].age"));
-                AreEqual(26,         eval.Eval(john, sum.Lambda()));
+                AreEqual(21,         eval.Eval(john, sum.Lambda()));
                 AreEqual("Sum(.children[@].age)", sum.ToString());
                 
                 var average     = new Average(new Field(".children[@].age"));
-                AreEqual(13,         eval.Eval(john, average.Lambda()));
+                AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                 AreEqual("Average(.children[@].age)", average.ToString());
                 
                 var count       = new Count(new Field(".children[@]"));
