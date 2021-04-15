@@ -100,10 +100,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Field (".children[@]"), new Equal (new Field (".children[@].name"), new StringLiteral ("Paul"))).Filter();
+                var  hasChildPaul = new Any (new Field (".children[=>]"), new Equal (new Field (".children[=>].name"), new StringLiteral ("Paul"))).Filter();
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new Field (".children[@]"), new LessThan (new Field (".children[@].age"), new LongLiteral (12))).Filter();
+                var hasChildAgeLess12 = new Any (new Field (".children[=>]"), new LessThan (new Field (".children[=>].age"), new LongLiteral (12))).Filter();
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Field (".children[@]"), new Equal(new Field (".children[@].age"), new LongLiteral (20))).Filter();
+                var allChildAgeEquals20 = new All (new Field (".children[=>]"), new Equal(new Field (".children[=>].age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
@@ -159,10 +159,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var john  = jsonMapper.Write(John);
 
                 // --- Any
-                var  hasChildHobbySurfing = new Any (new Field (".children[@]"), new Equal (new Field (".children[@].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
+                var  hasChildHobbySurfing = new Any (new Field (".children[=>]"), new Equal (new Field (".children[=>].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual("Any(.children[@], .children[@].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
+                AreEqual("Any(.children[=>], .children[=>].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
                 IsTrue (HasChildHobbySurfing(Peter));
                 IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));
@@ -225,25 +225,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 
                 // --- unary aggregate operations
-                var min         = new Min(new Field(".children[@].age"));
+                var min         = new Min(new Field(".children[=>].age"));
                 AreEqual(10,         eval.Eval(john, min.Lambda()));
-                AreEqual("Min(.children[@].age)", min.ToString());
+                AreEqual("Min(.children[=>].age)", min.ToString());
                 
-                var max         = new Max(new Field(".children[@].age"));
+                var max         = new Max(new Field(".children[=>].age"));
                 AreEqual(11,         eval.Eval(john, max.Lambda()));
-                AreEqual("Max(.children[@].age)", max.ToString());
+                AreEqual("Max(.children[=>].age)", max.ToString());
                 
-                var sum         = new Sum(new Field(".children[@].age"));
+                var sum         = new Sum(new Field(".children[=>].age"));
                 AreEqual(21,         eval.Eval(john, sum.Lambda()));
-                AreEqual("Sum(.children[@].age)", sum.ToString());
+                AreEqual("Sum(.children[=>].age)", sum.ToString());
                 
-                var average     = new Average(new Field(".children[@].age"));
+                var average     = new Average(new Field(".children[=>].age"));
                 AreEqual(10.5,       eval.Eval(john, average.Lambda()));
-                AreEqual("Average(.children[@].age)", average.ToString());
+                AreEqual("Average(.children[=>].age)", average.ToString());
                 
-                var count       = new Count(new Field(".children[@]"));
+                var count       = new Count(new Field(".children[=>]"));
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
-                AreEqual("Count(.children[@])", count.ToString());
+                AreEqual("Count(.children[=>])", count.ToString());
             }
         }
 
@@ -294,10 +294,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // --- quantifier operators
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual("Any(.children[@], .children[@].age == 20)", any.ToString());
+            AreEqual("Any(.children[=>], .children[=>].age == 20)", any.ToString());
             
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual("All(.children[@], .children[@].age == 20)", all.ToString());
+            AreEqual("All(.children[=>], .children[=>].age == 20)", all.ToString());
 
 
             // --- literals
@@ -359,22 +359,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // --- unary aggregate operators
             var min      = (Min)  Operator.FromLambda((Person p) => p.children.Min(child => child.age));
-            AreEqual("Min(.children[@].age)", min.ToString());
+            AreEqual("Min(.children[=>].age)", min.ToString());
             
             var max      = (Max)  Operator.FromLambda((Person p) => p.children.Max(child => child.age));
-            AreEqual("Max(.children[@].age)", max.ToString());
+            AreEqual("Max(.children[=>].age)", max.ToString());
 
             var sum      = (Sum)  Operator.FromLambda((Person p) => p.children.Sum(child => child.age));
-            AreEqual("Sum(.children[@].age)", sum.ToString());
+            AreEqual("Sum(.children[=>].age)", sum.ToString());
 
             var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count()); // () -> method call
-            AreEqual("Count(.children[@])", count.ToString());
+            AreEqual("Count(.children[=>])", count.ToString());
             
             var count2    = (Count)  Operator.FromLambda((Person p) => p.children.Count); // no () -> Count property 
-            AreEqual("Count(.children[@])", count2.ToString());
+            AreEqual("Count(.children[=>])", count2.ToString());
 
             var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
-            AreEqual("Average(.children[@].age)", average.ToString());
+            AreEqual("Average(.children[=>].age)", average.ToString());
         }
     }
 }

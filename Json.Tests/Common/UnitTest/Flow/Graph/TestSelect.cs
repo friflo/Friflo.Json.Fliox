@@ -116,8 +116,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]
         public void TestArrayGroupSelect() {
             var selectors = new[] {
-                ".children[@].hobbies[*].name", // group by using [@]
-                ".children[*].hobbies[*].name"  // dont group by using [*]
+                ".children[=>].hobbies[*].name", // group by using [=>]
+                ".children[*].hobbies[*].name"   // dont group by using [*]
             };
             var select = new JsonSelect(selectors);
             
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var peter  = jsonMapper.Write(TestQuery.Peter);
                 var result = jsonSelector.Select(peter, select);
                 
-                // --- path[0]  group by using [@]
+                // --- path[0]  group by using [=>]
                 AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[0].ToString());
                 // result contains two groups returned as index ranges:
                 // Group 0: [0 - 2]

@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph.Query
             var sourceOp = TraceExpression(source, cx);
             
             var predicate   = args[1];
-            string sourceField = $"{sourceOp}[@]";
+            string sourceField = $"{sourceOp}[=>]";
             var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Graph.Query
             var     args        = methodCall.Arguments;
             var     source      = args[0];
             var     sourceOp    = TraceExpression(source, cx);
-            string  sourceField = $"{sourceOp}[@]";
+            string  sourceField = $"{sourceOp}[=>]";
             
             switch (methodCall.Method.Name) {
                 case "Count":
@@ -187,7 +187,7 @@ namespace Friflo.Json.Flow.Graph.Query
             var field = (Field)TraceExpression(member.Expression, cx);
             switch (name) {
                 case "Count":
-                    field.field = field.field + "[@]";
+                    field.field = field.field + "[=>]";
                     return new Count(field);
             }
             throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);

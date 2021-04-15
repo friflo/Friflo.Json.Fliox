@@ -77,12 +77,12 @@ namespace Friflo.Json.Flow.Graph.Select
             var arrayStart = path.IndexOf('[', start);
             var arrayEnd   = path.IndexOf(']', start);
             if (arrayStart != -1 || arrayEnd != -1) {
-                if (arrayStart + 2 == arrayEnd) {
+                if (arrayStart + 2 <= arrayEnd) {
                     SelectorType indexType;
-                    var indexChar = path[arrayStart + 1];
-                    switch (indexChar) {
-                        case '*': indexType = SelectorType.ArrayWildcard;   break;
-                        case '@': indexType = SelectorType.ArrayGroup;      break;
+                    string indexString = path.Substring(arrayStart + 1, arrayEnd - arrayStart - 1);
+                    switch (indexString) {
+                        case "*":  indexType = SelectorType.ArrayWildcard;   break;
+                        case "=>": indexType = SelectorType.ArrayGroup;      break;
                         default:
                             throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     }
