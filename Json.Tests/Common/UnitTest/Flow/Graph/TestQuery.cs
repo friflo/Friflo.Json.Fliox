@@ -235,6 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
             AreEqual(".age >= 20", isGreaterOrEqual.ToString());
             
+            
             // --- group operators
             var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
             AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
@@ -247,6 +248,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
             AreEqual("!(.age >= 20)", isNot.ToString());
                 
+            
+            // --- quantifier operators
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
             AreEqual("Any(.children[@], .children[@].age == 20)", any.ToString());
             
