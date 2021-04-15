@@ -148,13 +148,10 @@ namespace Friflo.Json.Flow.Graph.Query
         }
 
         private static Operator OperatorFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
+            var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
-                case ExpressionType.Not:
-                    var operand = TraceExpression(unary.Operand, cx);
-                    return new Not((BoolOp)operand);
-                case ExpressionType.Negate:
-                    operand = TraceExpression(unary.Operand, cx);
-                    return new Negate(operand);
+                case ExpressionType.Not:            return new Not((BoolOp)operand);
+                case ExpressionType.Negate:         return new Negate(operand);
                 case ExpressionType.Convert:
                     return OperatorFromConvert(unary, cx);
                 default:
