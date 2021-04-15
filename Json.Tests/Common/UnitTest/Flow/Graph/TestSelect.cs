@@ -114,11 +114,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public void TestArrayGroupSelect() {
-            var selectList = new[] {
-                ".children[@].hobbies[*].name",
-                ".children[*].hobbies[*].name",
+            var selectors = new[] {
+                ".children[@].hobbies[*].name", // group by using [@]
+                ".children[*].hobbies[*].name"  // dont group by using [*]
             };
-            var select = new JsonSelect(selectList);
+            var select = new JsonSelect(selectors);
             
             using (var jsonMapper = new ObjectMapper())
             using (var jsonSelector = new JsonSelector())
@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(new [] {0, 3},     result[0].groupIndices); // the start indices of groups
                 AreEqual(5,                 result[0].values.Count);
                 
-                // --- path[1]  no groups by using [*]
+                // --- path[1]  dont group by using [*]
                 AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[1].ToString());
                 // result contains no groups
                 AreEqual(0,                 result[1].groupIndices.Count);

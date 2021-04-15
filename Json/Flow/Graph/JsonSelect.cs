@@ -79,8 +79,8 @@ namespace Friflo.Json.Flow.Graph
         
         internal JsonSelect() { }
         
-        public JsonSelect(IList<string> pathList) {
-            CreateNodeTree(pathList);
+        public JsonSelect(IList<string> selectors) {
+            CreateNodeTree(selectors);
         }
 
         internal void CreateNodeTree(IList<string> pathList) {

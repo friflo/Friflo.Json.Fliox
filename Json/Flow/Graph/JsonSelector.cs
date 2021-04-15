@@ -24,9 +24,9 @@ namespace Friflo.Json.Flow.Graph
             // serializer.Dispose();
         }
 
-        public SelectorResult Select(string json, string path, bool pretty = false) {
-            var pathList = new [] {path};
-            var result = Select(json, pathList, pretty);
+        public SelectorResult Select(string json, string selector, bool pretty = false) {
+            var selectors = new [] {selector};
+            var result = Select(json, selectors, pretty);
             return result[0];
         }
 
