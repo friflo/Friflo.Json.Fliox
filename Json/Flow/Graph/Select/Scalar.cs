@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Graph.Select
                     typeDiff = ScalarType.Null - other.type;
                     return typeDiff != 0 ? typeDiff : 0;
                 default:
-                    throw new NotSupportedException($"SelectorValue does not support CompareTo() for: {type}");                
+                    throw new NotSupportedException($"Scalar does not support CompareTo() for type: {type}");                
             }
         }
 
