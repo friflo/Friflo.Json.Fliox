@@ -276,8 +276,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
             AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
-
             
+            var or2 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 );
+            AreEqual(".age == 1 || .age == 2", or2.ToString());
+            
+            var and2 =  (And)       Operator.FromLambda((Person p) => p.age == 1 && p.age == 2 );
+            AreEqual(".age == 1 && .age == 2", and2.ToString());
+            
+            var or3 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
+            AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
+
+
             // --- unary operators
             var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
             AreEqual("!(.age >= 20)", isNot.ToString());
@@ -329,7 +338,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
             AreEqual("-(Abs(-1))", negate.ToString());
-
             
             
             // --- binary arithmetic operators

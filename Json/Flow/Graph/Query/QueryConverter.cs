@@ -162,6 +162,7 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operator OperatorFromConvert(UnaryExpression unary, QueryCx cx) {
             var type = unary.Operand.NodeType;
             switch (type) {
+                /*
                 case ExpressionType.Constant:
                 case ExpressionType.Call:
                 case ExpressionType.Add:
@@ -169,12 +170,15 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.Multiply:
                 case ExpressionType.Divide:
                 case ExpressionType.Negate:
-                    return TraceExpression(unary.Operand, cx);
+                case ExpressionType.OrElse:
+                case ExpressionType.AndAlso:
+                    return TraceExpression(unary.Operand, cx); */
                 case ExpressionType.MemberAccess:
                     var member = (MemberExpression)unary.Operand;
                     return OperatorFromMember(member, cx);
                 default:
-                    throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
+                    return TraceExpression(unary.Operand, cx);
+                    // throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
             }
         }
 
