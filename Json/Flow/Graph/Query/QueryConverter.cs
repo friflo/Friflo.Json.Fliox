@@ -24,18 +24,7 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operator TraceExpression(Expression expression, QueryCx cx) {
             switch (expression) {
                 case MemberExpression member:
-                    MemberInfo memberInfo = member.Member;
-                    string name;
-                    switch (memberInfo) {
-                        case FieldInfo fieldInfo:
-                            name = fieldInfo.Name;
-                            break;
-                        case PropertyInfo propertyInfo:
-                            name = propertyInfo.Name;
-                            break;
-                        default:
-                            throw NotSupported($"Member not supported: {member}", cx);
-                    }
+                    string name = GetMemberName(member, cx);
                     if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         // isArraySelector = true;
                     }
@@ -55,6 +44,18 @@ namespace Friflo.Json.Flow.Graph.Query
                     return OperatorFromConstant(constant, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
+            }
+        }
+
+        private static string GetMemberName(MemberExpression member, QueryCx cx) {
+            MemberInfo memberInfo = member.Member;
+            switch (memberInfo) {
+                case FieldInfo fieldInfo:
+                    return fieldInfo.Name;
+                case PropertyInfo propertyInfo:
+                    return propertyInfo.Name;
+                default:
+                    throw NotSupported($"Member not supported: {member}", cx);
             }
         }
 
@@ -178,9 +179,17 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.Divide:
                     return TraceExpression(unary.Operand, cx);
                 case ExpressionType.MemberAccess:
-                    throw NotSupported($"Convert operand not supported. operand: {type}", cx);
+                    var member = (MemberExpression)unary.Operand;
+                    var name = GetMemberName(member, cx);
+                    var field = (Field)TraceExpression(member.Expression, cx);
+                    switch (name) {
+                        case "Count":
+                            field.field = field.field + "[@]";
+                            return new Count(field);
+                    }
+                    throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
                 default:
-                    throw NotSupported($"Convert operand not supported. operand: {type}", cx);
+                    throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
             }
         }
 
