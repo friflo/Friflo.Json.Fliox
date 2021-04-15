@@ -176,9 +176,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var john  = jsonMapper.Write(John);
                 
                 // --- use expression
-                AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<Person>(p => "hello")));
-                // use lambda
-                AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
+                AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<object>(p => "hello")));
+                
                 // use operator
                 AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
                 AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0).Lambda()));
