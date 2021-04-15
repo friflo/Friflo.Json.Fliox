@@ -8,26 +8,26 @@ namespace Friflo.Json.Flow.Graph.Query
 {
     public abstract class UnaryAggregateOp : Operator
     {
-        protected           Field               field;
+        protected           Operator            array;
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
-        protected UnaryAggregateOp(Field field) { this.field = field; }
+        protected UnaryAggregateOp(Operator array) { this.array = array; }
         
         internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
-            field.Init(cx);
+            array.Init(cx);
         }
     }
     
     public class Min : UnaryAggregateOp
     {
-        public Min(Field field) : base(field) { }
+        public Min(Operator array) : base(array) { }
 
-        public override     string      ToString() => $"Min({field})";
+        public override     string      ToString() => $"Min({array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
-            var eval = field.Eval(cx);
+            var eval = array.Eval(cx);
             foreach (var val in eval.values) {
                 if (currentMin.type != ScalarType.Undefined) {
                     if (val.CompareTo(currentMin) < 0)
@@ -43,13 +43,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Max : UnaryAggregateOp
     {
-        public Max(Field field) : base(field) { }
+        public Max(Operator array) : base(array) { }
 
-        public override     string      ToString() => $"Max({field})";
+        public override     string      ToString() => $"Max({array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
-            var eval = field.Eval(cx);
+            var eval = array.Eval(cx);
             foreach (var val in eval.values) {
                 if (currentMin.type != ScalarType.Undefined) {
                     if (val.CompareTo(currentMin) > 0)
@@ -65,13 +65,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Sum : UnaryAggregateOp
     {
-        public Sum(Field field) : base(field) { }
+        public Sum(Operator array) : base(array) { }
 
-        public override     string      ToString() => $"Sum({field})";
+        public override     string      ToString() => $"Sum({array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
-            var eval = field.Eval(cx);
+            var eval = array.Eval(cx);
             foreach (var val in eval.values) {
                 sum = sum.Add(val);
             }
@@ -82,13 +82,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Average : UnaryAggregateOp
     {
-        public Average(Field field) : base(field) { }
+        public Average(Operator array) : base(array) { }
 
-        public override     string      ToString() => $"Average({field})";
+        public override     string      ToString() => $"Average({array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
-            var eval = field.Eval(cx);
+            var eval = array.Eval(cx);
             int count = 0;
             foreach (var val in eval.values) {
                 sum = sum.Add(val);
@@ -102,12 +102,12 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Count : UnaryAggregateOp
     {
-        public Count(Field field) : base(field) { }
+        public Count(Operator array) : base(array) { }
 
-        public override     string      ToString() => $"Count({field})";
+        public override     string      ToString() => $"Count({array})";
         
         internal override EvalResult Eval(EvalCx cx) {
-            var eval = field.Eval(cx);
+            var eval = array.Eval(cx);
             int count = eval.values.Count;
             evalResult.SetSingle(new Scalar(count));
             return evalResult;

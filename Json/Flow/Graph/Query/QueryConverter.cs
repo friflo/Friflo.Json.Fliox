@@ -144,7 +144,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         private static Operator OperatorFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
             var predicate   = methodCall.Arguments[1];
-            var valueOp = (Field)TraceExpression(predicate, cx);
+            var valueOp = TraceExpression(predicate, cx);
             
             switch (methodCall.Method.Name) {
                 case "Min":     return new Min(valueOp);
