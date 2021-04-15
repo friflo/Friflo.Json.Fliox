@@ -122,21 +122,34 @@ namespace Friflo.Json.Flow.Graph.Query
         }
         
         private static Operator OperatorFromAggregate(MethodCallExpression methodCall, QueryCx cx) {
-            var args = methodCall.Arguments;
-            var source   = args[0];
-            var sourceOp = TraceExpression(source, cx);
+            var     args        = methodCall.Arguments;
+            var     source      = args[0];
+            var     sourceOp    = TraceExpression(source, cx);
+            string  sourceField = $"{sourceOp}[@]";
             
-            var predicate   = args[1];
-            string sourceField = $"{sourceOp}[@]";
-            var lambdaCx = new QueryCx(cx.path + sourceField);
-            var valueOp = TraceExpression(predicate, lambdaCx);
+            switch (methodCall.Method.Name) {
+                case "Count":
+                    return new Count(new Field(sourceField));
+                case "Min":
+                case "Max":
+                case "Sum":
+                case "Average":
+                    var lambdaCx = new QueryCx(cx.path + sourceField);
+                    return OperatorFromBinaryAggregate(methodCall, lambdaCx);
+                default:
+                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+            }
+        }
+        
+        private static Operator OperatorFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
+            var predicate   = methodCall.Arguments[1];
+            var valueOp = TraceExpression(predicate, cx);
             
             switch (methodCall.Method.Name) {
                 case "Min":     return new Min(valueOp);
                 case "Max":     return new Max(valueOp);
                 case "Sum":     return new Sum(valueOp);
                 case "Average": return new Average(valueOp);
-                case "Count":   return new Count(valueOp);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
