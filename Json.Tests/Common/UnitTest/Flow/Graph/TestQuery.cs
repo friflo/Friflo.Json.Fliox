@@ -351,6 +351,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count());
             AreEqual("Count(.children[@])", count.ToString());
             
+            // todo
+            // var count2    = (Count)  Operator.FromLambda((Person p) => p.children.Count);
+            // AreEqual("Count(.children[@])", count2.ToString());
+
             var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
             AreEqual("Average(.children[@].age)", average.ToString());
         }

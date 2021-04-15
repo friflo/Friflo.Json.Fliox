@@ -12,13 +12,13 @@ namespace Friflo.Json.Flow.Graph.Query
     internal static class QueryConverter
     {
         public static Operator OperatorFromExpression(Expression query) {
+            var cx = new QueryCx ("", query);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
-                var cx = new QueryCx ("");
                 var op = TraceExpression(body, cx);
                 return op;
             }
-            throw new NotSupportedException($"query not supported: {query}");
+            throw NotSupported($"query not supported: {query}", cx);
         }
         
         private static Operator TraceExpression(Expression expression, QueryCx cx) {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph.Query
                             name = propertyInfo.Name;
                             break;
                         default:
-                            throw new NotSupportedException($"Member not supported: {member}");
+                            throw NotSupported($"Member not supported: {member}", cx);
                     }
                     if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         // isArraySelector = true;
@@ -52,9 +52,9 @@ namespace Friflo.Json.Flow.Graph.Query
                     op = OperatorFromBinaryExpression(binary, cx);
                     return op;
                 case ConstantExpression constant:
-                    return OperatorFromConstant(constant);
+                    return OperatorFromConstant(constant, cx);
                 default:
-                    throw new NotSupportedException($"Body not supported: {expression}");
+                    throw NotSupported($"Body not supported: {expression}", cx);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Friflo.Json.Flow.Graph.Query
                     return OperatorFromAggregate(methodCall, cx);
                 
                 default:
-                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
 
@@ -94,14 +94,14 @@ namespace Friflo.Json.Flow.Graph.Query
             
             var predicate   = args[1];
             string sourceField = $"{sourceOp}[@]";
-            var lambdaCx = new QueryCx(cx.path + sourceField);
+            var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
                 case "Any":     return new Any(new Field(sourceField), predicateOp);
                 case "All":     return new All(new Field(sourceField), predicateOp);
                 default:
-                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Log":     return new Log(valueOp);
                 case "Sqrt":    return new Sqrt(valueOp);
                 default:
-                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
@@ -134,10 +134,10 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Max":
                 case "Sum":
                 case "Average":
-                    var lambdaCx = new QueryCx(cx.path + sourceField);
+                    var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
                     return OperatorFromBinaryAggregate(methodCall, lambdaCx);
                 default:
-                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
@@ -151,17 +151,22 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Sum":     return new Sum(valueOp);
                 case "Average": return new Average(valueOp);
                 default:
-                    throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
+                    throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
 
         private static Operator OperatorFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
             var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
-                case ExpressionType.Not:        return new Not((BoolOp)operand);
-                case ExpressionType.Convert:    return operand;
+                case ExpressionType.Not:
+                    return new Not((BoolOp)operand);
+                case ExpressionType.Convert:
+                    /* if (unary.Operand.NodeType == ExpressionType.MemberAccess) {
+                        int i = 11;
+                    } */
+                    return operand;
                 default:
-                    throw new NotSupportedException($"UnaryExpression not supported: {unary}");
+                    throw NotSupported($"UnaryExpression not supported: {unary}", cx);
             }
         }
 
@@ -188,11 +193,11 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.Divide:             return new Divide(leftOp, rightOp);
 
                 default:
-                    throw new NotSupportedException($"Method not supported. method: {binary}");
+                    throw NotSupported($"Method not supported. method: {binary}", cx);
             }
         }
 
-        private static Operator OperatorFromConstant(ConstantExpression constant) {
+        private static Operator OperatorFromConstant(ConstantExpression constant, QueryCx cx) {
             Type type = constant.Type;
             object value = constant.Value;
             if (type == typeof(string))
@@ -218,16 +223,22 @@ namespace Friflo.Json.Flow.Graph.Query
             if (type == typeof(object) && value == null)
                 return new NullLiteral();
 
-            throw new NotSupportedException($"Constant not supported: {constant}");
+            throw NotSupported($"Constant not supported: {constant}", cx);
+        }
+
+        static Exception NotSupported(string message, QueryCx cx) {
+            return new NotSupportedException($"{message}, expression: {cx.exp}");
         }
     }
 
     internal class QueryCx
     {
-        internal readonly string path;
+        internal readonly string        path;
+        internal readonly Expression    exp;
 
-        internal QueryCx(string path) {
+        internal QueryCx(string path, Expression exp) {
             this.path = path;
+            this.exp  = exp;
         }
     }
 }
