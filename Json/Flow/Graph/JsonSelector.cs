@@ -32,8 +32,7 @@ namespace Friflo.Json.Flow.Graph
 
         public List<SelectorResult> Select(string json, IList<string> pathList, bool pretty = false) {
             reusedSelect.CreateNodeTree(pathList);
-            Select(json, reusedSelect, pretty);
-            return reusedSelect.Results;
+            return Select(json, reusedSelect, pretty);
         }
 
         public List<SelectorResult> Select(string json, JsonSelect jsonSelect, bool pretty = false) {
