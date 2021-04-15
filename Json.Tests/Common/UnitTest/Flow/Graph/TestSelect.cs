@@ -125,10 +125,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             {
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(TestQuery.Peter);
-                var john = jsonMapper.Write(TestQuery.John);
                 jsonSelector.Select(peter, select);
                 var result = select.GetResult();
-                AreEqual("['Biking','Biking','Surfing']", result[0].ToString());
+                AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[0].ToString());
+                // result contains two groups returned as index ranges:
+                // Group 0: [0 - 2]
+                // Group 1: [3 - 4]    note: 4 = result[0].values.Count - 1
+                AreEqual(new [] {0, 3}, result[0].groupIndices); // the start indices of groups
+                AreEqual(5,             result[0].values.Count);
                 AreEqual("[(object),(object)]", result[1].ToString());
             }
         }

@@ -32,7 +32,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 new Person {
                     name = "Paul" , age = 20,
                     hobbies = {
-                        new Hobby{ name= "Biking"}
+                        new Hobby{ name= "Gaming"},
+                        new Hobby{ name= "Biking"},
+                        new Hobby{ name= "Travelling"},
                     }
                 },
                 new Person {
