@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Exp":
                 case "Log":
                 case "Sqrt":
-                    return OperatorFromBinaryMethodCall(methodCall, cx);
+                    return OperatorFromUnaryMethodCall(methodCall, cx);
                 default:
                     throw new NotSupportedException($"MethodCallExpression not supported: {methodCall}");
             }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
         
-        private static Operator OperatorFromBinaryMethodCall(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operator OperatorFromUnaryMethodCall(MethodCallExpression methodCall, QueryCx cx) {
             var value = methodCall.Arguments[0];
             var valueOp = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
