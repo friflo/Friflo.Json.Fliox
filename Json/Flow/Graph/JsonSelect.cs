@@ -83,6 +83,12 @@ namespace Friflo.Json.Flow.Graph
         
         internal JsonSelect() { }
         
+        public JsonSelect(string selector) {
+            var selectors = new[] {selector};
+            CreateNodeTree(selectors);
+            results.Capacity = selectors.Length;
+        }
+        
         public JsonSelect(IList<string> selectors) {
             CreateNodeTree(selectors);
             results.Capacity = selectors.Count;
