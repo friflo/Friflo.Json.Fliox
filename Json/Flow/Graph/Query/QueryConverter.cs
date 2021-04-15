@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -219,26 +218,22 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operator OperatorFromConstant(ConstantExpression constant, QueryCx cx) {
             Type type = constant.Type;
             object value = constant.Value;
-            if (type == typeof(string))
-                return new StringLiteral((string)   value);
+            if (type == typeof(string))     return new StringLiteral((string)   value);
             
-            if (type == typeof(double))
-                return new DoubleLiteral((double)   value);
-            if (type == typeof(float))
-                return new DoubleLiteral((float)    value);
+            // --- floating point
+            if (type == typeof(double))     return new DoubleLiteral((double)   value);
+            if (type == typeof(float))      return new DoubleLiteral((float)    value);
             
-            if (type == typeof(long))
-                return new LongLiteral((long)       value);
-            if (type == typeof(int))
-                return new LongLiteral((int)        value);
-            if (type == typeof(short))
-                return new LongLiteral((short)      value);
-            if (type == typeof(byte))
-                return new LongLiteral((byte)       value);
+            // --- integral
+            if (type == typeof(long))       return new LongLiteral((long)       value);
+            if (type == typeof(int))        return new LongLiteral((int)        value);
+            if (type == typeof(short))      return new LongLiteral((short)      value);
+            if (type == typeof(byte))       return new LongLiteral((byte)       value);
             
-            if (type == typeof(bool))
-                return new BoolLiteral((bool)       value);
+            // --- bool
+            if (type == typeof(bool))       return new BoolLiteral((bool)       value);
             
+            // --- null
             if (type == typeof(object) && value == null)
                 return new NullLiteral();
 
