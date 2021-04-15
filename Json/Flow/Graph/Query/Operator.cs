@@ -32,8 +32,8 @@ namespace Friflo.Json.Flow.Graph.Query
             return QueryConverter.OperatorFromExpression(lambda);
         }
         
-        public static Operator FromFilter<T>(Expression<Func<T, bool>> filter) {
-            return QueryConverter.OperatorFromExpression(filter);
+        public static BoolOp FromFilter<T>(Expression<Func<T, bool>> filter) {
+            return (BoolOp)QueryConverter.OperatorFromExpression(filter);
         }
     }
 

@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Graph
         public JsonFilter(BoolOp op) : base(op) { }
         
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
-            var op = (BoolOp)Operator.FromFilter(filter);
+            var op = Operator.FromFilter(filter);
             var jsonLambda = new JsonFilter(op);
             return jsonLambda;
         }
