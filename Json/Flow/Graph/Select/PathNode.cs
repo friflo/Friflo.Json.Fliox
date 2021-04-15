@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
+    /// <summary>
     /// <see cref="PathNode{TResult}"/>'s build a tree of nodes starting from <see cref="PathNodeTree{T}.rootNode"/>.
     /// The tree is build based on a given list of <see cref="string"/> paths.
     /// 
@@ -17,6 +18,7 @@ namespace Friflo.Json.Flow.Graph.Select
     /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
     /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node while traversing having an
     /// associated <see cref="PathSelector{T}"/> in <see cref="selectors"/>.
+    /// </summary>
     internal class PathNode<TResult>
     {
         /// direct access to <see cref="children"/>[*]
