@@ -33,18 +33,19 @@ namespace Friflo.Json.Flow.Graph.Select
                     }
                     curNode = childNode;
                 }
-                var parentGroup = GetParentGroup(curNode);
+                var parentGroup = GetParentGroup(selectorNodes, curNode);
                 var selector = new PathSelector<T>(path, curNode, isArrayResult, parentGroup);
                 curNode.selectors.Add(selector);
                 selectors.Add(selector);
             }
         }
 
-        private PathNode<T> GetParentGroup(PathNode<T> node) {
-            while (node != null) {
-                if (node.selectorNode.selectorType == SelectorType.ArrayGroup)
-                    return node;
-                node = node.parent;
+        private PathNode<T> GetParentGroup(List<SelectorNode> selectorNodes, PathNode<T> pathNode) {
+            for (int n = selectorNodes.Count - 1; n >= 0; n--) {
+                var selectorNode = selectorNodes[n];
+                if (selectorNode.selectorType == SelectorType.ArrayGroup)
+                    return pathNode;
+                pathNode = pathNode.parent;
             }
             return null;
         }

@@ -128,21 +128,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 jsonSelector.Select(peter, select);
                 var result = select.GetResult();
                 
-                // --- path[0]  no grouping by using [@]
+                // --- path[0]  group by using [@]
                 AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[0].ToString());
                 // result contains two groups returned as index ranges:
                 // Group 0: [0 - 2]
                 // Group 1: [3 - 4]    note: 4 = result[0].values.Count - 1
-                AreEqual(new [] {0, 3}, result[0].groupIndices); // the start indices of groups
-                AreEqual(5,             result[0].values.Count);
+                AreEqual(new [] {0, 3},     result[0].groupIndices); // the start indices of groups
+                AreEqual(5,                 result[0].values.Count);
                 
-                // --- path[0]  no grouping by using [*]
+                // --- path[1]  no groups by using [*]
                 AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[1].ToString());
-                // result contains two groups returned as index ranges:
-                // Group 0: [0 - 2]
-                // Group 1: [3 - 4]    note: 4 = result[0].values.Count - 1
-                AreEqual(new [] {0, 3}, result[1].groupIndices); // the start indices of groups
-                AreEqual(5,             result[1].values.Count);
+                // result contains no groups
+                AreEqual(0,                 result[1].groupIndices.Count);
+                
+                // values of both results are equal
+                AreEqual(result[0].values,  result[1].values);
             }
         }
     }
