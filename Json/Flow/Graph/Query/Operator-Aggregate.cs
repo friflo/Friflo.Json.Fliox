@@ -8,26 +8,26 @@ namespace Friflo.Json.Flow.Graph.Query
 {
     public abstract class UnaryAggregateOp : Operator
     {
-        protected           Operator            operand;
+        protected           Field               field;
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
-        protected UnaryAggregateOp(Operator operand) { this.operand = operand; }
+        protected UnaryAggregateOp(Field field) { this.field = field; }
         
         internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
-            operand.Init(cx);
+            field.Init(cx);
         }
     }
     
     public class Min : UnaryAggregateOp
     {
-        public Min(Operator operand) : base(operand) { }
+        public Min(Field field) : base(field) { }
 
-        public override     string      ToString() => $"Min({operand})";
+        public override     string      ToString() => $"Min({field})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
-            var eval = operand.Eval(cx);
+            var eval = field.Eval(cx);
             foreach (var val in eval.values) {
                 if (currentMin.type != ScalarType.Undefined) {
                     if (val.CompareTo(currentMin) < 0)
@@ -43,13 +43,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Max : UnaryAggregateOp
     {
-        public Max(Operator operand) : base(operand) { }
+        public Max(Field field) : base(field) { }
 
-        public override     string      ToString() => $"Max({operand})";
+        public override     string      ToString() => $"Max({field})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
-            var eval = operand.Eval(cx);
+            var eval = field.Eval(cx);
             foreach (var val in eval.values) {
                 if (currentMin.type != ScalarType.Undefined) {
                     if (val.CompareTo(currentMin) > 0)
@@ -65,13 +65,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Sum : UnaryAggregateOp
     {
-        public Sum(Operator operand) : base(operand) { }
+        public Sum(Field field) : base(field) { }
 
-        public override     string      ToString() => $"Sum({operand})";
+        public override     string      ToString() => $"Sum({field})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
-            var eval = operand.Eval(cx);
+            var eval = field.Eval(cx);
             foreach (var val in eval.values) {
                 sum = sum.Add(val);
             }
@@ -82,13 +82,13 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Average : UnaryAggregateOp
     {
-        public Average(Operator operand) : base(operand) { }
+        public Average(Field field) : base(field) { }
 
-        public override     string      ToString() => $"Average({operand})";
+        public override     string      ToString() => $"Average({field})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
-            var eval = operand.Eval(cx);
+            var eval = field.Eval(cx);
             int count = 0;
             foreach (var val in eval.values) {
                 sum = sum.Add(val);
@@ -102,12 +102,12 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Count : UnaryAggregateOp
     {
-        public Count(Operator operand) : base(operand) { }
+        public Count(Field field) : base(field) { }
 
-        public override     string      ToString() => $"Count({operand})";
+        public override     string      ToString() => $"Count({field})";
         
         internal override EvalResult Eval(EvalCx cx) {
-            var eval = operand.Eval(cx);
+            var eval = field.Eval(cx);
             int count = eval.values.Count;
             evalResult.SetSingle(new Scalar(count));
             return evalResult;
