@@ -11,11 +11,12 @@ namespace Friflo.Json.Flow.Graph.Select
     /// The tree is build based on a given list of <see cref="string"/> paths.
     /// 
     /// The route from <see cref="PathNodeTree{T}.rootNode"/> to a leaf node represents a given <see cref="string"/> path.
-    /// For each path a <see cref="PathSelector{T}"/> is created. The <see cref="PathSelector{T}"/> is then added
+    /// For each given path a <see cref="PathSelector{T}"/> is created. The <see cref="PathSelector{T}"/> is then added
     /// to <see cref="selectors"/>.
     /// 
     /// The root of the hierarchy is <see cref="PathNodeTree{T}.rootNode"/>
-    /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node having <see cref="selectors"/>.
+    /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node while traversing having an
+    /// associated <see cref="PathSelector{T}"/> in <see cref="selectors"/>.
     internal class PathNode<TResult>
     {
         /// direct access to <see cref="children"/>[*]
