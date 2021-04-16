@@ -50,6 +50,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class BinaryLogicalOp : BoolOp
     {
         protected           List<BoolOp>        operands;
+        internal            List<EvalResult>    evalList = new List<EvalResult>();
 
         protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
         
@@ -68,7 +69,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public And(List<BoolOp> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {
-            var evalList = new List<EvalResult>(operands.Count);
+            evalList.Clear();
             foreach (var operand in operands) {
                 var eval = operand.Eval(cx);
                 evalList.Add(eval);
@@ -97,7 +98,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public Or(List<BoolOp> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {
-            var evalList = new List<EvalResult>(operands.Count);
+            evalList.Clear();
             foreach (var operand in operands) {
                 var eval = operand.Eval(cx);
                 evalList.Add(eval);

@@ -48,8 +48,8 @@ namespace Friflo.Json.Flow.Graph.Query
 
     internal class OperatorContext
     {
-        internal readonly Dictionary<string, Field> selectors = new Dictionary<string, Field>();
-        private  readonly HashSet<Operator>         operators = new HashSet<Operator>();
+        internal readonly List<Field>           selectors = new List<Field>();
+        private  readonly HashSet<Operator>     operators = new HashSet<Operator>();
 
         internal void Init() {
             selectors.Clear();
@@ -75,7 +75,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public Field(string field) { this.field = field; }
 
         internal override void Init(OperatorContext cx) {
-            cx.selectors.TryAdd(field, this);
+            cx.selectors.Add(this);
         }
 
         internal override EvalResult Eval(EvalCx cx) {
