@@ -92,42 +92,62 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public void TestArraySelect() {
-            using (var typeStore    = new TypeStore()) 
-            using (var jsonWriter   = new ObjectWriter(typeStore))
-            using (var jsonSelector = new ScalarSelector())
+            using (var typeStore        = new TypeStore()) 
+            using (var jsonWriter       = new ObjectWriter(typeStore))
+            using (var scalarSelector   = new ScalarSelector())
+            using (var jsonSelector     = new JsonSelector())
             {
                 var store = new Store();
                 store.InitSample();
                 var json = jsonWriter.Write(store);
-                var select = new ScalarSelect(new[] {
+                var selectors = new[] {
                     ".books[*].title",
                     ".books[*].author",
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
-                });
-                var result = new List<ScalarResult>();
+                };
+                
+                // --- Scalar select
+                var scalarSelect = new ScalarSelect(selectors);
+                var scalarResults = new List<ScalarResult>();
                 for (int n = 0; n < 2; n++) {
-                    result = jsonSelector.Select(json, select);
+                    scalarResults = scalarSelector.Select(json, scalarSelect);
                 }
-                AssertStoreResult(result);
+                AssertScalarResults(scalarResults);
                 
                 for (int n = 0; n < 2; n++) {
-                     jsonSelector.Select(json, select);
-                     result = select.Results; // alternative access to results
+                     scalarSelector.Select(json, scalarSelect);
+                     scalarResults = scalarSelect.Results; // alternative access to results
                 }
-                AssertStoreResult(result);
+                AssertScalarResults(scalarResults);
+                
+                // --- JSON select
+                var jsonSelect = new JsonSelect(selectors);
+                var jsonResults = new List<JsonResult>();
+                for (int n = 0; n < 2; n++) {
+                    jsonSelector.Select(json, jsonSelect);
+                    jsonResults = jsonSelect.Results; // alternative access to results
+                }
+                AssertJsonResults(jsonResults);
             }
         }
 
-        private void AssertStoreResult(List<ScalarResult> result) {
+        private void AssertScalarResults(List<ScalarResult> result) {
             AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].AsObjects());
             AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].AsObjects());
             AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].AsObjects());
             AreEqual(new object[] {},                                                       result[3].AsObjects());
         }
+        
+        private void AssertJsonResults(List<JsonResult> result) {
+            AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].values);
+            AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].values);
+            AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].values);
+            AreEqual(new object[] {},                                                       result[3].values);
+        }
 
         [Test]
-        public void TestArrayGroupSelect() {
+        public void TestGroupSelect() {
             var selectors = new[] {
                 ".children[=>].hobbies[*].name", // group by using [=>]
                 ".children[*].hobbies[*].name"   // dont group by using [*]
