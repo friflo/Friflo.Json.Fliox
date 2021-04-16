@@ -152,17 +152,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public static void NoAllocFilter() {
-            var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
+            var memLog = new MemoryLogger(10, 10, MemoryLog.Disabled);
             using (var eval = new JsonEvaluator())
             using (var jsonMapper = new ObjectMapper()) {
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(Peter);
                 
-                var anyChildAgeWithin10And20 = JsonFilter.Create<Person>(p => p.children.Any(child => child.age > 10 && child.age < 20));
+                var anyChildAgeWithin10And20 = JsonFilter.Create<Person>(p => p.children.All(child => child.age >= 20 && child.age <= 20));
+                bool result = false;
                 for (int n = 0; n < 100; n++) {
-                    eval.Filter(peter, anyChildAgeWithin10And20);
+                    result = eval.Filter(peter, anyChildAgeWithin10And20);
                     memLog.Snapshot();
                 }
+                IsTrue(result);
             }
             memLog.AssertNoAllocations();
         }
