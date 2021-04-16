@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph
         private             JsonParser                      targetParser;
         
         private readonly    List<PathNode<ScalarResult>>    nodeStack = new List<PathNode<ScalarResult>>();
-        private readonly    JsonSelect                      reusedSelect = new JsonSelect();
+        private readonly    ScalarSelect                    reusedSelect = new ScalarSelect();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -24,10 +24,10 @@ namespace Friflo.Json.Flow.Graph
             // serializer.Dispose();
         }
 
-        public List<ScalarResult> Select(string json, JsonSelect jsonSelect, bool pretty = false) {
-            jsonSelect.InitSelectorResults();
+        public List<ScalarResult> Select(string json, ScalarSelect scalarSelect, bool pretty = false) {
+            scalarSelect.InitSelectorResults();
             nodeStack.Clear();
-            nodeStack.Add(jsonSelect.nodeTree.rootNode);
+            nodeStack.Add(scalarSelect.nodeTree.rootNode);
             targetJson.Clear();
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
@@ -39,9 +39,9 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             
             // refill result list cause application code may mutate between Select() calls
-            var results = jsonSelect.results; 
+            var results = scalarSelect.results; 
             results.Clear();
-            foreach (var selector in jsonSelect.nodeTree.selectors) {
+            foreach (var selector in scalarSelect.nodeTree.selectors) {
                 results.Add(selector.result);
             }
             return results;

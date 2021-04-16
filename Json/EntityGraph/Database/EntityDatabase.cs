@@ -133,7 +133,7 @@ namespace Friflo.Json.EntityGraph.Database
                         throw new InvalidOperationException($"expect entity dependency available: {id}");
                     }
                     // todo call Select() only once with multiple selectors 
-                    var select = new JsonSelect(dependency.refPath);
+                    var select = new ScalarSelect(dependency.refPath);
                     var selectorResults = jsonPath.Select(depEntity.value.json, select);
                     var depIds = selectorResults[0].AsStrings();
                     dependencyResult.ids.AddRange(depIds);

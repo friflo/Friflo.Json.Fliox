@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
 
-                var select = new JsonSelect(new[] {
+                var select = new ScalarSelect(new[] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
                     ".dbl",
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var store = new Store();
                 store.InitSample();
                 var json = jsonWriter.Write(store);
-                var select = new JsonSelect(new[] {
+                var select = new ScalarSelect(new[] {
                     ".books[*].title",
                     ".books[*].author",
                     ".books[*].chapters[*].name",
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 ".children[=>].hobbies[*].name", // group by using [=>]
                 ".children[*].hobbies[*].name"   // dont group by using [*]
             };
-            var select = new JsonSelect(selectors);
+            var select = new ScalarSelect(selectors);
             
             using (var jsonMapper = new ObjectMapper())
             using (var jsonSelector = new ScalarSelector())

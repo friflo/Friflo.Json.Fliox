@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private void ReadJsonFields(string json, JsonLambda lambda) {
-            var query = lambda.jsonSelect;
+            var query = lambda.scalarSelect;
             var selectorResults = scalarSelector.Select(json, query);
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
     {
         private  readonly   List<string>        selectors       = new List<string>();
         internal readonly   List<Field>         fields          = new List<Field>();
-        internal readonly   JsonSelect          jsonSelect      = new JsonSelect();
+        internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
         internal            Operator            op;
         private  readonly   OperatorContext     operatorContext = new OperatorContext();
 
@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
                 selectors.Add(selectorPair.Key);
                 fields.Add(selectorPair.Value);
             }
-            jsonSelect.CreateNodeTree(selectors);
+            scalarSelect.CreateNodeTree(selectors);
         }
     }
 

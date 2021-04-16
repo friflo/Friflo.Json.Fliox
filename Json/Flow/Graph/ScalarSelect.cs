@@ -8,9 +8,7 @@ using Friflo.Json.Flow.Graph.Select;
 namespace Friflo.Json.Flow.Graph
 {
 
-    
-
-    public class JsonSelect
+    public class ScalarSelect
     {
         internal readonly   PathNodeTree<ScalarResult>    nodeTree = new PathNodeTree<ScalarResult>();
         internal readonly   List<ScalarResult>            results = new List<ScalarResult>();
@@ -18,15 +16,15 @@ namespace Friflo.Json.Flow.Graph
         public              List<ScalarResult>            Results => results;
 
         
-        internal JsonSelect() { }
+        internal ScalarSelect() { }
         
-        public JsonSelect(string selector) {
+        public ScalarSelect(string selector) {
             var selectors = new[] {selector};
             CreateNodeTree(selectors);
             results.Capacity = selectors.Length;
         }
         
-        public JsonSelect(IList<string> selectors) {
+        public ScalarSelect(IList<string> selectors) {
             CreateNodeTree(selectors);
             results.Capacity = selectors.Count;
         }
