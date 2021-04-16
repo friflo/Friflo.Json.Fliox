@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        // [Test]
+        [Test]
         public static void NoAllocFilter() {
             var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
             using (var eval = new JsonEvaluator())

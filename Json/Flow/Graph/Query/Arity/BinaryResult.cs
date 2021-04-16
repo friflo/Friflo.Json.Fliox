@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
         public void Dispose() { }
     } 
     
-    internal readonly struct  BinaryResult : IEnumerable<BinaryPair>
+    internal readonly struct  BinaryResult // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         internal  readonly EvalResult   leftResult;
         internal  readonly EvalResult   rightResult;
@@ -80,10 +80,11 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
             throw new InvalidOperationException("Expect at least an operation result with one element");
         }
 
-        public IEnumerator<BinaryPair> GetEnumerator() {
+        // return BinaryResultEnumerator instead of IEnumerator<BinaryPair> to avoid boxing 
+        public BinaryResultEnumerator GetEnumerator() {
             return new BinaryResultEnumerator(this);
         }
-
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        
+        // IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }  see boxing note above
     }
 }
