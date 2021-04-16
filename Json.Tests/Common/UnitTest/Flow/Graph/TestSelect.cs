@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Graph.Select;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
@@ -92,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     ".books[*].chapters[*].name",
                     ".books[*].unknown"
                 });
-                var result = new List<SelectorResult>();
+                var result = new List<ScalarResult>();
                 for (int n = 0; n < 2; n++) {
                     result = jsonSelector.Select(json, select);
                 }
@@ -106,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        private void AssertStoreResult(List<SelectorResult> result) {
+        private void AssertStoreResult(List<ScalarResult> result) {
             AreEqual("['The Lord of the Rings','Moby Dick']",                           result[0].ToString());
             AreEqual("['J. R. R. Tolkien','Herman Melville']",                          result[1].ToString());
             AreEqual("['The Sermon','A Long-expected Party','The Shadow of the Past']", result[2].ToString());
