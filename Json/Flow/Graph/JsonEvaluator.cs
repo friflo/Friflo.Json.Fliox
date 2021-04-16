@@ -10,10 +10,10 @@ namespace Friflo.Json.Flow.Graph
 {
     public class JsonEvaluator : IDisposable
     {
-        private readonly JsonSelector   jsonSelector    = new JsonSelector();
+        private readonly ScalarSelector   scalarSelector    = new ScalarSelector();
 
         public void Dispose() {
-            jsonSelector.Dispose();
+            scalarSelector.Dispose();
         }
 
         // --- Filter
@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Graph
 
         private void ReadJsonFields(string json, JsonLambda lambda) {
             var query = lambda.jsonSelect;
-            var selectorResults = jsonSelector.Select(json, query);
+            var selectorResults = scalarSelector.Select(json, query);
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
                 Field field = fields[n];

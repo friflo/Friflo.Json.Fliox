@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void TestObjectSelect() {
             using (var typeStore    = new TypeStore()) 
             using (var jsonWriter   = new ObjectWriter(typeStore))
-            using (var jsonSelector = new JsonSelector())
+            using (var jsonSelector = new ScalarSelector())
             {
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void TestArraySelect() {
             using (var typeStore    = new TypeStore()) 
             using (var jsonWriter   = new ObjectWriter(typeStore))
-            using (var jsonSelector = new JsonSelector())
+            using (var jsonSelector = new ScalarSelector())
             {
                 var store = new Store();
                 store.InitSample();
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var select = new JsonSelect(selectors);
             
             using (var jsonMapper = new ObjectMapper())
-            using (var jsonSelector = new JsonSelector())
+            using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
                 var peter  = jsonMapper.Write(TestQuery.Peter);
