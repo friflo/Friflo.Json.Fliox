@@ -22,21 +22,52 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
     internal struct N_aryResultEnumerator : IEnumerator<N_aryList>
     {
         private readonly    List<Scalar?>       values;
-        private readonly    List<EvalResult>    evalResults;
-        private readonly    int                 last;
+        private readonly    N_aryList           resultList;
+        private             List<EvalResult>    evalResults;
+        private             int                 last;
         private             int                 pos;
         
         internal N_aryResultEnumerator(N_aryResult binaryResult) {
-            evalResults     = binaryResult.results;
-            values          = new List<Scalar?>(evalResults.Count);
+            evalResults = binaryResult.results;
+            values      = new List<Scalar?>(evalResults.Count);
+            resultList  = new N_aryList(evalResults.Count);
+            last        = GetMaxCount(evalResults) - 1;
+            pos         = -1;
+            SetValues();
+        }
+        
+        internal void Init(N_aryResult binaryResult) {
+            evalResults = binaryResult.results;
+            values.Clear();
+            last        = GetMaxCount(evalResults) - 1;
+            pos         = -1;
+            SetValues();
+        }
+        
+        internal N_aryResultEnumerator(bool _) {
+            evalResults = null;
+            values      = new List<Scalar?>(0);
+            resultList  = new N_aryList(0);
+            last        = -1;
+            pos         = -1;
+        }
+        
+        private void SetValues() {
             foreach (var result in evalResults) {
                 if (result.Count == 1)
                     values.Add(result.values[0]);
                 else
                     values.Add(null);
             }
-            last = evalResults.Max(value => value.Count) - 1;
-            pos = -1;
+        }
+
+        private static int GetMaxCount(List<EvalResult> results) {
+            int max = results[0].Count;
+            for (int n = 1; n < results.Count; n++) {
+                if (max < results[n].Count)
+                    max = results[n].Count;
+            }
+            return max;
         }
         
         public bool MoveNext() {
@@ -50,7 +81,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
 
         public N_aryList Current {
             get {
-                var resultList = new N_aryList(values.Count);
+                resultList.evalResult.Clear();
                 for (int n = 0; n < values.Count; n++) {
                     var single = values[n];
                     var result  = single ?? evalResults[n].values[evalResults[n].StartIndex + pos];

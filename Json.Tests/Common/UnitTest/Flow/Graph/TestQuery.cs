@@ -158,9 +158,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 jsonMapper.Pretty = true;
                 var peter = jsonMapper.Write(Peter);
                 
-                var anyChildAgeLess20 = JsonFilter.Create<Person>(p => p.children.Any(child => child.age < 20));
+                var anyChildAgeWithin10And20 = JsonFilter.Create<Person>(p => p.children.Any(child => child.age > 10 && child.age < 20));
                 for (int n = 0; n < 100; n++) {
-                    eval.Filter(peter, anyChildAgeLess20);
+                    eval.Filter(peter, anyChildAgeWithin10And20);
                     memLog.Snapshot();
                 }
             }

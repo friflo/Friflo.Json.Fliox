@@ -49,8 +49,9 @@ namespace Friflo.Json.Flow.Graph.Query
     // ----------------------------------- (n-ary) logical group operators -----------------------------------
     public abstract class BinaryLogicalOp : BoolOp
     {
-        protected           List<BoolOp>        operands;
-        internal            List<EvalResult>    evalList = new List<EvalResult>();
+        protected           List<BoolOp>            operands;
+        internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
+        internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
         protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
         
@@ -77,7 +78,9 @@ namespace Friflo.Json.Flow.Graph.Query
             
             evalResult.Clear();
             var nAryResult = new N_aryResult(evalList);
-            foreach (N_aryList result in nAryResult) {
+            resultIterator.Init(nAryResult);
+            while (resultIterator.MoveNext()) {
+                var result = resultIterator.Current;
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
                     if (result.evalResult.values[n].CompareTo(True) != 0) {
@@ -106,7 +109,9 @@ namespace Friflo.Json.Flow.Graph.Query
             
             evalResult.Clear();
             var nAryResult = new N_aryResult(evalList);
-            foreach (N_aryList result in nAryResult) {
+            resultIterator.Init(nAryResult);
+            while (resultIterator.MoveNext()) {
+                var result = resultIterator.Current;
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {
                     if (result.evalResult.values[n].CompareTo(True) == 0) {
