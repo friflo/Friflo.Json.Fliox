@@ -10,8 +10,6 @@ namespace Friflo.Json.Flow.Graph
 {
     public class ScalarSelector : IDisposable
     {
-        // private          JsonSerializer                  serializer;
-            
         private             Bytes                           targetJson = new Bytes(128);
         private             JsonParser                      targetParser;
         
@@ -21,10 +19,9 @@ namespace Friflo.Json.Flow.Graph
         public void Dispose() {
             targetParser.Dispose();
             targetJson.Dispose();
-            // serializer.Dispose();
         }
 
-        public List<ScalarResult> Select(string json, ScalarSelect scalarSelect, bool pretty = false) {
+        public List<ScalarResult> Select(string json, ScalarSelect scalarSelect) {
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);
@@ -32,7 +29,6 @@ namespace Friflo.Json.Flow.Graph
             targetJson.AppendString(json);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
-            //serializer.SetPretty(pretty);
             
             TraceTree(ref targetParser);
             if (nodeStack.Count != 0)
@@ -51,17 +47,9 @@ namespace Friflo.Json.Flow.Graph
             var selectors = node.selectors;
             switch (targetParser.Event) {
                 case JsonEvent.ObjectStart:
-                    //serializer.InitSerializer();
-                    //serializer.ObjectStart();
-                    //serializer.WriteObject(ref targetParser);
-                    //var json = serializer.json.ToString();
                     ScalarResult.Add(new Scalar(ScalarType.Object, "(object)"), selectors);
                     return;
                 case JsonEvent.ArrayStart:
-                    //serializer.InitSerializer();
-                    //serializer.ArrayStart(true);
-                    //serializer.WriteArray(ref targetParser);
-                    //json = serializer.json.ToString();
                     ScalarResult.Add(new Scalar(ScalarType.Array, "(array)"), selectors);
                     return;
                 case JsonEvent.ValueString:
@@ -97,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
                 // found node
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    // continue;
+                    // continue;  <- ScalarSelector does not read JSON objects & arrays
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -150,7 +138,7 @@ namespace Friflo.Json.Flow.Graph
                 }
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    // continue;
+                    // continue;  <- ScalarSelector does not read JSON objects & arrays
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:

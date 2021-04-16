@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
                 // found node
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    continue;
+                    continue;  // <- JsonSelector read JSON objects & arrays
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -145,7 +145,7 @@ namespace Friflo.Json.Flow.Graph
                 }
                 if (path.selectors.Count > 0) {
                     AddPathNodeResult(path);
-                    continue;
+                    continue;  // <- JsonSelector read JSON objects & arrays
                 }
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
