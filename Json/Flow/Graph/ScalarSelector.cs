@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Graph.Select;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class JsonSelector : IDisposable
+    public class ScalarSelector : IDisposable
     {
         // private          JsonSerializer                  serializer;
             

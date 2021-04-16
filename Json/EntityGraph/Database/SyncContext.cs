@@ -19,10 +19,10 @@ namespace Friflo.Json.EntityGraph.Database
     public class SyncContext : IDisposable
     {
         public readonly  JsonPatcher    jsonPatcher     = new JsonPatcher();
-        public readonly  JsonSelector   jsonSelector    = new JsonSelector();
+        public readonly  ScalarSelector   scalarSelector    = new ScalarSelector();
 
         public void Dispose() {
-            jsonSelector.Dispose();
+            scalarSelector.Dispose();
             jsonPatcher.Dispose();
         }
     }
