@@ -115,6 +115,9 @@ namespace Friflo.Json.Flow.Graph.Select
                     return BoolValue;
                 case ScalarType.Null:
                     return null;
+                case ScalarType.Object:
+                case ScalarType.Array:
+                    return stringValue;
                 default:
                     throw new NotImplementedException($"value type supported. type: {type}");
             }
