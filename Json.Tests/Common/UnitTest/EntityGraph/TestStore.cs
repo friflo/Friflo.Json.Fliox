@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
     public class TestStore : LeakTestsFixture
     {
-        [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Log.Info("--- " + i)); }
+        [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task   CollectAwaitAsync() { await CollectAwait(); }
         
         private async Task CollectAwait() {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await Task.WhenAll(tasks);
         }
 
-        [UnityTest] public IEnumerator  ChainAwaitCoroutine() { yield return RunAsync.Await(ChainAwait(), i => Log.Info("--- " + i)); }
+        [UnityTest] public IEnumerator  ChainAwaitCoroutine() { yield return RunAsync.Await(ChainAwait(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task   ChainAwaitAsync() { await ChainAwait(); }
         private async Task ChainAwait() {
             for (int n = 0; n < 5; n++) {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             }
         }
         
-        [UnityTest] public IEnumerator FileCreateCoroutine() { yield return RunAsync.Await(FileCreate(), i => Log.Info("--- " + i)); }
+        [UnityTest] public IEnumerator FileCreateCoroutine() { yield return RunAsync.Await(FileCreate(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private async Task FileCreate() {
@@ -93,14 +93,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 // await hostDatabase.HandleIncomingConnections();
                 remoteHost.Run();
                 // await Task.Delay(100); // test awaiting hostTask
-                Log.Info("1. RemoteHost finished");
+                Logger.Info("1. RemoteHost finished");
             });
             
             await run();
             
             await remoteHost.Stop();
             await hostTask;
-            Log.Info("2. awaited hostTask");
+            Logger.Info("2. awaited hostTask");
         } 
 
 

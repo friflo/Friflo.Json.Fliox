@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.Utils
         }
     }
 
-    public static class Log
+    public static class Logger
     {
         public static void Info(string msg) {
 #if UNITY_5_3_OR_NEWER

@@ -48,11 +48,13 @@ namespace Friflo.Json.Flow.Graph
 
         private void ReadJsonFields(string json, JsonLambda lambda) {
             var query = lambda.scalarSelect;
-            var selectorResults = scalarSelector.Select(json, query);
+            scalarSelector.Select(json, query);
             var fields = lambda.fields;
             for (int n = 0; n < fields.Count; n++) {
                 Field field = fields[n];
-                field.evalResult = new EvalResult(selectorResults[n].values, selectorResults[n].groupIndices);
+                var evalResult = lambda.resultBuffer[n];
+                evalResult.SetRange(0, evalResult.values.Count);
+                field.evalResult = evalResult;
             }
         }
     }
@@ -60,8 +62,9 @@ namespace Friflo.Json.Flow.Graph
     // --------------------------------------- JsonLambda ---------------------------------------
     public class JsonLambda
     {
-        private  readonly   List<string>        selectors       = new List<string>();
-        internal readonly   List<Field>         fields          = new List<Field>();
+        private  readonly   List<string>        selectors       = new List<string>();        
+        internal readonly   List<Field>         fields          = new List<Field>();        // Count == selectors.Count
+        internal readonly   List<EvalResult>    resultBuffer    = new List<EvalResult>();   // Count == selectors.Count
         internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
         internal            Operator            op;
         private  readonly   OperatorContext     operatorContext = new OperatorContext();
@@ -91,6 +94,14 @@ namespace Friflo.Json.Flow.Graph
                 fields.Add(selectorPair.Value);
             }
             scalarSelect.CreateNodeTree(selectors);
+
+            var pathSelectors = scalarSelect.nodeTree.selectors;
+            resultBuffer.Clear();
+            for (int n = 0; n < pathSelectors.Count; n++) {
+                var result = pathSelectors[n].result;
+                var evalResult = new EvalResult(result.values, result.groupIndices);
+                resultBuffer.Add(evalResult);
+            }
         }
     }
 

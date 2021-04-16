@@ -4,6 +4,7 @@ using System.Linq;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Query;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -148,7 +149,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 eval.Filter(peter, reuseField);
             }
         }
-        
+
+        // [Test]
+        public static void NoAllocFilter() {
+            var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
+            using (var eval = new JsonEvaluator())
+            using (var jsonMapper = new ObjectMapper()) {
+                jsonMapper.Pretty = true;
+                var peter = jsonMapper.Write(Peter);
+                
+                var anyChildAgeLess20 = JsonFilter.Create<Person>(p => p.children.Any(child => child.age < 20));
+                for (int n = 0; n < 100; n++) {
+                    eval.Filter(peter, anyChildAgeLess20);
+                    memLog.Snapshot();
+                }
+            }
+            memLog.AssertNoAllocations();
+        }
+
         [Test]
         public static void TestGroupFilter () {
             using (var eval         = new JsonEvaluator())
