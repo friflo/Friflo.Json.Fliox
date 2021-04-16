@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Globalization;
-using Friflo.Json.Flow.Graph.Select;
 
 namespace Friflo.Json.Flow.Graph.Query
 {

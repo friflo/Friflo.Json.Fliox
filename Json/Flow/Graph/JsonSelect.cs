@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Text;
 using Friflo.Json.Flow.Graph.Select;
 
 namespace Friflo.Json.Flow.Graph
@@ -10,10 +9,10 @@ namespace Friflo.Json.Flow.Graph
 
     public class JsonSelect
     {
-        internal readonly   PathNodeTree<JsonResult>    nodeTree = new PathNodeTree<JsonResult>();
-        internal readonly   List<JsonResult>            results = new List<JsonResult>();
+        internal readonly   PathNodeTree<JsonSelectResult>    nodeTree = new PathNodeTree<JsonSelectResult>();
+        internal readonly   List<JsonSelectResult>            results = new List<JsonSelectResult>();
         
-        public              List<JsonResult>            Results => results;
+        public              List<JsonSelectResult>            Results => results;
 
         
         internal JsonSelect() { }
@@ -32,13 +31,31 @@ namespace Friflo.Json.Flow.Graph
         private void CreateNodeTree(IList<string> pathList) {
             nodeTree.CreateNodeTree(pathList);
             foreach (var selector in nodeTree.selectors) {
-                selector.result = new JsonResult ();
+                selector.result = new JsonSelectResult ();
             }
         }
         
         internal void InitSelectorResults() {
             foreach (var selector in nodeTree.selectors) {
                 selector.result.Init();
+            }
+        }
+    }
+    
+    // --- Select result ---
+    public class JsonSelectResult
+    {
+        public   readonly   List<string>    values          = new List<string>();
+
+
+        internal void Init() {
+            values.Clear();
+        }
+
+        internal static void Add(string scalar, List<PathSelector<JsonSelectResult>> selectors) {
+            foreach (var selector in selectors) {
+                var result = selector.result;
+                result.values.Add(scalar);
             }
         }
     }

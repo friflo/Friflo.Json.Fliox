@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.Flow.Graph.Select;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph.Query.Arity

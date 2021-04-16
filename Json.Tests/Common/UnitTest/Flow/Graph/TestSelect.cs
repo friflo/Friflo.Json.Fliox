@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Graph.Select;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
@@ -109,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // --- Scalar select
                 var scalarSelect = new ScalarSelect(selectors);
-                var scalarResults = new List<ScalarResult>();
+                var scalarResults = new List<ScalarSelectResult>();
                 for (int n = 0; n < 2; n++) {
                     scalarResults = scalarSelector.Select(json, scalarSelect);
                 }
@@ -123,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // --- JSON select
                 var jsonSelect = new JsonSelect(selectors);
-                var jsonResults = new List<JsonResult>();
+                var jsonResults = new List<JsonSelectResult>();
                 for (int n = 0; n < 2; n++) {
                     jsonSelector.Select(json, jsonSelect);
                     jsonResults = jsonSelect.Results; // alternative access to results
@@ -132,14 +131,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        private void AssertScalarResults(List<ScalarResult> result) {
+        private void AssertScalarResults(List<ScalarSelectResult> result) {
             AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].AsObjects());
             AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].AsObjects());
             AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].AsObjects());
             AreEqual(new object[] {},                                                       result[3].AsObjects());
         }
         
-        private void AssertJsonResults(List<JsonResult> result) {
+        private void AssertJsonResults(List<JsonSelectResult> result) {
             AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].values);
             AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].values);
             AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].values);

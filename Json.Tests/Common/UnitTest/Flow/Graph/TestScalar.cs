@@ -1,4 +1,4 @@
-﻿using Friflo.Json.Flow.Graph.Select;
+﻿using Friflo.Json.Flow.Graph;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
