@@ -2,6 +2,7 @@
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -175,6 +176,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // values of both results are equal
                 AreEqual(result[0].values,  result[1].values);
+            }
+        }
+        
+        // [Test]
+        public void TestNoAlloc() {
+            var selectors = new[] {
+                ".age",
+                ".children[*].age"
+            };
+            var select = new ScalarSelect(selectors);
+            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            using (var jsonMapper   = new ObjectMapper())
+            using (var jsonSelector = new ScalarSelector())
+            {
+                jsonMapper.Pretty = true;
+                var peter  = jsonMapper.Write(TestQuery.Peter);
+
+                var result = new List<ScalarSelectResult>();
+                for (int n = 0; n < 1000; n++) {
+                    result = jsonSelector.Select(peter, select);
+                    memLog.Snapshot();
+                }
+                AreEqual(new [] {40},     result[0].AsObjects());
+                AreEqual(new [] {20, 20}, result[1].AsObjects());
+                memLog.AssertNoAllocations();
             }
         }
     }
