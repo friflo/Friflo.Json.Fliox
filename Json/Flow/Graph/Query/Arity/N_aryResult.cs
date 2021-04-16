@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
         public void Dispose() { }
     } 
     
-    internal readonly struct  N_aryResult : IEnumerable<N_aryList>
+    internal readonly struct  N_aryResult // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         internal  readonly  List<EvalResult>    results;
         
@@ -73,10 +73,11 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
             this.results  = results;
         }
 
-        public IEnumerator<N_aryList> GetEnumerator() {
+        // return N_aryResultEnumerator instead of IEnumerator<BinaryPair> to avoid boxing 
+        public N_aryResultEnumerator GetEnumerator() {
             return new N_aryResultEnumerator(this);
         }
 
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        // IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }  see boxing note above
     }
 }
