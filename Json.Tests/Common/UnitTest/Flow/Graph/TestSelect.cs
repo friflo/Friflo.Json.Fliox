@@ -13,14 +13,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         [Test]
         public void TestObjectSelect() {
-            using (var typeStore    = new TypeStore()) 
-            using (var jsonWriter   = new ObjectWriter(typeStore))
-            using (var jsonSelector = new ScalarSelector())
+            using (var typeStore        = new TypeStore()) 
+            using (var jsonWriter       = new ObjectWriter(typeStore))
+            using (var scalarSelector   = new ScalarSelector())
+            using (var jsonSelector     = new JsonSelector())
             {
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
-
-                var select = new ScalarSelect(new[] {
+                var selectors = new[] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
                     ".dbl",
@@ -28,16 +28,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     ".enumIL1",
                     ".child",
                     ".unknown"
-                });
-                var result = jsonSelector.Select(json, select);
+                };
+                var scalarSelect = new ScalarSelect(selectors);
+                var scalarResults = scalarSelector.Select(json, scalarSelect);
                 
                 // AreEqual(@"[{""val2"":68}]",    result[0].ToString());
-                AreEqual(new object[] {69},                result[1].AsObjects());
-                AreEqual(new object[] {94},                result[2].AsObjects());
-                AreEqual(new object[] {true},              result[3].AsObjects());
-                AreEqual(new object[] {"one"},             result[4].AsObjects());
-                AreEqual(new object[] {null},              result[5].AsObjects());
-                AreEqual(new object[] {},                  result[6].AsObjects());
+                AreEqual(new object[] {69},     scalarResults[1].AsObjects());
+                AreEqual(new object[] {94},     scalarResults[2].AsObjects());
+                AreEqual(new object[] {true},   scalarResults[3].AsObjects());
+                AreEqual(new object[] {"one"},  scalarResults[4].AsObjects());
+                AreEqual(new object[] {null},   scalarResults[5].AsObjects());
+                AreEqual(new object[] {},       scalarResults[6].AsObjects());
+                
+                var jsonSelect = new JsonSelect(selectors);
+                var jsonResults = jsonSelector.Select(json, jsonSelect);
+                
+                AreEqual(new[] {@"{""val2"":68}"},      jsonResults[0].values);
+                AreEqual(new[] {"69"},                  jsonResults[1].values);
+                AreEqual(new[] {"94.0"},                jsonResults[2].values);
+                AreEqual(new[] {"true"},                jsonResults[3].values);
+                AreEqual(new[] {"one"},                 jsonResults[4].values);
+                AreEqual(new[] {"null"},                jsonResults[5].values);
+                AreEqual(new string[0],                 jsonResults[6].values);
             }
         }
 
