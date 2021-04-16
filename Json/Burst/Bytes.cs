@@ -212,6 +212,25 @@ namespace Friflo.Json.Burst
             return Utf8Utils.IsStringEqualUtf8(str, in this);
         }
 
+        public bool IsEqualArray(byte[] array) {
+#if JSON_BURST
+            if (Len != array.Length)
+                return false;
+            int pos = 0;
+            var buf = buffer.array;
+            var endPos = end; 
+            for (int n = start; n < endPos; n++) {
+                if (buf[n] != array[pos++])
+                    return false;
+            }
+            return true;
+#else
+            var span  = new ReadOnlySpan<byte>(buffer.array, start, Len);
+            var other = new ReadOnlySpan<byte>(array);
+            return span.SequenceEqual(other);
+#endif
+        }
+
         public override bool Equals (Object obj) {
             if (obj == null)
                 return false;

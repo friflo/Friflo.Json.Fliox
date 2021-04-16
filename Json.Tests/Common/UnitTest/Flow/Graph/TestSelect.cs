@@ -179,14 +179,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        // [Test]
+        [Test]
         public void TestNoAlloc() {
             var selectors = new[] {
                 ".age",
                 ".children[*].age"
             };
             var select = new ScalarSelect(selectors);
-            var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
+            var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
             using (var jsonMapper   = new ObjectMapper())
             using (var jsonSelector = new ScalarSelector())
             {
@@ -194,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var peter  = jsonMapper.Write(TestQuery.Peter);
 
                 var result = new List<ScalarSelectResult>();
-                for (int n = 0; n < 1000; n++) {
+                for (int n = 0; n < 100; n++) {
                     result = jsonSelector.Select(peter, select);
                     memLog.Snapshot();
                 }

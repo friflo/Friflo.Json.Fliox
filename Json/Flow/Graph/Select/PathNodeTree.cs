@@ -1,19 +1,20 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
     internal class PathNodeTree<T>
     {
-        internal readonly   PathNode<T>             rootNode        = new PathNode<T>(new SelectorNode("$", SelectorType.Root), null);
+        internal readonly   PathNode<T>             rootNode        = new PathNode<T>(new SelectorNode("$", -1, SelectorType.Root), null);
         internal readonly   List<PathSelector<T>>   selectors       = new List<PathSelector<T>>();
         private  readonly   List<SelectorNode>      selectorNodes   = new List<SelectorNode>(); // reused buffer
 
         internal void CreateNodeTree(IList<string> pathList) {
             selectors.Clear();
-            rootNode.children.Clear();
+            rootNode.Clear();
             var count = pathList.Count;
             for (int n = 0; n < count; n++) {
                 bool isArrayResult = false;
@@ -22,9 +23,9 @@ namespace Friflo.Json.Flow.Graph.Select
                 PathNode<T> curNode = rootNode;
                 for (int i = 0; i < selectorNodes.Count; i++) {
                     var selectorNode = selectorNodes[i];
-                    if (!curNode.children.TryGetValue(selectorNode.name, out PathNode<T> childNode)) {
+                    if (!curNode.FindByString(selectorNode.name, out PathNode<T> childNode)) {
                         childNode = new PathNode<T>(selectorNode, curNode);
-                        curNode.children.Add(selectorNode.name, childNode);
+                        curNode.Add(childNode);
                     }
                     var type = selectorNode.selectorType;
                     if (type == SelectorType.ArrayWildcard || type == SelectorType.ArrayGroup) {

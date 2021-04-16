@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Flow.Graph.Select
 {
@@ -26,14 +27,58 @@ namespace Friflo.Json.Flow.Graph.Select
         internal            int                                     arrayIndex;
         
         internal readonly   List<PathSelector<TResult>>             selectors = new List<PathSelector<TResult>>();
-        internal readonly   SelectorNode                            selectorNode;
         internal readonly   PathNode<TResult>                       parent;
-        internal readonly   Dictionary<string, PathNode<TResult>>   children = new Dictionary<string, PathNode<TResult>>();
         
+        private  readonly   SelectorNode                            selectorNode;
+        private  readonly   List<PathNode<TResult>>                 children = new List<PathNode<TResult>>();
+        private  readonly   List<byte[]>                            keys = new List<byte[]>();
+
+        internal bool FindByBytes(ref Bytes key, out PathNode<TResult> node) {
+            for (int n = 0; n < keys.Count; n++) {
+                if (key.IsEqualArray(keys[n])) {
+                    node = children[n];
+                    return true;
+                }
+            }
+            node = null;
+            return false;
+        }
+        
+        internal bool FindByIndex(int key, out PathNode<TResult> node) {
+            for (int n = 0; n < children.Count; n++) {
+                node = children[n];
+                if (key == node.selectorNode.index)
+                    return true;
+            }
+            node = null;
+            return false;
+        }
+        
+        internal bool FindByString(string key, out PathNode<TResult> node) {
+            for (int n = 0; n < children.Count; n++) {
+                node = children[n];
+                if (key.Equals(node.selectorNode.name))
+                    return true;
+            }
+            node = null;
+            return false;
+        }
+
         public override string ToString() {
             var sb = new StringBuilder();
             AscendToString(sb);
             return sb.ToString();
+        }
+
+        internal void Add(PathNode<TResult> node) {
+            children.Add(node);
+            var key = Encoding.UTF8.GetBytes(node.selectorNode.name);
+            keys.Add(key);
+        }
+
+        internal void Clear() {
+            children.Clear();
+            keys.Clear();
         }
 
         private void AscendToString(StringBuilder sb) {
@@ -60,12 +105,14 @@ namespace Friflo.Json.Flow.Graph.Select
 
     internal readonly struct SelectorNode
     {
-        internal SelectorNode(string name, SelectorType selectorType) {
+        internal SelectorNode(string name, int index, SelectorType selectorType) {
             this.name           = name;
+            this.index           = index;
             this.selectorType   = selectorType;
         }
         
         internal        readonly    string          name;
+        internal        readonly    int             index;
         internal        readonly    SelectorType    selectorType;
 
         private         const       string          Wildcard = "[*]";
@@ -87,14 +134,14 @@ namespace Friflo.Json.Flow.Graph.Select
                             throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     }
                     var token = path.Substring(start, arrayStart - start);
-                    selectorNodes.Add(new SelectorNode (token, SelectorType.Member));
-                    selectorNodes.Add(new SelectorNode (Wildcard, indexType));
+                    selectorNodes.Add(new SelectorNode (token,    -1, SelectorType.Member));
+                    selectorNodes.Add(new SelectorNode (Wildcard, -1, indexType));
                     return;
                 }
                 throw new InvalidOperationException($"Invalid array selector: {path.Substring(start, len)}");
             }
             var memberToken = path.Substring(start, len);
-            selectorNodes.Add(new SelectorNode (memberToken, SelectorType.Member));
+            selectorNodes.Add(new SelectorNode (memberToken, -1, SelectorType.Member));
         }
 
         internal static void PathToSelectorNodes(string path, List<SelectorNode> selectorNodes) {

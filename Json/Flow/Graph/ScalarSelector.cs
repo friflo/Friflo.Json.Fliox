@@ -76,9 +76,8 @@ namespace Friflo.Json.Flow.Graph
         
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
-                string key = p.key.ToString();
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.children.TryGetValue(key, out PathNode<ScalarSelectResult> path)) {
+                if (!node.FindByBytes(ref p.key, out PathNode<ScalarSelectResult> path)) {
                     targetParser.SkipEvent();
                     continue;
                 }
@@ -129,8 +128,7 @@ namespace Friflo.Json.Flow.Graph
                     path = node.wildcardNode;
                     path.arrayIndex = index;
                 } else {
-                    string key = index.ToString();
-                    if (!node.children.TryGetValue(key, out path)) {
+                    if (!node.FindByIndex(index, out path)) {
                         targetParser.SkipEvent();
                         continue;
                     }
