@@ -32,12 +32,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var result = jsonSelector.Select(json, select);
                 
                 // AreEqual(@"[{""val2"":68}]",    result[0].ToString());
-                AreEqual("[69]",                result[1].ToString());
-                AreEqual("[94]",                result[2].ToString());
-                AreEqual("[true]",              result[3].ToString());
-                AreEqual("['one']",             result[4].ToString());
-                AreEqual("[null]",              result[5].ToString());
-                AreEqual("[]",                  result[6].ToString());
+                AreEqual(new object[] {69},                result[1].AsObjects());
+                AreEqual(new object[] {94},                result[2].AsObjects());
+                AreEqual(new object[] {true},              result[3].AsObjects());
+                AreEqual(new object[] {"one"},             result[4].AsObjects());
+                AreEqual(new object[] {null},              result[5].AsObjects());
+                AreEqual(new object[] {},                  result[6].AsObjects());
             }
         }
 
@@ -108,10 +108,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private void AssertStoreResult(List<ScalarResult> result) {
-            AreEqual("['The Lord of the Rings','Moby Dick']",                           result[0].ToString());
-            AreEqual("['J. R. R. Tolkien','Herman Melville']",                          result[1].ToString());
-            AreEqual("['The Sermon','A Long-expected Party','The Shadow of the Past']", result[2].ToString());
-            AreEqual("[]",                                                              result[3].ToString());
+            AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].AsObjects());
+            AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].AsObjects());
+            AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].AsObjects());
+            AreEqual(new object[] {},                                                       result[3].AsObjects());
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var result = jsonSelector.Select(peter, select);
                 
                 // --- path[0]  group by using [=>]
-                AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[0].ToString());
+                AreEqual(new [] {"Gaming", "Biking", "Travelling", "Biking", "Surfing"}, result[0].AsObjects());
                 // result contains two groups returned as index ranges:
                 // Group 0: [0 - 2]
                 // Group 1: [3 - 4]    note: 4 = result[0].values.Count - 1
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(5,                 result[0].values.Count);
                 
                 // --- path[1]  dont group by using [*]
-                AreEqual("['Gaming','Biking','Travelling','Biking','Surfing']", result[1].ToString());
+                AreEqual(new [] {"Gaming", "Biking", "Travelling", "Biking", "Surfing"}, result[1].AsObjects());
                 // result contains no groups
                 AreEqual(0,                 result[1].groupIndices.Count);
                 

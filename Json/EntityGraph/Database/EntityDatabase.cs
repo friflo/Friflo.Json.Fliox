@@ -135,7 +135,7 @@ namespace Friflo.Json.EntityGraph.Database
                     // todo call Select() only once with multiple selectors 
                     var select = new JsonSelect(dependency.refPath);
                     var selectorResults = jsonPath.Select(depEntity.value.json, select);
-                    var depIds = selectorResults[0].AsStringList();
+                    var depIds = selectorResults[0].AsStrings();
                     dependencyResult.ids.AddRange(depIds);
                     
                     // add dependencies to syncDependencies

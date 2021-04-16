@@ -33,41 +33,20 @@ namespace Friflo.Json.Flow.Graph.Select
             }
         }
 
-        public List<string> AsStringList() {
+        public List<string> AsStrings() {
             var result = new List<string>(values.Count);
             foreach (var item in values) {
                 result.Add(item.AsString());
             }
             return result;
         }
-
-        public override string ToString() {
-            var sb = new StringBuilder();
-            AppendItemAsString(sb);
-            return sb.ToString();
-        }
-
-        /// Format as debug string - not as JSON 
-        private void AppendItemAsString(StringBuilder sb) {
-            switch (values.Count) {
-                case 0:
-                    sb.Append("[]");
-                    break;
-                case 1:
-                    sb.Append('[');
-                    values[0].AppendTo(sb);
-                    sb.Append(']');
-                    break;
-                default:
-                    sb.Append('[');
-                    values[0].AppendTo(sb);
-                    for (int n = 1; n < values.Count; n++) {
-                        sb.Append(',');
-                        values[n].AppendTo(sb);
-                    }
-                    sb.Append(']');
-                    break;
+        
+        public List<object> AsObjects() {
+            var result = new List<object>(values.Count);
+            foreach (var item in values) {
+                result.Add(item.AsObject());
             }
+            return result;
         }
     }
 }
