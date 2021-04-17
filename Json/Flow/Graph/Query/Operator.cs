@@ -120,30 +120,30 @@ namespace Friflo.Json.Flow.Graph.Query
     // ------------------------------------- unary operators -------------------------------------
     public class Field : Operator
     {
-        public          string                  field;
+        public          string                  name;
         
         [Fri.Ignore]
         internal        string                  selector;   // == field if field starts with . otherwise appended to a lambda parameter
         [Fri.Ignore]
         internal        EvalResult              evalResult;
 
-        public override string                  ToString() => field;
+        public override string                  ToString() => name;
 
         public Field() { }
-        public Field(string field) { this.field = field; }
+        public Field(string name) { this.name = name; }
 
         internal override void Init(OperatorContext cx, InitFlags flags) {
             bool isArrayField = (flags & InitFlags.ArrayField) != 0;
-            if (field.StartsWith(".")) {
-                selector = isArrayField ? field + "[=>]" : field;
+            if (name.StartsWith(".")) {
+                selector = isArrayField ? name + "[=>]" : name;
             } else {
-                var dotPos = field.IndexOf('.');
+                var dotPos = name.IndexOf('.');
                 if (dotPos == -1)
                     throw new InvalidOperationException("expect a dot in field name");
-                var parameter = field.Substring(0, dotPos);
+                var parameter = name.Substring(0, dotPos);
                 var lambda = cx.parameters[parameter];
-                var path = field.Substring(dotPos + 1);
-                selector = lambda.field + "[=>]." + path;
+                var path = name.Substring(dotPos + 1);
+                selector = lambda.name + "[=>]." + path;
             }
             cx.selectors.Add(this);
         }

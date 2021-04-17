@@ -275,27 +275,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 {
                     // --- unary aggregate operations
                     var min         = new Min(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, min, "{'op':'min','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
+                    AssertJson(mapper, min, "{'op':'min','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
                     AreEqual(10,         eval.Eval(john, min.Lambda()));
                     AreEqual(".children.Min(child => child.age)", min.ToString());
                 } {
                     var max         = new Max(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, max, "{'op':'max','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
+                    AssertJson(mapper, max, "{'op':'max','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
                     AreEqual(11,         eval.Eval(john, max.Lambda()));
                     AreEqual(".children.Max(child => child.age)", max.ToString());
                 } {
                     var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, sum, "{'op':'sum','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
+                    AssertJson(mapper, sum, "{'op':'sum','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
                     AreEqual(21,         eval.Eval(john, sum.Lambda()));
                     AreEqual(".children.Sum(child => child.age)", sum.ToString());
                 } {
                     var average     = new Average(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, average, "{'op':'average','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
+                    AssertJson(mapper, average, "{'op':'average','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
                     AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                     AreEqual(".children.Average(child => child.age)", average.ToString());
                 } {
                     var count       = new Count(new Field(".children"));
-                    AssertJson(mapper, count, "{'op':'count','field':{'field':'.children'}}");
+                    AssertJson(mapper, count, "{'op':'count','field':{'name':'.children'}}");
                     AreEqual(2,          eval.Eval(john, count.Lambda()));
                     AreEqual(".children.Count()", count.ToString());
                 }
@@ -317,65 +317,65 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             {
                 // --- comparision operators
                 var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
-                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}");
+                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name == 'Peter'", isEqual.ToString());
             } {
                 var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
-                AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}");
+                AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name != 'Peter'", isNotEqual.ToString());
             } {
                 var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
-                AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
+                AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age < 20", isLess.ToString());
             } {            
                 var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
-                AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
+                AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age <= 20", isLessOrEqual.ToString());
             } {
                 var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
-                AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
+                AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age > 20", isGreater.ToString());
             } {            
                 var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
-                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
+                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age >= 20", isGreaterOrEqual.ToString());
             } {            
                 
                 // --- group operators
                 var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
             } {            
                 var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
             } {            
                 var or2 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 );
-                AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]}");
+                AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 || .age == 2", or2.ToString());
             } {            
                 var and2 =  (And)       Operator.FromLambda((Person p) => p.age == 1 && p.age == 2 );
-                AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]}");
+                AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 && .age == 2", and2.ToString());
             } { 
                 var or3 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
-                AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':3}}]}");
+                AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
                 AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
             } {
 
                 // --- unary operators
                 var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
-                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual("!(.age >= 20)", isNot.ToString());
             } {     
                 
                 // --- quantifier operators
                 var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-                AssertJson(mapper, any, "{'op':'any','field':{'field':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','field':'child.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.Any(child => child.age == 20)", any.ToString());
             } { 
                 var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-                AssertJson(mapper, all, "{'op':'all','field':{'field':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','field':'child.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.All(child => child.age == 20)", all.ToString());
             } {
 
