@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
             selectors.Clear();
             fields.Clear();
             foreach (var selector in operatorContext.selectors) {
-                selectors.Add(selector.field);
+                selectors.Add(selector.selector);
                 fields.Add(selector);
             }
             scalarSelect.CreateNodeTree(selectors);

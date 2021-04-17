@@ -5,17 +5,20 @@ namespace Friflo.Json.Flow.Graph.Query
 {
     public abstract class BinaryQuantifyOp : BoolOp
     {
-        protected       Field       field;
-        protected       string      parameter;
-        protected       BoolOp      predicate;     // e.g.   i => i.amount < 1
+        public      Field       field;
+        public      string      parameter;
+        public      BoolOp      predicate;  // e.g.   i => i.amount < 1
 
+        
         protected BinaryQuantifyOp(Field field, string parameter, BoolOp predicate) {
             this.field      = field;
             this.predicate  = predicate;
+            this.parameter  = parameter;
         }
         
         internal override void Init(OperatorContext cx) {
             cx.ValidateReuse(this); // results are reused
+            cx.parameters.Add(parameter, field);
             field.Init(cx);
             predicate.Init(cx);
         }

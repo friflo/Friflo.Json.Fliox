@@ -48,12 +48,14 @@ namespace Friflo.Json.Flow.Graph.Query
 
     internal class OperatorContext
     {
-        internal readonly List<Field>           selectors = new List<Field>();
-        private  readonly HashSet<Operator>     operators = new HashSet<Operator>();
+        internal readonly List<Field>                   selectors = new List<Field>();
+        private  readonly HashSet<Operator>             operators = new HashSet<Operator>();
+        internal readonly Dictionary<string, Field>     parameters = new Dictionary<string, Field>();
 
         internal void Init() {
             selectors.Clear();
             operators.Clear();
+            parameters.Clear();
         }
 
         internal void ValidateReuse(Operator op) {
@@ -68,6 +70,8 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Field : Operator
     {
         public          string                  field;
+        
+        internal        string                  selector;   // == field if field starts with . otherwise appended to a lambda parameter
         internal        EvalResult              evalResult;
 
         public override string                  ToString() => field;
@@ -75,6 +79,17 @@ namespace Friflo.Json.Flow.Graph.Query
         public Field(string field) { this.field = field; }
 
         internal override void Init(OperatorContext cx) {
+            if (field.StartsWith(".")) {
+                selector = field;
+            } else {
+                var dotPos = field.IndexOf('.');
+                if (dotPos == -1)
+                    throw new InvalidOperationException("expect a dot in field name");
+                var parameter = field.Substring(0, dotPos);
+                var lambda = cx.parameters[parameter];
+                var path = field.Substring(dotPos + 1);
+                selector = lambda.field + "." + path;
+            }
             cx.selectors.Add(this);
         }
 

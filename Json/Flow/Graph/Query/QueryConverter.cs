@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph.Query
     internal static class QueryConverter
     {
         public static Operator OperatorFromExpression(Expression query) {
-            var cx = new QueryCx ("", query);
+            var cx = new QueryCx ("", "", query);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
                 return TraceExpression(body, cx);
@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph.Query
             switch (expression) {
                 case MemberExpression member:
                     string name = GetMemberName(member, cx);
-                    return new Field(cx.path + "." + name);
+                    return new Field(cx.parameter + "." + name); // field refers to object root (.) or a lambda parameter
                 case MethodCallExpression methodCall:
                     return OperatorFromMethodCallExpression(methodCall, cx);
                 case LambdaExpression lambda: 
@@ -86,9 +86,9 @@ namespace Friflo.Json.Flow.Graph.Query
             
             var predicate   = (LambdaExpression)args[1];
             string sourceField = $"{sourceOp}[=>]";
-            var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
-            var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             var lambdaParameter = predicate.Parameters[0].Name;
+            var lambdaCx = new QueryCx(lambdaParameter, cx.path + sourceField, cx.exp);
+            var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
                 case "Any":     return new Any(new Field(sourceField), lambdaParameter, predicateOp);
@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Max":
                 case "Sum":
                 case "Average":
-                    var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
+                    var lambdaCx = new QueryCx(cx.parameter, cx.path + sourceField, cx.exp);
                     return OperatorFromBinaryAggregate(methodCall, lambdaCx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
@@ -135,14 +135,17 @@ namespace Friflo.Json.Flow.Graph.Query
         }
         
         private static Operator OperatorFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
-            var predicate   = methodCall.Arguments[1];
-            var valueOp = TraceExpression(predicate, cx);
+            var predicate   = (LambdaExpression)methodCall.Arguments[1];
+            string sourceField = $"{cx.path}";
+            var lambdaParameter = predicate.Parameters[0].Name;
+            var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp);
+            var valueOp = TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
-                case "Min":     return new Min      (valueOp);
-                case "Max":     return new Max      (valueOp);
-                case "Sum":     return new Sum      (valueOp);
-                case "Average": return new Average  (valueOp);
+                case "Min":     return new Min      (new Field(sourceField), lambdaParameter, valueOp);
+                case "Max":     return new Max      (new Field(sourceField), lambdaParameter, valueOp);
+                case "Sum":     return new Sum      (new Field(sourceField), lambdaParameter, valueOp);
+                case "Average": return new Average  (new Field(sourceField), lambdaParameter, valueOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
@@ -253,12 +256,14 @@ namespace Friflo.Json.Flow.Graph.Query
 
     internal class QueryCx
     {
+        internal readonly string        parameter;
         internal readonly string        path;
         internal readonly Expression    exp;
 
-        internal QueryCx(string path, Expression exp) {
-            this.path = path;
-            this.exp  = exp;
+        internal QueryCx(string parameter, string path, Expression exp) {
+            this.path       = path;
+            this.exp        = exp;
+            this.parameter  = parameter;
         }
     }
 }
