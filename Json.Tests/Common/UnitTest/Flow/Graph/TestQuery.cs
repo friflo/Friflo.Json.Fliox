@@ -225,68 +225,82 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 
                 // --- unary arithmetic operations
-                var abs     = new Abs(new LongLiteral(-2));
-                AreEqual(2,         eval.Eval("{}", abs.Lambda()));
-                
-                var ceiling = new Ceiling(new DoubleLiteral(2.5));
-                AreEqual(3,         eval.Eval("{}", ceiling.Lambda()));
-                
-                var floor   = new Floor(new DoubleLiteral(2.5));
-                AreEqual(2,         eval.Eval("{}", floor.Lambda()));
-                
-                var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
-                AreEqual(2,         eval.Eval("{}", exp.Lambda()));
-                
-                var log     = new Log(new DoubleLiteral(Math.Exp(3)));
-                AreEqual(3,         eval.Eval("{}", log.Lambda()));
-                
-                var sqrt    = new Sqrt(new DoubleLiteral(9));
-                AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
-                
-                var negate  = new Negate(new DoubleLiteral(1));
-                AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
-                
-
-                // --- binary arithmetic operations
-                var add      = new Add(new LongLiteral(1), new LongLiteral(2));
-                AreEqual(3,         eval.Eval("{}", add.Lambda()));
-                
-                var subtract = new Subtract(new LongLiteral(1), new LongLiteral(2));
-                AreEqual(-1,        eval.Eval("{}", subtract.Lambda()));
-                
-                var multiply = new Multiply(new LongLiteral(2), new LongLiteral(3));
-                AreEqual(6,         eval.Eval("{}", multiply.Lambda()));
-                
-                var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
-                AreEqual(5,         eval.Eval("{}", divide.Lambda()));
-                
-                
-                // --- unary aggregate operations
-                var min         = new Min(new Field(".children"), "child", new Field("child.age"));
-                AreEqual(10,         eval.Eval(john, min.Lambda()));
-                AreEqual(".children.Min(child => child.age)", min.ToString());
-                
-                var max         = new Max(new Field(".children"), "child", new Field("child.age"));
-                AreEqual(11,         eval.Eval(john, max.Lambda()));
-                AreEqual(".children.Max(child => child.age)", max.ToString());
-                
-                var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
-                AreEqual(21,         eval.Eval(john, sum.Lambda()));
-                AreEqual(".children.Sum(child => child.age)", sum.ToString());
-                
-                var average     = new Average(new Field(".children"), "child", new Field("child.age"));
-                AreEqual(10.5,       eval.Eval(john, average.Lambda()));
-                AreEqual(".children.Average(child => child.age)", average.ToString());
-                
-                var count       = new Count(new Field(".children"));
-                AreEqual(2,          eval.Eval(john, count.Lambda()));
-                AreEqual(".children.Count()", count.ToString());
+                {
+                    var abs     = new Abs(new LongLiteral(-2));
+                    AssertJson(mapper, abs, "{'op':'abs','operand':{'op':'int64','value':-2}}");
+                    AreEqual(2,         eval.Eval("{}", abs.Lambda()));
+                } {
+                    var ceiling = new Ceiling(new DoubleLiteral(2.5));
+                    AssertJson(mapper, ceiling, "{'op':'ceiling','operand':{'op':'double','value':2.5}}");
+                    AreEqual(3,         eval.Eval("{}", ceiling.Lambda()));
+                } {
+                    var floor   = new Floor(new DoubleLiteral(2.5));
+                    AssertJson(mapper, floor, "{'op':'floor','operand':{'op':'double','value':2.5}}");
+                    AreEqual(2,         eval.Eval("{}", floor.Lambda()));
+                } {
+                    var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
+                    AssertJson(mapper, exp, "{'op':'exp','operand':{'op':'double','value':0.6931471805599453}}");
+                    AreEqual(2,         eval.Eval("{}", exp.Lambda()));
+                } {
+                    var log     = new Log(new DoubleLiteral(Math.Exp(3)));
+                    AssertJson(mapper, log, "{'op':'log','operand':{'op':'double','value':20.085536923187668}}");
+                    AreEqual(3,         eval.Eval("{}", log.Lambda()));
+                } {
+                    var sqrt    = new Sqrt(new DoubleLiteral(9));
+                    AssertJson(mapper, sqrt, "{'op':'sqrt','operand':{'op':'double','value':9.0}}");
+                    AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
+                } {
+                    var negate  = new Negate(new DoubleLiteral(1));
+                    AssertJson(mapper, negate, "{'op':'negate','operand':{'op':'double','value':1.0}}");
+                    AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
+                } {
+                    // --- binary arithmetic operations
+                    var add      = new Add(new LongLiteral(1), new LongLiteral(2));
+                    AssertJson(mapper, add, "{'op':'add','left':{'op':'int64','value':1},'right':{'op':'int64','value':2}}");
+                    AreEqual(3,         eval.Eval("{}", add.Lambda()));
+                } {
+                    var subtract = new Subtract(new LongLiteral(1), new LongLiteral(2));
+                    AssertJson(mapper, subtract, "{'op':'subtract','left':{'op':'int64','value':1},'right':{'op':'int64','value':2}}");
+                    AreEqual(-1,        eval.Eval("{}", subtract.Lambda()));
+                } {
+                    var multiply = new Multiply(new LongLiteral(2), new LongLiteral(3));
+                    AssertJson(mapper, multiply, "{'op':'multiply','left':{'op':'int64','value':2},'right':{'op':'int64','value':3}}");
+                    AreEqual(6,         eval.Eval("{}", multiply.Lambda()));
+                } {
+                    var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
+                    AssertJson(mapper, divide, "{'op':'divide','left':{'op':'int64','value':10},'right':{'op':'int64','value':2}}");
+                    AreEqual(5,         eval.Eval("{}", divide.Lambda()));
+                } {
+                    // --- unary aggregate operations
+                    var min         = new Min(new Field(".children"), "child", new Field("child.age"));
+                    AreEqual(10,         eval.Eval(john, min.Lambda()));
+                    AreEqual(".children.Min(child => child.age)", min.ToString());
+                } {
+                    var max         = new Max(new Field(".children"), "child", new Field("child.age"));
+                    AreEqual(11,         eval.Eval(john, max.Lambda()));
+                    AreEqual(".children.Max(child => child.age)", max.ToString());
+                } {
+                    var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
+                    AreEqual(21,         eval.Eval(john, sum.Lambda()));
+                    AreEqual(".children.Sum(child => child.age)", sum.ToString());
+                } {
+                    var average     = new Average(new Field(".children"), "child", new Field("child.age"));
+                    AreEqual(10.5,       eval.Eval(john, average.Lambda()));
+                    AreEqual(".children.Average(child => child.age)", average.ToString());
+                } {
+                    var count       = new Count(new Field(".children"));
+                    AreEqual(2,          eval.Eval(john, count.Lambda()));
+                    AreEqual(".children.Count()", count.ToString());
+                }
             }
         }
 
         private static void AssertJson(ObjectMapper mapper, Operator op, string json) {
-            json = json.Replace('\'', '\"');
             var result = mapper.Write(op);
+            result = result.Replace('\"', '\'');
+            if (json != result) {
+                Fail($"Expected: {json}\nBut was:  {result}");
+            }
             AreEqual(json, result);
         }
 
