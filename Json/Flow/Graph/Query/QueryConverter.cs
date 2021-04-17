@@ -191,7 +191,7 @@ namespace Friflo.Json.Flow.Graph.Query
             var field = (Field)TraceExpression(member.Expression, cx);
             switch (name) {
                 case "Count":
-                    field.name = field.name; // + "[=>]";
+                    // field.name = field.name; // + "[=>]";
                     return new Count(field);
             }
             throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
