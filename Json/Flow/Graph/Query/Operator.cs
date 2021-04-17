@@ -11,6 +11,9 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Flow.Graph.Query
 {
     [Fri.Discriminator("op")]
+    //
+    [Fri.Polymorph(typeof(Field),           Discriminant = "field")]
+    //
     [Fri.Polymorph(typeof(StringLiteral),   Discriminant = "string")]
     [Fri.Polymorph(typeof(DoubleLiteral),   Discriminant = "double")]
     [Fri.Polymorph(typeof(LongLiteral),     Discriminant = "int64")]
@@ -104,7 +107,9 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public          string                  field;
         
+        [Fri.Ignore]
         internal        string                  selector;   // == field if field starts with . otherwise appended to a lambda parameter
+        [Fri.Ignore]
         internal        EvalResult              evalResult;
 
         public override string                  ToString() => field;
