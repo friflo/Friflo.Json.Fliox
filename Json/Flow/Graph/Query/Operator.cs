@@ -38,13 +38,17 @@ namespace Friflo.Json.Flow.Graph.Query
     [Fri.Polymorph(typeof(Sum),                 Discriminant = "sum")]
     [Fri.Polymorph(typeof(Average),             Discriminant = "average")]
     [Fri.Polymorph(typeof(Count),               Discriminant = "count")]
-    //  
+    
+    // --- BoolOp  
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
     [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
     [Fri.Polymorph(typeof(LessThanOrEqual),     Discriminant = "lessThanOrEqual")]
     [Fri.Polymorph(typeof(GreaterThan),         Discriminant = "greaterThan")]
     [Fri.Polymorph(typeof(GreaterThanOrEqual),  Discriminant = "greaterThanOrEqual")]
+    //
+    [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
+    [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
     
     
     

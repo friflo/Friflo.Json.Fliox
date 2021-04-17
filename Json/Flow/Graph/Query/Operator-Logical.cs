@@ -7,6 +7,17 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
+    [Fri.Discriminator("op")]
+    // --- BoolOp  
+    [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
+    [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
+    [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
+    [Fri.Polymorph(typeof(LessThanOrEqual),     Discriminant = "lessThanOrEqual")]
+    [Fri.Polymorph(typeof(GreaterThan),         Discriminant = "greaterThan")]
+    [Fri.Polymorph(typeof(GreaterThanOrEqual),  Discriminant = "greaterThanOrEqual")]
+    //
+    [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
+    [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
     public abstract class BoolOp : Operator
     {
         [Fri.Ignore]
@@ -51,10 +62,13 @@ namespace Friflo.Json.Flow.Graph.Query
     // ----------------------------------- (n-ary) logical group operators -----------------------------------
     public abstract class BinaryLogicalOp : BoolOp
     {
-        protected           List<BoolOp>            operands;
+        public              List<BoolOp>            operands;
+        [Fri.Ignore]
         internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
+        [Fri.Ignore]
         internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
+        protected BinaryLogicalOp() { }
         protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
         
         internal override void Init(OperatorContext cx, InitFlags flags) {
@@ -68,7 +82,8 @@ namespace Friflo.Json.Flow.Graph.Query
     public class And : BinaryLogicalOp
     {
         public override     string      ToString() => string.Join(" && ", operands);
-        
+
+        public And() { }
         public And(List<BoolOp> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -100,6 +115,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => string.Join(" || ", operands);
         
+        public Or() { }
         public Or(List<BoolOp> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {

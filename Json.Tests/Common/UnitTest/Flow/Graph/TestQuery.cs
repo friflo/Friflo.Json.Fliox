@@ -343,18 +343,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // --- group operators
                 var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
+                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
             } {            
                 var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
+                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
             } {            
                 var or2 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 );
+                AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 || .age == 2", or2.ToString());
             } {            
                 var and2 =  (And)       Operator.FromLambda((Person p) => p.age == 1 && p.age == 2 );
+                AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 && .age == 2", and2.ToString());
             } { 
                 var or3 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
+                AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':3}}]}");
                 AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
             } {
 
