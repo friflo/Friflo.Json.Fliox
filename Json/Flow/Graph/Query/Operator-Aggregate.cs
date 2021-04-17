@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Graph.Query
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operator
     {
-        protected           Field               field;
+        public              Field               field;
         [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
@@ -43,9 +43,9 @@ namespace Friflo.Json.Flow.Graph.Query
     // ------------------------------------------- binary -------------------------------------------
     public abstract class BinaryAggregateOp : Operator
     {
-        protected           Field               field;
+        public              Field               field;
         public              string              parameter;
-        protected           Operator            array;
+        public              Operator            array;
         [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 

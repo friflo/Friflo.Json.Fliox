@@ -275,27 +275,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 {
                     // --- unary aggregate operations
                     var min         = new Min(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, min, "{'op':'min','parameter':'child'}");
+                    AssertJson(mapper, min, "{'op':'min','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
                     AreEqual(10,         eval.Eval(john, min.Lambda()));
                     AreEqual(".children.Min(child => child.age)", min.ToString());
                 } {
                     var max         = new Max(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, max, "{'op':'max','parameter':'child'}");
+                    AssertJson(mapper, max, "{'op':'max','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
                     AreEqual(11,         eval.Eval(john, max.Lambda()));
                     AreEqual(".children.Max(child => child.age)", max.ToString());
                 } {
                     var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, sum, "{'op':'sum','parameter':'child'}");
+                    AssertJson(mapper, sum, "{'op':'sum','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
                     AreEqual(21,         eval.Eval(john, sum.Lambda()));
                     AreEqual(".children.Sum(child => child.age)", sum.ToString());
                 } {
                     var average     = new Average(new Field(".children"), "child", new Field("child.age"));
-                    AssertJson(mapper, average, "{'op':'average','parameter':'child'}");
+                    AssertJson(mapper, average, "{'op':'average','field':{'field':'.children'},'parameter':'child','array':{'op':'field','field':'child.age'}}");
                     AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                     AreEqual(".children.Average(child => child.age)", average.ToString());
                 } {
                     var count       = new Count(new Field(".children"));
-                    AssertJson(mapper, count, "{'op':'count'}");
+                    AssertJson(mapper, count, "{'op':'count','field':{'field':'.children'}}");
                     AreEqual(2,          eval.Eval(john, count.Lambda()));
                     AreEqual(".children.Count()", count.ToString());
                 }
