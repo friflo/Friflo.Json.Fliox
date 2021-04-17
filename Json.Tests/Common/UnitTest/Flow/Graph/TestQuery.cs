@@ -101,10 +101,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
 
                 // --- Any
-                var  hasChildPaul = new Any (new Field (".children[=>]"), "child", new Equal (new Field (".children[=>].name"), new StringLiteral ("Paul"))).Filter();
+                var  hasChildPaul = new Any (new Field (".children[=>]"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter();
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new Field (".children[=>]"), "child", new LessThan (new Field (".children[=>].age"), new LongLiteral (12))).Filter();
+                var hasChildAgeLess12 = new Any (new Field (".children[=>]"), "child", new LessThan (new Field ("child.age"), new LongLiteral (12))).Filter();
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
                 
                 // --- All
-                var allChildAgeEquals20 = new All (new Field (".children[=>]"), "child", new Equal(new Field (".children[=>].age"), new LongLiteral (20))).Filter();
+                var allChildAgeEquals20 = new All (new Field (".children[=>]"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
