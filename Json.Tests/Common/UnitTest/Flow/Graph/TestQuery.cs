@@ -365,14 +365,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 // --- unary operators
                 var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
+                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual("!(.age >= 20)", isNot.ToString());
             } {     
                 
                 // --- quantifier operators
                 var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
+                AssertJson(mapper, any, "{'op':'any','field':{'field':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','field':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.Any(child => child.age == 20)", any.ToString());
             } { 
                 var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
+                AssertJson(mapper, all, "{'op':'all','field':{'field':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','field':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.All(child => child.age == 20)", all.ToString());
             } {
 

@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public      string      parameter;
         public      BoolOp      predicate;  // e.g.   i => i.amount < 1
 
-        
+        protected BinaryQuantifyOp() { }
         protected BinaryQuantifyOp(Field field, string parameter, BoolOp predicate) {
             this.field      = field;
             this.predicate  = predicate;
@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => $"{field}.Any({parameter} => {predicate})";
 
+        public Any() { }
         public Any(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -48,6 +49,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => $"{field}.All({parameter} => {predicate})";
         
+        public All() { }
         public All(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {

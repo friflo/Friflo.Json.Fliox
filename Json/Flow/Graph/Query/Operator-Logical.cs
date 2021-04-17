@@ -18,6 +18,12 @@ namespace Friflo.Json.Flow.Graph.Query
     //
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
+    //
+    [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
+    [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
+    
+    // ----------------------------- BoolOp --------------------------
     public abstract class BoolOp : Operator
     {
         [Fri.Ignore]
@@ -31,8 +37,9 @@ namespace Friflo.Json.Flow.Graph.Query
     // ----------------------------------- unary logical operators -----------------------------------
     public abstract class UnaryLogicalOp : BoolOp
     {
-        protected           BoolOp              operand;     // e.g.   i => i.amount < 1
+        public           BoolOp              operand;     // e.g.   i => i.amount < 1
 
+        protected UnaryLogicalOp() { }
         protected UnaryLogicalOp(BoolOp operand) { this.operand = operand; }
         
         internal override void Init(OperatorContext cx, InitFlags flags) {
@@ -44,7 +51,8 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Not : UnaryLogicalOp
     {
         public override     string      ToString() => $"!({operand})";
-        
+
+        public Not() { }
         public Not(BoolOp operand) : base(operand) { }
         
         internal override EvalResult Eval(EvalCx cx) {

@@ -49,9 +49,12 @@ namespace Friflo.Json.Flow.Graph.Query
     //
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
+    //
+    [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
+    [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
     
-    
-    
+    // ----------------------------- Operator --------------------------
     public abstract class Operator
     {
         internal abstract void Init(OperatorContext cx, InitFlags flags);
