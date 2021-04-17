@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph.Query
         // is set always to the same value in Eval() so it can be reused
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
-        internal override void Init(OperatorContext cx) { }
+        internal override void Init(OperatorContext cx, InitFlags flags) { }
     }
         
     public class StringLiteral : Literal

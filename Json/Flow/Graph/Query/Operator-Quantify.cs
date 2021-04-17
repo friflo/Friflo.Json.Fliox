@@ -16,11 +16,11 @@ namespace Friflo.Json.Flow.Graph.Query
             this.parameter  = parameter;
         }
         
-        internal override void Init(OperatorContext cx) {
+        internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             cx.parameters.Add(parameter, field);
-            field.Init(cx);
-            predicate.Init(cx);
+            field.Init(cx, InitFlags.ArrayField);
+            predicate.Init(cx, 0);
         }
     }
     

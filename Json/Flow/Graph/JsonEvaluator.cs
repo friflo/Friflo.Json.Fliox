@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph
         private void InitLambda(Operator op) {
             this.op = op;
             operatorContext.Init();
-            op.Init(operatorContext);
+            op.Init(operatorContext, 0);
             selectors.Clear();
             fields.Clear();
             foreach (var selector in operatorContext.selectors) {

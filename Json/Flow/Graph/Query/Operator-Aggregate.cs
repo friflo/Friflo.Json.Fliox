@@ -16,9 +16,9 @@ namespace Friflo.Json.Flow.Graph.Query
 
         }
         
-        internal override void Init(OperatorContext cx) {
+        internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
-            field.Init(cx);
+            field.Init(cx, InitFlags.ArrayField);
         }
     }
     
@@ -50,11 +50,11 @@ namespace Friflo.Json.Flow.Graph.Query
             this.array      = array;
         }
         
-        internal override void Init(OperatorContext cx) {
+        internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             cx.parameters.Add(parameter, field);
-            field.Init(cx);
-            array.Init(cx);
+            field.Init(cx, InitFlags.ArrayField);
+            array.Init(cx, flags);
         }
     }
     

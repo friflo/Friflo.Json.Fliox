@@ -9,10 +9,10 @@ using Friflo.Json.Burst; // UnityExtension.TryAdd()
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Flow.Graph.Query
 {
-    
+
     public abstract class Operator
     {
-        internal abstract void                  Init(OperatorContext cx);
+        internal abstract void Init(OperatorContext cx, InitFlags flags);
         internal abstract EvalResult            Eval(EvalCx cx);
         
         internal static readonly Scalar         True  = Scalar.True; 
@@ -44,6 +44,12 @@ namespace Friflo.Json.Flow.Graph.Query
         internal EvalCx(int groupIndex) {
             this.groupIndex = groupIndex;
         }
+    }
+
+    [Flags]
+    internal enum InitFlags
+    {
+        ArrayField = 1
     }
 
     internal class OperatorContext
@@ -78,9 +84,10 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public Field(string field) { this.field = field; }
 
-        internal override void Init(OperatorContext cx) {
+        internal override void Init(OperatorContext cx, InitFlags flags) {
+            bool isArrayField = (flags & InitFlags.ArrayField) != 0;
             if (field.StartsWith(".")) {
-                selector = field;
+                selector = isArrayField ? field + "[=>]" : field;
             } else {
                 var dotPos = field.IndexOf('.');
                 if (dotPos == -1)
@@ -88,7 +95,7 @@ namespace Friflo.Json.Flow.Graph.Query
                 var parameter = field.Substring(0, dotPos);
                 var lambda = cx.parameters[parameter];
                 var path = field.Substring(dotPos + 1);
-                selector = lambda.field + "." + path;
+                selector = lambda.field + "[=>]." + path;
             }
             cx.selectors.Add(this);
         }
