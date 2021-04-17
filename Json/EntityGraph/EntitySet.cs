@@ -20,11 +20,11 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadDependencyResult  (ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps);
+        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult result, List<string> parentIds, ReadDeps deps);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
-        internal  abstract  void            SyncDependencies      (ContainerEntities containerResults);
+        internal  abstract  void            SyncReferences        (ContainerEntities containerResults);
 
     }
     
@@ -199,10 +199,10 @@ namespace Friflo.Json.EntityGraph
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
 
-                var dependencies = new List<ReadDependency>();
+                var references = new List<ReadReference>();
                 foreach (var depPair in readDeps) {
                     ReadDeps depsById = depPair.Value;
-                    ReadDependency readDep = new ReadDependency {
+                    ReadReference readDep = new ReadReference {
                         refPath = depsById.selector,
                         container = depsById.entityType.Name,
                         ids = new List<string>() 
@@ -210,12 +210,12 @@ namespace Friflo.Json.EntityGraph
                     foreach (var dep in depsById.readRefs) {
                         readDep.ids.Add(dep.Key);
                     }
-                    dependencies.Add(readDep);
+                    references.Add(readDep);
                 }
                 var req = new ReadEntities {
                     container = container.name,
                     ids = ids,
-                    dependencies = dependencies
+                    references = references
                 };
                 commands.Add(req);
                 syncReadDeps = readDeps;
@@ -245,35 +245,35 @@ namespace Friflo.Json.EntityGraph
         
         // --- ReadEntities
         internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
-            for (int n = 0; n < result.dependencies.Count; n++) {
-                ReadDependency          dependency = command.dependencies[n];
-                ReadDependencyResult    depResult  = result.dependencies[n];
-                var depContainer = store.intern.setByName[depResult.container];
-                ReadDeps deps = syncReadDeps[dependency.refPath];
-                depContainer.ReadDependencyResult(dependency, depResult, command.ids, deps);
+            for (int n = 0; n < result.references.Count; n++) {
+                ReadReference          reference = command.references[n];
+                ReadReferenceResult    refResult  = result.references[n];
+                var refContainer = store.intern.setByName[refResult.container];
+                ReadDeps deps = syncReadDeps[reference.refPath];
+                refContainer.ReadReferenceResult(reference, refResult, command.ids, deps);
             }
             syncReadDeps = null;
         }
 
-        internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps) {
+        internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadDeps deps) {
             foreach (var parentId in parentIds) {
-                var dependency = deps.readRefs[parentId];
-                if (dependency.singleResult) {
-                    var singleDep = (ReadRef<T>) dependency;
+                var reference = deps.readRefs[parentId];
+                if (reference.singleResult) {
+                    var singleDep = (ReadRef<T>) reference;
                     if (result.ids.Count != 1)
-                        throw new InvalidOperationException("Expect exactly one dependency");
+                        throw new InvalidOperationException("Expect exactly one reference");
                     var id = result.ids[0];
                     var peer = GetPeerById(id);
                     singleDep.id        = id;
                     singleDep.entity    = peer.entity;
                     singleDep.synced    = true;
                 } else {
-                    var multiDep = (ReadRefs<T>) dependency;
+                    var multiDep = (ReadRefs<T>) reference;
                     multiDep.synced = true;
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new ReadRef<T>(dependency.parentId, dependency.parentSet, dependency.label) {
+                        var dep = new ReadRef<T>(reference.parentId, reference.parentSet, reference.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true
@@ -284,7 +284,7 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal override void SyncDependencies(ContainerEntities containerResults) {
+        internal override void SyncReferences(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var peer = GetPeerById(id);

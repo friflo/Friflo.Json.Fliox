@@ -29,61 +29,61 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadRef<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
-            return DependencyByPathIntern<TValue>(selector);
+            return ReadRefByPathIntern<TValue>(selector);
         }
         
         public ReadRefs<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            return DependenciesByPathIntern<TValue>(selector);
+            return ReadRefsByPathIntern<TValue>(selector);
         }
         
         public ReadRef<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
-                throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(ReadRefs)}()");
-            return DependencyByPathIntern<TValue>(path);
+                throw new InvalidOperationException($"selector returns an array of ReadRefs. Use ${nameof(ReadRefs)}()");
+            return ReadRefByPathIntern<TValue>(path);
         }
         
         public ReadRefs<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
-                throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(ReadRef)}()");
-            return DependenciesByPathIntern<TValue>(path);
+                throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
+            return ReadRefsByPathIntern<TValue>(path);
         }
 
-        // lab - dependencies by Entity Type
+        // lab - ReadRefs by Entity Type
         public ReadRefs<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
-            throw new NotImplementedException("DependenciesOfType() planned to be implemented");
+            throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
-        // lab - all dependencies
+        // lab - all ReadRefs
         public ReadRefs<Entity> ReadAllRefs()
         {
-            throw new NotImplementedException("AllDependencies() planned to be implemented");
+            throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
         
-        private ReadRef<TValue> DependencyByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRef<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
                 return (ReadRef<TValue>)readRef;
-            ReadRef<TValue> newDependency = new ReadRef<TValue>(id, set, selector);
-            readDeps.readRefs.Add(id, newDependency);
-            return newDependency;
+            ReadRef<TValue> newReadRef = new ReadRef<TValue>(id, set, selector);
+            readDeps.readRefs.Add(id, newReadRef);
+            return newReadRef;
         }
         
-        private ReadRefs<TValue> DependenciesByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRefs<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var readDeps = set.GetReadDeps<TValue>(selector);
             if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
                 return (ReadRefs<TValue>)readRef;
-            ReadRefs<TValue> newDependency = new ReadRefs<TValue>(id, set, selector);
-            readDeps.readRefs.Add(id, newDependency);
-            return newDependency;
+            ReadRefs<TValue> newReadRefs = new ReadRefs<TValue>(id, set, selector);
+            readDeps.readRefs.Add(id, newReadRefs);
+            return newReadRefs;
         }
     }
 
@@ -114,7 +114,7 @@ namespace Friflo.Json.EntityGraph
 
     
     
-    // ----------------------------------------- Dependency<> -----------------------------------------
+    // ----------------------------------------- ReadRef -----------------------------------------
     public class ReadRef
     {
         internal readonly   string      parentId;

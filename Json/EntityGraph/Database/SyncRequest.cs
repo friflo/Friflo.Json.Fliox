@@ -71,26 +71,26 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  string                      container;
         public  List<string>                ids;
-        public  List<ReadDependency>        dependencies;
+        public  List<ReadReference>         references;
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public partial class ReadEntitiesResult : CommandResult
     {
-        public  List<ReadDependencyResult>  dependencies;
+        public  List<ReadReferenceResult>   references;
     }
     
-    // ------ ReadDependency
-    public class ReadDependency
+    // ------ ReadReference
+    public class ReadReference
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
-        /// These dependent entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
+        /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
         public  string              refPath; // e.g. ".items[*].article"
         public  string              container;
         public  List<string>        ids;
     }
     
-    public class ReadDependencyResult
+    public class ReadReferenceResult
     {
         public  string              container;
         public  List<string>        ids;

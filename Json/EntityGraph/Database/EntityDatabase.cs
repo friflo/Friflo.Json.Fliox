@@ -114,38 +114,38 @@ namespace Friflo.Json.EntityGraph.Database
             CreateEntities(entities); // should be UpdateEntities
         }
 
-        public List<ReadDependencyResult> ReadDependencies(
-                List<ReadDependency>            dependencies,
+        public List<ReadReferenceResult> ReadReferences(
+                List<ReadReference>             references,
                 Dictionary<string, EntityValue> entities,
                 SyncResponse                    syncResponse)
         {
             var jsonPath    = SyncContext.scalarSelector;
-            var dependencyResults = new List<ReadDependencyResult>();
-            foreach (var dependency in dependencies) {
-                var depContainer = database.GetContainer(dependency.container);
-                var dependencyResult = new ReadDependencyResult {
-                    container   = dependency.container,
+            var referenceResults = new List<ReadReferenceResult>();
+            foreach (var reference in references) {
+                var refContainer = database.GetContainer(reference.container);
+                var referenceResult = new ReadReferenceResult {
+                    container   = reference.container,
                     ids         = new List<string>()
                 };
-                foreach (var id in dependency.ids) {
-                    EntityValue depEntity = entities[id];
-                    if (depEntity == null) {
-                        throw new InvalidOperationException($"expect entity dependency available: {id}");
+                foreach (var id in reference.ids) {
+                    EntityValue refEntity = entities[id];
+                    if (refEntity == null) {
+                        throw new InvalidOperationException($"expect entity reference available: {id}");
                     }
                     // todo call Select() only once with multiple selectors 
-                    var select = new ScalarSelect(dependency.refPath);
-                    var selectorResults = jsonPath.Select(depEntity.value.json, select);
-                    var depIds = selectorResults[0].AsStrings();
-                    dependencyResult.ids.AddRange(depIds);
+                    var select = new ScalarSelect(reference.refPath);
+                    var selectorResults = jsonPath.Select(refEntity.value.json, select);
+                    var refIds = selectorResults[0].AsStrings();
+                    referenceResult.ids.AddRange(refIds);
                     
-                    // add dependencies to syncDependencies
-                    var depEntities = depContainer.ReadEntities(depIds);
-                    var containerResult = syncResponse.GetContainerResult(dependency.container);
-                    containerResult.AddEntities(depEntities);
+                    // add references to ContainerEntities
+                    var refEntities = refContainer.ReadEntities(refIds);
+                    var containerResult = syncResponse.GetContainerResult(reference.container);
+                    containerResult.AddEntities(refEntities);
                 }
-                dependencyResults.Add(dependencyResult);
+                referenceResults.Add(referenceResult);
             }
-            return dependencyResults;
+            return referenceResults;
         }
     }
 }

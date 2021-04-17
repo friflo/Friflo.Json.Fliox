@@ -62,9 +62,9 @@ namespace Friflo.Json.EntityGraph.Database
             var entities = entityContainer.ReadEntities(ids);
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
-            var dependencyResults = entityContainer.ReadDependencies(dependencies, entities, response);
+            var readRefResults = entityContainer.ReadReferences(references, entities, response);
             var result = new ReadEntitiesResult {
-                dependencies = dependencyResults
+                references = readRefResults
             };
             return result;
         }
