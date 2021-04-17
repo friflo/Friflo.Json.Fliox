@@ -28,70 +28,70 @@ namespace Friflo.Json.EntityGraph
             return new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
         }
         
-        public Dependency<TValue> DependencyByPath<TValue>(string selector) where TValue : Entity {
+        public ReadRef<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
             return DependencyByPathIntern<TValue>(selector);
         }
         
-        public Dependencies<TValue> DependenciesByPath<TValue>(string selector) where TValue : Entity {
+        public ReadRefs<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
             return DependenciesByPathIntern<TValue>(selector);
         }
         
-        public Dependency<TValue> Dependency<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
+        public ReadRef<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
-                throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(Dependencies)}()");
+                throw new InvalidOperationException($"selector returns an array of dependencies. Use ${nameof(ReadRefs)}()");
             return DependencyByPathIntern<TValue>(path);
         }
         
-        public Dependencies<TValue> Dependencies<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefs<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
-                throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(Dependency)}()");
+                throw new InvalidOperationException($"selector returns a single dependency. Use ${nameof(ReadRef)}()");
             return DependenciesByPathIntern<TValue>(path);
         }
 
         // lab - dependencies by Entity Type
-        public Dependencies<TValue> DependenciesOfType<TValue>() where TValue : Entity {
+        public ReadRefs<TValue> DependenciesOfType<TValue>() where TValue : Entity {
             throw new NotImplementedException("DependenciesOfType() planned to be implemented");
         }
         
         // lab - all dependencies
-        public Dependencies<Entity> AllDependencies()
+        public ReadRefs<Entity> AllDependencies()
         {
             throw new NotImplementedException("AllDependencies() planned to be implemented");
         }
         
-        private Dependency<TValue> DependencyByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRef<TValue> DependencyByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
-                return (Dependency<TValue>)dependency;
-            Dependency<TValue> newDependency = new Dependency<TValue>(id, set, selector);
-            readDeps.dependencies.Add(id, newDependency);
+            if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
+                return (ReadRef<TValue>)readRef;
+            ReadRef<TValue> newDependency = new ReadRef<TValue>(id, set, selector);
+            readDeps.readRefs.Add(id, newDependency);
             return newDependency;
         }
         
-        private Dependencies<TValue> DependenciesByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRefs<TValue> DependenciesByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.dependencies.TryGetValue(id, out Dependency dependency))
-                return (Dependencies<TValue>)dependency;
-            Dependencies<TValue> newDependency = new Dependencies<TValue>(id, set, selector);
-            readDeps.dependencies.Add(id, newDependency);
+            if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
+                return (ReadRefs<TValue>)readRef;
+            ReadRefs<TValue> newDependency = new ReadRefs<TValue>(id, set, selector);
+            readDeps.readRefs.Add(id, newDependency);
             return newDependency;
         }
     }
 
     public class ReadWhere<T> where T : Entity
     {
-        private readonly    List<Dependency<T>> results = new List<Dependency<T>>();
+        private readonly    List<ReadRef<T>>    results = new List<ReadRef<T>>();
 
-        public              List<Dependency<T>> Results => results;
+        public              List<ReadRef<T>>    Results => results;
     }
     
     
@@ -115,7 +115,7 @@ namespace Friflo.Json.EntityGraph
     
     
     // ----------------------------------------- Dependency<> -----------------------------------------
-    public class Dependency
+    public class ReadRef
     {
         internal readonly   string      parentId;
         internal readonly   EntitySet   parentSet;
@@ -124,7 +124,7 @@ namespace Friflo.Json.EntityGraph
 
         public   override   string      ToString() => $"{parentSet.Type.Name}['{parentId}'] {label}";
         
-        internal Dependency(string parentId, EntitySet parentSet, string label, bool singleResult) {
+        internal ReadRef(string parentId, EntitySet parentSet, string label, bool singleResult) {
             this.parentId           = parentId;
             this.parentSet          = parentSet;
             this.singleResult       = singleResult;
@@ -132,7 +132,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class Dependency<T> : Dependency where T : Entity
+    public class ReadRef<T> : ReadRef where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -141,22 +141,22 @@ namespace Friflo.Json.EntityGraph
         public      string      Id      => synced ? id      : throw Error();
         public      T           Result  => synced ? entity  : throw Error();
 
-        internal Dependency(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
+        internal ReadRef(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"Dependency not synced: {ToString()}");
         }
     }
     
-    public class Dependencies<T> : Dependency where T : Entity
+    public class ReadRefs<T> : ReadRef where T : Entity
     {
         internal            bool                synced;
-        internal readonly   List<Dependency<T>> results = new List<Dependency<T>>();
+        internal readonly   List<ReadRef<T>>    results = new List<ReadRef<T>>();
         
-        public              List<Dependency<T>> Results         => synced ? results         : throw Error();
-        public              Dependency<T>       this[int index] => synced ? results[index]  : throw Error();
+        public              List<ReadRef<T>>    Results         => synced ? results         : throw Error();
+        public              ReadRef<T>          this[int index] => synced ? results[index]  : throw Error();
 
-        internal Dependencies(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
+        internal ReadRefs(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"Dependencies not synced: {ToString()}");
@@ -167,7 +167,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal readonly   string                          selector;
         internal readonly   Type                            entityType;
-        internal readonly   Dictionary<string, Dependency>  dependencies = new Dictionary<string, Dependency>();
+        internal readonly   Dictionary<string, ReadRef>     readRefs = new Dictionary<string, ReadRef>();
         
         internal ReadDeps(string selector, Type entityType) {
             this.selector = selector;

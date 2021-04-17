@@ -207,7 +207,7 @@ namespace Friflo.Json.EntityGraph
                         container = depsById.entityType.Name,
                         ids = new List<string>() 
                     };
-                    foreach (var dep in depsById.dependencies) {
+                    foreach (var dep in depsById.readRefs) {
                         readDep.ids.Add(dep.Key);
                     }
                     dependencies.Add(readDep);
@@ -257,9 +257,9 @@ namespace Friflo.Json.EntityGraph
 
         internal override void ReadDependencyResult(ReadDependency command, ReadDependencyResult result, List<string> parentIds, ReadDeps deps) {
             foreach (var parentId in parentIds) {
-                var dependency = deps.dependencies[parentId];
+                var dependency = deps.readRefs[parentId];
                 if (dependency.singleResult) {
-                    var singleDep = (Dependency<T>) dependency;
+                    var singleDep = (ReadRef<T>) dependency;
                     if (result.ids.Count != 1)
                         throw new InvalidOperationException("Expect exactly one dependency");
                     var id = result.ids[0];
@@ -268,12 +268,12 @@ namespace Friflo.Json.EntityGraph
                     singleDep.entity    = peer.entity;
                     singleDep.synced    = true;
                 } else {
-                    var multiDep = (Dependencies<T>) dependency;
+                    var multiDep = (ReadRefs<T>) dependency;
                     multiDep.synced = true;
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new Dependency<T>(dependency.parentId, dependency.parentSet, dependency.label) {
+                        var dep = new ReadRef<T>(dependency.parentId, dependency.parentSet, dependency.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true

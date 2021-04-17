@@ -139,10 +139,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var read6 = store.orders.ReadWhere(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
 
             
-            Dependency<Customer>     customer   = order1.DependencyByPath<Customer>(".customer");
-            Dependency<Customer>     customer2  = order1.DependencyByPath<Customer>(".customer");
+            ReadRef<Customer>     customer   = order1.ReadRefByPath<Customer>(".customer");
+            ReadRef<Customer>     customer2  = order1.ReadRefByPath<Customer>(".customer");
             AreSame(customer, customer2);
-            Dependency<Customer>     customer3  = order1.Dependency(o => o.customer);
+            ReadRef<Customer>     customer3  = order1.ReadRef(o => o.customer);
             AreSame(customer, customer3);
             AreEqual("Order['order-1'] .customer", customer.ToString());
             
@@ -154,8 +154,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // lab - test dependency expressions
             if (lab) {
-                Dependencies<Article> articles2 =   order1.DependenciesOfType<Article>();
-                Dependencies<Entity> allDeps =      order1.AllDependencies();
+                ReadRefs<Article> articles2 =   order1.DependenciesOfType<Article>();
+                ReadRefs<Entity> allDeps =      order1.AllDependencies();
             }
 
             await store.Sync();
@@ -163,16 +163,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Smith",       customer.Result.lastName);
 
             // schedule dependency an already synced Read operation
-            e = Throws<InvalidOperationException>(() => { order1.DependencyByPath<Article>("customer"); });
+            e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
             AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
-            e = Throws<InvalidOperationException>(() => { order1.DependenciesByPath<Article>("items[*].article"); });
+            e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
             AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
 
             order1 =    store.orders.Read("order-1");
-            Dependencies<Article>    articleDeps    = order1.DependenciesByPath<Article>(".items[*].article");
-            Dependencies<Article>    articleDeps2   = order1.DependenciesByPath<Article>(".items[*].article");
+            ReadRefs<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefs<Article>    articleDeps2   = order1.ReadRefsByPath<Article>(".items[*].article");
             AreSame(articleDeps, articleDeps2);
-            Dependencies<Article>    articleDeps3   = order1.Dependencies(o => o.items.Select(a => a.article));
+            ReadRefs<Article>    articleDeps3   = order1.ReadRefs(o => o.items.Select(a => a.article));
             AreSame(articleDeps, articleDeps3);
             AreEqual("Order['order-1'] .items[*].article", articleDeps.ToString());
             
