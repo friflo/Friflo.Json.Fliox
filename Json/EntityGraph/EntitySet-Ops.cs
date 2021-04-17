@@ -66,11 +66,11 @@ namespace Friflo.Json.EntityGraph
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
-            var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
+            var map = set.GetReadRefMap<TValue>(selector);
+            if (map.readRefs.TryGetValue(id, out ReadRef readRef))
                 return (ReadRef<TValue>)readRef;
             ReadRef<TValue> newReadRef = new ReadRef<TValue>(id, set, selector);
-            readDeps.readRefs.Add(id, newReadRef);
+            map.readRefs.Add(id, newReadRef);
             return newReadRef;
         }
         
@@ -78,11 +78,11 @@ namespace Friflo.Json.EntityGraph
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
-            var readDeps = set.GetReadDeps<TValue>(selector);
-            if (readDeps.readRefs.TryGetValue(id, out ReadRef readRef))
+            var map = set.GetReadRefMap<TValue>(selector);
+            if (map.readRefs.TryGetValue(id, out ReadRef readRef))
                 return (ReadRefs<TValue>)readRef;
             ReadRefs<TValue> newReadRefs = new ReadRefs<TValue>(id, set, selector);
-            readDeps.readRefs.Add(id, newReadRefs);
+            map.readRefs.Add(id, newReadRefs);
             return newReadRefs;
         }
     }
@@ -163,13 +163,13 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    internal class ReadDeps
+    internal class ReadRefMap
     {
         internal readonly   string                          selector;
         internal readonly   Type                            entityType;
         internal readonly   Dictionary<string, ReadRef>     readRefs = new Dictionary<string, ReadRef>();
         
-        internal ReadDeps(string selector, Type entityType) {
+        internal ReadRefMap(string selector, Type entityType) {
             this.selector = selector;
             this.entityType = entityType;
         }

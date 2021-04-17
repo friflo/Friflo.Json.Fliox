@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult result, List<string> parentIds, ReadDeps deps);
+        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult result, List<string> parentIds, ReadRefMap map);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
@@ -43,8 +43,8 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
-        private             Dictionary<string, ReadDeps>        readDeps    = new Dictionary<string, ReadDeps>();
-        private             Dictionary<string, ReadDeps>        syncReadDeps;
+        private             Dictionary<string, ReadRefMap>      readRefMap  = new Dictionary<string, ReadRefMap>();
+        private             Dictionary<string, ReadRefMap>      syncReadRefMap;
 
 
         internal override   Type                                Type => type;
@@ -62,11 +62,11 @@ namespace Friflo.Json.EntityGraph
             tracer = new Tracer(store.intern.typeCache, store);
         }
 
-        internal ReadDeps GetReadDeps<TValue>(string selector) {
-            if (readDeps.TryGetValue(selector, out ReadDeps result))
+        internal ReadRefMap GetReadRefMap<TValue>(string selector) {
+            if (readRefMap.TryGetValue(selector, out ReadRefMap result))
                 return result;
-            result = new ReadDeps(selector, typeof(TValue));
-            readDeps.Add(selector, result);
+            result = new ReadRefMap(selector, typeof(TValue));
+            readRefMap.Add(selector, result);
             return result;
         }
         
@@ -200,17 +200,17 @@ namespace Friflo.Json.EntityGraph
                 var ids = reads.Select(read => read.Key).ToList();
 
                 var references = new List<ReadReference>();
-                foreach (var depPair in readDeps) {
-                    ReadDeps depsById = depPair.Value;
-                    ReadReference readDep = new ReadReference {
-                        refPath = depsById.selector,
-                        container = depsById.entityType.Name,
+                foreach (var depPair in readRefMap) {
+                    ReadRefMap map = depPair.Value;
+                    ReadReference readReference = new ReadReference {
+                        refPath = map.selector,
+                        container = map.entityType.Name,
                         ids = new List<string>() 
                     };
-                    foreach (var dep in depsById.readRefs) {
-                        readDep.ids.Add(dep.Key);
+                    foreach (var readRef in map.readRefs) {
+                        readReference.ids.Add(readRef.Key);
                     }
-                    references.Add(readDep);
+                    references.Add(readReference);
                 }
                 var req = new ReadEntities {
                     container = container.name,
@@ -218,8 +218,8 @@ namespace Friflo.Json.EntityGraph
                     references = references
                 };
                 commands.Add(req);
-                syncReadDeps = readDeps;
-                readDeps = new Dictionary<string, ReadDeps>();
+                syncReadRefMap = readRefMap;
+                readRefMap = new Dictionary<string, ReadRefMap>();
                 reads.Clear();
             }
             // --- PatchEntities
@@ -249,15 +249,15 @@ namespace Friflo.Json.EntityGraph
                 ReadReference          reference = command.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
                 var refContainer = store.intern.setByName[refResult.container];
-                ReadDeps deps = syncReadDeps[reference.refPath];
+                ReadRefMap deps = syncReadRefMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, command.ids, deps);
             }
-            syncReadDeps = null;
+            syncReadRefMap = null;
         }
 
-        internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadDeps deps) {
+        internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefMap map) {
             foreach (var parentId in parentIds) {
-                var reference = deps.readRefs[parentId];
+                var reference = map.readRefs[parentId];
                 if (reference.singleResult) {
                     var singleDep = (ReadRef<T>) reference;
                     if (result.ids.Count != 1)
