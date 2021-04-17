@@ -6,9 +6,10 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class BinaryQuantifyOp : BoolOp
     {
         protected       Field       field;
+        protected       string      parameter;
         protected       BoolOp      predicate;     // e.g.   i => i.amount < 1
 
-        protected BinaryQuantifyOp(Field field, BoolOp predicate) {
+        protected BinaryQuantifyOp(Field field, string parameter, BoolOp predicate) {
             this.field      = field;
             this.predicate  = predicate;
         }
@@ -24,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => $"Any({field}, {predicate})";
 
-        public Any(Field field, BoolOp predicate) : base(field, predicate) { }
+        public Any(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = field.Eval(cx);
@@ -44,7 +45,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => $"All({field}, {predicate})";
         
-        public All(Field field, BoolOp predicate) : base(field, predicate) { }
+        public All(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = field.Eval(cx);

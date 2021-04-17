@@ -84,14 +84,15 @@ namespace Friflo.Json.Flow.Graph.Query
             var source      = args[0];
             var sourceOp = TraceExpression(source, cx);
             
-            var predicate   = args[1];
+            var predicate   = (LambdaExpression)args[1];
             string sourceField = $"{sourceOp}[=>]";
             var lambdaCx = new QueryCx(cx.path + sourceField, cx.exp);
             var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
+            var lambdaParameter = predicate.Parameters[0].Name;
             
             switch (methodCall.Method.Name) {
-                case "Any":     return new Any(new Field(sourceField), predicateOp);
-                case "All":     return new All(new Field(sourceField), predicateOp);
+                case "Any":     return new Any(new Field(sourceField), lambdaParameter, predicateOp);
+                case "All":     return new All(new Field(sourceField), lambdaParameter, predicateOp);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
