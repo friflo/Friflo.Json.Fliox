@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Any : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"Any({field}, {predicate})";
+        public override     string      ToString() => $"{field}.Any({parameter} => {predicate})";
 
         public Any(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class All : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"All({field}, {predicate})";
+        public override     string      ToString() => $"{field}.All({parameter} => {predicate})";
         
         public All(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
         

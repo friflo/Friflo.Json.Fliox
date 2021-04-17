@@ -179,10 +179,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var john  = jsonMapper.Write(John);
 
                 // --- Any
-                var  hasChildHobbySurfing = new Any (new Field (".children[=>]"), "child", new Equal (new Field (".children[=>].hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
+                var  hasChildHobbySurfing = new Any (new Field (".children[=>]"), "child", new Equal (new Field ("child.hobbies[*].name"), new StringLiteral ("Surfing"))).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual("Any(.children[=>], .children[=>].hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
+                AreEqual(".children[=>].Any(child => child.hobbies[*].name == 'Surfing')", hasChildHobbySurfing.ToString());
                 IsTrue (HasChildHobbySurfing(Peter));
                 IsTrue (eval.Filter(peter, hasChildHobbySurfing));
                 IsFalse(eval.Filter(john,  hasChildHobbySurfing));
@@ -314,10 +314,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // --- quantifier operators
             var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual("Any(.children[=>], child.age == 20)", any.ToString());
+            AreEqual(".children[=>].Any(child => child.age == 20)", any.ToString());
             
             var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual("All(.children[=>], child.age == 20)", all.ToString());
+            AreEqual(".children[=>].All(child => child.age == 20)", all.ToString());
 
 
             // --- literals
