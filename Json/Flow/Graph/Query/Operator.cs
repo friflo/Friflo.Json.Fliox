@@ -4,12 +4,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Burst; // UnityExtension.TryAdd()
+using Friflo.Json.Burst;  // UnityExtension.TryAdd()
+using Friflo.Json.Flow.Mapper; 
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Flow.Graph.Query
 {
-
+    [Fri.Discriminator("op")]
+    [Fri.Polymorph(typeof(StringLiteral),          Discriminant = "string")]
+    [Fri.Polymorph(typeof(DoubleLiteral),          Discriminant = "double")]
+    [Fri.Polymorph(typeof(LongLiteral),            Discriminant = "int64")]
+    [Fri.Polymorph(typeof(BoolLiteral),            Discriminant = "bool")]
+    [Fri.Polymorph(typeof(NullLiteral),            Discriminant = "null")]
     public abstract class Operator
     {
         internal abstract void Init(OperatorContext cx, InitFlags flags);

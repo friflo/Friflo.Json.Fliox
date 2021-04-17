@@ -191,20 +191,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public static void TestEval() {
-            using (var eval         = new JsonEvaluator())
-            using (var jsonMapper   = new ObjectMapper())
+            using (var eval     = new JsonEvaluator())
+            using (var mapper   = new ObjectMapper())
             {
-                jsonMapper.Pretty = true;
-                var john  = jsonMapper.Write(John);
+                mapper.Pretty = true;
+                var john  = mapper.Write(John);
+                mapper.Pretty = false;
+                
                 
                 // --- use expression
                 AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<object>(p => "hello")));
                 
                 // use operator
-                AreEqual("hello",   eval.Eval("{}", new StringLiteral("hello").Lambda()));
-                AreEqual(42.0,      eval.Eval("{}", new DoubleLiteral(42.0).Lambda()));
-                AreEqual(true,      eval.Eval("{}", new BoolLiteral(true).Lambda()));
-                AreEqual(null,      eval.Eval("{}", new NullLiteral().Lambda()));
+                var stringLiteral   = new StringLiteral("hello");
+                AssertJson(mapper, stringLiteral, "{'op':'string','value':'hello'}");
+                AreEqual("hello",   eval.Eval("{}", stringLiteral.Lambda()));
+
+                var doubleLiteral   = new DoubleLiteral(42.0);
+                AssertJson(mapper, doubleLiteral, "{'op':'double','value':42.0}");
+                AreEqual(42.0,      eval.Eval("{}", doubleLiteral.Lambda()));
+                
+                var longLiteral   = new LongLiteral(42);
+                AssertJson(mapper, longLiteral, "{'op':'int64','value':42}");
+                AreEqual(42.0,      eval.Eval("{}", doubleLiteral.Lambda()));
+
+                var boolLiteral     = new BoolLiteral(true);
+                AssertJson(mapper, boolLiteral, "{'op':'bool','value':true}");
+                AreEqual(true,      eval.Eval("{}", boolLiteral.Lambda()));
+
+                var nullLiteral     = new NullLiteral();
+                AssertJson(mapper, nullLiteral, "{'op':'null'}");
+                AreEqual(null,      eval.Eval("{}", nullLiteral.Lambda()));
 
                 
                 // --- unary arithmetic operations
@@ -265,6 +282,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
                 AreEqual(".children.Count()", count.ToString());
             }
+        }
+
+        private static void AssertJson(ObjectMapper mapper, Operator op, string json) {
+            json = json.Replace('\'', '\"');
+            var result = mapper.Write(op);
+            AreEqual(json, result);
         }
 
         [Test]

@@ -3,12 +3,14 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
     // --- literals
     public abstract class Literal : Operator {
         // is set always to the same value in Eval() so it can be reused
+        [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         internal override void Init(OperatorContext cx, InitFlags flags) { }
@@ -20,6 +22,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public override     string      ToString() => $"'{value}'";
 
+        public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -30,10 +33,11 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class DoubleLiteral : Literal
     {
-        private             double      value;
+        public             double      value;
 
         public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
 
+        public DoubleLiteral() { }
         public DoubleLiteral(double value) { this.value = value; }
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -44,10 +48,11 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class LongLiteral : Literal
     {
-        private             long      value;
+        public             long      value;
 
         public override     string      ToString() => value.ToString();
 
+        public LongLiteral() { }
         public LongLiteral(long value) { this.value = value; }
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -62,6 +67,7 @@ namespace Friflo.Json.Flow.Graph.Query
         
         public override     string      ToString() => value ? "true" : "false";
 
+        public BoolLiteral() { }
         public BoolLiteral(bool value) {
             this.value = value;
         }
@@ -76,6 +82,7 @@ namespace Friflo.Json.Flow.Graph.Query
     {
         public override     string      ToString() => "null";
 
+        public NullLiteral() { }
 
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.SetSingle(Null);
