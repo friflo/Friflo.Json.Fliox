@@ -313,24 +313,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public static void TestQueryConversion() {
+          using (var mapper   = new ObjectMapper()) {
             {
                 // --- comparision operators
                 var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
+                AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name == 'Peter'", isEqual.ToString());
             } {
                 var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
+                AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','field':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name != 'Peter'", isNotEqual.ToString());
             } {
                 var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
+                AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age < 20", isLess.ToString());
             } {            
                 var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
+                AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age <= 20", isLessOrEqual.ToString());
             } {
                 var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
+                AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age > 20", isGreater.ToString());
             } {            
                 var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
+                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','field':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age >= 20", isGreaterOrEqual.ToString());
             } {            
                 
@@ -440,6 +447,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
                 AreEqual(".children.Average(child => child.age)", average.ToString());
             }
+          } 
         }
     }
 }

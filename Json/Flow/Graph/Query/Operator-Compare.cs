@@ -8,9 +8,10 @@ namespace Friflo.Json.Flow.Graph.Query
     // -------------------------------------- comparison operators --------------------------------------
     public abstract class BinaryBoolOp : BoolOp
     {
-        protected           Operator            left;
-        protected           Operator            right;
+        public              Operator            left;
+        public              Operator            right;
         
+        protected BinaryBoolOp() { }
         protected BinaryBoolOp(Operator left, Operator right) {
             this.left = left;
             this.right = right;
@@ -26,6 +27,7 @@ namespace Friflo.Json.Flow.Graph.Query
     // --- associative comparison operators ---
     public class Equal : BinaryBoolOp
     {
+        public Equal() { }
         public Equal(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} == {right}";
@@ -42,6 +44,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class NotEqual : BinaryBoolOp
     {
+        public NotEqual() { }
         public NotEqual(Operator left, Operator right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} != {right}";
@@ -59,6 +62,7 @@ namespace Friflo.Json.Flow.Graph.Query
     // --- non-associative comparison operators -> call Order() --- 
     public class LessThan : BinaryBoolOp
     {
+        public LessThan() { }
         public LessThan(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} < {right}";
@@ -75,6 +79,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class LessThanOrEqual : BinaryBoolOp
     {
+        public LessThanOrEqual() { }
         public LessThanOrEqual(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} <= {right}";
@@ -91,6 +96,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class GreaterThan : BinaryBoolOp
     {
+        public GreaterThan() { }
         public GreaterThan(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} > {right}";
@@ -107,6 +113,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class GreaterThanOrEqual : BinaryBoolOp
     {
+        public GreaterThanOrEqual() { }
         public GreaterThanOrEqual(Operator left, Operator right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} >= {right}";
