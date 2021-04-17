@@ -148,21 +148,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             Exception e;
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("Dependency not synced: Order['order-1'] .customer", e.Message);
+            AreEqual("ReadRef not synced: Order['order-1'] .customer", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("Dependency not synced: Order['order-1'] .customer", e.Message);
+            AreEqual("ReadRef not synced: Order['order-1'] .customer", e.Message);
             
-            // lab - test dependency expressions
+            // lab - test ReadRef expressions
             if (lab) {
-                ReadRefs<Article> articles2 =   order1.DependenciesOfType<Article>();
-                ReadRefs<Entity> allDeps =      order1.AllDependencies();
+                ReadRefs<Article> articles2 =   order1.ReadRefsOfType<Article>();
+                ReadRefs<Entity> allDeps =      order1.ReadAllRefs();
             }
 
             await store.Sync();
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
 
-            // schedule dependency an already synced Read operation
+            // schedule ReadRefs on an already synced Read operation
             e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
             AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
             e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
@@ -177,9 +177,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Order['order-1'] .items[*].article", articleDeps.ToString());
             
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
-            AreEqual("Dependencies not synced: Order['order-1'] .items[*].article", e.Message);
+            AreEqual("ReadRefs not synced: Order['order-1'] .items[*].article", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
-            AreEqual("Dependencies not synced: Order['order-1'] .items[*].article", e.Message);
+            AreEqual("ReadRefs not synced: Order['order-1'] .items[*].article", e.Message);
 
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);

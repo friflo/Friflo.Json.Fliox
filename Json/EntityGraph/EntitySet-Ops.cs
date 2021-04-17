@@ -52,12 +52,12 @@ namespace Friflo.Json.EntityGraph
         }
 
         // lab - dependencies by Entity Type
-        public ReadRefs<TValue> DependenciesOfType<TValue>() where TValue : Entity {
+        public ReadRefs<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
             throw new NotImplementedException("DependenciesOfType() planned to be implemented");
         }
         
         // lab - all dependencies
-        public ReadRefs<Entity> AllDependencies()
+        public ReadRefs<Entity> ReadAllRefs()
         {
             throw new NotImplementedException("AllDependencies() planned to be implemented");
         }
@@ -144,7 +144,7 @@ namespace Friflo.Json.EntityGraph
         internal ReadRef(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
         private Exception Error() {
-            return new PeerNotSyncedException($"Dependency not synced: {ToString()}");
+            return new PeerNotSyncedException($"ReadRef not synced: {ToString()}");
         }
     }
     
@@ -159,7 +159,7 @@ namespace Friflo.Json.EntityGraph
         internal ReadRefs(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
         private Exception Error() {
-            return new PeerNotSyncedException($"Dependencies not synced: {ToString()}");
+            return new PeerNotSyncedException($"ReadRefs not synced: {ToString()}");
         }
     }
     
