@@ -200,8 +200,8 @@ namespace Friflo.Json.EntityGraph
                 var ids = reads.Select(read => read.Key).ToList();
 
                 var references = new List<ReadReference>();
-                foreach (var depPair in readRefMap) {
-                    ReadRefMap map = depPair.Value;
+                foreach (var refPair in readRefMap) {
+                    ReadRefMap map = refPair.Value;
                     ReadReference readReference = new ReadReference {
                         refPath = map.selector,
                         container = map.entityType.Name,
@@ -249,8 +249,8 @@ namespace Friflo.Json.EntityGraph
                 ReadReference          reference = command.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
                 var refContainer = store.intern.setByName[refResult.container];
-                ReadRefMap deps = syncReadRefMap[reference.refPath];
-                refContainer.ReadReferenceResult(reference, refResult, command.ids, deps);
+                ReadRefMap map = syncReadRefMap[reference.refPath];
+                refContainer.ReadReferenceResult(reference, refResult, command.ids, map);
             }
             syncReadRefMap = null;
         }
@@ -259,26 +259,26 @@ namespace Friflo.Json.EntityGraph
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
                 if (reference.singleResult) {
-                    var singleDep = (ReadRef<T>) reference;
+                    var singleRef = (ReadRef<T>) reference;
                     if (result.ids.Count != 1)
                         throw new InvalidOperationException("Expect exactly one reference");
                     var id = result.ids[0];
                     var peer = GetPeerById(id);
-                    singleDep.id        = id;
-                    singleDep.entity    = peer.entity;
-                    singleDep.synced    = true;
+                    singleRef.id        = id;
+                    singleRef.entity    = peer.entity;
+                    singleRef.synced    = true;
                 } else {
-                    var multiDep = (ReadRefs<T>) reference;
-                    multiDep.synced = true;
+                    var multiRef = (ReadRefs<T>) reference;
+                    multiRef.synced = true;
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var dep = new ReadRef<T>(reference.parentId, reference.parentSet, reference.label) {
+                        var readRef = new ReadRef<T>(reference.parentId, reference.parentSet, reference.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true
                         };
-                        multiDep.results.Add(dep);
+                        multiRef.results.Add(readRef);
                     }
                 }
             }
