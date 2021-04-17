@@ -253,7 +253,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     var negate  = new Negate(new DoubleLiteral(1));
                     AssertJson(mapper, negate, "{'op':'negate','operand':{'op':'double','value':1.0}}");
                     AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
-                } {
+                }
+                {
                     // --- binary arithmetic operations
                     var add      = new Add(new LongLiteral(1), new LongLiteral(2));
                     AssertJson(mapper, add, "{'op':'add','left':{'op':'int64','value':1},'right':{'op':'int64','value':2}}");
@@ -270,25 +271,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
                     AssertJson(mapper, divide, "{'op':'divide','left':{'op':'int64','value':10},'right':{'op':'int64','value':2}}");
                     AreEqual(5,         eval.Eval("{}", divide.Lambda()));
-                } {
+                }
+                {
                     // --- unary aggregate operations
                     var min         = new Min(new Field(".children"), "child", new Field("child.age"));
+                    AssertJson(mapper, min, "{'op':'min','parameter':'child'}");
                     AreEqual(10,         eval.Eval(john, min.Lambda()));
                     AreEqual(".children.Min(child => child.age)", min.ToString());
                 } {
                     var max         = new Max(new Field(".children"), "child", new Field("child.age"));
+                    AssertJson(mapper, max, "{'op':'max','parameter':'child'}");
                     AreEqual(11,         eval.Eval(john, max.Lambda()));
                     AreEqual(".children.Max(child => child.age)", max.ToString());
                 } {
                     var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
+                    AssertJson(mapper, sum, "{'op':'sum','parameter':'child'}");
                     AreEqual(21,         eval.Eval(john, sum.Lambda()));
                     AreEqual(".children.Sum(child => child.age)", sum.ToString());
                 } {
                     var average     = new Average(new Field(".children"), "child", new Field("child.age"));
+                    AssertJson(mapper, average, "{'op':'average','parameter':'child'}");
                     AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                     AreEqual(".children.Average(child => child.age)", average.ToString());
                 } {
                     var count       = new Count(new Field(".children"));
+                    AssertJson(mapper, count, "{'op':'count'}");
                     AreEqual(2,          eval.Eval(john, count.Lambda()));
                     AreEqual(".children.Count()", count.ToString());
                 }
@@ -306,132 +313,133 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         [Test]
         public static void TestQueryConversion() {
-
-            // --- comparision operators
-            var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
-            AreEqual(".name == 'Peter'", isEqual.ToString());
-            
-            var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
-            AreEqual(".name != 'Peter'", isNotEqual.ToString());
-
-            var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
-            AreEqual(".age < 20", isLess.ToString());
-            
-            var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
-            AreEqual(".age <= 20", isLessOrEqual.ToString());
-
-            var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
-            AreEqual(".age > 20", isGreater.ToString());
-            
-            var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
-            AreEqual(".age >= 20", isGreaterOrEqual.ToString());
-            
-            
-            // --- group operators
-            var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-            AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
-            
-            var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-            AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
-            
-            var or2 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 );
-            AreEqual(".age == 1 || .age == 2", or2.ToString());
-            
-            var and2 =  (And)       Operator.FromLambda((Person p) => p.age == 1 && p.age == 2 );
-            AreEqual(".age == 1 && .age == 2", and2.ToString());
-            
-            var or3 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
-            AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
-
-
-            // --- unary operators
-            var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
-            AreEqual("!(.age >= 20)", isNot.ToString());
+            {
+                // --- comparision operators
+                var isEqual =           (Equal)             Operator.FromFilter((Person p) => p.name == "Peter");
+                AreEqual(".name == 'Peter'", isEqual.ToString());
+            } {
+                var isNotEqual =        (NotEqual)          Operator.FromFilter((Person p) => p.name != "Peter");
+                AreEqual(".name != 'Peter'", isNotEqual.ToString());
+            } {
+                var isLess =            (LessThan)          Operator.FromFilter((Person p) => p.age < 20);
+                AreEqual(".age < 20", isLess.ToString());
+            } {            
+                var isLessOrEqual =     (LessThanOrEqual)   Operator.FromFilter((Person p) => p.age <= 20);
+                AreEqual(".age <= 20", isLessOrEqual.ToString());
+            } {
+                var isGreater =         (GreaterThan)       Operator.FromFilter((Person p) => p.age > 20);
+                AreEqual(".age > 20", isGreater.ToString());
+            } {            
+                var isGreaterOrEqual =  (GreaterThanOrEqual)Operator.FromFilter((Person p) => p.age >= 20);
+                AreEqual(".age >= 20", isGreaterOrEqual.ToString());
+            } {            
                 
-            
-            // --- quantifier operators
-            var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
-            AreEqual(".children.Any(child => child.age == 20)", any.ToString());
-            
-            var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
-            AreEqual(".children.All(child => child.age == 20)", all.ToString());
+                // --- group operators
+                var or =    (Or)        Operator.FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
+                AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
+            } {            
+                var and =   (And)       Operator.FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
+                AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
+            } {            
+                var or2 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 );
+                AreEqual(".age == 1 || .age == 2", or2.ToString());
+            } {            
+                var and2 =  (And)       Operator.FromLambda((Person p) => p.age == 1 && p.age == 2 );
+                AreEqual(".age == 1 && .age == 2", and2.ToString());
+            } { 
+                var or3 =   (Or)        Operator.FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
+                AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
+            } {
 
+                // --- unary operators
+                var isNot = (Not)       Operator.FromFilter((Person p) => !(p.age >= 20));
+                AreEqual("!(.age >= 20)", isNot.ToString());
+            } {     
+                
+                // --- quantifier operators
+                var any =   (Any)       Operator.FromFilter((Person p) => p.children.Any(child => child.age == 20));
+                AreEqual(".children.Any(child => child.age == 20)", any.ToString());
+            } { 
+                var all =   (All)       Operator.FromFilter((Person p) => p.children.All(child => child.age == 20));
+                AreEqual(".children.All(child => child.age == 20)", all.ToString());
+            } {
 
-            // --- literals
-            var lng     = (LongLiteral)     Operator.FromLambda((object p) => 1);
-            AreEqual("1",           lng.ToString());
-            
-            var dbl     = (DoubleLiteral)   Operator.FromLambda((object p) => 1.5);
-            AreEqual("1.5",         dbl.ToString());
-
-            var str     = (StringLiteral)   Operator.FromLambda((object p) => "hello");
-            AreEqual("'hello'",     str.ToString());
-            
-            var @true   = (BoolLiteral)     Operator.FromLambda((object p) => true);
-            AreEqual("true",        @true.ToString());
-
-            var @null   = (NullLiteral)     Operator.FromLambda((object p) => null);
-            AreEqual("null",        @null.ToString());
-
-            
-            // --- unary arithmetic operators
-            var abs     = (Abs)     Operator.FromLambda((object p) => Math.Abs(-1));
-            AreEqual("Abs(-1)", abs.ToString());
-            
-            var ceiling = (Ceiling) Operator.FromLambda((object p) => Math.Ceiling(2.5));
-            AreEqual("Ceiling(2.5)", ceiling.ToString());
-            
-            var floor   = (Floor)   Operator.FromLambda((object p) => Math.Floor(2.5));
-            AreEqual("Floor(2.5)", floor.ToString());
-            
-            var exp     = (Exp)     Operator.FromLambda((object p) => Math.Exp(2.5));
-            AreEqual("Exp(2.5)", exp.ToString());
-            
-            var log     = (Log)     Operator.FromLambda((object p) => Math.Log(2.5));
-            AreEqual("Log(2.5)", log.ToString());
-            
-            var sqrt    = (Sqrt)    Operator.FromLambda((object p) => Math.Sqrt(2.5));
-            AreEqual("Sqrt(2.5)", sqrt.ToString());
-            
-            var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
-            AreEqual("-(Abs(-1))", negate.ToString());
-            
-            var plus    = (Abs)     Operator.FromLambda((object p) => +Math.Abs(-1)); // + will be eliminated
-            AreEqual("Abs(-1)", plus.ToString());
-            
-            
-            // --- binary arithmetic operators
-            var add         = (Add)     Operator.FromLambda((object p) => 1 + Math.Abs(1.0));
-            AreEqual("1 + Abs(1)", add.ToString());
-
-            var subtract    = (Subtract)Operator.FromLambda((object p) => 1 - Math.Abs(1.0));
-            AreEqual("1 - Abs(1)", subtract.ToString());
-
-            var multiply    = (Multiply)Operator.FromLambda((object p) => 1 * Math.Abs(1.0));
-            AreEqual("1 * Abs(1)", multiply.ToString());
-
-            var divide      = (Divide)  Operator.FromLambda((object p) => 1 / Math.Abs(1.0));
-            AreEqual("1 / Abs(1)", divide.ToString());
-            
-            
-            // --- unary aggregate operators
-            var min      = (Min)  Operator.FromLambda((Person p) => p.children.Min(child => child.age));
-            AreEqual(".children.Min(child => child.age)", min.ToString());
-            
-            var max      = (Max)  Operator.FromLambda((Person p) => p.children.Max(child => child.age));
-            AreEqual(".children.Max(child => child.age)", max.ToString());
-
-            var sum      = (Sum)  Operator.FromLambda((Person p) => p.children.Sum(child => child.age));
-            AreEqual(".children.Sum(child => child.age)", sum.ToString());
-
-            var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count()); // () -> method call
-            AreEqual(".children.Count()", count.ToString());
-            
-            var count2    = (Count)  Operator.FromLambda((Person p) => p.children.Count); // no () -> Count property 
-            AreEqual(".children.Count()", count2.ToString());
-
-            var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
-            AreEqual(".children.Average(child => child.age)", average.ToString());
+                // --- literals
+                var lng     = (LongLiteral)     Operator.FromLambda((object p) => 1);
+                AreEqual("1",           lng.ToString());
+            } { 
+                var dbl     = (DoubleLiteral)   Operator.FromLambda((object p) => 1.5);
+                AreEqual("1.5",         dbl.ToString());
+            } {
+                var str     = (StringLiteral)   Operator.FromLambda((object p) => "hello");
+                AreEqual("'hello'",     str.ToString());
+            } { 
+                var @true   = (BoolLiteral)     Operator.FromLambda((object p) => true);
+                AreEqual("true",        @true.ToString());
+            } {
+                var @null   = (NullLiteral)     Operator.FromLambda((object p) => null);
+                AreEqual("null",        @null.ToString());
+            } {
+                
+                // --- unary arithmetic operators
+                var abs     = (Abs)     Operator.FromLambda((object p) => Math.Abs(-1));
+                AreEqual("Abs(-1)", abs.ToString());
+            } { 
+                var ceiling = (Ceiling) Operator.FromLambda((object p) => Math.Ceiling(2.5));
+                AreEqual("Ceiling(2.5)", ceiling.ToString());
+            } { 
+                var floor   = (Floor)   Operator.FromLambda((object p) => Math.Floor(2.5));
+                AreEqual("Floor(2.5)", floor.ToString());
+            } { 
+                var exp     = (Exp)     Operator.FromLambda((object p) => Math.Exp(2.5));
+                AreEqual("Exp(2.5)", exp.ToString());
+            } { 
+                var log     = (Log)     Operator.FromLambda((object p) => Math.Log(2.5));
+                AreEqual("Log(2.5)", log.ToString());
+            } { 
+                var sqrt    = (Sqrt)    Operator.FromLambda((object p) => Math.Sqrt(2.5));
+                AreEqual("Sqrt(2.5)", sqrt.ToString());
+            } { 
+                var negate  = (Negate)  Operator.FromLambda((object p) => -Math.Abs(-1));
+                AreEqual("-(Abs(-1))", negate.ToString());
+            } { 
+                var plus    = (Abs)     Operator.FromLambda((object p) => +Math.Abs(-1)); // + will be eliminated
+                AreEqual("Abs(-1)", plus.ToString());
+            } { 
+                
+                // --- binary arithmetic operators
+                var add         = (Add)     Operator.FromLambda((object p) => 1 + Math.Abs(1.0));
+                AreEqual("1 + Abs(1)", add.ToString());
+            } {
+                var subtract    = (Subtract)Operator.FromLambda((object p) => 1 - Math.Abs(1.0));
+                AreEqual("1 - Abs(1)", subtract.ToString());
+            } {
+                var multiply    = (Multiply)Operator.FromLambda((object p) => 1 * Math.Abs(1.0));
+                AreEqual("1 * Abs(1)", multiply.ToString());
+            } {
+                var divide      = (Divide)  Operator.FromLambda((object p) => 1 / Math.Abs(1.0));
+                AreEqual("1 / Abs(1)", divide.ToString());
+            } { 
+                
+                // --- unary aggregate operators
+                var min      = (Min)  Operator.FromLambda((Person p) => p.children.Min(child => child.age));
+                AreEqual(".children.Min(child => child.age)", min.ToString());
+            } { 
+                var max      = (Max)  Operator.FromLambda((Person p) => p.children.Max(child => child.age));
+                AreEqual(".children.Max(child => child.age)", max.ToString());
+            } {
+                var sum      = (Sum)  Operator.FromLambda((Person p) => p.children.Sum(child => child.age));
+                AreEqual(".children.Sum(child => child.age)", sum.ToString());
+            } {
+                var count    = (Count)  Operator.FromLambda((Person p) => p.children.Count()); // () -> method call
+                AreEqual(".children.Count()", count.ToString());
+            } { 
+                var count2    = (Count)  Operator.FromLambda((Person p) => p.children.Count); // no () -> Count property 
+                AreEqual(".children.Count()", count2.ToString());
+            } {
+                var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
+                AreEqual(".children.Average(child => child.age)", average.ToString());
+            }
         }
     }
 }

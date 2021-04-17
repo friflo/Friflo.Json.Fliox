@@ -3,11 +3,13 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Query.Arity;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
     public abstract class BoolOp : Operator
     {
+        [Fri.Ignore]
         internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
 
         public JsonFilter Filter() {

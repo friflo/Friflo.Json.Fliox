@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
@@ -9,8 +10,10 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class UnaryAggregateOp : Operator
     {
         protected           Field               field;
+        [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
+        protected UnaryAggregateOp() { }
         protected UnaryAggregateOp(Field field) {
             this.field = field;
 
@@ -24,6 +27,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Count : UnaryAggregateOp
     {
+        public Count() { }
         public Count(Field field) : base(field) { }
 
         public override     string      ToString() => $"{field}.Count()";
@@ -42,8 +46,10 @@ namespace Friflo.Json.Flow.Graph.Query
         protected           Field               field;
         public              string              parameter;
         protected           Operator            array;
+        [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
+        protected BinaryAggregateOp() { }
         protected BinaryAggregateOp(Field field, string parameter, Operator array) {
             this.field      = field;
             this.parameter  = parameter;
@@ -60,6 +66,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Min : BinaryAggregateOp
     {
+        public Min() { }
         public Min(Field field, string parameter, Operator array) : base(field, parameter, array) { }
 
         public override     string      ToString() => $"{field}.Min({parameter} => {array})";
@@ -82,6 +89,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Max : BinaryAggregateOp
     {
+        public Max() { }
         public Max(Field field, string parameter, Operator array) : base(field, parameter, array) { }
 
         public override     string      ToString() => $"{field}.Max({parameter} => {array})";
@@ -104,6 +112,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Sum : BinaryAggregateOp
     {
+        public Sum() { }
         public Sum(Field field, string parameter, Operator array) : base(field, parameter, array) { }
 
         public override     string      ToString() => $"{field}.Sum({parameter} => {array})";
@@ -121,6 +130,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Average : BinaryAggregateOp
     {
+        public Average() { }
         public Average(Field field, string parameter, Operator array) : base(field, parameter, array) { }
 
         public override     string      ToString() => $"{field}.Average({parameter} => {array})";

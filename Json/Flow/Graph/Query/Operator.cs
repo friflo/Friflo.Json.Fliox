@@ -29,6 +29,13 @@ namespace Friflo.Json.Flow.Graph.Query
     [Fri.Polymorph(typeof(Subtract),        Discriminant = "subtract")]
     [Fri.Polymorph(typeof(Multiply),        Discriminant = "multiply")]
     [Fri.Polymorph(typeof(Divide),          Discriminant = "divide")]
+    //
+    [Fri.Polymorph(typeof(Min),             Discriminant = "min")]
+    [Fri.Polymorph(typeof(Max),             Discriminant = "max")]
+    [Fri.Polymorph(typeof(Sum),             Discriminant = "sum")]
+    [Fri.Polymorph(typeof(Average),         Discriminant = "average")]
+    [Fri.Polymorph(typeof(Count),           Discriminant = "count")]
+    
     
     public abstract class Operator
     {
@@ -101,7 +108,8 @@ namespace Friflo.Json.Flow.Graph.Query
         internal        EvalResult              evalResult;
 
         public override string                  ToString() => field;
-        
+
+        public Field() { }
         public Field(string field) { this.field = field; }
 
         internal override void Init(OperatorContext cx, InitFlags flags) {
