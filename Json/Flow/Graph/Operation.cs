@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(Average),             Discriminant = "average")]
     [Fri.Polymorph(typeof(Count),               Discriminant = "count")]
     
-    // --- BoolOp  
+    // --- FilterOperation  
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
     [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
     }
     
     [Fri.Discriminator("op")]
-    // --- BoolOp  
+    // --- FilterOperation  
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
     [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
     [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
-    // ----------------------------- BoolOp --------------------------
+    // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
         [Fri.Ignore]

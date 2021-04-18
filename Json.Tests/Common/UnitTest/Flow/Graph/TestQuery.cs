@@ -333,7 +333,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             string   opWrite = mapper.Write(opRead);
             AreEqual(result, opWrite);
             
-            // assert mapping of JSON string to/from BoolOp
+            // assert mapping of JSON string to/from FilterOperation
             if (opRead is FilterOperation) {
                 FilterOperation boolOpRead  = mapper.Read<FilterOperation>(result);
                 string boolOpWrite = mapper.Write(boolOpRead);
