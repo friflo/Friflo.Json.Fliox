@@ -324,11 +324,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         private static void AssertJson(ObjectMapper mapper, Operator op, string json) {
             var result = mapper.Write(op);
-            result = result.Replace('\"', '\'');
-            if (json != result) {
-                Fail($"Expected: {json}\nBut was:  {result}");
+            var singleQuoteResult = result.Replace('\"', '\'');
+            if (json != singleQuoteResult) {
+                Fail($"Expected: {json}\nBut was:  {singleQuoteResult}");
             }
-            AreEqual(json, result);
+            // assert mapping of JSON string to/from Operator
+            Operator opRead  = mapper.Read<Operator>(result);
+            string   opWrite = mapper.Write(opRead);
+            AreEqual(result, opWrite);
+            
+            // assert mapping of JSON string to/from BoolOp
+            if (opRead is BoolOp) {
+                BoolOp boolOpRead  = mapper.Read<BoolOp>(result);
+                string boolOpWrite = mapper.Write(boolOpRead);
+                AreEqual(result, boolOpWrite);
+            }
         }
 
         [Test]
