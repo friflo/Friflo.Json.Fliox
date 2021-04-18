@@ -1,6 +1,6 @@
 ![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
 
-# friflo Json.Flow
+# friflo JSON Flow
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
