@@ -129,20 +129,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static bool lab = false;
 
         private static async Task AssertStore(Order order, PocStore store) {
-            Read<Order> order1 =    store.orders.Read("order-1");
+            ReadTask<Order> order1 =    store.orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
-            var read1 = store.orders.ReadWhere(o => o.customer.Id == "customer-1");
-            var read2 = store.orders.ReadWhere(o => o.customer.Entity.lastName == "Smith");
-            var read3 = store.orders.ReadWhere(o => o.items.Count(i => i.amount < 1) > 0);
-            var read4 = store.orders.ReadWhere(o => o.items.Any(i => i.amount < 1));
-            var read5 = store.orders.ReadWhere(o => o.items.All(i => i.amount < 1));
-            var read6 = store.orders.ReadWhere(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
+            var read1 = store.orders.Query(o => o.customer.Id == "customer-1");
+            var read2 = store.orders.Query(o => o.customer.Entity.lastName == "Smith");
+            var read3 = store.orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
+            var read4 = store.orders.Query(o => o.items.Any(i => i.amount < 1));
+            var read5 = store.orders.Query(o => o.items.All(i => i.amount < 1));
+            var read6 = store.orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
 
             
-            ReadRef<Customer>     customer   = order1.ReadRefByPath<Customer>(".customer");
-            ReadRef<Customer>     customer2  = order1.ReadRefByPath<Customer>(".customer");
+            ReadRefTask<Customer>     customer   = order1.ReadRefByPath<Customer>(".customer");
+            ReadRefTask<Customer>     customer2  = order1.ReadRefByPath<Customer>(".customer");
             AreSame(customer, customer2);
-            ReadRef<Customer>     customer3  = order1.ReadRef(o => o.customer);
+            ReadRefTask<Customer>     customer3  = order1.ReadRef(o => o.customer);
             AreSame(customer, customer3);
             AreEqual("Order['order-1'] .customer", customer.ToString());
             
@@ -154,8 +154,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // lab - test ReadRef expressions
             if (lab) {
-                ReadRefs<Article> articles2 =   order1.ReadRefsOfType<Article>();
-                ReadRefs<Entity> allDeps =      order1.ReadAllRefs();
+                ReadRefsTask<Article> articles2 =   order1.ReadRefsOfType<Article>();
+                ReadRefsTask<Entity> allDeps =      order1.ReadAllRefs();
             }
 
             await store.Sync();
@@ -169,10 +169,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
 
             order1 =    store.orders.Read("order-1");
-            ReadRefs<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
-            ReadRefs<Article>    articleDeps2   = order1.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article>    articleDeps2   = order1.ReadRefsByPath<Article>(".items[*].article");
             AreSame(articleDeps, articleDeps2);
-            ReadRefs<Article>    articleDeps3   = order1.ReadRefs(o => o.items.Select(a => a.article));
+            ReadRefsTask<Article>    articleDeps3   = order1.ReadRefs(o => o.items.Select(a => a.article));
             AreSame(articleDeps, articleDeps3);
             AreEqual("Order['order-1'] .items[*].article", articleDeps.ToString());
             

@@ -39,8 +39,8 @@ namespace Friflo.Json.EntityGraph
         private readonly    Tracer                              tracer;
         
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
-        private readonly    Dictionary<string, Read<T>>         reads       = new Dictionary<string, Read<T>>();
-        private readonly    Dictionary<string, Create<T>>       creates     = new Dictionary<string, Create<T>>();
+        private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
+        private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
         private             Dictionary<string, ReadRefMap>      readRefMap  = new Dictionary<string, ReadRefMap>();
@@ -81,11 +81,11 @@ namespace Friflo.Json.EntityGraph
             return peer;
         }
         
-        internal Create<T> AddCreate (PeerEntity<T> peer) {
+        internal CreateTask<T> AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
             var create = peer.create;
             if (create == null) {
-                peer.create = create = new Create<T>(peer.entity, store);
+                peer.create = create = new CreateTask<T>(peer.entity, store);
             }
             creates.Add(peer.entity.id, create);
             return create;
@@ -115,26 +115,26 @@ namespace Friflo.Json.EntityGraph
             return peer;
         }
         
-        public Read<T> Read(string id) {
-            if (reads.TryGetValue(id, out Read<T> read))
+        public ReadTask<T> Read(string id) {
+            if (reads.TryGetValue(id, out ReadTask<T> read))
                 return read;
             var peer = GetPeerById(id);
             read = peer.read;
             if (read == null) {
-                peer.read = read = new Read<T>(peer.entity.id, this);
+                peer.read = read = new ReadTask<T>(peer.entity.id, this);
             }
             reads.Add(id, read);
             return read;
         }
 
         // lab interface
-        public ReadWhere<T> ReadWhere(Expression<Func<T, bool>> filter) {
+        public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
             return default;
         }
         
-        public Create<T> Create(T entity) {
-            if (creates.TryGetValue(entity.id, out Create<T> create))
+        public CreateTask<T> Create(T entity) {
+            if (creates.TryGetValue(entity.id, out CreateTask<T> create))
                 return create;
             var peer = CreatePeer(entity);
             create = AddCreate(peer);
@@ -182,7 +182,7 @@ namespace Friflo.Json.EntityGraph
             if (creates.Count > 0) {
                 var entries = new Dictionary<string, EntityValue>();
                 foreach (var createPair in creates) {
-                    Create<T> create = createPair.Value;
+                    CreateTask<T> create = createPair.Value;
                     var entity = create.Entity;
                     var json = jsonMapper.Write(entity);
                     var entry = new EntityValue(json);
@@ -259,7 +259,7 @@ namespace Friflo.Json.EntityGraph
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
                 if (reference.singleResult) {
-                    var singleRef = (ReadRef<T>) reference;
+                    var singleRef = (ReadRefTask<T>) reference;
                     if (result.ids.Count != 1)
                         throw new InvalidOperationException("Expect exactly one reference");
                     var id = result.ids[0];
@@ -268,12 +268,12 @@ namespace Friflo.Json.EntityGraph
                     singleRef.entity    = peer.entity;
                     singleRef.synced    = true;
                 } else {
-                    var multiRef = (ReadRefs<T>) reference;
+                    var multiRef = (ReadRefsTask<T>) reference;
                     multiRef.synced = true;
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var readRef = new ReadRef<T>(reference.parentId, reference.parentSet, reference.label) {
+                        var readRef = new ReadRefTask<T>(reference.parentId, reference.parentSet, reference.label) {
                             id      = id,
                             entity  = peer.entity,
                             synced  = true

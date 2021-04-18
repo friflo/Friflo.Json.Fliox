@@ -9,7 +9,7 @@ namespace Friflo.Json.EntityGraph
     // =======================================   CRUD   ==========================================
     
     // ----------------------------------------- Read<> -----------------------------------------
-    public class Read<T> where T : Entity
+    public class ReadTask<T> where T : Entity
     {
         private  readonly   string          id;
         internal            T               result;
@@ -19,7 +19,7 @@ namespace Friflo.Json.EntityGraph
         public              T               Result      => synced ? result : throw Error();
         public   override   string          ToString()  => id;
 
-        internal Read(string id, EntitySet<T> set) {
+        internal ReadTask(string id, EntitySet<T> set) {
             this.id = id;
             this.set = set;
         }
@@ -28,15 +28,15 @@ namespace Friflo.Json.EntityGraph
             return new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {typeof(T).Name} id: {id}");
         }
         
-        public ReadRef<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
+        public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
             return ReadRefByPathIntern<TValue>(selector);
         }
         
-        public ReadRefs<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
+        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
             return ReadRefsByPathIntern<TValue>(selector);
         }
         
-        public ReadRef<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
+        public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
@@ -44,7 +44,7 @@ namespace Friflo.Json.EntityGraph
             return ReadRefByPathIntern<TValue>(path);
         }
         
-        public ReadRefs<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
                 throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
@@ -52,51 +52,51 @@ namespace Friflo.Json.EntityGraph
         }
 
         // lab - ReadRefs by Entity Type
-        public ReadRefs<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
+        public ReadRefsTask<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
         // lab - all ReadRefs
-        public ReadRefs<Entity> ReadAllRefs()
+        public ReadRefsTask<Entity> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
         
-        private ReadRef<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRefTask<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRef readRef))
-                return (ReadRef<TValue>)readRef;
-            ReadRef<TValue> newReadRef = new ReadRef<TValue>(id, set, selector);
+                return (ReadRefTask<TValue>)readRef;
+            ReadRefTask<TValue> newReadRef = new ReadRefTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRef);
             return newReadRef;
         }
         
-        private ReadRefs<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
+        private ReadRefsTask<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRef readRef))
-                return (ReadRefs<TValue>)readRef;
-            ReadRefs<TValue> newReadRefs = new ReadRefs<TValue>(id, set, selector);
+                return (ReadRefsTask<TValue>)readRef;
+            ReadRefsTask<TValue> newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRefs);
             return newReadRefs;
         }
     }
 
-    public class ReadWhere<T> where T : Entity
+    public class QueryTask<T> where T : Entity
     {
-        private readonly    List<ReadRef<T>>    results = new List<ReadRef<T>>();
+        private readonly    List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
 
-        public              List<ReadRef<T>>    Results => results;
+        public              List<ReadRefTask<T>>    Results => results;
     }
     
     
     // ----------------------------------------- Create<> -----------------------------------------
-    public class Create<T> where T : Entity
+    public class CreateTask<T> where T : Entity
     {
         private readonly    T           entity;
         private readonly    EntityStore store;
@@ -104,7 +104,7 @@ namespace Friflo.Json.EntityGraph
         internal            T           Entity      => entity;
         public   override   string      ToString()  => entity.id;
         
-        internal Create(T entity, EntityStore entityStore) {
+        internal CreateTask(T entity, EntityStore entityStore) {
             this.entity = entity;
             this.store = entityStore;
         }
@@ -132,7 +132,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRef<T> : ReadRef where T : Entity
+    public class ReadRefTask<T> : ReadRef where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -141,22 +141,22 @@ namespace Friflo.Json.EntityGraph
         public      string      Id      => synced ? id      : throw Error();
         public      T           Result  => synced ? entity  : throw Error();
 
-        internal ReadRef(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
+        internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"ReadRef not synced: {ToString()}");
         }
     }
     
-    public class ReadRefs<T> : ReadRef where T : Entity
+    public class ReadRefsTask<T> : ReadRef where T : Entity
     {
-        internal            bool                synced;
-        internal readonly   List<ReadRef<T>>    results = new List<ReadRef<T>>();
+        internal            bool                    synced;
+        internal readonly   List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
         
-        public              List<ReadRef<T>>    Results         => synced ? results         : throw Error();
-        public              ReadRef<T>          this[int index] => synced ? results[index]  : throw Error();
+        public              List<ReadRefTask<T>>    Results         => synced ? results         : throw Error();
+        public              ReadRefTask<T>          this[int index] => synced ? results[index]  : throw Error();
 
-        internal ReadRefs(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
+        internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
         private Exception Error() {
             return new PeerNotSyncedException($"ReadRefs not synced: {ToString()}");
