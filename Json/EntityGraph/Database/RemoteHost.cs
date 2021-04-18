@@ -179,8 +179,8 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
         
-        public override Dictionary<string, EntityValue> ReadEntitiesWhere(BoolOp filter) {
-            throw new NotImplementedException("ReadEntitiesWhere");
+        public override Dictionary<string, EntityValue> QueryEntities(BoolOp filter) {
+            throw new NotImplementedException("QueryEntities");
         }
     }
 }

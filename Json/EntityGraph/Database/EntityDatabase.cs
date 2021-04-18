@@ -79,10 +79,10 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual  void                            Dispose() { }
         
-        public abstract void                            CreateEntities      (Dictionary<string, EntityValue> entities);
-        public abstract void                            UpdateEntities      (Dictionary<string, EntityValue> entities);
-        public abstract Dictionary<string, EntityValue> ReadEntities        (ICollection<string> ids);
-        public abstract Dictionary<string, EntityValue> ReadEntitiesWhere   (BoolOp filter);
+        public abstract void                            CreateEntities  (Dictionary<string, EntityValue> entities);
+        public abstract void                            UpdateEntities  (Dictionary<string, EntityValue> entities);
+        public abstract Dictionary<string, EntityValue> ReadEntities    (ICollection<string> ids);
+        public abstract Dictionary<string, EntityValue> QueryEntities   (BoolOp filter);
 
         /// <summary>
         /// Default implementation to apply patches to entities.

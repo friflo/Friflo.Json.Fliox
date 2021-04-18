@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Graph.Query;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -30,6 +31,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Discriminator("command")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
+    [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     public abstract class DatabaseCommand
     {
@@ -41,6 +43,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Discriminator("command")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
+    [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     public abstract class CommandResult
     {
@@ -50,6 +53,7 @@ namespace Friflo.Json.EntityGraph.Database
     public enum CommandType
     {
         Read,
+        Query,
         Create,
         Patch
     }
@@ -94,6 +98,27 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  string              container;
         public  List<string>        ids;
+    }
+    
+    // ------ QueryEntities
+    public class QueryEntities : DatabaseCommand
+    {
+        public  string                      container;
+        public  BoolOp                      filter;
+        public  List<ReadReference>         references;
+
+        internal override CommandType       CommandType => CommandType.Query;
+        
+        internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
+            throw new System.NotImplementedException();
+        }
+    }
+    
+    public class QueryEntitiesResult : CommandResult
+    {
+        public              List<ReadReferenceResult>   references;
+        
+        internal override   CommandType                 CommandType => CommandType.Query;
     }
     
     // ------ PatchEntities
