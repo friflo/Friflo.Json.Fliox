@@ -481,7 +481,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
                 AreEqual(".children.Average(child => child.age)", average.ToString());
             }
-  } 
+            
+            // --- binary string operators
+            {
+                var contains      = (Contains)  Operator.FromFilter((object p) => "12345".Contains("234"));
+                AreEqual("'12345'.Contains('234')", contains.ToString());
+            } {
+                var startsWith    = (StartsWith)  Operator.FromFilter((object p) => "12345".StartsWith("123"));
+                AreEqual("'12345'.StartsWith('123')", startsWith.ToString());
+            } {
+                var endsWith      = (EndsWith)  Operator.FromFilter((object p) => "12345".EndsWith("345"));
+                AreEqual("'12345'.EndsWith('345')", endsWith.ToString());
+            }
+          } 
         }
     }
 }

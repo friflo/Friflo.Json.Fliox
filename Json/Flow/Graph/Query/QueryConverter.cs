@@ -73,7 +73,10 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Count":
                 case "Average":
                     return OperatorFromAggregate(methodCall, cx);
-                
+                case "Contains":
+                case "StartsWith":
+                case "EndsWith":
+                    return OperatorFromBinaryCall(methodCall, cx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
@@ -131,6 +134,20 @@ namespace Friflo.Json.Flow.Graph.Query
                     return OperatorFromBinaryAggregate(methodCall, lambdaCx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
+            }
+        }
+        
+        private static Operator OperatorFromBinaryCall(MethodCallExpression methodCall, QueryCx cx) {
+            var leftOp  = TraceExpression(methodCall.Object,       cx);
+            var rightOp = TraceExpression(methodCall.Arguments[0], cx);
+            switch (methodCall.Method.Name) {
+                // --- binary comparison operators
+                case "Contains":            return new Contains     (leftOp, rightOp);
+                case "StartsWith":          return new StartsWith   (leftOp, rightOp);
+                case "EndsWith":            return new EndsWith     (leftOp, rightOp);
+
+                default:
+                    throw NotSupported($"Method not supported. method: {methodCall}", cx);
             }
         }
         
