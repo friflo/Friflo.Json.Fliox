@@ -3,7 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst; // UnityExtension.TryAdd()
+using Friflo.Json.Burst;
+using Friflo.Json.Flow.Graph.Query; // UnityExtension.TryAdd()
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -60,5 +61,10 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return result;
         }
+        
+        public override Dictionary<string, EntityValue> ReadEntitiesWhere(BoolOp filter) {
+            throw new NotImplementedException("ReadEntitiesWhere");
+        }
+
     }
 }

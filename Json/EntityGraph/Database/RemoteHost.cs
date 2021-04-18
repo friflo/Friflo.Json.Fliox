@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Graph.Query;
 using Friflo.Json.Flow.Mapper;
 
 
@@ -176,6 +177,10 @@ namespace Friflo.Json.EntityGraph.Database
         public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
             var result = local.ReadEntities(ids);
             return result;
+        }
+        
+        public override Dictionary<string, EntityValue> ReadEntitiesWhere(BoolOp filter) {
+            throw new NotImplementedException("ReadEntitiesWhere");
         }
     }
 }

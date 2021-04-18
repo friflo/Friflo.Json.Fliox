@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Friflo.Json.Flow.Graph.Query;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -60,6 +61,10 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+        }
+        
+        public override Dictionary<string, EntityValue> ReadEntitiesWhere(BoolOp filter) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
     }
