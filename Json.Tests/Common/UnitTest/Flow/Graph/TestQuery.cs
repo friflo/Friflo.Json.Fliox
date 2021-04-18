@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
                 // --- group operations must not be reused
-                var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
+                var testGroupOp = new And(new List<FilterOperation> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
                 AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
@@ -334,8 +334,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(result, opWrite);
             
             // assert mapping of JSON string to/from BoolOp
-            if (opRead is BoolOp) {
-                BoolOp boolOpRead  = mapper.Read<BoolOp>(result);
+            if (opRead is FilterOperation) {
+                FilterOperation boolOpRead  = mapper.Read<FilterOperation>(result);
                 string boolOpWrite = mapper.Write(boolOpRead);
                 AreEqual(result, boolOpWrite);
             }

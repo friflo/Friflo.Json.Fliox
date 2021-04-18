@@ -103,7 +103,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class QueryEntities : DatabaseCommand
     {
         public  string                      container;
-        public  BoolOp                      filter;
+        public  FilterOperation             filter;
         public  List<ReadReference>         references;
 
         internal override CommandType       CommandType => CommandType.Query;

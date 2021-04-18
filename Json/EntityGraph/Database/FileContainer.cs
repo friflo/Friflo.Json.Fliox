@@ -76,7 +76,7 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
 
-        public override Dictionary<string, EntityValue> QueryEntities(BoolOp filter) {
+        public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             throw new NotImplementedException("QueryEntities");
         }
         

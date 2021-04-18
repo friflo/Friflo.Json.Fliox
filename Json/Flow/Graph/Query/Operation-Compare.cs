@@ -6,7 +6,7 @@ using Friflo.Json.Flow.Graph.Query.Arity;
 namespace Friflo.Json.Flow.Graph.Query
 {
     // -------------------------------------- comparison operations --------------------------------------
-    public abstract class BinaryBoolOp : BoolOp
+    public abstract class BinaryBoolOp : FilterOperation
     {
         public              Operation            left;
         public              Operation            right;

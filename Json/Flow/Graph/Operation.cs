@@ -79,8 +79,8 @@ namespace Friflo.Json.Flow.Graph
             return QueryConverter.OperationFromExpression(lambda);
         }
         
-        public static BoolOp FromFilter<T>(Expression<Func<T, bool>> filter) {
-            return (BoolOp)QueryConverter.OperationFromExpression(filter);
+        public static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter) {
+            return (FilterOperation)QueryConverter.OperationFromExpression(filter);
         }
     }
     
@@ -105,7 +105,7 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- BoolOp --------------------------
-    public abstract class BoolOp : Operation
+    public abstract class FilterOperation : Operation
     {
         [Fri.Ignore]
         internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());

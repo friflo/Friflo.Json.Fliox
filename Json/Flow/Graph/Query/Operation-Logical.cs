@@ -10,12 +10,12 @@ namespace Friflo.Json.Flow.Graph.Query
 
     
     // ----------------------------------- unary logical operations -----------------------------------
-    public abstract class UnaryLogicalOp : BoolOp
+    public abstract class UnaryLogicalOp : FilterOperation
     {
-        public           BoolOp              operand;     // e.g.   i => i.amount < 1
+        public           FilterOperation            operand;     // e.g.   i => i.amount < 1
 
         protected UnaryLogicalOp() { }
-        protected UnaryLogicalOp(BoolOp operand) { this.operand = operand; }
+        protected UnaryLogicalOp(FilterOperation operand) { this.operand = operand; }
         
         internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => $"!({operand})";
 
         public Not() { }
-        public Not(BoolOp operand) : base(operand) { }
+        public Not(FilterOperation operand) : base(operand) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -43,16 +43,16 @@ namespace Friflo.Json.Flow.Graph.Query
 
     
     // ----------------------------------- (n-ary) logical group operations -----------------------------------
-    public abstract class BinaryLogicalOp : BoolOp
+    public abstract class BinaryLogicalOp : FilterOperation
     {
-        public              List<BoolOp>            operands;
+        public              List<FilterOperation>   operands;
         [Fri.Ignore]
         internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
         [Fri.Ignore]
         internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
         protected BinaryLogicalOp() { }
-        protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
+        protected BinaryLogicalOp(List<FilterOperation> operands) { this.operands = operands; }
         
         internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => string.Join(" && ", operands);
 
         public And() { }
-        public And(List<BoolOp> operands) : base(operands) { }
+        public And(List<FilterOperation> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalList.Clear();
@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => string.Join(" || ", operands);
         
         public Or() { }
-        public Or(List<BoolOp> operands) : base(operands) { }
+        public Or(List<FilterOperation> operands) : base(operands) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalList.Clear();

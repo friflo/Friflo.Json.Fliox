@@ -64,7 +64,7 @@ namespace Friflo.Json.EntityGraph.Database
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
         
-        public override Dictionary<string, EntityValue> QueryEntities(BoolOp filter) {
+        public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
     }

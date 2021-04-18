@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Graph.Query
             string sourceField = $"{sourceOp}"; // [=>]
             var lambdaParameter = predicate.Parameters[0].Name;
             var lambdaCx = new QueryCx(lambdaParameter, cx.path + sourceField, cx.exp);
-            var predicateOp = (BoolOp)TraceExpression(predicate, lambdaCx);
+            var predicateOp = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
                 case "Any":     return new Any(new Field(sourceField), lambdaParameter, predicateOp);
@@ -171,7 +171,7 @@ namespace Friflo.Json.Flow.Graph.Query
         private static Operation OperationFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
             var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
-                case ExpressionType.Not:            return new Not((BoolOp)operand);
+                case ExpressionType.Not:            return new Not((FilterOperation)operand);
                 case ExpressionType.Negate:         return new Negate(operand);
                 case ExpressionType.Convert:
                     return OperationFromConvert(unary, cx);
@@ -227,8 +227,8 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual   (leftOp, rightOp);
                 
                 // --- group operations:
-                case ExpressionType.OrElse:             return new Or(new List<BoolOp>  {(BoolOp)leftOp, (BoolOp)rightOp});
-                case ExpressionType.AndAlso:            return new And(new List<BoolOp> {(BoolOp)leftOp, (BoolOp)rightOp});
+                case ExpressionType.OrElse:             return new Or (new List<FilterOperation> {(FilterOperation)leftOp, (FilterOperation)rightOp});
+                case ExpressionType.AndAlso:            return new And(new List<FilterOperation> {(FilterOperation)leftOp, (FilterOperation)rightOp});
                 
                 // --- binary arithmetic operations
                 case ExpressionType.Add:                return new Add                  (leftOp, rightOp);
