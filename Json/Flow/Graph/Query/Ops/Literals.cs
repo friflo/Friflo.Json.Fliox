@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Graph.Query
+namespace Friflo.Json.Flow.Graph.Query.Ops
 {
     // --- literals
     public abstract class Literal : Operation {

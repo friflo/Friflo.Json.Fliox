@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 
 // ReSharper disable ConvertToAutoProperty
-namespace Friflo.Json.Flow.Graph.Query
+namespace Friflo.Json.Flow.Graph.Query.Ops
 {
     internal readonly struct EvalCx
     {

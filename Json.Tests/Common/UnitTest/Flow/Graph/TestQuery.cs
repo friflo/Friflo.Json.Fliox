@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Graph.Query;
+using Friflo.Json.Flow.Graph.Query.Ops;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Flow.Graph.Operation;
-using Contains = Friflo.Json.Flow.Graph.Query.Contains;
+using Contains = Friflo.Json.Flow.Graph.Query.Ops.Contains;
 
 
 // ReSharper disable CollectionNeverQueried.Global

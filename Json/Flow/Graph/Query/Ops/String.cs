@@ -3,7 +3,7 @@
 
 using Friflo.Json.Flow.Graph.Query.Arity;
 
-namespace Friflo.Json.Flow.Graph.Query
+namespace Friflo.Json.Flow.Graph.Query.Ops
 {
     
     public class Contains : BinaryBoolOp

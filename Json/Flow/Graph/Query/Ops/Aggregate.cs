@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Graph.Query
+namespace Friflo.Json.Flow.Graph.Query.Ops
 {
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operation

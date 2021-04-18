@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph.Query;
+using Friflo.Json.Flow.Graph.Query.Ops;
 
 namespace Friflo.Json.Flow.Graph
 {
