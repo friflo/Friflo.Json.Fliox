@@ -22,6 +22,10 @@ namespace Friflo.Json.Flow.Graph.Query
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
+    //
+    [Fri.Polymorph(typeof(Contains),            Discriminant = "contains")]
+    [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
+    [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- BoolOp --------------------------
     public abstract class BoolOp : Operator

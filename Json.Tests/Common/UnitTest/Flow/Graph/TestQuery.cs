@@ -7,6 +7,8 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using Contains = Friflo.Json.Flow.Graph.Query.Contains;
+
 
 // ReSharper disable CollectionNeverQueried.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
@@ -301,6 +303,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
                 AreEqual(".children.Count()", count.ToString());
             }
+            
+            // --- binary string operations
+            {
+                var contains     = new Contains(new StringLiteral("12345"), new StringLiteral("234"));
+                AssertJson(mapper, contains, "{'op':'contains','left':{'op':'string','value':'12345'},'right':{'op':'string','value':'234'}}");
+                AreEqual(true,         eval.Eval("{}", contains.Lambda()));
+            } {
+                var startsWith     = new StartsWith(new StringLiteral("12345"), new StringLiteral("123"));
+                AssertJson(mapper, startsWith, "{'op':'startsWith','left':{'op':'string','value':'12345'},'right':{'op':'string','value':'123'}}");
+                AreEqual(true,         eval.Eval("{}", startsWith.Lambda()));
+            } {
+                var endsWith     = new EndsWith(new StringLiteral("12345"), new StringLiteral("345"));
+                AssertJson(mapper, endsWith, "{'op':'endsWith','left':{'op':'string','value':'12345'},'right':{'op':'string','value':'345'}}");
+                AreEqual(true,         eval.Eval("{}", endsWith.Lambda()));
+            }
           }
         }
 
@@ -464,7 +481,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var average  = (Average)  Operator.FromLambda((Person p) => p.children.Average(child => child.age));
                 AreEqual(".children.Average(child => child.age)", average.ToString());
             }
-          } 
+  } 
         }
     }
 }

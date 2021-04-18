@@ -27,6 +27,7 @@ namespace Friflo.Json.Flow.Graph
         private                 long            LongValue => primitiveValue;
         private                 bool            BoolValue => primitiveValue != 0;
 
+        private                 bool            IsString => type == ScalarType.String;
         private                 bool            IsNumber => type == ScalarType.Double || type == ScalarType.Long;
         private                 bool            IsDouble => type == ScalarType.Double;
         private                 bool            IsLong   => type == ScalarType.Long;
@@ -256,6 +257,27 @@ namespace Friflo.Json.Flow.Graph
         private void AssertBinaryNumbers(Scalar other) {
             if (!IsNumber || !other.IsNumber)
                 throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
+        }
+        
+        // --- binary string expressions
+        public Scalar Contains(Scalar other) {
+            AssertBinaryString(other);
+            return stringValue.Contains(other.stringValue) ? True : False;
+        }
+        
+        public Scalar StartsWith(Scalar other) {
+            AssertBinaryString(other);
+            return stringValue.StartsWith(other.stringValue) ? True : False;
+        }
+        
+        public Scalar EndsWith(Scalar other) {
+            AssertBinaryString(other);
+            return stringValue.EndsWith(other.stringValue) ? True : False;
+        }
+        
+        private void AssertBinaryString(Scalar other) {
+            if (!IsString || !other.IsString)
+                throw new InvalidOperationException($"Expect both operands being a string. left: {this}, right: {other}");
         }
         
         // --------

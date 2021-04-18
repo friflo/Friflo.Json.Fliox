@@ -1,0 +1,64 @@
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using Friflo.Json.Flow.Graph.Query.Arity;
+
+namespace Friflo.Json.Flow.Graph.Query
+{
+    
+    public class Contains : BinaryBoolOp
+    {
+        public override     string      ToString() => $"{left}.Contains({right})";
+
+        public Contains() { }
+        public Contains(Operator left, Operator right) : base(left, right) { }
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            evalResult.Clear();
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
+            foreach (var pair in eval) {
+                var contains = pair.left.Contains(pair.right);
+                evalResult.Add(contains);
+            }
+            return evalResult;
+        }
+    }
+    
+    public class StartsWith : BinaryBoolOp
+    {
+        public override     string      ToString() => $"{left}.StartsWith({right})";
+
+        public StartsWith() { }
+        public StartsWith(Operator left, Operator right) : base(left, right) { }
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            evalResult.Clear();
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
+            foreach (var pair in eval) {
+                var startsWith = pair.left.StartsWith(pair.right);
+                evalResult.Add(startsWith);
+            }
+            return evalResult;
+        }
+    }
+    
+    public class EndsWith : BinaryBoolOp
+    {
+        public override     string      ToString() => $"{left}.EndsWith({right})";
+
+        public EndsWith() { }
+        public EndsWith(Operator left, Operator right) : base(left, right) { }
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            evalResult.Clear();
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
+            foreach (var pair in eval) {
+                var endsWith = pair.left.EndsWith(pair.right);
+                evalResult.Add(endsWith);
+            }
+            return evalResult;
+        }
+    }
+
+
+}
