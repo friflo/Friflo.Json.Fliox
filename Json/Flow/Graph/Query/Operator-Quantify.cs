@@ -6,19 +6,19 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class BinaryQuantifyOp : BoolOp
     {
         public      Field       field;
-        public      string      parameter;
+        public      string      arg;
         public      BoolOp      predicate;  // e.g.   i => i.amount < 1
 
         protected BinaryQuantifyOp() { }
-        protected BinaryQuantifyOp(Field field, string parameter, BoolOp predicate) {
+        protected BinaryQuantifyOp(Field field, string arg, BoolOp predicate) {
             this.field      = field;
             this.predicate  = predicate;
-            this.parameter  = parameter;
+            this.arg        = arg;
         }
         
         internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
-            cx.parameters.Add(parameter, field);
+            cx.parameters.Add(arg, field);
             field.Init(cx, InitFlags.ArrayField);
             predicate.Init(cx, 0);
         }
@@ -26,10 +26,10 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class Any : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"{field}.Any({parameter} => {predicate})";
+        public override     string      ToString() => $"{field}.Any({arg} => {predicate})";
 
         public Any() { }
-        public Any(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
+        public Any(Field field, string arg, BoolOp predicate) : base(field, arg, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = field.Eval(cx);
@@ -47,10 +47,10 @@ namespace Friflo.Json.Flow.Graph.Query
     
     public class All : BinaryQuantifyOp
     {
-        public override     string      ToString() => $"{field}.All({parameter} => {predicate})";
+        public override     string      ToString() => $"{field}.All({arg} => {predicate})";
         
         public All() { }
-        public All(Field field, string parameter, BoolOp predicate) : base(field, parameter, predicate) { }
+        public All(Field field, string arg, BoolOp predicate) : base(field, arg, predicate) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             var groupEval = field.Eval(cx);

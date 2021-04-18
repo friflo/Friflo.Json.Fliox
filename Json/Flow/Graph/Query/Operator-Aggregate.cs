@@ -44,21 +44,21 @@ namespace Friflo.Json.Flow.Graph.Query
     public abstract class BinaryAggregateOp : Operator
     {
         public              Field               field;
-        public              string              parameter;
+        public              string              arg;
         public              Operator            array;
         [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }
-        protected BinaryAggregateOp(Field field, string parameter, Operator array) {
+        protected BinaryAggregateOp(Field field, string arg, Operator array) {
             this.field      = field;
-            this.parameter  = parameter;
+            this.arg        = arg;
             this.array      = array;
         }
         
         internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
-            cx.parameters.Add(parameter, field);
+            cx.parameters.Add(arg, field);
             field.Init(cx, InitFlags.ArrayField);
             array.Init(cx, flags);
         }
@@ -67,9 +67,9 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Min : BinaryAggregateOp
     {
         public Min() { }
-        public Min(Field field, string parameter, Operator array) : base(field, parameter, array) { }
+        public Min(Field field, string arg, Operator array) : base(field, arg, array) { }
 
-        public override     string      ToString() => $"{field}.Min({parameter} => {array})";
+        public override     string      ToString() => $"{field}.Min({arg} => {array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -90,9 +90,9 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Max : BinaryAggregateOp
     {
         public Max() { }
-        public Max(Field field, string parameter, Operator array) : base(field, parameter, array) { }
+        public Max(Field field, string arg, Operator array) : base(field, arg, array) { }
 
-        public override     string      ToString() => $"{field}.Max({parameter} => {array})";
+        public override     string      ToString() => $"{field}.Max({arg} => {array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -113,9 +113,9 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Sum : BinaryAggregateOp
     {
         public Sum() { }
-        public Sum(Field field, string parameter, Operator array) : base(field, parameter, array) { }
+        public Sum(Field field, string arg, Operator array) : base(field, arg, array) { }
 
-        public override     string      ToString() => $"{field}.Sum({parameter} => {array})";
+        public override     string      ToString() => $"{field}.Sum({arg} => {array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
@@ -131,9 +131,9 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Average : BinaryAggregateOp
     {
         public Average() { }
-        public Average(Field field, string parameter, Operator array) : base(field, parameter, array) { }
+        public Average(Field field, string arg, Operator array) : base(field, arg, array) { }
 
-        public override     string      ToString() => $"{field}.Average({parameter} => {array})";
+        public override     string      ToString() => $"{field}.Average({arg} => {array})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);

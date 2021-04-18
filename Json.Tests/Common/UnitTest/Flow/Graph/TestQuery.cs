@@ -280,22 +280,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // --- unary aggregate operations
             {
                 var min         = new Min(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, min, "{'op':'min','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
+                AssertJson(mapper, min, "{'op':'min','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(10,         eval.Eval(john, min.Lambda()));
                 AreEqual(".children.Min(child => child.age)", min.ToString());
             } {
                 var max         = new Max(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, max, "{'op':'max','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
+                AssertJson(mapper, max, "{'op':'max','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(11,         eval.Eval(john, max.Lambda()));
                 AreEqual(".children.Max(child => child.age)", max.ToString());
             } {
                 var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, sum, "{'op':'sum','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
+                AssertJson(mapper, sum, "{'op':'sum','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(21,         eval.Eval(john, sum.Lambda()));
                 AreEqual(".children.Sum(child => child.age)", sum.ToString());
             } {
                 var average     = new Average(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, average, "{'op':'average','field':{'name':'.children'},'parameter':'child','array':{'op':'field','name':'child.age'}}");
+                AssertJson(mapper, average, "{'op':'average','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(10.5,       eval.Eval(john, average.Lambda()));
                 AreEqual(".children.Average(child => child.age)", average.ToString());
             } {
@@ -404,11 +404,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // --- quantifier operators
             {
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
-                AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.Any(child => child.age == 20)", any.ToString());
             } { 
                 var all =   (All)       FromFilter((Person p) => p.children.All(child => child.age == 20));
-                AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'parameter':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.All(child => child.age == 20)", all.ToString());
             }
             
