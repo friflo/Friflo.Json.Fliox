@@ -312,5 +312,8 @@ the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Thr
 
 
 
+# License
 
+`Friflo.Json.Flow` is licensed under LGPLv3
 
+Copyright (c) Ullrich Praetz
