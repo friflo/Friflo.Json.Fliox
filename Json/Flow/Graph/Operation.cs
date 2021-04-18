@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
-using Friflo.Json.Flow.Mapper; 
+using Friflo.Json.Flow.Graph.Query;
+using Friflo.Json.Flow.Mapper;
 
-// ReSharper disable ConvertToAutoProperty
-namespace Friflo.Json.Flow.Graph.Query
+namespace Friflo.Json.Flow.Graph
 {
     [Fri.Discriminator("op")]
     //
@@ -83,90 +83,35 @@ namespace Friflo.Json.Flow.Graph.Query
             return (BoolOp)QueryConverter.OperationFromExpression(filter);
         }
     }
-
-    internal readonly struct EvalCx
-    {
-        private readonly    int     groupIndex;
-
-        public              int     GroupIndex => groupIndex;
-        
-        internal EvalCx(int groupIndex) {
-            this.groupIndex = groupIndex;
-        }
-    }
-
-    [Flags]
-    internal enum InitFlags
-    {
-        ArrayField = 1
-    }
-
-    internal class OperationContext
-    {
-        internal readonly List<Field>                   selectors = new List<Field>();
-        private  readonly HashSet<Operation>            operations = new HashSet<Operation>();
-        internal readonly Dictionary<string, Field>     parameters = new Dictionary<string, Field>();
-
-        internal void Init() {
-            selectors.Clear();
-            operations.Clear();
-            parameters.Clear();
-        }
-
-        internal void ValidateReuse(Operation op) {
-            if (operations.Add(op))
-                return;
-            var msg = $"Used operation instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
-            throw new InvalidOperationException(msg);
-        }
-    }
     
-    // ------------------------------------- unary operations -------------------------------------
-    public class Field : Operation
+    [Fri.Discriminator("op")]
+    // --- BoolOp  
+    [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
+    [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
+    [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
+    [Fri.Polymorph(typeof(LessThanOrEqual),     Discriminant = "lessThanOrEqual")]
+    [Fri.Polymorph(typeof(GreaterThan),         Discriminant = "greaterThan")]
+    [Fri.Polymorph(typeof(GreaterThanOrEqual),  Discriminant = "greaterThanOrEqual")]
+    //
+    [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
+    [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
+    //
+    [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
+    [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
+    //
+    [Fri.Polymorph(typeof(Contains),            Discriminant = "contains")]
+    [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
+    [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
+    
+    // ----------------------------- BoolOp --------------------------
+    public abstract class BoolOp : Operation
     {
-        public          string                  name;
-        
         [Fri.Ignore]
-        internal        string                  selector;   // == field if field starts with . otherwise appended to a lambda parameter
-        [Fri.Ignore]
-        internal        EvalResult              evalResult;
+        internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
 
-        public override string                  ToString() => name;
-
-        public Field() { }
-        public Field(string name) { this.name = name; }
-
-        internal override void Init(OperationContext cx, InitFlags flags) {
-            bool isArrayField = (flags & InitFlags.ArrayField) != 0;
-            if (name.StartsWith(".")) {
-                selector = isArrayField ? name + "[=>]" : name;
-            } else {
-                var dotPos = name.IndexOf('.');
-                if (dotPos == -1)
-                    throw new InvalidOperationException("expect a dot in field name");
-                var parameter = name.Substring(0, dotPos);
-                var lambda = cx.parameters[parameter];
-                var path = name.Substring(dotPos + 1);
-                selector = lambda.name + "[=>]." + path;
-            }
-            cx.selectors.Add(this);
-        }
-
-        internal override EvalResult Eval(EvalCx cx) {
-            int groupIndex = cx.GroupIndex;
-            if (groupIndex == -1)
-                return evalResult;
-            
-            var groupIndices = evalResult.groupIndices;
-            int startIndex = groupIndices[groupIndex];
-            int endIndex;
-            if (groupIndex + 1 < groupIndices.Count) {
-                endIndex = groupIndices[groupIndex + 1];
-            } else {
-                endIndex = evalResult.values.Count;
-            }
-            evalResult.SetRange(startIndex, endIndex);
-            return evalResult;
+        public JsonFilter Filter() {
+            return new JsonFilter(this);
         }
     }
 }

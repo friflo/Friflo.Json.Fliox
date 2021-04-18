@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Graph.Query;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 
 

@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Flow.Graph.Query.Operation;
+using static Friflo.Json.Flow.Graph.Operation;
 using Contains = Friflo.Json.Flow.Graph.Query.Contains;
 
 
