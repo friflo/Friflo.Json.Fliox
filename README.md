@@ -314,6 +314,8 @@ the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Thr
 
 ## License
 
-This project is licensed under LGPLv3
+This project is licensed under LGPLv3.
+
+Project not publish nor released yet. 2021-04-18
 
 Copyright (c) 2021 Ullrich Praetz. All rights reserved.
