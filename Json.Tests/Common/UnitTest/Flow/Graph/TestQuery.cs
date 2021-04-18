@@ -230,31 +230,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // --- unary arithmetic operations
             {
                 var abs     = new Abs(new LongLiteral(-2));
-                AssertJson(mapper, abs, "{'op':'abs','operand':{'op':'int64','value':-2}}");
+                AssertJson(mapper, abs, "{'op':'abs','value':{'op':'int64','value':-2}}");
                 AreEqual(2,         eval.Eval("{}", abs.Lambda()));
             } {
                 var ceiling = new Ceiling(new DoubleLiteral(2.5));
-                AssertJson(mapper, ceiling, "{'op':'ceiling','operand':{'op':'double','value':2.5}}");
+                AssertJson(mapper, ceiling, "{'op':'ceiling','value':{'op':'double','value':2.5}}");
                 AreEqual(3,         eval.Eval("{}", ceiling.Lambda()));
             } {
                 var floor   = new Floor(new DoubleLiteral(2.5));
-                AssertJson(mapper, floor, "{'op':'floor','operand':{'op':'double','value':2.5}}");
+                AssertJson(mapper, floor, "{'op':'floor','value':{'op':'double','value':2.5}}");
                 AreEqual(2,         eval.Eval("{}", floor.Lambda()));
             } {
                 var exp     = new Exp(new DoubleLiteral(Math.Log(2)));
-                AssertJson(mapper, exp, "{'op':'exp','operand':{'op':'double','value':0.6931471805599453}}");
+                AssertJson(mapper, exp, "{'op':'exp','value':{'op':'double','value':0.6931471805599453}}");
                 AreEqual(2,         eval.Eval("{}", exp.Lambda()));
             } {
                 var log     = new Log(new DoubleLiteral(Math.Exp(3)));
-                AssertJson(mapper, log, "{'op':'log','operand':{'op':'double','value':20.085536923187668}}");
+                AssertJson(mapper, log, "{'op':'log','value':{'op':'double','value':20.085536923187668}}");
                 AreEqual(3,         eval.Eval("{}", log.Lambda()));
             } {
                 var sqrt    = new Sqrt(new DoubleLiteral(9));
-                AssertJson(mapper, sqrt, "{'op':'sqrt','operand':{'op':'double','value':9.0}}");
+                AssertJson(mapper, sqrt, "{'op':'sqrt','value':{'op':'double','value':9.0}}");
                 AreEqual(3,         eval.Eval("{}", sqrt.Lambda()));
             } {
                 var negate  = new Negate(new DoubleLiteral(1));
-                AssertJson(mapper, negate, "{'op':'negate','operand':{'op':'double','value':1.0}}");
+                AssertJson(mapper, negate, "{'op':'negate','value':{'op':'double','value':1.0}}");
                 AreEqual(-1,        eval.Eval("{}", negate.Lambda()));
             }
             

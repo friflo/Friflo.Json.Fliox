@@ -10,29 +10,32 @@ namespace Friflo.Json.Flow.Graph.Query
     // ------------------------------------ unary arithmetic operators ------------------------------------
     public abstract class UnaryArithmeticOp : Operator
     {
-        public           Operator           operand;
+        public           Operator           value;
         [Fri.Ignore]
         internal  readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
 
         protected UnaryArithmeticOp() { }
-        protected UnaryArithmeticOp(Operator operand) { this.operand = operand; }
+
+        protected UnaryArithmeticOp(Operator value) {
+            this.value = value;
+        }
         
         internal override void Init(OperatorContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
-            operand.Init(cx, 0);
+            value.Init(cx, 0);
         }
     }
     
     public class Abs : UnaryArithmeticOp
     {
         public Abs() { }
-        public Abs(Operator operand) : base(operand) { }
+        public Abs(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Abs({operand})";
+        public override     string      ToString() => $"Abs({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Abs();
                 evalResult.Add(result);
@@ -44,13 +47,13 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Ceiling : UnaryArithmeticOp
     {
         public Ceiling() { }
-        public Ceiling(Operator operand) : base(operand) { }
+        public Ceiling(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Ceiling({operand})";
+        public override     string      ToString() => $"Ceiling({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Ceiling();
                 evalResult.Add(result);
@@ -62,13 +65,13 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Floor : UnaryArithmeticOp
     {
         public Floor() { }
-        public Floor(Operator operand) : base(operand) { }
+        public Floor(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Floor({operand})";
+        public override     string      ToString() => $"Floor({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Floor();
                 evalResult.Add(result);
@@ -80,13 +83,13 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Exp : UnaryArithmeticOp
     {
         public Exp() { }
-        public Exp(Operator operand) : base(operand) { }
+        public Exp(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Exp({operand})";
+        public override     string      ToString() => $"Exp({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Exp();
                 evalResult.Add(result);
@@ -98,13 +101,13 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Log : UnaryArithmeticOp
     {
         public Log() { }
-        public Log(Operator operand) : base(operand) { }
+        public Log(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Log({operand})";
+        public override     string      ToString() => $"Log({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Log();
                 evalResult.Add(result);
@@ -116,13 +119,13 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Sqrt : UnaryArithmeticOp
     {
         public Sqrt() { }
-        public Sqrt(Operator operand) : base(operand) { }
+        public Sqrt(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"Sqrt({operand})";
+        public override     string      ToString() => $"Sqrt({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = val.Sqrt();
                 evalResult.Add(result);
@@ -134,14 +137,14 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Negate : UnaryArithmeticOp
     {
         public Negate() { }
-        public Negate(Operator operand) : base(operand) { }
+        public Negate(Operator value) : base(value) { }
 
-        public override     string      ToString() => $"-({operand})";
+        public override     string      ToString() => $"-({value})";
         
         internal override EvalResult Eval(EvalCx cx) {
             var zero = new Scalar(0);
             evalResult.Clear();
-            var eval = operand.Eval(cx);
+            var eval = value.Eval(cx);
             foreach (var val in eval.values) {
                 var result = zero.Subtract(val);
                 evalResult.Add(result);
