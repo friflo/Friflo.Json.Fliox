@@ -129,7 +129,7 @@ namespace Friflo.Json.EntityGraph
 
         // lab interface
         public ReadWhere<T> ReadWhere(Expression<Func<T, bool>> filter) {
-            var op = Operator.FromFilter(filter);
+            var op = Operation.FromFilter(filter);
             return default;
         }
         

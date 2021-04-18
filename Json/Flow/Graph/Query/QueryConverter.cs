@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph.Query
 {
     internal static class QueryConverter
     {
-        public static Operator OperatorFromExpression(Expression query) {
+        public static Operation OperationFromExpression(Expression query) {
             var cx = new QueryCx ("", "", query);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
@@ -19,22 +19,22 @@ namespace Friflo.Json.Flow.Graph.Query
             throw NotSupported($"query not supported: {query}", cx);
         }
         
-        private static Operator TraceExpression(Expression expression, QueryCx cx) {
+        private static Operation TraceExpression(Expression expression, QueryCx cx) {
             switch (expression) {
                 case MemberExpression member:
                     string name = GetMemberName(member, cx);
                     return new Field(cx.parameter + "." + name); // field refers to object root (.) or a lambda parameter
                 case MethodCallExpression methodCall:
-                    return OperatorFromMethodCallExpression(methodCall, cx);
+                    return OperationFromMethodCallExpression(methodCall, cx);
                 case LambdaExpression lambda: 
                     var body = lambda.Body;
                     return TraceExpression(body, cx);
                 case UnaryExpression unary:
-                    return OperatorFromUnaryExpression(unary, cx);
+                    return OperationFromUnaryExpression(unary, cx);
                 case BinaryExpression binary:
-                    return OperatorFromBinaryExpression(binary, cx);
+                    return OperationFromBinaryExpression(binary, cx);
                 case ConstantExpression constant:
-                    return OperatorFromConstant(constant, cx);
+                    return OperationFromConstant(constant, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
             }
@@ -50,39 +50,39 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static Operator OperatorFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
             switch (methodCall.Method.Name) {
-                // quantify operators
+                // quantify operations
                 case "Any":
                 case "All":
-                    return OperatorFromBinaryQuantifier(methodCall, cx);
+                    return OperationFromBinaryQuantifier(methodCall, cx);
                 
-                // arithmetic operators
+                // arithmetic operations
                 case "Abs":
                 case "Ceiling":
                 case "Floor":
                 case "Exp":
                 case "Log":
                 case "Sqrt":
-                    return OperatorFromUnaryArithmetic(methodCall, cx);
+                    return OperationFromUnaryArithmetic(methodCall, cx);
                 
-                // aggregate operators
+                // aggregate operations
                 case "Min":
                 case "Max":
                 case "Sum":
                 case "Count":
                 case "Average":
-                    return OperatorFromAggregate(methodCall, cx);
+                    return OperationFromAggregate(methodCall, cx);
                 case "Contains":
                 case "StartsWith":
                 case "EndsWith":
-                    return OperatorFromBinaryCall(methodCall, cx);
+                    return OperationFromBinaryCall(methodCall, cx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
 
-        private static Operator OperatorFromBinaryQuantifier(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryQuantifier(MethodCallExpression methodCall, QueryCx cx) {
             var args = methodCall.Arguments;
             var source      = args[0];
             var sourceOp = TraceExpression(source, cx);
@@ -101,11 +101,11 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
         
-        private static Operator OperatorFromUnaryArithmetic(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromUnaryArithmetic(MethodCallExpression methodCall, QueryCx cx) {
             var value = methodCall.Arguments[0];
             var valueOp = TraceExpression(value, cx);
             switch (methodCall.Method.Name) {
-                // --- arithmetic operators
+                // --- arithmetic operations
                 case "Abs":     return new Abs      (valueOp);
                 case "Ceiling": return new Ceiling  (valueOp);
                 case "Floor":   return new Floor    (valueOp);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
         
-        private static Operator OperatorFromAggregate(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromAggregate(MethodCallExpression methodCall, QueryCx cx) {
             var     args        = methodCall.Arguments;
             var     source      = args[0];
             var     sourceOp    = TraceExpression(source, cx);
@@ -131,17 +131,17 @@ namespace Friflo.Json.Flow.Graph.Query
                 case "Sum":
                 case "Average":
                     var lambdaCx = new QueryCx(cx.parameter, cx.path + sourceField, cx.exp);
-                    return OperatorFromBinaryAggregate(methodCall, lambdaCx);
+                    return OperationFromBinaryAggregate(methodCall, lambdaCx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
             }
         }
         
-        private static Operator OperatorFromBinaryCall(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryCall(MethodCallExpression methodCall, QueryCx cx) {
             var leftOp  = TraceExpression(methodCall.Object,       cx);
             var rightOp = TraceExpression(methodCall.Arguments[0], cx);
             switch (methodCall.Method.Name) {
-                // --- binary comparison operators
+                // --- binary comparison operations
                 case "Contains":            return new Contains     (leftOp, rightOp);
                 case "StartsWith":          return new StartsWith   (leftOp, rightOp);
                 case "EndsWith":            return new EndsWith     (leftOp, rightOp);
@@ -151,7 +151,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
         
-        private static Operator OperatorFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
+        private static Operation OperationFromBinaryAggregate(MethodCallExpression methodCall, QueryCx cx) {
             var predicate   = (LambdaExpression)methodCall.Arguments[1];
             string sourceField = $"{cx.path}";
             var lambdaParameter = predicate.Parameters[0].Name;
@@ -168,19 +168,19 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static Operator OperatorFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
+        private static Operation OperationFromUnaryExpression(UnaryExpression unary, QueryCx cx) {
             var operand = TraceExpression(unary.Operand, cx);
             switch (unary.NodeType) {
                 case ExpressionType.Not:            return new Not((BoolOp)operand);
                 case ExpressionType.Negate:         return new Negate(operand);
                 case ExpressionType.Convert:
-                    return OperatorFromConvert(unary, cx);
+                    return OperationFromConvert(unary, cx);
                 default:
                     throw NotSupported($"UnaryExpression not supported: {unary}", cx);
             }
         }
 
-        private static Operator OperatorFromConvert(UnaryExpression unary, QueryCx cx) {
+        private static Operation OperationFromConvert(UnaryExpression unary, QueryCx cx) {
             var type = unary.Operand.NodeType;
             switch (type) {
                 /*
@@ -196,14 +196,14 @@ namespace Friflo.Json.Flow.Graph.Query
                     return TraceExpression(unary.Operand, cx); */
                 case ExpressionType.MemberAccess:
                     var member = (MemberExpression)unary.Operand;
-                    return OperatorFromMember(member, cx);
+                    return OperationFromMember(member, cx);
                 default:
                     return TraceExpression(unary.Operand, cx);
                     // throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
             }
         }
 
-        private static Operator OperatorFromMember(MemberExpression member, QueryCx cx) {
+        private static Operation OperationFromMember(MemberExpression member, QueryCx cx) {
             var name = GetMemberName(member, cx);
             var field = (Field)TraceExpression(member.Expression, cx);
             switch (name) {
@@ -214,11 +214,11 @@ namespace Friflo.Json.Flow.Graph.Query
             throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
         }
 
-        private static Operator OperatorFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
+        private static Operation OperationFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
             var leftOp  = TraceExpression(binary.Left,  cx);
             var rightOp = TraceExpression(binary.Right, cx);
             switch (binary.NodeType) {
-                // --- binary comparison operators
+                // --- binary comparison operations
                 case ExpressionType.Equal:              return new Equal                (leftOp, rightOp);
                 case ExpressionType.NotEqual:           return new NotEqual             (leftOp, rightOp);
                 case ExpressionType.LessThan:           return new LessThan             (leftOp, rightOp);
@@ -226,11 +226,11 @@ namespace Friflo.Json.Flow.Graph.Query
                 case ExpressionType.GreaterThan:        return new GreaterThan          (leftOp, rightOp);
                 case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual   (leftOp, rightOp);
                 
-                // --- group operator:
+                // --- group operations:
                 case ExpressionType.OrElse:             return new Or(new List<BoolOp>  {(BoolOp)leftOp, (BoolOp)rightOp});
                 case ExpressionType.AndAlso:            return new And(new List<BoolOp> {(BoolOp)leftOp, (BoolOp)rightOp});
                 
-                // --- binary arithmetic operators
+                // --- binary arithmetic operations
                 case ExpressionType.Add:                return new Add                  (leftOp, rightOp);
                 case ExpressionType.Subtract:           return new Subtract             (leftOp, rightOp);
                 case ExpressionType.Multiply:           return new Multiply             (leftOp, rightOp);
@@ -241,7 +241,7 @@ namespace Friflo.Json.Flow.Graph.Query
             }
         }
 
-        private static Operator OperatorFromConstant(ConstantExpression constant, QueryCx cx) {
+        private static Operation OperationFromConstant(ConstantExpression constant, QueryCx cx) {
             Type type = constant.Type;
             object value = constant.Value;
             if (type == typeof(string))     return new StringLiteral((string)   value);

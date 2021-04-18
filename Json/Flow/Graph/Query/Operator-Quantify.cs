@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph.Query
             this.arg        = arg;
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             cx.parameters.Add(arg, field);
             field.Init(cx, InitFlags.ArrayField);

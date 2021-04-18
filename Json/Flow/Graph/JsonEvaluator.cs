@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
             var evalResult = filter.op.Eval(cx);
             
             foreach (var result in evalResult.values) {
-                if (result.CompareTo(Operator.True) != 0)
+                if (result.CompareTo(Operation.True) != 0)
                     return false;
             }
             return true;
@@ -66,30 +66,30 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   List<Field>         fields          = new List<Field>();        // Count == selectors.Count
         internal readonly   List<EvalResult>    resultBuffer    = new List<EvalResult>();   // Count == selectors.Count
         internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
-        internal            Operator            op;
-        private  readonly   OperatorContext     operatorContext = new OperatorContext();
+        internal            Operation            op;
+        private  readonly   OperationContext     operationContext = new OperationContext();
 
         public   override   string              ToString() => op != null ? op.ToString() : "not initialized";
 
         internal JsonLambda() { }
 
-        public JsonLambda(Operator op) {
+        public JsonLambda(Operation op) {
             InitLambda(op);
         }
         
         public static JsonLambda Create<T> (Expression<Func<T, object>> lambda) {
-            var op = Operator.FromLambda(lambda);
+            var op = Operation.FromLambda(lambda);
             var jsonLambda = new JsonLambda(op);
             return jsonLambda;
         }
 
-        private void InitLambda(Operator op) {
+        private void InitLambda(Operation op) {
             this.op = op;
-            operatorContext.Init();
-            op.Init(operatorContext, 0);
+            operationContext.Init();
+            op.Init(operationContext, 0);
             selectors.Clear();
             fields.Clear();
-            foreach (var selector in operatorContext.selectors) {
+            foreach (var selector in operationContext.selectors) {
                 selectors.Add(selector.selector);
                 fields.Add(selector);
             }
@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Graph
         public JsonFilter(BoolOp op) : base(op) { }
         
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
-            var op = Operator.FromFilter(filter);
+            var op = Operation.FromFilter(filter);
             var jsonLambda = new JsonFilter(op);
             return jsonLambda;
         }

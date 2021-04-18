@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph.Query
     [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- BoolOp --------------------------
-    public abstract class BoolOp : Operator
+    public abstract class BoolOp : Operation
     {
         [Fri.Ignore]
         internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
     
-    // ----------------------------------- unary logical operators -----------------------------------
+    // ----------------------------------- unary logical operations -----------------------------------
     public abstract class UnaryLogicalOp : BoolOp
     {
         public           BoolOp              operand;     // e.g.   i => i.amount < 1
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Graph.Query
         protected UnaryLogicalOp() { }
         protected UnaryLogicalOp(BoolOp operand) { this.operand = operand; }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             operand.Init(cx, 0);
         }
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Graph.Query
     
 
     
-    // ----------------------------------- (n-ary) logical group operators -----------------------------------
+    // ----------------------------------- (n-ary) logical group operations -----------------------------------
     public abstract class BinaryLogicalOp : BoolOp
     {
         public              List<BoolOp>            operands;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Flow.Graph.Query
         protected BinaryLogicalOp() { }
         protected BinaryLogicalOp(List<BoolOp> operands) { this.operands = operands; }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             foreach (var operand in operands) {
                 operand.Init(cx, 0);

@@ -5,30 +5,30 @@ using Friflo.Json.Flow.Graph.Query.Arity;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
-    // -------------------------------------- comparison operators --------------------------------------
+    // -------------------------------------- comparison operations --------------------------------------
     public abstract class BinaryBoolOp : BoolOp
     {
-        public              Operator            left;
-        public              Operator            right;
+        public              Operation            left;
+        public              Operation            right;
         
         protected BinaryBoolOp() { }
-        protected BinaryBoolOp(Operator left, Operator right) {
+        protected BinaryBoolOp(Operation left, Operation right) {
             this.left = left;
             this.right = right;
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             left.Init(cx, 0);
             right.Init(cx, 0);
         }
     }
     
-    // --- associative comparison operators ---
+    // --- associative comparison operations ---
     public class Equal : BinaryBoolOp
     {
         public Equal() { }
-        public Equal(Operator left, Operator right) : base(left, right) { }
+        public Equal(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} == {right}";
         
@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class NotEqual : BinaryBoolOp
     {
         public NotEqual() { }
-        public NotEqual(Operator left, Operator right) : base(left, right) { }
+        public NotEqual(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} != {right}";
         
@@ -59,11 +59,11 @@ namespace Friflo.Json.Flow.Graph.Query
         }
     }
 
-    // --- non-associative comparison operators -> call Order() --- 
+    // --- non-associative comparison operations -> call Order() --- 
     public class LessThan : BinaryBoolOp
     {
         public LessThan() { }
-        public LessThan(Operator left, Operator right) : base(left, right) { }
+        public LessThan(Operation left, Operation right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} < {right}";
         
@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class LessThanOrEqual : BinaryBoolOp
     {
         public LessThanOrEqual() { }
-        public LessThanOrEqual(Operator left, Operator right) : base(left, right) { }
+        public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} <= {right}";
         
@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class GreaterThan : BinaryBoolOp
     {
         public GreaterThan() { }
-        public GreaterThan(Operator left, Operator right) : base(left, right) { }
+        public GreaterThan(Operation left, Operation right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} > {right}";
         
@@ -114,7 +114,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class GreaterThanOrEqual : BinaryBoolOp
     {
         public GreaterThanOrEqual() { }
-        public GreaterThanOrEqual(Operator left, Operator right) : base(left, right) { }
+        public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public override     string      ToString() => $"{left} >= {right}";
         

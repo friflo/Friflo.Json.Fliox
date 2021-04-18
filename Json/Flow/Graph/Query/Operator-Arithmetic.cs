@@ -7,20 +7,20 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query
 {
-    // ------------------------------------ unary arithmetic operators ------------------------------------
-    public abstract class UnaryArithmeticOp : Operator
+    // ------------------------------------ unary arithmetic operations ------------------------------------
+    public abstract class UnaryArithmeticOp : Operation
     {
-        public           Operator           value;
+        public              Operation       value;
         [Fri.Ignore]
         internal  readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
 
         protected UnaryArithmeticOp() { }
 
-        protected UnaryArithmeticOp(Operator value) {
+        protected UnaryArithmeticOp(Operation value) {
             this.value = value;
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             value.Init(cx, 0);
         }
@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Abs : UnaryArithmeticOp
     {
         public Abs() { }
-        public Abs(Operator value) : base(value) { }
+        public Abs(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Abs({value})";
         
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Ceiling : UnaryArithmeticOp
     {
         public Ceiling() { }
-        public Ceiling(Operator value) : base(value) { }
+        public Ceiling(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Ceiling({value})";
         
@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Floor : UnaryArithmeticOp
     {
         public Floor() { }
-        public Floor(Operator value) : base(value) { }
+        public Floor(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Floor({value})";
         
@@ -83,7 +83,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Exp : UnaryArithmeticOp
     {
         public Exp() { }
-        public Exp(Operator value) : base(value) { }
+        public Exp(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Exp({value})";
         
@@ -101,7 +101,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Log : UnaryArithmeticOp
     {
         public Log() { }
-        public Log(Operator value) : base(value) { }
+        public Log(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Log({value})";
         
@@ -119,7 +119,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Sqrt : UnaryArithmeticOp
     {
         public Sqrt() { }
-        public Sqrt(Operator value) : base(value) { }
+        public Sqrt(Operation value) : base(value) { }
 
         public override     string      ToString() => $"Sqrt({value})";
         
@@ -137,7 +137,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Negate : UnaryArithmeticOp
     {
         public Negate() { }
-        public Negate(Operator value) : base(value) { }
+        public Negate(Operation value) : base(value) { }
 
         public override     string      ToString() => $"-({value})";
         
@@ -156,20 +156,20 @@ namespace Friflo.Json.Flow.Graph.Query
     
     
     
-    // ------------------------------------ binary arithmetic operators ------------------------------------
-    public abstract class BinaryArithmeticOp : Operator
+    // ------------------------------------ binary arithmetic operations ------------------------------------
+    public abstract class BinaryArithmeticOp : Operation
     {
-        public              Operator    left;
-        public              Operator    right;
+        public              Operation   left;
+        public              Operation   right;
         internal readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
 
         protected BinaryArithmeticOp() { }
-        protected BinaryArithmeticOp(Operator left, Operator right) {
+        protected BinaryArithmeticOp(Operation left, Operation right) {
             this.left = left;
             this.right = right;
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             left.Init(cx, 0);
             right.Init(cx, 0);
@@ -179,7 +179,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Add : BinaryArithmeticOp
     {
         public Add() { }
-        public Add(Operator left, Operator right) : base(left, right) { }
+        public Add(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} + {right}";
         
@@ -197,7 +197,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Subtract : BinaryArithmeticOp
     {
         public Subtract() { }
-        public Subtract(Operator left, Operator right) : base(left, right) { }
+        public Subtract(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} - {right}";
         
@@ -215,7 +215,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Multiply : BinaryArithmeticOp
     {
         public Multiply() { }
-        public Multiply(Operator left, Operator right) : base(left, right) { }
+        public Multiply(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} * {right}";
         
@@ -233,7 +233,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Divide : BinaryArithmeticOp
     {
         public Divide() { }
-        public Divide(Operator left, Operator right) : base(left, right) { }
+        public Divide(Operation left, Operation right) : base(left, right) { }
 
         public override     string      ToString() => $"{left} / {right}";
         

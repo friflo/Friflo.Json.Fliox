@@ -8,12 +8,12 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Flow.Graph.Query
 {
     // --- literals
-    public abstract class Literal : Operator {
+    public abstract class Literal : Operation {
         // is set always to the same value in Eval() so it can be reused
         [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
-        internal override void Init(OperatorContext cx, InitFlags flags) { }
+        internal override void Init(OperationContext cx, InitFlags flags) { }
     }
         
     public class StringLiteral : Literal

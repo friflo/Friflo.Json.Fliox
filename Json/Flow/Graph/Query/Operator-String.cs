@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => $"{left}.Contains({right})";
 
         public Contains() { }
-        public Contains(Operator left, Operator right) : base(left, right) { }
+        public Contains(Operation left, Operation right) : base(left, right) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => $"{left}.StartsWith({right})";
 
         public StartsWith() { }
-        public StartsWith(Operator left, Operator right) : base(left, right) { }
+        public StartsWith(Operation left, Operation right) : base(left, right) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public override     string      ToString() => $"{left}.EndsWith({right})";
 
         public EndsWith() { }
-        public EndsWith(Operator left, Operator right) : base(left, right) { }
+        public EndsWith(Operation left, Operation right) : base(left, right) { }
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();

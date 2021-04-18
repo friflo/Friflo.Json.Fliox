@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Flow.Graph.Query
 {
     // ------------------------------------------- unary -------------------------------------------
-    public abstract class UnaryAggregateOp : Operator
+    public abstract class UnaryAggregateOp : Operation
     {
         public              Field               field;
         [Fri.Ignore]
@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Graph.Query
 
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             field.Init(cx, InitFlags.ArrayField);
         }
@@ -41,22 +41,22 @@ namespace Friflo.Json.Flow.Graph.Query
     }
     
     // ------------------------------------------- binary -------------------------------------------
-    public abstract class BinaryAggregateOp : Operator
+    public abstract class BinaryAggregateOp : Operation
     {
         public              Field               field;
         public              string              arg;
-        public              Operator            array;
+        public              Operation           array;
         [Fri.Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }
-        protected BinaryAggregateOp(Field field, string arg, Operator array) {
+        protected BinaryAggregateOp(Field field, string arg, Operation array) {
             this.field      = field;
             this.arg        = arg;
             this.array      = array;
         }
         
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
             cx.parameters.Add(arg, field);
             field.Init(cx, InitFlags.ArrayField);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Min : BinaryAggregateOp
     {
         public Min() { }
-        public Min(Field field, string arg, Operator array) : base(field, arg, array) { }
+        public Min(Field field, string arg, Operation array) : base(field, arg, array) { }
 
         public override     string      ToString() => $"{field}.Min({arg} => {array})";
         
@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Max : BinaryAggregateOp
     {
         public Max() { }
-        public Max(Field field, string arg, Operator array) : base(field, arg, array) { }
+        public Max(Field field, string arg, Operation array) : base(field, arg, array) { }
 
         public override     string      ToString() => $"{field}.Max({arg} => {array})";
         
@@ -113,7 +113,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Sum : BinaryAggregateOp
     {
         public Sum() { }
-        public Sum(Field field, string arg, Operator array) : base(field, arg, array) { }
+        public Sum(Field field, string arg, Operation array) : base(field, arg, array) { }
 
         public override     string      ToString() => $"{field}.Sum({arg} => {array})";
         
@@ -131,7 +131,7 @@ namespace Friflo.Json.Flow.Graph.Query
     public class Average : BinaryAggregateOp
     {
         public Average() { }
-        public Average(Field field, string arg, Operator array) : base(field, arg, array) { }
+        public Average(Field field, string arg, Operation array) : base(field, arg, array) { }
 
         public override     string      ToString() => $"{field}.Average({arg} => {array})";
         

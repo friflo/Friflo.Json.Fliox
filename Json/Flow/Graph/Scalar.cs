@@ -157,7 +157,7 @@ namespace Friflo.Json.Flow.Graph
             }
         }
 
-        // --- unary arithmetic operators ---
+        // --- unary arithmetic operations ---
         public Scalar Abs() {
             AssertUnaryNumber();
             if (IsDouble)
@@ -205,7 +205,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Expect operand being numeric. operand: {this}");
         }
         
-        // --- binary arithmetic operators ---
+        // --- binary arithmetic operations ---
         public Scalar Add(Scalar other) {
             AssertBinaryNumbers(other);
             if (IsDouble) {

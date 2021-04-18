@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Flow.Graph.Query.Operator;
+using static Friflo.Json.Flow.Graph.Query.Operation;
 using Contains = Friflo.Json.Flow.Graph.Query.Contains;
 
 
@@ -133,16 +133,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 // ------------------------------ Test runtime assertions ------------------------------
                 Exception e;
-                // --- compare operators must not be reused
+                // --- compare operations must not be reused
                 e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter());
-                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
+                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
                 
-                // --- group operators must not be reused
+                // --- group operations must not be reused
                 var testGroupOp = new And(new List<BoolOp> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
                 e = Throws<InvalidOperationException>(() => _ = new Equal(testGroupOp, testGroupOp).Filter());
-                AreEqual("Used operator instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
+                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: And, instance: 'A' == 'B'", e.Message);
 
-                // --- literal and field operators are applicable for reuse
+                // --- literal and field operations are applicable for reuse
                 var testLiteral = new StringLiteral("Test");
                 var reuseLiterals = new Equal(testLiteral, testLiteral).Filter();
                 eval.Filter(peter, reuseLiterals);
@@ -322,14 +322,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
           }
         }
 
-        private static void AssertJson(ObjectMapper mapper, Operator op, string json) {
+        private static void AssertJson(ObjectMapper mapper, Operation op, string json) {
             var result = mapper.Write(op);
             var singleQuoteResult = result.Replace('\"', '\'');
             if (json != singleQuoteResult) {
                 Fail($"Expected: {json}\nBut was:  {singleQuoteResult}");
             }
-            // assert mapping of JSON string to/from Operator
-            Operator opRead  = mapper.Read<Operator>(result);
+            // assert mapping of JSON string to/from Operation
+            Operation opRead  = mapper.Read<Operation>(result);
             string   opWrite = mapper.Write(opRead);
             AreEqual(result, opWrite);
             
@@ -344,7 +344,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]
         public static void TestQueryConversion() {
           using (var mapper   = new ObjectMapper()) {
-            // --- comparision operators
+            // --- comparision operations
             {
                 var isEqual =           (Equal)             FromFilter((Person p) => p.name == "Peter");
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
@@ -371,7 +371,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(".age >= 20", isGreaterOrEqual.ToString());
             }
             
-            // --- group operators
+            // --- group operations
             {
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
@@ -394,14 +394,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
             }
             
-            // --- unary operators
+            // --- unary operations
             {
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual("!(.age >= 20)", isNot.ToString());
             }
             
-            // --- quantifier operators
+            // --- quantifier operations
             {
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
                 AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
@@ -430,7 +430,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("null",        @null.ToString());
             }
             
-            // --- unary arithmetic operators
+            // --- unary arithmetic operations
             {
                 var abs     = (Abs)     FromLambda((object p) => Math.Abs(-1));
                 AreEqual("Abs(-1)", abs.ToString());
@@ -457,7 +457,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("Abs(-1)", plus.ToString());
             }
             
-            // --- binary arithmetic operators
+            // --- binary arithmetic operations
             {
                 var add         = (Add)     FromLambda((object p) => 1 + Math.Abs(1.0));
                 AreEqual("1 + Abs(1)", add.ToString());
@@ -472,7 +472,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("1 / Abs(1)", divide.ToString());
             } 
             
-            // --- unary aggregate operators
+            // --- unary aggregate operations
             {
                 var min      = (Min)  FromLambda((Person p) => p.children.Min(child => child.age));
                 AreEqual(".children.Min(child => child.age)", min.ToString());
@@ -493,7 +493,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(".children.Average(child => child.age)", average.ToString());
             }
             
-            // --- binary string operators
+            // --- binary string operations
             {
                 var contains      = (Contains)  FromFilter((object p) => "12345".Contains("234"));
                 AreEqual("'12345'.Contains('234')", contains.ToString());

@@ -58,10 +58,10 @@ namespace Friflo.Json.Flow.Graph.Query
     [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
     [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
-    // ----------------------------- Operator --------------------------
-    public abstract class Operator
+    // ----------------------------- Operation --------------------------
+    public abstract class Operation
     {
-        internal abstract void Init(OperatorContext cx, InitFlags flags);
+        internal abstract void Init(OperationContext cx, InitFlags flags);
         internal abstract EvalResult            Eval(EvalCx cx);
         
         internal static readonly Scalar         True  = Scalar.True; 
@@ -75,12 +75,12 @@ namespace Friflo.Json.Flow.Graph.Query
             return new JsonLambda(this);
         }
         
-        public static Operator FromLambda<T>(Expression<Func<T, object>> lambda) {
-            return QueryConverter.OperatorFromExpression(lambda);
+        public static Operation FromLambda<T>(Expression<Func<T, object>> lambda) {
+            return QueryConverter.OperationFromExpression(lambda);
         }
         
         public static BoolOp FromFilter<T>(Expression<Func<T, bool>> filter) {
-            return (BoolOp)QueryConverter.OperatorFromExpression(filter);
+            return (BoolOp)QueryConverter.OperationFromExpression(filter);
         }
     }
 
@@ -101,28 +101,28 @@ namespace Friflo.Json.Flow.Graph.Query
         ArrayField = 1
     }
 
-    internal class OperatorContext
+    internal class OperationContext
     {
         internal readonly List<Field>                   selectors = new List<Field>();
-        private  readonly HashSet<Operator>             operators = new HashSet<Operator>();
+        private  readonly HashSet<Operation>            operations = new HashSet<Operation>();
         internal readonly Dictionary<string, Field>     parameters = new Dictionary<string, Field>();
 
         internal void Init() {
             selectors.Clear();
-            operators.Clear();
+            operations.Clear();
             parameters.Clear();
         }
 
-        internal void ValidateReuse(Operator op) {
-            if (operators.Add(op))
+        internal void ValidateReuse(Operation op) {
+            if (operations.Add(op))
                 return;
-            var msg = $"Used operator instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
+            var msg = $"Used operation instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
             throw new InvalidOperationException(msg);
         }
     }
     
-    // ------------------------------------- unary operators -------------------------------------
-    public class Field : Operator
+    // ------------------------------------- unary operations -------------------------------------
+    public class Field : Operation
     {
         public          string                  name;
         
@@ -136,7 +136,7 @@ namespace Friflo.Json.Flow.Graph.Query
         public Field() { }
         public Field(string name) { this.name = name; }
 
-        internal override void Init(OperatorContext cx, InitFlags flags) {
+        internal override void Init(OperationContext cx, InitFlags flags) {
             bool isArrayField = (flags & InitFlags.ArrayField) != 0;
             if (name.StartsWith(".")) {
                 selector = isArrayField ? name + "[=>]" : name;
