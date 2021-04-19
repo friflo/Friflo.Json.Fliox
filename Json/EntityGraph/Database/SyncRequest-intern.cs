@@ -34,8 +34,8 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ CreateEntities
     public partial class CreateEntities
     {
-        internal override CommandType   CommandType => CommandType.Create;
-        public   override string        ToString() => "container: " + container;
+        internal override   CommandType     CommandType => CommandType.Create;
+        public   override   string          ToString() => "container: " + container;
         
         internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
@@ -54,8 +54,8 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ ReadEntities
     public partial class ReadEntities
     {
-        internal override CommandType   CommandType => CommandType.Read;
-        public   override string        ToString() => "container: " + container;
+        internal override   CommandType     CommandType => CommandType.Read;
+        public   override   string          ToString() => "container: " + container;
         
         internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
@@ -72,14 +72,30 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class ReadEntitiesResult
     {
-        internal override CommandType CommandType => CommandType.Read;
+        internal override   CommandType     CommandType => CommandType.Read;
+    }
+    
+    // ------ QueryEntities
+    public partial class QueryEntities 
+    {
+        internal override   CommandType     CommandType => CommandType.Query;
+        public   override   string          ToString() => "container: " + container;
+        
+        internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
+            throw new System.NotImplementedException();
+        }
+    }
+    
+    public partial class QueryEntitiesResult
+    {
+        internal override   CommandType     CommandType => CommandType.Query;
     }
     
     // ------ PatchEntities
     public partial class PatchEntities
     {
-        internal override CommandType   CommandType => CommandType.Patch;
-        public   override string        ToString() => "container: " + container;
+        internal override   CommandType     CommandType => CommandType.Patch;
+        public   override   string          ToString() => "container: " + container;
         
         internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);

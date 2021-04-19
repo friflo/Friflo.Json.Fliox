@@ -100,24 +100,16 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // --------------------------------------- QueryEntities ---------------------------------------
-    public class QueryEntities : DatabaseCommand
+    public partial class QueryEntities : DatabaseCommand
     {
         public  string                      container;
         public  FilterOperation             filter;
         public  List<QueryReference>        references;
-
-        internal override CommandType       CommandType => CommandType.Query;
-        
-        internal override CommandResult Execute(EntityDatabase database, SyncResponse response) {
-            throw new System.NotImplementedException();
-        }
     }
     
-    public class QueryEntitiesResult : CommandResult
+    public partial class QueryEntitiesResult : CommandResult
     {
-        public              List<QueryReferenceResult>  references;
-        
-        internal override   CommandType                 CommandType => CommandType.Query;
+        public  List<QueryReferenceResult>  references;
     }
     
     // --- QueryReference
