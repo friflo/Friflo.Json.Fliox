@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Abs() { }
         public Abs(Operation value) : base(value) { }
 
-        public override string      Linq => $"Abs({value})";
+        public override string      Linq => $"Abs({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Ceiling() { }
         public Ceiling(Operation value) : base(value) { }
 
-        public override string      Linq => $"Ceiling({value})";
+        public override string      Linq => $"Ceiling({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Floor() { }
         public Floor(Operation value) : base(value) { }
 
-        public override string      Linq => $"Floor({value})";
+        public override string      Linq => $"Floor({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Exp() { }
         public Exp(Operation value) : base(value) { }
 
-        public override string      Linq => $"Exp({value})";
+        public override string      Linq => $"Exp({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Log() { }
         public Log(Operation value) : base(value) { }
 
-        public override string      Linq => $"Log({value})";
+        public override string      Linq => $"Log({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Sqrt() { }
         public Sqrt(Operation value) : base(value) { }
 
-        public override string      Linq => $"Sqrt({value})";
+        public override string      Linq => $"Sqrt({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -139,7 +139,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Negate() { }
         public Negate(Operation value) : base(value) { }
 
-        public override string      Linq => $"-({value})";
+        public override string      Linq => $"-({value.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             var zero = new Scalar(0);
@@ -181,7 +181,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Add() { }
         public Add(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => $"{left} + {right}";
+        public override string      Linq => $"{left.Linq} + {right.Linq}";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -199,7 +199,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Subtract() { }
         public Subtract(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => $"{left} - {right}";
+        public override string      Linq => $"{left.Linq} - {right.Linq}";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -217,7 +217,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Multiply() { }
         public Multiply(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => $"{left} * {right}";
+        public override string      Linq => $"{left.Linq} * {right.Linq}";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -235,7 +235,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Divide() { }
         public Divide(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => $"{left} / {right}";
+        public override string      Linq => $"{left.Linq} / {right.Linq}";
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();

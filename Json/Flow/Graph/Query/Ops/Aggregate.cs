@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Count() { }
         public Count(Field field) : base(field) { }
 
-        public override string      Linq => $"{field}.Count()";
+        public override string      Linq => $"{field.Linq}.Count()";
         
         internal override EvalResult Eval(EvalCx cx) {
             var eval = field.Eval(cx);
@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Min() { }
         public Min(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public override string      Linq => $"{field}.Min({arg} => {array})";
+        public override string      Linq => $"{field.Linq}.Min({arg} => {array.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Max() { }
         public Max(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public override string      Linq => $"{field}.Max({arg} => {array})";
+        public override string      Linq => $"{field.Linq}.Max({arg} => {array.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Sum() { }
         public Sum(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public override string      Linq => $"{field}.Sum({arg} => {array})";
+        public override string      Linq => $"{field.Linq}.Sum({arg} => {array.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
@@ -133,7 +133,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         public Average() { }
         public Average(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public override string      Linq => $"{field}.Average({arg} => {array})";
+        public override string      Linq => $"{field.Linq}.Average({arg} => {array.Linq})";
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
