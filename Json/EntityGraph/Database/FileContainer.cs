@@ -78,16 +78,8 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             var result = new Dictionary<string, EntityValue>();
-            string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var ids = new string[fileNames.Length];
-            for (int n = 0; n < fileNames.Length; n++) {
-                var fileName = fileNames[n];
-                var len = fileName.Length;
-                var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
-                ids[n] = id;
-            }
-            var entities = ReadEntities(ids);
-            
+            var ids         = GetIds(folder);
+            var entities    = ReadEntities(ids);
             var jsonFilter = new JsonFilter(filter);
             foreach (var entityPair in entities) {
                 var key = entityPair.Key;
@@ -98,6 +90,19 @@ namespace Friflo.Json.EntityGraph.Database
                 }
             }
             return result;
+        }
+        
+        private static string[] GetIds(string folder)
+        {
+            string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+            var ids = new string[fileNames.Length];
+            for (int n = 0; n < fileNames.Length; n++) {
+                var fileName = fileNames[n];
+                var len = fileName.Length;
+                var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
+                ids[n] = id;
+            }
+            return ids;
         }
         
         private static void WriteText(string filePath, string text)
