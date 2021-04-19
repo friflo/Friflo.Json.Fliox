@@ -41,7 +41,8 @@ namespace Friflo.Json.EntityGraph
         
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
-        private readonly    List<QueryTask<T>>                  queries     = new List<QueryTask<T>>();
+        private             Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();
+        private             Dictionary<string, QueryTask<T>>    syncQueries;
         private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
@@ -137,7 +138,8 @@ namespace Friflo.Json.EntityGraph
         
         public QueryTask<T> Query(FilterOperation filter) {
             var query = new QueryTask<T>(filter, this);
-            queries.Add(query);
+            var filterStr = filter.ToString();
+            queries.Add(filterStr, query);
             return query;
         }
         
@@ -232,14 +234,16 @@ namespace Friflo.Json.EntityGraph
             }
             // --- QueryEntities
             if (queries.Count > 0) {
-                foreach (var query in queries) {
+                foreach (var queryPair in queries) {
+                    var query = queryPair.Value;
                     var req = new QueryEntities {
                         container = container.name,
                         filter = query.filter,
                     };
                     commands.Add(req);
                 }
-                queries.Clear();
+                syncQueries = queries;
+                queries = new Dictionary<string, QueryTask<T>>();
             }
             // --- PatchEntities
             if (patches.Count > 0) {
@@ -304,6 +308,15 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
+            var filterStr = command.filter.ToString();
+            var query = syncQueries[filterStr];
+            var entities = query.entities;
+            foreach (var id in result.ids) {
+                var peer = GetPeerById(id);
+                entities.Add(peer.entity);
+            }
+            query.synced = true;
+            syncQueries.Remove(filterStr);
         }
 
         internal override void SyncReferences(ContainerEntities containerResults) {

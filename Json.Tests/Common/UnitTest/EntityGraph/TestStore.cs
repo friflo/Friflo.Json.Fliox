@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
 
-            // AreEqual(1, hasOrderCamera.Result.Count); // todo
+            AreEqual(1, hasOrderCamera.Result.Count);
 
 
             AreEqual("customer-1",  customer.Id);

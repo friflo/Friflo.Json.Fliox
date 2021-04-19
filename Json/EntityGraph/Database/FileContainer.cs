@@ -78,6 +78,25 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             var result = new Dictionary<string, EntityValue>();
+            string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+            var ids = new string[fileNames.Length];
+            for (int n = 0; n < fileNames.Length; n++) {
+                var fileName = fileNames[n];
+                var len = fileName.Length;
+                var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
+                ids[n] = id;
+            }
+            var entities = ReadEntities(ids);
+            
+            var jsonFilter = new JsonFilter(filter);
+            foreach (var entityPair in entities) {
+                var key = entityPair.Key;
+                var payload = entityPair.Value.value.json;
+                if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
+                    var entry = new EntityValue(payload);
+                    result.Add(key, entry);
+                }
+            }
             return result;
         }
         
