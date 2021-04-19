@@ -102,6 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 // Not
                 IsFalse (eval.Filter(peter, isNotAgeGreater35));
                 IsTrue  (eval.Filter(john,  isNotAgeGreater35));
+                
+                var  equalUnknownField         = new Equal(new Field (".unknown"), new StringLiteral ("SomeString")).Filter();
+                IsFalse(eval.Filter(john, equalUnknownField));
 
                 // --- Any
                 var  hasChildPaul = new Any (new Field (".children[=>]"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter();
@@ -115,13 +118,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 IsFalse(eval.Filter(peter, hasChildAgeLess12));
                 IsTrue (eval.Filter(john,  hasChildAgeLess12));
-                
+
+                var  anyEqualUnknownField  = new Any (new Field (".children[=>]"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter();
+                IsFalse(eval.Filter(john, anyEqualUnknownField));
+
                 // --- All
                 var allChildAgeEquals20 = new All (new Field (".children[=>]"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter();
                 IsTrue (eval.Filter(peter, allChildAgeEquals20));
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
-                
+                var  allEqualUnknownField  = new All (new Field (".children[=>]"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter();
+                IsTrue(eval.Filter(john, allEqualUnknownField)); 
+
                 // --- test with arithmetic operations
                 var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
                 IsTrue  (eval.Filter(peter, isAge40));

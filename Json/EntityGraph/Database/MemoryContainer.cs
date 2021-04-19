@@ -64,7 +64,6 @@ namespace Friflo.Json.EntityGraph.Database
         
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             var result = new Dictionary<string, EntityValue>();
-            return result;
             var jsonFilter = new JsonFilter(filter);
             foreach (var payloadPair in payloads) {
                 var payload = payloadPair.Value;

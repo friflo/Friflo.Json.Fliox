@@ -57,6 +57,10 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
                 return evalResult;
             
             var groupIndices = evalResult.groupIndices;
+            if (groupIndices.Count == 0) {
+                evalResult.SetRange(0, 0);
+                return evalResult;
+            }
             int startIndex = groupIndices[groupIndex];
             int endIndex;
             if (groupIndex + 1 < groupIndices.Count) {

@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
             evalResults = binaryResult.results;
             values      = new List<Scalar?>(evalResults.Count);
             resultList  = new N_aryList(evalResults.Count);
-            last        = GetMaxCount(evalResults) - 1;
+            last        = GetLast(evalResults);
             pos         = -1;
             SetValues();
         }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
         internal void Init(N_aryResult binaryResult) {
             evalResults = binaryResult.results;
             values.Clear();
-            last        = GetMaxCount(evalResults) - 1;
+            last        = GetLast(evalResults);
             pos         = -1;
             SetValues();
         }
@@ -61,13 +61,16 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
             }
         }
 
-        private static int GetMaxCount(List<EvalResult> results) {
+        private static int GetLast(List<EvalResult> results) {
             int max = results[0].Count;
             for (int n = 1; n < results.Count; n++) {
-                if (max < results[n].Count)
-                    max = results[n].Count;
+                var count = results[n].Count;
+                if (count == 0)
+                    return -1; // if only one of the results is empty the iterator return no elements
+                if (max < count)
+                    max = count;
             }
-            return max;
+            return max - 1;
         }
         
         public bool MoveNext() {

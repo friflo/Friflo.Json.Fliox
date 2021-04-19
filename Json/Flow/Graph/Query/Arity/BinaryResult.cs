@@ -41,8 +41,14 @@ namespace Friflo.Json.Flow.Graph.Query.Arity
                 rightValue = rightResult.values[0];
             else
                 rightValue = null;
-            last = Math.Max(leftResult.Count, rightResult.Count) - 1;
+            last = GetLast(leftResult, rightResult);
             pos = -1;
+        }
+
+        private static int GetLast(EvalResult leftResult, EvalResult rightResult) {
+            if (leftResult.Count == 0 || rightResult.Count == 0)
+                return -1; // if only one of the results is empty the iterator return no elements
+            return Math.Max(leftResult.Count, rightResult.Count) - 1;
         }
         
         public bool MoveNext() {

@@ -22,6 +22,9 @@ namespace Friflo.Json.Flow.Graph
             ReadJsonFields(json, filter);
             var cx = new EvalCx(-1);
             var evalResult = filter.op.Eval(cx);
+
+            if (evalResult.values.Count == 0)
+                return false;
             
             foreach (var result in evalResult.values) {
                 if (result.CompareTo(Operation.True) != 0)
