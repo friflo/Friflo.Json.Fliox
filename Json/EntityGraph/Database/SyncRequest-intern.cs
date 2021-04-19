@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
 
 namespace Friflo.Json.EntityGraph.Database
@@ -87,7 +88,15 @@ namespace Friflo.Json.EntityGraph.Database
         public   override   string          ToString() => "container: " + container;
         
         internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
-            throw new System.NotImplementedException();
+            var entityContainer = database.GetContainer(container);
+            var entities = entityContainer.QueryEntities(filter);
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(entities);
+            
+            var result = new QueryEntitiesResult {
+                ids =  entities.Keys.ToList()
+            };
+            return result;
         }
     }
     

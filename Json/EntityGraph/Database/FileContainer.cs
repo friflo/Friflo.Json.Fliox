@@ -77,7 +77,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
-            throw new NotImplementedException("QueryEntities");
+            var result = new Dictionary<string, EntityValue>();
+            return result;
         }
         
         private static void WriteText(string filePath, string text)

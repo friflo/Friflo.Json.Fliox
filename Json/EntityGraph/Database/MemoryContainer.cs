@@ -63,7 +63,17 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
-            throw new NotImplementedException("QueryEntities");
+            var result = new Dictionary<string, EntityValue>();
+            return result;
+            var jsonFilter = new JsonFilter(filter);
+            foreach (var payloadPair in payloads) {
+                var payload = payloadPair.Value;
+                if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
+                    var entry = new EntityValue(payload);
+                    result.Add(payloadPair.Key, entry);
+                }
+            }
+            return result;
         }
 
     }

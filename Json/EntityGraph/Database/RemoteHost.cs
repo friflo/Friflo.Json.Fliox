@@ -180,7 +180,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
-            throw new NotImplementedException("QueryEntities");
+            var result = local.QueryEntities(filter);
+            return result;
         }
     }
 }

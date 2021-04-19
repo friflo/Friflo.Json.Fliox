@@ -40,6 +40,7 @@ namespace Friflo.Json.EntityGraph
         
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
+        private readonly    List<QueryTask<T>>                  queries     = new List<QueryTask<T>>();
         private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         
@@ -130,7 +131,13 @@ namespace Friflo.Json.EntityGraph
         // lab interface
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
-            return default;
+            return Query(op);
+        }
+        
+        public QueryTask<T> Query(FilterOperation filter) {
+            var query = new QueryTask<T>(filter, this);
+            queries.Add(query);
+            return query;
         }
         
         public CreateTask<T> Create(T entity) {
@@ -221,6 +228,17 @@ namespace Friflo.Json.EntityGraph
                 syncReadRefMap = readRefMap;
                 readRefMap = new Dictionary<string, ReadRefMap>();
                 reads.Clear();
+            }
+            // --- QueryEntities
+            if (queries.Count > 0) {
+                foreach (var query in queries) {
+                    var req = new QueryEntities {
+                        container = container.name,
+                        filter = query.filter,
+                    };
+                    commands.Add(req);
+                }
+                queries.Clear();
             }
             // --- PatchEntities
             if (patches.Count > 0) {

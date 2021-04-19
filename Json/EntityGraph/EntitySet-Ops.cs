@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -89,9 +90,14 @@ namespace Friflo.Json.EntityGraph
 
     public class QueryTask<T> where T : Entity
     {
-        private readonly    List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
+        internal readonly   FilterOperation filter;
+        private  readonly   EntitySet<T>    set;
 
-        public              List<ReadRefTask<T>>    Results => results;
+        internal QueryTask(FilterOperation filter, EntitySet<T> set) {
+            this.filter = filter;
+            this.set    = set;
+        }
+        
     }
     
     
