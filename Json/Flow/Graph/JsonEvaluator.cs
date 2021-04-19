@@ -73,7 +73,7 @@ namespace Friflo.Json.Flow.Graph
         internal            Operation            op;
         private  readonly   OperationContext     operationContext = new OperationContext();
 
-        public   override   string              ToString() => op != null ? op.ToString() : "not initialized";
+        public   override   string              ToString() => op != null ? op.Linq : "not initialized";
 
         internal JsonLambda() { }
 

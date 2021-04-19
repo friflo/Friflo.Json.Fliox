@@ -290,27 +290,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var min         = new Min(new Field(".children"), "child", new Field("child.age"));
                 AssertJson(mapper, min, "{'op':'min','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(10,         eval.Eval(john, min.Lambda()));
-                AreEqual(".children.Min(child => child.age)", min.ToString());
+                AreEqual(".children.Min(child => child.age)", min.Linq);
             } {
                 var max         = new Max(new Field(".children"), "child", new Field("child.age"));
                 AssertJson(mapper, max, "{'op':'max','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(11,         eval.Eval(john, max.Lambda()));
-                AreEqual(".children.Max(child => child.age)", max.ToString());
+                AreEqual(".children.Max(child => child.age)", max.Linq);
             } {
                 var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
                 AssertJson(mapper, sum, "{'op':'sum','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(21,         eval.Eval(john, sum.Lambda()));
-                AreEqual(".children.Sum(child => child.age)", sum.ToString());
+                AreEqual(".children.Sum(child => child.age)", sum.Linq);
             } {
                 var average     = new Average(new Field(".children"), "child", new Field("child.age"));
                 AssertJson(mapper, average, "{'op':'average','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
                 AreEqual(10.5,       eval.Eval(john, average.Lambda()));
-                AreEqual(".children.Average(child => child.age)", average.ToString());
+                AreEqual(".children.Average(child => child.age)", average.Linq);
             } {
                 var count       = new Count(new Field(".children"));
                 AssertJson(mapper, count, "{'op':'count','field':{'name':'.children'}}");
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
-                AreEqual(".children.Count()", count.ToString());
+                AreEqual(".children.Count()", count.Linq);
             }
             
             // --- binary string operations
@@ -356,161 +356,161 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             {
                 var isEqual =           (Equal)             FromFilter((Person p) => p.name == "Peter");
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name == 'Peter'", isEqual.ToString());
+                AreEqual(".name == 'Peter'", isEqual.Linq);
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) => p.name != "Peter");
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name != 'Peter'", isNotEqual.ToString());
+                AreEqual(".name != 'Peter'", isNotEqual.Linq);
             } {
                 var isLess =            (LessThan)          FromFilter((Person p) => p.age < 20);
                 AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age < 20", isLess.ToString());
+                AreEqual(".age < 20", isLess.Linq);
             } {            
                 var isLessOrEqual =     (LessThanOrEqual)   FromFilter((Person p) => p.age <= 20);
                 AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age <= 20", isLessOrEqual.ToString());
+                AreEqual(".age <= 20", isLessOrEqual.Linq);
             } {
                 var isGreater =         (GreaterThan)       FromFilter((Person p) => p.age > 20);
                 AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age > 20", isGreater.ToString());
+                AreEqual(".age > 20", isGreater.Linq);
             } {            
                 var isGreaterOrEqual =  (GreaterThanOrEqual)FromFilter((Person p) => p.age >= 20);
                 AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age >= 20", isGreaterOrEqual.ToString());
+                AreEqual(".age >= 20", isGreaterOrEqual.Linq);
             }
             
             // --- group operations
             {
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 || .name == 'Peter'", or.ToString());
+                AreEqual(".age >= 20 || .name == 'Peter'", or.Linq);
             } {            
                 var and =   (And)       FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 && .name == 'Peter'", and.ToString());
+                AreEqual(".age >= 20 && .name == 'Peter'", and.Linq);
             } {            
                 var or2 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 );
                 AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 || .age == 2", or2.ToString());
+                AreEqual(".age == 1 || .age == 2", or2.Linq);
             } {            
                 var and2 =  (And)       FromLambda((Person p) => p.age == 1 && p.age == 2 );
                 AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 && .age == 2", and2.ToString());
+                AreEqual(".age == 1 && .age == 2", and2.Linq);
             } { 
                 var or3 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
-                AreEqual(".age == 1 || .age == 2 || .age == 3", or3.ToString());
+                AreEqual(".age == 1 || .age == 2 || .age == 3", or3.Linq);
             }
             
             // --- unary operations
             {
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual("!(.age >= 20)", isNot.ToString());
+                AreEqual("!(.age >= 20)", isNot.Linq);
             }
             
             // --- quantifier operations
             {
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
                 AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual(".children.Any(child => child.age == 20)", any.ToString());
+                AreEqual(".children.Any(child => child.age == 20)", any.Linq);
             } { 
                 var all =   (All)       FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual(".children.All(child => child.age == 20)", all.ToString());
+                AreEqual(".children.All(child => child.age == 20)", all.Linq);
             }
             
             // --- literals
             {
                 var lng     = (LongLiteral)     FromLambda((object p) => 1);
-                AreEqual("1",           lng.ToString());
+                AreEqual("1",           lng.Linq);
             } { 
                 var dbl     = (DoubleLiteral)   FromLambda((object p) => 1.5);
-                AreEqual("1.5",         dbl.ToString());
+                AreEqual("1.5",         dbl.Linq);
             } {
                 var str     = (StringLiteral)   FromLambda((object p) => "hello");
-                AreEqual("'hello'",     str.ToString());
+                AreEqual("'hello'",     str.Linq);
             } { 
                 var @true   = (BoolLiteral)     FromLambda((object p) => true);
-                AreEqual("true",        @true.ToString());
+                AreEqual("true",        @true.Linq);
             } {
                 var @null   = (NullLiteral)     FromLambda((object p) => null);
-                AreEqual("null",        @null.ToString());
+                AreEqual("null",        @null.Linq);
             }
             
             // --- unary arithmetic operations
             {
                 var abs     = (Abs)     FromLambda((object p) => Math.Abs(-1));
-                AreEqual("Abs(-1)", abs.ToString());
+                AreEqual("Abs(-1)", abs.Linq);
             } { 
                 var ceiling = (Ceiling) FromLambda((object p) => Math.Ceiling(2.5));
-                AreEqual("Ceiling(2.5)", ceiling.ToString());
+                AreEqual("Ceiling(2.5)", ceiling.Linq);
             } { 
                 var floor   = (Floor)   FromLambda((object p) => Math.Floor(2.5));
-                AreEqual("Floor(2.5)", floor.ToString());
+                AreEqual("Floor(2.5)", floor.Linq);
             } { 
                 var exp     = (Exp)     FromLambda((object p) => Math.Exp(2.5));
-                AreEqual("Exp(2.5)", exp.ToString());
+                AreEqual("Exp(2.5)", exp.Linq);
             } { 
                 var log     = (Log)     FromLambda((object p) => Math.Log(2.5));
-                AreEqual("Log(2.5)", log.ToString());
+                AreEqual("Log(2.5)", log.Linq);
             } { 
                 var sqrt    = (Sqrt)    FromLambda((object p) => Math.Sqrt(2.5));
-                AreEqual("Sqrt(2.5)", sqrt.ToString());
+                AreEqual("Sqrt(2.5)", sqrt.Linq);
             } { 
                 var negate  = (Negate)  FromLambda((object p) => -Math.Abs(-1));
-                AreEqual("-(Abs(-1))", negate.ToString());
+                AreEqual("-(Abs(-1))", negate.Linq);
             } { 
                 var plus    = (Abs)     FromLambda((object p) => +Math.Abs(-1)); // + will be eliminated
-                AreEqual("Abs(-1)", plus.ToString());
+                AreEqual("Abs(-1)", plus.Linq);
             }
             
             // --- binary arithmetic operations
             {
                 var add         = (Add)     FromLambda((object p) => 1 + Math.Abs(1.0));
-                AreEqual("1 + Abs(1)", add.ToString());
+                AreEqual("1 + Abs(1)", add.Linq);
             } {
                 var subtract    = (Subtract)FromLambda((object p) => 1 - Math.Abs(1.0));
-                AreEqual("1 - Abs(1)", subtract.ToString());
+                AreEqual("1 - Abs(1)", subtract.Linq);
             } {
                 var multiply    = (Multiply)FromLambda((object p) => 1 * Math.Abs(1.0));
-                AreEqual("1 * Abs(1)", multiply.ToString());
+                AreEqual("1 * Abs(1)", multiply.Linq);
             } {
                 var divide      = (Divide)  FromLambda((object p) => 1 / Math.Abs(1.0));
-                AreEqual("1 / Abs(1)", divide.ToString());
+                AreEqual("1 / Abs(1)", divide.Linq);
             } 
             
             // --- unary aggregate operations
             {
                 var min      = (Min)  FromLambda((Person p) => p.children.Min(child => child.age));
-                AreEqual(".children.Min(child => child.age)", min.ToString());
+                AreEqual(".children.Min(child => child.age)", min.Linq);
             } { 
                 var max      = (Max)  FromLambda((Person p) => p.children.Max(child => child.age));
-                AreEqual(".children.Max(child => child.age)", max.ToString());
+                AreEqual(".children.Max(child => child.age)", max.Linq);
             } {
                 var sum      = (Sum)  FromLambda((Person p) => p.children.Sum(child => child.age));
-                AreEqual(".children.Sum(child => child.age)", sum.ToString());
+                AreEqual(".children.Sum(child => child.age)", sum.Linq);
             } {
                 var count    = (Count)  FromLambda((Person p) => p.children.Count()); // () -> method call
-                AreEqual(".children.Count()", count.ToString());
+                AreEqual(".children.Count()", count.Linq);
             } { 
                 var count2    = (Count)  FromLambda((Person p) => p.children.Count); // no () -> Count property 
-                AreEqual(".children.Count()", count2.ToString());
+                AreEqual(".children.Count()", count2.Linq);
             } {
                 var average  = (Average)  FromLambda((Person p) => p.children.Average(child => child.age));
-                AreEqual(".children.Average(child => child.age)", average.ToString());
+                AreEqual(".children.Average(child => child.age)", average.Linq);
             }
             
             // --- binary string operations
             {
                 var contains      = (Contains)  FromFilter((object p) => "12345".Contains("234"));
-                AreEqual("'12345'.Contains('234')", contains.ToString());
+                AreEqual("'12345'.Contains('234')", contains.Linq);
             } {
                 var startsWith    = (StartsWith)  FromFilter((object p) => "12345".StartsWith("123"));
-                AreEqual("'12345'.StartsWith('123')", startsWith.ToString());
+                AreEqual("'12345'.StartsWith('123')", startsWith.Linq);
             } {
                 var endsWith      = (EndsWith)  FromFilter((object p) => "12345".EndsWith("345"));
-                AreEqual("'12345'.EndsWith('345')", endsWith.ToString());
+                AreEqual("'12345'.EndsWith('345')", endsWith.Linq);
             }
           } 
         }
