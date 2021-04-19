@@ -144,7 +144,7 @@ namespace Friflo.Json.EntityGraph
         public QueryTask<T> Query(FilterOperation filter) {
             var query = new QueryTask<T>(filter, this);
             var filterLinq = filter.Linq;
-            queries.Add(filterLinq, query);
+            queries.Add(filterLinq, query); // xxx
             return query;
         }
         

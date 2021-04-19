@@ -106,7 +106,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         private Exception Error(string message) {
-            return new PeerNotSyncedException($"{message} Entity: {set.type.Name} filter: {filter}");
+            return new PeerNotSyncedException($"{message} Entity: {set.type.Name} filter: {filter.Linq}");
         }
     }
     
@@ -128,8 +128,7 @@ namespace Friflo.Json.EntityGraph
         // public T Result  => entity;
     }
 
-    
-    
+
     // ----------------------------------------- ReadRef -----------------------------------------
     public class ReadRef
     {
@@ -138,13 +137,18 @@ namespace Friflo.Json.EntityGraph
         internal readonly   bool        singleResult;
         internal readonly   string      label;
 
-        public   override   string      ToString() => $"{parentSet.Type.Name}['{parentId}'] {label}";
+        private             string      DebugName => $"{parentSet.Type.Name}['{parentId}'] {label}";
+        public   override   string      ToString() => DebugName;
         
         internal ReadRef(string parentId, EntitySet parentSet, string label, bool singleResult) {
             this.parentId           = parentId;
             this.parentSet          = parentSet;
             this.singleResult       = singleResult;
             this.label              = label;
+        }
+        
+        protected Exception Error(string message) {
+            return new PeerNotSyncedException($"{message} {DebugName}");
         }
     }
     
@@ -158,10 +162,6 @@ namespace Friflo.Json.EntityGraph
         public      T           Result  => synced ? entity  : throw Error("ReadRefTask.Result requires Sync().");
 
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
-        
-        private Exception Error(string message) {
-            return new PeerNotSyncedException($"{message} {ToString()}");
-        }
     }
     
     public class ReadRefsTask<T> : ReadRef where T : Entity
@@ -173,10 +173,6 @@ namespace Friflo.Json.EntityGraph
         public              ReadRefTask<T>          this[int index] => synced ? results[index]  : throw Error("ReadRefsTask[] requires Sync().");
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
-        
-        private Exception Error(string message) {
-            return new PeerNotSyncedException($"{message} {ToString()}");
-        }
     }
     
     internal class ReadRefMap
