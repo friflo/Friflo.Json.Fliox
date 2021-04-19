@@ -220,7 +220,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } {
                 var @false   = new FalseLiteral();
                 AssertJson(mapper, @false, "{'op':'false'}");
-                AreEqual(true,   eval.Eval("{}", @false.Lambda()));
+                AreEqual(false,  eval.Eval("{}", @false.Lambda()));
             }
             
             // --- unary literal operations

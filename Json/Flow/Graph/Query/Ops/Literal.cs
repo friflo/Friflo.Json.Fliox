@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         internal override void Init(OperationContext cx, InitFlags flags) { }
 
         internal override EvalResult Eval(EvalCx cx) {
-            return SingleTrue;
+            return SingleFalse;
         }
     }
 
