@@ -57,7 +57,7 @@ namespace Friflo.Json.EntityGraph.Database
         Patch
     }
     
-    // ------ CreateEntities
+    // --------------------------------------- CreateEntities ---------------------------------------
     public partial class CreateEntities : DatabaseCommand
     {
         public  string                          container;
@@ -69,7 +69,7 @@ namespace Friflo.Json.EntityGraph.Database
         internal override CommandType CommandType => CommandType.Create;
     }
 
-    // ------ ReadEntities
+    // --------------------------------------- ReadEntities ---------------------------------------
     public partial class ReadEntities : DatabaseCommand
     {
         public  string                      container;
@@ -83,7 +83,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<ReadReferenceResult>   references;
     }
     
-    // ------ ReadReference
+    // --- ReadReference
     public class ReadReference
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
@@ -99,12 +99,12 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<string>        ids;
     }
     
-    // ------ QueryEntities
+    // --------------------------------------- QueryEntities ---------------------------------------
     public class QueryEntities : DatabaseCommand
     {
         public  string                      container;
         public  FilterOperation             filter;
-        public  List<ReadReference>         references;
+        public  List<QueryReference>        references;
 
         internal override CommandType       CommandType => CommandType.Query;
         
@@ -115,12 +115,30 @@ namespace Friflo.Json.EntityGraph.Database
     
     public class QueryEntitiesResult : CommandResult
     {
-        public              List<ReadReferenceResult>   references;
+        public              List<QueryReferenceResult>  references;
         
         internal override   CommandType                 CommandType => CommandType.Query;
     }
     
-    // ------ PatchEntities
+    // --- QueryReference
+    /// In contrast to <see cref="ReadReference"/> which know the ids of referenced entities in advance
+    /// a <see cref="QueryReference"/> doesnt know the ids of referenced  entities when initiating a query.
+    /// The ids are only available as a result after <see cref="QueryEntities"/> is executed.   
+    public class QueryReference
+    {
+        /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
+        /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
+        public  string              refPath; // e.g. ".items[*].article"
+        public  string              container;
+    }
+    
+    public class QueryReferenceResult
+    {
+        public  string              container;
+        public  List<string>        ids;
+    }
+    
+    // --------------------------------------- PatchEntities ---------------------------------------
     public partial class PatchEntities : DatabaseCommand
     {
         public  string              container;
