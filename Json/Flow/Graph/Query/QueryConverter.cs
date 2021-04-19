@@ -258,7 +258,11 @@ namespace Friflo.Json.Flow.Graph.Query
             if (type == typeof(byte))       return new LongLiteral((byte)       value);
             
             // --- bool
-            if (type == typeof(bool))       return new BoolLiteral((bool)       value);
+            if (type == typeof(bool)) {
+                if ((bool) value)
+                    return new TrueLiteral();
+                return new FalseLiteral();
+            }
             
             // --- null
             if (type == typeof(object) && value == null)

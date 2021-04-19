@@ -19,6 +19,11 @@ namespace Friflo.Json.Flow.Graph
 
         // --- Filter
         public bool Filter(string json, JsonFilter filter) {
+            if (filter.op is TrueLiteral)
+                return true;  // result is independent fom given json
+            if (filter.op is FalseLiteral)
+                return false; // result is independent fom given json
+            
             ReadJsonFields(json, filter);
             var cx = new EvalCx(-1);
             var evalResult = filter.op.Eval(cx);

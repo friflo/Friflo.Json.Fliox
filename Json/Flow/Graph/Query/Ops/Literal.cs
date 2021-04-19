@@ -61,20 +61,25 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         }
     }
     
-    public class BoolLiteral : Literal
+    public class TrueLiteral : FilterOperation
     {
-        public          bool        value;
-        
-        public override string      Linq => value ? "true" : "false";
+        public override string      Linq => "true";
 
-        public BoolLiteral() { }
-        public BoolLiteral(bool value) {
-            this.value = value;
-        }
+        internal override void Init(OperationContext cx, InitFlags flags) { }
 
         internal override EvalResult Eval(EvalCx cx) {
-            evalResult.SetSingle(value ? True : False);
-            return evalResult;
+            return SingleTrue;
+        }
+    }
+    
+    public class FalseLiteral : FilterOperation
+    {
+        public override string      Linq => "false";
+
+        internal override void Init(OperationContext cx, InitFlags flags) { }
+
+        internal override EvalResult Eval(EvalCx cx) {
+            return SingleTrue;
         }
     }
 

@@ -18,7 +18,6 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(StringLiteral),       Discriminant = "string")]
     [Fri.Polymorph(typeof(DoubleLiteral),       Discriminant = "double")]
     [Fri.Polymorph(typeof(LongLiteral),         Discriminant = "int64")]
-    [Fri.Polymorph(typeof(BoolLiteral),         Discriminant = "bool")]
     [Fri.Polymorph(typeof(NullLiteral),         Discriminant = "null")]
     //  
     [Fri.Polymorph(typeof(Abs),                 Discriminant = "abs")]
@@ -51,6 +50,8 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
     //
+    [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
+    [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
@@ -74,7 +75,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly EvalResult     SingleTrue  = new EvalResult(True);
         internal static readonly EvalResult     SingleFalse = new EvalResult(False);
-
+       
         public JsonLambda Lambda() {
             return new JsonLambda(this);
         }
@@ -100,6 +101,8 @@ namespace Friflo.Json.Flow.Graph
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
     //
+    [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
+    [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]

@@ -212,6 +212,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // --- use expression
             AreEqual("hello",   eval.Eval("{}", JsonLambda.Create<object>(p => "hello")));
             
+            // --- nullary operation (boolean literals)
+            {
+                var @true   = new TrueLiteral();
+                AssertJson(mapper, @true, "{'op':'true'}");
+                AreEqual(true,   eval.Eval("{}", @true.Lambda()));
+            } {
+                var @false   = new FalseLiteral();
+                AssertJson(mapper, @false, "{'op':'false'}");
+                AreEqual(true,   eval.Eval("{}", @false.Lambda()));
+            }
+            
             // --- unary literal operations
             {
                 var stringLiteral   = new StringLiteral("hello");
@@ -225,10 +236,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var longLiteral   = new LongLiteral(42);
                 AssertJson(mapper, longLiteral, "{'op':'int64','value':42}");
                 AreEqual(42.0,      eval.Eval("{}", longLiteral.Lambda()));
-            } {
-                var boolLiteral     = new BoolLiteral(true);
-                AssertJson(mapper, boolLiteral, "{'op':'bool','value':true}");
-                AreEqual(true,      eval.Eval("{}", boolLiteral.Lambda()));
             } {
                 var nullLiteral     = new NullLiteral();
                 AssertJson(mapper, nullLiteral, "{'op':'null'}");
@@ -430,9 +437,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } {
                 var str     = (StringLiteral)   FromLambda((object p) => "hello");
                 AreEqual("'hello'",     str.Linq);
-            } { 
-                var @true   = (BoolLiteral)     FromLambda((object p) => true);
-                AreEqual("true",        @true.Linq);
             } {
                 var @null   = (NullLiteral)     FromLambda((object p) => null);
                 AreEqual("null",        @null.Linq);
