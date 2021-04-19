@@ -75,8 +75,8 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   List<Field>         fields          = new List<Field>();        // Count == selectors.Count
         internal readonly   List<EvalResult>    resultBuffer    = new List<EvalResult>();   // Count == selectors.Count
         internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
-        internal            Operation            op;
-        private  readonly   OperationContext     operationContext = new OperationContext();
+        internal            Operation           op;
+        private  readonly   OperationContext    operationContext = new OperationContext();
 
         public   override   string              ToString() => op != null ? op.Linq : "not initialized";
 
