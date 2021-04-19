@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph.Database
             var result = new Dictionary<string, EntityValue>();
             var ids         = GetIds(folder);
             var entities    = ReadEntities(ids);
-            var jsonFilter = new JsonFilter(filter);
+            var jsonFilter = new JsonFilter(filter); // filter can be reused
             foreach (var entityPair in entities) {
                 var key = entityPair.Key;
                 var payload = entityPair.Value.value.json;
