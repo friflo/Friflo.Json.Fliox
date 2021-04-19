@@ -43,8 +43,8 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
                 var dotPos = name.IndexOf('.');
                 if (dotPos == -1)
                     throw new InvalidOperationException("expect a dot in field name");
-                var parameter = name.Substring(0, dotPos);
-                var lambda = cx.parameters[parameter];
+                var arg = name.Substring(0, dotPos);
+                var lambda = cx.lambdaArgs[arg];
                 var path = name.Substring(dotPos + 1);
                 selector = lambda.name + "[=>]." + path;
             }
@@ -83,12 +83,12 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     {
         internal readonly List<Field>                   selectors = new List<Field>();
         private  readonly HashSet<Operation>            operations = new HashSet<Operation>();
-        internal readonly Dictionary<string, Field>     parameters = new Dictionary<string, Field>();
+        internal readonly Dictionary<string, Field>     lambdaArgs = new Dictionary<string, Field>();
 
         internal void Init() {
             selectors.Clear();
             operations.Clear();
-            parameters.Clear();
+            lambdaArgs.Clear();
         }
 
         internal void ValidateReuse(Operation op) {
