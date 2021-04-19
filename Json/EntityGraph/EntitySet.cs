@@ -39,13 +39,18 @@ namespace Friflo.Json.EntityGraph
         private readonly    ObjectPatcher                       objectPatcher;
         private readonly    Tracer                              tracer;
         
+        /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
+        /// key: <see cref="ReadTask{T}.id"/>
         private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
-        private             Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();
+        /// key: <see cref="QueryTask{T}.filter"/>.Linq 
+        private             Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();   
         private             Dictionary<string, QueryTask<T>>    syncQueries;
+        /// key: <see cref="CreateTask{T}.entity"/>.id
         private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
+        /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
-        
+        /// key: <see cref="ReadRefMap.selector"/>
         private             Dictionary<string, ReadRefMap>      readRefMap  = new Dictionary<string, ReadRefMap>();
         private             Dictionary<string, ReadRefMap>      syncReadRefMap;
 
@@ -236,9 +241,11 @@ namespace Friflo.Json.EntityGraph
             if (queries.Count > 0) {
                 foreach (var queryPair in queries) {
                     var query = queryPair.Value;
+                    var linq = query.filter.Linq;
                     var req = new QueryEntities {
-                        container = container.name,
-                        filter = query.filter,
+                        container   = container.name,
+                        filter      = query.filter,
+                        filterLinq  = linq
                     };
                     commands.Add(req);
                 }
@@ -308,7 +315,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
-            var filterLinq = command.filter.Linq;
+            var filterLinq = result.filterLinq;
             var query = syncQueries[filterLinq];
             var entities = query.entities;
             foreach (var id in result.ids) {

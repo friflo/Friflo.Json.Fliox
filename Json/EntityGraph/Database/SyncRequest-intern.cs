@@ -94,7 +94,8 @@ namespace Friflo.Json.EntityGraph.Database
             containerResult.AddEntities(entities);
             
             var result = new QueryEntitiesResult {
-                ids =  entities.Keys.ToList()
+                ids         = entities.Keys.ToList(),
+                filterLinq  = filterLinq
             };
             return result;
         }

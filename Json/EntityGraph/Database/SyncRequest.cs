@@ -102,12 +102,14 @@ namespace Friflo.Json.EntityGraph.Database
     public partial class QueryEntities : DbCommand
     {
         public  string                      container;
+        public  string                      filterLinq;
         public  FilterOperation             filter;
         public  List<QueryReference>        references;
     }
     
     public partial class QueryEntitiesResult : DbCommandResult
     {
+        public  string                      filterLinq;
         public  List<string>                ids;
         public  List<QueryReferenceResult>  references;
     }
