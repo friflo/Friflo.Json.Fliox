@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph.Database
     /// multi threaded.
     ///
     /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
-    /// for a <see cref="SyncResponse"/> in <see cref="DatabaseCommand.Execute"/> need to be single threaded. 
+    /// for a <see cref="SyncResponse"/> in <see cref="DbCommand.Execute"/> need to be single threaded. 
     /// </summary>
     public class SyncContext : IDisposable
     {

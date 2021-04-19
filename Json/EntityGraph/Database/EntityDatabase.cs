@@ -38,7 +38,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
-                results             = new List<CommandResult>(),
+                results             = new List<DbCommandResult>(),
                 containerResults    = new Dictionary<string, ContainerEntities>()
             };
             foreach (var command in syncRequest.commands) {

@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         private SyncRequest CreateSyncRequest() {
-            var syncRequest = new SyncRequest { commands = new List<DatabaseCommand>() };
+            var syncRequest = new SyncRequest { commands = new List<DbCommand>() };
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
                 set.AddCommands(syncRequest.commands);

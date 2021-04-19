@@ -16,7 +16,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal  abstract  Type            Type { get;  }
         
-        internal  abstract  void            AddCommands           (List<DatabaseCommand> commands);
+        internal  abstract  void            AddCommands           (List<DbCommand> commands);
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
@@ -177,7 +177,7 @@ namespace Friflo.Json.EntityGraph
             return patch.patches.Count;
         }
 
-        internal override void AddCommands(List<DatabaseCommand> commands) {
+        internal override void AddCommands(List<DbCommand> commands) {
             // --- CreateEntities
             if (creates.Count > 0) {
                 var entries = new Dictionary<string, EntityValue>();

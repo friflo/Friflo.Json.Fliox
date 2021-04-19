@@ -10,12 +10,12 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest
     {
-        public  List<DatabaseCommand>                   commands;
+        public  List<DbCommand>                         commands;
     }
     
     public partial class SyncResponse
     {
-        public  List<CommandResult>                     results;
+        public  List<DbCommandResult>                   results;
         public  Dictionary<string, ContainerEntities>   containerResults;
     }
     
@@ -32,10 +32,10 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
-    public abstract class DatabaseCommand
+    public abstract class DbCommand
     {
-        internal abstract CommandResult   Execute(EntityDatabase database, SyncResponse response);
-        internal abstract CommandType     CommandType { get; }
+        internal abstract DbCommandResult   Execute(EntityDatabase database, SyncResponse response);
+        internal abstract CommandType       CommandType { get; }
     }
     
     // ------------------------------ CommandResult ------------------------------
@@ -44,9 +44,9 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
-    public abstract class CommandResult
+    public abstract class DbCommandResult
     {
-        internal abstract CommandType CommandType { get; }
+        internal abstract CommandType       CommandType { get; }
     }
     
     public enum CommandType
@@ -58,19 +58,18 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // --------------------------------------- CreateEntities ---------------------------------------
-    public partial class CreateEntities : DatabaseCommand
+    public partial class CreateEntities : DbCommand
     {
         public  string                          container;
         public  Dictionary<string, EntityValue> entities;
     }
     
-    public class CreateEntitiesResult : CommandResult
+    public partial class CreateEntitiesResult : DbCommandResult
     {
-        internal override CommandType CommandType => CommandType.Create;
     }
 
     // --------------------------------------- ReadEntities ---------------------------------------
-    public partial class ReadEntities : DatabaseCommand
+    public partial class ReadEntities : DbCommand
     {
         public  string                      container;
         public  List<string>                ids;
@@ -78,41 +77,41 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
-    public partial class ReadEntitiesResult : CommandResult
+    public partial class ReadEntitiesResult : DbCommandResult
     {
         public  List<ReadReferenceResult>   references;
     }
     
-    // --- ReadReference
+    // ---
     public class ReadReference
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string              refPath; // e.g. ".items[*].article"
-        public  string              container;
-        public  List<string>        ids;
+        public  string                  refPath; // e.g. ".items[*].article"
+        public  string                  container;
+        public  List<string>            ids;
     }
     
     public class ReadReferenceResult
     {
-        public  string              container;
-        public  List<string>        ids;
+        public  string                  container;
+        public  List<string>            ids;
     }
     
     // --------------------------------------- QueryEntities ---------------------------------------
-    public partial class QueryEntities : DatabaseCommand
+    public partial class QueryEntities : DbCommand
     {
         public  string                      container;
         public  FilterOperation             filter;
         public  List<QueryReference>        references;
     }
     
-    public partial class QueryEntitiesResult : CommandResult
+    public partial class QueryEntitiesResult : DbCommandResult
     {
         public  List<QueryReferenceResult>  references;
     }
     
-    // --- QueryReference
+    // ---
     /// In contrast to <see cref="ReadReference"/> which know the ids of referenced entities in advance
     /// a <see cref="QueryReference"/> doesnt know the ids of referenced  entities when initiating a query.
     /// The ids are only available as a result after <see cref="QueryEntities"/> is executed.   
@@ -120,18 +119,18 @@ namespace Friflo.Json.EntityGraph.Database
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string              refPath; // e.g. ".items[*].article"
-        public  string              container;
+        public  string                  refPath; // e.g. ".items[*].article"
+        public  string                  container;
     }
     
     public class QueryReferenceResult
     {
-        public  string              container;
-        public  List<string>        ids;
+        public  string                  container;
+        public  List<string>            ids;
     }
     
     // --------------------------------------- PatchEntities ---------------------------------------
-    public partial class PatchEntities : DatabaseCommand
+    public partial class PatchEntities : DbCommand
     {
         public  string              container;
         public  List<EntityPatch>   entityPatches;
@@ -143,8 +142,7 @@ namespace Friflo.Json.EntityGraph.Database
         public List<JsonPatch>      patches;
     }
 
-    public class PatchEntitiesResult : CommandResult
+    public partial class PatchEntitiesResult : DbCommandResult
     {
-        internal override CommandType CommandType => CommandType.Patch;
     }
 }
