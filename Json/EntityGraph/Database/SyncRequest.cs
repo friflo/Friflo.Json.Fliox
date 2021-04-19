@@ -109,6 +109,7 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class QueryEntitiesResult : DbCommandResult
     {
+        public  string                      container;  // only for debugging ergonomics
         public  string                      filterLinq;
         public  List<string>                ids;
         public  List<QueryReferenceResult>  references;

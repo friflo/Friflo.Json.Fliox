@@ -85,7 +85,7 @@ namespace Friflo.Json.EntityGraph.Database
     public partial class QueryEntities 
     {
         internal override   CommandType     CommandType => CommandType.Query;
-        public   override   string          ToString() => "container: " + container;
+        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
         
         internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
@@ -94,8 +94,9 @@ namespace Friflo.Json.EntityGraph.Database
             containerResult.AddEntities(entities);
             
             var result = new QueryEntitiesResult {
-                ids         = entities.Keys.ToList(),
-                filterLinq  = filterLinq
+                container   = container,
+                filterLinq  = filterLinq,
+                ids         = entities.Keys.ToList()
             };
             return result;
         }
@@ -104,6 +105,7 @@ namespace Friflo.Json.EntityGraph.Database
     public partial class QueryEntitiesResult
     {
         internal override   CommandType     CommandType => CommandType.Query;
+        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
     }
     
     // ------ PatchEntities
