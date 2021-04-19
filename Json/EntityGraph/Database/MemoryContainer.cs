@@ -53,7 +53,7 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
-            var result = new Dictionary<string, EntityValue>();
+            var result = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
                 payloads.TryGetValue(id, out var payload);
                 var entry = new EntityValue(payload);
