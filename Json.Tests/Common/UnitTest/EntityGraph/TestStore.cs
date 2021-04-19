@@ -150,10 +150,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             Exception e;
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRef not synced: Order['order-1'] .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). Order['order-1'] .customer", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRef not synced: Order['order-1'] .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). Order['order-1'] .customer", e.Message);
             
+            e = Throws<PeerNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
+            AreEqual("QueryTask.Result requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
+            AreEqual("QueryTask[] requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
+
             // lab - test ReadRef expressions
             if (lab) {
                 ReadRefsTask<Article> articles2 =   order1.ReadRefsOfType<Article>();
@@ -162,17 +167,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
 
-            AreEqual(1, hasOrderCamera.Result.Count);
-
+            AreEqual(1,             hasOrderCamera.Result.Count);
+            AreEqual("order-1",     hasOrderCamera[0].id);
 
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
 
             // schedule ReadRefs on an already synced Read operation
             e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
-            AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
+            AreEqual("ReadRefTask already synced. Type: Order, id: order-1", e.Message);
             e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
-            AreEqual("Read already synced. Type: Order, id: order-1", e.Message);
+            AreEqual("ReadRefsTask already synced. Type: Order, id: order-1", e.Message);
 
             order1 =    store.orders.Read("order-1");
             ReadRefsTask<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
@@ -182,10 +187,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(articleDeps, articleDeps3);
             AreEqual("Order['order-1'] .items[*].article", articleDeps.ToString());
             
-            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0].Id; });
-            AreEqual("ReadRefs not synced: Order['order-1'] .items[*].article", e.Message);
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0]; });
+            AreEqual("ReadRefsTask[] requires Sync(). Order['order-1'] .items[*].article", e.Message);
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
-            AreEqual("ReadRefs not synced: Order['order-1'] .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
             await store.Sync();
             AreEqual("article-1",       articleDeps[0].Id);

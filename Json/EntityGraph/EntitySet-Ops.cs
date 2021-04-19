@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         private Exception Error() {
-            return new PeerNotSyncedException($"Read().Result requires Sync(). Entity: {set.type.Name} id: {id}");
+            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). Entity: {set.type.Name} id: {id}");
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
@@ -65,7 +65,7 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefTask<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
-                throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
+                throw new InvalidOperationException($"ReadRefTask already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRef readRef))
@@ -77,7 +77,7 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefsTask<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
-                throw new InvalidOperationException($"Read already synced. Type: {typeof(T).Name}, id: {id}");
+                throw new InvalidOperationException($"ReadRefsTask already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRef readRef))
@@ -95,7 +95,8 @@ namespace Friflo.Json.EntityGraph
         internal            bool            synced;
         internal readonly   List<T>         entities = new List<T>();
         
-        public              List<T>         Result  => synced ? entities : throw Error();
+        public              List<T>         Result          => synced ? entities        : throw Error("QueryTask.Result requires Sync().");
+        public              T               this[int index] => synced ? entities[index] : throw Error("QueryTask[] requires Sync().");
 
         public override     string          ToString() => filter.ToString();
 
@@ -104,8 +105,8 @@ namespace Friflo.Json.EntityGraph
             this.set    = set;
         }
         
-        private Exception Error() {
-            return new PeerNotSyncedException($"Query() Result requires Sync(). Entity: {set.type.Name} filter: {filter}");
+        private Exception Error(string message) {
+            return new PeerNotSyncedException($"{message} Entity: {set.type.Name} filter: {filter}");
         }
     }
     
@@ -153,13 +154,13 @@ namespace Friflo.Json.EntityGraph
         internal    T           entity;
         internal    bool        synced;
 
-        public      string      Id      => synced ? id      : throw Error();
-        public      T           Result  => synced ? entity  : throw Error();
+        public      string      Id      => synced ? id      : throw Error("ReadRefTask.Id requires Sync().");
+        public      T           Result  => synced ? entity  : throw Error("ReadRefTask.Result requires Sync().");
 
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
-        private Exception Error() {
-            return new PeerNotSyncedException($"ReadRef not synced: {ToString()}");
+        private Exception Error(string message) {
+            return new PeerNotSyncedException($"{message} {ToString()}");
         }
     }
     
@@ -168,13 +169,13 @@ namespace Friflo.Json.EntityGraph
         internal            bool                    synced;
         internal readonly   List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
         
-        public              List<ReadRefTask<T>>    Results         => synced ? results         : throw Error();
-        public              ReadRefTask<T>          this[int index] => synced ? results[index]  : throw Error();
+        public              List<ReadRefTask<T>>    Results         => synced ? results         : throw Error("ReadRefsTask.Results requires Sync().");
+        public              ReadRefTask<T>          this[int index] => synced ? results[index]  : throw Error("ReadRefsTask[] requires Sync().");
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
-        private Exception Error() {
-            return new PeerNotSyncedException($"ReadRefs not synced: {ToString()}");
+        private Exception Error(string message) {
+            return new PeerNotSyncedException($"{message} {ToString()}");
         }
     }
     
