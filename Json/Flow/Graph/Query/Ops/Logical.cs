@@ -7,8 +7,6 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Query.Ops
 {
-
-    
     // ----------------------------------- unary logical operations -----------------------------------
     public abstract class UnaryLogicalOp : FilterOperation
     {
