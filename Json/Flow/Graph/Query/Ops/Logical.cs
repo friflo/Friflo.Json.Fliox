@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class Not : UnaryLogicalOp
     {
-        public override     string      ToString() => $"!({operand})";
+        public override string      Linq => $"!({operand})";
 
         public Not() { }
         public Not(FilterOperation operand) : base(operand) { }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class And : BinaryLogicalOp
     {
-        public override     string      ToString() => string.Join(" && ", operands);
+        public override string      Linq => string.Join(" && ", operands);
 
         public And() { }
         public And(List<FilterOperation> operands) : base(operands) { }
@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class Or : BinaryLogicalOp
     {
-        public override     string      ToString() => string.Join(" || ", operands);
+        public override string      Linq => string.Join(" || ", operands);
         
         public Or() { }
         public Or(List<FilterOperation> operands) : base(operands) { }

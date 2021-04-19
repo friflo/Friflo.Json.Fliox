@@ -138,8 +138,8 @@ namespace Friflo.Json.EntityGraph
         
         public QueryTask<T> Query(FilterOperation filter) {
             var query = new QueryTask<T>(filter, this);
-            var filterStr = filter.ToString();
-            queries.Add(filterStr, query);
+            var filterLinq = filter.Linq;
+            queries.Add(filterLinq, query);
             return query;
         }
         
@@ -308,15 +308,15 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
-            var filterStr = command.filter.ToString();
-            var query = syncQueries[filterStr];
+            var filterLinq = command.filter.Linq;
+            var query = syncQueries[filterLinq];
             var entities = query.entities;
             foreach (var id in result.ids) {
                 var peer = GetPeerById(id);
                 entities.Add(peer.entity);
             }
             query.synced = true;
-            syncQueries.Remove(filterStr);
+            syncQueries.Remove(filterLinq);
         }
 
         internal override void SyncReferences(ContainerEntities containerResults) {

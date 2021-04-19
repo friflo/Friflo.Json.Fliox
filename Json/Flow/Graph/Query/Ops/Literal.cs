@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     {
         public              string      value;
         
-        public override     string      ToString() => $"'{value}'";
+        public override     string      Linq => $"'{value}'";
 
         public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }
@@ -33,9 +33,9 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class DoubleLiteral : Literal
     {
-        public             double      value;
+        public          double      value;
 
-        public override     string      ToString() => value.ToString(CultureInfo.InvariantCulture);
+        public override string      Linq => value.ToString(CultureInfo.InvariantCulture);
 
         public DoubleLiteral() { }
         public DoubleLiteral(double value) { this.value = value; }
@@ -48,9 +48,9 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class LongLiteral : Literal
     {
-        public             long      value;
+        public          long        value;
 
-        public override     string      ToString() => value.ToString();
+        public override string      Linq => value.ToString();
 
         public LongLiteral() { }
         public LongLiteral(long value) { this.value = value; }
@@ -63,9 +63,9 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class BoolLiteral : Literal
     {
-        public bool         value;
+        public          bool        value;
         
-        public override     string      ToString() => value ? "true" : "false";
+        public override string      Linq => value ? "true" : "false";
 
         public BoolLiteral() { }
         public BoolLiteral(bool value) {
@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
 
     public class NullLiteral : Literal
     {
-        public override     string      ToString() => "null";
+        public override string      Linq => "null";
 
         public NullLiteral() { }
 

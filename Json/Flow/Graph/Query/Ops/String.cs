@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class Contains : BinaryBoolOp
     {
-        public override     string      ToString() => $"{left}.Contains({right})";
+        public override string      Linq => $"{left}.Contains({right})";
 
         public Contains() { }
         public Contains(Operation left, Operation right) : base(left, right) { }
@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class StartsWith : BinaryBoolOp
     {
-        public override     string      ToString() => $"{left}.StartsWith({right})";
+        public override string      Linq => $"{left}.StartsWith({right})";
 
         public StartsWith() { }
         public StartsWith(Operation left, Operation right) : base(left, right) { }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
     
     public class EndsWith : BinaryBoolOp
     {
-        public override     string      ToString() => $"{left}.EndsWith({right})";
+        public override string      Linq => $"{left}.EndsWith({right})";
 
         public EndsWith() { }
         public EndsWith(Operation left, Operation right) : base(left, right) { }

@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Graph.Query.Ops
         [Fri.Ignore]
         internal        EvalResult              evalResult;
 
-        public override string                  ToString() => name;
+        public override string                  Linq => name;
 
         public Field() { }
         public Field(string name) { this.name = name; }

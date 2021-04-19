@@ -62,9 +62,12 @@ namespace Friflo.Json.Flow.Graph
     // ----------------------------- Operation --------------------------
     public abstract class Operation
     {
-        internal abstract void Init(OperationContext cx, InitFlags flags);
-        internal abstract EvalResult            Eval(EvalCx cx);
-        
+        public   abstract   string      Linq { get; }
+        internal abstract   void        Init (OperationContext cx, InitFlags flags);
+        internal abstract   EvalResult  Eval (EvalCx cx);
+
+        public   override   string      ToString() => Linq; 
+
         internal static readonly Scalar         True  = Scalar.True; 
         internal static readonly Scalar         False = Scalar.False;
         internal static readonly Scalar         Null  = Scalar.Null;
