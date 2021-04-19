@@ -131,8 +131,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static async Task AssertStore(Order order, PocStore store) {
             ReadTask<Order> order1 =    store.orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
+            var allArticles     = store.articles.QueryAll();
             var hasOrderCamera  = store.orders.Query(o => o.items.Any(i => i.name == "Camera"));
-            var allOrders       = store.orders.QueryAll();
             var read1           = store.orders.Query(o => o.customer.Id == "customer-1");
             var read2           = store.orders.Query(o => o.customer.Entity.lastName == "Smith");
             var read3           = store.orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
@@ -167,6 +167,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
 
+            AreEqual(3,             allArticles.Result.Count);
             AreEqual(1,             hasOrderCamera.Result.Count);
             AreEqual("order-1",     hasOrderCamera[0].id);
 
