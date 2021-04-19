@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -132,6 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             ReadTask<Order> order1 =    store.orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
             var allArticles     = store.articles.QueryAll();
+            var allArticles2    = store.articles.QueryFilter(Operation.FilterTrue);
             var hasOrderCamera  = store.orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1           = store.orders.Query(o => o.customer.Id == "customer-1");
             var read2           = store.orders.Query(o => o.customer.Entity.lastName == "Smith");

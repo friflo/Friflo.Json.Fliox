@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Graph.Query.Ops;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 
@@ -138,19 +137,21 @@ namespace Friflo.Json.EntityGraph
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
-            return Query(op);
+            return QueryFilter(op);
         }
         
-        public QueryTask<T> Query(FilterOperation filter) {
-            var query = new QueryTask<T>(filter, this);
+        public QueryTask<T> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
-            queries.Add(filterLinq, query); // xxx
+            if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
+                return query;
+            query = new QueryTask<T>(filter, this);
+            queries.Add(filterLinq, query);
             return query;
         }
         
         public QueryTask<T> QueryAll() {
-            var all = new TrueLiteral();
-            return Query(all);
+            var all = Operation.FilterTrue;
+            return QueryFilter(all);
         }
 
         public CreateTask<T> Create(T entity) {

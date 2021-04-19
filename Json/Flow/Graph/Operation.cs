@@ -75,6 +75,10 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly EvalResult     SingleTrue  = new EvalResult(True);
         internal static readonly EvalResult     SingleFalse = new EvalResult(False);
+        
+        public   static readonly TrueLiteral    FilterTrue  = new TrueLiteral();
+        public   static readonly FalseLiteral   FilterFalse = new FalseLiteral();
+
        
         public JsonLambda Lambda() {
             return new JsonLambda(this);

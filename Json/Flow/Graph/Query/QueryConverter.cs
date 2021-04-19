@@ -260,8 +260,8 @@ namespace Friflo.Json.Flow.Graph.Query
             // --- bool
             if (type == typeof(bool)) {
                 if ((bool) value)
-                    return new TrueLiteral();
-                return new FalseLiteral();
+                    return Operation.FilterTrue;
+                return Operation.FilterFalse;
             }
             
             // --- null
