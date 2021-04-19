@@ -16,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     public class OrderItem {
         public Ref<Article>     article;
         public int              amount;
+        public string           name;
     }
 
     public class Article : Entity
@@ -83,7 +84,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var item1       = new OrderItem {
                 article = camera.Result,
-                amount = 1
+                amount = 1,
+                name = "Camera"
             };
             order.items.Add(item1);
 
@@ -92,13 +94,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var item2       = new OrderItem {
                 article = smartphone,
-                amount = 2
+                amount = 2,
+                name = smartphone.name
             };
             order.items.Add(item2);
             
             var item3       = new OrderItem {
                 article = camera.Result,
-                amount = 3
+                amount = 3,
+                name = "Camera"
             };
             order.items.Add(item3);
 

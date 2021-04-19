@@ -92,12 +92,19 @@ namespace Friflo.Json.EntityGraph
     {
         internal readonly   FilterOperation filter;
         private  readonly   EntitySet<T>    set;
+        internal            bool            synced;
+        private  readonly   List<T>         entities;
+        
+        public              List<T>         Result  => synced ? entities : throw Error();
 
         internal QueryTask(FilterOperation filter, EntitySet<T> set) {
             this.filter = filter;
             this.set    = set;
         }
         
+        private Exception Error() {
+            return new PeerNotSyncedException($"Query() Result requires Sync(). Entity: {typeof(T).Name} filter: {filter}");
+        }
     }
     
     

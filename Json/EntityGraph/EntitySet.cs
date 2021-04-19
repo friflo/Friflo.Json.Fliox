@@ -20,7 +20,8 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult result, List<string> parentIds, ReadRefMap map);
+        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefMap map);
+        internal  abstract  void            QueryEntitiesResult   (QueryEntities  command, QueryEntitiesResult  result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
@@ -300,6 +301,9 @@ namespace Friflo.Json.EntityGraph
                     }
                 }
             }
+        }
+
+        internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
         }
 
         internal override void SyncReferences(ContainerEntities containerResults) {

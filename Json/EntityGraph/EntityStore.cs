@@ -113,6 +113,11 @@ namespace Friflo.Json.EntityGraph
                         set = intern.setByName[read.container];
                         set.ReadEntitiesResult(read, (ReadEntitiesResult)result);
                         break;
+                    case CommandType.Query:
+                        var query = (QueryEntities) command;
+                        set = intern.setByName[query.container];
+                        set.QueryEntitiesResult(query, (QueryEntitiesResult)result);
+                        break;
                     case CommandType.Patch:
                         var patch = (PatchEntities) command;
                         set = intern.setByName[patch.container];
