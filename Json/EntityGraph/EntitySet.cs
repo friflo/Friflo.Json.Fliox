@@ -58,7 +58,7 @@ namespace Friflo.Json.EntityGraph
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
-        internal            SyncSet<T>                          sync; // todo: intended to create a new instance after calling Sync()
+        internal            SyncSet<T>                          sync;
         
         internal override   SyncSet                             Sync => sync;
         
