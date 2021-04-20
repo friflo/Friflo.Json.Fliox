@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         //          
         internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
         internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
-        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefMap map);
+        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
         internal  abstract  void            QueryEntitiesResult   (QueryEntities  command, QueryEntitiesResult  result);
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
@@ -50,9 +50,9 @@ namespace Friflo.Json.EntityGraph
         private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
-        /// key: <see cref="ReadRefMap.selector"/>
-        private             Dictionary<string, ReadRefMap>      readRefMap  = new Dictionary<string, ReadRefMap>();
-        private             Dictionary<string, ReadRefMap>      syncReadRefMap;
+        /// key: <see cref="ReadRefTaskMap.selector"/>
+        private             Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
+        private             Dictionary<string, ReadRefTaskMap>  syncReadRefMap;
 
 
         internal override   Type                                Type => type;
@@ -70,10 +70,10 @@ namespace Friflo.Json.EntityGraph
             tracer = new Tracer(store.intern.typeCache, store);
         }
 
-        internal ReadRefMap GetReadRefMap<TValue>(string selector) {
-            if (readRefMap.TryGetValue(selector, out ReadRefMap result))
+        internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
+            if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
                 return result;
-            result = new ReadRefMap(selector, typeof(TValue));
+            result = new ReadRefTaskMap(selector, typeof(TValue));
             readRefMap.Add(selector, result);
             return result;
         }
@@ -222,7 +222,7 @@ namespace Friflo.Json.EntityGraph
 
                 var references = new List<ReadReference>();
                 foreach (var refPair in readRefMap) {
-                    ReadRefMap map = refPair.Value;
+                    ReadRefTaskMap map = refPair.Value;
                     ReadReference readReference = new ReadReference {
                         refPath = map.selector,
                         container = map.entityType.Name,
@@ -240,7 +240,7 @@ namespace Friflo.Json.EntityGraph
                 };
                 commands.Add(req);
                 syncReadRefMap = readRefMap;
-                readRefMap = new Dictionary<string, ReadRefMap>();
+                readRefMap = new Dictionary<string, ReadRefTaskMap>();
                 reads.Clear();
             }
             // --- QueryEntities
@@ -285,13 +285,13 @@ namespace Friflo.Json.EntityGraph
                 ReadReference          reference = command.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
                 var refContainer = store.intern.setByName[refResult.container];
-                ReadRefMap map = syncReadRefMap[reference.refPath];
+                ReadRefTaskMap map = syncReadRefMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, command.ids, map);
             }
             syncReadRefMap = null;
         }
 
-        internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefMap map) {
+        internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
                 if (reference.singleResult) {

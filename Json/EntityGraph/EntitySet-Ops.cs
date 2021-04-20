@@ -68,7 +68,7 @@ namespace Friflo.Json.EntityGraph
                 throw new InvalidOperationException($"ReadRefTask already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
-            if (map.readRefs.TryGetValue(id, out ReadRef readRef))
+            if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefTask<TValue>)readRef;
             ReadRefTask<TValue> newReadRef = new ReadRefTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRef);
@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph
                 throw new InvalidOperationException($"ReadRefsTask already synced. Type: {typeof(T).Name}, id: {id}");
             
             var map = set.GetReadRefMap<TValue>(selector);
-            if (map.readRefs.TryGetValue(id, out ReadRef readRef))
+            if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefsTask<TValue>)readRef;
             ReadRefsTask<TValue> newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRefs);
@@ -130,7 +130,7 @@ namespace Friflo.Json.EntityGraph
 
 
     // ----------------------------------------- ReadRef -----------------------------------------
-    public class ReadRef
+    public class ReadRefTask
     {
         internal readonly   string      parentId;
         internal readonly   EntitySet   parentSet;
@@ -140,7 +140,7 @@ namespace Friflo.Json.EntityGraph
         private             string      DebugName => $"{parentSet.Type.Name}['{parentId}'] {label}";
         public   override   string      ToString() => DebugName;
         
-        internal ReadRef(string parentId, EntitySet parentSet, string label, bool singleResult) {
+        internal ReadRefTask(string parentId, EntitySet parentSet, string label, bool singleResult) {
             this.parentId           = parentId;
             this.parentSet          = parentSet;
             this.singleResult       = singleResult;
@@ -152,7 +152,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRefTask<T> : ReadRef where T : Entity
+    public class ReadRefTask<T> : ReadRefTask where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -164,7 +164,7 @@ namespace Friflo.Json.EntityGraph
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
     }
     
-    public class ReadRefsTask<T> : ReadRef where T : Entity
+    public class ReadRefsTask<T> : ReadRefTask where T : Entity
     {
         internal            bool                    synced;
         internal readonly   List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
@@ -175,13 +175,13 @@ namespace Friflo.Json.EntityGraph
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
     }
     
-    internal class ReadRefMap
+    internal class ReadRefTaskMap
     {
         internal readonly   string                          selector;
         internal readonly   Type                            entityType;
-        internal readonly   Dictionary<string, ReadRef>     readRefs = new Dictionary<string, ReadRef>();
+        internal readonly   Dictionary<string, ReadRefTask> readRefs = new Dictionary<string, ReadRefTask>();
         
-        internal ReadRefMap(string selector, Type entityType) {
+        internal ReadRefTaskMap(string selector, Type entityType) {
             this.selector = selector;
             this.entityType = entityType;
         }
