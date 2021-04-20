@@ -14,18 +14,12 @@ namespace Friflo.Json.EntityGraph
     public abstract class EntitySet
     {
         internal  abstract  Type            Type { get;  }
+        internal  abstract  EntitySetSync   Sync { get;  }
         
-        internal  abstract  void            AddCommands           (List<DbCommand> commands);
-        //          
-        internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
-        internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
         internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
-        internal  abstract  void            QueryEntitiesResult   (QueryEntities  command, QueryEntitiesResult  result);
-        internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
         internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
-
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
@@ -39,11 +33,12 @@ namespace Friflo.Json.EntityGraph
         internal readonly   Tracer                              tracer;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
+        private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
 
-        internal readonly    EntitySetSync<T>                       sync;
+        internal readonly   EntitySetSync<T>                    sync;
 
         internal override   Type                                Type => type;
+        internal override   EntitySetSync                       Sync => sync;
         
         public EntitySet(EntityStore store) {
             this.store = store;
@@ -125,25 +120,6 @@ namespace Friflo.Json.EntityGraph
             return sync.LogEntityChanges(entity);
         }
 
-        internal override void AddCommands(List<DbCommand> commands) {
-            sync.AddCommands(commands);
-        }
-
-        // --- CreateEntities
-        internal override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
-            var entities = command.entities;
-            foreach (var entry in entities) {
-                var peer = GetPeerById(entry.Key);
-                peer.create = null;
-                peer.patchReference = jsonMapper.Read<T>(entry.Value.value.json);
-            }
-        }
-        
-        // --- ReadEntities
-        internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
-            sync.ReadEntitiesResult(command, result);
-        }
-
         internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
@@ -173,10 +149,6 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
-            sync.QueryEntitiesResult(command, result);
-        }
-
         internal override void SyncEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
@@ -202,15 +174,5 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        // --- ReadEntities
-        internal override void PatchEntitiesResult(PatchEntities command, PatchEntitiesResult result) {
-            var entityPatches = command.entityPatches;
-            foreach (var entityPatch in entityPatches) {
-                var id = entityPatch.id;
-                var peer = GetPeerById(id);
-                peer.patchReference = peer.nextPatchReference;
-                peer.nextPatchReference = null;
-            }
-        }
     }
 }

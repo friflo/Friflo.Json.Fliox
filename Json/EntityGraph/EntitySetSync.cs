@@ -8,9 +8,20 @@ using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph
 {
+    public abstract class EntitySetSync
+    {
+        internal  abstract  void            AddCommands           (List<DbCommand> commands);
+        
+        internal  abstract  void            CreateEntitiesResult  (CreateEntities command, CreateEntitiesResult result);
+        internal  abstract  void            ReadEntitiesResult    (ReadEntities   command, ReadEntitiesResult   result);
+        internal  abstract  void            QueryEntitiesResult   (QueryEntities  command, QueryEntitiesResult  result);
+
+        internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
+    }
+    
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal class EntitySetSync<T> where T : Entity
+    internal class EntitySetSync<T> : EntitySetSync where T : Entity
     {
         // Note!
         // All fields must be private to ensure that all scheduled tasks managed by this instance can be mapped
@@ -118,7 +129,7 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal void AddCommands(List<DbCommand> commands) {
+        internal override void AddCommands(List<DbCommand> commands) {
             // --- CreateEntities
             if (creates.Count > 0) {
                 var entries = new Dictionary<string, EntityValue>();
@@ -189,7 +200,16 @@ namespace Friflo.Json.EntityGraph
             }
         }
         
-        internal void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
+        internal override void CreateEntitiesResult(CreateEntities command, CreateEntitiesResult result) {
+            var entities = command.entities;
+            foreach (var entry in entities) {
+                var peer = set.GetPeerById(entry.Key);
+                peer.create = null;
+                peer.patchReference = set.jsonMapper.Read<T>(entry.Value.value.json);
+            }
+        }
+        
+        internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
             for (int n = 0; n < result.references.Count; n++) {
                 ReadReference          reference = command.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
@@ -200,7 +220,7 @@ namespace Friflo.Json.EntityGraph
             syncReadRefMap = null;
         }
         
-        internal void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
+        internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
             var filterLinq = result.filterLinq;
             var query = syncQueries[filterLinq];
             var entities = query.entities;
@@ -211,5 +231,17 @@ namespace Friflo.Json.EntityGraph
             query.synced = true;
             syncQueries.Remove(filterLinq);
         }
+        
+        internal override void PatchEntitiesResult(PatchEntities command, PatchEntitiesResult result) {
+            var entityPatches = command.entityPatches;
+            foreach (var entityPatch in entityPatches) {
+                var id = entityPatch.id;
+                var peer = set.GetPeerById(id);
+                peer.patchReference = peer.nextPatchReference;
+                peer.nextPatchReference = null;
+            }
+        }
+
+
     }
 }
