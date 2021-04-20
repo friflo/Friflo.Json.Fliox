@@ -141,7 +141,7 @@ namespace Friflo.Json.EntityGraph
                     entries.Add(entity.id, entry);
                 }
                 var req = new CreateEntities {
-                    container = set.container.name,
+                    container = set.name,
                     entities = entries
                 };
                 commands.Add(req);
@@ -165,7 +165,7 @@ namespace Friflo.Json.EntityGraph
                     references.Add(readReference);
                 }
                 var req = new ReadEntities {
-                    container = set.container.name,
+                    container = set.name,
                     ids = ids,
                     references = references
                 };
@@ -180,7 +180,7 @@ namespace Friflo.Json.EntityGraph
                     var query = queryPair.Value;
                     var linq = query.filter.Linq;
                     var req = new QueryEntities {
-                        container   = set.container.name,
+                        container   = set.name,
                         filter      = query.filter,
                         filterLinq  = linq
                     };
@@ -192,7 +192,7 @@ namespace Friflo.Json.EntityGraph
             // --- PatchEntities
             if (patches.Count > 0) {
                 var req = new PatchEntities {
-                    container = set.container.name,
+                    container = set.name,
                     entityPatches = patches.Values.ToList()
                 };
                 commands.Add(req);

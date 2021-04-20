@@ -30,9 +30,9 @@ namespace Friflo.Json.EntityGraph
     public class EntitySet<T> : EntitySet where T : Entity
     {
         internal readonly   EntityStore                         store;
+        private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         private  readonly   TypeMapper<T>                       typeMapper;
         internal readonly   ObjectMapper                        jsonMapper;
-        internal readonly   EntityContainer                     container;
         internal readonly   ObjectPatcher                       objectPatcher;
         internal readonly   Tracer                              tracer;
         
@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph
             
             jsonMapper = store.intern.jsonMapper;
             typeMapper = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
-            container = store.intern.database.GetContainer(type.Name);
+            container = store.intern.database.GetContainer(name);
             objectPatcher = store.intern.objectPatcher;
             tracer = new Tracer(store.intern.typeCache, store);
 
