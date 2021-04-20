@@ -109,16 +109,16 @@ namespace Friflo.Json.EntityGraph
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
-            return QueryFilter(op);
+            return QueryByFilter(op);
         }
         
-        public QueryTask<T> QueryFilter(FilterOperation filter) {
+        public QueryTask<T> QueryByFilter(FilterOperation filter) {
             return intern.sync.QueryFilter(filter);
         }
         
         public QueryTask<T> QueryAll() {
             var all = Operation.FilterTrue;
-            return QueryFilter(all);
+            return QueryByFilter(all);
         }
 
         public CreateTask<T> Create(T entity) {
