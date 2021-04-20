@@ -32,15 +32,13 @@ namespace Friflo.Json.EntityGraph
         /// key: <see cref="ReadTask{T}.id"/>
         private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filter"/>.Linq 
-        private             Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();   
-        private             Dictionary<string, QueryTask<T>>    syncQueries;
+        private readonly    Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();   
         /// key: <see cref="CreateTask{T}.entity"/>.id
         private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         /// key: <see cref="ReadRefTaskMap.selector"/>
-        private             Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
-        private             Dictionary<string, ReadRefTaskMap>  syncReadRefMap;
+        private readonly    Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
 
         internal EntitySetSync(EntitySet<T> set) {
             this.set = set;
@@ -170,8 +168,6 @@ namespace Friflo.Json.EntityGraph
                     references = references
                 };
                 commands.Add(req);
-                syncReadRefMap = readRefMap;
-                readRefMap = new Dictionary<string, ReadRefTaskMap>();
                 reads.Clear();
             }
             // --- QueryEntities
@@ -186,8 +182,6 @@ namespace Friflo.Json.EntityGraph
                     };
                     commands.Add(req);
                 }
-                syncQueries = queries;
-                queries = new Dictionary<string, QueryTask<T>>();
             }
             // --- PatchEntities
             if (patches.Count > 0) {
@@ -214,22 +208,20 @@ namespace Friflo.Json.EntityGraph
                 ReadReference          reference = command.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
                 var refContainer = set.intern.store.intern.setByName[refResult.container];
-                ReadRefTaskMap map = syncReadRefMap[reference.refPath];
+                ReadRefTaskMap map = readRefMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, command.ids, map);
             }
-            syncReadRefMap = null;
         }
         
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
             var filterLinq = result.filterLinq;
-            var query = syncQueries[filterLinq];
+            var query = queries[filterLinq];
             var entities = query.entities;
             foreach (var id in result.ids) {
                 var peer = set.GetPeerById(id);
                 entities.Add(peer.entity);
             }
             query.synced = true;
-            syncQueries.Remove(filterLinq);
         }
         
         internal override void PatchEntitiesResult(PatchEntities command, PatchEntitiesResult result) {
@@ -241,7 +233,5 @@ namespace Friflo.Json.EntityGraph
                 peer.nextPatchReference = null;
             }
         }
-
-
     }
 }
