@@ -131,6 +131,10 @@ namespace Friflo.Json.EntityGraph
         public DeleteTask Delete(string id) {
             return sync.Delete(id);
         }
+        
+        public DeleteTask Delete(T entity) {
+            return sync.Delete(entity.id);
+        }
 
         public override int LogSetChanges() {
             return sync.LogSetChanges(peers);
