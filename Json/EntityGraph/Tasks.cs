@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Friflo.Json.EntityGraph.Internal;
 using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph

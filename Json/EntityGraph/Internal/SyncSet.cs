@@ -6,9 +6,9 @@ using System.Linq;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Flow.Graph;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.EntityGraph.Internal
 {
-    internal abstract class EntitySetSync
+    internal abstract class SyncSet
     {
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -21,7 +21,7 @@ namespace Friflo.Json.EntityGraph
     
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal class EntitySetSync<T> : EntitySetSync where T : Entity
+    internal class SyncSet<T> : SyncSet where T : Entity
     {
         // Note!
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
@@ -40,7 +40,7 @@ namespace Friflo.Json.EntityGraph
         /// key: <see cref="ReadRefTaskMap.selector"/>
         private readonly    Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
 
-        internal EntitySetSync(EntitySet<T> set) {
+        internal SyncSet(EntitySet<T> set) {
             this.set = set;
         }
         

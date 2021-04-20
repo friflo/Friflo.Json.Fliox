@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
+using Friflo.Json.EntityGraph.Internal;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -15,7 +16,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal  readonly  string          name;
         
-        internal  abstract  EntitySetSync   Sync { get;  }
+        internal  abstract  SyncSet   Sync { get;  }
         
         internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 
@@ -57,9 +58,9 @@ namespace Friflo.Json.EntityGraph
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
-        internal            EntitySetSync<T>                    sync; // todo: intended to create a new instance after calling Sync()
+        internal            SyncSet<T>                          sync; // todo: intended to create a new instance after calling Sync()
         
-        internal override   EntitySetSync                       Sync => sync;
+        internal override   SyncSet                             Sync => sync;
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
@@ -67,7 +68,7 @@ namespace Friflo.Json.EntityGraph
             store.intern.setByName[type.Name]  = this;
             container   = store.intern.database.GetContainer(name);
             intern      = new SetIntern<T>(store);
-            sync        = new EntitySetSync<T>(this);
+            sync        = new SyncSet<T>(this);
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -190,7 +191,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void ResetSync() {
-            sync = new EntitySetSync<T>(this);
+            sync = new SyncSet<T>(this);
         }
     }
 }

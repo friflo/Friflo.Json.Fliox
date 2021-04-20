@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
-using Friflo.Json.EntityGraph.Map;
+using Friflo.Json.EntityGraph.Internal.Map;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;

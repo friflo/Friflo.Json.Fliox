@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 
+using Friflo.Json.EntityGraph.Internal;
+
 namespace Friflo.Json.EntityGraph
 {
     // Change to attribute

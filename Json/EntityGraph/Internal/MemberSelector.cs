@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.EntityGraph.Internal
 {
     internal static class MemberSelector
     {

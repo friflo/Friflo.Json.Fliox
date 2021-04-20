@@ -5,21 +5,6 @@ using System;
 
 namespace Friflo.Json.EntityGraph
 {
-    // --- PeerEntity<>
-    internal class PeerEntity<T>  where T : Entity
-    {
-        internal readonly   T               entity;
-        internal            T               patchReference; 
-        internal            T               nextPatchReference; 
-        internal            bool            assigned;
-        internal            ReadTask<T>     read;
-        internal            CreateTask<T>   create;
-
-        internal PeerEntity(T entity) {
-            this.entity = entity;
-        }
-    }
-
     public class PeerNotAssignedException : Exception
     {
         public readonly Entity entity;
