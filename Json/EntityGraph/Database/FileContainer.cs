@@ -93,7 +93,10 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override void DeleteEntities(ICollection<string> ids) {
-            throw new NotImplementedException("DeleteEntities");
+            foreach (var id in ids) {
+                string path = FilePath(id);
+                DeleteFile(path);
+            }
         }
         
         
@@ -136,6 +139,11 @@ namespace Friflo.Json.EntityGraph.Database
                 }
                 return sb.ToString();
             }
+        }
+        
+        private static void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
         }
     }
 }

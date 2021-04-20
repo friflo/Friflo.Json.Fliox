@@ -32,6 +32,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
+    [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     public abstract class DatabaseTask
     {
         internal abstract TaskResult        Execute(EntityDatabase database, SyncResponse response);
@@ -44,6 +45,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
+    [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     public abstract class TaskResult
     {
         internal abstract TaskType          TaskType { get; }

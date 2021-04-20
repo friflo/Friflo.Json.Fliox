@@ -134,7 +134,9 @@ namespace Friflo.Json.EntityGraph.Database
         public   override   string      ToString() => "container: " + container;
         
         internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
-            throw new NotImplementedException("DeleteEntities");
+            var entityContainer = database.GetContainer(container);
+            entityContainer.DeleteEntities(ids);
+            return new DeleteEntitiesResult();
         }
     }
     

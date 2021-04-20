@@ -208,6 +208,7 @@ namespace Friflo.Json.EntityGraph.Internal
             // --- DeleteEntities
             if (deletes.Count > 0) {
                 var req = new DeleteEntities {
+                    container = set.name,
                     ids = new List<string>()
                 };
                 foreach (var deletePair in deletes) {

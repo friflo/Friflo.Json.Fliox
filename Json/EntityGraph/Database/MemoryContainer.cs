@@ -76,7 +76,9 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         public override void DeleteEntities(ICollection<string> ids) {
-            throw new NotImplementedException("DeleteEntities");
+            foreach (var id in ids) {
+                payloads.Remove(id);
+            }
         }
 
     }

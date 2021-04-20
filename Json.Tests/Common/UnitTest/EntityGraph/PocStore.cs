@@ -63,6 +63,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             var cameraUnknown = store.articles.Read("article-unknown");
             var camera =        store.articles.Read("article-1");
+            
+            var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
+            var createCamForDelete = store.articles.Create(camForDelete);
             await store.Sync();
             
             cameraCreate.name = "Changed name";
@@ -70,6 +73,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual(1, store.articles.LogSetChanges());
             AreEqual(1, store.LogChanges());
             AreEqual(1, store.LogChanges());       // SaveChanges() is idempotent => state did not change
+
+            store.articles.Delete(camForDelete.id);
             await store.Sync();
 
             var cameraNotSynced = store.articles.Read("article-1");
