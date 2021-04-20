@@ -127,6 +127,10 @@ namespace Friflo.Json.EntityGraph
         public CreateTask<T> Create(T entity) {
             return sync.Create(entity);
         }
+        
+        public DeleteTask Delete(string id) {
+            return sync.Delete(id);
+        }
 
         public override int LogSetChanges() {
             return sync.LogSetChanges(peers);
@@ -135,7 +139,7 @@ namespace Friflo.Json.EntityGraph
         public int LogEntityChanges(T entity) {
             return sync.LogEntityChanges(entity);
         }
-
+        
         internal override void ReadReferenceResult(ReadReference task, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];

@@ -183,5 +183,9 @@ namespace Friflo.Json.EntityGraph.Database
             var result = local.QueryEntities(filter);
             return result;
         }
+        
+        public override void DeleteEntities(ICollection<string> ids) {
+            local.DeleteEntities(ids);
+        }
     }
 }

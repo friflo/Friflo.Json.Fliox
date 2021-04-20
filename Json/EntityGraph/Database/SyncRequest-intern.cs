@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
@@ -124,5 +125,21 @@ namespace Friflo.Json.EntityGraph.Database
     public partial class PatchEntitiesResult
     {
         internal override TaskType      TaskType => TaskType.Patch;
+    }
+    
+    // ------ DeleteEntities
+    public partial class DeleteEntities
+    {
+        internal override   TaskType    TaskType => TaskType.Delete;
+        public   override   string      ToString() => "container: " + container;
+        
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+            throw new NotImplementedException("DeleteEntities");
+        }
+    }
+    
+    public partial class DeleteEntitiesResult
+    {
+        internal override TaskType      TaskType => TaskType.Delete;
     }
 }

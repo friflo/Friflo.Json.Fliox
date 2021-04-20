@@ -15,8 +15,8 @@ namespace Friflo.Json.EntityGraph.Internal
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
         internal  abstract  void    ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result);
-
         internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
+        internal  abstract  void    DeleteEntitiesResult    (DeleteEntities task, DeleteEntitiesResult result);
     }
     
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
@@ -39,6 +39,8 @@ namespace Friflo.Json.EntityGraph.Internal
         private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
         /// key: <see cref="ReadRefTaskMap.selector"/>
         private readonly    Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
+        /// key: entity id
+        private readonly    Dictionary<string, DeleteTask>      deletes     = new Dictionary<string, DeleteTask>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
@@ -89,6 +91,17 @@ namespace Friflo.Json.EntityGraph.Internal
             var peer = set.CreatePeer(entity);
             create = AddCreate(peer);
             return create;
+        }
+        
+        internal DeleteTask Delete(string id) {
+            if (deletes.TryGetValue(id, out DeleteTask delete))
+                return delete;
+            delete = new DeleteTask(id);
+            deletes.Add(id, delete);
+            // todo
+            // var peer = set.CreatePeer(entity);
+            // create = AddCreate(peer);
+            return delete;
         }
         
         internal int LogSetChanges(Dictionary<string, PeerEntity<T>> peers) {
@@ -192,6 +205,18 @@ namespace Friflo.Json.EntityGraph.Internal
                 tasks.Add(req);
                 patches.Clear();
             }
+            // --- DeleteEntities
+            if (deletes.Count > 0) {
+                var req = new DeleteEntities {
+                    ids = new List<string>()
+                };
+                foreach (var deletePair in deletes) {
+                    var id = deletePair.Key;
+                    req.ids.Add(id);
+                }
+                tasks.Add(req);
+                deletes.Clear();
+            }
         }
         
         internal override void CreateEntitiesResult(CreateEntities task, CreateEntitiesResult result) {
@@ -232,6 +257,9 @@ namespace Friflo.Json.EntityGraph.Internal
                 peer.patchSource = peer.nextPatchReference;
                 peer.nextPatchReference = null;
             }
+        }
+
+        internal override void DeleteEntitiesResult(DeleteEntities task, DeleteEntitiesResult result) {
         }
     }
 }

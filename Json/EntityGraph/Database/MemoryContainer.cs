@@ -74,6 +74,10 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return result;
         }
+        
+        public override void DeleteEntities(ICollection<string> ids) {
+            throw new NotImplementedException("DeleteEntities");
+        }
 
     }
 }

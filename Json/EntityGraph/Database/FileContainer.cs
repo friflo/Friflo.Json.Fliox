@@ -91,7 +91,13 @@ namespace Friflo.Json.EntityGraph.Database
             }
             return result;
         }
+
+        public override void DeleteEntities(ICollection<string> ids) {
+            throw new NotImplementedException("DeleteEntities");
+        }
         
+        
+        // -------------------------------------- helper methods -------------------------------------- 
         private static string[] GetIds(string folder)
         {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);

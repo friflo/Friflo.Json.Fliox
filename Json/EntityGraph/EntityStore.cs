@@ -143,6 +143,11 @@ namespace Friflo.Json.EntityGraph
                             set = intern.setByName[patch.container];
                             set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult) result);
                             break;
+                        case TaskType.Delete:
+                            var delete = (DeleteEntities) task;
+                            set = intern.setByName[delete.container];
+                            set.Sync.DeleteEntitiesResult(delete, (DeleteEntitiesResult) result);
+                            break;
                     }
                 }
             }

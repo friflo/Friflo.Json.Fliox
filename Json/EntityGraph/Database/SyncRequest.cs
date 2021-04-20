@@ -54,7 +54,8 @@ namespace Friflo.Json.EntityGraph.Database
         Read,
         Query,
         Create,
-        Patch
+        Patch,
+        Delete
     }
     
     // --------------------------------------- CreateEntities ---------------------------------------
@@ -147,6 +148,17 @@ namespace Friflo.Json.EntityGraph.Database
     }
 
     public partial class PatchEntitiesResult : TaskResult
+    {
+    }
+    
+    // --------------------------------------- DeleteEntities ---------------------------------------
+    public partial class DeleteEntities : DatabaseTask
+    {
+        public  string                      container;
+        public  List<string>                ids;
+    }
+    
+    public partial class DeleteEntitiesResult : TaskResult
     {
     }
 }
