@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -94,6 +95,17 @@ namespace Friflo.Json.EntityGraph.Database
                 referenceResults.Add(referenceResult);
             }
             return referenceResults;
+        }
+    }
+    
+        
+    public class EntityValue {
+        public JsonValue    value;
+
+        public EntityValue() { } // required for TypeMapper
+
+        public EntityValue(string json) {
+            value.json = json;
         }
     }
 }

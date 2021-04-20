@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -44,16 +43,6 @@ namespace Friflo.Json.EntityGraph.Database
                 response.results.Add(result);
             }
             return response;
-        }
-    }
-    
-    public class EntityValue {
-        public JsonValue    value;
-
-        public EntityValue() { } // required for TypeMapper
-
-        public EntityValue(string json) {
-            value.json = json;
         }
     }
 }
