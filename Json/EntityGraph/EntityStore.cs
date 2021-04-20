@@ -79,6 +79,25 @@ namespace Friflo.Json.EntityGraph
             HandleSyncRequest(syncRequest, response);
         }
 
+        public int LogChanges() {
+            int count = 0;
+            foreach (var setPair in intern.setByType) {
+                EntitySet set = setPair.Value;
+                count += set.LogSetChanges();
+            }
+            return count;
+        }
+        
+        internal EntitySet<T> EntitySet<T>() where T : Entity
+        {
+            Type entityType = typeof(T);
+            if (intern.setByType.TryGetValue(entityType, out EntitySet set))
+                return (EntitySet<T>)set;
+            
+            set = new EntitySet<T>(this);
+            return (EntitySet<T>)set;
+        }
+
         private SyncRequest CreateSyncRequest() {
             var syncRequest = new SyncRequest { commands = new List<DbCommand>() };
             foreach (var setPair in intern.setByType) {
@@ -125,25 +144,6 @@ namespace Friflo.Json.EntityGraph
                         break;
                 }
             }
-        }
-
-        public EntitySet<T> EntitySet<T>() where T : Entity
-        {
-            Type entityType = typeof(T);
-            if (intern.setByType.TryGetValue(entityType, out EntitySet set))
-                return (EntitySet<T>)set;
-            
-            set = new EntitySet<T>(this);
-            return (EntitySet<T>)set;
-        }
-        
-        public int LogChanges() {
-            int count = 0;
-            foreach (var setPair in intern.setByType) {
-                EntitySet set = setPair.Value;
-                count += set.LogSetChanges();
-            }
-            return count;
         }
     }
 }
