@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual  void                            Dispose() { }
         
-        public abstract void                            CreateEntities  (Dictionary<string, EntityValue> entities);
+        public abstract CreateEntitiesResult            CreateEntities  (CreateEntities task);
         public abstract void                            UpdateEntities  (Dictionary<string, EntityValue> entities);
         public abstract Dictionary<string, EntityValue> ReadEntities    (ICollection<string> ids);
         public abstract Dictionary<string, EntityValue> QueryEntities   (FilterOperation filter);
@@ -61,7 +61,8 @@ namespace Friflo.Json.EntityGraph.Database
                 entity.Value.value.json = patcher.ApplyPatches(entity.Value.value.json, patch.patches, Pretty);
             }
             // Write patched entities back
-            CreateEntities(entities); // should be UpdateEntities
+            var task = new CreateEntities {entities = entities};
+            CreateEntities(task); // should be UpdateEntities
         }
 
         public List<ReadReferenceResult> ReadReferences(

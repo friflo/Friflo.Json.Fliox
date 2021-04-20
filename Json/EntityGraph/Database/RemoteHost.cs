@@ -166,8 +166,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
-            local.CreateEntities(entities);
+        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+            return local.CreateEntities(task);
         }
 
         public override void UpdateEntities(Dictionary<string, EntityValue> entities) {

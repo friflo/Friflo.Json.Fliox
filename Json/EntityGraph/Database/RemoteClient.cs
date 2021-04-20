@@ -52,7 +52,7 @@ namespace Friflo.Json.EntityGraph.Database
             : base(name, database) {
         }
 
-        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 

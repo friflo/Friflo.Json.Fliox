@@ -48,8 +48,7 @@ namespace Friflo.Json.EntityGraph.Database
                     entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
                 }
             }
-            entityContainer.CreateEntities(entities);
-            return new CreateEntitiesResult();
+            return entityContainer.CreateEntities(this);
         }
     }
     

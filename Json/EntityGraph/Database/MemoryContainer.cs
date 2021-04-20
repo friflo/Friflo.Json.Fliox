@@ -38,10 +38,12 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+            var entities = task.entities;
             foreach (var entity in entities) {
                 payloads[entity.Key] = entity.Value.value.json;
             }
+            return new CreateEntitiesResult();
         }
 
         public override void UpdateEntities(Dictionary<string, EntityValue> entities) {

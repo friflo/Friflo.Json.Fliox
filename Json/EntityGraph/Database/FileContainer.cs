@@ -49,12 +49,14 @@ namespace Friflo.Json.EntityGraph.Database
             return folder + key + ".json";
         }
         
-        public override void CreateEntities(Dictionary<string, EntityValue> entities) {
+        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+            var entities = task.entities;
             foreach (var entity in entities) {
                 var path = FilePath(entity.Key);
                 WriteText(path, entity.Value.value.json);
                 // await File.WriteAllTextAsync(path, entity.value);
             }
+            return new CreateEntitiesResult();
         }
 
         public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
