@@ -42,7 +42,7 @@ namespace Friflo.Json.EntityGraph.Database
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual void PatchEntities(PatchEntities patchEntities) {
+        public virtual PatchEntitiesResult      PatchEntities   (PatchEntities patchEntities) {
             var entityPatches = patchEntities.entityPatches;
             var ids = entityPatches.Select(patch => patch.id).ToList();
             // Read entities to be patched
@@ -66,6 +66,7 @@ namespace Friflo.Json.EntityGraph.Database
             // Write patched entities back
             var task = new CreateEntities {entities = entities};
             CreateEntities(task); // should be UpdateEntities
+            return new PatchEntitiesResult();
         }
 
         public List<ReadReferenceResult> ReadReferences(

@@ -135,8 +135,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            entityContainer.PatchEntities(this);
-            return new PatchEntitiesResult(); 
+            return entityContainer.PatchEntities(this);
         }
     }
     
