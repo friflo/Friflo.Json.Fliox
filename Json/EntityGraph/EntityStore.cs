@@ -108,47 +108,51 @@ namespace Friflo.Json.EntityGraph
         }
 
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
-            foreach (var containerResults in response.containerResults) {
-                var set = intern.setByName[containerResults.Key];
-                set.SyncEntities(containerResults.Value);
-            }
-            
-            var tasks = syncRequest.tasks;
-            var results = response.results;
-            for (int n = 0; n < tasks.Count; n++) {
-                var task = tasks[n];
-                var result = results[n];
-                TaskType taskType = task.TaskType;
-                if (taskType != result.TaskType)
-                    throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {taskType} got: {result.TaskType}");
-                switch (taskType) {
-                    case TaskType.Create:
-                        var create = (CreateEntities) task;
-                        EntitySet set = intern.setByName[create.container];
-                        set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult)result);
-                        break;
-                    case TaskType.Read:
-                        var read = (ReadEntities) task;
-                        set = intern.setByName[read.container];
-                        set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult)result);
-                        break;
-                    case TaskType.Query:
-                        var query = (QueryEntities) task;
-                        set = intern.setByName[query.container];
-                        set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult)result);
-                        break;
-                    case TaskType.Patch:
-                        var patch = (PatchEntities) task;
-                        set = intern.setByName[patch.container];
-                        set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult)result);
-                        break;
+            try {
+                foreach (var containerResults in response.containerResults) {
+                    var set = intern.setByName[containerResults.Key];
+                    set.SyncEntities(containerResults.Value);
+                }
+
+                var tasks = syncRequest.tasks;
+                var results = response.results;
+                for (int n = 0; n < tasks.Count; n++) {
+                    var task = tasks[n];
+                    var result = results[n];
+                    TaskType taskType = task.TaskType;
+                    if (taskType != result.TaskType)
+                        throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {taskType} got: {result.TaskType}");
+                    switch (taskType) {
+                        case TaskType.Create:
+                            var create = (CreateEntities) task;
+                            EntitySet set = intern.setByName[create.container];
+                            set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult) result);
+                            break;
+                        case TaskType.Read:
+                            var read = (ReadEntities) task;
+                            set = intern.setByName[read.container];
+                            set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult) result);
+                            break;
+                        case TaskType.Query:
+                            var query = (QueryEntities) task;
+                            set = intern.setByName[query.container];
+                            set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult) result);
+                            break;
+                        case TaskType.Patch:
+                            var patch = (PatchEntities) task;
+                            set = intern.setByName[patch.container];
+                            set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult) result);
+                            break;
+                    }
                 }
             }
-            
-            // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
-            foreach (var setPair in intern.setByType) {
-                EntitySet set = setPair.Value;
-                set.ResetSync();
+            finally
+            {
+                // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
+                foreach (var setPair in intern.setByType) {
+                    EntitySet set = setPair.Value;
+                    set.ResetSync();
+                }
             }
         }
     }
