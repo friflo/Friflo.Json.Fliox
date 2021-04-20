@@ -92,11 +92,13 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
 
-        public override void DeleteEntities(ICollection<string> ids) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+            var ids = task.ids;
             foreach (var id in ids) {
                 string path = FilePath(id);
                 DeleteFile(path);
             }
+            return new DeleteEntitiesResult();
         }
         
         

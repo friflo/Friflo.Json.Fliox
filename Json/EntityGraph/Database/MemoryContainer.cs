@@ -75,10 +75,12 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
         
-        public override void DeleteEntities(ICollection<string> ids) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+            var ids = task.ids;
             foreach (var id in ids) {
                 payloads.Remove(id);
             }
+            return new DeleteEntitiesResult();
         }
 
     }

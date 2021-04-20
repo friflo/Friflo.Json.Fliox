@@ -68,7 +68,7 @@ namespace Friflo.Json.EntityGraph.Database
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
         
-        public override void DeleteEntities(ICollection<string> ids) {
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
     }

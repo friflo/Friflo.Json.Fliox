@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph.Database
         public abstract void                            UpdateEntities  (Dictionary<string, EntityValue> entities);
         public abstract Dictionary<string, EntityValue> ReadEntities    (ICollection<string> ids);
         public abstract Dictionary<string, EntityValue> QueryEntities   (FilterOperation filter);
-        public abstract void                            DeleteEntities  (ICollection<string> ids);
+        public abstract DeleteEntitiesResult            DeleteEntities  (DeleteEntities task);
 
         /// <summary>
         /// Default implementation to apply patches to entities.

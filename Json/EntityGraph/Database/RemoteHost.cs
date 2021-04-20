@@ -184,8 +184,8 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
         
-        public override void DeleteEntities(ICollection<string> ids) {
-            local.DeleteEntities(ids);
+        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+            return local.DeleteEntities(task);
         }
     }
 }
