@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph
 {
-    public abstract class EntitySetSync
+    internal abstract class EntitySetSync
     {
         internal  abstract  void            AddCommands           (List<DbCommand> commands);
         
