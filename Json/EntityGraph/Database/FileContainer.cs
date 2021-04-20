@@ -60,7 +60,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new CreateEntitiesResult();
         }
 
-        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
+        public override UpdateEntitiesResult UpdateEntities(UpdateEntities task) {
             throw new NotImplementedException();
         }
 

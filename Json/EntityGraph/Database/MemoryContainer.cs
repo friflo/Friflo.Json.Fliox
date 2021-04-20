@@ -46,12 +46,14 @@ namespace Friflo.Json.EntityGraph.Database
             return new CreateEntitiesResult();
         }
 
-        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
+        public override UpdateEntitiesResult UpdateEntities(UpdateEntities task) {
+            var entities = task.entities;
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.Key, out string _))
                     throw new InvalidOperationException($"Expect Entity with id {entity.Key} in DatabaseContainer: {name}");
                 payloads[entity.Key] = entity.Value.value.json;
             }
+            return new UpdateEntitiesResult();
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities task) {

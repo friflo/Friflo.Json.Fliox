@@ -29,6 +29,7 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------ DatabaseCommand ------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
+    [Fri.Polymorph(typeof(UpdateEntities),          Discriminant = "update")]
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
@@ -42,6 +43,7 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------ CommandResult ------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
+    [Fri.Polymorph(typeof(UpdateEntitiesResult),    Discriminant = "update")]
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
@@ -56,6 +58,7 @@ namespace Friflo.Json.EntityGraph.Database
         Read,
         Query,
         Create,
+        Update,
         Patch,
         Delete
     }
@@ -68,6 +71,17 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     public partial class CreateEntitiesResult : TaskResult
+    {
+    }
+    
+    // --------------------------------------- UpdateEntities ---------------------------------------
+    public partial class UpdateEntities : DatabaseTask
+    {
+        public  string                          container;
+        public  Dictionary<string, EntityValue> entities;
+    }
+    
+    public partial class UpdateEntitiesResult : TaskResult
     {
     }
 

@@ -56,6 +56,30 @@ namespace Friflo.Json.EntityGraph.Database
         internal override TaskType TaskType => TaskType.Create;
     }
     
+    // ------ UpdateEntities
+    public partial class UpdateEntities
+    {
+        internal override   TaskType    TaskType => TaskType.Update;
+        public   override   string      ToString() => "container: " + container;
+        
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+            var entityContainer = database.GetContainer(container);
+            // may call patcher.Copy() always to ensure a valid JSON value
+            if (entityContainer.Pretty) {
+                var patcher = entityContainer.SyncContext.jsonPatcher;
+                foreach (var entity in entities) {
+                    entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
+                }
+            }
+            return entityContainer.UpdateEntities(this);
+        }
+    }
+    
+    public partial class UpdateEntitiesResult
+    {
+        internal override TaskType TaskType => TaskType.Update;
+    }
+    
     // ------ ReadEntities
     public partial class ReadEntities
     {

@@ -166,25 +166,23 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+        public override CreateEntitiesResult    CreateEntities(CreateEntities task) {
             return local.CreateEntities(task);
         }
 
-        public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
-            local.UpdateEntities(entities);
+        public override UpdateEntitiesResult    UpdateEntities(UpdateEntities task) {
+            return local.UpdateEntities(task);
         }
 
-        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
-            var result = local.ReadEntities(task);
-            return result;
+        public override ReadEntitiesResult      ReadEntities(ReadEntities task) {
+            return local.ReadEntities(task);
         }
         
-        public override QueryEntitiesResult QueryEntities(QueryEntities task) {
-            var result = local.QueryEntities(task);
-            return result;
+        public override QueryEntitiesResult     QueryEntities(QueryEntities task) {
+            return local.QueryEntities(task);
         }
         
-        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+        public override DeleteEntitiesResult    DeleteEntities(DeleteEntities task) {
             return local.DeleteEntities(task);
         }
     }
