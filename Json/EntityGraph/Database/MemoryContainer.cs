@@ -65,9 +65,9 @@ namespace Friflo.Json.EntityGraph.Database
             return new ReadEntitiesResult{entities = entities};
         }
         
-        public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
+        public override QueryEntitiesResult QueryEntities(QueryEntities task) {
             var result = new Dictionary<string, EntityValue>();
-            var jsonFilter = new JsonFilter(filter); // filter can be reused
+            var jsonFilter = new JsonFilter(task.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
                 var payload = payloadPair.Value;
                 if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
@@ -75,7 +75,7 @@ namespace Friflo.Json.EntityGraph.Database
                     result.Add(payloadPair.Key, entry);
                 }
             }
-            return result;
+            return new QueryEntitiesResult{entities = result };
         }
         
         public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {

@@ -179,8 +179,8 @@ namespace Friflo.Json.EntityGraph.Database
             return result;
         }
         
-        public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
-            var result = local.QueryEntities(filter);
+        public override QueryEntitiesResult QueryEntities(QueryEntities task) {
+            var result = local.QueryEntities(task);
             return result;
         }
         

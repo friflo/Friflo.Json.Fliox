@@ -87,15 +87,12 @@ namespace Friflo.Json.EntityGraph.Database
         
         internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            var entities = entityContainer.QueryEntities(filter);
+            var result = entityContainer.QueryEntities(this);
             var containerResult = response.GetContainerResult(container);
-            containerResult.AddEntities(entities);
-            
-            var result = new QueryEntitiesResult {
-                container   = container,
-                filterLinq  = filterLinq,
-                ids         = entities.Keys.ToList()
-            };
+            containerResult.AddEntities(result.entities);
+            result.container    = container;
+            result.filterLinq   = filterLinq;
+            result.ids          = result.entities.Keys.ToList();
             return result;
         }
     }

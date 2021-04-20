@@ -114,10 +114,12 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class QueryEntitiesResult : TaskResult
     {
-        public  string                      container;  // only for debugging ergonomics
-        public  string                      filterLinq;
-        public  List<string>                ids;
-        public  List<QueryReferenceResult>  references;
+        public  string                              container;  // only for debugging ergonomics
+        public  string                              filterLinq;
+        public  List<string>                        ids;
+        public  List<QueryReferenceResult>          references;
+        [Fri.Ignore]
+        internal Dictionary<string, EntityValue>    entities;
     }
     
     // ---

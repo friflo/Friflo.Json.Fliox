@@ -26,11 +26,11 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual  void                            Dispose() { }
         
-        public abstract CreateEntitiesResult            CreateEntities  (CreateEntities task);
-        public abstract void                            UpdateEntities  (Dictionary<string, EntityValue> entities);
-        public abstract ReadEntitiesResult              ReadEntities    (ReadEntities task);
-        public abstract Dictionary<string, EntityValue> QueryEntities   (FilterOperation filter);
-        public abstract DeleteEntitiesResult            DeleteEntities  (DeleteEntities task);
+        public abstract CreateEntitiesResult    CreateEntities  (CreateEntities task);
+        public abstract void                    UpdateEntities  (Dictionary<string, EntityValue> entities);
+        public abstract ReadEntitiesResult      ReadEntities    (ReadEntities   task);
+        public abstract QueryEntitiesResult     QueryEntities   (QueryEntities  task);
+        public abstract DeleteEntitiesResult    DeleteEntities  (DeleteEntities task);
 
         /// <summary>
         /// Default implementation to apply patches to entities.
