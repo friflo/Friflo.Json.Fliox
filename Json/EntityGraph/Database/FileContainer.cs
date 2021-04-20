@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Graph;
@@ -65,8 +64,8 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override ReadEntitiesResult ReadEntities(ReadEntities task) {
-            var ids = task.ids;
-            var entities = new Dictionary<string, EntityValue>(ids.Count);
+            var ids         = task.ids;
+            var entities    = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
                 var filePath = FilePath(id);
                 string payload = null;
@@ -81,12 +80,11 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override QueryEntitiesResult QueryEntities(QueryEntities task) {
-            var result = new Dictionary<string, EntityValue>();
+            var result      = new Dictionary<string, EntityValue>();
             var ids         = GetIds(folder);
-            var readTask = new ReadEntities {ids = ids.ToList()};
-            var readResult = ReadEntities(readTask);
-            var jsonFilter = new JsonFilter(task.filter); // filter can be reused
-            var entities = readResult.entities;
+            var readIds     = new ReadEntities {ids = ids};
+            var entities    = ReadEntities(readIds).entities;
+            var jsonFilter  = new JsonFilter(task.filter); // filter can be reused
             foreach (var entityPair in entities) {
                 var key = entityPair.Key;
                 var payload = entityPair.Value.value.json;
@@ -109,15 +107,15 @@ namespace Friflo.Json.EntityGraph.Database
         
         
         // -------------------------------------- helper methods -------------------------------------- 
-        private static string[] GetIds(string folder)
+        private static List<string> GetIds(string folder)
         {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var ids = new string[fileNames.Length];
+            var ids = new List<string>(fileNames.Length);
             for (int n = 0; n < fileNames.Length; n++) {
                 var fileName = fileNames[n];
                 var len = fileName.Length;
                 var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
-                ids[n] = id;
+                ids.Add(id);
             }
             return ids;
         }
