@@ -10,7 +10,7 @@ namespace Friflo.Json.EntityGraph
 {
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    class EntitySetTasks<T> where T : Entity
+    internal class EntitySetSync<T> where T : Entity
     {
         // Note!
         // All fields must be private to ensure that all scheduled tasks managed by this instance can be mapped
@@ -31,7 +31,7 @@ namespace Friflo.Json.EntityGraph
         private             Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
         private             Dictionary<string, ReadRefTaskMap>  syncReadRefMap;
 
-        internal EntitySetTasks(EntitySet<T> set) {
+        internal EntitySetSync(EntitySet<T> set) {
             this.set = set;
         }
         

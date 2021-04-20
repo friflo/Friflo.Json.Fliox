@@ -41,7 +41,7 @@ namespace Friflo.Json.EntityGraph
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
 
-        internal readonly    EntitySetTasks<T>                       tasks;
+        internal readonly    EntitySetSync<T>                       sync;
 
         internal override   Type                                Type => type;
         
@@ -57,7 +57,7 @@ namespace Friflo.Json.EntityGraph
             objectPatcher = store.intern.objectPatcher;
             tracer = new Tracer(store.intern.typeCache, store);
 
-            tasks = new EntitySetTasks<T>(this);
+            sync = new EntitySetSync<T>(this);
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -96,7 +96,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadTask<T> Read(string id) {
-            return tasks.Read(id);
+            return sync.Read(id);
         }
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
@@ -105,7 +105,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public QueryTask<T> QueryFilter(FilterOperation filter) {
-            return tasks.QueryFilter(filter);
+            return sync.QueryFilter(filter);
         }
         
         public QueryTask<T> QueryAll() {
@@ -114,19 +114,19 @@ namespace Friflo.Json.EntityGraph
         }
 
         public CreateTask<T> Create(T entity) {
-            return tasks.Create(entity);
+            return sync.Create(entity);
         }
 
         public override int LogSetChanges() {
-            return tasks.LogSetChanges(peers);
+            return sync.LogSetChanges(peers);
         }
 
         public int LogEntityChanges(T entity) {
-            return tasks.LogEntityChanges(entity);
+            return sync.LogEntityChanges(entity);
         }
 
         internal override void AddCommands(List<DbCommand> commands) {
-            tasks.AddCommands(commands);
+            sync.AddCommands(commands);
         }
 
         // --- CreateEntities
@@ -141,7 +141,7 @@ namespace Friflo.Json.EntityGraph
         
         // --- ReadEntities
         internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
-            tasks.ReadEntitiesResult(command, result);
+            sync.ReadEntitiesResult(command, result);
         }
 
         internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
@@ -174,7 +174,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
-            tasks.QueryEntitiesResult(command, result);
+            sync.QueryEntitiesResult(command, result);
         }
 
         internal override void SyncEntities(ContainerEntities containerResults) {
