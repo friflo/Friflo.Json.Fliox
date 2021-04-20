@@ -33,12 +33,15 @@ namespace Friflo.Json.EntityGraph
         internal readonly   ObjectMapper        jsonMapper;
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
+        internal readonly   EntityStore         store;
+
 
         internal SetIntern(EntityStore store) {
             jsonMapper      = store.intern.jsonMapper;
             typeMapper      = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
             objectPatcher   = store.intern.objectPatcher;
             tracer          = new Tracer(store.intern.typeCache, store);
+            this.store      = store;
         }
     } 
     
@@ -52,14 +55,12 @@ namespace Friflo.Json.EntityGraph
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
-        internal readonly   EntityStore                         store;
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         internal readonly   EntitySetSync<T>                    sync; // todo: intended to create a new instance after calling Sync()
         
         internal override   EntitySetSync                       Sync => sync;
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            this.store = store;
             Type type = typeof(T);
             store.intern.setByType[type]       = this;
             store.intern.setByName[type.Name]  = this;
