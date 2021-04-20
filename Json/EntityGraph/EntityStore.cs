@@ -19,11 +19,11 @@ namespace Friflo.Json.EntityGraph
         }
     }
 
-    public readonly struct StoreIntern
+    internal readonly struct StoreIntern
     {
-        public   readonly   TypeStore                       typeStore;
-        public   readonly   TypeCache                       typeCache;
-        public   readonly   ObjectMapper                    jsonMapper;
+        internal readonly   TypeStore                       typeStore;
+        internal readonly   TypeCache                       typeCache;
+        internal readonly   ObjectMapper                    jsonMapper;
 
         internal readonly   ObjectPatcher                   objectPatcher;
         
@@ -48,9 +48,10 @@ namespace Friflo.Json.EntityGraph
         // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
         // Reason: EntityStore is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
-        public readonly StoreIntern   intern;
+        internal readonly   StoreIntern     intern;
+        public              TypeStore       TypeStore => intern.typeStore;
         
-        public EntityStore(EntityDatabase database) {
+        protected EntityStore(EntityDatabase database) {
             var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);

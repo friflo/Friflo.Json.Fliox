@@ -110,21 +110,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var order = store.orders.Read("order-1");
             await store.Sync();
             // var xxx = order.Result.customer.Entity;
-
-            WriteRead(order.Result, store);
-            await AssertStore(order.Result, store);
+            using (ObjectMapper mapper = new ObjectMapper(store.TypeStore)) {
+                WriteRead(order.Result, mapper);
+                await AssertStore(order.Result, store);
+            }
         }
         
-        private static void WriteRead(Order order, EntityStore store) {
-            var m = store.intern.jsonMapper;
-            m.Pretty = true;
+        private static void WriteRead(Order order, ObjectMapper mapper) {
+            mapper.Pretty = true;
             
-            AssertWriteRead(m, order);
-            AssertWriteRead(m, order.customer);
-            AssertWriteRead(m, order.items[0]);
-            AssertWriteRead(m, order.items[1]);
-            AssertWriteRead(m, order.items[0].article);
-            AssertWriteRead(m, order.items[1].article);
+            AssertWriteRead(mapper, order);
+            AssertWriteRead(mapper, order.customer);
+            AssertWriteRead(mapper, order.items[0]);
+            AssertWriteRead(mapper, order.items[1]);
+            AssertWriteRead(mapper, order.items[0].article);
+            AssertWriteRead(mapper, order.items[1].article);
         }
 
         private static bool lab = false;
