@@ -33,14 +33,12 @@ namespace Friflo.Json.EntityGraph
         internal readonly   ObjectMapper        jsonMapper;
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
-        internal readonly   EntitySetSync<T>    sync; // todo: intended to create a new instance after calling Sync()
 
-        internal SetIntern(EntityStore store, EntitySet<T> set) {
+        internal SetIntern(EntityStore store) {
             jsonMapper      = store.intern.jsonMapper;
             typeMapper      = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
             objectPatcher   = store.intern.objectPatcher;
             tracer          = new Tracer(store.intern.typeCache, store);
-            sync            = new EntitySetSync<T>(set);
         }
     } 
     
@@ -56,8 +54,9 @@ namespace Friflo.Json.EntityGraph
         
         internal readonly   EntityStore                         store;
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
-
-        internal override   EntitySetSync                       Sync => intern.sync;
+        internal readonly   EntitySetSync<T>                    sync; // todo: intended to create a new instance after calling Sync()
+        
+        internal override   EntitySetSync                       Sync => sync;
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             this.store = store;
@@ -65,7 +64,8 @@ namespace Friflo.Json.EntityGraph
             store.intern.setByType[type]       = this;
             store.intern.setByName[type.Name]  = this;
             container = store.intern.database.GetContainer(name);
-            intern = new SetIntern<T>(store, this);
+            intern = new SetIntern<T>(store);
+            sync            = new EntitySetSync<T>(this);
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -104,7 +104,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadTask<T> Read(string id) {
-            return intern.sync.Read(id);
+            return sync.Read(id);
         }
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
@@ -113,7 +113,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public QueryTask<T> QueryByFilter(FilterOperation filter) {
-            return intern.sync.QueryFilter(filter);
+            return sync.QueryFilter(filter);
         }
         
         public QueryTask<T> QueryAll() {
@@ -122,15 +122,15 @@ namespace Friflo.Json.EntityGraph
         }
 
         public CreateTask<T> Create(T entity) {
-            return intern.sync.Create(entity);
+            return sync.Create(entity);
         }
 
         public override int LogSetChanges() {
-            return intern.sync.LogSetChanges(peers);
+            return sync.LogSetChanges(peers);
         }
 
         public int LogEntityChanges(T entity) {
-            return intern.sync.LogEntityChanges(entity);
+            return sync.LogEntityChanges(entity);
         }
 
         internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
