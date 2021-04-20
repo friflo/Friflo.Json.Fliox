@@ -13,18 +13,22 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  abstract  Type            Type { get;  }
+        internal  readonly  string          name;
+        
         internal  abstract  EntitySetSync   Sync { get;  }
         
         internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 
         public    abstract  int             LogSetChanges();
         internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
+
+        protected EntitySet(string name) {
+            this.name = name;
+        }
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
-        public   readonly   Type                                type;
         internal readonly   EntityStore                         store;
         private  readonly   TypeMapper<T>                       typeMapper;
         internal readonly   ObjectMapper                        jsonMapper;
@@ -37,12 +41,11 @@ namespace Friflo.Json.EntityGraph
 
         internal readonly   EntitySetSync<T>                    sync;
 
-        internal override   Type                                Type => type;
         internal override   EntitySetSync                       Sync => sync;
         
-        public EntitySet(EntityStore store) {
+        public EntitySet(EntityStore store) : base (typeof(T).Name) {
             this.store = store;
-            type = typeof(T);
+            Type type = typeof(T);
             store.intern.setByType[type]       = this;
             store.intern.setByName[type.Name]  = this;
             

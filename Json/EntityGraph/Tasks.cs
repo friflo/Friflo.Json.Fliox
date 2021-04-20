@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         private Exception Error() {
-            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). Entity: {set.type.Name} id: {id}");
+            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). Entity: {set.name} id: {id}");
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
@@ -106,7 +106,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         private Exception Error(string message) {
-            return new PeerNotSyncedException($"{message} Entity: {set.type.Name} filter: {filter.Linq}");
+            return new PeerNotSyncedException($"{message} Entity: {set.name} filter: {filter.Linq}");
         }
     }
     
@@ -135,7 +135,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   bool        singleResult;
         internal readonly   string      label;
 
-        private             string      DebugName => $"{parentSet.Type.Name}['{parentId}'] {label}";
+        private             string      DebugName => $"{parentSet.name}['{parentId}'] {label}";
         public   override   string      ToString() => DebugName;
         
         internal ReadRefTask(string parentId, EntitySet parentSet, string label, bool singleResult) {
