@@ -90,7 +90,7 @@ namespace Friflo.Json.EntityGraph
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
             foreach (var containerResults in response.containerResults) {
                 var set = intern.setByName[containerResults.Key];
-                set.SyncReferences(containerResults.Value);
+                set.SyncEntities(containerResults.Value);
             }
             
             var commands = syncRequest.commands;

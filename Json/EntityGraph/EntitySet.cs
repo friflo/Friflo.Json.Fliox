@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.Flow.Graph;
@@ -25,35 +24,24 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  void            PatchEntitiesResult   (PatchEntities  command, PatchEntitiesResult  result);
 
         public    abstract  int             LogSetChanges();
-        internal  abstract  void            SyncReferences        (ContainerEntities containerResults);
+        internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
 
     }
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
-        public  readonly    Type                                type;
-        private readonly    EntityStore                         store;
-        private readonly    TypeMapper<T>                       typeMapper;
-        private readonly    ObjectMapper                        jsonMapper;
-        private readonly    EntityContainer                     container;
-        private readonly    ObjectPatcher                       objectPatcher;
-        private readonly    Tracer                              tracer;
+        public   readonly   Type                                type;
+        internal readonly   EntityStore                         store;
+        private  readonly   TypeMapper<T>                       typeMapper;
+        internal readonly   ObjectMapper                        jsonMapper;
+        internal readonly   EntityContainer                     container;
+        internal readonly   ObjectPatcher                       objectPatcher;
+        internal readonly   Tracer                              tracer;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
-        /// key: <see cref="ReadTask{T}.id"/>
-        private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
-        /// key: <see cref="QueryTask{T}.filter"/>.Linq 
-        private             Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();   
-        private             Dictionary<string, QueryTask<T>>    syncQueries;
-        /// key: <see cref="CreateTask{T}.entity"/>.id
-        private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
-        /// key: <see cref="EntityPatch.id"/>
-        private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
-        /// key: <see cref="ReadRefTaskMap.selector"/>
-        private             Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
-        private             Dictionary<string, ReadRefTaskMap>  syncReadRefMap;
 
+        internal readonly    EntitySetTasks<T>                       tasks;
 
         internal override   Type                                Type => type;
         
@@ -68,17 +56,11 @@ namespace Friflo.Json.EntityGraph
             container = store.intern.database.GetContainer(type.Name);
             objectPatcher = store.intern.objectPatcher;
             tracer = new Tracer(store.intern.typeCache, store);
+
+            tasks = new EntitySetTasks<T>(this);
         }
 
-        internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
-            if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
-                return result;
-            result = new ReadRefTaskMap(selector, typeof(TValue));
-            readRefMap.Add(selector, result);
-            return result;
-        }
-        
-        private PeerEntity<T> CreatePeer (T entity) {
+        internal PeerEntity<T> CreatePeer (T entity) {
             if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
                 if (peer.entity != entity)
                     throw new InvalidOperationException("");
@@ -87,16 +69,6 @@ namespace Friflo.Json.EntityGraph
             peer = new PeerEntity<T>(entity);
             peers.Add(entity.id, peer);
             return peer;
-        }
-        
-        internal CreateTask<T> AddCreate (PeerEntity<T> peer) {
-            peer.assigned = true;
-            var create = peer.create;
-            if (create == null) {
-                peer.create = create = new CreateTask<T>(peer.entity, store);
-            }
-            creates.Add(peer.entity.id, create);
-            return create;
         }
         
         internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
@@ -124,15 +96,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadTask<T> Read(string id) {
-            if (reads.TryGetValue(id, out ReadTask<T> read))
-                return read;
-            var peer = GetPeerById(id);
-            read = peer.read;
-            if (read == null) {
-                peer.read = read = new ReadTask<T>(peer.entity.id, this);
-            }
-            reads.Add(id, read);
-            return read;
+            return tasks.Read(id);
         }
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
@@ -141,12 +105,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public QueryTask<T> QueryFilter(FilterOperation filter) {
-            var filterLinq = filter.Linq;
-            if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
-                return query;
-            query = new QueryTask<T>(filter, this);
-            queries.Add(filterLinq, query);
-            return query;
+            return tasks.QueryFilter(filter);
         }
         
         public QueryTask<T> QueryAll() {
@@ -155,118 +114,19 @@ namespace Friflo.Json.EntityGraph
         }
 
         public CreateTask<T> Create(T entity) {
-            if (creates.TryGetValue(entity.id, out CreateTask<T> create))
-                return create;
-            var peer = CreatePeer(entity);
-            create = AddCreate(peer);
-            return create;
+            return tasks.Create(entity);
         }
 
         public override int LogSetChanges() {
-            foreach (var peerPair in peers) {
-                PeerEntity<T> peer = peerPair.Value;
-                GetEntityChanges(peer);
-            }
-            return creates.Count + patches.Values.Count;
-        }
-        
-        private void GetEntityChanges(PeerEntity<T> peer) {
-            if (peer.create != null) {
-                tracer.Trace(peer.entity);
-                return;
-            }
-            if (peer.patchReference != null) {
-                var diff = objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
-                if (diff == null)
-                    return;
-                var patchList = objectPatcher.CreatePatches(diff);
-                var id = peer.entity.id;
-                var entityPatch = new EntityPatch {
-                    id = id,
-                    patches = patchList
-                };
-                var json = jsonMapper.writer.Write(peer.entity);
-                peer.nextPatchReference = jsonMapper.Read<T>(json);
-                patches[peer.entity.id] = entityPatch;
-            }
+            return tasks.LogSetChanges(peers);
         }
 
         public int LogEntityChanges(T entity) {
-            var peer = GetPeerById(entity.id);
-            GetEntityChanges(peer);
-            var patch = patches[entity.id];
-            return patch.patches.Count;
+            return tasks.LogEntityChanges(entity);
         }
 
         internal override void AddCommands(List<DbCommand> commands) {
-            // --- CreateEntities
-            if (creates.Count > 0) {
-                var entries = new Dictionary<string, EntityValue>();
-                foreach (var createPair in creates) {
-                    CreateTask<T> create = createPair.Value;
-                    var entity = create.Entity;
-                    var json = jsonMapper.Write(entity);
-                    var entry = new EntityValue(json);
-                    entries.Add(entity.id, entry);
-                }
-                var req = new CreateEntities {
-                    container = container.name,
-                    entities = entries
-                };
-                commands.Add(req);
-                creates.Clear();
-            }
-            // --- ReadEntities
-            if (reads.Count > 0) {
-                var ids = reads.Select(read => read.Key).ToList();
-
-                var references = new List<ReadReference>();
-                foreach (var refPair in readRefMap) {
-                    ReadRefTaskMap map = refPair.Value;
-                    ReadReference readReference = new ReadReference {
-                        refPath = map.selector,
-                        container = map.entityType.Name,
-                        ids = new List<string>() 
-                    };
-                    foreach (var readRef in map.readRefs) {
-                        readReference.ids.Add(readRef.Key);
-                    }
-                    references.Add(readReference);
-                }
-                var req = new ReadEntities {
-                    container = container.name,
-                    ids = ids,
-                    references = references
-                };
-                commands.Add(req);
-                syncReadRefMap = readRefMap;
-                readRefMap = new Dictionary<string, ReadRefTaskMap>();
-                reads.Clear();
-            }
-            // --- QueryEntities
-            if (queries.Count > 0) {
-                foreach (var queryPair in queries) {
-                    var query = queryPair.Value;
-                    var linq = query.filter.Linq;
-                    var req = new QueryEntities {
-                        container   = container.name,
-                        filter      = query.filter,
-                        filterLinq  = linq
-                    };
-                    commands.Add(req);
-                }
-                syncQueries = queries;
-                queries = new Dictionary<string, QueryTask<T>>();
-            }
-            // --- PatchEntities
-            if (patches.Count > 0) {
-                var req = new PatchEntities {
-                    container = container.name,
-                    entityPatches = patches.Values.ToList()
-                };
-                commands.Add(req);
-                patches.Clear();
-            }
+            tasks.AddCommands(commands);
         }
 
         // --- CreateEntities
@@ -281,14 +141,7 @@ namespace Friflo.Json.EntityGraph
         
         // --- ReadEntities
         internal override void ReadEntitiesResult(ReadEntities command, ReadEntitiesResult result) {
-            for (int n = 0; n < result.references.Count; n++) {
-                ReadReference          reference = command.references[n];
-                ReadReferenceResult    refResult  = result.references[n];
-                var refContainer = store.intern.setByName[refResult.container];
-                ReadRefTaskMap map = syncReadRefMap[reference.refPath];
-                refContainer.ReadReferenceResult(reference, refResult, command.ids, map);
-            }
-            syncReadRefMap = null;
+            tasks.ReadEntitiesResult(command, result);
         }
 
         internal override void ReadReferenceResult(ReadReference command, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
@@ -321,18 +174,10 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryEntitiesResult(QueryEntities command, QueryEntitiesResult result) {
-            var filterLinq = result.filterLinq;
-            var query = syncQueries[filterLinq];
-            var entities = query.entities;
-            foreach (var id in result.ids) {
-                var peer = GetPeerById(id);
-                entities.Add(peer.entity);
-            }
-            query.synced = true;
-            syncQueries.Remove(filterLinq);
+            tasks.QueryEntitiesResult(command, result);
         }
 
-        internal override void SyncReferences(ContainerEntities containerResults) {
+        internal override void SyncEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var peer = GetPeerById(id);
