@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph
         //          peers, Sync, name, container & store 
         internal readonly   SetIntern<T>                        intern;
         
-        /// key: <see cref="PeerEntity{T}.entity"/>.id
+        /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
         internal readonly   EntityStore                         store;

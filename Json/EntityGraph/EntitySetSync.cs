@@ -24,8 +24,8 @@ namespace Friflo.Json.EntityGraph
     internal class EntitySetSync<T> : EntitySetSync where T : Entity
     {
         // Note!
-        // All fields must be private to ensure that all scheduled tasks managed by this instance can be mapped
-        // to their task results safely.
+        // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
+        // by this instance can be mapped to their task results safely.
         
         private readonly    EntitySet<T>                        set;
             
