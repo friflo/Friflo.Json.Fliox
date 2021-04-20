@@ -110,21 +110,21 @@ namespace Friflo.Json.EntityGraph
 
         private void GetEntityChanges(PeerEntity<T> peer) {
             if (peer.create != null) {
-                set.tracer.Trace(peer.entity);
+                set.intern.tracer.Trace(peer.entity);
                 return;
             }
             if (peer.patchReference != null) {
-                var diff = set.objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
+                var diff = set.intern.objectPatcher.differ.GetDiff(peer.patchReference, peer.entity);
                 if (diff == null)
                     return;
-                var patchList = set.objectPatcher.CreatePatches(diff);
+                var patchList = set.intern.objectPatcher.CreatePatches(diff);
                 var id = peer.entity.id;
                 var entityPatch = new EntityPatch {
                     id = id,
                     patches = patchList
                 };
-                var json = set.jsonMapper.writer.Write(peer.entity);
-                peer.nextPatchReference = set.jsonMapper.Read<T>(json);
+                var json = set.intern.jsonMapper.writer.Write(peer.entity);
+                peer.nextPatchReference = set.intern.jsonMapper.Read<T>(json);
                 patches[peer.entity.id] = entityPatch;
             }
         }
@@ -136,7 +136,7 @@ namespace Friflo.Json.EntityGraph
                 foreach (var createPair in creates) {
                     CreateTask<T> create = createPair.Value;
                     var entity = create.Entity;
-                    var json = set.jsonMapper.Write(entity);
+                    var json = set.intern.jsonMapper.Write(entity);
                     var entry = new EntityValue(json);
                     entries.Add(entity.id, entry);
                 }
@@ -205,7 +205,7 @@ namespace Friflo.Json.EntityGraph
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
                 peer.create = null;
-                peer.patchReference = set.jsonMapper.Read<T>(entry.Value.value.json);
+                peer.patchReference = set.intern.jsonMapper.Read<T>(entry.Value.value.json);
             }
         }
         

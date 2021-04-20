@@ -67,7 +67,7 @@ namespace Friflo.Json.EntityGraph
             if (synced)
                 throw new InvalidOperationException($"ReadRefTask already synced. Type: {typeof(T).Name}, id: {id}");
             
-            var map = set.sync.GetReadRefMap<TValue>(selector);
+            var map = set.intern.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefTask<TValue>)readRef;
             ReadRefTask<TValue> newReadRef = new ReadRefTask<TValue>(id, set, selector);
@@ -79,7 +79,7 @@ namespace Friflo.Json.EntityGraph
             if (synced)
                 throw new InvalidOperationException($"ReadRefsTask already synced. Type: {typeof(T).Name}, id: {id}");
             
-            var map = set.sync.GetReadRefMap<TValue>(selector);
+            var map = set.intern.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefsTask<TValue>)readRef;
             ReadRefsTask<TValue> newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
