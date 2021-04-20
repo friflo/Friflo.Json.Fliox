@@ -144,6 +144,12 @@ namespace Friflo.Json.EntityGraph
                         break;
                 }
             }
+            
+            // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
+            foreach (var setPair in intern.setByType) {
+                EntitySet set = setPair.Value;
+                set.ResetSync();
+            }
         }
     }
 }

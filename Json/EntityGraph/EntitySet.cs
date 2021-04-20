@@ -17,10 +17,11 @@ namespace Friflo.Json.EntityGraph
         
         internal  abstract  EntitySetSync   Sync { get;  }
         
-        internal  abstract  void            ReadReferenceResult   (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
+        internal  abstract  void            ReadReferenceResult (ReadReference  command, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 
         public    abstract  int             LogSetChanges();
         internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
+        internal  abstract  void            ResetSync           ();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -56,7 +57,7 @@ namespace Friflo.Json.EntityGraph
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
-        internal readonly   EntitySetSync<T>                    sync; // todo: intended to create a new instance after calling Sync()
+        internal            EntitySetSync<T>                    sync; // todo: intended to create a new instance after calling Sync()
         
         internal override   EntitySetSync                       Sync => sync;
         
@@ -64,9 +65,9 @@ namespace Friflo.Json.EntityGraph
             Type type = typeof(T);
             store.intern.setByType[type]       = this;
             store.intern.setByName[type.Name]  = this;
-            container = store.intern.database.GetContainer(name);
-            intern = new SetIntern<T>(store);
-            sync            = new EntitySetSync<T>(this);
+            container   = store.intern.database.GetContainer(name);
+            intern      = new SetIntern<T>(store);
+            sync        = new EntitySetSync<T>(this);
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -188,5 +189,8 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
+        internal override void ResetSync() {
+            sync = new EntitySetSync<T>(this);
+        }
     }
 }
