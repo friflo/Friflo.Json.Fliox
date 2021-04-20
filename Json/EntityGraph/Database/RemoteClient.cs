@@ -60,7 +60,7 @@ namespace Friflo.Json.EntityGraph.Database
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 
-        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
+        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
         

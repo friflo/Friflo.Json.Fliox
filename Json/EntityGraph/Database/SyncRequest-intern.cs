@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
@@ -65,13 +64,12 @@ namespace Friflo.Json.EntityGraph.Database
         
         internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            var entities = entityContainer.ReadEntities(ids);
+            var result = entityContainer.ReadEntities(this);
+            var entities = result.entities;
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
             var readRefResults = entityContainer.ReadReferences(references, entities, response);
-            var result = new ReadEntitiesResult {
-                references = readRefResults
-            };
+            result.references = readRefResults;
             return result;
         }
     }

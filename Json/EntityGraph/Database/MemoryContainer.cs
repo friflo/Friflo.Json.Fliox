@@ -54,14 +54,15 @@ namespace Friflo.Json.EntityGraph.Database
             }
         }
 
-        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
-            var result = new Dictionary<string, EntityValue>(ids.Count);
+        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
+            var ids = task.ids;
+            var entities = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
                 payloads.TryGetValue(id, out var payload);
                 var entry = new EntityValue(payload);
-                result.TryAdd(id, entry);
+                entities.TryAdd(id, entry);
             }
-            return result;
+            return new ReadEntitiesResult{entities = entities};
         }
         
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {

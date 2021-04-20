@@ -174,8 +174,8 @@ namespace Friflo.Json.EntityGraph.Database
             local.UpdateEntities(entities);
         }
 
-        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
-            var result = local.ReadEntities(ids);
+        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
+            var result = local.ReadEntities(task);
             return result;
         }
         

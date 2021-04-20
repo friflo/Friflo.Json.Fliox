@@ -82,7 +82,9 @@ namespace Friflo.Json.EntityGraph.Database
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public partial class ReadEntitiesResult : TaskResult
     {
-        public  List<ReadReferenceResult>   references;
+        public   List<ReadReferenceResult>          references;
+        [Fri.Ignore]
+        internal Dictionary<string, EntityValue>    entities;
     }
     
     // ---

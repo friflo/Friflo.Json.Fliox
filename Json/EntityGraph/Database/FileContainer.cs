@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Graph;
@@ -63,8 +64,9 @@ namespace Friflo.Json.EntityGraph.Database
             throw new NotImplementedException();
         }
 
-        public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
-            var result = new Dictionary<string,EntityValue>(ids.Count);
+        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
+            var ids = task.ids;
+            var entities = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
                 var filePath = FilePath(id);
                 string payload = null;
@@ -73,16 +75,18 @@ namespace Friflo.Json.EntityGraph.Database
                     // payload = await File.ReadAllTextAsync(filePath);
                 }
                 var entry = new EntityValue(payload);
-                result.TryAdd(id, entry);
+                entities.TryAdd(id, entry);
             }
-            return result;
+            return new ReadEntitiesResult{entities = entities};
         }
 
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
             var result = new Dictionary<string, EntityValue>();
             var ids         = GetIds(folder);
-            var entities    = ReadEntities(ids);
+            var readTask = new ReadEntities {ids = ids.ToList()};
+            var readResult = ReadEntities(readTask);
             var jsonFilter = new JsonFilter(filter); // filter can be reused
+            var entities = readResult.entities;
             foreach (var entityPair in entities) {
                 var key = entityPair.Key;
                 var payload = entityPair.Value.value.json;

@@ -28,7 +28,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         public abstract CreateEntitiesResult            CreateEntities  (CreateEntities task);
         public abstract void                            UpdateEntities  (Dictionary<string, EntityValue> entities);
-        public abstract Dictionary<string, EntityValue> ReadEntities    (ICollection<string> ids);
+        public abstract ReadEntitiesResult              ReadEntities    (ReadEntities task);
         public abstract Dictionary<string, EntityValue> QueryEntities   (FilterOperation filter);
         public abstract DeleteEntitiesResult            DeleteEntities  (DeleteEntities task);
 
@@ -45,7 +45,9 @@ namespace Friflo.Json.EntityGraph.Database
         public virtual void PatchEntities(IList<EntityPatch> entityPatches) {
             var ids = entityPatches.Select(patch => patch.id).ToList();
             // Read entities to be patched
-            var entities = ReadEntities(ids);
+            var readTask = new ReadEntities {ids = ids};
+            var readResult = ReadEntities(readTask);
+            var entities = readResult.entities;
             if (entities.Count != ids.Count)
                 throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
             
@@ -90,9 +92,10 @@ namespace Friflo.Json.EntityGraph.Database
                     referenceResult.ids.AddRange(refIds);
                     
                     // add references to ContainerEntities
-                    var refEntities = refContainer.ReadEntities(refIds);
+                    var readRefIds = new ReadEntities {ids = refIds};
+                    var refEntities = refContainer.ReadEntities(readRefIds);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
-                    containerResult.AddEntities(refEntities);
+                    containerResult.AddEntities(refEntities.entities);
                 }
                 referenceResults.Add(referenceResult);
             }
