@@ -10,12 +10,12 @@ namespace Friflo.Json.EntityGraph.Database
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest
     {
-        public  List<DbCommand>                         commands;
+        public  List<DatabaseTask>                      tasks;
     }
     
     public partial class SyncResponse
     {
-        public  List<DbCommandResult>                   results;
+        public  List<TaskResult>                        results;
         public  Dictionary<string, ContainerEntities>   containerResults;
     }
     
@@ -27,29 +27,29 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // ------------------------------ DatabaseCommand ------------------------------
-    [Fri.Discriminator("command")]
+    [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
-    public abstract class DbCommand
+    public abstract class DatabaseTask
     {
-        internal abstract DbCommandResult   Execute(EntityDatabase database, SyncResponse response);
-        internal abstract CommandType       CommandType { get; }
+        internal abstract TaskResult        Execute(EntityDatabase database, SyncResponse response);
+        internal abstract TaskType          TaskType { get; }
     }
     
     // ------------------------------ CommandResult ------------------------------
-    [Fri.Discriminator("command")]
+    [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
-    public abstract class DbCommandResult
+    public abstract class TaskResult
     {
-        internal abstract CommandType       CommandType { get; }
+        internal abstract TaskType          TaskType { get; }
     }
     
-    public enum CommandType
+    public enum TaskType
     {
         Read,
         Query,
@@ -58,18 +58,18 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // --------------------------------------- CreateEntities ---------------------------------------
-    public partial class CreateEntities : DbCommand
+    public partial class CreateEntities : DatabaseTask
     {
         public  string                          container;
         public  Dictionary<string, EntityValue> entities;
     }
     
-    public partial class CreateEntitiesResult : DbCommandResult
+    public partial class CreateEntitiesResult : TaskResult
     {
     }
 
     // --------------------------------------- ReadEntities ---------------------------------------
-    public partial class ReadEntities : DbCommand
+    public partial class ReadEntities : DatabaseTask
     {
         public  string                      container;
         public  List<string>                ids;
@@ -77,7 +77,7 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
-    public partial class ReadEntitiesResult : DbCommandResult
+    public partial class ReadEntitiesResult : TaskResult
     {
         public  List<ReadReferenceResult>   references;
     }
@@ -99,7 +99,7 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // --------------------------------------- QueryEntities ---------------------------------------
-    public partial class QueryEntities : DbCommand
+    public partial class QueryEntities : DatabaseTask
     {
         public  string                      container;
         public  string                      filterLinq;
@@ -107,7 +107,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  List<QueryReference>        references;
     }
     
-    public partial class QueryEntitiesResult : DbCommandResult
+    public partial class QueryEntitiesResult : TaskResult
     {
         public  string                      container;  // only for debugging ergonomics
         public  string                      filterLinq;
@@ -134,7 +134,7 @@ namespace Friflo.Json.EntityGraph.Database
     }
     
     // --------------------------------------- PatchEntities ---------------------------------------
-    public partial class PatchEntities : DbCommand
+    public partial class PatchEntities : DatabaseTask
     {
         public  string              container;
         public  List<EntityPatch>   entityPatches;
@@ -146,7 +146,7 @@ namespace Friflo.Json.EntityGraph.Database
         public List<JsonPatch>      patches;
     }
 
-    public partial class PatchEntitiesResult : DbCommandResult
+    public partial class PatchEntitiesResult : TaskResult
     {
     }
 }

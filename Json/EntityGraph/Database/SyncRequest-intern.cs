@@ -35,10 +35,10 @@ namespace Friflo.Json.EntityGraph.Database
     // ------ CreateEntities
     public partial class CreateEntities
     {
-        internal override   CommandType     CommandType => CommandType.Create;
-        public   override   string          ToString() => "container: " + container;
+        internal override   TaskType    TaskType => TaskType.Create;
+        public   override   string      ToString() => "container: " + container;
         
-        internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
@@ -54,16 +54,16 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class CreateEntitiesResult
     {
-        internal override CommandType CommandType => CommandType.Create;
+        internal override TaskType TaskType => TaskType.Create;
     }
     
     // ------ ReadEntities
     public partial class ReadEntities
     {
-        internal override   CommandType     CommandType => CommandType.Read;
-        public   override   string          ToString() => "container: " + container;
+        internal override   TaskType    TaskType => TaskType.Read;
+        public   override   string      ToString() => "container: " + container;
         
-        internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.ReadEntities(ids);
             var containerResult = response.GetContainerResult(container);
@@ -78,16 +78,16 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class ReadEntitiesResult
     {
-        internal override   CommandType     CommandType => CommandType.Read;
+        internal override   TaskType    TaskType => TaskType.Read;
     }
     
     // ------ QueryEntities
     public partial class QueryEntities 
     {
-        internal override   CommandType     CommandType => CommandType.Query;
-        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
+        internal override   TaskType    TaskType => TaskType.Query;
+        public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
         
-        internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var entities = entityContainer.QueryEntities(filter);
             var containerResult = response.GetContainerResult(container);
@@ -104,17 +104,17 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class QueryEntitiesResult
     {
-        internal override   CommandType     CommandType => CommandType.Query;
-        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
+        internal override   TaskType    TaskType => TaskType.Query;
+        public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
     }
     
     // ------ PatchEntities
     public partial class PatchEntities
     {
-        internal override   CommandType     CommandType => CommandType.Patch;
-        public   override   string          ToString() => "container: " + container;
+        internal override   TaskType    TaskType => TaskType.Patch;
+        public   override   string      ToString() => "container: " + container;
         
-        internal override DbCommandResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             entityContainer.PatchEntities(entityPatches);
             return new PatchEntitiesResult(); 
@@ -123,6 +123,6 @@ namespace Friflo.Json.EntityGraph.Database
     
     public partial class PatchEntitiesResult
     {
-        internal override CommandType CommandType => CommandType.Patch;
+        internal override TaskType      TaskType => TaskType.Patch;
     }
 }

@@ -38,11 +38,11 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual SyncResponse Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
-                results             = new List<DbCommandResult>(),
+                results             = new List<TaskResult>(),
                 containerResults    = new Dictionary<string, ContainerEntities>()
             };
-            foreach (var command in syncRequest.commands) {
-                var result = command.Execute(this, response);
+            foreach (var task in syncRequest.tasks) {
+                var result = task.Execute(this, response);
                 response.results.Add(result);
             }
             return response;

@@ -53,19 +53,19 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
         public override void CreateEntities(Dictionary<string, EntityValue> entities) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 
         public override void UpdateEntities(Dictionary<string, EntityValue> entities) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 
         public override Dictionary<string, EntityValue> ReadEntities(ICollection<string> ids) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
         
         public override Dictionary<string, EntityValue> QueryEntities(FilterOperation filter) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
     }
 }

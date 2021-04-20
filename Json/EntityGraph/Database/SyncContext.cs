@@ -5,7 +5,7 @@ using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph.Database
 {
-    // ------------------------------------ CommandContext ------------------------------------
+    // ------------------------------------ SyncContext ------------------------------------
     /// <summary>
     /// One <see cref="SyncContext"/> is created per <see cref="EntityContainer"/> to enable multi threaded
     /// request handling for different <see cref="EntityContainer"/> instances.
@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph.Database
     /// multi threaded.
     ///
     /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
-    /// for a <see cref="SyncResponse"/> in <see cref="DbCommand.Execute"/> need to be single threaded. 
+    /// for a <see cref="SyncResponse"/> in <see cref="DatabaseTask.Execute"/> need to be single threaded. 
     /// </summary>
     public class SyncContext : IDisposable
     {

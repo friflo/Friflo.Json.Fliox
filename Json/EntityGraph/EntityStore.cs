@@ -99,10 +99,10 @@ namespace Friflo.Json.EntityGraph
         }
 
         private SyncRequest CreateSyncRequest() {
-            var syncRequest = new SyncRequest { commands = new List<DbCommand>() };
+            var syncRequest = new SyncRequest { tasks = new List<DatabaseTask>() };
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
-                set.Sync.AddCommands(syncRequest.commands);
+                set.Sync.AddTasks(syncRequest.tasks);
             }
             return syncRequest;
         }
@@ -113,32 +113,32 @@ namespace Friflo.Json.EntityGraph
                 set.SyncEntities(containerResults.Value);
             }
             
-            var commands = syncRequest.commands;
+            var tasks = syncRequest.tasks;
             var results = response.results;
-            for (int n = 0; n < commands.Count; n++) {
-                var command = commands[n];
+            for (int n = 0; n < tasks.Count; n++) {
+                var task = tasks[n];
                 var result = results[n];
-                CommandType commandType = command.CommandType;
-                if (commandType != result.CommandType)
-                    throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {commandType} got: {result.CommandType}");
-                switch (commandType) {
-                    case CommandType.Create:
-                        var create = (CreateEntities) command;
+                TaskType taskType = task.TaskType;
+                if (taskType != result.TaskType)
+                    throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {taskType} got: {result.TaskType}");
+                switch (taskType) {
+                    case TaskType.Create:
+                        var create = (CreateEntities) task;
                         EntitySet set = intern.setByName[create.container];
                         set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult)result);
                         break;
-                    case CommandType.Read:
-                        var read = (ReadEntities) command;
+                    case TaskType.Read:
+                        var read = (ReadEntities) task;
                         set = intern.setByName[read.container];
                         set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult)result);
                         break;
-                    case CommandType.Query:
-                        var query = (QueryEntities) command;
+                    case TaskType.Query:
+                        var query = (QueryEntities) task;
                         set = intern.setByName[query.container];
                         set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult)result);
                         break;
-                    case CommandType.Patch:
-                        var patch = (PatchEntities) command;
+                    case TaskType.Patch:
+                        var patch = (PatchEntities) task;
                         set = intern.setByName[patch.container];
                         set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult)result);
                         break;
