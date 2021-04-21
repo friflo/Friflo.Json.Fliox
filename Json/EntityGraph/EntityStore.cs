@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Internal.Map;
@@ -82,6 +83,7 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
+
             SyncResponse response = await intern.database.Execute(syncRequest); // <--- asynchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
@@ -117,9 +119,19 @@ namespace Friflo.Json.EntityGraph
             var syncRequest = new SyncRequest { tasks = new List<DatabaseTask>() };
             foreach (var setPair in intern.setByType) {
                 EntitySet set = setPair.Value;
+                var setInfo = set.SetInfo;
+                var curTaskCount = syncRequest.tasks.Count;
                 set.Sync.AddTasks(syncRequest.tasks);
+                AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount);
             }
             return syncRequest;
+        }
+
+        [Conditional("DEBUG")]
+        private static void AssertTaskCount(SetInfo setInfo, int taskCount) {
+            int expect  = setInfo.tasks; 
+            if (expect != taskCount)
+                throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
 
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {

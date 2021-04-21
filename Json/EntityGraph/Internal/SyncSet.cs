@@ -50,7 +50,7 @@ namespace Friflo.Json.EntityGraph.Internal
             this.set = set;
         }
 
-        internal override   SetInfo                            SetInfo => set.GetTaskInfo();
+        internal override   SetInfo                             SetInfo => set.GetTaskInfo();
 
         internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
             if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
@@ -279,8 +279,11 @@ namespace Friflo.Json.EntityGraph.Internal
         private static int Some(int count) { return count != 0 ? 1 : 0; }
 
         public void SetTaskInfo(SetInfo info) {
-            info.tasks = Some(reads.Count)      + Some(queries.Count)   + Some(creates.Count) +
-                         Some(patches.Count)    + Some(deletes.Count)   + Some(readRefMap.Count);
+            info.tasks = Some(reads.Count)   +
+                         queries.Count       +
+                         Some(creates.Count) +
+                         Some(patches.Count) +
+                         Some(deletes.Count);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;
