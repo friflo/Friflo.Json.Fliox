@@ -3,6 +3,7 @@
 
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.EntityGraph.Database
@@ -31,14 +32,14 @@ namespace Friflo.Json.EntityGraph.Database
             return container;
         }
 
-        public override SyncResponse Execute(SyncRequest syncRequest) {
+        public override async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var jsonRequest = jsonMapper.Write(syncRequest);
             var body = new StringContent(jsonRequest);
             body.Headers.ContentType.MediaType = "application/json";
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
 
-            HttpResponseMessage httpResponse = httpClient.PostAsync(endpoint, body).Result;
-            string jsonResponse = httpResponse.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, body);
+            string jsonResponse = await httpResponse.Content.ReadAsStringAsync();
             var response = jsonMapper.Read<SyncResponse>(jsonResponse);
             return response;
         }
@@ -50,23 +51,23 @@ namespace Friflo.Json.EntityGraph.Database
             : base(name, database) {
         }
 
-        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 
-        public override UpdateEntitiesResult UpdateEntities(UpdateEntities task) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
 
-        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
         
-        public override QueryEntitiesResult QueryEntities(QueryEntities task) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
         
-        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
         }
     }

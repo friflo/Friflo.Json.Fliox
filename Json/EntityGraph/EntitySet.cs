@@ -16,7 +16,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal  readonly  string          name;
         
-        internal  abstract  SyncSet   Sync { get;  }
+        internal  abstract  SyncSet         Sync { get;  }
         
         internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 

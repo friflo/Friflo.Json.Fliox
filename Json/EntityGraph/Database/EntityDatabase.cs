@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Friflo.Json.EntityGraph.Database
 {
@@ -33,13 +34,13 @@ namespace Friflo.Json.EntityGraph.Database
             return container;
         }
         
-        public virtual SyncResponse Execute(SyncRequest syncRequest) {
+        public virtual async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 results             = new List<TaskResult>(),
                 containerResults    = new Dictionary<string, ContainerEntities>()
             };
             foreach (var task in syncRequest.tasks) {
-                var result = task.Execute(this, response);
+                var result = await task.Execute(this, response);
                 response.results.Add(result);
             }
             return response;

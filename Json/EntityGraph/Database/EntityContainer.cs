@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
@@ -26,11 +27,11 @@ namespace Friflo.Json.EntityGraph.Database
         
         public virtual  void                            Dispose() { }
         
-        public abstract CreateEntitiesResult    CreateEntities  (CreateEntities task);
-        public abstract UpdateEntitiesResult    UpdateEntities  (UpdateEntities task);
-        public abstract ReadEntitiesResult      ReadEntities    (ReadEntities   task);
-        public abstract QueryEntitiesResult     QueryEntities   (QueryEntities  task);
-        public abstract DeleteEntitiesResult    DeleteEntities  (DeleteEntities task);
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities task);
+        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities task);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities task);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities task);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities task);
 
         /// <summary>
         /// Default implementation to apply patches to entities.
@@ -42,12 +43,12 @@ namespace Friflo.Json.EntityGraph.Database
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual PatchEntitiesResult      PatchEntities   (PatchEntities patchEntities) {
+        public virtual async Task<PatchEntitiesResult>      PatchEntities   (PatchEntities patchEntities) {
             var entityPatches = patchEntities.entityPatches;
             var ids = entityPatches.Select(patch => patch.id).ToList();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
-            var readResult = ReadEntities(readTask);
+            var readResult = await ReadEntities(readTask);
             var entities = readResult.entities;
             if (entities.Count != ids.Count)
                 throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
@@ -69,7 +70,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new PatchEntitiesResult();
         }
 
-        public List<ReadReferenceResult> ReadReferences(
+        public async Task<List<ReadReferenceResult>> ReadReferences(
                 List<ReadReference>             references,
                 Dictionary<string, EntityValue> entities,
                 SyncResponse                    syncResponse)
@@ -95,7 +96,7 @@ namespace Friflo.Json.EntityGraph.Database
                     
                     // add references to ContainerEntities
                     var readRefIds = new ReadEntities {ids = refIds};
-                    var refEntities = refContainer.ReadEntities(readRefIds);
+                    var refEntities = await refContainer.ReadEntities(readRefIds);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);
                 }

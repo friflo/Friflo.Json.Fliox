@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
 
 namespace Friflo.Json.EntityGraph.Database
@@ -38,7 +39,7 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Create;
         public   override   string      ToString() => "container: " + container;
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
@@ -47,7 +48,7 @@ namespace Friflo.Json.EntityGraph.Database
                     entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
                 }
             }
-            return entityContainer.CreateEntities(this);
+            return await entityContainer.CreateEntities(this);
         }
     }
     
@@ -62,7 +63,7 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Update;
         public   override   string      ToString() => "container: " + container;
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
@@ -71,7 +72,7 @@ namespace Friflo.Json.EntityGraph.Database
                     entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
                 }
             }
-            return entityContainer.UpdateEntities(this);
+            return await entityContainer.UpdateEntities(this);
         }
     }
     
@@ -86,13 +87,13 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Read;
         public   override   string      ToString() => "container: " + container;
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            var result = entityContainer.ReadEntities(this);
+            var result = await entityContainer.ReadEntities(this);
             var entities = result.entities;
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
-            var readRefResults = entityContainer.ReadReferences(references, entities, response);
+            var readRefResults = await entityContainer.ReadReferences(references, entities, response);
             result.references = readRefResults;
             return result;
         }
@@ -109,9 +110,9 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Query;
         public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            var result = entityContainer.QueryEntities(this);
+            var result = await entityContainer.QueryEntities(this);
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(result.entities);
             result.container    = container;
@@ -133,9 +134,9 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Patch;
         public   override   string      ToString() => "container: " + container;
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            return entityContainer.PatchEntities(this);
+            return await entityContainer.PatchEntities(this);
         }
     }
     
@@ -150,9 +151,9 @@ namespace Friflo.Json.EntityGraph.Database
         internal override   TaskType    TaskType => TaskType.Delete;
         public   override   string      ToString() => "container: " + container;
         
-        internal override TaskResult Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
-            return entityContainer.DeleteEntities(this);
+            return await entityContainer.DeleteEntities(this);
         }
     }
     

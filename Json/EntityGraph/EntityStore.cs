@@ -69,13 +69,15 @@ namespace Friflo.Json.EntityGraph
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await Task.Run(() => intern.database.Execute(syncRequest)); // <--- asynchronous Sync point
+            SyncResponse response = await intern.database.Execute(syncRequest); // <--- asynchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
         
         public void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = intern.database.Execute(syncRequest); // <--- synchronous Sync point
+            var responseTask = intern.database.Execute(syncRequest);
+            // responseTask.Wait();  
+            SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
 

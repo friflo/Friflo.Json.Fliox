@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Graph; 
 
@@ -38,7 +39,7 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override CreateEntitiesResult CreateEntities(CreateEntities task) {
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             var entities = task.entities;
             foreach (var entity in entities) {
                 payloads[entity.Key] = entity.Value.value.json;
@@ -46,7 +47,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new CreateEntitiesResult();
         }
 
-        public override UpdateEntitiesResult UpdateEntities(UpdateEntities task) {
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
             var entities = task.entities;
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.Key, out string _))
@@ -56,7 +57,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new UpdateEntitiesResult();
         }
 
-        public override ReadEntitiesResult ReadEntities(ReadEntities task) {
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
             var ids = task.ids;
             var entities = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
@@ -67,7 +68,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new ReadEntitiesResult{entities = entities};
         }
         
-        public override QueryEntitiesResult QueryEntities(QueryEntities task) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
             var result      = new Dictionary<string, EntityValue>();
             var jsonFilter  = new JsonFilter(task.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
@@ -80,7 +81,7 @@ namespace Friflo.Json.EntityGraph.Database
             return new QueryEntitiesResult{ entities = result };
         }
         
-        public override DeleteEntitiesResult DeleteEntities(DeleteEntities task) {
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
             var ids = task.ids;
             foreach (var id in ids) {
                 payloads.Remove(id);

@@ -41,7 +41,7 @@ namespace Friflo.Json.EntityGraph.Database
             return container;
         }
 
-        public override SyncResponse Execute(SyncRequest syncRequest) {
+        public override Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var response = base.Execute(syncRequest);
             return response;
         }
@@ -72,7 +72,7 @@ namespace Friflo.Json.EntityGraph.Database
                             Log("Shutdown requested");
                             runServer = false;
                         } else {
-                            var data = HandlePost(requestContent, resp);
+                            byte[] data = await HandlePost(requestContent, resp);
                             await resp.OutputStream.WriteAsync(data, 0, data.Length);
                             resp.Close();
                         }
@@ -97,9 +97,9 @@ namespace Friflo.Json.EntityGraph.Database
             }
         }
 
-        private byte[] HandlePost (string requestContent, HttpListenerResponse resp) {
+        private async Task<byte[]> HandlePost (string requestContent, HttpListenerResponse resp) {
             var syncRequest = jsonMapper.Read<SyncRequest>(requestContent);
-            var syncResponse = Execute(syncRequest);
+            SyncResponse syncResponse = await Execute(syncRequest);
             jsonMapper.Pretty = true;
             var jsonResponse = jsonMapper.Write(syncResponse);
 
@@ -164,24 +164,24 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override CreateEntitiesResult    CreateEntities(CreateEntities task) {
-            return local.CreateEntities(task);
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
+            return await local.CreateEntities(task);
         }
 
-        public override UpdateEntitiesResult    UpdateEntities(UpdateEntities task) {
-            return local.UpdateEntities(task);
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
+            return await local.UpdateEntities(task);
         }
 
-        public override ReadEntitiesResult      ReadEntities(ReadEntities task) {
-            return local.ReadEntities(task);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
+            return await local.ReadEntities(task);
         }
         
-        public override QueryEntitiesResult     QueryEntities(QueryEntities task) {
-            return local.QueryEntities(task);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
+            return await local.QueryEntities(task);
         }
         
-        public override DeleteEntitiesResult    DeleteEntities(DeleteEntities task) {
-            return local.DeleteEntities(task);
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
+            return await local.DeleteEntities(task);
         }
     }
 }

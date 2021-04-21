@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 
@@ -36,7 +37,7 @@ namespace Friflo.Json.EntityGraph.Database
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     public abstract class DatabaseTask
     {
-        internal abstract TaskResult        Execute(EntityDatabase database, SyncResponse response);
+        internal abstract Task<TaskResult>  Execute(EntityDatabase database, SyncResponse response);
         internal abstract TaskType          TaskType { get; }
     }
     
