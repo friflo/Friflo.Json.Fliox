@@ -39,25 +39,27 @@ namespace Friflo.Json.EntityGraph.Database
         }
 
 
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             var entities = task.entities;
             foreach (var entity in entities) {
                 payloads[entity.Key] = entity.Value.value.json;
             }
-            return new CreateEntitiesResult();
+            var result = new CreateEntitiesResult();
+            return Task.FromResult(result);
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
             var entities = task.entities;
             foreach (var entity in entities) {
                 if (!payloads.TryGetValue(entity.Key, out string _))
                     throw new InvalidOperationException($"Expect Entity with id {entity.Key} in DatabaseContainer: {name}");
                 payloads[entity.Key] = entity.Value.value.json;
             }
-            return new UpdateEntitiesResult();
+            var result = new UpdateEntitiesResult();
+            return Task.FromResult(result);
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
             var ids = task.ids;
             var entities = new Dictionary<string, EntityValue>(ids.Count);
             foreach (var id in ids) {
@@ -65,28 +67,31 @@ namespace Friflo.Json.EntityGraph.Database
                 var entry = new EntityValue(payload);
                 entities.TryAdd(id, entry);
             }
-            return new ReadEntitiesResult{entities = entities};
+            var result = new ReadEntitiesResult{entities = entities};
+            return Task.FromResult(result);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
-            var result      = new Dictionary<string, EntityValue>();
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
+            var entities    = new Dictionary<string, EntityValue>();
             var jsonFilter  = new JsonFilter(task.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
                 var payload = payloadPair.Value;
                 if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
                     var entry = new EntityValue(payload);
-                    result.Add(payloadPair.Key, entry);
+                    entities.Add(payloadPair.Key, entry);
                 }
             }
-            return new QueryEntitiesResult{ entities = result };
+            var result = new QueryEntitiesResult {entities = entities};
+            return Task.FromResult(result);
         }
         
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
             var ids = task.ids;
             foreach (var id in ids) {
                 payloads.Remove(id);
             }
-            return new DeleteEntitiesResult();
+            var result = new DeleteEntitiesResult();
+            return Task.FromResult(result);
         }
 
     }

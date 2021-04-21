@@ -97,13 +97,14 @@ namespace Friflo.Json.EntityGraph.Database
             return new QueryEntitiesResult{entities = result};
         }
 
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
             var ids = task.ids;
             foreach (var id in ids) {
                 string path = FilePath(id);
                 DeleteFile(path);
             }
-            return new DeleteEntitiesResult();
+            var result = new DeleteEntitiesResult();
+            return Task.FromResult(result);
         }
         
         
