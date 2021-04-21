@@ -83,7 +83,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
-            string id = reference.Id;
+            string id = reference.id;
             PeerEntity<T> peer = reference.peer;
             if (peer == null) {
                 var entity = reference.GetEntity();
@@ -182,7 +182,6 @@ namespace Friflo.Json.EntityGraph
                 if (json != null && "null" != json) {
                     intern.jsonMapper.ReadTo(json, peer.entity);
                     peer.patchSource = intern.jsonMapper.Read<T>(json);
-                    peer.assigned = true;
                     if (read != null) {
                         read.result = peer.entity;
                         read.synced = true;
@@ -194,6 +193,7 @@ namespace Friflo.Json.EntityGraph
                         read.synced = true;
                     }
                 }
+                peer.assigned = true;
                 peer.read = null;
             }
         }

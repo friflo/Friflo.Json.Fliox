@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var allArticles     = store.articles.QueryAll();
             var allArticles2    = store.articles.QueryByFilter(Operation.FilterTrue);
             var hasOrderCamera  = store.orders.Query(o => o.items.Any(i => i.name == "Camera"));
-            var read1           = store.orders.Query(o => o.customer.Id == "customer-1");
+            var read1           = store.orders.Query(o => o.customer.id == "customer-1");
             var read2           = store.orders.Query(o => o.customer.Entity.lastName == "Smith");
             var read3           = store.orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
             var read4           = store.orders.Query(o => o.items.Any(i => i.amount < 1));

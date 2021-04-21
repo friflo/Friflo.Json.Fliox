@@ -50,13 +50,13 @@ namespace Friflo.Json.EntityGraph.Internal.Map
         }
         
         public override DiffNode Diff (Differ differ, Ref<T> left, Ref<T> right) {
-            if (left.Id != right.Id)
-                return differ.AddNotEqual(left.Id, right.Id);
+            if (left.id != right.id)
+                return differ.AddNotEqual(left.id, right.id);
             return null;
         }
         
         public override void Trace(Tracer tracer, Ref<T> value) {
-            string id = value.Id;
+            string id = value.id;
             if (id == null)
                 return;
             var store = tracer.tracerContext.Store();
@@ -71,7 +71,7 @@ namespace Friflo.Json.EntityGraph.Internal.Map
         }
 
         public override void Write(ref Writer writer, Ref<T> value) {
-            string id = value.Id;
+            string id = value.id;
             if (id != null) {
                 writer.WriteString(id);
             } else {

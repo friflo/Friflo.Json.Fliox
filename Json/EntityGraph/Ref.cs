@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
@@ -14,45 +15,51 @@ namespace Friflo.Json.EntityGraph
     
     public readonly struct Ref<T>  where T : Entity
     {
-        internal readonly   PeerEntity<T>   peer;
-        private  readonly   T               entity;     // not null, if set by application
-        private  readonly   string          id;         // not null, if set by application
-        
-        public   override   string          ToString() => Id;
-        
-        // public Ref() { }
+        // invariant of Ref<T> has following cases:
+        //
+        //      id == null,     entity == null,     peer == null
+        //      id != null,     entity == null,     peer == null
+        //      id != null,     entity != null,     peer == null
+        //      id != null,     entity != null,     peer != null    entity may not be assigned
+        //
+        //      peer == null    =>  - application assigned id or entity to Ref<T>
+        //                          - entity is not tracked by EntitySet<T> until now
+        //
+        //      peer != null    =>  - entity is tracked by EntitySet<T>
 
+        public   readonly   string          id;
+        private  readonly   T               entity;
+        internal readonly   PeerEntity<T>   peer;
+        
+        public   override   string          ToString() => id;
+        
         public Ref(string id) {
             this.id     = id;
-            peer        = null;
             entity      = null;
+            peer        = null;
         }
         
         public Ref(T entity) {
+            id          = entity?.id;
             this.entity = entity;
             peer        = null;
-            id          = null;
+            if (entity != null && entity.id == null)
+                throw new InvalidOperationException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.peer   = peer;
+            this.id     = peer.entity.id;  // peer.entity never null
             this.entity = peer.entity;
-            this.id     = null;
+            this.peer   = peer;
         }
-
-        // either id or entity is set. Never both
-        public string   Id => entity != null ? entity.id : id;
 
         public T        Entity {
             get {
-                if (entity != null)
+                if (peer == null)
                     return entity;
-                if (peer != null) {
-                    if (peer.assigned)
-                        return peer.entity;
-                    throw new PeerNotAssignedException(peer.entity);
-                }
-                return null;
+                if (peer.assigned)
+                    return peer.entity;
+                throw new PeerNotAssignedException(peer.entity);
             }
         }
         
@@ -64,11 +71,11 @@ namespace Friflo.Json.EntityGraph
             if (obj == null)
                 return false;
             Ref<T> other = (Ref<T>)obj;
-            return Id.Equals(other.Id);
+            return id.Equals(other.id);
         }
 
         public override int GetHashCode() {
-            return Id.GetHashCode();
+            return id.GetHashCode();
         }
 
         public static implicit operator Ref<T>(T entity) {
@@ -78,7 +85,6 @@ namespace Friflo.Json.EntityGraph
         /* public static implicit operator T(Ref<T> reference) {
             return reference.entity;
         } */
-
 
         public static implicit operator Ref<T>(string id) {
             return new Ref<T> (id);

@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             
             Update2 (order, o => new {
                 o.customer.Entity.lastName,
-                o.customer.Id,
+                o.customer.id,
                 item = o.items.Sel(i => new {
                     i.amount,
                     i.article,
