@@ -22,10 +22,8 @@ namespace Friflo.Json.EntityGraph
         //      id != null,     entity != null,     peer == null
         //      id != null,     entity != null,     peer != null    entity may not be assigned
         //
-        //      peer == null    =>  - application assigned id or entity to Ref<T>
-        //                          - entity is not tracked by EntitySet<T> until now
-        //
-        //      peer != null    =>  - entity is tracked by EntitySet<T>
+        //      peer == null    =>  application  assigned id & entity to Ref<T>
+        //      peer != null    =>  EntitySet<T> assigned id & entity to Ref<> via Read(), ReadRef() or Query()
 
         public   readonly   string          id;
         private  readonly   T               entity;
@@ -35,14 +33,14 @@ namespace Friflo.Json.EntityGraph
         
         public Ref(string id) {
             this.id     = id;
-            entity      = null;
-            peer        = null;
+            this.entity = null;
+            this.peer   = null;
         }
         
         public Ref(T entity) {
-            id          = entity?.id;
+            this.id     = entity?.id;
             this.entity = entity;
-            peer        = null;
+            this.peer   = null;
             if (entity != null && entity.id == null)
                 throw new InvalidOperationException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
