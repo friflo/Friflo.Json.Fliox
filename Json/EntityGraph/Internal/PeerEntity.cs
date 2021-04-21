@@ -10,14 +10,12 @@ namespace Friflo.Json.EntityGraph.Internal
     internal class PeerEntity<T>  where T : Entity
     {
         internal readonly   T               entity; // never null
-        private             T               patchSource; 
-        private             T               nextPatchSource; 
         internal            bool            assigned;
         internal            ReadTask<T>     read;
         internal            CreateTask<T>   create;
 
-        internal            T               PatchSource => patchSource;
-        internal            T               NextPatchSource => nextPatchSource;
+        internal            T               PatchSource     { get; private set; }
+        internal            T               NextPatchSource { get; private set; }
 
         internal PeerEntity(T entity) {
             if (entity == null)
@@ -28,21 +26,21 @@ namespace Friflo.Json.EntityGraph.Internal
         internal void SetPatchSource(T entity) {
             if (entity == null)
                 throw new InvalidOperationException("SetPatchSource() - expect entity not null");
-            patchSource = entity;
+            PatchSource = entity;
         }
         
         internal void SetPatchSourceNull() {
-            patchSource = null;
+            PatchSource = null;
         }
         
         internal void SetNextPatchSource(T entity) {
             if (entity == null)
                 throw new InvalidOperationException("SetNextPatchSource() - expect entity not null");
-            nextPatchSource = entity;
+            NextPatchSource = entity;
         }
         
         internal void SetNextPatchSourceNull() {
-            nextPatchSource = null;
+            NextPatchSource = null;
         }
     }
 
