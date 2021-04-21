@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         //      id == null,     entity == null,     peer == null
         //      id != null,     entity == null,     peer == null
         //      id != null,     entity != null,     peer == null
-        //      id != null,     entity != null,     peer != null    entity may not be assigned
+        //      id != null,     entity != null,     peer != null
         //
         //      peer == null    =>  application  assigned id & entity to Ref<T>
         //      peer != null    =>  EntitySet<T> assigned id & entity to Ref<> via Read(), ReadRef() or Query()
