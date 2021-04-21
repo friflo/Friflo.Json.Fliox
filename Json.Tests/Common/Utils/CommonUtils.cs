@@ -29,9 +29,14 @@ namespace Friflo.Json.Tests.Common.Utils
 #endif
         }
         
-        public static void AreSimiliar(object expect, object actual) {
-            var normalisedExpect    = expect.ToString().Replace(" ", string.Empty);
-            var actualExpect        = actual.ToString().Replace(" ", string.Empty);
+        public static void AreSimilar(object expect, object actual) {
+            var normalisedExpect    = expect.ToString();
+            var actualExpect        = actual.ToString();
+            if (normalisedExpect == null || actualExpect == null)
+                throw new InvalidOperationException("AreSimilar() - ToString() of both parameter must not be null");
+            
+            normalisedExpect    = normalisedExpect.Replace(" ", string.Empty);
+            actualExpect        = actualExpect.Replace(" ", string.Empty);
             if (normalisedExpect.Equals(actualExpect))
                 return;
             Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
