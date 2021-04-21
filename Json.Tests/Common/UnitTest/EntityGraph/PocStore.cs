@@ -76,7 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            await store.Sync();
+            
+            await store.Sync(); // -------- Sync --------
             
             cameraCreate.name = "Changed name";
             AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
@@ -85,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual(1, store.LogChanges());       // SaveChanges() is idempotent => state did not change
 
             store.articles.Delete(camForDelete.id);
-            await store.Sync();
+            await store.Sync(); // -------- Sync --------
 
             var cameraNotSynced = store.articles.Read("article-1");
             var e = Throws<PeerNotSyncedException>(() => { var res = cameraNotSynced.Result; });
@@ -126,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual(1, store.orders.LogSetChanges());
             AreEqual(3, store.LogChanges());
             AreEqual(3, store.LogChanges());       // SaveChanges() is idempotent => state did not change
-            await store.Sync();
+            await store.Sync(); // -------- Sync --------
             return store;
         }
     }

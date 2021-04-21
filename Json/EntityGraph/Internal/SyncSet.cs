@@ -4,12 +4,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Database;
+using Friflo.Json.EntityGraph.Internal.Map;
 using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph.Internal
 {
     internal abstract class SyncSet
     {
+        internal  abstract  int     TaskCount { get; }
+        
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
@@ -45,7 +48,11 @@ namespace Friflo.Json.EntityGraph.Internal
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
         }
-        
+
+        internal override   int     TaskCount => reads.Count + queries.Count + creates.Count + patches.Count + deletes.Count;
+
+        public   override   string  ToString() => TaskCount.ToString();
+
         internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
             if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
                 return result;
@@ -114,20 +121,25 @@ namespace Friflo.Json.EntityGraph.Internal
 
         internal int LogEntityChanges(T entity) {
             var peer = set.GetPeerById(entity.id);
-            GetEntityChanges(peer);
-            var patch = patches[entity.id];
-            return patch.patches.Count;
+            var patch = GetEntityChanges(peer);
+            if (patch != null)
+                return patch.patches.Count;
+            return 0;
         }
 
-        private void GetEntityChanges(PeerEntity<T> peer) {
+        /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to
+        /// find changes in referenced entities in <see cref="Ref{T}"/> fields of the given entity.
+        /// In these cases <see cref="RefMapper{T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
+        /// which is not already assigned) 
+        private EntityPatch GetEntityChanges(PeerEntity<T> peer) {
             if (peer.create != null) {
                 set.intern.tracer.Trace(peer.entity);
-                return;
+                return null;
             }
             if (peer.patchSource != null) {
                 var diff = set.intern.objectPatcher.differ.GetDiff(peer.patchSource, peer.entity);
                 if (diff == null)
-                    return;
+                    return null;
                 var patchList = set.intern.objectPatcher.CreatePatches(diff);
                 var id = peer.entity.id;
                 var entityPatch = new EntityPatch {
@@ -137,7 +149,9 @@ namespace Friflo.Json.EntityGraph.Internal
                 var json = set.intern.jsonMapper.writer.Write(peer.entity);
                 peer.nextPatchReference = set.intern.jsonMapper.Read<T>(json);
                 patches[peer.entity.id] = entityPatch;
+                return entityPatch;
             }
+            return null;
         }
 
         internal override void AddTasks(List<DatabaseTask> tasks) {

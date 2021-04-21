@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntityDatabase                  database;
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
-
+        
         internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore  = typeStore;
             this.database   = database;
@@ -50,6 +50,16 @@ namespace Friflo.Json.EntityGraph
         //         So internal fields are encapsulated in field intern.
         internal readonly   StoreIntern     intern;
         public              TypeStore       TypeStore => intern.typeStore;
+        
+        internal int TaskCount {
+            get {
+                int count = 0;
+                foreach (var pair in intern.setByType) {
+                    count += pair.Value.Sync.TaskCount;
+                }
+                return count;
+            }
+        }
         
         protected EntityStore(EntityDatabase database) {
             var typeStore = new TypeStore();

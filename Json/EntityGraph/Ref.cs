@@ -10,7 +10,7 @@ namespace Friflo.Json.EntityGraph
     public class Entity {
         public              string  id;
 
-        public override     string  ToString() => id;
+        public override     string  ToString() => id ?? "null";
     }
     
     public readonly struct Ref<T>  where T : Entity
@@ -29,7 +29,7 @@ namespace Friflo.Json.EntityGraph
         private  readonly   T               entity;
         internal readonly   PeerEntity<T>   peer;
         
-        public   override   string          ToString() => id;
+        public   override   string          ToString() => id ?? "null";
         
         public Ref(string id) {
             this.id     = id;
