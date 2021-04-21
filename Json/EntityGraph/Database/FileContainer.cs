@@ -109,8 +109,7 @@ namespace Friflo.Json.EntityGraph.Database
         
         
         // -------------------------------------- helper methods -------------------------------------- 
-        private static List<string> GetIds(string folder)
-        {
+        private static List<string> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var ids = new List<string>(fileNames.Length);
             for (int n = 0; n < fileNames.Length; n++) {
@@ -122,26 +121,19 @@ namespace Friflo.Json.EntityGraph.Database
             return ids;
         }
         
-        private static async Task WriteText(string filePath, string text)
-        {
+        private static async Task WriteText(string filePath, string text) {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
-            using (var sourceStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None,
-                bufferSize: 4096, useAsync: false))
-            {
-                await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+            using (var destStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: false)) {
+                await destStream.WriteAsync(encodedText, 0, encodedText.Length);
             }
         }
         
-        private static async Task<string> ReadText(string filePath)
-        {
-            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-                bufferSize: 4096, useAsync: false))
-            {
+        private static async Task<string> ReadText(string filePath) {
+            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 var sb = new StringBuilder();
                 byte[] buffer = new byte[0x1000];
                 int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
-                {
+                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0) {
                     string text = Encoding.UTF8.GetString(buffer, 0, numRead);
                     sb.Append(text);
                 }
@@ -149,8 +141,7 @@ namespace Friflo.Json.EntityGraph.Database
             }
         }
         
-        private static void DeleteFile(string filePath)
-        {
+        private static void DeleteFile(string filePath) {
             File.Delete(filePath);
         }
     }
