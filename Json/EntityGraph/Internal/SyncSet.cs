@@ -135,8 +135,9 @@ namespace Friflo.Json.EntityGraph.Internal
                 set.intern.tracer.Trace(peer.entity);
                 return null;
             }
-            if (peer.patchSource != null) {
-                var diff = set.intern.objectPatcher.differ.GetDiff(peer.patchSource, peer.entity);
+            var patchSource = peer.PatchSource;
+            if (patchSource != null) {
+                var diff = set.intern.objectPatcher.differ.GetDiff(patchSource, peer.entity);
                 if (diff == null)
                     return null;
                 var patchList = set.intern.objectPatcher.CreatePatches(diff);
@@ -146,7 +147,7 @@ namespace Friflo.Json.EntityGraph.Internal
                     patches = patchList
                 };
                 var json = set.intern.jsonMapper.writer.Write(peer.entity);
-                peer.nextPatchReference = set.intern.jsonMapper.Read<T>(json);
+                peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
                 patches[peer.entity.id] = entityPatch;
                 return entityPatch;
             }
@@ -238,7 +239,7 @@ namespace Friflo.Json.EntityGraph.Internal
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
                 peer.create = null;
-                peer.patchSource = set.intern.jsonMapper.Read<T>(entry.Value.value.json);
+                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
             }
         }
         
@@ -268,8 +269,8 @@ namespace Friflo.Json.EntityGraph.Internal
             foreach (var entityPatch in entityPatches) {
                 var id = entityPatch.id;
                 var peer = set.GetPeerById(id);
-                peer.patchSource = peer.nextPatchReference;
-                peer.nextPatchReference = null;
+                peer.SetPatchSource(peer.NextPatchSource);
+                peer.SetNextPatchSourceNull();
             }
         }
 

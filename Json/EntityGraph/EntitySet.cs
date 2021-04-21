@@ -221,13 +221,13 @@ namespace Friflo.Json.EntityGraph
                 var json = entity.Value.value.json;
                 if (json != null && "null" != json) {
                     intern.jsonMapper.ReadTo(json, peer.entity);
-                    peer.patchSource = intern.jsonMapper.Read<T>(json);
+                    peer.SetPatchSource(intern.jsonMapper.Read<T>(json));
                     if (read != null) {
                         read.result = peer.entity;
                         read.synced = true;
                     }
                 } else {
-                    peer.patchSource = null;
+                    peer.SetPatchSourceNull();
                     if (read != null) {
                         read.result = null;
                         read.synced = true;
