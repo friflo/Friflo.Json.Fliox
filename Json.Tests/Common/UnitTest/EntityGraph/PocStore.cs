@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var camera =        store.articles.Read("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
-            var createCamForDelete = store.articles.Create(camForDelete);
+            store.articles.Create(camForDelete);
             await store.Sync();
             
             cameraCreate.name = "Changed name";
