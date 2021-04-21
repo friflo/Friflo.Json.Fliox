@@ -22,10 +22,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     public class Article : Entity
     {
         public string           name;
+        public Ref<Producer>    producer;
     }
 
     public class Customer : Entity {
         public string           lastName;
+    }
+    
+    public class Producer : Entity {
+        public string           name;
     }
 
     // --- store containers
@@ -35,11 +40,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             orders      = new EntitySet<Order>       (this);
             customers   = new EntitySet<Customer>    (this);
             articles    = new EntitySet<Article>     (this);
+            producers   = new EntitySet<Producer>     (this);
         }
 
         public readonly EntitySet<Order>      orders;
         public readonly EntitySet<Customer>   customers;
         public readonly EntitySet<Article>    articles;
+        public readonly EntitySet<Producer>   producers;
     }
         
     // --------------------------------------------------------------------
@@ -48,8 +55,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database);
             var order       = new Order { id = "order-1" };
+
+            var producer1 = new Producer { id ="producer-1", name = "Producer "};
+            store.producers.Create(producer1);
             
-            var cameraCreate    = new Article { id = "article-1", name = "Camera" };
+            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = producer1 };
             var createCam1 = store.articles.Create(cameraCreate);
             var createCam2 = store.articles.Create(cameraCreate);   // Create() is idempotent
             AreSame(createCam1, createCam2);                       // test redundant create
