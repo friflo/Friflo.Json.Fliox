@@ -31,6 +31,8 @@ namespace Friflo.Json.EntityGraph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
         
+        public   override   string                          ToString() => $"TaskCount: {TaskCount}, PeerCount: {PeerCount}";
+
         internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore  = typeStore;
             this.database   = database;
@@ -39,7 +41,27 @@ namespace Friflo.Json.EntityGraph
             setByType = new Dictionary<Type, EntitySet>();
             setByName = new Dictionary<string, EntitySet>();
             objectPatcher = new ObjectPatcher(jsonMapper);
-        } 
+        }
+        
+        internal int TaskCount {
+            get {
+                int count = 0;
+                foreach (var pair in setByType) {
+                    count += pair.Value.Sync.TaskCount;
+                }
+                return count;
+            }
+        }
+        
+        internal int PeerCount {
+            get {
+                int count = 0;
+                foreach (var pair in setByType) {
+                    count += pair.Value.PeerCount;
+                }
+                return count;
+            }
+        }
     }
     
     // --------------------------------------- EntityStore ---------------------------------------
@@ -50,17 +72,10 @@ namespace Friflo.Json.EntityGraph
         //         So internal fields are encapsulated in field intern.
         internal readonly   StoreIntern     intern;
         public              TypeStore       TypeStore => intern.typeStore;
-        
-        internal int TaskCount {
-            get {
-                int count = 0;
-                foreach (var pair in intern.setByType) {
-                    count += pair.Value.Sync.TaskCount;
-                }
-                return count;
-            }
-        }
-        
+
+        public   override   string          ToString() => intern.ToString();
+
+
         protected EntityStore(EntityDatabase database) {
             var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);

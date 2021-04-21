@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph.Internal
 
         internal override   int     TaskCount => reads.Count + queries.Count + creates.Count + patches.Count + deletes.Count;
 
-        public   override   string  ToString() => TaskCount.ToString();
+        public   override   string  ToString() => $"TaskCount: {TaskCount.ToString()}";
 
         internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
             if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))

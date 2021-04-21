@@ -16,7 +16,8 @@ namespace Friflo.Json.EntityGraph
     {
         internal  readonly  string          name;
         
-        internal  abstract  SyncSet         Sync { get;  }
+        internal  abstract  SyncSet         Sync        { get;  }
+        internal  abstract  int             PeerCount   { get;  }
         
         internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 
@@ -61,7 +62,10 @@ namespace Friflo.Json.EntityGraph
         internal            SyncSet<T>                          sync;
         
         internal override   SyncSet                             Sync => sync;
-        
+        internal override   int                                 PeerCount => peers.Count;
+
+        public override string ToString() => $"TaskCount: {Sync.TaskCount}, PeerCount: {PeerCount}";
+
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
             store.intern.setByType[type]       = this;
