@@ -31,8 +31,6 @@ namespace Friflo.Json.EntityGraph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
         
-        public   override   string                          ToString() => $"TaskCount: {TaskCount}, PeerCount: {PeerCount}";
-
         internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore  = typeStore;
             this.database   = database;
@@ -43,23 +41,13 @@ namespace Friflo.Json.EntityGraph
             objectPatcher = new ObjectPatcher(jsonMapper);
         }
         
-        internal int TaskCount {
+        internal SetInfo SetInfoSum {
             get {
-                int count = 0;
+                var sum = new SetInfo();
                 foreach (var pair in setByType) {
-                    count += pair.Value.Sync.TaskCount;
+                    sum.Add(pair.Value.Sync.SetInfo);
                 }
-                return count;
-            }
-        }
-        
-        internal int PeerCount {
-            get {
-                int count = 0;
-                foreach (var pair in setByType) {
-                    count += pair.Value.PeerCount;
-                }
-                return count;
+                return sum;
             }
         }
     }
@@ -73,7 +61,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   StoreIntern     intern;
         public              TypeStore       TypeStore => intern.typeStore;
 
-        public   override   string          ToString() => intern.ToString();
+        public   override   string          ToString() => $"{intern.SetInfoSum}";
 
 
         protected EntityStore(EntityDatabase database) {

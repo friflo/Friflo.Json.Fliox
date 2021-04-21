@@ -11,7 +11,7 @@ namespace Friflo.Json.EntityGraph.Internal
 {
     internal abstract class SyncSet
     {
-        internal  abstract  int     TaskCount { get; }
+        internal  abstract  SetInfo SetInfo { get; }
         
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -21,7 +21,8 @@ namespace Friflo.Json.EntityGraph.Internal
         internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities task, DeleteEntitiesResult result);
     }
-    
+
+
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
     internal class SyncSet<T> : SyncSet where T : Entity
@@ -49,9 +50,7 @@ namespace Friflo.Json.EntityGraph.Internal
             this.set = set;
         }
 
-        internal override   int     TaskCount => reads.Count + queries.Count + creates.Count + patches.Count + deletes.Count;
-
-        public   override   string  ToString() => $"TaskCount: {TaskCount.ToString()}";
+        internal override   SetInfo                            SetInfo => set.GetTaskInfo();
 
         internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
             if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
@@ -275,6 +274,20 @@ namespace Friflo.Json.EntityGraph.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, DeleteEntitiesResult result) {
+        }
+
+        private static int Some(int count) { return count != 0 ? 1 : 0; }
+
+        public void SetTaskInfo(SetInfo info) {
+            info.tasks = Some(reads.Count)      + Some(queries.Count)   + Some(creates.Count) +
+                         Some(patches.Count)    + Some(deletes.Count)   + Some(readRefMap.Count);
+            //
+            info.reads      = reads.Count;
+            info.queries    = queries.Count;
+            info.creates    = creates.Count;
+            info.patches    = patches.Count;
+            info.deletes    = deletes.Count;
+            info.readRefs   = readRefMap.Count;
         }
     }
 }

@@ -16,8 +16,8 @@ namespace Friflo.Json.EntityGraph
     {
         internal  readonly  string          name;
         
-        internal  abstract  SyncSet         Sync        { get;  }
-        internal  abstract  int             PeerCount   { get;  }
+        internal  abstract  SyncSet         Sync       { get;  }
+        internal  abstract  SetInfo         SetInfo   { get;  }
         
         internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
 
@@ -46,7 +46,37 @@ namespace Friflo.Json.EntityGraph
             tracer          = new Tracer(store.intern.typeCache, store);
             this.store      = store;
         }
-    } 
+    }
+    
+    public class SetInfo
+    {
+        public  int     peers;
+        public  int     tasks;
+        //
+        public  int     creates;
+        public  int     reads;
+        public  int     queries;
+        public  int     patches;
+        public  int     deletes;
+        public  int     readRefs;
+
+        public void Add(SetInfo info) {
+            peers       += info.peers;
+            tasks       += info.tasks;
+            creates     += info.creates;
+            reads       += info.reads;
+            queries     += info.queries;
+            patches     += info.patches;
+            deletes     += info.deletes;
+            readRefs    += info.readRefs;
+        }
+
+        private static string F(int count) => count > 0 ? count.ToString() : "-"; 
+
+        public override string ToString() {
+            return $"peers: {peers},    tasks: {F(tasks)} (creates: {F(creates)}, reads: {F(reads)}, readRefs: {F(readRefs)}, queries: {F(queries)}, patches: {F(patches)}, deletes: {F(deletes)})";
+        }
+    }
     
     public class EntitySet<T> : EntitySet where T : Entity
     {
@@ -62,9 +92,15 @@ namespace Friflo.Json.EntityGraph
         internal            SyncSet<T>                          sync;
         
         internal override   SyncSet                             Sync => sync;
-        internal override   int                                 PeerCount => peers.Count;
+        internal override   SetInfo                            SetInfo => GetTaskInfo();
 
-        public override string ToString() => $"TaskCount: {Sync.TaskCount}, PeerCount: {PeerCount}";
+        public override string ToString() => GetTaskInfo().ToString();
+        
+        public SetInfo GetTaskInfo() {
+            var info = new SetInfo { peers = peers.Count };
+            sync.SetTaskInfo(info);
+            return info;
+        }
 
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
