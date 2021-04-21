@@ -80,7 +80,8 @@ namespace Friflo.Json.EntityGraph.Internal.Map
         }
 
         public override Ref<T> Read(ref Reader reader, Ref<T> slot, out bool success) {
-            if (reader.parser.Event == JsonEvent.ValueString) {
+            var ev = reader.parser.Event;
+            if (ev == JsonEvent.ValueString) {
                 success = true;
                 string id = reader.parser.value.ToString();
                 if (reader.tracerContext != null) {
@@ -93,8 +94,11 @@ namespace Friflo.Json.EntityGraph.Internal.Map
                 slot = new Ref<T> (id);
                 return slot;
             }
-            success = false;
-            return default;
+            if (ev == JsonEvent.ValueNull) {
+                success = true;
+                return default;
+            }
+            return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
         }
     }
 }
