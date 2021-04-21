@@ -12,9 +12,9 @@ namespace Friflo.Json.EntityGraph
     
     public class Ref<T>  where T : Entity
     {
-        internal    PeerEntity<T>   peer;
-        private     T               entity;
-        private     string          id;
+        internal readonly   PeerEntity<T>   peer;
+        private             T               entity;
+        private             string          id;
         
         public Ref() { }
 
@@ -24,6 +24,11 @@ namespace Friflo.Json.EntityGraph
         
         public Ref(T entity) {
             this.entity = entity;
+        }
+        
+        internal Ref(PeerEntity<T> peer) {
+            this.peer = peer;
+            this.id = peer.entity.id;
         }
 
         // either id or entity is set. Never both
