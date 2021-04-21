@@ -15,6 +15,16 @@ namespace Friflo.Json.EntityGraph
         internal    PeerEntity<T>   peer;
         private     T               entity;
         private     string          id;
+        
+        public Ref() { }
+
+        public Ref(string id) {
+            this.id = id;
+        }
+        
+        public Ref(T entity) {
+            this.entity = entity;
+        }
 
         // either id or entity is set. Never both
         public string   Id {
@@ -22,7 +32,7 @@ namespace Friflo.Json.EntityGraph
             set { id = value; entity = null; }
         }
 
-        public T GetEntity() {
+        internal T GetEntity() {
             return entity;
         }
 
@@ -52,9 +62,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         public static implicit operator Ref<T>(T entity) {
-            var reference = new Ref<T>();
-            reference.entity    = entity;
-            return reference;
+            return new Ref<T> (entity);
         }
         
         /* public static implicit operator T(Ref<T> reference) {
@@ -63,9 +71,7 @@ namespace Friflo.Json.EntityGraph
 
 
         public static implicit operator Ref<T>(string id) {
-            var reference = new Ref<T>();
-            reference.id    = id;
-            return reference;
+            return new Ref<T> (id);
         }
     }
 }
