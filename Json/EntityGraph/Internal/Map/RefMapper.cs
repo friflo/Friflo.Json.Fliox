@@ -39,7 +39,7 @@ namespace Friflo.Json.EntityGraph.Internal.Map
         public override string DataTypeName() { return "Ref<>"; }
 
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
-            base(config, type, true, true)
+            base(config, type, false, true)
         {
         }
 
@@ -94,7 +94,7 @@ namespace Friflo.Json.EntityGraph.Internal.Map
                 return slot;
             }
             success = false;
-            return null;
+            return default;
         }
     }
 }

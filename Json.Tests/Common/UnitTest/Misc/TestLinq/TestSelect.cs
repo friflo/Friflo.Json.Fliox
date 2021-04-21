@@ -163,12 +163,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
             Update (order, o => o.customer.Entity.lastName);
             Update (order, o => o.items[1].amount);
-
+            
             Update2 (order, o => new {
-                customer = o.customer.Sub (c => new {
-                    c.Entity,
-                    c.Entity.id
-                }),
                 o.customer.Entity.lastName,
                 o.customer.Id,
                 item = o.items.Sel(i => new {
@@ -178,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 }),
             });
             
-            Update3 (order, () => new EntityGraph.Order{ customer = null, items = null});
+            Update3 (order, () => new EntityGraph.Order{ items = null});
 
 
             int index = 3;

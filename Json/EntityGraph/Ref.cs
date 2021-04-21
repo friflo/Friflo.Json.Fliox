@@ -7,39 +7,41 @@ namespace Friflo.Json.EntityGraph
 {
     // Change to attribute
     public class Entity {
-        public string   id;
+        public              string  id;
+
+        public override     string  ToString() => id;
     }
     
-    public class Ref<T>  where T : Entity
+    public readonly struct Ref<T>  where T : Entity
     {
         internal readonly   PeerEntity<T>   peer;
-        private             T               entity;
-        private             string          id;
+        private  readonly   T               entity;     // not null, if set by application
+        private  readonly   string          id;         // not null, if set by application
         
-        public Ref() { }
+        public   override   string          ToString() => Id;
+        
+        // public Ref() { }
 
         public Ref(string id) {
-            this.id = id;
+            this.id     = id;
+            peer        = null;
+            entity      = null;
         }
         
         public Ref(T entity) {
             this.entity = entity;
+            peer        = null;
+            id          = null;
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.peer = peer;
-            this.id = peer.entity.id;
+            this.peer   = peer;
+            this.entity = peer.entity;
+            this.id     = null;
         }
 
         // either id or entity is set. Never both
-        public string   Id {
-            get => entity != null ? entity.id : id;
-            set { id = value; entity = null; }
-        }
-
-        internal T GetEntity() {
-            return entity;
-        }
+        public string   Id => entity != null ? entity.id : id;
 
         public T        Entity {
             get {
@@ -52,7 +54,10 @@ namespace Friflo.Json.EntityGraph
                 }
                 return null;
             }
-            set { entity = value; id = null; }
+        }
+        
+        internal T GetEntity() {
+            return entity;
         }
 
         public override bool Equals(object obj) {
