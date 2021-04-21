@@ -98,7 +98,7 @@ namespace Friflo.Json.EntityGraph.Internal.Map
                 success = true;
                 return default;
             }
-            return reader.ErrorMsg<T>("unexpected state: ", ev, out success);
+            return reader.HandleEvent(this, out success);
         }
     }
 }
