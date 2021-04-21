@@ -56,10 +56,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var store = new PocStore(database);
             var order       = new Order { id = "order-1" };
 
-            var producer1 = new Producer { id ="producer-1", name = "Producer "};
-            store.producers.Create(producer1);
+            var samsung = new Producer { id ="producer-1", name = "Samsung"};
+            store.producers.Create(samsung);
             
-            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = producer1 };
+            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = samsung };
             var createCam1 = store.articles.Create(cameraCreate);
             var createCam2 = store.articles.Create(cameraCreate);   // Create() is idempotent
             AreSame(createCam1, createCam2);                       // test redundant create
