@@ -74,7 +74,7 @@ namespace Friflo.Json.EntityGraph
         private static string F(int count) => count > 0 ? count.ToString() : "-"; 
 
         public override string ToString() {
-            return $"peers: {peers},    tasks: {F(tasks)} (creates: {F(creates)}, reads: {F(reads)} (refs: {F(readRefs)}), queries: {F(queries)}, patches: {F(patches)}, deletes: {F(deletes)})";
+            return $"peers: {peers},    tasks: {F(tasks)} {{ creates: {F(creates)}, reads: {F(reads)} (refs: {F(readRefs)}), queries: {F(queries)}, patches: {F(patches)}, deletes: {F(deletes)} }}";
         }
     }
     

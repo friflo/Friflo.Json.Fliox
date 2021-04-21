@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
+
 
 namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 {
@@ -76,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            
+            AreSimiliar("peers: 5, tasks: 3 { creates: 4, reads: 2 (refs: -), queries: -, patches: -, deletes: - }", store);
             await store.Sync(); // -------- Sync --------
             
             cameraCreate.name = "Changed name";

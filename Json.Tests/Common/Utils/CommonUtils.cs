@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Mapper.Utils;
-
+using NUnit.Framework;
 #if !UNITY_5_3_OR_NEWER
     using FluentAssertions;
 #endif
@@ -27,6 +27,14 @@ namespace Friflo.Json.Tests.Common.Utils
 #if !UNITY_5_3_OR_NEWER
             actual.Should().BeEquivalentTo(expect);
 #endif
+        }
+        
+        public static void AreSimiliar(object expect, object actual) {
+            var normalisedExpect    = expect.ToString().Replace(" ", string.Empty);
+            var actualExpect        = actual.ToString().Replace(" ", string.Empty);
+            if (normalisedExpect.Equals(actualExpect))
+                return;
+            Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
         }
     }
     
