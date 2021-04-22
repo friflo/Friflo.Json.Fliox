@@ -76,8 +76,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            AreEqual("peers: 5, tasks: 3", store.ToString());
-            AreEqual("peers: 4, tasks: 2 -> create #3, read #2", store.articles.ToString());
+            AreEqual("peers: 5, tasks: 3",                          store.ToString());
+            AreEqual("peers: 4, tasks: 2 -> create #3, read #2",    store.articles.ToString());
+            AreEqual("peers: 1, tasks: 1 -> create #1",             store.producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
