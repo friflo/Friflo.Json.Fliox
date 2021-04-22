@@ -15,11 +15,23 @@ namespace Friflo.Json.EntityGraph
         public  int     create;
         public  int     read;
         public  int     readRef;
-        public  int     query;
+        public  int     queries;
         public  int     patch;
         public  int     delete;
 
         internal static void  Append(StringBuilder sb, string label, int count, ref bool first) {
+            if (count == 0)
+                return;
+            if (!first) {
+                sb.Append(", ");
+            }
+            sb.Append(label);
+            sb.Append(" #");
+            sb.Append(count);
+            first = false;
+        }
+        
+        internal static void  AppendTasks(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
                 return;
             if (!first) {
@@ -39,19 +51,19 @@ namespace Friflo.Json.EntityGraph
             
             if (tasks > 0) {
                 bool first = false;
-                Append(sb, "tasks", tasks, ref first);
+                AppendTasks(sb, "tasks", tasks, ref first);
                 first = true;
                 sb.Append(" -> ");
-                Append(sb, "create",   create,    ref first);
-                Append(sb, "read",     read,      ref first);
+                Append(sb,  "create",   create,    ref first);
+                Append(sb,  "read",     read,      ref first);
                 if (readRef > 0) {
                     sb.Append("(");
                     Append(sb, "ref",      readRef,    ref first);
                     sb.Append(")");
                 }
-                Append(sb, "query",    query,      ref first);
-                Append(sb, "patch",    patch,      ref first);
-                Append(sb, "delete",   delete,     ref first);
+                AppendTasks(sb, "queries",  queries,    ref first);
+                Append(sb,  "patch",    patch,      ref first);
+                Append(sb,  "delete",   delete,     ref first);
             }
             return sb.ToString();
         }
@@ -82,7 +94,7 @@ namespace Friflo.Json.EntityGraph
             
             if (tasks > 0) {
                 bool first = false;
-                SetInfo.Append(sb, "tasks", tasks, ref first);
+                SetInfo.AppendTasks(sb, "tasks", tasks, ref first);
             }
             return sb.ToString();
         }

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
 
 namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
@@ -77,7 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            AreSimilar("peers: 5, tasks: 3", store);
+            AreEqual("peers: 5, tasks: 3", store.ToString());
+            AreEqual("peers: 4, tasks: 2 -> create #3, read #2", store.articles.ToString());
             
             await store.Sync(); // -------- Sync --------
             
