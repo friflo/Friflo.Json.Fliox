@@ -32,15 +32,21 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
             return ReadRefByPathIntern<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
             return ReadRefsByPathIntern<TValue>(selector);
         }
         
         public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity 
         {
+            if (synced)
+                throw AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (isArraySelector)
                 throw new InvalidOperationException($"selector returns an array of ReadRefs. Use ${nameof(ReadRefs)}()");
@@ -48,6 +54,8 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
             if (!isArraySelector)
                 throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
@@ -66,9 +74,6 @@ namespace Friflo.Json.EntityGraph
         }
         
         private ReadRefTask<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-            
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefTask<TValue>)readRef;
@@ -78,9 +83,6 @@ namespace Friflo.Json.EntityGraph
         }
         
         private ReadRefsTask<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-                
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefsTask<TValue>)readRef;
