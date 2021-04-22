@@ -82,6 +82,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             await store.Sync(); // -------- Sync --------
             
+            AreEqual("peers: 4",                                    store.ToString());
+            
             cameraCreate.name = "Changed name";
             AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
             AreEqual(1, store.articles.LogSetChanges());

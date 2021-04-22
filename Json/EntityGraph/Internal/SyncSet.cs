@@ -243,7 +243,8 @@ namespace Friflo.Json.EntityGraph.Internal
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = entities.entities[id];
-                if (value.value.json == null)
+                var json = value.value.json;  // in case of RemoteClient json is "null"
+                if (json == null || json == "null")
                     set.DeletePeer(id);
             }
             for (int n = 0; n < result.references.Count; n++) {
