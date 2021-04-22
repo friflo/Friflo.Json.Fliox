@@ -59,6 +59,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
             store.articles.Create(galaxy);
             store.producers.Create(samsung); // todo remove - should be created implicit by galaxy
+            
+            var apple     = new Producer { id = "producer-apple", name = "Apple"};
+            store.producers.Create(apple);
+            store.articles.Delete("article-iphone"); // delete if exist in database
+            
 
             await store.Sync(); // -------- Sync --------
             
@@ -80,13 +85,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            AreEqual("peers: 6, tasks: 2",                          store.ToString());
+            AreEqual("peers: 7, tasks: 2",                          store.ToString());
             AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    store.articles.ToString());
-            AreEqual("peers: 1",                                    store.producers.ToString());
+            AreEqual("peers: 2",                                    store.producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 5",                                    store.ToString()); // "article-missing" peer removed
+            AreEqual("peers: 6",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, store.articles.LogEntityChanges(cameraCreate));

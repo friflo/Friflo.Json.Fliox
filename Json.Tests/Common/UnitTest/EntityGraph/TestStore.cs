@@ -139,11 +139,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // IsNull(galaxy.Result.producer.Entity.name);  todo
             galaxy.Result.producer.Read(store.producers);
+            var iphone = new Article { id = "article-galaxy", name = "Galaxy S10", producer = "producer-apple" };
+            iphone.producer.Read(store.producers);
             
             await store.Sync();  // -------- Sync --------
             AreEqual("Samsung", galaxy.Result.producer.Entity.name);
-
-
+            // AreEqual("Apple",   iphone.producer.Entity.name);
 
             await store.Sync();  // -------- Sync --------
 
