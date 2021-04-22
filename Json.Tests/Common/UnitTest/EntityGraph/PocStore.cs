@@ -54,56 +54,60 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     {
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database);
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var producers   = store.producers;
+            
             
             var samsung   = new Producer { id = "producer-1", name = "Samsung"};
             var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
-            store.articles.Create(galaxy);
-            store.producers.Create(samsung); // todo remove - should be created implicit by galaxy
+            articles.Create(galaxy);
+            producers.Create(samsung); // todo remove - should be created implicit by galaxy
             
             var apple     = new Producer { id = "producer-apple", name = "Apple"};
-            store.producers.Create(apple);
-            store.articles.Delete("article-iphone"); // delete if exist in database
+            producers.Create(apple);
+            articles.Delete("article-iphone"); // delete if exist in database
             
 
             await store.Sync(); // -------- Sync --------
             
             var order       = new Order { id = "order-1" };
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
-            var createCam1 = store.articles.Create(cameraCreate);
-            var createCam2 = store.articles.Create(cameraCreate);   // Create() is idempotent
+            var createCam1 = articles.Create(cameraCreate);
+            var createCam2 = articles.Create(cameraCreate);   // Create() is idempotent
             AreSame(createCam1, createCam2);                       // test redundant create
             AreEqual("article-1", createCam1.ToString());
             
             for (int n = 0; n < 1; n++) {
                 var id = $"bulk-article-{n:D4}";
                 var newArticle = new Article { id = id, name = id };
-                store.articles.Create(newArticle);
+                articles.Create(newArticle);
             }
 
-            var cameraUnknown = store.articles.Read("article-missing");
-            var camera =        store.articles.Read("article-1");
+            var cameraUnknown = articles.Read("article-missing");
+            var camera =        articles.Read("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
-            store.articles.Create(camForDelete);
+            articles.Create(camForDelete);
             AreEqual("peers: 7, tasks: 2",                          store.ToString());
-            AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    store.articles.ToString());
-            AreEqual("peers: 2",                                    store.producers.ToString());
+            AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    articles.ToString());
+            AreEqual("peers: 2",                                    producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
             AreEqual("peers: 6",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
-            AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
-            AreEqual(1, store.articles.LogSetChanges());
+            AreEqual(1, articles.LogEntityChanges(cameraCreate));
+            AreEqual(1, articles.LogSetChanges());
             AreEqual(1, store.LogChanges());
             AreEqual(1, store.LogChanges());       // SaveChanges() is idempotent => state did not change
 
-            store.articles.Delete(camForDelete.id);
+            articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
 
-            var cameraNotSynced = store.articles.Read("article-1");
+            var cameraNotSynced = articles.Read("article-1");
             var e = Throws<PeerNotSyncedException>(() => { var res = cameraNotSynced.Result; });
             AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
             
@@ -111,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(camera.Result, cameraCreate);
             
             var customer    = new Customer { id = "customer-1", lastName = "Smith" };
-            // store.customers.Create(customer);    // redundant - implicit tracked by order
+            // customers.Create(customer);    // redundant - implicit tracked by order
             
             var item1       = new OrderItem {
                 article = camera.Result,
@@ -121,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order.items.Add(item1);
 
             var smartphone    = new Article { id = "article-2", name = "Smartphone" };
-            // store.articles.Create(smartphone);   // redundant - implicit tracked by order
+            // articles.Create(smartphone);   // redundant - implicit tracked by order
             
             var item2       = new OrderItem {
                 article = smartphone,
@@ -138,8 +142,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             order.items.Add(item3);
 
             order.customer = customer;
-            store.orders.Create(order);
-            AreEqual(1, store.orders.LogSetChanges());
+            orders.Create(order);
+            AreEqual(1, orders.LogSetChanges());
             AreEqual(3, store.LogChanges());
             AreEqual(3, store.LogChanges());       // SaveChanges() is idempotent => state did not change
             
