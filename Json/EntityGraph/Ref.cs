@@ -104,5 +104,9 @@ namespace Friflo.Json.EntityGraph
         public static implicit operator Ref<T>(string id) {
             return new Ref<T> (id);
         }
+
+        public ReadTask<T> Read() {
+            return peer.set.Read(id);
+        }
     }
 }

@@ -58,6 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var samsung   = new Producer { id = "producer-1", name = "Samsung"};
             var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
             store.articles.Create(galaxy);
+            store.producers.Create(samsung); // todo remove - should be created implicit by galaxy
 
             await store.Sync(); // -------- Sync --------
             

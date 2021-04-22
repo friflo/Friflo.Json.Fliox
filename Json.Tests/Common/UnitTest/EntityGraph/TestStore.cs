@@ -130,6 +130,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static bool lab = false;
 
         private static async Task AssertStore(Order order, PocStore store) {
+            
+            var galaxy = store.articles.Read("article-galaxy");
+            await store.Sync();  // -------- Sync --------
+            
+            // IsNull(galaxy.Result.producer.Entity.name);  todo
+            galaxy.Result.producer.Read();
+            
+            await store.Sync();  // -------- Sync --------
+            AreEqual("Samsung", galaxy.Result.producer.Entity.name);
+
+
+
+            await store.Sync();  // -------- Sync --------
+
             ReadTask<Order> order1 =    store.orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
             var allArticles     = store.articles.QueryAll();
@@ -167,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 ReadRefsTask<Entity> allDeps =      order1.ReadAllRefs();
             }
 
-            await store.Sync();
+            await store.Sync();  // -------- Sync --------
 
             AreEqual(4,             allArticles.Result.Count);
             AreEqual(1,             hasOrderCamera.Result.Count);
@@ -195,7 +209,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
-            await store.Sync();
+            await store.Sync(); // -------- Sync --------
+            
             AreEqual("article-1",       articleDeps[0].Id);
             AreEqual("Changed name",    articleDeps[0].Result.name);
             AreEqual("article-2",       articleDeps[1].Id);
@@ -211,7 +226,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var customer1 = store.customers.Read("customer-1");
             var unknown   = store.customers.Read("article-unknown");
 
-            await store.Sync();
+            await store.Sync(); // -------- Sync --------
             
             // AreEqual(1, store.customers.Count);
             // AreEqual(2, store.articles.Count);
