@@ -90,6 +90,10 @@ namespace Friflo.Json.EntityGraph
             return peer;
         }
         
+        internal void DeletePeer (string id) {
+            peers.Remove(id);
+        }
+        
         internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
             string id = reference.id;
             PeerEntity<T> peer = reference.peer;

@@ -271,6 +271,9 @@ namespace Friflo.Json.EntityGraph.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, DeleteEntitiesResult result) {
+            foreach (var id in task.ids) {
+                set.DeletePeer(id);
+            }
         }
 
         private static int Some(int count) { return count != 0 ? 1 : 0; }
