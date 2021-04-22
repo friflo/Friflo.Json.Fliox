@@ -75,17 +75,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 store.articles.Create(newArticle);
             }
 
-            var cameraUnknown = store.articles.Read("article-unknown");
+            var cameraUnknown = store.articles.Read("article-missing");
             var camera =        store.articles.Read("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
             AreEqual("peers: 6, tasks: 2",                          store.ToString());
             AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    store.articles.ToString());
+            AreEqual("peers: 1",                                    store.producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 5",                                    store.ToString());
+            AreEqual("peers: 5",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
