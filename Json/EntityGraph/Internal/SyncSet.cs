@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph.Internal
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
-        internal  abstract  void    ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result);
+        internal  abstract void     ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result, ContainerEntities entities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities task, DeleteEntitiesResult result);
@@ -239,7 +239,13 @@ namespace Friflo.Json.EntityGraph.Internal
             }
         }
         
-        internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result) {
+        internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities entities) {
+            // remove all requested peers from EntitySet which are not present in database
+            foreach (var id in task.ids) {
+                var value = entities.entities[id];
+                if (value.value.json == null)
+                    set.DeletePeer(id);
+            }
             for (int n = 0; n < result.references.Count; n++) {
                 ReadReference          reference = task.references[n];
                 ReadReferenceResult    refResult  = result.references[n];

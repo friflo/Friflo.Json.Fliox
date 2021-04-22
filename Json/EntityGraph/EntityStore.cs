@@ -137,9 +137,10 @@ namespace Friflo.Json.EntityGraph
 
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
             try {
-                foreach (var containerResults in response.containerResults) {
-                    var set = _intern.setByName[containerResults.Key];
-                    set.SyncEntities(containerResults.Value);
+                var containerResults = response.containerResults;
+                foreach (var containerResult in containerResults) {
+                    var set = _intern.setByName[containerResult.Key];
+                    set.SyncEntities(containerResult.Value);
                 }
 
                 var tasks = syncRequest.tasks;
@@ -159,7 +160,8 @@ namespace Friflo.Json.EntityGraph
                         case TaskType.Read:
                             var read = (ReadEntities) task;
                             set = _intern.setByName[read.container];
-                            set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult) result);
+                            var entities = containerResults[read.container];
+                            set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult) result, entities);
                             break;
                         case TaskType.Query:
                             var query = (QueryEntities) task;
