@@ -11,8 +11,6 @@ namespace Friflo.Json.EntityGraph.Internal
 {
     internal abstract class SyncSet
     {
-        internal  abstract  SetInfo SetInfo { get; }
-        
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
@@ -49,8 +47,6 @@ namespace Friflo.Json.EntityGraph.Internal
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
         }
-
-        internal override   SetInfo                             SetInfo => set.GetTaskInfo();
 
         internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
             if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))

@@ -46,7 +46,7 @@ namespace Friflo.Json.EntityGraph
             get {
                 var sum = new SetInfo();
                 foreach (var pair in setByType) {
-                    sum.Add(pair.Value.Sync.SetInfo);
+                    sum.Add(pair.Value.SetInfo);
                 }
                 return sum;
             }

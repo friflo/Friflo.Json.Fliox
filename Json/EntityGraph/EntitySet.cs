@@ -62,15 +62,13 @@ namespace Friflo.Json.EntityGraph
         internal            SyncSet<T>                          sync;
         
         internal override   SyncSet                             Sync => sync;
-        internal override   SetInfo                             SetInfo => GetTaskInfo();
+        public   override   string                              ToString() => SetInfo.ToString();
 
-        public override string ToString() => GetTaskInfo().ToString();
-        
-        public SetInfo GetTaskInfo() {
-            var info = new SetInfo { peers = peers.Count };
-            sync.SetTaskInfo(info);
-            return info;
-        }
+        internal override   SetInfo                             SetInfo { get {
+                var info = new SetInfo { peers = peers.Count };
+                sync.SetTaskInfo(info);
+                return info;
+        }}
 
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
