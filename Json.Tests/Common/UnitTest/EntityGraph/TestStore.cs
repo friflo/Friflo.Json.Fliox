@@ -130,12 +130,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static bool lab = false;
 
         private static async Task AssertStore(Order order, PocStore store) {
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var customers   = store.customers;
             
-            var galaxy = store.articles.Read("article-galaxy");
+            var galaxy = articles.Read("article-galaxy");
             await store.Sync();  // -------- Sync --------
             
             // IsNull(galaxy.Result.producer.Entity.name);  todo
-            galaxy.Result.producer.Read();
+            galaxy.Result.producer.Read(store.producers);
             
             await store.Sync();  // -------- Sync --------
             AreEqual("Samsung", galaxy.Result.producer.Entity.name);
@@ -144,17 +147,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();  // -------- Sync --------
 
-            ReadTask<Order> order1 =    store.orders.Read("order-1");
+            ReadTask<Order> order1 =    orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
-            var allArticles     = store.articles.QueryAll();
-            var allArticles2    = store.articles.QueryByFilter(Operation.FilterTrue);
-            var hasOrderCamera  = store.orders.Query(o => o.items.Any(i => i.name == "Camera"));
-            var read1           = store.orders.Query(o => o.customer.id == "customer-1");
-            var read2           = store.orders.Query(o => o.customer.Entity.lastName == "Smith");
-            var read3           = store.orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
-            var read4           = store.orders.Query(o => o.items.Any(i => i.amount < 1));
-            var read5           = store.orders.Query(o => o.items.All(i => i.amount < 1));
-            var read6           = store.orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
+            var allArticles     = articles.QueryAll();
+            var allArticles2    = articles.QueryByFilter(Operation.FilterTrue);
+            var hasOrderCamera  = orders.Query(o => o.items.Any(i => i.name == "Camera"));
+            var read1           = orders.Query(o => o.customer.id == "customer-1");
+            var read2           = orders.Query(o => o.customer.Entity.lastName == "Smith");
+            var read3           = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
+            var read4           = orders.Query(o => o.items.Any(i => i.amount < 1));
+            var read5           = orders.Query(o => o.items.All(i => i.amount < 1));
+            var read6           = orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
 
             
             ReadRefTask<Customer>     customer   = order1.ReadRefByPath<Customer>(".customer");
@@ -196,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
             AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
 
-            order1 =    store.orders.Read("order-1");
+            order1 =    orders.Read("order-1");
             ReadRefsTask<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
             ReadRefsTask<Article>    articleDeps2   = order1.ReadRefsByPath<Article>(".items[*].article");
             AreSame(articleDeps, articleDeps2);
@@ -218,13 +221,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("article-1",       articleDeps[2].Id);
             AreEqual("Changed name",    articleDeps[2].Result.name);
             
-            var article1            =  store.articles.Read("article-1");
-            var article1Redundant   =  store.articles.Read("article-1");
+            var article1            =  articles.Read("article-1");
+            var article1Redundant   =  articles.Read("article-1");
             AreSame(article1, article1Redundant);
             
-            var article2 =  store.articles.Read("article-2");
-            var customer1 = store.customers.Read("customer-1");
-            var unknown   = store.customers.Read("article-unknown");
+            var article2 =  articles.Read("article-2");
+            var customer1 = customers.Read("customer-1");
+            var unknown   = customers.Read("article-unknown");
 
             await store.Sync(); // -------- Sync --------
             

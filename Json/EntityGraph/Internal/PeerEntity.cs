@@ -10,7 +10,6 @@ namespace Friflo.Json.EntityGraph.Internal
     internal class PeerEntity<T>  where T : Entity
     {
         internal readonly   T               entity; // never null
-        internal readonly   EntitySet<T>    set;
         internal            bool            assigned;
         internal            ReadTask<T>     read;
         internal            CreateTask<T>   create;
@@ -18,8 +17,7 @@ namespace Friflo.Json.EntityGraph.Internal
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }
 
-        internal PeerEntity(T entity, EntitySet<T> set) {
-            this.set = set;
+        internal PeerEntity(T entity) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;

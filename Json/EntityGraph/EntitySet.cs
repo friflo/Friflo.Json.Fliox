@@ -85,7 +85,7 @@ namespace Friflo.Json.EntityGraph
                     throw new InvalidOperationException("");
                 return peer;
             }
-            peer = new PeerEntity<T>(entity, this);
+            peer = new PeerEntity<T>(entity);
             peers.Add(entity.id, peer);
             return peer;
         }
@@ -112,7 +112,7 @@ namespace Friflo.Json.EntityGraph
                 return peer;
             }
             var entity = (T)intern.typeMapper.CreateInstance();
-            peer = new PeerEntity<T>(entity, this);
+            peer = new PeerEntity<T>(entity);
             peer.entity.id = id;
             peers.Add(id, peer);
             return peer;

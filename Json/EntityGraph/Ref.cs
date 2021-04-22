@@ -105,8 +105,9 @@ namespace Friflo.Json.EntityGraph
             return new Ref<T> (id);
         }
 
-        public ReadTask<T> Read() {
-            return peer.set.Read(id);
+        public ReadTask<T> Read(EntitySet<T> set) {
+            // may validate that set is the same which created the PeerEntity<>
+            return set.Read(id);
         }
     }
 }
