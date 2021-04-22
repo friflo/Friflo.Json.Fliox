@@ -286,12 +286,12 @@ namespace Friflo.Json.EntityGraph.Internal
                          Some(patches.Count) +
                          Some(deletes.Count);
             //
-            info.reads      = reads.Count;
-            info.queries    = queries.Count;
-            info.creates    = creates.Count;
-            info.patches    = patches.Count;
-            info.deletes    = deletes.Count;
-            info.readRefs   = readRefMap.Count;
+            info.read      = reads.Count;
+            info.query    = queries.Count;
+            info.create    = creates.Count;
+            info.patch    = patches.Count;
+            info.delete    = deletes.Count;
+            info.readRef   = readRefMap.Count;
         }
     }
 }
