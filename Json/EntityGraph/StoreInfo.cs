@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Friflo.Json.EntityGraph
 {
-    public class SetInfo
+    public struct SetInfo
     {
         public  int     peers;
         public  int     tasks;
@@ -55,12 +57,19 @@ namespace Friflo.Json.EntityGraph
         }
     }
 
-    public class StoreInfo
+    public struct StoreInfo
     {
         public  int     peers;
         public  int     tasks;
+
+        internal StoreInfo(Dictionary<Type, EntitySet> setByType) {
+            peers = 0;
+            tasks = 0;
+            foreach (var pair in setByType)
+                Add(pair.Value.SetInfo);
+        }
         
-        public void Add(SetInfo info) {
+        private void Add(in SetInfo info) {
             peers       += info.peers;
             tasks       += info.tasks;
         }

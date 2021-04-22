@@ -66,7 +66,7 @@ namespace Friflo.Json.EntityGraph
 
         internal override   SetInfo                             SetInfo { get {
             var info = new SetInfo { peers = peers.Count };
-            sync.SetTaskInfo(info);
+            sync.SetTaskInfo(ref info);
             return info;
         }}
 
