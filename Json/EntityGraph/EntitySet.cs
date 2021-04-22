@@ -65,9 +65,9 @@ namespace Friflo.Json.EntityGraph
         public   override   string                              ToString() => SetInfo.ToString();
 
         internal override   SetInfo                             SetInfo { get {
-                var info = new SetInfo { peers = peers.Count };
-                sync.SetTaskInfo(info);
-                return info;
+            var info = new SetInfo { peers = peers.Count };
+            sync.SetTaskInfo(info);
+            return info;
         }}
 
         public EntitySet(EntityStore store) : base (typeof(T).Name) {

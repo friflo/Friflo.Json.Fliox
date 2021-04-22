@@ -50,7 +50,7 @@ namespace Friflo.Json.EntityGraph
                 bool first = false;
                 Add(sb, "tasks", tasks, ref first);
                 first = true;
-                sb.Append(" (");
+                sb.Append(" -> ");
                 Add(sb, "create",   create,    ref first);
                 Add(sb, "read",     read,      ref first);
                 if (readRef > 0) {
@@ -61,7 +61,6 @@ namespace Friflo.Json.EntityGraph
                 Add(sb, "query",    query,      ref first);
                 Add(sb, "patch",    patch,      ref first);
                 Add(sb, "delete",   delete,     ref first);
-                sb.Append(")");
             }
             return sb.ToString();
         }

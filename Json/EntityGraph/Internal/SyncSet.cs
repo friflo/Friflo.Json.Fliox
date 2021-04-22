@@ -285,18 +285,19 @@ namespace Friflo.Json.EntityGraph.Internal
         private static int Some(int count) { return count != 0 ? 1 : 0; }
 
         public void SetTaskInfo(SetInfo info) {
-            info.tasks = Some(reads.Count)   +
-                         queries.Count       +
-                         Some(creates.Count) +
-                         Some(patches.Count) +
-                         Some(deletes.Count);
+            info.tasks =
+                Some(reads.Count)   +
+                queries.Count       +
+                Some(creates.Count) +
+                Some(patches.Count) +
+                Some(deletes.Count);
             //
-            info.read      = reads.Count;
-            info.query    = queries.Count;
-            info.create    = creates.Count;
-            info.patch    = patches.Count;
-            info.delete    = deletes.Count;
-            info.readRef   = readRefMap.Count;
+            info.read       = reads.Count;
+            info.query      = queries.Count;
+            info.create     = creates.Count;
+            info.patch      = patches.Count;
+            info.delete     = deletes.Count;
+            info.readRef    = readRefMap.Count;
         }
     }
 }
