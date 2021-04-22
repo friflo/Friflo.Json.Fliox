@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             var cameraNotSynced = store.articles.Read("article-1");
             var e = Throws<PeerNotSyncedException>(() => { var res = cameraNotSynced.Result; });
-            AreEqual("ReadTask.Result requires Sync(). Entity: Article id: article-1", e.Message);
+            AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);

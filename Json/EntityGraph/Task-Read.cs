@@ -15,7 +15,7 @@ namespace Friflo.Json.EntityGraph
         internal            bool            synced;
         private  readonly   EntitySet<T>    set;
 
-        public              T               Result      => synced ? result : throw Error();
+        public              T               Result      => synced ? result : throw RequiresSyncError();
         public   override   string          ToString()  => id;
 
         internal ReadTask(string id, EntitySet<T> set) {
@@ -23,8 +23,12 @@ namespace Friflo.Json.EntityGraph
             this.set = set;
         }
 
-        private Exception Error() {
-            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). Entity: {set.name} id: {id}");
+        private Exception RequiresSyncError() {
+            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). ReadTask<{typeof(T).Name}> id: {id}");
+        }
+
+        private Exception AlreadySyncedError() {
+            return new InvalidOperationException($"Used ReadTask is already synced. ReadTask<{typeof(T).Name}>, id: {id}");
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
@@ -63,7 +67,7 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefTask<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
-                throw new InvalidOperationException($"ReadRefTask already synced. Type: {typeof(T).Name}, id: {id}");
+                throw AlreadySyncedError();
             
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
@@ -75,8 +79,8 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefsTask<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
             if (synced)
-                throw new InvalidOperationException($"ReadRefsTask already synced. Type: {typeof(T).Name}, id: {id}");
-            
+                throw AlreadySyncedError();
+                
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefsTask<TValue>)readRef;

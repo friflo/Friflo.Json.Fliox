@@ -178,9 +178,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             // schedule ReadRefs on an already synced Read operation
             e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
-            AreEqual("ReadRefTask already synced. Type: Order, id: order-1", e.Message);
+            AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
             e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
-            AreEqual("ReadRefsTask already synced. Type: Order, id: order-1", e.Message);
+            AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
 
             order1 =    store.orders.Read("order-1");
             ReadRefsTask<Article>    articleDeps    = order1.ReadRefsByPath<Article>(".items[*].article");
