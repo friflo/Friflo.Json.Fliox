@@ -17,18 +17,7 @@ namespace Friflo.Json.EntityGraph
         public  int     patch;
         public  int     delete;
 
-        public void Add(SetInfo info) {
-            peers       += info.peers;
-            tasks       += info.tasks;
-            create      += info.create;
-            read        += info.read;
-            readRef     += info.readRef;
-            query       += info.query;
-            patch       += info.patch;
-            delete      += info.delete;
-        }
-
-        private static void  Add(StringBuilder sb, string label, int count, ref bool first) {
+        internal static void  Append(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
                 return;
             if (!first) {
@@ -48,21 +37,45 @@ namespace Friflo.Json.EntityGraph
             
             if (tasks > 0) {
                 bool first = false;
-                Add(sb, "tasks", tasks, ref first);
+                Append(sb, "tasks", tasks, ref first);
                 first = true;
                 sb.Append(" -> ");
-                Add(sb, "create",   create,    ref first);
-                Add(sb, "read",     read,      ref first);
+                Append(sb, "create",   create,    ref first);
+                Append(sb, "read",     read,      ref first);
                 if (readRef > 0) {
                     sb.Append("(");
-                    Add(sb, "ref",      readRef,    ref first);
+                    Append(sb, "ref",      readRef,    ref first);
                     sb.Append(")");
                 }
-                Add(sb, "query",    query,      ref first);
-                Add(sb, "patch",    patch,      ref first);
-                Add(sb, "delete",   delete,     ref first);
+                Append(sb, "query",    query,      ref first);
+                Append(sb, "patch",    patch,      ref first);
+                Append(sb, "delete",   delete,     ref first);
             }
             return sb.ToString();
         }
     }
+
+    public class StoreInfo
+    {
+        public  int     peers;
+        public  int     tasks;
+        
+        public void Add(SetInfo info) {
+            peers       += info.peers;
+            tasks       += info.tasks;
+        }
+        
+        public override string ToString() {
+            var sb = new StringBuilder();
+            sb.Append("peers");
+            sb.Append(": ");
+            sb.Append(peers);
+            
+            if (tasks > 0) {
+                bool first = false;
+                SetInfo.Append(sb, "tasks", tasks, ref first);
+            }
+            return sb.ToString();
+        }
+    } 
 }

@@ -42,15 +42,12 @@ namespace Friflo.Json.EntityGraph
             objectPatcher = new ObjectPatcher(jsonMapper);
         }
         
-        internal SetInfo SetInfoSum {
-            get {
-                var sum = new SetInfo();
-                foreach (var pair in setByType) {
-                    sum.Add(pair.Value.SetInfo);
-                }
-                return sum;
-            }
-        }
+        internal StoreInfo StoreInfo { get {
+            var sum = new StoreInfo();
+            foreach (var pair in setByType)
+                sum.Add(pair.Value.SetInfo);
+            return sum;
+        }}
     }
     
     // --------------------------------------- EntityStore ---------------------------------------
@@ -63,7 +60,7 @@ namespace Friflo.Json.EntityGraph
         internal readonly   StoreIntern     _intern;
         public              TypeStore       TypeStore => _intern.typeStore;
 
-        public   override   string          ToString() => $"{_intern.SetInfoSum}";
+        public   override   string          ToString() => _intern.StoreInfo.ToString();
 
 
         protected EntityStore(EntityDatabase database) {

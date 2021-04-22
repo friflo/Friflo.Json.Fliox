@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.EntityGraph;
 using Friflo.Json.EntityGraph.Database;
@@ -78,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            AreSimilar("peers: 5, tasks: 3 -> create: 4, read: 2", store);
+            AreSimilar("peers: 5, tasks: 3", store);
             
             await store.Sync(); // -------- Sync --------
             
