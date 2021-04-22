@@ -169,7 +169,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync();
 
-            AreEqual(3,             allArticles.Result.Count);
+            AreEqual(4,             allArticles.Result.Count);
             AreEqual(1,             hasOrderCamera.Result.Count);
             AreEqual("order-1",     hasOrderCamera[0].id);
 

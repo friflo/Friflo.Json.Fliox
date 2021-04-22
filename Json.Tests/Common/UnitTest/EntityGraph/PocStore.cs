@@ -54,11 +54,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     {
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database);
-            var order       = new Order { id = "order-1" };
-
-            var samsung = new Producer { id ="producer-1", name = "Samsung"};
-            store.producers.Create(samsung);
             
+            var samsung   = new Producer { id = "producer-1", name = "Samsung"};
+            var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
+            store.articles.Create(galaxy);
+
+            await store.Sync(); // -------- Sync --------
+            
+            var order       = new Order { id = "order-1" };
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
             var createCam1 = store.articles.Create(cameraCreate);
             var createCam2 = store.articles.Create(cameraCreate);   // Create() is idempotent
@@ -76,13 +79,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             store.articles.Create(camForDelete);
-            AreEqual("peers: 5, tasks: 3",                          store.ToString());
-            AreEqual("peers: 4, tasks: 2 -> create #3, read #2",    store.articles.ToString());
-            AreEqual("peers: 1, tasks: 1 -> create #1",             store.producers.ToString());
+            AreEqual("peers: 6, tasks: 2",                          store.ToString());
+            AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    store.articles.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 4",                                    store.ToString());
+            AreEqual("peers: 5",                                    store.ToString());
             
             cameraCreate.name = "Changed name";
             AreEqual(1, store.articles.LogEntityChanges(cameraCreate));
