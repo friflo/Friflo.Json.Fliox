@@ -243,7 +243,7 @@ namespace Friflo.Json.EntityGraph.Internal
             for (int n = 0; n < result.references.Count; n++) {
                 ReadReference          reference = task.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
-                var refContainer = set.intern.store.intern.setByName[refResult.container];
+                var refContainer = set.intern.store._intern.setByName[refResult.container];
                 ReadRefTaskMap map = readRefMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
             }

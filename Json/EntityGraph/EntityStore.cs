@@ -59,10 +59,11 @@ namespace Friflo.Json.EntityGraph
         // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
         // Reason: EntityStore is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
-        internal readonly   StoreIntern     intern;
-        public              TypeStore       TypeStore => intern.typeStore;
+        // ReSharper disable once InconsistentNaming
+        internal readonly   StoreIntern     _intern;
+        public              TypeStore       TypeStore => _intern.typeStore;
 
-        public   override   string          ToString() => $"{intern.SetInfoSum}";
+        public   override   string          ToString() => $"{_intern.SetInfoSum}";
 
 
         protected EntityStore(EntityDatabase database) {
@@ -72,25 +73,25 @@ namespace Friflo.Json.EntityGraph
             var jsonMapper = new ObjectMapper(typeStore) {
                 TracerContext = this
             };
-            intern = new StoreIntern(typeStore, database, jsonMapper);
+            _intern = new StoreIntern(typeStore, database, jsonMapper);
         }
         
         public void Dispose() {
-            intern.objectPatcher.Dispose();
-            intern.jsonMapper.Dispose();
-            intern.typeStore.Dispose();
+            _intern.objectPatcher.Dispose();
+            _intern.jsonMapper.Dispose();
+            _intern.typeStore.Dispose();
         }
 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
 
-            SyncResponse response = await intern.database.Execute(syncRequest); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.Execute(syncRequest); // <--- asynchronous Sync point
             HandleSyncRequest(syncRequest, response);
         }
         
         public void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var responseTask = intern.database.Execute(syncRequest);
+            var responseTask = _intern.database.Execute(syncRequest);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
             HandleSyncRequest(syncRequest, response);
@@ -98,7 +99,7 @@ namespace Friflo.Json.EntityGraph
 
         public int LogChanges() {
             int count = 0;
-            foreach (var setPair in intern.setByType) {
+            foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 count += set.LogSetChanges();
             }
@@ -108,7 +109,7 @@ namespace Friflo.Json.EntityGraph
         internal EntitySet<T> EntitySet<T>() where T : Entity
         {
             Type entityType = typeof(T);
-            if (intern.setByType.TryGetValue(entityType, out EntitySet set))
+            if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
                 return (EntitySet<T>)set;
             
             set = new EntitySet<T>(this);
@@ -117,7 +118,7 @@ namespace Friflo.Json.EntityGraph
 
         private SyncRequest CreateSyncRequest() {
             var syncRequest = new SyncRequest { tasks = new List<DatabaseTask>() };
-            foreach (var setPair in intern.setByType) {
+            foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 var setInfo = set.SetInfo;
                 var curTaskCount = syncRequest.tasks.Count;
@@ -137,7 +138,7 @@ namespace Friflo.Json.EntityGraph
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
             try {
                 foreach (var containerResults in response.containerResults) {
-                    var set = intern.setByName[containerResults.Key];
+                    var set = _intern.setByName[containerResults.Key];
                     set.SyncEntities(containerResults.Value);
                 }
 
@@ -152,27 +153,27 @@ namespace Friflo.Json.EntityGraph
                     switch (taskType) {
                         case TaskType.Create:
                             var create = (CreateEntities) task;
-                            EntitySet set = intern.setByName[create.container];
+                            EntitySet set = _intern.setByName[create.container];
                             set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult) result);
                             break;
                         case TaskType.Read:
                             var read = (ReadEntities) task;
-                            set = intern.setByName[read.container];
+                            set = _intern.setByName[read.container];
                             set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult) result);
                             break;
                         case TaskType.Query:
                             var query = (QueryEntities) task;
-                            set = intern.setByName[query.container];
+                            set = _intern.setByName[query.container];
                             set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult) result);
                             break;
                         case TaskType.Patch:
                             var patch = (PatchEntities) task;
-                            set = intern.setByName[patch.container];
+                            set = _intern.setByName[patch.container];
                             set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult) result);
                             break;
                         case TaskType.Delete:
                             var delete = (DeleteEntities) task;
-                            set = intern.setByName[delete.container];
+                            set = _intern.setByName[delete.container];
                             set.Sync.DeleteEntitiesResult(delete, (DeleteEntitiesResult) result);
                             break;
                     }
@@ -181,7 +182,7 @@ namespace Friflo.Json.EntityGraph
             finally
             {
                 // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
-                foreach (var setPair in intern.setByType) {
+                foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }

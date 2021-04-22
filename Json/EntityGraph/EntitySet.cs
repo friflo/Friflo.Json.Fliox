@@ -40,10 +40,10 @@ namespace Friflo.Json.EntityGraph
 
 
         internal SetIntern(EntityStore store) {
-            jsonMapper      = store.intern.jsonMapper;
-            typeMapper      = (TypeMapper<T>)store.intern.typeStore.GetTypeMapper(typeof(T));
-            objectPatcher   = store.intern.objectPatcher;
-            tracer          = new Tracer(store.intern.typeCache, store);
+            jsonMapper      = store._intern.jsonMapper;
+            typeMapper      = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T));
+            objectPatcher   = store._intern.objectPatcher;
+            tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
         }
     }
@@ -72,9 +72,9 @@ namespace Friflo.Json.EntityGraph
 
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
-            store.intern.setByType[type]       = this;
-            store.intern.setByName[type.Name]  = this;
-            container   = store.intern.database.GetContainer(name);
+            store._intern.setByType[type]       = this;
+            store._intern.setByName[type.Name]  = this;
+            container   = store._intern.database.GetContainer(name);
             intern      = new SetIntern<T>(store);
             sync        = new SyncSet<T>(this);
         }
