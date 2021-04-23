@@ -156,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             ReadTask<Order> order1 = orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
-            var allArticles = articles.QueryAll();
+            var allArticles =  articles.QueryAll();
             var allArticles2 = articles.QueryByFilter(Operation.FilterTrue);
             var hasOrderCamera = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1 = orders.Query(o => o.customer.id == "customer-1");
@@ -167,7 +167,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var read6 = orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
 
 
-            ReadRefTask<Customer> customer = order1.ReadRefByPath<Customer>(".customer");
+            ReadRefTask<Customer> customer  = order1.ReadRefByPath<Customer>(".customer");
             ReadRefTask<Customer> customer2 = order1.ReadRefByPath<Customer>(".customer");
             AreSame(customer, customer2);
             ReadRefTask<Customer> customer3 = order1.ReadRef(o => o.customer);
@@ -193,12 +193,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual(4, allArticles.Result.Count);
-            AreEqual(1, hasOrderCamera.Result.Count);
+            AreEqual(4,         allArticles.Result.Count);
+            AreEqual(1,         hasOrderCamera.Result.Count);
             AreEqual("order-1", hasOrderCamera[0].id);
 
-            AreEqual("customer-1", customer.Id);
-            AreEqual("Smith", customer.Result.lastName);
+            AreEqual("customer-1",  customer.Id);
+            AreEqual("Smith",       customer.Result.lastName);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -229,12 +229,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual("article-1", articleRefsTask[0].Id);
-            AreEqual("Changed name", articleRefsTask[0].Result.name);
-            AreEqual("article-2", articleRefsTask[1].Id);
-            AreEqual("Smartphone", articleRefsTask[1].Result.name);
-            AreEqual("article-1", articleRefsTask[2].Id);
-            AreEqual("Changed name", articleRefsTask[2].Result.name);
+            AreEqual("article-1",       articleRefsTask[0].Id);
+            AreEqual("Changed name",    articleRefsTask[0].Result.name);
+            AreEqual("article-2",       articleRefsTask[1].Id);
+            AreEqual("Smartphone",      articleRefsTask[1].Result.name);
+            AreEqual("article-1",       articleRefsTask[2].Id);
+            AreEqual("Changed name",    articleRefsTask[2].Result.name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
