@@ -37,8 +37,8 @@ namespace Friflo.Json.EntityGraph
     /// <para>
     /// A <see cref="Ref{T}"/> can be assigned in three ways:
     ///     <para>1. By assigning an id of type <see cref="string"/>. Using null is valid.</para>
-    ///     <para>2. By assigning and entity of type <see cref="EntityGraph.Entity"/>. Using null is valid.</para>
-    ///     <para>3. By assigning a <see langword="default"/> <see cref="Ref{T}"/> instance to express the reference is not set</para>
+    ///     <para>2. By assigning an entity of type <see cref="EntityGraph.Entity"/>. Using null is valid.</para>
+    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>. Using a default <see cref="Ref{T}"/> is valid.</para>
     /// </para>
     /// 
     /// <para>
