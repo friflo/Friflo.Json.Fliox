@@ -47,11 +47,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
         private async Task MemoryCreate() {
-            using (var database = new MemoryDatabase())
-            using (var emptyClientStore = new PocStore(database))
-            using (var store = await TestRelationPoC.CreateStore(database)) {
-                await WriteRead(store);
-                await AssertEmptyStore(emptyClientStore);
+            using (var database     = new MemoryDatabase())
+            using (var createStore  = await TestRelationPoC.CreateStore(database))
+            using (var useStore     = new PocStore(database))  {
+                await TestStores(createStore, useStore);
             }
         }
         
@@ -59,11 +58,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private async Task FileCreate() {
-            using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var emptyClientStore = new PocStore(database))
-            using (var store = await TestRelationPoC.CreateStore(database)) {
-                await WriteRead(store);
-                await AssertEmptyStore(emptyClientStore);
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
+            using (var useStore     = new PocStore(fileDatabase)) {
+                await TestStores(createStore, useStore);
             }
         }
         
@@ -71,11 +69,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         [Test]      public async Task  FileEmptyAsync() { await FileEmpty(); }
         
         private async Task FileEmpty() {
-            using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var emptyClientStore = new PocStore(database))
-            using (var store = new PocStore(database)) {
-                await WriteRead(store);
-                await AssertEmptyStore(emptyClientStore);
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var createStore  = new PocStore(fileDatabase))
+            using (var useStore     = new PocStore(fileDatabase)) {
+                await TestStores(createStore, useStore);
             }
         }
         
@@ -86,14 +83,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var clientDatabase   = new RemoteClient("http://localhost:8080/"))
-                    using (var emptyClientStore = new PocStore(clientDatabase))
-                    using (var clientStore      = await TestRelationPoC.CreateStore(clientDatabase)) {
-                        await WriteRead(clientStore);
-                        await AssertEmptyStore(emptyClientStore);
+                    using (var remoteDatabase   = new RemoteClient("http://localhost:8080/"))
+                    using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
+                    using (var useStore         = new PocStore(remoteDatabase)) {
+                        await TestStores(createStore, useStore);
                     }
                 });
             }
+        }
+
+        private static async Task TestStores(PocStore createStore, PocStore useStore) {
+            await WriteRead(createStore);
+            await AssertEmptyStore(useStore);
         }
 
         private static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
@@ -113,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         } 
 
 
-        private async Task WriteRead(PocStore store) {
+        private static async Task WriteRead(PocStore store) {
             // --- cache empty
             var order = store.orders.Read("order-1");
             await store.Sync();
