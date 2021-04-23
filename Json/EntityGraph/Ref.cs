@@ -30,6 +30,37 @@ namespace Friflo.Json.EntityGraph
         public override     string  ToString() => id ?? "null";
     }
     
+    /// <summary>
+    /// A <see cref="Ref{T}"/> is used to model a reference to an <see cref="EntityGraph.Entity"/> in a data modal
+    /// by id of type <see cref="string"/>.
+    /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
+    /// <para>
+    /// A <see cref="Ref{T}"/> can be assigned in three ways:
+    ///     <para>1. By assigning an id of type <see cref="string"/>. Using null is valid.</para>
+    ///     <para>2. By assigning and entity of type <see cref="EntityGraph.Entity"/>. Using null is valid.</para>
+    ///     <para>3. By assigning a <see langword="default"/> <see cref="Ref{T}"/> instance to express the reference is not set</para>
+    /// </para>
+    /// 
+    /// <para>
+    ///     Access to <see cref="id"/> and <see cref="Entity"/>:
+    ///     <para>The <see cref="id"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
+    ///     <para><see cref="Entity"/> enables access to the referenced <see cref="EntityGraph.Entity"/> instance.
+    ///         If the <see cref="Ref{T}"/> was assigned by an entity the access has no restrictions.
+    ///         If the <see cref="Ref{T}"/> was assigned by an id the referenced <see cref="EntityGraph.Entity"/> need to
+    ///         be resolved upfront. For resolving see notes bellow.
+    ///     </para>
+    /// </para>
+    /// <para>
+    ///     To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
+    ///     <para>By calling <see cref="Read"/> of a <see cref="Ref{T}"/> instance.</para>
+    ///     <para>
+    ///         When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
+    ///         <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
+    ///         to read referenced entity by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>.  
+    ///     </para>
+    ///     In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
+    /// </para>
+    /// </summary>
     public struct Ref<T>  where T : Entity
     {
         // invariant of Ref<T> has following cases:
