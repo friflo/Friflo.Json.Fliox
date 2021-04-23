@@ -32,16 +32,16 @@ namespace Friflo.Json.EntityGraph
     
     /// <summary>
     /// A <see cref="Ref{T}"/> is used to declare fields being references to other <see cref="EntityGraph.Entity"/>'s in a data modal.
-    ///
+    /// <para>
     /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
-    /// <para><b>unresolved</b>
+    ///   <para><b>unresolved</b>
     ///     Only the access to <see cref="id"/> is valid. This is always the case.
-    ///     Accessing the property <see cref="Entity"/> result in an <see cref="Exception"/>.
-    /// </para> 
-    /// <para><b>resolved</b>
+    ///     Access to the referenced <see cref="EntityGraph.Entity"/> via <see cref="Entity"/> result in an <see cref="Exception"/>.
+    ///   </para> 
+    ///   <para><b>resolved</b>
     ///     Access to the referenced <see cref="EntityGraph.Entity"/> is valid via the property <see cref="Entity"/>.
+    ///   </para> 
     /// </para> 
-    /// 
     /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{T}"/> can be assigned in three ways:
@@ -60,15 +60,15 @@ namespace Friflo.Json.EntityGraph
     ///     </para>
     /// </para>
     /// <para>
-    ///     To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
-    ///     <para>By calling <see cref="ReadFrom"/> of a <see cref="Ref{T}"/> instance.</para>
-    ///     <para>
-    ///         When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
-    ///         <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
-    ///         to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>
-    ///         or <see cref="ReadTask{T}.ReadRefs{TValue}"/> 
-    ///     </para>
-    ///     In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
+    ///   To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
+    ///   <para>By calling <see cref="ReadFrom"/> of a <see cref="Ref{T}"/> instance.</para>
+    ///   <para>
+    ///     When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
+    ///     <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
+    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>
+    ///     or <see cref="ReadTask{T}.ReadRefs{TValue}"/> 
+    ///   </para>
+    ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
     /// </para>
     /// </summary>
     public struct Ref<T>  where T : Entity
