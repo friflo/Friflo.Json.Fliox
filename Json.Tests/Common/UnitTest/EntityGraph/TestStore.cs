@@ -139,11 +139,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync();  // -------- Sync --------
             
             // IsNull(galaxy.Result.producer.Entity.name);  todo
-            galaxy.Result.producer.Read(producers);
+            galaxy.Result.producer.ReadFrom(producers);
             
             // set producer: Ref<Producer> by id ("producer-apple")
             var iphone = new Article { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
-            iphone.producer.Read(producers);
+            iphone.producer.ReadFrom(producers);
             
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
             // set producer: Ref<Producer> by entity (tesla)

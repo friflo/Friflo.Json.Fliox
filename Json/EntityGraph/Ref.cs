@@ -52,7 +52,7 @@ namespace Friflo.Json.EntityGraph
     /// </para>
     /// <para>
     ///     To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
-    ///     <para>By calling <see cref="Read"/> of a <see cref="Ref{T}"/> instance.</para>
+    ///     <para>By calling <see cref="ReadFrom"/> of a <see cref="Ref{T}"/> instance.</para>
     ///     <para>
     ///         When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
     ///         <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
@@ -136,7 +136,7 @@ namespace Friflo.Json.EntityGraph
             return new Ref<T> (id);
         }
 
-        public ReadTask<T> Read(EntitySet<T> set) {
+        public ReadTask<T> ReadFrom(EntitySet<T> set) {
             // may validate that set is the same which created the PeerEntity<>
             
             var readTask = set.Read(id);
