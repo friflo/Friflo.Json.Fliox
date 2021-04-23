@@ -112,7 +112,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static async Task TestStores(PocStore createStore, PocStore useStore) {
             await WriteRead             (createStore);
             await AssertEntityIdentity  (createStore);
-            await AssertReading         (createStore);
+            await AssertQueryTask         (createStore);
+            await AssertReadTask        (createStore);
             await AssertEmptyStore      (useStore);
         }
 
@@ -167,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private static bool lab = false;
 
-        private static async Task AssertReading(PocStore store) {
+        private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;
             var articles = store.articles;
 
@@ -216,8 +217,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             AreEqual("customer-1", customer.Id);
             AreEqual("Smith", customer.Result.lastName);
-
+        }
+        
+        private static async Task AssertReadTask(PocStore store) {
+            var orders = store.orders;
+            ReadTask<Order> order1 = orders.Read("order-1");
+            await store.Sync();
+            
             // schedule ReadRefs on an already synced Read operation
+            Exception e;
             e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
             AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
             e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
