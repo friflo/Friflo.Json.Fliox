@@ -56,7 +56,8 @@ namespace Friflo.Json.EntityGraph
     ///     <para>
     ///         When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
     ///         <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
-    ///         to read referenced entity by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>.  
+    ///         to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>
+    ///         or <see cref="ReadTask{T}.ReadRefs{TValue}"/> 
     ///     </para>
     ///     In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
     /// </para>
