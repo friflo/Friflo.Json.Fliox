@@ -48,8 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         private async Task MemoryCreate() {
             using (var database = new MemoryDatabase())
+            using (var emptyClientStore = new PocStore(database))
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
+                await AssertEmptyStore(emptyClientStore);
             }
         }
         
@@ -58,8 +60,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
         private async Task FileCreate() {
             using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var emptyClientStore = new PocStore(database))
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 await WriteRead(store);
+                await AssertEmptyStore(emptyClientStore);
             }
         }
         
@@ -68,8 +72,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         private async Task FileEmpty() {
             using (var database = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var emptyClientStore = new PocStore(database))
             using (var store = new PocStore(database)) {
                 await WriteRead(store);
+                await AssertEmptyStore(emptyClientStore);
             }
         }
         
@@ -80,9 +86,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var clientDatabase = new RemoteClient("http://localhost:8080/"))
-                    using (var clientStore = await TestRelationPoC.CreateStore(clientDatabase)) {
+                    using (var clientDatabase   = new RemoteClient("http://localhost:8080/"))
+                    using (var emptyClientStore = new PocStore(clientDatabase))
+                    using (var clientStore      = await TestRelationPoC.CreateStore(clientDatabase)) {
                         await WriteRead(clientStore);
+                        await AssertEmptyStore(emptyClientStore);
                     }
                 });
             }
@@ -127,20 +135,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AssertWriteRead(mapper, order.items[1].article);
         }
 
-        private static bool lab = false;
-
-        private static async Task AssertStore(Order order, PocStore store) {
-            var orders      = store.orders;
+        private static async Task AssertEmptyStore(PocStore store) {
             var articles    = store.articles;
-            var customers   = store.customers;
             var producers   = store.producers;
             
-            var galaxy = articles.Read("article-galaxy"); // entity exist in database 
+            var galaxyTask = articles.Read("article-galaxy"); // entity exist in database 
             await store.Sync();  // -------- Sync --------
-            
+
+            var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
-            // IsNull(galaxy.Result.producer.Entity.name);
-            galaxy.Result.producer.ReadFrom(producers);
+            // AreEqual("Samsung", galaxy.producer.Entity.name);
+            galaxy.producer.ReadFrom(producers);
             
             // set producer: Ref<Producer> by id ("producer-apple")
             var iphone = new Article { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
@@ -153,10 +158,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Tesla",   model3.producer.Entity.name);           // Entity access directly available
 
             await store.Sync();  // -------- Sync --------
-            AreEqual("Samsung", galaxy.Result.producer.Entity.name);    // Entity access is required Sync()
+            
+            AreEqual("Samsung", galaxy.producer.Entity.name);    // Entity access is required Sync()
             AreEqual("Apple",   iphone.producer.Entity.name);           // Entity access is required Sync()
+        }
 
-            await store.Sync();  // -------- Sync --------
+        private static bool lab = false;
+
+        private static async Task AssertStore(Order order, PocStore store) {
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var customers   = store.customers;
 
             ReadTask<Order> order1 =    orders.Read("order-1");
             AreEqual("order-1", order1.ToString());
