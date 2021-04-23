@@ -99,7 +99,7 @@ namespace Friflo.Json.EntityGraph
         
         internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
             string id = reference.id;
-            PeerEntity<T> peer = reference.peer;
+            PeerEntity<T> peer = reference.GetPeer();
             if (peer == null) {
                 var entity = reference.GetEntity();
                 if (entity != null)

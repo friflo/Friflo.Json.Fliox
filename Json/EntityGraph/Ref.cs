@@ -4,8 +4,8 @@
 using System;
 using System.Diagnostics;
 using Friflo.Json.EntityGraph.Internal;
-// ReSharper disable InconsistentNaming
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.EntityGraph
 {
     // Change to attribute
@@ -66,17 +66,16 @@ namespace Friflo.Json.EntityGraph
     {
         // invariant of Ref<T> has following cases:
         //
-        //      id == null,     entity == null,     peer == null
-        //      id != null,     entity == null,     peer == null
-        //      id != null,     entity != null,     peer == null
-        //      id != null,     entity != null,     peer != null
+        //      id == null,     entity == null      => Ref<> was assigned by an id or entity = null   
+        //      id != null,     entity == null      => Ref<> was assigned by an id != null
+        //      id != null,     entity != null      => Ref<> was assigned by an entity != null
         //
-        //      peer == null    =>  application  assigned id & entity to Ref<T>
-        //      peer != null    =>  EntitySet<T> assigned id & entity to Ref<> via Read(), ReadRef() or Query()
+        //      peer == null    =>  Ref<> is not attached to a peer until now
+        //      peer != null    =>  Ref<> is attached to a peer
 
         public   readonly   string          id;
         private  readonly   T               entity;
-        internal            PeerEntity<T>   peer;
+        private             PeerEntity<T>   peer;
         
         public   override   string          ToString() => id ?? "null";
         
@@ -110,9 +109,8 @@ namespace Friflo.Json.EntityGraph
             }
         }
         
-        internal T GetEntity() {
-            return entity;
-        }
+        internal T              GetEntity() { return entity; }
+        internal PeerEntity<T>  GetPeer()   { return peer; }
 
         public override bool Equals(object obj) {
             if (obj == null)
@@ -139,7 +137,6 @@ namespace Friflo.Json.EntityGraph
 
         public ReadTask<T> ReadFrom(EntitySet<T> set) {
             // may validate that set is the same which created the PeerEntity<>
-            
             var readTask = set.Read(id);
             peer = readTask.peer;
             return readTask;
