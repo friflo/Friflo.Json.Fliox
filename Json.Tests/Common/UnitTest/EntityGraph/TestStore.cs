@@ -135,10 +135,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var customers   = store.customers;
             var producers   = store.producers;
             
-            var galaxy = articles.Read("article-galaxy");
+            var galaxy = articles.Read("article-galaxy"); // entity exist in database 
             await store.Sync();  // -------- Sync --------
             
-            // IsNull(galaxy.Result.producer.Entity.name);  todo
+            // the referenced entity "producer-samsung" is not resolved until now.
+            // IsNull(galaxy.Result.producer.Entity.name);
             galaxy.Result.producer.ReadFrom(producers);
             
             // set producer: Ref<Producer> by id ("producer-apple")

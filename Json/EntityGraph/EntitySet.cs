@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Internal;
@@ -59,6 +60,8 @@ namespace Friflo.Json.EntityGraph
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            SyncSet<T>                          sync;
         
         internal override   SyncSet                             Sync => sync;

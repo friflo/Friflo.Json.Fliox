@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var producers   = store.producers;
             
             
-            var samsung   = new Producer { id = "producer-1", name = "Samsung"};
+            var samsung   = new Producer { id = "producer-samsung", name = "Samsung"};
             var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
             articles.Create(galaxy);
             producers.Create(samsung); // todo remove - should be created implicit by galaxy
