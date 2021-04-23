@@ -114,10 +114,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await AssertEntityIdentity  (createStore);
             await AssertQueryTask       (createStore);
             await AssertReadTask        (createStore);
-            await AssertRefAssignemnt   (useStore);
+            await AssertRefAssignment   (useStore);
         }
 
-        private static async Task AssertRefAssignemnt(PocStore store) {
+        private static async Task AssertRefAssignment(PocStore store) {
             var articles    = store.articles;
             var producers   = store.producers;
             
