@@ -46,7 +46,7 @@ namespace Friflo.Json.EntityGraph.Database
             return response;
         }
         
-        public async Task HandleIncomingConnections()
+        private async Task HandleIncomingConnections()
         {
             runServer = true;
 
@@ -114,15 +114,14 @@ namespace Friflo.Json.EntityGraph.Database
             return data;
         }
 
-        /// <summary>
-        /// For testing requires:
-        ///     netsh http add urlacl url=http://+:8080/ user=<DOMAIN>\<USER> listen=yes
-        ///     netsh http delete urlacl http://+:8080/
-        /// 
-        /// Get DOMAIN\USER via  PowerShell
-        ///     $env:UserName
-        ///     $env:UserDomain
-        /// </summary>
+        // For testing requires:
+        //     netsh http add urlacl url=http://+:8080/ user=<DOMAIN>\<USER> listen=yes
+        //     netsh http delete urlacl http://+:8080/
+        // 
+        // Get DOMAIN\USER via  PowerShell
+        //     $env:UserName
+        //     $env:UserDomain
+        //
         public void Start() {
             // Create a Http server and start listening for incoming connections
             listener.Start();

@@ -19,7 +19,7 @@ namespace Friflo.Json.EntityGraph
         public  int     patch;
         public  int     delete;
 
-        internal static void  Append(StringBuilder sb, string label, int count, ref bool first) {
+        private static void  Append(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
                 return;
             if (!first) {
@@ -51,19 +51,19 @@ namespace Friflo.Json.EntityGraph
             
             if (tasks > 0) {
                 bool first = false;
-                AppendTasks(sb, "tasks", tasks, ref first);
+                AppendTasks(sb, "tasks",    tasks,      ref first);
                 first = true;
                 sb.Append(" -> ");
-                Append(sb,  "create",   create,    ref first);
-                Append(sb,  "read",     read,      ref first);
+                Append(sb,  "create",       create,     ref first);
+                Append(sb,  "read",         read,       ref first);
                 if (readRef > 0) {
                     sb.Append("(");
-                    Append(sb, "ref",      readRef,    ref first);
+                    Append(sb, "ref",       readRef,    ref first);
                     sb.Append(")");
                 }
                 AppendTasks(sb, "queries",  queries,    ref first);
-                Append(sb,  "patch",    patch,      ref first);
-                Append(sb,  "delete",   delete,     ref first);
+                Append(sb,  "patch",        patch,      ref first);
+                Append(sb,  "delete",       delete,     ref first);
             }
             return sb.ToString();
         }
@@ -82,8 +82,8 @@ namespace Friflo.Json.EntityGraph
         }
         
         private void Add(in SetInfo info) {
-            peers       += info.peers;
-            tasks       += info.tasks;
+            peers += info.peers;
+            tasks += info.tasks;
         }
         
         public override string ToString() {

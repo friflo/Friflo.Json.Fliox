@@ -2,8 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using Friflo.Json.EntityGraph.Internal;
 using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph

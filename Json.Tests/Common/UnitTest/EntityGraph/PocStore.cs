@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
             
-            var order       = new Order { id = "order-1" };
+            var order           = new Order { id = "order-1" };
             var cameraCreate    = new Article { id = "article-1", name = "Camera" };
             var createCam1 = articles.Create(cameraCreate);
             var createCam2 = articles.Create(cameraCreate);   // Create() is idempotent
@@ -89,6 +89,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
+            // StoreInfo is accessible via property an ToString()
+            AreEqual(7, store.StoreInfo.peers);
+            AreEqual(2, store.StoreInfo.tasks); 
             AreEqual("peers: 7, tasks: 2",                          store.ToString());
             AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    articles.ToString());
             AreEqual("peers: 2",                                    producers.ToString());
