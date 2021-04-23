@@ -140,12 +140,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // IsNull(galaxy.Result.producer.Entity.name);  todo
             galaxy.Result.producer.Read(producers);
-            var iphone = new Article { id = "article-galaxy", name = "Galaxy S10", producer = "producer-apple" };
+            
+            // set producer: Ref<Producer> by id ("producer-apple")
+            var iphone = new Article { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
             iphone.producer.Read(producers);
             
+            var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
+            // set producer: Ref<Producer> by entity (tesla)
+            var model3 = new Article  { id = "article-model3", name = "Model 3", producer = tesla };
+            
+            AreEqual("Tesla",   model3.producer.Entity.name);           // Entity access directly available
+
             await store.Sync();  // -------- Sync --------
-            AreEqual("Samsung", galaxy.Result.producer.Entity.name);
-            AreEqual("Apple",   iphone.producer.Entity.name);
+            AreEqual("Samsung", galaxy.Result.producer.Entity.name);    // Entity access is required Sync()
+            AreEqual("Apple",   iphone.producer.Entity.name);           // Entity access is required Sync()
 
             await store.Sync();  // -------- Sync --------
 
