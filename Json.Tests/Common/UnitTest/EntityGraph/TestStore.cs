@@ -129,7 +129,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Exception e;
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
             AreEqual("Entity references an unresolved entity. Ref<Producer> id: producer-samsung", e.Message);
-            
+            IsFalse(galaxy.producer.TryEntity(out Producer result));
+            IsNull(result);
+
             galaxy.producer.ReadFrom(producers); // schedule resolving producer reference now
             
             // assign producer field with id "producer-apple"
@@ -139,6 +141,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
             // assign producer field with entity instance tesla
             var model3 = new Article  { id = "article-model3", name = "Model 3", producer = tesla };
+            IsTrue(model3.producer.TryEntity(out result));
+            AreSame(tesla, result);
             
             AreEqual("Tesla",   model3.producer.Entity.name);   // Entity is directly accessible
 

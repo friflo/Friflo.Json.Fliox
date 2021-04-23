@@ -117,6 +117,20 @@ namespace Friflo.Json.EntityGraph
                 throw new UnresolvedRefException("Entity references an unresolved entity.", peer.entity);
             }
         }
+
+        public bool TryEntity(out T entity) {
+            // same implementation as Entity
+            if (peer == null) {
+                entity = this.entity;
+                return true;
+            }
+            if (peer.assigned) {
+                entity = peer.entity;
+                return true;
+            }
+            entity = null;
+            return false;
+        }
         
         internal T              GetEntity() { return entity; }
         internal PeerEntity<T>  GetPeer()   { return peer; }
