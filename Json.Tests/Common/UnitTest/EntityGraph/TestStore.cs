@@ -117,24 +117,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await AssertEmptyStore      (useStore);
         }
 
-        private static async Task WriteRead(PocStore createStore) {
-            // --- cache empty
-            var orderTask = createStore.orders.Read("order-1");
-            await createStore.Sync();
-
-            var order = orderTask.Result;
-            using (ObjectMapper mapper = new ObjectMapper(createStore.TypeStore)) {
-                mapper.Pretty = true;
-            
-                AssertWriteRead(mapper, order);
-                AssertWriteRead(mapper, order.customer);
-                AssertWriteRead(mapper, order.items[0]);
-                AssertWriteRead(mapper, order.items[1]);
-                AssertWriteRead(mapper, order.items[0].article);
-                AssertWriteRead(mapper, order.items[1].article);
-            }
-        }
-
         private static async Task AssertEmptyStore(PocStore store) {
             var articles    = store.articles;
             var producers   = store.producers;
@@ -287,7 +269,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(article2Task.   Result,   order.items[1].article.Entity);
             IsNull(unknownTask.     Result);
         }
+        
+        private static async Task WriteRead(PocStore createStore) {
+            // --- cache empty
+            var orderTask = createStore.orders.Read("order-1");
+            await createStore.Sync();
 
+            var order = orderTask.Result;
+            using (ObjectMapper mapper = new ObjectMapper(createStore.TypeStore)) {
+                mapper.Pretty = true;
+            
+                AssertWriteRead(mapper, order);
+                AssertWriteRead(mapper, order.customer);
+                AssertWriteRead(mapper, order.items[0]);
+                AssertWriteRead(mapper, order.items[1]);
+                AssertWriteRead(mapper, order.items[0].article);
+                AssertWriteRead(mapper, order.items[1].article);
+            }
+        }
+        
         private static void AssertWriteRead<T>(ObjectMapper m, T entity) {
             var json    = m.Write(entity);
             var result  = m.Read<T>(json);
