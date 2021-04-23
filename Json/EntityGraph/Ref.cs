@@ -31,11 +31,20 @@ namespace Friflo.Json.EntityGraph
     }
     
     /// <summary>
-    /// A <see cref="Ref{T}"/> is used to model a reference to an <see cref="EntityGraph.Entity"/> in a data modal
-    /// by id of type <see cref="string"/>.
+    /// A <see cref="Ref{T}"/> is used to declare fields being references to other <see cref="EntityGraph.Entity"/>'s in a data modal.
+    ///
+    /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
+    /// <para><b>unresolved</b>
+    ///     Only the access to <see cref="id"/> is valid. This is always the case.
+    ///     Accessing the property <see cref="Entity"/> result in an <see cref="Exception"/>.
+    /// </para> 
+    /// <para><b>resolved</b>
+    ///     Access to the referenced <see cref="EntityGraph.Entity"/> is valid via the property <see cref="Entity"/>.
+    /// </para> 
+    /// 
     /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
     /// <para>
-    /// A <see cref="Ref{T}"/> can be assigned in three ways:
+    ///     A <see cref="Ref{T}"/> can be assigned in three ways:
     ///     <para>1. By assigning an id of type <see cref="string"/>. Assigning a null <see cref="string"/> is valid.</para>
     ///     <para>2. By assigning an entity of a type extending <see cref="EntityGraph.Entity"/>. Assigning a null <see cref="EntityGraph.Entity"/> is valid.</para>
     ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>. Assigning a default <see cref="Ref{T}"/> is valid.</para>
