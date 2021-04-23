@@ -91,13 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
                 });
             }
         }
-
-        private static async Task TestStores(PocStore createStore, PocStore useStore) {
-            await WriteRead(createStore);
-            await AssertReading(createStore);
-            await AssertEmptyStore(useStore);
-        }
-
+        
         private static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
             remoteHost.Start();
             var hostTask = Task.Run(() => {
@@ -114,27 +108,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             Logger.Info("2. awaited hostTask");
         } 
 
+        // ------------------------------------ test assertion methods ------------------------------------
+        private static async Task TestStores(PocStore createStore, PocStore useStore) {
+            await WriteRead             (createStore);
+            await AssertEntityIdentity  (createStore);
+            await AssertReading         (createStore);
+            await AssertEmptyStore      (useStore);
+        }
 
         private static async Task WriteRead(PocStore createStore) {
             // --- cache empty
-            var order = createStore.orders.Read("order-1");
+            var orderTask = createStore.orders.Read("order-1");
             await createStore.Sync();
-            
+
+            var order = orderTask.Result;
             using (ObjectMapper mapper = new ObjectMapper(createStore.TypeStore)) {
-                WriteRead(order.Result, mapper);
-                await AssertEntityIdentity(createStore);
-            }
-        }
-        
-        private static void WriteRead(Order order, ObjectMapper mapper) {
-            mapper.Pretty = true;
+                mapper.Pretty = true;
             
-            AssertWriteRead(mapper, order);
-            AssertWriteRead(mapper, order.customer);
-            AssertWriteRead(mapper, order.items[0]);
-            AssertWriteRead(mapper, order.items[1]);
-            AssertWriteRead(mapper, order.items[0].article);
-            AssertWriteRead(mapper, order.items[1].article);
+                AssertWriteRead(mapper, order);
+                AssertWriteRead(mapper, order.customer);
+                AssertWriteRead(mapper, order.items[0]);
+                AssertWriteRead(mapper, order.items[1]);
+                AssertWriteRead(mapper, order.items[0].article);
+                AssertWriteRead(mapper, order.items[1].article);
+            }
         }
 
         private static async Task AssertEmptyStore(PocStore store) {
