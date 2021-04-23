@@ -105,7 +105,7 @@ namespace Friflo.Json.EntityGraph
                     return entity;
                 if (peer.assigned)
                     return peer.entity;
-                throw new PeerNotAssignedException(peer.entity);
+                throw new PeerNotAssignedException("Entity not resolved.", peer.entity);
             }
         }
         

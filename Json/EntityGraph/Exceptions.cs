@@ -9,7 +9,9 @@ namespace Friflo.Json.EntityGraph
     {
         public readonly Entity entity;
         
-        public PeerNotAssignedException(Entity entity) : base ($"Entity: {entity.GetType().Name} id: {entity.id}") {
+        public PeerNotAssignedException(string message, Entity entity)
+            : base ($"{message} Type: {entity.GetType().Name} id: {entity.id}")
+        {
             this.entity = entity;
         }
     }

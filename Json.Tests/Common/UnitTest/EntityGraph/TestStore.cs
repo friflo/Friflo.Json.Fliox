@@ -144,7 +144,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
-            // AreEqual("Samsung", galaxy.producer.Entity.name);
+            Exception e;
+            e = Throws<PeerNotAssignedException>(() => { var _ = galaxy.producer.Entity; });
+            AreEqual("Entity not resolved. Type: Producer id: producer-samsung", e.Message);
+            
             galaxy.producer.ReadFrom(producers);
             
             // set producer: Ref<Producer> by id ("producer-apple")
