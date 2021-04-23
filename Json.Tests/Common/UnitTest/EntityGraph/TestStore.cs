@@ -148,22 +148,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<PeerNotAssignedException>(() => { var _ = galaxy.producer.Entity; });
             AreEqual("Entity not resolved. Type: Producer id: producer-samsung", e.Message);
             
-            galaxy.producer.ReadFrom(producers);
+            galaxy.producer.ReadFrom(producers); // schedule resolving producer reference now
             
-            // set producer: Ref<Producer> by id ("producer-apple")
-            var iphone = new Article { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
+            // assign producer field with id "producer-apple"
+            var iphone = new Article  { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
             iphone.producer.ReadFrom(producers);
             
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
-            // set producer: Ref<Producer> by entity (tesla)
+            // assign producer field with entity instance tesla
             var model3 = new Article  { id = "article-model3", name = "Model 3", producer = tesla };
             
-            AreEqual("Tesla",   model3.producer.Entity.name);           // Entity access directly available
+            AreEqual("Tesla",   model3.producer.Entity.name);   // Entity is directly accessible
 
             await store.Sync();  // -------- Sync --------
             
-            AreEqual("Samsung", galaxy.producer.Entity.name);    // Entity access is required Sync()
-            AreEqual("Apple",   iphone.producer.Entity.name);           // Entity access is required Sync()
+            AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible
+            AreEqual("Apple",   iphone.producer.Entity.name);   // after Sync() Entity is accessible
         }
 
         private static bool lab = false;
