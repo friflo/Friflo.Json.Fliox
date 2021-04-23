@@ -36,9 +36,9 @@ namespace Friflo.Json.EntityGraph
     /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
     /// <para>
     /// A <see cref="Ref{T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an id of type <see cref="string"/>. Using null is valid.</para>
-    ///     <para>2. By assigning an entity of a type extending <see cref="EntityGraph.Entity"/>. Using null is valid.</para>
-    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>. Using a default <see cref="Ref{T}"/> is valid.</para>
+    ///     <para>1. By assigning an id of type <see cref="string"/>. Assigning a null <see cref="string"/> is valid.</para>
+    ///     <para>2. By assigning an entity of a type extending <see cref="EntityGraph.Entity"/>. Assigning a null <see cref="EntityGraph.Entity"/> is valid.</para>
+    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>. Assigning a default <see cref="Ref{T}"/> is valid.</para>
     /// </para>
     /// 
     /// <para>
