@@ -11,6 +11,7 @@ namespace Friflo.Json.EntityGraph
     public class ReadTask<T> where T : Entity
     {
         private  readonly   string          id;
+        internal readonly   PeerEntity<T>   peer;
         internal            T               result;
         internal            bool            synced;
         private  readonly   EntitySet<T>    set;
@@ -18,9 +19,10 @@ namespace Friflo.Json.EntityGraph
         public              T               Result      => synced ? result : throw RequiresSyncError();
         public   override   string          ToString()  => id;
 
-        internal ReadTask(string id, EntitySet<T> set) {
-            this.id = id;
-            this.set = set;
+        internal ReadTask(string id, EntitySet<T> set, PeerEntity<T> peer) {
+            this.id     = id;
+            this.set    = set;
+            this.peer   = peer;
         }
 
         private Exception RequiresSyncError() {

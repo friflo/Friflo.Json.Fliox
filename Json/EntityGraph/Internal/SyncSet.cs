@@ -72,7 +72,7 @@ namespace Friflo.Json.EntityGraph.Internal
             var peer = set.GetPeerById(id);
             read = peer.read;
             if (read == null) {
-                peer.read = read = new ReadTask<T>(peer.entity.id, set);
+                peer.read = read = new ReadTask<T>(peer.entity.id, set, peer);
             }
             reads.Add(id, read);
             return read;

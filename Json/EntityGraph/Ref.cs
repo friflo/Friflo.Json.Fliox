@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph
         public override     string  ToString() => id ?? "null";
     }
     
-    public readonly struct Ref<T>  where T : Entity
+    public struct Ref<T>  where T : Entity
     {
         // invariant of Ref<T> has following cases:
         //
@@ -44,7 +44,7 @@ namespace Friflo.Json.EntityGraph
 
         public   readonly   string          id;
         private  readonly   T               entity;
-        internal readonly   PeerEntity<T>   peer;
+        internal            PeerEntity<T>   peer;
         
         public   override   string          ToString() => id ?? "null";
         
@@ -107,7 +107,10 @@ namespace Friflo.Json.EntityGraph
 
         public ReadTask<T> Read(EntitySet<T> set) {
             // may validate that set is the same which created the PeerEntity<>
-            return set.Read(id);
+            
+            var readTask = set.Read(id);
+            peer = readTask.peer;
+            return readTask;
         }
     }
 }

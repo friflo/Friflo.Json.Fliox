@@ -133,18 +133,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var orders      = store.orders;
             var articles    = store.articles;
             var customers   = store.customers;
+            var producers   = store.producers;
             
             var galaxy = articles.Read("article-galaxy");
             await store.Sync();  // -------- Sync --------
             
             // IsNull(galaxy.Result.producer.Entity.name);  todo
-            galaxy.Result.producer.Read(store.producers);
+            galaxy.Result.producer.Read(producers);
             var iphone = new Article { id = "article-galaxy", name = "Galaxy S10", producer = "producer-apple" };
-            iphone.producer.Read(store.producers);
+            iphone.producer.Read(producers);
             
             await store.Sync();  // -------- Sync --------
             AreEqual("Samsung", galaxy.Result.producer.Entity.name);
-            // AreEqual("Apple",   iphone.producer.Entity.name);
+            AreEqual("Apple",   iphone.producer.Entity.name);
 
             await store.Sync();  // -------- Sync --------
 
