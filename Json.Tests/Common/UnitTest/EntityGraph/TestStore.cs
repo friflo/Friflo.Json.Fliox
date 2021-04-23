@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         private static async Task TestStores(PocStore createStore, PocStore useStore) {
             await WriteRead             (createStore);
             await AssertEntityIdentity  (createStore);
-            await AssertQueryTask         (createStore);
+            await AssertQueryTask       (createStore);
             await AssertReadTask        (createStore);
             await AssertEmptyStore      (useStore);
         }
@@ -221,37 +221,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
         
         private static async Task AssertReadTask(PocStore store) {
             var orders = store.orders;
-            ReadTask<Order> order1 = orders.Read("order-1");
+            ReadTask<Order> order1Task = orders.Read("order-1");
             await store.Sync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            e = Throws<InvalidOperationException>(() => { order1.ReadRefByPath<Article>("customer"); });
+            e = Throws<InvalidOperationException>(() => { order1Task.ReadRefByPath<Article>("customer"); });
             AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
-            e = Throws<InvalidOperationException>(() => { order1.ReadRefsByPath<Article>("items[*].article"); });
+            e = Throws<InvalidOperationException>(() => { order1Task.ReadRefsByPath<Article>("items[*].article"); });
             AreEqual("Used ReadTask is already synced. ReadTask<Order>, id: order-1", e.Message);
 
-            order1 = orders.Read("order-1");
-            ReadRefsTask<Article> articleDeps = order1.ReadRefsByPath<Article>(".items[*].article");
-            ReadRefsTask<Article> articleDeps2 = order1.ReadRefsByPath<Article>(".items[*].article");
-            AreSame(articleDeps, articleDeps2);
-            ReadRefsTask<Article> articleDeps3 = order1.ReadRefs(o => o.items.Select(a => a.article));
-            AreSame(articleDeps, articleDeps3);
-            AreEqual("Order['order-1'] .items[*].article", articleDeps.ToString());
+            order1Task = orders.Read("order-1");
+            ReadRefsTask<Article> articleRefsTask  = order1Task.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article> articleRefsTask2 = order1Task.ReadRefsByPath<Article>(".items[*].article");
+            AreSame(articleRefsTask, articleRefsTask2);
+            
+            ReadRefsTask<Article> articleRefsTask3 = order1Task.ReadRefs(o => o.items.Select(a => a.article));
+            AreSame(articleRefsTask, articleRefsTask3);
+            AreEqual("Order['order-1'] .items[*].article", articleRefsTask.ToString());
 
-            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps[0]; });
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleRefsTask[0]; });
             AreEqual("ReadRefsTask[] requires Sync(). Order['order-1'] .items[*].article", e.Message);
-            e = Throws<PeerNotSyncedException>(() => { var _ = articleDeps.Results; });
+            e = Throws<PeerNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual("article-1", articleDeps[0].Id);
-            AreEqual("Changed name", articleDeps[0].Result.name);
-            AreEqual("article-2", articleDeps[1].Id);
-            AreEqual("Smartphone", articleDeps[1].Result.name);
-            AreEqual("article-1", articleDeps[2].Id);
-            AreEqual("Changed name", articleDeps[2].Result.name);
+            AreEqual("article-1", articleRefsTask[0].Id);
+            AreEqual("Changed name", articleRefsTask[0].Result.name);
+            AreEqual("article-2", articleRefsTask[1].Id);
+            AreEqual("Smartphone", articleRefsTask[1].Result.name);
+            AreEqual("article-1", articleRefsTask[2].Id);
+            AreEqual("Changed name", articleRefsTask[2].Result.name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
@@ -264,15 +265,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var customers   = store.customers;
             var orders      = store.orders;
             
-            ReadTask<Order> order1 = orders.Read("order-1");
+            ReadTask<Order> order1Task = orders.Read("order-1");
             
-            var article1            =  articles.Read("article-1");
-            var article1Redundant   =  articles.Read("article-1");
-            AreSame(article1, article1Redundant);
+            var article1Task            =  articles.Read("article-1");
+            var article1TaskRedundant   =  articles.Read("article-1");
+            AreSame(article1Task, article1TaskRedundant);
             
-            var article2 =  articles.Read("article-2");
-            var customer1 = customers.Read("customer-1");
-            var unknown   = customers.Read("article-unknown");
+            var article2Task =  articles.Read("article-2");
+            var customer1Task = customers.Read("customer-1");
+            var unknownTask   = customers.Read("article-unknown");
 
             await store.Sync(); // -------- Sync --------
             
@@ -280,11 +281,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             // AreEqual(2, store.articles.Count);
             // AreEqual(1, store.orders.Count);
 
-            AreSame(order1.   Result,   order);
-            AreSame(customer1.Result,   order.customer.Entity);
-            AreSame(article1. Result,   order.items[0].article.Entity);
-            AreSame(article2. Result,   order.items[1].article.Entity);
-            IsNull(unknown.Result);
+            AreSame(order1Task.     Result,   order);
+            AreSame(customer1Task.  Result,   order.customer.Entity);
+            AreSame(article1Task.   Result,   order.items[0].article.Entity);
+            AreSame(article2Task.   Result,   order.items[1].article.Entity);
+            IsNull(unknownTask.     Result);
         }
 
         private static void AssertWriteRead<T>(ObjectMapper m, T entity) {
