@@ -17,6 +17,8 @@ namespace Friflo.Json.EntityGraph.Internal
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }
 
+        public   override   string          ToString() => entity.id ?? "null";
+
         internal PeerEntity(T entity) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
