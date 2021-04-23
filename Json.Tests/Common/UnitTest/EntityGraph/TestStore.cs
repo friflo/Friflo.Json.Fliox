@@ -114,10 +114,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await AssertEntityIdentity  (createStore);
             await AssertQueryTask       (createStore);
             await AssertReadTask        (createStore);
-            await AssertEmptyStore      (useStore);
+            await AssertRefAssignemnt   (useStore);
         }
 
-        private static async Task AssertEmptyStore(PocStore store) {
+        private static async Task AssertRefAssignemnt(PocStore store) {
             var articles    = store.articles;
             var producers   = store.producers;
             
@@ -127,8 +127,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
             Exception e;
-            e = Throws<PeerNotAssignedException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Entity not resolved. Type: Producer id: producer-samsung", e.Message);
+            e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
+            AreEqual("Entity references an unresolved entity. Ref<Producer> id: producer-samsung", e.Message);
             
             galaxy.producer.ReadFrom(producers); // schedule resolving producer reference now
             
@@ -175,14 +175,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("Order['order-1'] .customer", customer.ToString());
 
             Exception e;
-            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Id; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
             AreEqual("ReadRefTask.Id requires Sync(). Order['order-1'] .customer", e.Message);
-            e = Throws<PeerNotSyncedException>(() => { var _ = customer.Result; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires Sync(). Order['order-1'] .customer", e.Message);
 
-            e = Throws<PeerNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
-            e = Throws<PeerNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
             AreEqual("QueryTask[] requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
             // lab - test ReadRef expressions
@@ -222,9 +222,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("Order['order-1'] .items[*].article", articleRefsTask.ToString());
 
-            e = Throws<PeerNotSyncedException>(() => { var _ = articleRefsTask[0]; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask[0]; });
             AreEqual("ReadRefsTask[] requires Sync(). Order['order-1'] .items[*].article", e.Message);
-            e = Throws<PeerNotSyncedException>(() => { var _ = articleRefsTask.Results; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
             await store.Sync(); // -------- Sync --------

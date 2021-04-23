@@ -5,19 +5,19 @@ using System;
 
 namespace Friflo.Json.EntityGraph
 {
-    public class PeerNotAssignedException : Exception
+    public class UnresolvedRefException : Exception
     {
         public readonly Entity entity;
         
-        public PeerNotAssignedException(string message, Entity entity)
-            : base ($"{message} Type: {entity.GetType().Name} id: {entity.id}")
+        public UnresolvedRefException(string message, Entity entity)
+            : base ($"{message} Ref<{entity.GetType().Name}> id: {entity.id}")
         {
             this.entity = entity;
         }
     }
     
-    public class PeerNotSyncedException : Exception
+    public class TaskNotSyncedException : Exception
     {
-        public PeerNotSyncedException(string message) : base (message) { }
+        public TaskNotSyncedException(string message) : base (message) { }
     }
 }

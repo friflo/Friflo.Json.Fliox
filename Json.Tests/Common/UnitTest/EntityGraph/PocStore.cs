@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             await store.Sync(); // -------- Sync --------
 
             var cameraNotSynced = articles.Read("article-1");
-            var e = Throws<PeerNotSyncedException>(() => { var res = cameraNotSynced.Result; });
+            var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
             AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);

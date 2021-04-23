@@ -25,7 +25,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         protected Exception Error(string message) {
-            return new PeerNotSyncedException($"{message} {DebugName}");
+            return new TaskNotSyncedException($"{message} {DebugName}");
         }
     }
     

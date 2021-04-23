@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         private Exception RequiresSyncError() {
-            return new PeerNotSyncedException($"ReadTask.Result requires Sync(). ReadTask<{typeof(T).Name}> id: {id}");
+            return new TaskNotSyncedException($"ReadTask.Result requires Sync(). ReadTask<{typeof(T).Name}> id: {id}");
         }
 
         private Exception AlreadySyncedError() {
