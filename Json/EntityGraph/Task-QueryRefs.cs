@@ -31,11 +31,11 @@ namespace Friflo.Json.EntityGraph
 
     public class QueryRefsTask<T> : QueryRefsTask where T : Entity
     {
-        internal            bool                    synced;
-        internal readonly   List<QueryRefsTask<T>>  results = new List<QueryRefsTask<T>>();
+        internal            bool     synced;
+        internal readonly   List<T>  results = new List<T>();
         
-        public              List<QueryRefsTask<T>>  Results         => synced ? results         : throw Error("QueryRefsTask.Results requires Sync().");
-        public              QueryRefsTask<T>        this[int index] => synced ? results[index]  : throw Error("QueryRefsTask[] requires Sync().");
+        public              List<T>  Results         => synced ? results         : throw Error("QueryRefsTask.Results requires Sync().");
+        public              T        this[int index] => synced ? results[index]  : throw Error("QueryRefsTask[] requires Sync().");
 
         internal QueryRefsTask(string filterLinq, EntitySet parentSet, string selector, Type entityType) :
             base (filterLinq, parentSet, selector, entityType) { }

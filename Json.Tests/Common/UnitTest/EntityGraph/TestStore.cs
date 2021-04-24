@@ -198,12 +198,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual(4,         allArticles.Result.Count);
-            AreEqual(1,         hasOrderCamera.Result.Count);
-            AreEqual("order-1", hasOrderCamera[0].id);
+            AreEqual(4,             allArticles.Result.Count);
+            AreEqual(1,             hasOrderCamera.Result.Count);
+            AreEqual("order-1",     hasOrderCamera[0].id);
 
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
+            
+            AreEqual(1,             producersTask.Results.Count);
+            AreEqual("Samsung",     producersTask.Results[0].name);
         }
         
         private static async Task AssertReadTask(PocStore store) {

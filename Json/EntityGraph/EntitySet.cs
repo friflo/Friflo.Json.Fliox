@@ -15,16 +15,17 @@ namespace Friflo.Json.EntityGraph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  readonly  string          name;
+        internal  readonly  string  name;
         
-        internal  abstract  SyncSet         Sync       { get;  }
-        internal  abstract  SetInfo         SetInfo   { get;  }
+        internal  abstract  SyncSet Sync       { get;  }
+        internal  abstract  SetInfo SetInfo   { get;  }
         
-        internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefsTaskMap map);
+        internal  abstract  void    ReadReferenceResult  (ReadReference  task, ReadReferenceResult   result, List<string> parentIds, ReadRefsTaskMap map);
+        internal  abstract  void    QueryReferenceResult (QueryReference task, QueryReferenceResult  result, QueryRefsTask queryRefsTask);
 
-        public    abstract  int             LogSetChanges();
-        internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
-        internal  abstract  void            ResetSync           ();
+        public    abstract  int     LogSetChanges();
+        internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
+        internal  abstract  void    ResetSync           ();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -185,6 +186,16 @@ namespace Friflo.Json.EntityGraph
                         multiRef.results.Add(readRef);
                     }
                 }
+            }
+        }
+
+        internal override void QueryReferenceResult(QueryReference task, QueryReferenceResult result, QueryRefsTask queryRefsTask) {
+            var queryRefs = (QueryRefsTask<T>) queryRefsTask;
+            queryRefs.synced = true;
+            for (int o = 0; o < result.ids.Count; o++) {
+                var id = result.ids[o];
+                var peer = GetPeerById(id);
+                queryRefs.results.Add(peer.entity);
             }
         }
 

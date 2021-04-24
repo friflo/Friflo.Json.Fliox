@@ -259,8 +259,8 @@ namespace Friflo.Json.EntityGraph.Internal
                     set.DeletePeer(id);
             }
             for (int n = 0; n < result.references.Count; n++) {
-                ReadReference          reference = task.references[n];
-                ReadReferenceResult    refResult  = result.references[n];
+                ReadReference          reference = task.  references[n];
+                ReadReferenceResult    refResult = result.references[n];
                 var refContainer = set.intern.store._intern.setByName[refResult.container];
                 ReadRefsTaskMap map = readRefsMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
@@ -274,6 +274,14 @@ namespace Friflo.Json.EntityGraph.Internal
             foreach (var id in result.ids) {
                 var peer = set.GetPeerById(id);
                 entities.Add(peer.entity);
+            }
+
+            for (int n = 0; n < result.references.Count; n++) {
+                QueryReference          reference  = task.  references[n];
+                QueryReferenceResult    refResult  = result.references[n];
+                var refContainer            = set.intern.store._intern.setByName[refResult.container];
+                QueryRefsTask queryRefsTask = query.queryRefs[reference.refPath];
+                refContainer.QueryReferenceResult(reference, refResult, queryRefsTask);
             }
             query.synced = true;
         }
