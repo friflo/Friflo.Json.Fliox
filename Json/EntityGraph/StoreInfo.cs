@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph
         //
         public  int     create;
         public  int     read;
-        public  int     readRef;
+        public  int     readRefs;
         public  int     queries;
         public  int     patch;
         public  int     delete;
@@ -56,9 +56,9 @@ namespace Friflo.Json.EntityGraph
                 sb.Append(" -> ");
                 Append(sb,  "create",       create,     ref first);
                 Append(sb,  "read",         read,       ref first);
-                if (readRef > 0) {
+                if (readRefs > 0) {
                     sb.Append("(");
-                    Append(sb, "ref",       readRef,    ref first);
+                    Append(sb, "refs",      readRefs,    ref first);
                     sb.Append(")");
                 }
                 AppendTasks(sb, "queries",  queries,    ref first);

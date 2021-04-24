@@ -39,8 +39,8 @@ namespace Friflo.Json.EntityGraph.Internal
         private readonly    Dictionary<string, CreateTask<T>>    creates      = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>      patches      = new Dictionary<string, EntityPatch>();
-        /// key: <see cref="ReadRefTaskMap.selector"/>
-        private readonly    Dictionary<string, ReadRefTaskMap>   readRefMap   = new Dictionary<string, ReadRefTaskMap>();
+        /// key: <see cref="ReadRefsTaskMap.selector"/>
+        private readonly    Dictionary<string, ReadRefsTaskMap>  readRefsMap  = new Dictionary<string, ReadRefsTaskMap>();
         /// key: <see cref="QueryRefsTaskMap.selector"/>
         private readonly    Dictionary<string, QueryRefsTaskMap> queryRefsMap = new Dictionary<string, QueryRefsTaskMap>();
         /// key: entity id
@@ -50,11 +50,11 @@ namespace Friflo.Json.EntityGraph.Internal
             this.set = set;
         }
 
-        internal ReadRefTaskMap GetReadRefMap<TValue>(string selector) {
-            if (readRefMap.TryGetValue(selector, out ReadRefTaskMap result))
+        internal ReadRefsTaskMap GetReadRefMap<TValue>(string selector) {
+            if (readRefsMap.TryGetValue(selector, out ReadRefsTaskMap result))
                 return result;
-            result = new ReadRefTaskMap(selector, typeof(TValue));
-            readRefMap.Add(selector, result);
+            result = new ReadRefsTaskMap(selector, typeof(TValue));
+            readRefsMap.Add(selector, result);
             return result;
         }
         
@@ -183,8 +183,8 @@ namespace Friflo.Json.EntityGraph.Internal
                 var ids = reads.Select(read => read.Key).ToList();
 
                 var references = new List<ReadReference>();
-                foreach (var refPair in readRefMap) {
-                    ReadRefTaskMap map = refPair.Value;
+                foreach (var refPair in readRefsMap) {
+                    ReadRefsTaskMap map = refPair.Value;
                     ReadReference readReference = new ReadReference {
                         refPath = map.selector,
                         container = map.entityType.Name,
@@ -260,7 +260,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 ReadReference          reference = task.references[n];
                 ReadReferenceResult    refResult  = result.references[n];
                 var refContainer = set.intern.store._intern.setByName[refResult.container];
-                ReadRefTaskMap map = readRefMap[reference.refPath];
+                ReadRefsTaskMap map = readRefsMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
             }
         }
@@ -307,7 +307,7 @@ namespace Friflo.Json.EntityGraph.Internal
             info.create     = creates.Count;
             info.patch      = patches.Count;
             info.delete     = deletes.Count;
-            info.readRef    = readRefMap.Count;
+            info.readRefs   = readRefsMap.Count;
         }
     }
 }

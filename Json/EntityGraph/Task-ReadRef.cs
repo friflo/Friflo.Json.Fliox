@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- ReadRefTask -----------------------------------------
-    public class ReadRefTask
+    public class ReadRefsTask
     {
         internal readonly   string      parentId;
         internal readonly   EntitySet   parentSet;
@@ -17,7 +17,7 @@ namespace Friflo.Json.EntityGraph
         private             string      DebugName => $"{parentSet.name}['{parentId}'] {label}";
         public   override   string      ToString() => DebugName;
         
-        internal ReadRefTask(string parentId, EntitySet parentSet, string label, bool singleResult) {
+        internal ReadRefsTask(string parentId, EntitySet parentSet, string label, bool singleResult) {
             this.parentId           = parentId;
             this.parentSet          = parentSet;
             this.singleResult       = singleResult;
@@ -29,7 +29,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRefTask<T> : ReadRefTask where T : Entity
+    public class ReadRefTask<T> : ReadRefsTask where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -41,7 +41,7 @@ namespace Friflo.Json.EntityGraph
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
     }
     
-    public class ReadRefsTask<T> : ReadRefTask where T : Entity
+    public class ReadRefsTask<T> : ReadRefsTask where T : Entity
     {
         internal            bool                    synced;
         internal readonly   List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
@@ -52,14 +52,14 @@ namespace Friflo.Json.EntityGraph
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
     }
     
-    internal class ReadRefTaskMap
+    internal class ReadRefsTaskMap
     {
-        internal readonly   string                          selector;
-        internal readonly   Type                            entityType;
+        internal readonly   string                           selector;
+        internal readonly   Type                             entityType;
         /// key: <see cref="ReadTask{T}.id"/>
-        internal readonly   Dictionary<string, ReadRefTask> readRefs = new Dictionary<string, ReadRefTask>();
+        internal readonly   Dictionary<string, ReadRefsTask> readRefs = new Dictionary<string, ReadRefsTask>();
         
-        internal ReadRefTaskMap(string selector, Type entityType) {
+        internal ReadRefsTaskMap(string selector, Type entityType) {
             this.selector = selector;
             this.entityType = entityType;
         }

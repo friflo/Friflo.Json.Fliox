@@ -20,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  SyncSet         Sync       { get;  }
         internal  abstract  SetInfo         SetInfo   { get;  }
         
-        internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefTaskMap map);
+        internal  abstract  void            ReadReferenceResult (ReadReference task, ReadReferenceResult  result, List<string> parentIds, ReadRefsTaskMap map);
 
         public    abstract  int             LogSetChanges();
         internal  abstract  void            SyncEntities        (ContainerEntities containerResults);
@@ -159,7 +159,7 @@ namespace Friflo.Json.EntityGraph
             return sync.LogEntityChanges(entity);
         }
         
-        internal override void ReadReferenceResult(ReadReference task, ReadReferenceResult result, List<string> parentIds, ReadRefTaskMap map) {
+        internal override void ReadReferenceResult(ReadReference task, ReadReferenceResult result, List<string> parentIds, ReadRefsTaskMap map) {
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
                 if (reference.singleResult) {

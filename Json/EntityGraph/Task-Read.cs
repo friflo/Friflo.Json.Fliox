@@ -78,7 +78,7 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefTask<TValue> ReadRefByPathIntern<TValue>(string selector) where TValue : Entity {
             var map = set.sync.GetReadRefMap<TValue>(selector);
-            if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
+            if (map.readRefs.TryGetValue(id, out ReadRefsTask readRef))
                 return (ReadRefTask<TValue>)readRef;
             var newReadRef = new ReadRefTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRef);
@@ -87,7 +87,7 @@ namespace Friflo.Json.EntityGraph
         
         private ReadRefsTask<TValue> ReadRefsByPathIntern<TValue>(string selector) where TValue : Entity {
             var map = set.sync.GetReadRefMap<TValue>(selector);
-            if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
+            if (map.readRefs.TryGetValue(id, out ReadRefsTask readRef))
                 return (ReadRefsTask<TValue>)readRef;
             var newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRefs);
