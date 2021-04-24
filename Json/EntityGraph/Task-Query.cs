@@ -48,18 +48,14 @@ namespace Friflo.Json.EntityGraph
         public QueryRefsTask<TValue> QueryRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
-            // if (!isArraySelector)
-            //     throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
+            string path = MemberSelector.PathFromExpression(selector, out bool _);
             return QueryRefsByPathIntern<TValue>(path);
         }
         
         public QueryRefsTask<TValue> QueryRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
-            // if (!isArraySelector)
-            //     throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
+            string path = MemberSelector.PathFromExpression(selector, out bool _);
             return QueryRefsByPathIntern<TValue>(path);
         }
 
