@@ -83,21 +83,23 @@ namespace Friflo.Json.EntityGraph.Database
                     container   = reference.container,
                     ids         = new List<string>()
                 };
+                // todo call Select() only once with multiple selectors 
+                var select = new ScalarSelect(reference.refPath);
+                
                 // todo could also iterate entities instead of reference.ids
                 foreach (var id in reference.ids) {
                     EntityValue refEntity = entities[id];
                     if (refEntity == null) {
                         throw new InvalidOperationException($"expect entity reference available: {id}");
                     }
-                    // todo call Select() only once with multiple selectors 
-                    var select = new ScalarSelect(reference.refPath);
+
                     var selectorResults = jsonPath.Select(refEntity.value.json, select);
                     var refIds = selectorResults[0].AsStrings();
                     if (refIds.Count > 0) {
                         referenceResult.ids.AddRange(refIds);
                         // add references to ContainerEntities
                         var readRefIds = new ReadEntities {ids = refIds};
-                        var refEntities = await refContainer.ReadEntities(readRefIds);
+                        var refEntities = await refContainer.ReadEntities(readRefIds); // todo move out of loop
                         var containerResult = syncResponse.GetContainerResult(reference.container);
                         containerResult.AddEntities(refEntities.entities);
                     }
@@ -136,7 +138,7 @@ namespace Friflo.Json.EntityGraph.Database
                         referenceResult.ids.AddRange(refIds);
                         // add references to ContainerEntities
                         var readRefIds = new ReadEntities {ids = refIds};
-                        var refEntities = await refContainer.ReadEntities(readRefIds);
+                        var refEntities = await refContainer.ReadEntities(readRefIds); // todo move out of loop
                         var containerResult = syncResponse.GetContainerResult(reference.container);
                         containerResult.AddEntities(refEntities.entities);
                     }
