@@ -12,7 +12,7 @@ namespace Friflo.Json.EntityGraph
     public class QueryTask<T> where T : Entity
     {
         internal readonly   FilterOperation filter;
-        internal readonly   string          filterLinq;
+        internal readonly   string          filterLinq; // use as string identifier of a filter 
         private  readonly   EntitySet<T>    set;
         internal            bool            synced;
         internal readonly   List<T>         entities = new List<T>();
