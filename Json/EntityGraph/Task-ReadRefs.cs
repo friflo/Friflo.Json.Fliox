@@ -24,7 +24,7 @@ namespace Friflo.Json.EntityGraph
             this.label              = label;
         }
         
-        protected Exception Error(string message) {
+        protected Exception RequiresSyncError(string message) {
             return new TaskNotSyncedException($"{message} {DebugName}");
         }
     }
@@ -35,8 +35,8 @@ namespace Friflo.Json.EntityGraph
         internal    T           entity;
         internal    bool        synced;
 
-        public      string      Id      => synced ? id      : throw Error("ReadRefTask.Id requires Sync().");
-        public      T           Result  => synced ? entity  : throw Error("ReadRefTask.Result requires Sync().");
+        public      string      Id      => synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
+        public      T           Result  => synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
 
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
     }
@@ -46,8 +46,8 @@ namespace Friflo.Json.EntityGraph
         internal            bool        synced;
         internal readonly   List<T>     results = new List<T>();
             
-        public              List<T>     Results         => synced ? results         : throw Error("ReadRefsTask.Results requires Sync().");
-        public              T           this[int index] => synced ? results[index]  : throw Error("ReadRefsTask[] requires Sync().");
+        public              List<T>     Results         => synced ? results         : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
+        public              T           this[int index] => synced ? results[index]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
     }
