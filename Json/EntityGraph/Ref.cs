@@ -114,7 +114,7 @@ namespace Friflo.Json.EntityGraph
                     return entity;
                 if (peer.assigned)
                     return peer.entity;
-                throw new UnresolvedRefException("Entity references an unresolved entity.", peer.entity);
+                throw new UnresolvedRefException("Accessed an unresolved entity.", peer.entity);
             }
         }
 
