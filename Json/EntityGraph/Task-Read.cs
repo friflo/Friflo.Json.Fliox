@@ -33,6 +33,7 @@ namespace Friflo.Json.EntityGraph
             return new InvalidOperationException($"Used ReadTask is already synced. ReadTask<{typeof(T).Name}>, id: {id}");
         }
         
+        // --- schedule read references
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();

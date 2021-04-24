@@ -29,20 +29,22 @@ namespace Friflo.Json.EntityGraph.Internal
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
         // by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<T>                        set;
+        private readonly    EntitySet<T>                         set;
             
         /// key: <see cref="ReadTask{T}.id"/>
-        private readonly    Dictionary<string, ReadTask<T>>     reads       = new Dictionary<string, ReadTask<T>>();
+        private readonly    Dictionary<string, ReadTask<T>>      reads        = new Dictionary<string, ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filter"/>.Linq 
-        private readonly    Dictionary<string, QueryTask<T>>    queries     = new Dictionary<string, QueryTask<T>>();   
+        private readonly    Dictionary<string, QueryTask<T>>     queries      = new Dictionary<string, QueryTask<T>>();   
         /// key: <see cref="CreateTask{T}.entity"/>.id
-        private readonly    Dictionary<string, CreateTask<T>>   creates     = new Dictionary<string, CreateTask<T>>();
+        private readonly    Dictionary<string, CreateTask<T>>    creates      = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
-        private readonly    Dictionary<string, EntityPatch>     patches     = new Dictionary<string, EntityPatch>();
+        private readonly    Dictionary<string, EntityPatch>      patches      = new Dictionary<string, EntityPatch>();
         /// key: <see cref="ReadRefTaskMap.selector"/>
-        private readonly    Dictionary<string, ReadRefTaskMap>  readRefMap  = new Dictionary<string, ReadRefTaskMap>();
+        private readonly    Dictionary<string, ReadRefTaskMap>   readRefMap   = new Dictionary<string, ReadRefTaskMap>();
+        /// key: <see cref="QueryRefsTaskMap.selector"/>
+        private readonly    Dictionary<string, QueryRefsTaskMap> queryRefsMap = new Dictionary<string, QueryRefsTaskMap>();
         /// key: entity id
-        private readonly    Dictionary<string, DeleteTask>      deletes     = new Dictionary<string, DeleteTask>();
+        private readonly    Dictionary<string, DeleteTask>       deletes      = new Dictionary<string, DeleteTask>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
@@ -53,6 +55,14 @@ namespace Friflo.Json.EntityGraph.Internal
                 return result;
             result = new ReadRefTaskMap(selector, typeof(TValue));
             readRefMap.Add(selector, result);
+            return result;
+        }
+        
+        internal QueryRefsTaskMap GetQueryRefMap<TValue>(string selector) {
+            if (queryRefsMap.TryGetValue(selector, out QueryRefsTaskMap result))
+                return result;
+            result = new QueryRefsTaskMap(selector, typeof(TValue));
+            queryRefsMap.Add(selector, result);
             return result;
         }
         
