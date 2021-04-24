@@ -79,7 +79,7 @@ namespace Friflo.Json.EntityGraph
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefTask<TValue>)readRef;
-            ReadRefTask<TValue> newReadRef = new ReadRefTask<TValue>(id, set, selector);
+            var newReadRef = new ReadRefTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRef);
             return newReadRef;
         }
@@ -88,7 +88,7 @@ namespace Friflo.Json.EntityGraph
             var map = set.sync.GetReadRefMap<TValue>(selector);
             if (map.readRefs.TryGetValue(id, out ReadRefTask readRef))
                 return (ReadRefsTask<TValue>)readRef;
-            ReadRefsTask<TValue> newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
+            var newReadRefs = new ReadRefsTask<TValue>(id, set, selector);
             map.readRefs.Add(id, newReadRefs);
             return newReadRefs;
         }

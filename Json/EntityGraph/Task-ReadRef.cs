@@ -56,6 +56,7 @@ namespace Friflo.Json.EntityGraph
     {
         internal readonly   string                          selector;
         internal readonly   Type                            entityType;
+        /// key: <see cref="ReadTask{T}.id"/>
         internal readonly   Dictionary<string, ReadRefTask> readRefs = new Dictionary<string, ReadRefTask>();
         
         internal ReadRefTaskMap(string selector, Type entityType) {
