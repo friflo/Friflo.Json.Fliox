@@ -11,16 +11,18 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------------- QueryTask -----------------------------------------
     public class QueryTask<T> where T : Entity
     {
-        internal readonly   FilterOperation filter;
-        internal readonly   string          filterLinq; // use as string identifier of a filter 
-        private  readonly   EntitySet<T>    set;
-        internal            bool            synced;
-        internal readonly   List<T>         entities = new List<T>();
+        internal readonly   FilterOperation                     filter;
+        internal readonly   string                              filterLinq; // use as string identifier of a filter 
+        private  readonly   EntitySet<T>                        set;
+        internal            bool                                synced;
+        internal readonly   List<T>                             entities = new List<T>();
+        /// key: <see cref="QueryRefsTask.selector"/>
+        internal readonly   Dictionary<string, QueryRefsTask>   queryRefs = new Dictionary<string, QueryRefsTask>();
         
-        public              List<T>         Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
-        public              T               this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
-
-        public override     string          ToString() => filterLinq;
+        public              List<T>                             Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
+        public              T                                   this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
+                     
+        public override     string                              ToString() => filterLinq;
 
         internal QueryTask(FilterOperation filter, EntitySet<T> set) {
             this.filter     = filter;
@@ -43,6 +45,15 @@ namespace Friflo.Json.EntityGraph
             return QueryRefsByPathIntern<TValue>(selector);
         }
         
+        public QueryRefsTask<TValue> QueryRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
+            string path = MemberSelector.PathFromExpression(selector, out bool isArraySelector);
+            // if (!isArraySelector)
+            //     throw new InvalidOperationException($"selector returns a single ReadRef. Use ${nameof(ReadRef)}()");
+            return QueryRefsByPathIntern<TValue>(path);
+        }
+        
         public QueryRefsTask<TValue> QueryRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
@@ -53,12 +64,10 @@ namespace Friflo.Json.EntityGraph
         }
 
         private QueryRefsTask<TValue> QueryRefsByPathIntern<TValue>(string selector) where TValue : Entity {
-            var linq = filterLinq;
-            var map = set.sync.GetQueryRefMap<TValue>(selector);
-            if (map.queryRefs.TryGetValue(linq, out QueryRefsTask readRef))
+            if (queryRefs.TryGetValue(selector, out QueryRefsTask readRef))
                 return (QueryRefsTask<TValue>)readRef;
-            var newQueryRefs = new QueryRefsTask<TValue>(linq, set, selector);
-            map.queryRefs.Add(linq, newQueryRefs);
+            var newQueryRefs = new QueryRefsTask<TValue>(filterLinq, set, selector, typeof(TValue));
+            queryRefs.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
     }

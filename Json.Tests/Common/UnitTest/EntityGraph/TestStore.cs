@@ -162,6 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("order-1", order1.ToString());
             var allArticles =  articles.QueryAll();
             var allArticles2 = articles.QueryByFilter(Operation.FilterTrue);
+            var producersTask = allArticles.QueryRef(a => a.producer);
             var hasOrderCamera = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1 = orders.Query(o => o.customer.id == "customer-1");
             var read2 = orders.Query(o => o.customer.Entity.lastName == "Smith");

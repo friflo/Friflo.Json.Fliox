@@ -9,25 +9,26 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------------- QueryRefsTask -----------------------------------------
     public class QueryRefsTask
     {
-        internal readonly   string      parentId;
+        internal readonly   string      selector;
+        internal readonly   Type        entityType;
+        internal readonly   string      filterLinq;
         internal readonly   EntitySet   parentSet;
-        internal readonly   string      label;
 
-        private             string      DebugName => $"{parentSet.name}['{parentId}'] {label}";
+        private             string      DebugName => $"{parentSet.name}['{filterLinq}'] {selector}";
         public   override   string      ToString() => DebugName;
         
-        internal QueryRefsTask(string parentId, EntitySet parentSet, string label) {
-            this.parentId           = parentId;
+        internal QueryRefsTask(string filterLinq, EntitySet parentSet, string selector, Type entityType) {
+            this.filterLinq         = filterLinq;
             this.parentSet          = parentSet;
-            this.label              = label;
+            this.selector           = selector;
+            this.entityType         = entityType;
         }
         
         protected Exception Error(string message) {
             return new TaskNotSyncedException($"{message} {DebugName}");
         }
     }
-    
-    
+
     public class QueryRefsTask<T> : QueryRefsTask where T : Entity
     {
         internal            bool                    synced;
@@ -36,19 +37,8 @@ namespace Friflo.Json.EntityGraph
         public              List<QueryRefsTask<T>>  Results         => synced ? results         : throw Error("QueryRefsTask.Results requires Sync().");
         public              QueryRefsTask<T>        this[int index] => synced ? results[index]  : throw Error("QueryRefsTask[] requires Sync().");
 
-        internal QueryRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label) { }
+        internal QueryRefsTask(string filterLinq, EntitySet parentSet, string selector, Type entityType) :
+            base (filterLinq, parentSet, selector, entityType) { }
     }
     
-    internal class QueryRefsTaskMap
-    {
-        internal readonly   string                              selector;
-        internal readonly   Type                                entityType;
-        /// key: <see cref="QueryTask{T}.filterLinq"/>
-        internal readonly   Dictionary<string, QueryRefsTask>   queryRefs = new Dictionary<string, QueryRefsTask>();
-        
-        internal QueryRefsTaskMap(string selector, Type entityType) {
-            this.selector = selector;
-            this.entityType = entityType;
-        }
-    }
 }

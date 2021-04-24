@@ -41,8 +41,7 @@ namespace Friflo.Json.EntityGraph.Internal
         private readonly    Dictionary<string, EntityPatch>      patches      = new Dictionary<string, EntityPatch>();
         /// key: <see cref="ReadRefsTaskMap.selector"/>
         private readonly    Dictionary<string, ReadRefsTaskMap>  readRefsMap  = new Dictionary<string, ReadRefsTaskMap>();
-        /// key: <see cref="QueryRefsTaskMap.selector"/>
-        private readonly    Dictionary<string, QueryRefsTaskMap> queryRefsMap = new Dictionary<string, QueryRefsTaskMap>();
+
         /// key: entity id
         private readonly    Dictionary<string, DeleteTask>       deletes      = new Dictionary<string, DeleteTask>();
 
@@ -55,14 +54,6 @@ namespace Friflo.Json.EntityGraph.Internal
                 return result;
             result = new ReadRefsTaskMap(selector, typeof(TValue));
             readRefsMap.Add(selector, result);
-            return result;
-        }
-        
-        internal QueryRefsTaskMap GetQueryRefMap<TValue>(string selector) {
-            if (queryRefsMap.TryGetValue(selector, out QueryRefsTaskMap result))
-                return result;
-            result = new QueryRefsTaskMap(selector, typeof(TValue));
-            queryRefsMap.Add(selector, result);
             return result;
         }
         
@@ -206,11 +197,22 @@ namespace Friflo.Json.EntityGraph.Internal
             // --- QueryEntities
             if (queries.Count > 0) {
                 foreach (var queryPair in queries) {
-                    var query = queryPair.Value;
+                    QueryTask<T> query = queryPair.Value;
+                    var queryRefs = query.queryRefs;
+                    var references = new List<QueryReference>(queryRefs.Count);
+                    foreach (var queryRefPair in queryRefs) {
+                        QueryRefsTask queryRefsTask = queryRefPair.Value;
+                        var queryReference = new QueryReference {
+                            container = queryRefsTask.entityType.Name,
+                            refPath   = queryRefsTask.selector
+                        };
+                        references.Add(queryReference);
+                    }
                     var req = new QueryEntities {
                         container   = set.name,
                         filter      = query.filter,
-                        filterLinq  = query.filterLinq
+                        filterLinq  = query.filterLinq,
+                        references  = references
                     };
                     tasks.Add(req);
                 }
