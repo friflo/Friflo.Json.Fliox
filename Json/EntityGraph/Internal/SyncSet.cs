@@ -33,7 +33,7 @@ namespace Friflo.Json.EntityGraph.Internal
             
         /// key: <see cref="ReadTask{T}.id"/>
         private readonly    Dictionary<string, ReadTask<T>>      reads        = new Dictionary<string, ReadTask<T>>();
-        /// key: <see cref="QueryTask{T}.filter"/>.Linq 
+        /// key: <see cref="QueryTask{T}.filterLinq"/> 
         private readonly    Dictionary<string, QueryTask<T>>     queries      = new Dictionary<string, QueryTask<T>>();   
         /// key: <see cref="CreateTask{T}.entity"/>.id
         private readonly    Dictionary<string, CreateTask<T>>    creates      = new Dictionary<string, CreateTask<T>>();
@@ -207,11 +207,10 @@ namespace Friflo.Json.EntityGraph.Internal
             if (queries.Count > 0) {
                 foreach (var queryPair in queries) {
                     var query = queryPair.Value;
-                    var linq = query.filter.Linq;
                     var req = new QueryEntities {
                         container   = set.name,
                         filter      = query.filter,
-                        filterLinq  = linq
+                        filterLinq  = query.filterLinq
                     };
                     tasks.Add(req);
                 }

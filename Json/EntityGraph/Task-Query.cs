@@ -12,6 +12,7 @@ namespace Friflo.Json.EntityGraph
     public class QueryTask<T> where T : Entity
     {
         internal readonly   FilterOperation filter;
+        internal readonly   string          filterLinq;
         private  readonly   EntitySet<T>    set;
         internal            bool            synced;
         internal readonly   List<T>         entities = new List<T>();
@@ -19,19 +20,20 @@ namespace Friflo.Json.EntityGraph
         public              List<T>         Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
         public              T               this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
 
-        public override     string          ToString() => filter.Linq;
+        public override     string          ToString() => filterLinq;
 
         internal QueryTask(FilterOperation filter, EntitySet<T> set) {
-            this.filter = filter;
-            this.set    = set;
+            this.filter     = filter;
+            this.filterLinq = filter.Linq;
+            this.set        = set;
         }
         
         private Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} Entity: {set.name} filter: {filter.Linq}");
+            return new TaskNotSyncedException($"{message} Entity: {set.name} filter: {filterLinq}");
         }
         
         private Exception AlreadySyncedError() {
-            return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{typeof(T).Name}>, filter: {filter.Linq}");
+            return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{typeof(T).Name}>, filter: {filterLinq}");
         }
         
         // --- schedule query references
@@ -51,12 +53,12 @@ namespace Friflo.Json.EntityGraph
         }
 
         private QueryRefsTask<TValue> QueryRefsByPathIntern<TValue>(string selector) where TValue : Entity {
-            var linqFilter = filter.Linq;
+            var linq = filterLinq;
             var map = set.sync.GetQueryRefMap<TValue>(selector);
-            if (map.queryRefs.TryGetValue(linqFilter, out QueryRefsTask readRef))
+            if (map.queryRefs.TryGetValue(linq, out QueryRefsTask readRef))
                 return (QueryRefsTask<TValue>)readRef;
-            var newQueryRefs = new QueryRefsTask<TValue>(linqFilter, set, selector);
-            map.queryRefs.Add(linqFilter, newQueryRefs);
+            var newQueryRefs = new QueryRefsTask<TValue>(linq, set, selector);
+            map.queryRefs.Add(linq, newQueryRefs);
             return newQueryRefs;
         }
     }

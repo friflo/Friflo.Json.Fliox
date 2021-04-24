@@ -41,10 +41,10 @@ namespace Friflo.Json.EntityGraph
     
     internal class QueryRefsTaskMap
     {
-        internal readonly   string                          selector;
-        internal readonly   Type                            entityType;
-        /// key: <see cref="QueryTask{T}.filter"/>
-        internal readonly   Dictionary<string, QueryRefsTask> queryRefs = new Dictionary<string, QueryRefsTask>();
+        internal readonly   string                              selector;
+        internal readonly   Type                                entityType;
+        /// key: <see cref="QueryTask{T}.filterLinq"/>
+        internal readonly   Dictionary<string, QueryRefsTask>   queryRefs = new Dictionary<string, QueryRefsTask>();
         
         internal QueryRefsTaskMap(string selector, Type entityType) {
             this.selector = selector;
