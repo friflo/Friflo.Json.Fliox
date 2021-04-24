@@ -83,6 +83,7 @@ namespace Friflo.Json.EntityGraph.Database
                     container   = reference.container,
                     ids         = new List<string>()
                 };
+                // todo could also iterate entities instead of reference.ids
                 foreach (var id in reference.ids) {
                     EntityValue refEntity = entities[id];
                     if (refEntity == null) {
@@ -92,21 +93,61 @@ namespace Friflo.Json.EntityGraph.Database
                     var select = new ScalarSelect(reference.refPath);
                     var selectorResults = jsonPath.Select(refEntity.value.json, select);
                     var refIds = selectorResults[0].AsStrings();
-                    referenceResult.ids.AddRange(refIds);
-                    
-                    // add references to ContainerEntities
-                    var readRefIds = new ReadEntities {ids = refIds};
-                    var refEntities = await refContainer.ReadEntities(readRefIds);
-                    var containerResult = syncResponse.GetContainerResult(reference.container);
-                    containerResult.AddEntities(refEntities.entities);
+                    if (refIds.Count > 0) {
+                        referenceResult.ids.AddRange(refIds);
+                        // add references to ContainerEntities
+                        var readRefIds = new ReadEntities {ids = refIds};
+                        var refEntities = await refContainer.ReadEntities(readRefIds);
+                        var containerResult = syncResponse.GetContainerResult(reference.container);
+                        containerResult.AddEntities(refEntities.entities);
+                    }
+                }
+                referenceResults.Add(referenceResult);
+            }
+            return referenceResults;
+        }
+        
+        public async Task<List<QueryReferenceResult>> QueryReferences(
+            List<QueryReference>            references,
+            Dictionary<string, EntityValue> entities,
+            SyncResponse                    syncResponse)
+        {
+            var jsonPath    = SyncContext.scalarSelector;
+            var referenceResults = new List<QueryReferenceResult>();
+
+            foreach (var reference in references) {
+                var refContainer = database.GetContainer(reference.container);
+                var referenceResult = new QueryReferenceResult {
+                    container   = reference.container,
+                    ids         = new List<string>()
+                };
+                // todo call Select() only once with multiple selectors 
+                var select = new ScalarSelect(reference.refPath);
+                
+                foreach (var entityPair in entities) {
+                    string      id          = entityPair.Key;
+                    EntityValue refEntity   = entityPair.Value;
+                    if (refEntity == null) {
+                        throw new InvalidOperationException($"expect entity reference available: {id}");
+                    }
+                    var selectorResults = jsonPath.Select(refEntity.value.json, select);
+                    var refIds = selectorResults[0].AsStrings();
+                    if (refIds.Count > 0) {
+                        referenceResult.ids.AddRange(refIds);
+                        // add references to ContainerEntities
+                        var readRefIds = new ReadEntities {ids = refIds};
+                        var refEntities = await refContainer.ReadEntities(readRefIds);
+                        var containerResult = syncResponse.GetContainerResult(reference.container);
+                        containerResult.AddEntities(refEntities.entities);
+                    }
                 }
                 referenceResults.Add(referenceResult);
             }
             return referenceResults;
         }
     }
-    
-        
+
+
     public class EntityValue {
         public JsonValue    value;
 

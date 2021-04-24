@@ -83,6 +83,8 @@ namespace Friflo.Json.Flow.Graph
         public string AsString() {
             if (type == ScalarType.String)
                 return stringValue;
+            if (type == ScalarType.Null)
+                return null;
             throw new InvalidOperationException($"Scalar cannot be returned as string. type: {type}, value: {this}");
         }
         

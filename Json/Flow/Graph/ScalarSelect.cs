@@ -73,7 +73,9 @@ namespace Friflo.Json.Flow.Graph
         public List<string> AsStrings() {
             var result = new List<string>(values.Count);
             foreach (var item in values) {
-                result.Add(item.AsString());
+                var str = item.AsString();
+                if (str != null)
+                    result.Add(item.AsString());
             }
             return result;
         }
