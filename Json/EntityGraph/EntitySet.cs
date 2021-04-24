@@ -178,12 +178,7 @@ namespace Friflo.Json.EntityGraph
                     for (int o = 0; o < result.ids.Count; o++) {
                         var id = result.ids[o];
                         var peer = GetPeerById(id);
-                        var readRef = new ReadRefTask<T>(reference.parentId, reference.parentSet, reference.label) {
-                            id      = id,
-                            entity  = peer.entity,
-                            synced  = true
-                        };
-                        multiRef.results.Add(readRef);
+                        multiRef.results.Add(peer.entity);
                     }
                 }
             }

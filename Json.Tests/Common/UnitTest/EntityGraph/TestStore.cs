@@ -237,12 +237,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual("article-1",       articleRefsTask[0].Id);
-            AreEqual("Changed name",    articleRefsTask[0].Result.name);
-            AreEqual("article-2",       articleRefsTask[1].Id);
-            AreEqual("Smartphone",      articleRefsTask[1].Result.name);
-            AreEqual("article-1",       articleRefsTask[2].Id);
-            AreEqual("Changed name",    articleRefsTask[2].Result.name);
+            AreEqual("article-1",       articleRefsTask[0].id);
+            AreEqual("Changed name",    articleRefsTask[0].name);
+            AreEqual("article-2",       articleRefsTask[1].id);
+            AreEqual("Smartphone",      articleRefsTask[1].name);
+            AreEqual("article-1",       articleRefsTask[2].id);
+            AreEqual("Changed name",    articleRefsTask[2].name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {

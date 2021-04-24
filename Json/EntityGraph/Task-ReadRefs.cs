@@ -43,11 +43,11 @@ namespace Friflo.Json.EntityGraph
     
     public class ReadRefsTask<T> : ReadRefsTask where T : Entity
     {
-        internal            bool                    synced;
-        internal readonly   List<ReadRefTask<T>>    results = new List<ReadRefTask<T>>();
-        
-        public              List<ReadRefTask<T>>    Results         => synced ? results         : throw Error("ReadRefsTask.Results requires Sync().");
-        public              ReadRefTask<T>          this[int index] => synced ? results[index]  : throw Error("ReadRefsTask[] requires Sync().");
+        internal            bool        synced;
+        internal readonly   List<T>     results = new List<T>();
+            
+        public              List<T>     Results         => synced ? results         : throw Error("ReadRefsTask.Results requires Sync().");
+        public              T           this[int index] => synced ? results[index]  : throw Error("ReadRefsTask[] requires Sync().");
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
     }
