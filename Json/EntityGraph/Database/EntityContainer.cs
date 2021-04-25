@@ -82,7 +82,7 @@ namespace Friflo.Json.EntityGraph.Database
             // prepare single ScalarSelect and references results
             var selectors = new List<string>(references.Count);  // can be reused
             foreach (var reference in references) {
-                selectors.Add(reference.refPath);
+                selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
                     ids         = new HashSet<string>()

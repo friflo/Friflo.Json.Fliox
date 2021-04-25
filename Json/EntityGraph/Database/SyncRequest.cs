@@ -107,7 +107,7 @@ namespace Friflo.Json.EntityGraph.Database
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string                  refPath; // e.g. ".items[*].article"
+        public  string                  selector; // e.g. ".items[*].article"
         public  string                  container;
     }
     

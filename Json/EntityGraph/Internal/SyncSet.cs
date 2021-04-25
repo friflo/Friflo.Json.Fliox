@@ -177,7 +177,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 foreach (var refPair in readRefsMap) {
                     ReadRefsTaskMap map = refPair.Value;
                     References readReference = new References {
-                        refPath = map.selector,
+                        selector  = map.selector,
                         container = map.entityType.Name
                     };
                     references.Add(readReference);
@@ -200,7 +200,7 @@ namespace Friflo.Json.EntityGraph.Internal
                         QueryRefsTask queryRefsTask = queryRefPair.Value;
                         var queryReference = new References {
                             container = queryRefsTask.entityType.Name,
-                            refPath   = queryRefsTask.selector
+                            selector  = queryRefsTask.selector
                         };
                         references.Add(queryReference);
                     }
@@ -258,7 +258,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 References          reference = task.  references[n];
                 ReferencesResult    refResult = result.references[n];
                 var refContainer = set.intern.store._intern.setByName[refResult.container];
-                ReadRefsTaskMap map = readRefsMap[reference.refPath];
+                ReadRefsTaskMap map = readRefsMap[reference.selector];
                 refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
             }
         }
@@ -276,7 +276,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 References          reference  = task.  references[n];
                 ReferencesResult    refResult  = result.references[n];
                 var refContainer            = set.intern.store._intern.setByName[refResult.container];
-                QueryRefsTask queryRefsTask = query.queryRefs[reference.refPath];
+                QueryRefsTask queryRefsTask = query.queryRefs[reference.selector];
                 refContainer.QueryReferenceResult(reference, refResult, queryRefsTask);
             }
             query.synced = true;
