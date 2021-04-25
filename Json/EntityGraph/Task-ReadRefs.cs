@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -38,35 +37,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadSubRefsTask<T> : ReadRefsTask where T : Entity {
-
-        internal ReadSubRefsTask(string parentId, EntitySet parentSet, string label, bool singleResult) :
-            base(parentId, parentSet, label, singleResult)
-        { }
-        
-        // --- SubRefsTask ---
-        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByPath<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return subRefs.SubRefsByPath<TValue>(path);
-        }
-        
-        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return subRefs.SubRefsByPath<TValue>(path);
-        }
-    }
-    
-    public class ReadRefTask<T> : ReadSubRefsTask<T> where T : Entity
+    public class ReadRefTask<T> : ReadRefsTask, ISubRefsTask<T> where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -75,9 +46,25 @@ namespace Friflo.Json.EntityGraph
         public      T           Result  => synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
 
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
+        
+        // --- ISubRefTask<T> ---
+        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByPath<TValue>(selector);
+        }
+        
+        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByExpression<TValue>(selector);
+        }
+        
+        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByExpression<TValue>(selector);
+        }
     }
     
-    public class ReadRefsTask<T> : ReadSubRefsTask<T> where T : Entity
+    public class ReadRefsTask<T> : ReadRefsTask, ISubRefsTask<T> where T : Entity
     {
         internal readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
             
@@ -85,6 +72,22 @@ namespace Friflo.Json.EntityGraph
         public              T                       this[string id] => synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
+        
+        // --- ISubRefTask<T> ---
+        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByPath<TValue>(selector);
+        }
+        
+        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByExpression<TValue>(selector);
+        }
+        
+        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            if (synced) throw subRefs.AlreadySyncedError();
+            return subRefs.SubRefsByExpression<TValue>(selector);
+        }
     }
     
     internal class ReadRefsTaskMap

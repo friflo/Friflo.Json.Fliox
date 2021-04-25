@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
 {
@@ -23,6 +25,11 @@ namespace Friflo.Json.EntityGraph
             return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{set.name}>, filter: {label}");
         }
         
+        internal SubRefsTask<TValue> SubRefsByExpression<TValue>(Expression selector) where TValue : Entity {
+            string path = MemberSelector.PathFromExpression(selector, out _);
+            return SubRefsByPath<TValue>(path);
+        }
+        
         internal SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
             if (map.TryGetValue(selector, out SubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
@@ -30,6 +37,13 @@ namespace Friflo.Json.EntityGraph
             map.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
+    }
+
+    interface ISubRefsTask<T> where T : Entity
+    {
+        SubRefsTask<TValue> SubRefsByPath <TValue>(string selector)                                        where TValue : Entity;
+        SubRefsTask<TValue> SubRef        <TValue>(Expression<Func<T, Ref<TValue>>> selector)              where TValue : Entity;
+        SubRefsTask<TValue> SubRefs       <TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity;
     }
     
     // ----------------------------------------- QueryRefsTask -----------------------------------------
