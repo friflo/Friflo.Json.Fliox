@@ -117,13 +117,14 @@ namespace Friflo.Json.EntityGraph.Database
         public  HashSet<string>         ids;
     }
     
+    
     // --------------------------------------- QueryEntities ---------------------------------------
     public partial class QueryEntities : DatabaseTask
     {
         public  string                      container;
         public  string                      filterLinq;
         public  FilterOperation             filter;
-        public  List<QueryReference>        references;
+        public  List<ReadReference>         references;
     }
     
     public partial class QueryEntitiesResult : TaskResult
@@ -131,27 +132,9 @@ namespace Friflo.Json.EntityGraph.Database
         public  string                              container;  // only for debugging ergonomics
         public  string                              filterLinq;
         public  List<string>                        ids;
-        public  List<QueryReferenceResult>          references;
+        public  List<ReadReferenceResult>           references;
         [Fri.Ignore]
         internal Dictionary<string, EntityValue>    entities;
-    }
-    
-    // ---
-    /// In contrast to <see cref="ReadReference"/> which know the ids of referenced entities in advance
-    /// a <see cref="QueryReference"/> doesnt know the ids of referenced  entities when initiating a query.
-    /// The ids are only available as a result after <see cref="QueryEntities"/> is executed.   
-    public class QueryReference
-    {
-        /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
-        /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
-        public  string                  refPath; // e.g. ".items[*].article"
-        public  string                  container;
-    }
-    
-    public class QueryReferenceResult
-    {
-        public  string                  container;
-        public  HashSet<string>         ids;
     }
     
     // --------------------------------------- PatchEntities ---------------------------------------

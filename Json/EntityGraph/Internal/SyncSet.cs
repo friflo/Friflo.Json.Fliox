@@ -195,10 +195,10 @@ namespace Friflo.Json.EntityGraph.Internal
                 foreach (var queryPair in queries) {
                     QueryTask<T> query = queryPair.Value;
                     var queryRefs = query.queryRefs;
-                    var references = new List<QueryReference>(queryRefs.Count);
+                    var references = new List<ReadReference>(queryRefs.Count);
                     foreach (var queryRefPair in queryRefs) {
                         QueryRefsTask queryRefsTask = queryRefPair.Value;
-                        var queryReference = new QueryReference {
+                        var queryReference = new ReadReference {
                             container = queryRefsTask.entityType.Name,
                             refPath   = queryRefsTask.selector
                         };
@@ -273,8 +273,8 @@ namespace Friflo.Json.EntityGraph.Internal
             }
 
             for (int n = 0; n < result.references.Count; n++) {
-                QueryReference          reference  = task.  references[n];
-                QueryReferenceResult    refResult  = result.references[n];
+                ReadReference          reference  = task.  references[n];
+                ReadReferenceResult    refResult  = result.references[n];
                 var refContainer            = set.intern.store._intern.setByName[refResult.container];
                 QueryRefsTask queryRefsTask = query.queryRefs[reference.refPath];
                 refContainer.QueryReferenceResult(reference, refResult, queryRefsTask);
