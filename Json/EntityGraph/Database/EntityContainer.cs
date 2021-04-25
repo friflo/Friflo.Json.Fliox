@@ -75,22 +75,40 @@ namespace Friflo.Json.EntityGraph.Database
                 Dictionary<string, EntityValue> entities,
                 SyncResponse                    syncResponse)
         {
-            var jsonPath    = SyncContext.scalarSelector;
-            var referenceResults = new List<ReadReferenceResult>();
+            // prepare single ScalarSelect
+            var selectors = new List<string>(references.Count);  // can be reused
             foreach (var reference in references) {
-                var refContainer = database.GetContainer(reference.container);
-                var refIds = new HashSet<string>();
+                selectors.Add(reference.refPath);
+            }
+            var select              = new ScalarSelect(selectors);  // can be reused
+            var jsonPath            = SyncContext.scalarSelector;
+            var entityRefResults    = new List<List<ScalarSelectResult>>(entities.Count);  // can be reused
+            
+            // Get the selected refs for all entities.
+            // Select() is expensive as it requires a full JSON parse. By using an selector array only one
+            // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
+            foreach (var entityPair in entities) {
+                EntityValue entity  = entityPair.Value;
+                var         json    = entity.value.json;
+                if (json != null) {
+                    var selectorResults = jsonPath.Select(json, select);
+                    entityRefResults.Add(selectorResults);
+                }
+            }
+            
+            var referenceResults = new List<ReadReferenceResult>(); // can be reused
+            for (int n = 0; n < references.Count; n++) {
+                var reference       = references[n];
+                var refContainer    = database.GetContainer(reference.container);
+                var refIds          = new HashSet<string>();
                 var referenceResult = new ReadReferenceResult {
                     container   = reference.container,
                     ids         = refIds
                 };
-                // todo call Select() only once with multiple selectors 
-                var select = new ScalarSelect(reference.refPath);
-
-                foreach (var entityPair in entities) {
-                    EntityValue entity = entityPair.Value;
-                    var selectorResults = jsonPath.Select(entity.value.json, select);
-                    var entityRefs = selectorResults[0].AsStrings();
+                // get ids found for a reference.selector
+                foreach (var selectorResults in entityRefResults) {
+                    // selectorResults[n] contains Select() result of selectors[n] 
+                    var entityRefs = selectorResults[n].AsStrings();
                     refIds.UnionWith(entityRefs);
                 }
                 if (refIds.Count > 0) {
