@@ -75,6 +75,10 @@ namespace Friflo.Json.EntityGraph.Database
                 Dictionary<string, EntityValue> entities,
                 SyncResponse                    syncResponse)
         {
+            var referenceResults = new List<ReadReferenceResult>(); // can be reused
+            if (references.Count == 0)
+                return referenceResults;
+            
             // prepare single ScalarSelect
             var selectors = new List<string>(references.Count);  // can be reused
             foreach (var reference in references) {
@@ -96,7 +100,6 @@ namespace Friflo.Json.EntityGraph.Database
                 }
             }
             
-            var referenceResults = new List<ReadReferenceResult>(); // can be reused
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
                 var refContainer    = database.GetContainer(reference.container);
