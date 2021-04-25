@@ -109,7 +109,6 @@ namespace Friflo.Json.EntityGraph.Database
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
         public  string                  refPath; // e.g. ".items[*].article"
         public  string                  container;
-        public  List<string>            ids;
     }
     
     public class ReadReferenceResult

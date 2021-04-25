@@ -178,12 +178,8 @@ namespace Friflo.Json.EntityGraph.Internal
                     ReadRefsTaskMap map = refPair.Value;
                     ReadReference readReference = new ReadReference {
                         refPath = map.selector,
-                        container = map.entityType.Name,
-                        ids = new List<string>() 
+                        container = map.entityType.Name
                     };
-                    foreach (var readRef in map.readRefs) {
-                        readReference.ids.Add(readRef.Key);
-                    }
                     references.Add(readReference);
                 }
                 var req = new ReadEntities {

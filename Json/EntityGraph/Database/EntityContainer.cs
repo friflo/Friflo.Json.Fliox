@@ -87,13 +87,9 @@ namespace Friflo.Json.EntityGraph.Database
                 // todo call Select() only once with multiple selectors 
                 var select = new ScalarSelect(reference.refPath);
 
-                // todo could also iterate entities instead of reference.ids
-                foreach (var id in reference.ids) {
-                    EntityValue refEntity = entities[id];
-                    if (refEntity == null) {
-                        throw new InvalidOperationException($"expect entity reference available: {id}");
-                    }
-                    var selectorResults = jsonPath.Select(refEntity.value.json, select);
+                foreach (var entityPair in entities) {
+                    EntityValue entity = entityPair.Value;
+                    var selectorResults = jsonPath.Select(entity.value.json, select);
                     var entityRefs = selectorResults[0].AsStrings();
                     refIds.UnionWith(entityRefs);
                 }
@@ -129,12 +125,8 @@ namespace Friflo.Json.EntityGraph.Database
                 var select = new ScalarSelect(reference.refPath);
                 
                 foreach (var entityPair in entities) {
-                    string      id          = entityPair.Key;
-                    EntityValue refEntity   = entityPair.Value;
-                    if (refEntity == null) {
-                        throw new InvalidOperationException($"expect entity reference available: {id}");
-                    }
-                    var selectorResults = jsonPath.Select(refEntity.value.json, select);
+                    EntityValue entity   = entityPair.Value;
+                    var selectorResults = jsonPath.Select(entity.value.json, select);
                     var entityRefs = selectorResults[0].AsStrings();
                     refIds.UnionWith(entityRefs);
                 }
