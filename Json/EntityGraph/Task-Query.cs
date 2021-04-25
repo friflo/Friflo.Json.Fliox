@@ -11,60 +11,46 @@ namespace Friflo.Json.EntityGraph
     // ----------------------------------------- QueryTask -----------------------------------------
     public class QueryTask<T> where T : Entity
     {
-        internal readonly   FilterOperation                     filter;
-        internal readonly   string                              filterLinq; // use as string identifier of a filter 
-        private  readonly   EntitySet<T>                        set;
-        internal            bool                                synced;
-        internal readonly   List<T>                             entities = new List<T>();
-        /// key: <see cref="QueryRefsTask.selector"/>
-        internal readonly   Dictionary<string, QueryRefsTask>   queryRefs = new Dictionary<string, QueryRefsTask>();
+        internal readonly   FilterOperation     filter;
+        internal readonly   string              filterLinq; // use as string identifier of a filter 
+        internal            bool                synced;
+        internal readonly   List<T>             entities = new List<T>();
+        internal            SubRefs             subRefs;
+
         
-        public              List<T>                             Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
-        public              T                                   this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
+        public              List<T>             Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
+        public              T                   this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
                      
-        public override     string                              ToString() => filterLinq;
+        public override     string              ToString() => filterLinq;
 
         internal QueryTask(FilterOperation filter, EntitySet<T> set) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
-            this.set        = set;
+            this.subRefs    = new SubRefs(filter.Linq, set);
         }
         
         private Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} Entity: {set.name} filter: {filterLinq}");
+            return new TaskNotSyncedException($"{message} Entity: {subRefs.set.name} filter: {filterLinq}");
         }
         
-        private Exception AlreadySyncedError() {
-            return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{typeof(T).Name}>, filter: {filterLinq}");
-        }
-        
-        // --- schedule query references
-        public QueryRefsTask<TValue> QueryRefsByPath<TValue>(string selector) where TValue : Entity {
+        public SubRefsTask<TValue> QueryRefsByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
-                throw AlreadySyncedError();
-            return QueryRefsByPathIntern<TValue>(selector);
+                throw subRefs.AlreadySyncedError();
+            return subRefs.QueryRefsByPathIntern<TValue>(selector);
         }
         
-        public QueryRefsTask<TValue> QueryRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public SubRefsTask<TValue> QueryRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (synced)
-                throw AlreadySyncedError();
+                throw subRefs.AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return QueryRefsByPathIntern<TValue>(path);
+            return subRefs.QueryRefsByPathIntern<TValue>(path);
         }
         
-        public QueryRefsTask<TValue> QueryRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public SubRefsTask<TValue> QueryRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (synced)
-                throw AlreadySyncedError();
+                throw subRefs.AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return QueryRefsByPathIntern<TValue>(path);
-        }
-
-        private QueryRefsTask<TValue> QueryRefsByPathIntern<TValue>(string selector) where TValue : Entity {
-            if (queryRefs.TryGetValue(selector, out QueryRefsTask readRef))
-                return (QueryRefsTask<TValue>)readRef;
-            var newQueryRefs = new QueryRefsTask<TValue>(filterLinq, set, selector, typeof(TValue));
-            queryRefs.Add(selector, newQueryRefs);
-            return newQueryRefs;
+            return subRefs.QueryRefsByPathIntern<TValue>(path);
         }
     }
 }

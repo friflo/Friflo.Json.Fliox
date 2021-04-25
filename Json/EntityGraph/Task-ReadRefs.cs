@@ -13,19 +13,25 @@ namespace Friflo.Json.EntityGraph
         internal readonly   EntitySet   parentSet;
         internal readonly   bool        singleResult;
         internal readonly   string      label;
+        internal            SubRefs     subRefs;
 
         private             string      DebugName => $"{parentSet.name}['{parentId}'] {label}";
         public   override   string      ToString() => DebugName;
         
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label, bool singleResult) {
-            this.parentId           = parentId;
-            this.parentSet          = parentSet;
-            this.singleResult       = singleResult;
-            this.label              = label;
+            this.parentId       = parentId;
+            this.parentSet      = parentSet;
+            this.singleResult   = singleResult;
+            this.label          = label;
+            this.subRefs        = new SubRefs(DebugName, parentSet);
         }
         
         protected Exception RequiresSyncError(string message) {
             return new TaskNotSyncedException($"{message} {DebugName}");
+        }
+        
+        internal Exception AlreadySyncedError() {
+            return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{parentSet.name}>, filter: {label}");
         }
     }
     

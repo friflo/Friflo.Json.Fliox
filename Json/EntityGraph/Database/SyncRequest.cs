@@ -109,12 +109,14 @@ namespace Friflo.Json.EntityGraph.Database
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
         public  string                  selector; // e.g. ".items[*].article"
         public  string                  container;
+        public  List<References>        references;
     }
     
     public class ReferencesResult
     {
         public  string                  container;
         public  HashSet<string>         ids;
+        public  List<ReferencesResult>  references;
     }
     
     

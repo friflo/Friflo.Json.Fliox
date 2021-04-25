@@ -22,7 +22,7 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  SetInfo SetInfo   { get;  }
         
         internal  abstract  void    ReadReferenceResult  (References task, ReferencesResult result, List<string> parentIds, ReadRefsTaskMap map);
-        internal  abstract  void    QueryReferenceResult (References task, ReferencesResult result, QueryRefsTask queryRefsTask);
+        internal  abstract  void    QueryReferenceResult (References task, ReferencesResult result, SubRefsTask subRefs);
 
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
@@ -184,12 +184,12 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal override void QueryReferenceResult(References task, ReferencesResult result, QueryRefsTask queryRefsTask) {
-            var queryRefs = (QueryRefsTask<T>) queryRefsTask;
-            queryRefs.synced = true;
+        internal override void QueryReferenceResult(References task, ReferencesResult result, SubRefsTask subRefs) {
+            var subRefsTask = (SubRefsTask<T>) subRefs;
+            subRefsTask.synced = true;
             foreach (var id in result.ids) {
                 var peer = GetPeerById(id);
-                queryRefs.results.Add(id, peer.entity);
+                subRefsTask.results.Add(id, peer.entity);
             }
         }
 
