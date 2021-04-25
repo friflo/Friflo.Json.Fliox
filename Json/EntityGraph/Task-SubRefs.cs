@@ -23,7 +23,7 @@ namespace Friflo.Json.EntityGraph
             return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{set.name}>, filter: {label}");
         }
         
-        internal SubRefsTask<TValue> QueryRefsByPathIntern<TValue>(string selector) where TValue : Entity {
+        internal SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
             if (map.TryGetValue(selector, out SubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new SubRefsTask<TValue>(label, set, selector, typeof(TValue));

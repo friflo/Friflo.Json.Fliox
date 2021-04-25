@@ -33,24 +33,25 @@ namespace Friflo.Json.EntityGraph
             return new TaskNotSyncedException($"{message} Entity: {subRefs.set.name} filter: {filterLinq}");
         }
         
-        public SubRefsTask<TValue> QueryRefsByPath<TValue>(string selector) where TValue : Entity {
+        // --- SubRefsTask ---
+        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw subRefs.AlreadySyncedError();
-            return subRefs.QueryRefsByPathIntern<TValue>(selector);
+            return subRefs.SubRefsByPath<TValue>(selector);
         }
         
-        public SubRefsTask<TValue> QueryRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (synced)
                 throw subRefs.AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return subRefs.QueryRefsByPathIntern<TValue>(path);
+            return subRefs.SubRefsByPath<TValue>(path);
         }
         
-        public SubRefsTask<TValue> QueryRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (synced)
                 throw subRefs.AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out bool _);
-            return subRefs.QueryRefsByPathIntern<TValue>(path);
+            return subRefs.SubRefsByPath<TValue>(path);
         }
     }
 }
