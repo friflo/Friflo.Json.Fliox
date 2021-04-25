@@ -41,8 +41,10 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             var entities = task.entities;
-            foreach (var entity in entities) {
-                payloads[entity.Key] = entity.Value.value.json;
+            foreach (var entityPair in entities) {
+                string      key      = entityPair.Key;
+                EntityValue payload  = entityPair.Value;
+                payloads[key] = payload.value.json;
             }
             var result = new CreateEntitiesResult();
             return Task.FromResult(result);
@@ -50,22 +52,24 @@ namespace Friflo.Json.EntityGraph.Database
 
         public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
             var entities = task.entities;
-            foreach (var entity in entities) {
-                if (!payloads.TryGetValue(entity.Key, out string _))
-                    throw new InvalidOperationException($"Expect Entity with id {entity.Key} in DatabaseContainer: {name}");
-                payloads[entity.Key] = entity.Value.value.json;
+            foreach (var entityPair in entities) {
+                string      key      = entityPair.Key;
+                EntityValue payload  = entityPair.Value;
+                if (!payloads.TryGetValue(key, out string _))
+                    throw new InvalidOperationException($"Expect Entity with key {key} in DatabaseContainer: {name}");
+                payloads[key] = payload.value.json;
             }
             var result = new UpdateEntitiesResult();
             return Task.FromResult(result);
         }
 
         public override Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
-            var ids = task.ids;
-            var entities = new Dictionary<string, EntityValue>(ids.Count);
-            foreach (var id in ids) {
-                payloads.TryGetValue(id, out var payload);
+            var keys = task.ids;
+            var entities = new Dictionary<string, EntityValue>(keys.Count);
+            foreach (var key in keys) {
+                payloads.TryGetValue(key, out var payload);
                 var entry = new EntityValue(payload);
-                entities.TryAdd(id, entry);
+                entities.TryAdd(key, entry);
             }
             var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
@@ -86,9 +90,9 @@ namespace Friflo.Json.EntityGraph.Database
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
-            var ids = task.ids;
-            foreach (var id in ids) {
-                payloads.Remove(id);
+            var keys = task.ids;
+            foreach (var key in keys) {
+                payloads.Remove(key);
             }
             var result = new DeleteEntitiesResult();
             return Task.FromResult(result);
