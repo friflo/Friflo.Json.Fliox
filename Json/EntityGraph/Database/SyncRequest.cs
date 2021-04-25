@@ -152,7 +152,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class QueryReferenceResult
     {
         public  string                  container;
-        public  List<string>            ids;
+        public  HashSet<string>         ids;
     }
     
     // --------------------------------------- PatchEntities ---------------------------------------

@@ -120,9 +120,10 @@ namespace Friflo.Json.EntityGraph.Database
 
             foreach (var reference in references) {
                 var refContainer = database.GetContainer(reference.container);
+                var refIds = new HashSet<string>();
                 var referenceResult = new QueryReferenceResult {
                     container   = reference.container,
-                    ids         = new List<string>()
+                    ids         = refIds
                 };
                 // todo call Select() only once with multiple selectors 
                 var select = new ScalarSelect(reference.refPath);
@@ -134,15 +135,16 @@ namespace Friflo.Json.EntityGraph.Database
                         throw new InvalidOperationException($"expect entity reference available: {id}");
                     }
                     var selectorResults = jsonPath.Select(refEntity.value.json, select);
-                    var refIds = selectorResults[0].AsStrings();
-                    if (refIds.Count > 0) {
-                        referenceResult.ids.AddRange(refIds);
-                        // add references to ContainerEntities
-                        var readRefIds = new ReadEntities {ids = refIds};
-                        var refEntities = await refContainer.ReadEntities(readRefIds); // todo move out of loop
-                        var containerResult = syncResponse.GetContainerResult(reference.container);
-                        containerResult.AddEntities(refEntities.entities);
-                    }
+                    var entityRefs = selectorResults[0].AsStrings();
+                    refIds.UnionWith(entityRefs);
+                }
+                if (refIds.Count > 0) {
+                    var refIdList = refIds.ToList();
+                    // add references to ContainerEntities
+                    var readRefIds = new ReadEntities {ids = refIdList};
+                    var refEntities = await refContainer.ReadEntities(readRefIds);
+                    var containerResult = syncResponse.GetContainerResult(reference.container);
+                    containerResult.AddEntities(refEntities.entities);
                 }
                 referenceResults.Add(referenceResult);
             }
