@@ -230,19 +230,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("Order['order-1'] .items[*].article", articleRefsTask.ToString());
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask[0]; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
             AreEqual("ReadRefsTask[] requires Sync(). Order['order-1'] .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
             await store.Sync(); // -------- Sync --------
-
-            AreEqual("article-1",       articleRefsTask[0].id);
-            AreEqual("Changed name",    articleRefsTask[0].name);
-            AreEqual("article-2",       articleRefsTask[1].id);
-            AreEqual("Smartphone",      articleRefsTask[1].name);
-            AreEqual("article-1",       articleRefsTask[2].id);
-            AreEqual("Changed name",    articleRefsTask[2].name);
+        
+            AreEqual(2,                 articleRefsTask.Results.Count);
+            AreEqual("Changed name",    articleRefsTask["article-1"].name);
+            AreEqual("Smartphone",      articleRefsTask["article-2"].name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {

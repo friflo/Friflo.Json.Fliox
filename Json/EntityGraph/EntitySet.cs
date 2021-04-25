@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Internal;
@@ -167,7 +168,7 @@ namespace Friflo.Json.EntityGraph
                     var singleRef = (ReadRefTask<T>) reference;
                     if (result.ids.Count != 1)
                         throw new InvalidOperationException("Expect exactly one reference");
-                    var id = result.ids[0];
+                    var id = result.ids.First();
                     var peer = GetPeerById(id);
                     singleRef.id        = id;
                     singleRef.entity    = peer.entity;
@@ -175,10 +176,9 @@ namespace Friflo.Json.EntityGraph
                 } else {
                     var multiRef = (ReadRefsTask<T>) reference;
                     multiRef.synced = true;
-                    for (int o = 0; o < result.ids.Count; o++) {
-                        var id = result.ids[o];
+                    foreach (var id in result.ids) {
                         var peer = GetPeerById(id);
-                        multiRef.results.Add(peer.entity);
+                        multiRef.results.Add(id, peer.entity);
                     }
                 }
             }

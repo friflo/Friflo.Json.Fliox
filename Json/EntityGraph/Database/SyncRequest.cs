@@ -115,7 +115,7 @@ namespace Friflo.Json.EntityGraph.Database
     public class ReadReferenceResult
     {
         public  string                  container;
-        public  List<string>            ids;
+        public  HashSet<string>         ids;
     }
     
     // --------------------------------------- QueryEntities ---------------------------------------
