@@ -21,8 +21,8 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  SyncSet Sync       { get;  }
         internal  abstract  SetInfo SetInfo   { get;  }
         
-        internal  abstract  void    ReadReferenceResult  (ReadReference  task, ReadReferenceResult   result, List<string> parentIds, ReadRefsTaskMap map);
-        internal  abstract  void    QueryReferenceResult (ReadReference task,  ReadReferenceResult  result, QueryRefsTask queryRefsTask);
+        internal  abstract  void    ReadReferenceResult  (References task, ReferencesResult result, List<string> parentIds, ReadRefsTaskMap map);
+        internal  abstract  void    QueryReferenceResult (References task, ReferencesResult result, QueryRefsTask queryRefsTask);
 
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
@@ -161,7 +161,7 @@ namespace Friflo.Json.EntityGraph
             return sync.LogEntityChanges(entity);
         }
         
-        internal override void ReadReferenceResult(ReadReference task, ReadReferenceResult result, List<string> parentIds, ReadRefsTaskMap map) {
+        internal override void ReadReferenceResult(References task, ReferencesResult result, List<string> parentIds, ReadRefsTaskMap map) {
             foreach (var parentId in parentIds) {
                 var reference = map.readRefs[parentId];
                 if (reference.singleResult) {
@@ -184,7 +184,7 @@ namespace Friflo.Json.EntityGraph
             }
         }
 
-        internal override void QueryReferenceResult(ReadReference task, ReadReferenceResult result, QueryRefsTask queryRefsTask) {
+        internal override void QueryReferenceResult(References task, ReferencesResult result, QueryRefsTask queryRefsTask) {
             var queryRefs = (QueryRefsTask<T>) queryRefsTask;
             queryRefs.synced = true;
             foreach (var id in result.ids) {

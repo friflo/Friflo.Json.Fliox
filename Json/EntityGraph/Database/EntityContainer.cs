@@ -70,27 +70,27 @@ namespace Friflo.Json.EntityGraph.Database
             return new PatchEntitiesResult();
         }
 
-        public async Task<List<ReadReferenceResult>> ReadReferences(
-                List<ReadReference>             references,
-                Dictionary<string, EntityValue> entities,
-                SyncResponse                    syncResponse)
+        public async Task<List<ReferencesResult>> ReadReferences(
+                List<References>                    references,
+                Dictionary<string, EntityValue>     entities,
+                SyncResponse                        syncResponse)
         {
-            var referenceResults = new List<ReadReferenceResult>();
+            var referenceResults = new List<ReferencesResult>();
             if (references.Count == 0)
                 return referenceResults;
             
-            // prepare single ScalarSelect and results
+            // prepare single ScalarSelect and references results
             var selectors = new List<string>(references.Count);  // can be reused
             foreach (var reference in references) {
                 selectors.Add(reference.refPath);
-                var referenceResult = new ReadReferenceResult {
+                var referenceResult = new ReferencesResult {
                     container   = reference.container,
                     ids         = new HashSet<string>()
                 };
                 referenceResults.Add(referenceResult);
             }
-            var select              = new ScalarSelect(selectors);  // can be reused
-            var jsonPath            = SyncContext.scalarSelector;
+            var select      = new ScalarSelect(selectors);  // can be reused
+            var jsonPath    = SyncContext.scalarSelector;
             
             // Get the selected refs for all entities.
             // Select() is expensive as it requires a full JSON parse. By using an selector array only one
@@ -114,8 +114,8 @@ namespace Friflo.Json.EntityGraph.Database
                 var refContainer    = database.GetContainer(reference.container);
                 var ids = referenceResults[n].ids;
                 if (ids.Count > 0) {
-                    var refIdList = ids.ToList();
-                    var readRefIds = new ReadEntities {ids = refIdList};
+                    var refIdList   = ids.ToList();
+                    var readRefIds  = new ReadEntities {ids = refIdList};
                     var refEntities = await refContainer.ReadEntities(readRefIds);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);

@@ -91,19 +91,19 @@ namespace Friflo.Json.EntityGraph.Database
     {
         public  string                      container;
         public  List<string>                ids;
-        public  List<ReadReference>         references;
+        public  List<References>            references;
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public partial class ReadEntitiesResult : TaskResult
     {
-        public   List<ReadReferenceResult>          references;
+        public   List<ReferencesResult>             references;
         [Fri.Ignore]
         internal Dictionary<string, EntityValue>    entities;
     }
     
     // ---
-    public class ReadReference
+    public class References
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
@@ -111,7 +111,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  string                  container;
     }
     
-    public class ReadReferenceResult
+    public class ReferencesResult
     {
         public  string                  container;
         public  HashSet<string>         ids;
@@ -124,7 +124,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  string                      container;
         public  string                      filterLinq;
         public  FilterOperation             filter;
-        public  List<ReadReference>         references;
+        public  List<References>            references;
     }
     
     public partial class QueryEntitiesResult : TaskResult
@@ -132,7 +132,7 @@ namespace Friflo.Json.EntityGraph.Database
         public  string                              container;  // only for debugging ergonomics
         public  string                              filterLinq;
         public  List<string>                        ids;
-        public  List<ReadReferenceResult>           references;
+        public  List<ReferencesResult>              references;
         [Fri.Ignore]
         internal Dictionary<string, EntityValue>    entities;
     }

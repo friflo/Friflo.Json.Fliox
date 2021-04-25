@@ -173,10 +173,10 @@ namespace Friflo.Json.EntityGraph.Internal
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
 
-                var references = new List<ReadReference>();
+                var references = new List<References>();
                 foreach (var refPair in readRefsMap) {
                     ReadRefsTaskMap map = refPair.Value;
-                    ReadReference readReference = new ReadReference {
+                    References readReference = new References {
                         refPath = map.selector,
                         container = map.entityType.Name
                     };
@@ -195,10 +195,10 @@ namespace Friflo.Json.EntityGraph.Internal
                 foreach (var queryPair in queries) {
                     QueryTask<T> query = queryPair.Value;
                     var queryRefs = query.queryRefs;
-                    var references = new List<ReadReference>(queryRefs.Count);
+                    var references = new List<References>(queryRefs.Count);
                     foreach (var queryRefPair in queryRefs) {
                         QueryRefsTask queryRefsTask = queryRefPair.Value;
-                        var queryReference = new ReadReference {
+                        var queryReference = new References {
                             container = queryRefsTask.entityType.Name,
                             refPath   = queryRefsTask.selector
                         };
@@ -255,8 +255,8 @@ namespace Friflo.Json.EntityGraph.Internal
                     set.DeletePeer(id);
             }
             for (int n = 0; n < result.references.Count; n++) {
-                ReadReference          reference = task.  references[n];
-                ReadReferenceResult    refResult = result.references[n];
+                References          reference = task.  references[n];
+                ReferencesResult    refResult = result.references[n];
                 var refContainer = set.intern.store._intern.setByName[refResult.container];
                 ReadRefsTaskMap map = readRefsMap[reference.refPath];
                 refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
@@ -273,8 +273,8 @@ namespace Friflo.Json.EntityGraph.Internal
             }
 
             for (int n = 0; n < result.references.Count; n++) {
-                ReadReference          reference  = task.  references[n];
-                ReadReferenceResult    refResult  = result.references[n];
+                References          reference  = task.  references[n];
+                ReferencesResult    refResult  = result.references[n];
                 var refContainer            = set.intern.store._intern.setByName[refResult.container];
                 QueryRefsTask queryRefsTask = query.queryRefs[reference.refPath];
                 refContainer.QueryReferenceResult(reference, refResult, queryRefsTask);
