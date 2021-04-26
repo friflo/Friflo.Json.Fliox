@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-using System;
+
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
 
@@ -24,11 +24,6 @@ namespace Friflo.Json.EntityGraph
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }
-        
-        private Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {Label}");
-        }
-
     }
 }
 
