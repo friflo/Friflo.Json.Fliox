@@ -198,7 +198,7 @@ namespace Friflo.Json.EntityGraph.Internal
             if (queries.Count > 0) {
                 foreach (var queryPair in queries) {
                     QueryTask<T> query = queryPair.Value;
-                    var subRefs = query.map;
+                    var subRefs = query.subRefs;
                     var references = new List<References>(subRefs.Count);
                     foreach (var queryRefPair in subRefs) {
                         ISubRefsTask subRefsTask = queryRefPair.Value;
@@ -294,7 +294,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 References          reference       = task.  references[n];
                 ReferencesResult    refResult       = result.references[n];
                 var                 refContainer    = set.intern.store._intern.setByName[refResult.container];
-                ISubRefsTask        subRefs         = query.map[reference.selector];
+                ISubRefsTask        subRefs         = query.subRefs[reference.selector];
                 refContainer.QueryReferenceResult(reference, refResult, subRefs);
             }
             query.synced = true;

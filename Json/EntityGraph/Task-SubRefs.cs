@@ -13,19 +13,19 @@ namespace Friflo.Json.EntityGraph
         string  Label { get; }
     }
     
-    public abstract class SubRefsBase<T> : ISetTask where T : Entity
+    public abstract class RefsBase<T> : ISetTask where T : Entity
     {
         internal            bool                                synced;
         internal readonly   EntitySet                           set;
         /// key: <see cref="ISubRefsTask.Selector"/>
-        internal readonly   Dictionary<string, ISubRefsTask>    map;
+        internal readonly   Dictionary<string, ISubRefsTask>    subRefs;
         
         public   abstract   string                              Label { get; }
 
-        internal SubRefsBase(EntitySet set) {
+        internal RefsBase(EntitySet set) {
 
-            this.set    = set;
-            this.map    = new Dictionary<string, ISubRefsTask>();
+            this.set        = set;
+            this.subRefs    = new Dictionary<string, ISubRefsTask>();
         }
         
         private Exception AlreadySyncedError() {
@@ -40,10 +40,10 @@ namespace Friflo.Json.EntityGraph
         private SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
-            if (map.TryGetValue(selector, out ISubRefsTask subRefsTask))
+            if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new SubRefsTask<TValue>(this, set, selector, typeof(TValue).Name);
-            map.Add(selector, newQueryRefs);
+            subRefs.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
         
@@ -61,22 +61,24 @@ namespace Friflo.Json.EntityGraph
     }
 
     // ----------------------------------------- QueryRefsTask -----------------------------------------
-    internal interface ISubRefsTask
+    public interface ISubRefsTask
     {
-        string Selector { get; }
-        string Container { get; }
+        string                              Selector    { get; }
+        string                              Container   { get; }
+        Dictionary<string, ISubRefsTask>    SubRefs     { get; }
     }
 
-    public class SubRefsTask<T> : SubRefsBase<T>, ISubRefsTask where T : Entity
+    public class SubRefsTask<T> : RefsBase<T>, ISubRefsTask where T : Entity
     {
-        private   readonly  ISetTask                parent;
-        internal  readonly  Dictionary<string, T>   results = new Dictionary<string, T>();
-
-        public    override  string                  Label => $"{parent.Label} {Selector}";
-        public    override  string                  ToString() => Label;
-
-        public              string                  Selector { get; }
-        public              string                  Container { get; }
+        private   readonly  ISetTask                            parent;
+        internal  readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
+            
+        public    override  string                              Label => $"{parent.Label} {Selector}";
+        public    override  string                              ToString() => Label;
+            
+        public              string                              Selector  { get; }
+        public              string                              Container { get; }
+        public              Dictionary<string, ISubRefsTask>    SubRefs => subRefs;
 
         public              Dictionary<string, T>   Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
         public              T                       this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");

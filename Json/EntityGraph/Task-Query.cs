@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Graph;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
-    public class QueryTask<T> : SubRefsBase<T> where T : Entity
+    public class QueryTask<T> : RefsBase<T> where T : Entity
     {
         internal readonly   FilterOperation     filter;
         internal readonly   string              filterLinq; // use as string identifier of a filter 
