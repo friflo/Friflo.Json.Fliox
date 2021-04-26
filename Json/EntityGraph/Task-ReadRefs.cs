@@ -9,17 +9,17 @@ using System.Linq;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- QueryRefsTask -----------------------------------------
-    public interface ISubRefsTask
+    public interface IReadRefsTask
     {
         string                              Selector    { get; }
         string                              Container   { get; }
-        Dictionary<string, ISubRefsTask>    SubRefs     { get; }
+        Dictionary<string, IReadRefsTask>   SubRefs     { get; }
         
         void    SetResult (EntitySet set, HashSet<string> ids);
 
     }
 
-    public class SubRefsTask<T> : RefsTask<T>, ISubRefsTask where T : Entity
+    public class ReadRefsTask<T> : RefsTask<T>, IReadRefsTask where T : Entity
     {
         private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
         private   readonly  ISetTask                            parent;
@@ -32,10 +32,10 @@ namespace Friflo.Json.EntityGraph
             
         public              string                              Selector  { get; }
         public              string                              Container { get; }
-        public              Dictionary<string, ISubRefsTask>    SubRefs => subRefs;
+        public              Dictionary<string, IReadRefsTask>   SubRefs => subRefs;
 
 
-        internal SubRefsTask(ISetTask parent, string selector, string container)
+        internal ReadRefsTask(ISetTask parent, string selector, string container)
         {
             this.parent     = parent;
             this.Selector   = selector;
@@ -52,7 +52,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class SubRefTask<T> : RefsTask<T>, ISubRefsTask where T : Entity
+    public class ReadRefTask<T> : RefsTask<T>, IReadRefsTask where T : Entity
     {
         private             string                              id;
         private             T                                   entity;
@@ -66,10 +66,10 @@ namespace Friflo.Json.EntityGraph
             
         public              string                              Selector  { get; }
         public              string                              Container { get; }
-        public              Dictionary<string, ISubRefsTask>    SubRefs => subRefs;
+        public              Dictionary<string, IReadRefsTask>   SubRefs => subRefs;
 
 
-        internal SubRefTask(ISetTask parent, string selector, string container)
+        internal ReadRefTask(ISetTask parent, string selector, string container)
         {
             this.parent     = parent;
             this.Selector   = selector;

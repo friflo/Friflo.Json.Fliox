@@ -184,7 +184,7 @@ namespace Friflo.Json.EntityGraph.Internal
                     var subRefs = query.subRefs;
                     var references = new List<References>(subRefs.Count);
                     foreach (var queryRefPair in subRefs) {
-                        ISubRefsTask subRefsTask = queryRefPair.Value;
+                        IReadRefsTask subRefsTask = queryRefPair.Value;
                         var queryReference = new References {
                             container = subRefsTask.Container,
                             selector  = subRefsTask.Selector
@@ -224,9 +224,9 @@ namespace Friflo.Json.EntityGraph.Internal
             }
         }
 
-        private void AddReferences(List<References> references, Dictionary<string, ISubRefsTask> refs) {
+        private void AddReferences(List<References> references, Dictionary<string, IReadRefsTask> refs) {
             foreach (var refsPair in refs) {
-                ISubRefsTask readRefs = refsPair.Value;
+                IReadRefsTask readRefs = refsPair.Value;
                 var queryReference = new References {
                     container = readRefs.Container,
                     selector  = readRefs.Selector
@@ -275,12 +275,12 @@ namespace Friflo.Json.EntityGraph.Internal
             query.synced = true;
         }
 
-        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, ISubRefsTask> refs) {
+        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, IReadRefsTask> refs) {
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
-                ISubRefsTask        subRef       = refs[reference.selector];
+                IReadRefsTask       subRef       = refs[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
 
                 var subReferences = reference.references;

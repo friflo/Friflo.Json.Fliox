@@ -24,29 +24,29 @@ namespace Friflo.Json.EntityGraph
         }
 
         // lab - ReadRefs by Entity Type
-        public SubRefsTask<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
+        public ReadRefsTask<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
         // lab - all ReadRefs
-        public SubRefsTask<Entity> ReadAllRefs()
+        public ReadRefsTask<Entity> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
         
-        public SubRefTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out _);
-            return SubRefByPath<TValue>(path);
+            return ReadRefByPath<TValue>(path);
         }
         
-        public SubRefTask<TValue> SubRefByPath<TValue>(string selector) where TValue : Entity {
+        public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
-            if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
-                return (SubRefTask<TValue>)subRefsTask;
-            var newQueryRefs = new SubRefTask<TValue>(this, selector, typeof(TValue).Name);
+            if (subRefs.TryGetValue(selector, out IReadRefsTask subRefsTask))
+                return (ReadRefTask<TValue>)subRefsTask;
+            var newQueryRefs = new ReadRefTask<TValue>(this, selector, typeof(TValue).Name);
             subRefs.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
