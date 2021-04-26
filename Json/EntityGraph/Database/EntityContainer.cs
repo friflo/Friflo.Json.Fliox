@@ -103,7 +103,8 @@ namespace Friflo.Json.EntityGraph.Database
                     for (int n = 0; n < references.Count; n++) {
                         // selectorResults[n] contains Select() result of selectors[n] 
                         var entityRefs = selectorResults[n].AsStrings();
-                        referenceResults[n].ids.UnionWith(entityRefs);
+                        var referenceResult = referenceResults[n];
+                        referenceResult.ids.UnionWith(entityRefs);
                     }
                 }
             }
@@ -112,13 +113,22 @@ namespace Friflo.Json.EntityGraph.Database
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
                 var refContainer    = database.GetContainer(reference.container);
-                var ids = referenceResults[n].ids;
+                var referenceResult = referenceResults[n];
+                var ids = referenceResult.ids;
                 if (ids.Count > 0) {
                     var refIdList   = ids.ToList();
                     var readRefIds  = new ReadEntities {ids = refIdList};
                     var refEntities = await refContainer.ReadEntities(readRefIds);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);
+                    var subReferences = reference.references;  
+                    if (subReferences != null) {
+                        var subEntities = new Dictionary<string, EntityValue>(ids.Count);
+                        foreach (var id in ids) {
+                            subEntities.Add(id, refEntities.entities[id]);
+                        }
+                        await ReadReferences(subReferences, subEntities, syncResponse);
+                    }
                 }
             }
             return referenceResults;
