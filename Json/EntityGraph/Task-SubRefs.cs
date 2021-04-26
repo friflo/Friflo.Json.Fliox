@@ -8,23 +8,23 @@ using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
 {
-    public class SubRefsBase<T> where T : Entity
+    public abstract class SubRefsBase<T> where T : Entity
     {
         internal            bool                                synced;
-
         internal readonly   EntitySet                           set;
-        private  readonly   string                              label;
         /// key: <see cref="ISubRefsTask.Selector"/>
         internal readonly   Dictionary<string, ISubRefsTask>    map;
+        
+        protected abstract  string                              Label { get; }
 
-        internal SubRefsBase(string label, EntitySet set) {
-            this.label  = label;
+        internal SubRefsBase(EntitySet set) {
+
             this.set    = set;
             this.map    = new Dictionary<string, ISubRefsTask>();
         }
         
         private Exception AlreadySyncedError() {
-            return new InvalidOperationException($"Used QueryTask is already synced. QueryTask<{set.name}>, filter: {label}");
+            return new InvalidOperationException($"Used task is already synced. {Label}");
         }
         
         private SubRefsTask<TValue> SubRefsByExpression<TValue>(Expression selector) where TValue : Entity {
@@ -37,7 +37,7 @@ namespace Friflo.Json.EntityGraph
                 throw AlreadySyncedError();
             if (map.TryGetValue(selector, out ISubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
-            var newQueryRefs = new SubRefsTask<TValue>(label, set, selector, typeof(TValue).Name);
+            var newQueryRefs = new SubRefsTask<TValue>(Label, set, selector, typeof(TValue).Name);
             map.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
@@ -54,7 +54,7 @@ namespace Friflo.Json.EntityGraph
             return SubRefsByExpression<TValue>(selector);
         }
     }
-    
+
     // ----------------------------------------- QueryRefsTask -----------------------------------------
     internal interface ISubRefsTask
     {
