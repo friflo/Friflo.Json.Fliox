@@ -205,8 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
             
-            AreEqual(1,             producersTask.Results.Count);
-            AreEqual("Samsung",     producersTask.Results["producer-samsung"].name);
+            AreEqual("Samsung",     producersTask.Result.name);
         }
         
         private static async Task AssertReadTask(PocStore store) {

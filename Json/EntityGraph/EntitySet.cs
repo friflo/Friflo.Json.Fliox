@@ -185,12 +185,7 @@ namespace Friflo.Json.EntityGraph
         }
 
         internal override void QueryReferenceResult(References task, ReferencesResult result, ISubRefsTask subRefs) {
-            var subRefsTask = (SubRefsTask<T>) subRefs;
-            subRefsTask.synced = true;
-            foreach (var id in result.ids) {
-                var peer = GetPeerById(id);
-                subRefsTask.results.Add(id, peer.entity);
-            }
+            subRefs.SetResult(this, result.ids);
         }
 
         internal override void SyncEntities(ContainerEntities containerResults) {
