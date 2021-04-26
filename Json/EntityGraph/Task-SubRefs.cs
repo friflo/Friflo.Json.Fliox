@@ -27,7 +27,7 @@ namespace Friflo.Json.EntityGraph
         public              Dictionary<string, T>               Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
         public              T                                   this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");
         
-        public    override  string                              Label => $"{parent.Label} {Selector}";
+        public    override  string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
         public              string                              Selector  { get; }
@@ -61,7 +61,7 @@ namespace Friflo.Json.EntityGraph
         public              string                              Id      => synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
         public              T                                   Result  => synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
             
-        public    override  string                              Label => $"{parent.Label} {Selector}";
+        public    override  string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
         public              string                              Selector  { get; }

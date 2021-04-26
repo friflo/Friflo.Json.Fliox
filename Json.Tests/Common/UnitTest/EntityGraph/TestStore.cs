@@ -177,13 +177,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreSame(customer, customer2);
             SubRefTask<Customer> customer3 = order1.SubRef(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("ReadTask<Order> id: order-1 .customer", customer.ToString());
+            AreEqual("ReadTask<Order> id: order-1 > .customer", customer.ToString());
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> id: order-1 .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> id: order-1 > .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> id: order-1 .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> id: order-1 > .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
@@ -227,14 +227,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             SubRefsTask<Article> articleRefsTask3 = order1Task.SubRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("ReadTask<Order> id: order-1 .items[*].article", articleRefsTask.ToString());
+            AreEqual("ReadTask<Order> id: order-1 > .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("QueryRefsTask[] requires Sync(). ReadTask<Order> id: order-1 .items[*].article", e.Message);
+            AreEqual("QueryRefsTask[] requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("QueryRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 .items[*].article", e.Message);
+            AreEqual("QueryRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
 
             SubRefTask<Producer> articleProducerTask = articleRefsTask.SubRef(a => a.producer);
+            AreEqual("ReadTask<Order> id: order-1 > .items[*].article > .producer", articleProducerTask.ToString());
 
             await store.Sync(); // -------- Sync --------
         
