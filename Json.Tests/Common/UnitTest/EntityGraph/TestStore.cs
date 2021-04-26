@@ -232,9 +232,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("ReadTask<Order> id: order-1 > .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("QueryRefsTask[] requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("QueryRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
 
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> id: order-1 > .items[*].article > .producer", articleProducerTask.ToString());

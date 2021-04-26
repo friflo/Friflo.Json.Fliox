@@ -24,8 +24,8 @@ namespace Friflo.Json.EntityGraph
         private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
         private   readonly  ISetTask                            parent;
             
-        public              Dictionary<string, T>               Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
-        public              T                                   this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");
+        public              Dictionary<string, T>               Results          => synced ? results      : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
+        public              T                                   this[string id]  => synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
         
         public    override  string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
