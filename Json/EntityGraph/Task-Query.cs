@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.EntityGraph
@@ -21,7 +20,7 @@ namespace Friflo.Json.EntityGraph
         public   override   string              ToString()      => Label;
 
 
-        internal QueryTask(FilterOperation filter, EntitySet<T> set) : base (set){
+        internal QueryTask(FilterOperation filter) {
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }

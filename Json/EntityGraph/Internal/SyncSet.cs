@@ -83,7 +83,7 @@ namespace Friflo.Json.EntityGraph.Internal
             var filterLinq = filter.Linq;
             if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
                 return query;
-            query = new QueryTask<T>(filter, set);
+            query = new QueryTask<T>(filter);
             queries.Add(filterLinq, query);
             return query;
         }

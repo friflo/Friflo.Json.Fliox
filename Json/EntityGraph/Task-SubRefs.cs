@@ -16,15 +16,12 @@ namespace Friflo.Json.EntityGraph
     public abstract class RefsBase<T> : ISetTask where T : Entity
     {
         internal            bool                                synced;
-        internal readonly   EntitySet                           set;
         /// key: <see cref="ISubRefsTask.Selector"/>
         internal readonly   Dictionary<string, ISubRefsTask>    subRefs;
         
         public   abstract   string                              Label { get; }
 
-        internal RefsBase(EntitySet set) {
-
-            this.set        = set;
+        internal RefsBase() {
             this.subRefs    = new Dictionary<string, ISubRefsTask>();
         }
         
@@ -42,7 +39,7 @@ namespace Friflo.Json.EntityGraph
                 throw AlreadySyncedError();
             if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
-            var newQueryRefs = new SubRefsTask<TValue>(this, set, selector, typeof(TValue).Name);
+            var newQueryRefs = new SubRefsTask<TValue>(this, selector, typeof(TValue).Name);
             subRefs.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
@@ -83,7 +80,7 @@ namespace Friflo.Json.EntityGraph
         public              Dictionary<string, T>   Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
         public              T                       this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");
 
-        internal SubRefsTask(ISetTask parent, EntitySet parentSet, string selector, string container) : base (parentSet)
+        internal SubRefsTask(ISetTask parent, string selector, string container)
         {
             this.parent     = parent;
             this.Selector   = selector;
