@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("ReadTask<Order> id: order-1", order1.ToString());
             var allArticles =  articles.QueryAll();
             var allArticles2 = articles.QueryByFilter(Operation.FilterTrue);
-            var producersTask = allArticles.SubRef(a => a.producer);
+            var producersTask = allArticles.SubRefs(a => a.producer);
             var hasOrderCamera = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1 = orders.Query(o => o.customer.id == "customer-1");
             var read2 = orders.Query(o => o.customer.Entity.lastName == "Smith");
@@ -205,7 +205,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
             
-            AreEqual("Samsung",     producersTask.Result.name);
+            AreEqual(2,             producersTask.Results.Count);
+            AreEqual("Samsung",     producersTask["producer-samsung"].name);
+            AreEqual("Canon",       producersTask["producer-canon"].name);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -242,7 +244,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);
             AreEqual("Smartphone",      articleRefsTask["article-2"].name);
-            // var xxx = articleProducerTask.Results;
+            
+            AreEqual(1,                 articleProducerTask.Results.Count);
+            AreEqual("Canon",           articleProducerTask["producer-canon"].name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {

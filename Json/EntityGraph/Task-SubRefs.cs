@@ -80,7 +80,7 @@ namespace Friflo.Json.EntityGraph
             var entitySet = (EntitySet<T>) set;
             synced = true;
             if (ids.Count != 1)
-                throw new InvalidOperationException($"Expect ids result with one element. Got: {ids.Count}");
+                throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
             var peer = entitySet.GetPeerById(id);
             entity = peer.entity;

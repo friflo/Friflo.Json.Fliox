@@ -70,9 +70,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
 
             await store.Sync(); // -------- Sync --------
-            
+            var canon           = new Producer { id = "producer-canon", name = "Canon"};
+            producers.Create(canon);
             var order           = new Order { id = "order-1" };
-            var cameraCreate    = new Article { id = "article-1", name = "Camera" };
+            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
             var createCam1 = articles.Create(cameraCreate);
             var createCam2 = articles.Create(cameraCreate);   // Create() is idempotent
             AreSame(createCam1, createCam2);                       // test redundant create
@@ -90,15 +91,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
             // StoreInfo is accessible via property an ToString()
-            AreEqual(7, store.StoreInfo.peers);
-            AreEqual(2, store.StoreInfo.tasks); 
-            AreEqual("peers: 7, tasks: 2",                          store.ToString());
+            AreEqual(8, store.StoreInfo.peers);
+            AreEqual(3, store.StoreInfo.tasks); 
+            AreEqual("peers: 8, tasks: 3",                          store.ToString());
             AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    articles.ToString());
-            AreEqual("peers: 2",                                    producers.ToString());
+            AreEqual("peers: 3, tasks: 1 -> create #1",             producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 6",                                    store.ToString()); // "article-missing" peer removed
+            AreEqual("peers: 7",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));

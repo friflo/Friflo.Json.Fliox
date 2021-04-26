@@ -286,7 +286,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 var subReferences = reference.references;
                 if (subReferences != null) {
                     var readRefs = subRef.SubRefs;
-                    // AddReferencesResult(subReferences, refResult.references, readRefs);
+                    AddReferencesResult(subReferences, refResult.references, readRefs);
                 }
             }
         }

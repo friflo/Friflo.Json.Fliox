@@ -27,23 +27,6 @@ namespace Friflo.Json.EntityGraph
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }
-        
-        public SubRefTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out _);
-            return SubRefByPath<TValue>(path);
-        }
-        
-        public SubRefTask<TValue> SubRefByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-            if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
-                return (SubRefTask<TValue>)subRefsTask;
-            var newQueryRefs = new SubRefTask<TValue>(this, selector, typeof(TValue).Name);
-            subRefs.Add(selector, newQueryRefs);
-            return newQueryRefs;
-        }
     }
 }
 
