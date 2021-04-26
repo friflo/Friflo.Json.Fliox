@@ -8,14 +8,19 @@ using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
 {
-    public abstract class SubRefsBase<T> where T : Entity
+    internal interface ISetTask
+    {
+        string  Label { get; }
+    }
+    
+    public abstract class SubRefsBase<T> : ISetTask where T : Entity
     {
         internal            bool                                synced;
         internal readonly   EntitySet                           set;
         /// key: <see cref="ISubRefsTask.Selector"/>
         internal readonly   Dictionary<string, ISubRefsTask>    map;
         
-        protected abstract  string                              Label { get; }
+        public   abstract   string                              Label { get; }
 
         internal SubRefsBase(EntitySet set) {
 
@@ -37,7 +42,7 @@ namespace Friflo.Json.EntityGraph
                 throw AlreadySyncedError();
             if (map.TryGetValue(selector, out ISubRefsTask subRefsTask))
                 return (SubRefsTask<TValue>)subRefsTask;
-            var newQueryRefs = new SubRefsTask<TValue>(Label, set, selector, typeof(TValue).Name);
+            var newQueryRefs = new SubRefsTask<TValue>(this, set, selector, typeof(TValue).Name);
             map.Add(selector, newQueryRefs);
             return newQueryRefs;
         }
@@ -64,10 +69,10 @@ namespace Friflo.Json.EntityGraph
 
     public class SubRefsTask<T> : SubRefsBase<T>, ISubRefsTask where T : Entity
     {
-        private   readonly  string                  parentLabel;
+        private   readonly  ISetTask                parent;
         internal  readonly  Dictionary<string, T>   results = new Dictionary<string, T>();
 
-        protected override  string                  Label => $"{parentLabel} {Selector}";
+        public    override  string                  Label => $"{parent.Label} {Selector}";
         public    override  string                  ToString() => Label;
 
         public              string                  Selector { get; }
@@ -76,9 +81,9 @@ namespace Friflo.Json.EntityGraph
         public              Dictionary<string, T>   Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
         public              T                       this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");
 
-        internal SubRefsTask(string parentLabel, EntitySet parentSet, string selector, string container) : base (parentSet)
+        internal SubRefsTask(ISetTask parent, EntitySet parentSet, string selector, string container) : base (parentSet)
         {
-            this.parentLabel = parentLabel;
+            this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
         }
