@@ -8,48 +8,26 @@ using Friflo.Json.Flow.Graph;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
-    public class QueryTask<T> : ISubRefsTask<T> where T : Entity
+    public class QueryTask<T> : SubRefsBase<T> where T : Entity
     {
         internal readonly   FilterOperation     filter;
         internal readonly   string              filterLinq; // use as string identifier of a filter 
-        internal            bool                synced;
         internal readonly   List<T>             entities = new List<T>();
-        internal            SubRefs             subRefs;
 
-        
         public              List<T>             Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
         public              T                   this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
                      
         public override     string              ToString() => filterLinq;
 
-        internal QueryTask(FilterOperation filter, EntitySet<T> set) {
+        internal QueryTask(FilterOperation filter, EntitySet<T> set) : base (filter.Linq, set){
             this.filter     = filter;
             this.filterLinq = filter.Linq;
-            this.subRefs    = new SubRefs(filter.Linq, set);
         }
         
         private Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} Entity: {subRefs.set.name} filter: {filterLinq}");
+            return new TaskNotSyncedException($"{message} Entity: {set.name} filter: {filterLinq}");
         }
-        
-        // --- ISubRefTask<T> ---
-        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByPath<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced)
-                throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
+
     }
 }
 
