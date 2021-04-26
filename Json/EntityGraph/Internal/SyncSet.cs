@@ -162,10 +162,13 @@ namespace Friflo.Json.EntityGraph.Internal
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
 
-                var references = new List<References>();
-                foreach (var readPair in reads) {
-                    ReadTask<T> read = readPair.Value;
-                    AddReferences(references, read.subRefs);
+                List<References> references = null;
+                if (reads.Count > 0) {
+                    references = new List<References>();
+                    foreach (var readPair in reads) {
+                        ReadTask<T> read = readPair.Value;
+                        AddReferences(references, read.subRefs);
+                    }
                 }
                 var req = new ReadEntities {
                     container = set.name,
