@@ -25,8 +25,12 @@ namespace Friflo.Json.EntityGraph
             this.subRefs    = new Dictionary<string, ISubRefsTask>();
         }
         
-        private Exception AlreadySyncedError() {
+        private   Exception AlreadySyncedError() {
             return new InvalidOperationException($"Used task is already synced. {Label}");
+        }
+        
+        protected Exception RequiresSyncError(string message) {
+            return new TaskNotSyncedException($"{message} {Label}");
         }
         
         private SubRefsTask<TValue> SubRefsByExpression<TValue>(Expression selector) where TValue : Entity {
@@ -86,13 +90,6 @@ namespace Friflo.Json.EntityGraph
             this.Selector   = selector;
             this.Container  = container;
         }
-        
-        protected Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {Label}");
-        }
-
-
-        
     }
     
 }
