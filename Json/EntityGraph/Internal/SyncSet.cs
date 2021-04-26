@@ -164,7 +164,7 @@ namespace Friflo.Json.EntityGraph.Internal
 
                 List<References> references = null;
                 if (reads.Count > 0) {
-                    references = new List<References>();
+                    references = new List<References>(reads.Count);
                     foreach (var readPair in reads) {
                         ReadTask<T> read = readPair.Value;
                         AddReferences(references, read.subRefs);
@@ -234,7 +234,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 references.Add(queryReference);
                 var subRefsMap = readRefs.SubRefs;
                 if (subRefsMap.Count > 0) {
-                    queryReference.references = new List<References>();
+                    queryReference.references = new List<References>(subRefsMap.Count);
                     AddReferences(queryReference.references, subRefsMap);
                 }
             }
