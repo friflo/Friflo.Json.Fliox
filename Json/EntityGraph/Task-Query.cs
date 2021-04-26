@@ -15,8 +15,8 @@ namespace Friflo.Json.EntityGraph
 
         public              List<T>             Result          => synced ? entities        : throw RequiresSyncError("QueryTask.Result requires Sync().");
         public              T                   this[int index] => synced ? entities[index] : throw RequiresSyncError("QueryTask[] requires Sync().");
+        
         public   override   string              Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
-                     
         public   override   string              ToString()      => Label;
 
 

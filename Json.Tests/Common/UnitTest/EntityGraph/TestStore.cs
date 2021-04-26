@@ -159,7 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var articles = store.articles;
 
             ReadTask<Order> order1 = orders.Read("order-1");
-            AreEqual("order-1", order1.ToString());
+            AreEqual("ReadTask<Order> id: order-1", order1.ToString());
             var allArticles =  articles.QueryAll();
             var allArticles2 = articles.QueryByFilter(Operation.FilterTrue);
             var producersTask = allArticles.SubRef(a => a.producer);

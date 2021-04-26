@@ -13,8 +13,9 @@ namespace Friflo.Json.EntityGraph
         internal            T               result;
 
         public              T               Result      => synced ? result : throw RequiresSyncError("ReadTask.Result requires Sync().");
-        public   override   string          ToString()  => id;
+        
         public   override   string          Label       => $"ReadTask<{typeof(T).Name}> id: {id}";
+        public   override   string          ToString()  => Label;
 
         internal ReadTask(string id, PeerEntity<T> peer) {
             this.id     = id;
