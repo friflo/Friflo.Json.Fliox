@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). Order['order-1'] .items[*].article", e.Message);
 
-            SubRefsTask<Producer> articleProducerTask = articleRefsTask.SubRef(a => a.producer);
+            // SubRefsTask<Producer> articleProducerTask = articleRefsTask.SubRef(a => a.producer);
 
             await store.Sync(); // -------- Sync --------
         

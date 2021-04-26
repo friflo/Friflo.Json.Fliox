@@ -15,7 +15,6 @@ namespace Friflo.Json.EntityGraph
         internal readonly   bool        singleResult;
         internal readonly   string      label;
         internal            bool        synced;
-        internal            SubRefs     subRefs;
 
         internal            string      DebugName => $"{parentSet.name}['{parentId}'] {label}";
         public   override   string      ToString() => DebugName;
@@ -25,7 +24,6 @@ namespace Friflo.Json.EntityGraph
             this.parentSet      = parentSet;
             this.singleResult   = singleResult;
             this.label          = label;
-            this.subRefs        = new SubRefs(DebugName, parentSet);
         }
         
         protected Exception RequiresSyncError(string message) {
@@ -37,7 +35,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRefTask<T> : ReadRefsTask, ISubRefsTask<T> where T : Entity
+    public class ReadRefTask<T> : ReadRefsTask where T : Entity
     {
         internal    string      id;
         internal    T           entity;
@@ -47,24 +45,10 @@ namespace Friflo.Json.EntityGraph
 
         internal ReadRefTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, true) { }
         
-        // --- ISubRefTask<T> ---
-        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByPath<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
+
     }
     
-    public class ReadRefsTask<T> : ReadRefsTask, ISubRefsTask<T> where T : Entity
+    public class ReadRefsTask<T> : ReadRefsTask where T : Entity
     {
         internal readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
             
@@ -73,21 +57,7 @@ namespace Friflo.Json.EntityGraph
 
         internal ReadRefsTask(string parentId, EntitySet parentSet, string label) : base (parentId, parentSet, label, false) { }
         
-        // --- ISubRefTask<T> ---
-        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByPath<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
-        
-        public SubRefsTask<TValue> SubRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced) throw subRefs.AlreadySyncedError();
-            return subRefs.SubRefsByExpression<TValue>(selector);
-        }
+
     }
     
     internal class ReadRefsTaskMap

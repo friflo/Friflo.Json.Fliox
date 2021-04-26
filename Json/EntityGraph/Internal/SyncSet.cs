@@ -180,10 +180,10 @@ namespace Friflo.Json.EntityGraph.Internal
                         selector  = map.selector,
                         container = map.entityType.Name
                     };
-                    foreach (var readRefPair in map.readRefs) {
+                    /* foreach (var readRefPair in map.readRefs) {
                         ReadRefsTask readRefsTask = readRefPair.Value;
                         AddSubReferences(readReference, readRefsTask.subRefs.map);
-                    }
+                    } */
                     references.Add(readReference);
                 }
                 var req = new ReadEntities {
@@ -201,10 +201,10 @@ namespace Friflo.Json.EntityGraph.Internal
                     var subRefs = query.subRefs.map;
                     var references = new List<References>(subRefs.Count);
                     foreach (var queryRefPair in subRefs) {
-                        SubRefsTask subRefsTask = queryRefPair.Value;
+                        ISubRefsTask subRefsTask = queryRefPair.Value;
                         var queryReference = new References {
-                            container = subRefsTask.entityType.Name,
-                            selector  = subRefsTask.selector
+                            container = subRefsTask.Container,
+                            selector  = subRefsTask.Selector
                         };
                         references.Add(queryReference);
                     }
@@ -241,15 +241,15 @@ namespace Friflo.Json.EntityGraph.Internal
             }
         }
 
-        private void AddSubReferences(References references, Dictionary<string, SubRefsTask> subRefs) {
+        private void AddSubReferences(References references, Dictionary<string, ISubRefsTask> subRefs) {
             if (subRefs.Count == 0)
                 return;
             references.references = new List<References>();
             foreach (var subRefPair in subRefs) {
                 var subRef = subRefPair.Value;
                 var subReferences = new References {
-                    container = subRef.entityType.Name,
-                    selector  = subRef.selector
+                    container = subRef.Container,
+                    selector  = subRef.Selector
                 };
                 references.references.Add(subReferences);
             }
@@ -294,7 +294,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 References          reference       = task.  references[n];
                 ReferencesResult    refResult       = result.references[n];
                 var                 refContainer    = set.intern.store._intern.setByName[refResult.container];
-                SubRefsTask         subRefs         = query.subRefs.map[reference.selector];
+                ISubRefsTask         subRefs         = query.subRefs.map[reference.selector];
                 refContainer.QueryReferenceResult(reference, refResult, subRefs);
             }
             query.synced = true;
