@@ -186,9 +186,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("ReadRefTask.Result requires Sync(). Order['order-1'] .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
-            AreEqual("QueryTask.Result requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
+            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
-            AreEqual("QueryTask[] requires Sync(). Entity: Order filter: .items.Any(i => i.name == 'Camera')", e.Message);
+            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
             // lab - test ReadRef expressions
             if (lab) {

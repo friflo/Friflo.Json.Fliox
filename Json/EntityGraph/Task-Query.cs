@@ -27,7 +27,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         private Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} Entity: {set.name} filter: {filterLinq}");
+            return new TaskNotSyncedException($"{message} {Label}");
         }
 
     }
