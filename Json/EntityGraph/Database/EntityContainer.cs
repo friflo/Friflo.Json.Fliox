@@ -75,7 +75,7 @@ namespace Friflo.Json.EntityGraph.Database
                 Dictionary<string, EntityValue>     entities,
                 SyncResponse                        syncResponse)
         {
-            var referenceResults = new List<ReferencesResult>();
+            var referenceResults = new List<ReferencesResult>(references.Count);
             if (references.Count == 0)
                 return referenceResults;
             
@@ -127,7 +127,7 @@ namespace Friflo.Json.EntityGraph.Database
                         foreach (var id in ids) {
                             subEntities.Add(id, refEntities.entities[id]);
                         }
-                        await ReadReferences(subReferences, subEntities, syncResponse);
+                        referenceResult.references = await ReadReferences(subReferences, subEntities, syncResponse); 
                     }
                 }
             }

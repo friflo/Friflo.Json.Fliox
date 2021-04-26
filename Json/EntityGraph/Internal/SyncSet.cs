@@ -275,13 +275,19 @@ namespace Friflo.Json.EntityGraph.Internal
             query.synced = true;
         }
 
-        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, ISubRefsTask> subRefs) {
+        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, ISubRefsTask> refs) {
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
-                ISubRefsTask        subRef       = subRefs[reference.selector];
+                ISubRefsTask        subRef       = refs[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
+
+                var subReferences = reference.references;
+                if (subReferences != null) {
+                    var readRefs = subRef.SubRefs;
+                    // AddReferencesResult(subReferences, refResult.references, readRefs);
+                }
             }
         }
         
