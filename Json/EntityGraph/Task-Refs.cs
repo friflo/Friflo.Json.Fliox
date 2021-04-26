@@ -26,7 +26,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         protected   Exception AlreadySyncedError() {
-            return new InvalidOperationException($"Used task is already synced. {Label}");
+            return new TaskAlreadySyncedException($"Task already synced. {Label}");
         }
         
         protected Exception RequiresSyncError(string message) {

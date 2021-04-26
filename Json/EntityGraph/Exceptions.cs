@@ -20,4 +20,9 @@ namespace Friflo.Json.EntityGraph
     {
         public TaskNotSyncedException(string message) : base (message) { }
     }
+    
+    public class TaskAlreadySyncedException : Exception
+    {
+        public TaskAlreadySyncedException(string message) : base (message) { }
+    }
 }

@@ -217,10 +217,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            e = Throws<InvalidOperationException>(() => { order1Task.SubRefByPath<Article>("customer"); });
-            AreEqual("Used task is already synced. ReadTask<Order> id: order-1", e.Message);
-            e = Throws<InvalidOperationException>(() => { order1Task.SubRefsByPath<Article>("items[*].article"); });
-            AreEqual("Used task is already synced. ReadTask<Order> id: order-1", e.Message);
+            e = Throws<TaskAlreadySyncedException>(() => { order1Task.SubRefByPath<Article>("customer"); });
+            AreEqual("Task already synced. ReadTask<Order> id: order-1", e.Message);
+            e = Throws<TaskAlreadySyncedException>(() => { order1Task.SubRefsByPath<Article>("items[*].article"); });
+            AreEqual("Task already synced. ReadTask<Order> id: order-1", e.Message);
 
             order1Task = orders.Read("order-1");
             SubRefsTask<Article> articleRefsTask  = order1Task.SubRefsByPath<Article>(".items[*].article");
