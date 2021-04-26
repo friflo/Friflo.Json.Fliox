@@ -62,16 +62,13 @@ namespace Friflo.Json.EntityGraph
         string Container { get; }
     }
 
-    public class SubRefsTask<T> : ISubRefsTask where T : Entity
+    public class SubRefsTask<T> : SubRefsBase<T>, ISubRefsTask where T : Entity
     {
-        private  readonly   string      filterLinq; // todo rename to parentLabel
-        private  readonly   EntitySet   parentSet;
+        private   readonly  string                  parentLabel;
+        internal  readonly  Dictionary<string, T>   results = new Dictionary<string, T>();
 
-        private             string      DebugName => $"{parentSet.name}['{filterLinq}'] {Selector}";
-        public   override   string      ToString() => DebugName;
-        
-        internal            bool                    synced;
-        internal readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
+        protected override  string                  Label => $"{parentLabel} {Selector}";
+        public    override  string                  ToString() => Label;
 
         public              string                  Selector { get; }
         public              string                  Container { get; }
@@ -79,19 +76,19 @@ namespace Friflo.Json.EntityGraph
         public              Dictionary<string, T>   Results          => synced ? results      : throw RequiresSyncError("QueryRefsTask.Results requires Sync().");
         public              T                       this[string id]  => synced ? results[id]  : throw RequiresSyncError("QueryRefsTask[] requires Sync().");
 
-        internal SubRefsTask(string filterLinq, EntitySet parentSet, string selector, string container)
+        internal SubRefsTask(string parentLabel, EntitySet parentSet, string selector, string container) : base (parentSet)
         {
-            this.filterLinq = filterLinq;
-            this.parentSet  = parentSet;
+            this.parentLabel = parentLabel;
             this.Selector   = selector;
             this.Container  = container;
         }
         
         protected Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {DebugName}");
+            return new TaskNotSyncedException($"{message} {Label}");
         }
 
 
+        
     }
     
 }
