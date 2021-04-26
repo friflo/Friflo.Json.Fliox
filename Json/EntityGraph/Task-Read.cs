@@ -12,17 +12,13 @@ namespace Friflo.Json.EntityGraph
         internal readonly   PeerEntity<T>   peer;
         internal            T               result;
 
-        public              T               Result      => synced ? result : throw RequiresSyncError();
+        public              T               Result      => synced ? result : throw RequiresSyncError("ReadTask.Result requires Sync().");
         public   override   string          ToString()  => id;
         public   override   string          Label       => $"ReadTask<{typeof(T).Name}> id: {id}";
 
         internal ReadTask(string id, PeerEntity<T> peer) {
             this.id     = id;
             this.peer   = peer;
-        }
-
-        private Exception RequiresSyncError() {
-            return new TaskNotSyncedException($"ReadTask.Result requires Sync(). ReadTask<{typeof(T).Name}> id: {id}");
         }
 
         // lab - ReadRefs by Entity Type
