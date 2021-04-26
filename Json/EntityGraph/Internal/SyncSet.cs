@@ -165,14 +165,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 var references = new List<References>();
                 foreach (var readPair in reads) {
                     ReadTask<T> read = readPair.Value;
-                    foreach (var subRefPair in read.subRefs) {
-                        var subRef = subRefPair.Value;
-                        References readReference = new References {
-                            selector  = subRef.Selector,
-                            container = subRef.Container
-                        };
-                        references.Add(readReference);
-                    }
+                    AddReferences(references, read.subRefs);
                 }
                 var req = new ReadEntities {
                     container = set.name,
@@ -228,17 +221,23 @@ namespace Friflo.Json.EntityGraph.Internal
             }
         }
 
-        private void AddSubReferences(References references, Dictionary<string, ISubRefsTask> subRefs) {
-            if (subRefs.Count == 0)
-                return;
-            references.references = new List<References>();
-            foreach (var subRefPair in subRefs) {
-                var subRef = subRefPair.Value;
-                var subReferences = new References {
-                    container = subRef.Container,
-                    selector  = subRef.Selector
+        private void AddReferences(List<References> references, Dictionary<string, ISubRefsTask> refs) {
+            foreach (var refsPair in refs) {
+                ISubRefsTask readRefs = refsPair.Value;
+                var queryReference = new References {
+                    container = readRefs.Container,
+                    selector  = readRefs.Selector
                 };
-                references.references.Add(subReferences);
+                references.Add(queryReference);
+                var subRefsMap = readRefs.SubRefs;
+                if (subRefsMap.Count > 0) {
+                    queryReference.references = new List<References>();
+                    foreach (var subRefMapPair in subRefsMap) {
+                        ISubRefsTask subRef = subRefMapPair.Value;
+                        var subRefsMap2 = subRef.SubRefs;
+                        AddReferences(queryReference.references, subRefsMap2);
+                    }
+                }
             }
         }
         
