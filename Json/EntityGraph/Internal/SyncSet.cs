@@ -232,11 +232,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 var subRefsMap = readRefs.SubRefs;
                 if (subRefsMap.Count > 0) {
                     queryReference.references = new List<References>();
-                    foreach (var subRefMapPair in subRefsMap) {
-                        ISubRefsTask subRef = subRefMapPair.Value;
-                        var subRefsMap2 = subRef.SubRefs;
-                        AddReferences(queryReference.references, subRefsMap2);
-                    }
+                    AddReferences(queryReference.references, subRefsMap);
                 }
             }
         }
