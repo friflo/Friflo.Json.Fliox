@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Internal;
@@ -21,9 +20,6 @@ namespace Friflo.Json.EntityGraph
         internal  abstract  SyncSet Sync       { get;  }
         internal  abstract  SetInfo SetInfo   { get;  }
         
-        internal  abstract  void    ReadReferenceResult  (References task, ReferencesResult result, List<string> parentIds, ReadRefsTaskMap map);
-        internal  abstract  void    QueryReferenceResult (References task, ReferencesResult result, ISubRefsTask subRefs);
-
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
         internal  abstract  void    ResetSync           ();
@@ -159,33 +155,6 @@ namespace Friflo.Json.EntityGraph
 
         public int LogEntityChanges(T entity) {
             return sync.LogEntityChanges(entity);
-        }
-        
-        internal override void ReadReferenceResult(References task, ReferencesResult result, List<string> parentIds, ReadRefsTaskMap map) {
-            foreach (var parentId in parentIds) {
-                var reference = map.readRefs[parentId];
-                if (reference.singleResult) {
-                    var singleRef = (ReadRefTask<T>) reference;
-                    if (result.ids.Count != 1)
-                        throw new InvalidOperationException("Expect exactly one reference");
-                    var id = result.ids.First();
-                    var peer = GetPeerById(id);
-                    singleRef.id        = id;
-                    singleRef.entity    = peer.entity;
-                    singleRef.synced    = true;
-                } else {
-                    var multiRef = (ReadRefsTask<T>) reference;
-                    multiRef.synced = true;
-                    foreach (var id in result.ids) {
-                        var peer = GetPeerById(id);
-                        multiRef.results.Add(id, peer.entity);
-                    }
-                }
-            }
-        }
-
-        internal override void QueryReferenceResult(References task, ReferencesResult result, ISubRefsTask subRefs) {
-            subRefs.SetResult(this, result.ids);
         }
 
         internal override void SyncEntities(ContainerEntities containerResults) {

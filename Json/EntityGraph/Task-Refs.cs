@@ -51,7 +51,7 @@ namespace Friflo.Json.EntityGraph
             return SubRefsByPath<TValue>(path);
         }
         
-        private SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
+        public SubRefsTask<TValue> SubRefsByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
             if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
@@ -66,7 +66,7 @@ namespace Friflo.Json.EntityGraph
             return SubRefByPath<TValue>(path);
         }
         
-        private SubRefTask<TValue> SubRefByPath<TValue>(string selector) where TValue : Entity {
+        public SubRefTask<TValue> SubRefByPath<TValue>(string selector) where TValue : Entity {
             if (synced)
                 throw AlreadySyncedError();
             if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))

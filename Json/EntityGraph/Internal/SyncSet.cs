@@ -39,22 +39,11 @@ namespace Friflo.Json.EntityGraph.Internal
         private readonly    Dictionary<string, CreateTask<T>>    creates      = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>      patches      = new Dictionary<string, EntityPatch>();
-        /// key: <see cref="ReadRefsTaskMap.selector"/>
-        private readonly    Dictionary<string, ReadRefsTaskMap>  readRefsMap  = new Dictionary<string, ReadRefsTaskMap>();
-
         /// key: entity id
         private readonly    Dictionary<string, DeleteTask>       deletes      = new Dictionary<string, DeleteTask>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
-        }
-
-        internal ReadRefsTaskMap GetReadRefMap<TValue>(string selector) {
-            if (readRefsMap.TryGetValue(selector, out ReadRefsTaskMap result))
-                return result;
-            result = new ReadRefsTaskMap(selector, typeof(TValue));
-            readRefsMap.Add(selector, result);
-            return result;
         }
         
         internal CreateTask<T> AddCreate (PeerEntity<T> peer) {
@@ -73,7 +62,7 @@ namespace Friflo.Json.EntityGraph.Internal
             var peer = set.GetPeerById(id);
             read = peer.read;
             if (read == null) {
-                peer.read = read = new ReadTask<T>(peer.entity.id, set, peer);
+                peer.read = read = new ReadTask<T>(peer.entity.id, peer);
             }
             reads.Add(id, read);
             return read;
@@ -174,17 +163,16 @@ namespace Friflo.Json.EntityGraph.Internal
                 var ids = reads.Select(read => read.Key).ToList();
 
                 var references = new List<References>();
-                foreach (var refPair in readRefsMap) {
-                    ReadRefsTaskMap map = refPair.Value;
-                    References readReference = new References {
-                        selector  = map.selector,
-                        container = map.entityType.Name
-                    };
-                    /* foreach (var readRefPair in map.readRefs) {
-                        ReadRefsTask readRefsTask = readRefPair.Value;
-                        AddSubReferences(readReference, readRefsTask.subRefs.map);
-                    } */
-                    references.Add(readReference);
+                foreach (var readPair in reads) {
+                    ReadTask<T> read = readPair.Value;
+                    foreach (var subRefPair in read.subRefs) {
+                        var subRef = subRefPair.Value;
+                        References readReference = new References {
+                            selector  = subRef.Selector,
+                            container = subRef.Container
+                        };
+                        references.Add(readReference);
+                    }
                 }
                 var req = new ReadEntities {
                     container = set.name,
@@ -192,7 +180,6 @@ namespace Friflo.Json.EntityGraph.Internal
                     references = references
                 };
                 tasks.Add(req);
-                reads.Clear();
             }
             // --- QueryEntities
             if (queries.Count > 0) {
@@ -272,12 +259,15 @@ namespace Friflo.Json.EntityGraph.Internal
                 if (json == null || json == "null")
                     set.DeletePeer(id);
             }
-            for (int n = 0; n < result.references.Count; n++) {
-                References          reference = task.  references[n];
-                ReferencesResult    refResult = result.references[n];
-                var refContainer = set.intern.store._intern.setByName[refResult.container];
-                ReadRefsTaskMap map = readRefsMap[reference.selector];
-                refContainer.ReadReferenceResult(reference, refResult, task.ids, map);
+            foreach (var id in task.ids) {
+                var read = reads[id];
+                for (int n = 0; n < result.references.Count; n++) {
+                    References          reference    = task.  references[n];
+                    ReferencesResult    refResult    = result.references[n];
+                    EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
+                    ISubRefsTask        subRef       = read.subRefs[reference.selector];
+                    subRef.SetResult(refContainer, refResult.ids);
+                }
             }
         }
         
@@ -295,7 +285,7 @@ namespace Friflo.Json.EntityGraph.Internal
                 ReferencesResult    refResult       = result.references[n];
                 var                 refContainer    = set.intern.store._intern.setByName[refResult.container];
                 ISubRefsTask        subRefs         = query.subRefs[reference.selector];
-                refContainer.QueryReferenceResult(reference, refResult, subRefs);
+                subRefs.SetResult(refContainer, refResult.ids);
             }
             query.synced = true;
         }
@@ -331,7 +321,7 @@ namespace Friflo.Json.EntityGraph.Internal
             info.create     = creates.Count;
             info.patch      = patches.Count;
             info.delete     = deletes.Count;
-            info.readRefs   = readRefsMap.Count;
+            // info.readRefs   = readRefsMap.Count;
         }
     }
 }
