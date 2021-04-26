@@ -234,7 +234,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("QueryRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
 
-            SubRefTask<Producer> articleProducerTask = articleRefsTask.SubRef(a => a.producer);
+            SubRefsTask<Producer> articleProducerTask = articleRefsTask.SubRefs(a => a.producer);
             AreEqual("ReadTask<Order> id: order-1 > .items[*].article > .producer", articleProducerTask.ToString());
 
             await store.Sync(); // -------- Sync --------
@@ -242,7 +242,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);
             AreEqual("Smartphone",      articleRefsTask["article-2"].name);
-            // var xxx = articleProducerTask.Result;
+            // var xxx = articleProducerTask.Results;
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {

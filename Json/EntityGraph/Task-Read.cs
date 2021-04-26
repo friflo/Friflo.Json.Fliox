@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Linq.Expressions;
 using Friflo.Json.EntityGraph.Internal;
 
 namespace Friflo.Json.EntityGraph
@@ -31,6 +32,23 @@ namespace Friflo.Json.EntityGraph
         public SubRefsTask<Entity> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
+        }
+        
+        public SubRefTask<TValue> SubRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
+            string path = MemberSelector.PathFromExpression(selector, out _);
+            return SubRefByPath<TValue>(path);
+        }
+        
+        public SubRefTask<TValue> SubRefByPath<TValue>(string selector) where TValue : Entity {
+            if (synced)
+                throw AlreadySyncedError();
+            if (subRefs.TryGetValue(selector, out ISubRefsTask subRefsTask))
+                return (SubRefTask<TValue>)subRefsTask;
+            var newQueryRefs = new SubRefTask<TValue>(this, selector, typeof(TValue).Name);
+            subRefs.Add(selector, newQueryRefs);
+            return newQueryRefs;
         }
     }
 }
