@@ -259,13 +259,7 @@ namespace Friflo.Json.EntityGraph.Internal
             }
             foreach (var id in task.ids) {
                 var read = reads[id];
-                for (int n = 0; n < result.references.Count; n++) {
-                    References          reference    = task.  references[n];
-                    ReferencesResult    refResult    = result.references[n];
-                    EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
-                    ISubRefsTask        subRef       = read.subRefs[reference.selector];
-                    subRef.SetResult(refContainer, refResult.ids);
-                }
+                AddReferencesResult(task.references, result.references, read.subRefs);
             }
         }
         
@@ -277,15 +271,18 @@ namespace Friflo.Json.EntityGraph.Internal
                 var peer = set.GetPeerById(id);
                 entities.Add(peer.entity);
             }
-
-            for (int n = 0; n < result.references.Count; n++) {
-                References          reference       = task.  references[n];
-                ReferencesResult    refResult       = result.references[n];
-                var                 refContainer    = set.intern.store._intern.setByName[refResult.container];
-                ISubRefsTask        subRefs         = query.subRefs[reference.selector];
-                subRefs.SetResult(refContainer, refResult.ids);
-            }
+            AddReferencesResult(task.references, result.references, query.subRefs);
             query.synced = true;
+        }
+
+        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, ISubRefsTask> subRefs) {
+            for (int n = 0; n < references.Count; n++) {
+                References          reference    = references[n];
+                ReferencesResult    refResult    = referencesResult[n];
+                EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
+                ISubRefsTask        subRef       = subRefs[reference.selector];
+                subRef.SetResult(refContainer, refResult.ids);
+            }
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, PatchEntitiesResult result) {
