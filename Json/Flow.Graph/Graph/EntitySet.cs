@@ -18,8 +18,8 @@ namespace Friflo.Json.Flow.Graph
     {
         internal  readonly  string  name;
         
-        internal  abstract  SyncSet Sync       { get;  }
-        internal  abstract  SetInfo SetInfo   { get;  }
+        internal  abstract  SyncSet Sync      { get; }
+        internal  abstract  SetInfo SetInfo   { get; }
         
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                              ToString() => SetInfo.ToString();
 
         internal override   SetInfo                             SetInfo { get {
-            var info = new SetInfo { peers = peers.Count };
+            var info = new SetInfo (name) { peers = peers.Count };
             sync.SetTaskInfo(ref info);
             return info;
         }}

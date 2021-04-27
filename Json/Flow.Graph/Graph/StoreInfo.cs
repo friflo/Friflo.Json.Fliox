@@ -9,6 +9,8 @@ namespace Friflo.Json.Flow.Graph
 {
     public struct SetInfo
     {
+        public readonly string name;
+        
         public  int     peers;
         public  int     tasks;
         //
@@ -18,6 +20,19 @@ namespace Friflo.Json.Flow.Graph
         public  int     queries;
         public  int     patch;
         public  int     delete;
+
+        public SetInfo(string name) {
+            this.name = name;
+            peers   = 0;
+            tasks   = 0;
+            //
+            create      = 0;
+            read        = 0;
+            readRefs    = 0;
+            queries     = 0;
+            patch       = 0;
+            delete      = 0;
+        }
 
         private static void  Append(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
@@ -45,7 +60,7 @@ namespace Friflo.Json.Flow.Graph
 
         public override string ToString() {
             var sb = new StringBuilder();
-            sb.Append("peers");
+            sb.Append(name);
             sb.Append(": ");
             sb.Append(peers);
             
@@ -88,7 +103,7 @@ namespace Friflo.Json.Flow.Graph
         
         public override string ToString() {
             var sb = new StringBuilder();
-            sb.Append("peers");
+            sb.Append("all");
             sb.Append(": ");
             sb.Append(peers);
             
