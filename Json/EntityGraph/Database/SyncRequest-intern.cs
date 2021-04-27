@@ -94,7 +94,10 @@ namespace Friflo.Json.EntityGraph.Database
             result.entities = null; // clear -> its not part of protocol
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
-            var readRefResults = await entityContainer.ReadReferences(references, entities, response);
+            List<ReferencesResult> readRefResults = null;
+            if (references != null && references.Count > 0) {
+                readRefResults = await entityContainer.ReadReferences(references, entities, response);
+            }
             result.references = readRefResults;
             return result;
         }
@@ -118,7 +121,10 @@ namespace Friflo.Json.EntityGraph.Database
             var entities = result.entities;
             result.entities = null;  // clear -> its not part of protocol
             containerResult.AddEntities(entities);
-            var queryRefsResults = await entityContainer.ReadReferences(references, entities, response);
+            List<ReferencesResult> queryRefsResults = null;
+            if (references != null && references.Count > 0) {
+                queryRefsResults = await entityContainer.ReadReferences(references, entities, response);
+            }
             result.container    = container;
             result.filterLinq   = filterLinq;
             result.ids          = entities.Keys.ToList();

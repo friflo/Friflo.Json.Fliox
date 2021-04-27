@@ -161,7 +161,6 @@ namespace Friflo.Json.EntityGraph.Internal
             // --- ReadEntities
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
-
                 List<References> references = null;
                 if (reads.Count > 0) {
                     references = new List<References>(reads.Count);
@@ -182,14 +181,10 @@ namespace Friflo.Json.EntityGraph.Internal
                 foreach (var queryPair in queries) {
                     QueryTask<T> query = queryPair.Value;
                     var subRefs = query.subRefs;
-                    var references = new List<References>(subRefs.Count);
-                    foreach (var queryRefPair in subRefs) {
-                        IReadRefsTask subRefsTask = queryRefPair.Value;
-                        var queryReference = new References {
-                            container = subRefsTask.Container,
-                            selector  = subRefsTask.Selector
-                        };
-                        references.Add(queryReference);
+                    List<References> references = null;
+                    if (subRefs.Count > 0) {
+                        references = new List<References>(subRefs.Count);
+                        AddReferences(references, subRefs);
                     }
                     var req = new QueryEntities {
                         container   = set.name,
@@ -276,6 +271,8 @@ namespace Friflo.Json.EntityGraph.Internal
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, IReadRefsTask> refs) {
+            if (references == null)
+                return;
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];

@@ -75,9 +75,9 @@ namespace Friflo.Json.EntityGraph.Database
                 Dictionary<string, EntityValue>     entities,
                 SyncResponse                        syncResponse)
         {
-            var referenceResults = new List<ReferencesResult>(references.Count);
             if (references.Count == 0)
-                return referenceResults;
+                throw new InvalidOperationException("Expect references.Count > 0");
+            var referenceResults = new List<ReferencesResult>(references.Count);
             
             // prepare single ScalarSelect and references results
             var selectors = new List<string>(references.Count);  // can be reused
