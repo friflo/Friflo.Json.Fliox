@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             // the referenced entity "producer-samsung" is not resolved until now.
             Exception e;
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Accessed an unresolved entity. Ref<Producer> id: producer-samsung", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> id: producer-samsung", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
 
