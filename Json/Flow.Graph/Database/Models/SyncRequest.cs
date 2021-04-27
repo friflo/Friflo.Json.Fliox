@@ -160,8 +160,8 @@ namespace Friflo.Json.Flow.Database.Models
     // --------------------------------------- DeleteEntities ---------------------------------------
     public partial class DeleteEntities : DatabaseTask
     {
-        public  string                      container;
-        public  List<string>                ids;
+        public  string              container;
+        public  List<string>        ids;
     }
     
     public partial class DeleteEntitiesResult : TaskResult
