@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.EntityGraph.Database;
 using Friflo.Json.EntityGraph.Internal.Map;
-using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.EntityGraph.Internal
 {

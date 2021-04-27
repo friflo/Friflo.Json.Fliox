@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Graph.Select;
+using Friflo.Json.Flow.Transform;
+using Friflo.Json.Flow.Transform.Select;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
 

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.EntityGraph
 {
