@@ -9,18 +9,18 @@ using System.Linq.Expressions;
 
 namespace Friflo.Json.EntityGraph
 {
-    // ----------------------------------------- QueryRefsTask -----------------------------------------
-    public interface IReadRefsTask
+    // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
+    public abstract class ReadRefsTask
     {
-        string                              Selector    { get; }
-        string                              Container   { get; }
-        Dictionary<string, IReadRefsTask>   SubRefs     { get; }
+        internal abstract string                                Selector    { get; }
+        internal abstract string                                Container   { get; }
+        internal abstract Dictionary<string, ReadRefsTask>      SubRefs     { get; }
         
-        void    SetResult (EntitySet set, HashSet<string> ids);
+        internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
 
     }
 
-    public class ReadRefsTask<T> : ISetTask, IReadRefsTask where T : Entity
+    public class ReadRefsTask<T> : ReadRefsTask, ISetTask  where T : Entity
     {
         private             RefsTask                            refsTask;
         private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
@@ -32,9 +32,9 @@ namespace Friflo.Json.EntityGraph
         public              string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
-        public              string                              Selector  { get; }
-        public              string                              Container { get; }
-        public              Dictionary<string, IReadRefsTask>   SubRefs => refsTask.subRefs;
+        internal  override  string                              Selector  { get; }
+        internal  override  string                              Container { get; }
+        internal  override  Dictionary<string, ReadRefsTask>    SubRefs => refsTask.subRefs;
 
 
         internal ReadRefsTask(ISetTask parent, string selector, string container)
@@ -45,7 +45,7 @@ namespace Friflo.Json.EntityGraph
             this.Container  = container;
         }
 
-        public void SetResult(EntitySet set, HashSet<string> ids) {
+        internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
             refsTask.synced = true;
             foreach (var id in ids) {
@@ -74,7 +74,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRefTask<T> : ISetTask, IReadRefsTask where T : Entity
+    public class ReadRefTask<T> : ReadRefsTask, ISetTask where T : Entity
     {
         private             RefsTask                            refsTask;
         private             string                              id;
@@ -87,9 +87,9 @@ namespace Friflo.Json.EntityGraph
         public              string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
-        public              string                              Selector  { get; }
-        public              string                              Container { get; }
-        public              Dictionary<string, IReadRefsTask>   SubRefs => refsTask.subRefs;
+        internal override   string                              Selector  { get; }
+        internal override   string                              Container { get; }
+        internal override    Dictionary<string, ReadRefsTask>   SubRefs => refsTask.subRefs;
 
 
         internal ReadRefTask(ISetTask parent, string selector, string container)
@@ -100,7 +100,7 @@ namespace Friflo.Json.EntityGraph
             this.Container  = container;
         }
         
-        public void SetResult(EntitySet set, HashSet<string> ids) {
+        internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
             refsTask.synced = true;
             if (ids.Count != 1)

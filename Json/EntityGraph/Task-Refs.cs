@@ -17,13 +17,13 @@ namespace Friflo.Json.EntityGraph
     {
         private readonly    ISetTask                            task;
         internal            bool                                synced;
-        /// key: <see cref="IReadRefsTask.Selector"/>
-        internal readonly   Dictionary<string, IReadRefsTask>   subRefs;
+        /// key: <see cref="ReadRefsTask.Selector"/>
+        internal readonly   Dictionary<string, ReadRefsTask>    subRefs;
         
         
         internal RefsTask(ISetTask task) {
             this.task       = task;
-            this.subRefs    = new Dictionary<string, IReadRefsTask>();
+            this.subRefs    = new Dictionary<string, ReadRefsTask>();
             this.synced     = false;
         }
         
@@ -41,7 +41,7 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (subRefs.TryGetValue(selector, out IReadRefsTask subRefsTask))
+            if (subRefs.TryGetValue(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name);
             subRefs.Add(selector, newQueryRefs);
