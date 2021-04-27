@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using static NUnit.Framework.Assert;
-
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
@@ -151,27 +151,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;
             
-            AreEqual("all:      8, tasks: 1",                       store.ToString());
+            AreSimilar("all:       8, tasks: 1",                       store);
             
-            AreEqual("Order:    0",                                 orders.ToString());
+            AreSimilar("Order:     0",                                 orders);
             orders.Create(order);
-            AreEqual("all:      9, tasks: 2",                       store.ToString());
-            AreEqual("Order:    1, tasks: 1 -> create #1",          orders.ToString());     // create order
+            AreSimilar("all:       9, tasks: 2",                       store);
+            AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // create order
             
-            AreEqual("Article:  4, tasks: 1 -> read #1", articles.ToString());
-            AreEqual("Customer: 0",                                 customers.ToString());
+            AreSimilar("Article:   4, tasks: 1 -> read #1", articles.ToString());
+            AreSimilar("Customer:  0",                                 customers);
             AreEqual(1,  orders.LogSetChanges());
-            AreEqual("all:      11, tasks: 4",                      store.ToString());
-            AreEqual("Article:  5, tasks: 2 -> create #1, read #1", articles.ToString());   // create smartphone (implicit)
-            AreEqual("Customer: 1, tasks: 1 -> create #1",          customers.ToString());  // create customer (implicit)
+            AreSimilar("all:      11, tasks: 4",                       store);
+            AreSimilar("Article:   5, tasks: 2 -> create #1, read #1", articles);   // create smartphone (implicit)
+            AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // create customer (implicit)
             
             AreEqual(3,  store.LogChanges());
             AreEqual(3,  store.LogChanges());       // LogChanges() is idempotent => state did not change
-            AreEqual("all:      11, tasks: 4",                      store.ToString());      // no new changes
+            AreSimilar("all:      11, tasks: 4",                       store);      // no new changes
 
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("all:      11",                                store.ToString());      // all task executed -> tasks cleared
+            AreSimilar("all:      11",                                 store);      // all task executed -> tasks cleared
             
             return store;
         }
