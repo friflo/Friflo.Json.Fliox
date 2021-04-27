@@ -261,7 +261,7 @@ namespace Friflo.Json.EntityGraph.Internal
         internal override void QueryEntitiesResult(QueryEntities task, QueryEntitiesResult result) {
             var filterLinq = result.filterLinq;
             var query = queries[filterLinq];
-            var entities = query.entities;
+            var entities = query.entities = new List<T>(result.ids.Count);
             foreach (var id in result.ids) {
                 var peer = set.GetPeerById(id);
                 entities.Add(peer.entity);

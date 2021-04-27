@@ -14,7 +14,7 @@ namespace Friflo.Json.EntityGraph
         internal            RefsTask            refsTask;
         internal readonly   FilterOperation     filter;
         internal readonly   string              filterLinq; // use as string identifier of a filter 
-        internal readonly   List<T>             entities = new List<T>();
+        internal            List<T>             entities;
 
         public              List<T>             Result          => refsTask.synced ? entities        : throw refsTask.RequiresSyncError("QueryTask.Result requires Sync().");
         public              T                   this[int index] => refsTask.synced ? entities[index] : throw refsTask.RequiresSyncError("QueryTask[] requires Sync().");

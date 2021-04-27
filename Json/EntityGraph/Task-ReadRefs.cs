@@ -30,7 +30,7 @@ namespace Friflo.Json.EntityGraph
     public class ReadRefsTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T>  where T : Entity
     {
         private             RefsTask                refsTask;
-        private   readonly  Dictionary<string, T>   results = new Dictionary<string, T>();
+        private             Dictionary<string, T>   results;
         private   readonly  ISetTask                parent;
             
         public              Dictionary<string, T>   Results          => refsTask.synced ? results      : throw refsTask.RequiresSyncError("ReadRefsTask.Results requires Sync().");
@@ -56,6 +56,7 @@ namespace Friflo.Json.EntityGraph
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
             refsTask.synced = true;
+            results = new Dictionary<string, T>(ids.Count);
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 results.Add(id, peer.entity);
