@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Burst; // UnityExtension.TryAdd()
 
-namespace Friflo.Json.EntityGraph.Database
+namespace Friflo.Json.Flow.Graph.Database
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public partial class SyncResponse

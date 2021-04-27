@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.EntityGraph.Database;
-using Friflo.Json.EntityGraph.Internal.Map;
+using Friflo.Json.Flow.Graph.Database;
+using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     public static class StoreExtension
     {

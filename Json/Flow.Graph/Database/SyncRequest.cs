@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.EntityGraph.Database
+namespace Friflo.Json.Flow.Graph.Database
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest

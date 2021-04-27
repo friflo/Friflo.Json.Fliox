@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.EntityGraph.Internal;
+using Friflo.Json.Flow.Graph.Internal;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     internal interface ISetTask
     {

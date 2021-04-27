@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace Friflo.Json.EntityGraph.Internal
+namespace Friflo.Json.Flow.Graph.Internal
 {
     internal static class MemberSelector
     {

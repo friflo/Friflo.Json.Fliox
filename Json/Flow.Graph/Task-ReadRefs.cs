@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
     public abstract class ReadRefsTask

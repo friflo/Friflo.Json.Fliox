@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
-namespace Friflo.Json.EntityGraph.Database
+namespace Friflo.Json.Flow.Graph.Database
 {
     public abstract class EntityContainer : IDisposable
     {

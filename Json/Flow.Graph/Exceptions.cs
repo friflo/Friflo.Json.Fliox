@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     public class UnresolvedRefException : Exception
     {

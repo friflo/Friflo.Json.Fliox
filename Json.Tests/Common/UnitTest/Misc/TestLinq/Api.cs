@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Friflo.Json.EntityGraph;
+using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 {

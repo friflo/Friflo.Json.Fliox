@@ -3,7 +3,7 @@
 using System;
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.EntityGraph.Database
+namespace Friflo.Json.Flow.Graph.Database
 {
     // ------------------------------------ SyncContext ------------------------------------
     /// <summary>

@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.EntityGraph;
-using Friflo.Json.EntityGraph.Database;
+using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Graph.Database;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Tests.Common.UnitTest.EntityGraph;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 limit:      10,
                 orderBy:    o => o.customer.Entity.lastName,
                 order:      Misc.TestLinq.Order.Desc,
-                @select: () => new EntityGraph.Order {
+                @select: () => new Flow.Graph.Order {
                     customer = {
                         Entity = {
                             id          = default,
@@ -55,12 +55,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 var order1 = store.orders.Read("order-1");
                 store.SyncWait();
                 var orderResult = order1.Result;
-                var orders = new List<EntityGraph.Order> { orderResult };
+                var orders = new List<Flow.Graph.Order> { orderResult };
 
                 var orderQuery =
                     from order in orders
                     // where order.id == "order-1"
-                    select new EntityGraph.Order {
+                    select new Flow.Graph.Order {
                         id = order.id,
                         customer =  order.customer,
                         items = order.items
@@ -92,15 +92,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             }
         }
 
-        private static bool WhereOrderEqual(EntityGraph.Order order, string test) {
+        private static bool WhereOrderEqual(Flow.Graph.Order order, string test) {
             return order.id == test;
         }
 
-        private static EntityGraph.Order SelectOrder(EntityGraph.Order order) {
+        private static Flow.Graph.Order SelectOrder(Flow.Graph.Order order) {
             return order;
         }
         
-        private static EntityGraph.Order GetOrder(string id) {
+        private static Flow.Graph.Order GetOrder(string id) {
             using (var database = new MemoryDatabase())
             using (var store = TestRelationPoC.CreateStore(database).Result) {
                 var order = store.orders.Read(id);
@@ -114,11 +114,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
             var order1 = GetOrder("order-1");
 
-            var orders = new List<EntityGraph.Order> {order1};
+            var orders = new List<Flow.Graph.Order> {order1};
 
-            IQueryable<EntityGraph.Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
+            IQueryable<Flow.Graph.Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
-            var gqlOrders = new GqlEnumerable<EntityGraph.Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
+            var gqlOrders = new GqlEnumerable<Flow.Graph.Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
             // var gqlOrders = new GqlEnumerable<Order>(orders);
 
 
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var store = await TestRelationPoC.CreateStore(database)) {
                 var order1 = store.orders.Read("order-1");
                 await store.Sync();
-                var orders = new List<EntityGraph.Order> {order1.Result};
+                var orders = new List<Flow.Graph.Order> {order1.Result};
 
                 var orderQuery =
                     from order in orders
@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void TestUpdateField() {
-            var order = new EntityGraph.Order();
+            var order = new Flow.Graph.Order();
             order.customer = new Ref<Customer>();
 
             Update (order, o => o.customer.Entity.lastName);
@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 }),
             });
             
-            Update3 (order, () => new EntityGraph.Order{ items = null});
+            Update3 (order, () => new Flow.Graph.Order{ items = null});
 
 
             int index = 3;

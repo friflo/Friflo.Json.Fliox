@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Transform; 
 
-namespace Friflo.Json.EntityGraph.Database
+namespace Friflo.Json.Flow.Graph.Database
 {
     public class MemoryDatabase : EntityDatabase
     {

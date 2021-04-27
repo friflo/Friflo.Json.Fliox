@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
     public class QueryTask<T> : ISetTask, IReadRefsTask<T> where T : Entity

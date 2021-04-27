@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Utils;
 using Friflo.Json.Flow.Mapper.Utils;
 
-namespace Friflo.Json.EntityGraph.Internal.Map
+namespace Friflo.Json.Flow.Graph.Internal.Map
 {
     // -------------------------------------------------------------------------------------
     public class RefMatcher : ITypeMatcher {

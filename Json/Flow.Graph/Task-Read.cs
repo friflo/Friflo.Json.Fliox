@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.EntityGraph.Internal;
+using Friflo.Json.Flow.Graph.Internal;
 
-namespace Friflo.Json.EntityGraph
+namespace Friflo.Json.Flow.Graph
 {
     // ----------------------------------------- ReadTask -----------------------------------------
     public class ReadTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
