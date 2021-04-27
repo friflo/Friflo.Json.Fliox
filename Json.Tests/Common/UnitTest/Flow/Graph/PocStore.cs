@@ -142,30 +142,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customer    = new Customer { id = "customer-1", name = "Smith Ltd." };
             // customers.Create(customer);    // redundant - implicit tracked by order
             
-            var item1       = new OrderItem {
-                article = camera.Result,
-                amount = 1,
-                name = "Camera"
-            };
-            order.items.Add(item1);
-
-            var smartphone    = new Article { id = "article-2", name = "Smartphone" };
+            var smartphone  = new Article { id = "article-2", name = "Smartphone" };
             // articles.Create(smartphone);   // redundant - implicit tracked by order
             
-            var item2       = new OrderItem {
-                article = smartphone,
-                amount = 2,
-                name = smartphone.name
-            };
-            order.items.Add(item2);
-            
-            var item3       = new OrderItem {
-                article = camera.Result,
-                amount = 3,
-                name = "Camera"
-            };
-            order.items.Add(item3);
-
+            var item1 = new OrderItem { article = camera.Result, amount = 1, name = "Camera" };
+            var item2 = new OrderItem { article = smartphone,    amount = 2, name = smartphone.name };
+            var item3 = new OrderItem { article = camera.Result, amount = 3, name = "Camera" };
+            order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;
             
             AreEqual("peers: 8, tasks: 1",                          store.ToString());
