@@ -77,6 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             employees.Create(steveJobs);
             var appleEmployees = new List<Ref<Employee>>{steveJobs};
             var apple     = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
+            var ipad      = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
+            articles.Create(ipad);
             producers.Create(apple);
             articles.Delete("article-iphone"); // delete if exist in database
             
@@ -103,15 +105,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
             // StoreInfo is accessible via property an ToString()
-            AreEqual(9, store.StoreInfo.peers);
-            AreEqual(3, store.StoreInfo.tasks); 
-            AreEqual("peers: 9, tasks: 3",                          store.ToString());
-            AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    articles.ToString());
+            AreEqual(10, store.StoreInfo.peers);
+            AreEqual(3,  store.StoreInfo.tasks); 
+            AreEqual("peers: 10, tasks: 3",                         store.ToString());
+            AreEqual("peers: 6, tasks: 2 -> create #3, read #2",    articles.ToString());
             AreEqual("peers: 3, tasks: 1 -> create #1",             producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 8",                                    store.ToString()); // "article-missing" peer removed
+            AreEqual("peers: 9",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));

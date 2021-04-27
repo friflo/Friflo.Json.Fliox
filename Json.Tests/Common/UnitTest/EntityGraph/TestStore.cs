@@ -190,6 +190,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
+            var producerEmployees = producersTask.ReadRefs(p => p.employees);
+            AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
+
             // lab - test ReadRef expressions
             if (lab) {
                 ReadRefsTask<Article> articles2 = order1.ReadRefsOfType<Article>();
@@ -198,16 +201,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual(4,             allArticles.Result.Count);
+            AreEqual(5,             allArticles.Result.Count);
             AreEqual(1,             hasOrderCamera.Result.Count);
             AreEqual("order-1",     hasOrderCamera[0].id);
 
             AreEqual("customer-1",  customer.Id);
             AreEqual("Smith",       customer.Result.lastName);
             
-            AreEqual(2,             producersTask.Results.Count);
+            AreEqual(3,             producersTask.Results.Count);
             AreEqual("Samsung",     producersTask["producer-samsung"].name);
             AreEqual("Canon",       producersTask["producer-canon"].name);
+            AreEqual("Apple",       producersTask["producer-apple"].name);
+            
+            AreEqual(1,             producerEmployees.Results.Count);
+            AreEqual("Steve",       producerEmployees["apple-0001"].firstName);
         }
         
         private static async Task AssertReadTask(PocStore store) {
