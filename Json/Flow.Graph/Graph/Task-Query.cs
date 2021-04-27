@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   string              filterLinq; // use as string identifier of a filter 
         internal            List<T>             entities;
 
-        public              List<T>             Result          => refsTask.synced ? entities        : throw refsTask.RequiresSyncError("QueryTask.Result requires Sync().");
+        public              List<T>             Results         => refsTask.synced ? entities        : throw refsTask.RequiresSyncError("QueryTask.Result requires Sync().");
         public              T                   this[int index] => refsTask.synced ? entities[index] : throw refsTask.RequiresSyncError("QueryTask[] requires Sync().");
         
         public              string              Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";

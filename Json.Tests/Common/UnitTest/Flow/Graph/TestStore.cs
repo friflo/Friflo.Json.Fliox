@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> id: order-1 > .customer", e.Message);
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
             AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
@@ -201,8 +201,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual(5,             allArticles.Result.Count);
-            AreEqual(1,             hasOrderCamera.Result.Count);
+            AreEqual(5,             allArticles.Results.Count);
+            AreEqual(1,             hasOrderCamera.Results.Count);
             AreEqual("order-1",     hasOrderCamera[0].id);
 
             AreEqual("customer-1",  customer.Id);
