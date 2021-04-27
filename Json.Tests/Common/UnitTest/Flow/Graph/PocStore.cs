@@ -108,14 +108,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // StoreInfo is accessible via property an ToString()
             AreEqual(10, store.StoreInfo.peers);
             AreEqual(3,  store.StoreInfo.tasks); 
-            AreEqual("all: 10, tasks: 3",                           store.ToString());
-            AreEqual("Article: 6, tasks: 2 -> create #3, read #2",  articles.ToString());
+            AreEqual("all:      10, tasks: 3",                      store.ToString());
+            AreEqual("Article:  6, tasks: 2 -> create #3, read #2", articles.ToString());
             AreEqual("Producer: 3, tasks: 1 -> create #1",          producers.ToString());
             AreEqual("Employee: 1",                                 employees.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("all: 9",                                    store.ToString()); // "article-missing" peer removed
+            AreEqual("all:      9",                                 store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));
@@ -126,12 +126,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
-            AreEqual("all: 8", store.ToString());
+            AreEqual("all:      8", store.ToString());
 
-            AreEqual("Article: 4",                      articles.ToString());
+            AreEqual("Article:  4",                         articles.ToString());
             var cameraNotSynced = articles.Read("article-1");
-            AreEqual("all: 8, tasks: 1",                store.ToString());
-            AreEqual("Article: 4, tasks: 1 -> read #1", articles.ToString());
+            AreEqual("all:      8, tasks: 1",               store.ToString());
+            AreEqual("Article:  4, tasks: 1 -> read #1",    articles.ToString());
             
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
             AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
@@ -151,27 +151,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;
             
-            AreEqual("all: 8, tasks: 1",                            store.ToString());
+            AreEqual("all:      8, tasks: 1",                       store.ToString());
             
-            AreEqual("Order: 0",                                    orders.ToString());
+            AreEqual("Order:    0",                                 orders.ToString());
             orders.Create(order);
-            AreEqual("all: 9, tasks: 2",                            store.ToString());
-            AreEqual("Order: 1, tasks: 1 -> create #1",             orders.ToString());     // create order
+            AreEqual("all:      9, tasks: 2",                       store.ToString());
+            AreEqual("Order:    1, tasks: 1 -> create #1",          orders.ToString());     // create order
             
-            AreEqual("Article: 4, tasks: 1 -> read #1", articles.ToString());
+            AreEqual("Article:  4, tasks: 1 -> read #1", articles.ToString());
             AreEqual("Customer: 0",                                 customers.ToString());
             AreEqual(1,  orders.LogSetChanges());
-            AreEqual("all: 11, tasks: 4",                           store.ToString());
-            AreEqual("Article: 5, tasks: 2 -> create #1, read #1",  articles.ToString());   // create smartphone (implicit)
+            AreEqual("all:      11, tasks: 4",                      store.ToString());
+            AreEqual("Article:  5, tasks: 2 -> create #1, read #1", articles.ToString());   // create smartphone (implicit)
             AreEqual("Customer: 1, tasks: 1 -> create #1",          customers.ToString());  // create customer (implicit)
             
             AreEqual(3,  store.LogChanges());
             AreEqual(3,  store.LogChanges());       // LogChanges() is idempotent => state did not change
-            AreEqual("all: 11, tasks: 4",                           store.ToString());      // no new changes
+            AreEqual("all:      11, tasks: 4",                      store.ToString());      // no new changes
 
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("all: 11",                                     store.ToString());      // all task executed -> tasks cleared
+            AreEqual("all:      11",                                store.ToString());      // all task executed -> tasks cleared
             
             return store;
         }

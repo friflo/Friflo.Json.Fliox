@@ -33,6 +33,14 @@ namespace Friflo.Json.Flow.Graph
             patch       = 0;
             delete      = 0;
         }
+        
+        internal static void  AppendName(StringBuilder sb, string name) {
+            sb.Append(name);
+            sb.Append(":");
+            int len = name.Length + 1;
+            for (int n = len; n < 10; n++)
+                sb.Append(' ');
+        }
 
         private static void  Append(StringBuilder sb, string label, int count, ref bool first) {
             if (count == 0)
@@ -60,8 +68,7 @@ namespace Friflo.Json.Flow.Graph
 
         public override string ToString() {
             var sb = new StringBuilder();
-            sb.Append(name);
-            sb.Append(": ");
+            AppendName(sb, name);
             sb.Append(peers);
             
             if (tasks > 0) {
@@ -103,8 +110,7 @@ namespace Friflo.Json.Flow.Graph
         
         public override string ToString() {
             var sb = new StringBuilder();
-            sb.Append("all");
-            sb.Append(": ");
+            SetInfo.AppendName(sb, "all");
             sb.Append(peers);
             
             if (tasks > 0) {
