@@ -262,10 +262,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void QueryEntitiesResult(QueryEntities task, QueryEntitiesResult result) {
             var filterLinq = result.filterLinq;
             var query = queries[filterLinq];
-            var entities = query.entities = new List<T>(result.ids.Count);
+            var entities = query.entities = new Dictionary<string, T>(result.ids.Count);
             foreach (var id in result.ids) {
                 var peer = set.GetPeerById(id);
-                entities.Add(peer.entity);
+                entities.Add(id, peer.entity);
             }
             AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
             query.refsTask.synced = true;

@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
             AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employees);
@@ -201,20 +201,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             await store.Sync(); // -------- Sync --------
 
-            AreEqual(5,             allArticles.Results.Count);
-            AreEqual(1,             hasOrderCamera.Results.Count);
-            AreEqual("order-1",     hasOrderCamera[0].id);
-
-            AreEqual("customer-1",  customer.Id);
-            AreEqual("Smith",       customer.Result.lastName);
+            AreEqual(5,                 allArticles.Results.Count);
+            AreEqual("Galaxy S10",      allArticles.Results["article-galaxy"].name);
+            AreEqual("iPad Pro",        allArticles.Results["article-ipad"].name);
             
-            AreEqual(3,             producersTask.Results.Count);
-            AreEqual("Samsung",     producersTask["producer-samsung"].name);
-            AreEqual("Canon",       producersTask["producer-canon"].name);
-            AreEqual("Apple",       producersTask["producer-apple"].name);
-            
-            AreEqual(1,             producerEmployees.Results.Count);
-            AreEqual("Steve",       producerEmployees["apple-0001"].firstName);
+            AreEqual(1,                 hasOrderCamera.Results.Count);
+            AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
+    
+            AreEqual("customer-1",      customer.Id);
+            AreEqual("Smith",           customer.Result.lastName);
+                
+            AreEqual(3,                 producersTask.Results.Count);
+            AreEqual("Samsung",         producersTask["producer-samsung"].name);
+            AreEqual("Canon",           producersTask["producer-canon"].name);
+            AreEqual("Apple",           producersTask["producer-apple"].name);
+                
+            AreEqual(1,                 producerEmployees.Results.Count);
+            AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
         }
         
         private static async Task AssertReadTask(PocStore store) {

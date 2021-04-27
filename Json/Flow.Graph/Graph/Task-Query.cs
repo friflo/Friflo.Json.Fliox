@@ -11,16 +11,16 @@ namespace Friflo.Json.Flow.Graph
     // ----------------------------------------- QueryTask -----------------------------------------
     public class QueryTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
     {
-        internal            RefsTask            refsTask;
-        internal readonly   FilterOperation     filter;
-        internal readonly   string              filterLinq; // use as string identifier of a filter 
-        internal            List<T>             entities;
+        internal            RefsTask                refsTask;
+        internal readonly   FilterOperation         filter;
+        internal readonly   string                  filterLinq; // use as string identifier of a filter 
+        internal            Dictionary<string, T>   entities;
 
-        public              List<T>             Results         => refsTask.synced ? entities        : throw refsTask.RequiresSyncError("QueryTask.Result requires Sync().");
-        public              T                   this[int index] => refsTask.synced ? entities[index] : throw refsTask.RequiresSyncError("QueryTask[] requires Sync().");
-        
-        public              string              Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
-        public   override   string              ToString()      => Label;
+        public              Dictionary<string, T>   Results         => refsTask.synced ? entities     : throw refsTask.RequiresSyncError("QueryTask.Result requires Sync().");
+        public              T                       this[string id] => refsTask.synced ? entities[id] : throw refsTask.RequiresSyncError("QueryTask[] requires Sync().");
+            
+        public              string                  Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
+        public   override   string                  ToString()      => Label;
 
 
         internal QueryTask(FilterOperation filter) {

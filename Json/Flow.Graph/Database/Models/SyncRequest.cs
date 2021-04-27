@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Database.Models
     {
         public  string                              container;  // only for debugging ergonomics
         public  string                              filterLinq;
-        public  List<string>                        ids;
+        public  HashSet<string>                     ids;
         public  List<ReferencesResult>              references;
         [Fri.Ignore]
         internal Dictionary<string, EntityValue>    entities;

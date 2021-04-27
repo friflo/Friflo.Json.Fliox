@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Database.Models
             }
             result.container    = container;
             result.filterLinq   = filterLinq;
-            result.ids          = entities.Keys.ToList();
+            result.ids          = entities.Keys.ToHashSet();
             result.references   = queryRefsResults;
             return result;
         }
