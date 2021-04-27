@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     public class FileDatabase : EntityDatabase
     {

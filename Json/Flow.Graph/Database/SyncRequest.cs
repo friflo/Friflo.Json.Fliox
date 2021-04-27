@@ -3,10 +3,11 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Transform;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest

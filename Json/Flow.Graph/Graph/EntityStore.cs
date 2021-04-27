@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Graph.Database;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;

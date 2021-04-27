@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     // ----------------------------------------- EntityDatabase -----------------------------------------
     public abstract class EntityDatabase : IDisposable

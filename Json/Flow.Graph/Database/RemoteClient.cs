@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     public class RemoteClient : EntityDatabase
     {

@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Burst; // UnityExtension.TryAdd()
+using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public partial class SyncResponse

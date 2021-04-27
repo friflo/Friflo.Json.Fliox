@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Graph.Database
+namespace Friflo.Json.Flow.Database
 {
     public abstract class EntityContainer : IDisposable
     {

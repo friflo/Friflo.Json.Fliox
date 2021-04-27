@@ -14,6 +14,7 @@
         <PackageIconUrl>https://github.com/friflo/Friflo.Json.Burst/blob/main/docs/images/Friflo.Json.Burst-128.png?raw=true</PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>
         <RepositoryType>git</RepositoryType>
+        <RootNamespace>Friflo.Json.Flow</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
