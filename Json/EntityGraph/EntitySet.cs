@@ -188,13 +188,13 @@ namespace Friflo.Json.EntityGraph
                     peer.SetPatchSource(intern.jsonMapper.Read<T>(json));
                     if (read != null) {
                         read.result = peer.entity;
-                        read.synced = true;
+                        read.refsTask.synced = true;
                     }
                 } else {
                     peer.SetPatchSourceNull();
                     if (read != null) {
                         read.result = null;
-                        read.synced = true;
+                        read.refsTask.synced = true;
                     }
                 }
                 peer.assigned = true;

@@ -13,46 +13,37 @@ namespace Friflo.Json.EntityGraph
         string  Label { get; }
     }
     
-    public abstract class RefsTask<T> : ISetTask where T : Entity
+    public struct RefsTask
     {
+        private readonly    ISetTask                            task;
         internal            bool                                synced;
         /// key: <see cref="IReadRefsTask.Selector"/>
         internal readonly   Dictionary<string, IReadRefsTask>   subRefs;
         
-        public   abstract   string                              Label { get; }
         
-        internal RefsTask() {
+        internal RefsTask(ISetTask task) {
+            this.task       = task;
             this.subRefs    = new Dictionary<string, IReadRefsTask>();
+            this.synced     = false;
         }
         
-        protected   Exception AlreadySyncedError() {
-            return new TaskAlreadySyncedException($"Task already synced. {Label}");
+        internal Exception AlreadySyncedError() {
+            return new TaskAlreadySyncedException($"Task already synced. {task.Label}");
         }
         
-        protected Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {Label}");
+        internal Exception RequiresSyncError(string message) {
+            return new TaskNotSyncedException($"{message} {task.Label}");
         }
         
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out _);
-            return ReadRefsByPath<TValue>(path);
-        }
-        
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out _);
+        public ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression) where TValue : Entity {
+            string path = MemberSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(path);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
-                throw AlreadySyncedError();
             if (subRefs.TryGetValue(selector, out IReadRefsTask subRefsTask))
                 return (ReadRefsTask<TValue>)subRefsTask;
-            var newQueryRefs = new ReadRefsTask<TValue>(this, selector, typeof(TValue).Name);
+            var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name);
             subRefs.Add(selector, newQueryRefs);
             return newQueryRefs;
         }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 
 namespace Friflo.Json.EntityGraph
@@ -19,24 +20,26 @@ namespace Friflo.Json.EntityGraph
 
     }
 
-    public class ReadRefsTask<T> : RefsTask<T>, IReadRefsTask where T : Entity
+    public class ReadRefsTask<T> : ISetTask, IReadRefsTask where T : Entity
     {
+        private             RefsTask                            refsTask;
         private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
         private   readonly  ISetTask                            parent;
             
-        public              Dictionary<string, T>               Results          => synced ? results      : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
-        public              T                                   this[string id]  => synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
+        public              Dictionary<string, T>               Results          => refsTask.synced ? results      : throw refsTask.RequiresSyncError("ReadRefsTask.Results requires Sync().");
+        public              T                                   this[string id]  => refsTask.synced ? results[id]  : throw refsTask.RequiresSyncError("ReadRefsTask[] requires Sync().");
         
-        public    override  string                              Label => $"{parent.Label} > {Selector}";
+        public              string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
         public              string                              Selector  { get; }
         public              string                              Container { get; }
-        public              Dictionary<string, IReadRefsTask>   SubRefs => subRefs;
+        public              Dictionary<string, IReadRefsTask>   SubRefs => refsTask.subRefs;
 
 
         internal ReadRefsTask(ISetTask parent, string selector, string container)
         {
+            refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
@@ -44,33 +47,54 @@ namespace Friflo.Json.EntityGraph
 
         public void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
-            synced = true;
+            refsTask.synced = true;
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 results.Add(id, peer.entity);
             }
         }
+        
+        // --- Refs
+        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TValue>(selector);
+        }
+        
+        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TValue>(selector);
+        }
+        
+        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByPath<TValue>(selector);
+        }
     }
     
-    public class ReadRefTask<T> : RefsTask<T>, IReadRefsTask where T : Entity
+    public class ReadRefTask<T> : ISetTask, IReadRefsTask where T : Entity
     {
+        private             RefsTask                            refsTask;
         private             string                              id;
         private             T                                   entity;
         private   readonly  ISetTask                            parent;
 
-        public              string                              Id      => synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
-        public              T                                   Result  => synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
+        public              string                              Id      => refsTask.synced ? id      : throw refsTask.RequiresSyncError("ReadRefTask.Id requires Sync().");
+        public              T                                   Result  => refsTask.synced ? entity  : throw refsTask.RequiresSyncError("ReadRefTask.Result requires Sync().");
             
-        public    override  string                              Label => $"{parent.Label} > {Selector}";
+        public              string                              Label => $"{parent.Label} > {Selector}";
         public    override  string                              ToString() => Label;
             
         public              string                              Selector  { get; }
         public              string                              Container { get; }
-        public              Dictionary<string, IReadRefsTask>   SubRefs => subRefs;
+        public              Dictionary<string, IReadRefsTask>   SubRefs => refsTask.subRefs;
 
 
         internal ReadRefTask(ISetTask parent, string selector, string container)
         {
+            refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
@@ -78,12 +102,30 @@ namespace Friflo.Json.EntityGraph
         
         public void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
-            synced = true;
+            refsTask.synced = true;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
             var peer = entitySet.GetPeerById(id);
             entity = peer.entity;
+        }
+        
+        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TValue>(selector);
+        }
+        
+        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TValue>(selector);
+        }
+        
+        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
+            if (refsTask.synced)
+                throw refsTask.AlreadySyncedError();
+            return refsTask.ReadRefsByPath<TValue>(selector);
         }
     }
     

@@ -166,7 +166,7 @@ namespace Friflo.Json.EntityGraph.Internal
                     references = new List<References>(reads.Count);
                     foreach (var readPair in reads) {
                         ReadTask<T> read = readPair.Value;
-                        AddReferences(references, read.subRefs);
+                        AddReferences(references, read.refsTask.subRefs);
                     }
                 }
                 var req = new ReadEntities {
@@ -180,7 +180,7 @@ namespace Friflo.Json.EntityGraph.Internal
             if (queries.Count > 0) {
                 foreach (var queryPair in queries) {
                     QueryTask<T> query = queryPair.Value;
-                    var subRefs = query.subRefs;
+                    var subRefs = query.refsTask.subRefs;
                     List<References> references = null;
                     if (subRefs.Count > 0) {
                         references = new List<References>(subRefs.Count);
@@ -254,7 +254,7 @@ namespace Friflo.Json.EntityGraph.Internal
             }
             foreach (var id in task.ids) {
                 var read = reads[id];
-                AddReferencesResult(task.references, result.references, read.subRefs);
+                AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
             }
         }
         
@@ -266,8 +266,8 @@ namespace Friflo.Json.EntityGraph.Internal
                 var peer = set.GetPeerById(id);
                 entities.Add(peer.entity);
             }
-            AddReferencesResult(task.references, result.references, query.subRefs);
-            query.synced = true;
+            AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
+            query.refsTask.synced = true;
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, IReadRefsTask> refs) {
