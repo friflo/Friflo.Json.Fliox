@@ -66,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var articles    = store.articles;
             var producers   = store.producers;
             var employees   = store.employees;
+            var customers   = store.customers;
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
@@ -79,7 +80,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             articles.Delete("article-iphone"); // delete if exist in database
             
+            AreEqual(2, store.StoreInfo.peers);
             AreEqual(5, store.LogChanges());
+            AreEqual(5, store.StoreInfo.peers);
 
             await store.Sync(); // -------- Sync --------
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
@@ -118,13 +121,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1, articles.LogEntityChanges(cameraCreate));
             AreEqual(1, articles.LogSetChanges());
             AreEqual(1, store.LogChanges());
-            AreEqual(1, store.LogChanges());       // SaveChanges() is idempotent => state did not change
+            AreEqual(1, store.LogChanges());       // LogChanges() is idempotent => state did not change
 
             articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
+            AreEqual("peers: 8", store.ToString());
 
+            AreEqual("peers: 4",                        articles.ToString());
             var cameraNotSynced = articles.Read("article-1");
+            AreEqual("peers: 8, tasks: 1",              store.ToString());
+            AreEqual("peers: 4, tasks: 1 -> read #1",   articles.ToString());
+            
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
             AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
             
@@ -159,10 +167,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             order.items.Add(item3);
 
             order.customer = customer;
+            
+            AreEqual("peers: 8, tasks: 1",                          store.ToString());
+            
             orders.Create(order);
-            AreEqual(1, orders.LogSetChanges());
-            AreEqual(3, store.LogChanges());
-            AreEqual(3, store.LogChanges());       // SaveChanges() is idempotent => state did not change
+            AreEqual("peers: 9, tasks: 2",                          store.ToString());
+            AreEqual("peers: 1, tasks: 1 -> create #1",             orders.ToString());
+            
+            AreEqual(1,  orders.LogSetChanges());
+            AreEqual("peers: 11, tasks: 4",                         store.ToString());
+            AreEqual("peers: 5, tasks: 2 -> create #1, read #1",    articles.ToString());
+            AreEqual("peers: 1, tasks: 1 -> create #1",             customers.ToString());
+            
+            AreEqual(3,  store.LogChanges());
+            AreEqual(3,  store.LogChanges());       // LogChanges() is idempotent => state did not change
+            AreEqual("peers: 11, tasks: 4",                         store.ToString()); // no new changes
+            
             
             await store.Sync(); // -------- Sync --------
             
