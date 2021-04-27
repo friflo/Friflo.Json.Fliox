@@ -170,8 +170,10 @@ namespace Friflo.Json.EntityGraph
         }
 
         public int LogEntityChanges(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.LogEntityChanges() Entity.id must not be null. EntitySet: {name}");
+                throw new InvalidOperationException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             return sync.LogEntityChanges(entity);
         }
 
