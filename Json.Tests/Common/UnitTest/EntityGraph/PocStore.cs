@@ -110,6 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             AreEqual("peers: 10, tasks: 3",                         store.ToString());
             AreEqual("peers: 6, tasks: 2 -> create #3, read #2",    articles.ToString());
             AreEqual("peers: 3, tasks: 1 -> create #1",             producers.ToString());
+            AreEqual("peers: 1",                                    employees.ToString());
             
             await store.Sync(); // -------- Sync --------
             
