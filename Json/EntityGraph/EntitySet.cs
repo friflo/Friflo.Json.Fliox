@@ -120,15 +120,21 @@ namespace Friflo.Json.EntityGraph
         }
         
         public ReadTask<T> Read(string id) {
+            if (id == null)
+                throw new InvalidOperationException($"EntitySet.Read() id must not be null. EntitySet: {name}");
             return sync.Read(id);
         }
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
+            if (filter == null)
+                throw new InvalidOperationException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter);
             return sync.QueryFilter(op);
         }
         
         public QueryTask<T> QueryByFilter(FilterOperation filter) {
+            if (filter == null)
+                throw new InvalidOperationException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
             return sync.QueryFilter(filter);
         }
         
@@ -138,14 +144,20 @@ namespace Friflo.Json.EntityGraph
         }
 
         public CreateTask<T> Create(T entity) {
+            if (entity.id == null)
+                throw new InvalidOperationException($"EntitySet.Create() Entity.id must not be null. EntitySet: {name}");
             return sync.Create(entity);
         }
         
         public DeleteTask Delete(string id) {
+            if (id == null)
+                throw new InvalidOperationException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
             return sync.Delete(id);
         }
         
         public DeleteTask Delete(T entity) {
+            if (entity.id == null)
+                throw new InvalidOperationException($"EntitySet.Delete() Entity.id must not be null. EntitySet: {name}");
             return sync.Delete(entity.id);
         }
 
@@ -154,6 +166,8 @@ namespace Friflo.Json.EntityGraph
         }
 
         public int LogEntityChanges(T entity) {
+            if (entity.id == null)
+                throw new InvalidOperationException($"EntitySet.LogEntityChanges() Entity.id must not be null. EntitySet: {name}");
             return sync.LogEntityChanges(entity);
         }
 

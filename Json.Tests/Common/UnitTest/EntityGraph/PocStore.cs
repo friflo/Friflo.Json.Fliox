@@ -30,7 +30,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
     }
     
     public class Producer : Entity {
-        public string           name;
+        public string               name;
+        public List<Ref<Employee>>  employees;
+    }
+    
+    public class Employee : Entity {
+        public string           firstName;
+        public string           lastName;
     }
 
     // --- store containers
@@ -40,13 +46,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             orders      = new EntitySet<Order>       (this);
             customers   = new EntitySet<Customer>    (this);
             articles    = new EntitySet<Article>     (this);
-            producers   = new EntitySet<Producer>     (this);
+            producers   = new EntitySet<Producer>    (this);
+            employees   = new EntitySet<Employee>    (this);
         }
 
         public readonly EntitySet<Order>      orders;
         public readonly EntitySet<Customer>   customers;
         public readonly EntitySet<Article>    articles;
         public readonly EntitySet<Producer>   producers;
+        public readonly EntitySet<Employee>   employees;
     }
         
     // --------------------------------------------------------------------
@@ -57,14 +65,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var orders      = store.orders;
             var articles    = store.articles;
             var producers   = store.producers;
+            var employees   = store.employees;
             
             
             var samsung   = new Producer { id = "producer-samsung", name = "Samsung"};
             var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
             articles.Create(galaxy);
             producers.Create(samsung); // todo remove - should be created implicit by galaxy
-            
-            var apple     = new Producer { id = "producer-apple", name = "Apple"};
+
+            var steveJobs = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
+            employees.Create(steveJobs);
+            var appleEmployees = new List<Ref<Employee>>{steveJobs};
+            var apple     = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
             producers.Create(apple);
             articles.Delete("article-iphone"); // delete if exist in database
             
@@ -91,15 +103,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
             // StoreInfo is accessible via property an ToString()
-            AreEqual(8, store.StoreInfo.peers);
+            AreEqual(9, store.StoreInfo.peers);
             AreEqual(3, store.StoreInfo.tasks); 
-            AreEqual("peers: 8, tasks: 3",                          store.ToString());
+            AreEqual("peers: 9, tasks: 3",                          store.ToString());
             AreEqual("peers: 5, tasks: 2 -> create #3, read #2",    articles.ToString());
             AreEqual("peers: 3, tasks: 1 -> create #1",             producers.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("peers: 7",                                    store.ToString()); // "article-missing" peer removed
+            AreEqual("peers: 8",                                    store.ToString()); // "article-missing" peer removed
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));

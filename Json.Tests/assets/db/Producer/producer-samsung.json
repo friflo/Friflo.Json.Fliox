@@ -1,4 +1,5 @@
 {
     "id": "producer-samsung",
-    "name": "Samsung"
+    "name": "Samsung",
+    "employees": null
 }
