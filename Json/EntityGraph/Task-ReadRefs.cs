@@ -16,15 +16,14 @@ namespace Friflo.Json.EntityGraph
         internal abstract Dictionary<string, ReadRefsTask>      SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
-
     }
 
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : Entity
     {
-        ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector)                where TValue : Entity;
-        ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector)   where TValue : Entity;
-        ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector)                                    where TValue : Entity;
+        ReadRefsTask<TValue> ReadRefs       <TValue>(Expression<Func<T, Ref<TValue>>> selector)              where TValue : Entity;
+        ReadRefsTask<TValue> ReadArrayRefs  <TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity;
+        ReadRefsTask<TValue> ReadRefsByPath <TValue>(string selector)                                        where TValue : Entity;
     }
 
     public class ReadRefsTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T>  where T : Entity
