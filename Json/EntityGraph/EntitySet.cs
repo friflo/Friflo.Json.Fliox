@@ -144,8 +144,10 @@ namespace Friflo.Json.EntityGraph
         }
 
         public CreateTask<T> Create(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.Create() Entity.id must not be null. EntitySet: {name}");
+                throw new InvalidOperationException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             return sync.Create(entity);
         }
         
@@ -156,8 +158,10 @@ namespace Friflo.Json.EntityGraph
         }
         
         public DeleteTask Delete(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.Delete() Entity.id must not be null. EntitySet: {name}");
+                throw new InvalidOperationException($"EntitySet.Delete() entity.id must not be null. EntitySet: {name}");
             return sync.Delete(entity.id);
         }
 
