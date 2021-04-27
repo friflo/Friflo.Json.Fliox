@@ -13,7 +13,7 @@ namespace Friflo.Json.EntityGraph
         string  Label { get; }
     }
     
-    public struct RefsTask
+    internal struct RefsTask
     {
         private readonly    ISetTask                            task;
         internal            bool                                synced;
@@ -35,12 +35,12 @@ namespace Friflo.Json.EntityGraph
             return new TaskNotSyncedException($"{message} {task.Label}");
         }
         
-        public ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression) where TValue : Entity {
+        internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(path);
         }
         
-        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
+        internal ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
             if (subRefs.TryGetValue(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name);

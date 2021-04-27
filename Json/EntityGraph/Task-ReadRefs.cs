@@ -29,18 +29,19 @@ namespace Friflo.Json.EntityGraph
 
     public class ReadRefsTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T>  where T : Entity
     {
-        private             RefsTask                            refsTask;
-        private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
-        private   readonly  ISetTask                            parent;
+        private             RefsTask                refsTask;
+        private   readonly  Dictionary<string, T>   results = new Dictionary<string, T>();
+        private   readonly  ISetTask                parent;
             
-        public              Dictionary<string, T>               Results          => refsTask.synced ? results      : throw refsTask.RequiresSyncError("ReadRefsTask.Results requires Sync().");
-        public              T                                   this[string id]  => refsTask.synced ? results[id]  : throw refsTask.RequiresSyncError("ReadRefsTask[] requires Sync().");
+        public              Dictionary<string, T>   Results          => refsTask.synced ? results      : throw refsTask.RequiresSyncError("ReadRefsTask.Results requires Sync().");
+        public              T                       this[string id]  => refsTask.synced ? results[id]  : throw refsTask.RequiresSyncError("ReadRefsTask[] requires Sync().");
         
-        public              string                              Label => $"{parent.Label} > {Selector}";
-        public    override  string                              ToString() => Label;
+        public              string                  Label => $"{parent.Label} > {Selector}";
+        public    override  string                  ToString() => Label;
             
-        internal  override  string                              Selector  { get; }
-        internal  override  string                              Container { get; }
+        internal  override  string                  Selector  { get; }
+        internal  override  string                  Container { get; }
+        
         internal  override  Dictionary<string, ReadRefsTask>    SubRefs => refsTask.subRefs;
 
 
@@ -83,20 +84,21 @@ namespace Friflo.Json.EntityGraph
     
     public class ReadRefTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T> where T : Entity
     {
-        private             RefsTask                            refsTask;
-        private             string                              id;
-        private             T                                   entity;
-        private   readonly  ISetTask                            parent;
+        private             RefsTask    refsTask;
+        private             string      id;
+        private             T           entity;
+        private   readonly  ISetTask    parent;
 
-        public              string                              Id      => refsTask.synced ? id      : throw refsTask.RequiresSyncError("ReadRefTask.Id requires Sync().");
-        public              T                                   Result  => refsTask.synced ? entity  : throw refsTask.RequiresSyncError("ReadRefTask.Result requires Sync().");
+        public              string      Id      => refsTask.synced ? id      : throw refsTask.RequiresSyncError("ReadRefTask.Id requires Sync().");
+        public              T           Result  => refsTask.synced ? entity  : throw refsTask.RequiresSyncError("ReadRefTask.Result requires Sync().");
             
-        public              string                              Label => $"{parent.Label} > {Selector}";
-        public    override  string                              ToString() => Label;
+        public              string      Label => $"{parent.Label} > {Selector}";
+        public    override  string      ToString() => Label;
             
-        internal override   string                              Selector  { get; }
-        internal override   string                              Container { get; }
-        internal override    Dictionary<string, ReadRefsTask>   SubRefs => refsTask.subRefs;
+        internal override   string      Selector  { get; }
+        internal override   string      Container { get; }
+        
+        internal override   Dictionary<string, ReadRefsTask>   SubRefs => refsTask.subRefs;
 
 
         internal ReadRefTask(ISetTask parent, string selector, string container)
