@@ -63,10 +63,12 @@ namespace Friflo.Json.EntityGraph
     ///   To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
     ///   <para>By calling <see cref="ReadFrom"/> of a <see cref="Ref{T}"/> instance.</para>
     ///   <para>
-    ///     When reading the parent <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
+    ///     When reading an <see cref="EntityGraph.Entity"/> containing a <see cref="Ref{T}"/> field
     ///     <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
-    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>
-    ///     or <see cref="RefsTask{T}.ReadRefs{TValue}(System.Linq.Expressions.Expression{System.Func{T,Friflo.Json.EntityGraph.Ref{TValue}}})"/> 
+    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>.
+    ///     <br></br>
+    ///     Further more those tasks used to resolve references provide themself methods to resolve their references.
+    ///     These are <see cref="ReadRefTask{T}"/> and <see cref="ReadRefsTask{T}"/>
     ///   </para>
     ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
     /// </para>

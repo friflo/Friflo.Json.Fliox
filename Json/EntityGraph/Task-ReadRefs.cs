@@ -23,7 +23,7 @@ namespace Friflo.Json.EntityGraph
     public interface IReadRefsTask<T> where T : Entity
     {
         ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector)                where TValue : Entity;
-        ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector)   where TValue : Entity;
+        ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector)   where TValue : Entity;
         ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector)                                    where TValue : Entity;
     }
 
@@ -70,7 +70,7 @@ namespace Friflo.Json.EntityGraph
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (refsTask.synced)
                 throw refsTask.AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
@@ -126,7 +126,7 @@ namespace Friflo.Json.EntityGraph
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
             if (refsTask.synced)
                 throw refsTask.AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);

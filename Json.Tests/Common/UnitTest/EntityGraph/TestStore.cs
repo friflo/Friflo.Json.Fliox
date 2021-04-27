@@ -190,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera[0]; });
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
-            var producerEmployees = producersTask.ReadRefs(p => p.employees);
+            var producerEmployees = producersTask.ReadArrayRefs(p => p.employees);
             AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions
@@ -234,7 +234,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.EntityGraph
             ReadRefsTask<Article> articleRefsTask2 = order1Task.ReadRefsByPath<Article>(".items[*].article");
             AreSame(articleRefsTask, articleRefsTask2);
             
-            ReadRefsTask<Article> articleRefsTask3 = order1Task.ReadRefs(o => o.items.Select(a => a.article));
+            ReadRefsTask<Article> articleRefsTask3 = order1Task.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("ReadTask<Order> id: order-1 > .items[*].article", articleRefsTask.ToString());
 
