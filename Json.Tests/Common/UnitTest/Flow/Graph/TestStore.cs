@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var producersTask = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1 = orders.Query(o => o.customer.id == "customer-1");
-            var read2 = orders.Query(o => o.customer.Entity.lastName == "Smith");
+            var read2 = orders.Query(o => o.customer.Entity.name == "Smith  Ltd.");
             var read3 = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
             var read4 = orders.Query(o => o.items.Any(i => i.amount < 1));
             var read5 = orders.Query(o => o.items.All(i => i.amount < 1));
@@ -209,7 +209,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
     
             AreEqual("customer-1",      customer.Id);
-            AreEqual("Smith",           customer.Result.lastName);
+            AreEqual("Smith Ltd.",      customer.Result.name);
                 
             AreEqual(3,                 producersTask.Results.Count);
             AreEqual("Samsung",         producersTask["producer-samsung"].name);

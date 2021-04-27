@@ -24,23 +24,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
            
             var query1 = TestQuery(
                 limit:      10,
-                orderBy:    c => c.lastName,
+                orderBy:    c => c.name,
                 order:      Misc.TestLinq.Order.Asc,
-                @where:      c => c.lastName == "dddd",
+                @where:      c => c.name == "dddd",
                 @select:  () => new Customer {
-                    lastName    = default,
+                    name    = default,
                     id          = default }
             );
 
             var query2 = TestQuery(
                 limit:      10,
-                orderBy:    o => o.customer.Entity.lastName,
+                orderBy:    o => o.customer.Entity.name,
                 order:      Misc.TestLinq.Order.Desc,
                 @select: () => new Flow.Graph.Order {
                     customer = {
                         Entity = {
                             id          = default,
-                            lastName    = default
+                            name    = default
                         }
                     },
                     items = default
@@ -161,11 +161,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             var order = new Flow.Graph.Order();
             order.customer = new Ref<Customer>();
 
-            Update (order, o => o.customer.Entity.lastName);
+            Update (order, o => o.customer.Entity.name);
             Update (order, o => o.items[1].amount);
             
             Update2 (order, o => new {
-                o.customer.Entity.lastName,
+                lastName = o.customer.Entity.name,
                 o.customer.id,
                 item = o.items.Sel(i => new {
                     i.amount,

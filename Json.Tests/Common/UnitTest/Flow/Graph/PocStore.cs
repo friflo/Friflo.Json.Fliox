@@ -9,24 +9,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     // ------------------------------ models ------------------------------
     public class Order : Entity {
-        public Ref<Customer>    customer;
-        public List<OrderItem>  items = new List<OrderItem>();
+        public Ref<Customer>        customer;
+        public List<OrderItem>      items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        public Ref<Article>     article;
-        public int              amount;
-        public string           name;
+        public Ref<Article>         article;
+        public int                  amount;
+        public string               name;
     }
 
     public class Article : Entity
     {
-        public string           name;
-        public Ref<Producer>    producer;
+        public string               name;
+        public Ref<Producer>        producer;
     }
 
     public class Customer : Entity {
-        public string           lastName;
+        public string               name;
     }
     
     public class Producer : Entity {
@@ -35,8 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
     public class Employee : Entity {
-        public string           firstName;
-        public string           lastName;
+        public string               firstName;
+        public string               lastName;
     }
 
     // --- store containers
@@ -133,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);
             
-            var customer    = new Customer { id = "customer-1", lastName = "Smith" };
+            var customer    = new Customer { id = "customer-1", name = "Smith Ltd." };
             // customers.Create(customer);    // redundant - implicit tracked by order
             
             var item1       = new OrderItem {
