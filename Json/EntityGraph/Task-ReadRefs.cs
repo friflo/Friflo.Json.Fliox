@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-
 namespace Friflo.Json.EntityGraph
 {
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
@@ -20,7 +19,15 @@ namespace Friflo.Json.EntityGraph
 
     }
 
-    public class ReadRefsTask<T> : ReadRefsTask, ISetTask  where T : Entity
+    /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
+    public interface IReadRefsTask<T> where T : Entity
+    {
+        ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector)                where TValue : Entity;
+        ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector)   where TValue : Entity;
+        ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector)                                    where TValue : Entity;
+    }
+
+    public class ReadRefsTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T>  where T : Entity
     {
         private             RefsTask                            refsTask;
         private   readonly  Dictionary<string, T>               results = new Dictionary<string, T>();
@@ -74,7 +81,7 @@ namespace Friflo.Json.EntityGraph
         }
     }
     
-    public class ReadRefTask<T> : ReadRefsTask, ISetTask where T : Entity
+    public class ReadRefTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T> where T : Entity
     {
         private             RefsTask                            refsTask;
         private             string                              id;

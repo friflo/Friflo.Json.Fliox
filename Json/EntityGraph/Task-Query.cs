@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Graph;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
-    public class QueryTask<T> : ISetTask where T : Entity
+    public class QueryTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
     {
         internal            RefsTask            refsTask;
         internal readonly   FilterOperation     filter;

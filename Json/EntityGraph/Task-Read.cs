@@ -8,7 +8,7 @@ using Friflo.Json.EntityGraph.Internal;
 namespace Friflo.Json.EntityGraph
 {
     // ----------------------------------------- ReadTask -----------------------------------------
-    public class ReadTask<T> : ISetTask where T : Entity
+    public class ReadTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
     {
         internal            RefsTask        refsTask;
         private  readonly   string          id;
