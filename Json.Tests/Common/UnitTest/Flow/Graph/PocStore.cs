@@ -66,22 +66,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var articles    = store.articles;
             var producers   = store.producers;
             var employees   = store.employees;
-            
-            
-            var samsung   = new Producer { id = "producer-samsung", name = "Samsung"};
-            var galaxy    = new Article  { id = "article-galaxy", name = "Galaxy S10", producer = samsung};
-            articles.Create(galaxy);
-            producers.Create(samsung); // todo remove - should be created implicit by galaxy
 
-            var steveJobs = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
-            employees.Create(steveJobs);
-            var appleEmployees = new List<Ref<Employee>>{steveJobs};
-            var apple     = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
-            var ipad      = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
+            var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
+            var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
+            articles.Create(galaxy);
+
+            var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
+            var appleEmployees  = new List<Ref<Employee>>{ steveJobs };
+            var apple           = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
+            var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             articles.Create(ipad);
-            producers.Create(apple);
+            
             articles.Delete("article-iphone"); // delete if exist in database
             
+            AreEqual(5, store.LogChanges());
 
             await store.Sync(); // -------- Sync --------
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
