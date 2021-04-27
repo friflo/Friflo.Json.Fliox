@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Database.Models
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest

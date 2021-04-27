@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Models;
 using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Transform;
 

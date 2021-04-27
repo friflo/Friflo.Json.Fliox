@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Models;
 
 namespace Friflo.Json.Flow.Database
 {
