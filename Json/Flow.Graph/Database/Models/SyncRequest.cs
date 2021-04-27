@@ -90,17 +90,17 @@ namespace Friflo.Json.Flow.Database.Models
     // --------------------------------------- ReadEntities ---------------------------------------
     public partial class ReadEntities : DatabaseTask
     {
-        public  string                      container;
-        public  List<string>                ids;
-        public  List<References>            references;
+        public  string                          container;
+        public  List<string>                    ids;
+        public  List<References>                references;
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public partial class ReadEntitiesResult : TaskResult
     {
-        public   List<ReferencesResult>             references;
+        public   List<ReferencesResult>         references;
         [Fri.Ignore]
-        internal Dictionary<string, EntityValue>    entities;
+        internal Dictionary<string,EntityValue> entities;
     }
     
     // ---
@@ -124,20 +124,20 @@ namespace Friflo.Json.Flow.Database.Models
     // --------------------------------------- QueryEntities ---------------------------------------
     public partial class QueryEntities : DatabaseTask
     {
-        public  string                      container;
-        public  string                      filterLinq;
-        public  FilterOperation             filter;
-        public  List<References>            references;
+        public  string                          container;
+        public  string                          filterLinq;
+        public  FilterOperation                 filter;
+        public  List<References>                references;
     }
     
     public partial class QueryEntitiesResult : TaskResult
     {
-        public  string                              container;  // only for debugging ergonomics
-        public  string                              filterLinq;
-        public  HashSet<string>                     ids;
-        public  List<ReferencesResult>              references;
+        public  string                          container;  // only for debugging ergonomics
+        public  string                          filterLinq;
+        public  HashSet<string>                 ids;
+        public  List<ReferencesResult>          references;
         [Fri.Ignore]
-        internal Dictionary<string, EntityValue>    entities;
+        internal Dictionary<string,EntityValue> entities;
     }
     
     // --------------------------------------- PatchEntities ---------------------------------------
