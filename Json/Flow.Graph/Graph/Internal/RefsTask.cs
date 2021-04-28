@@ -70,9 +70,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             map.Add(selector, subRefsTask);
         }
 
-        // return BinaryResultEnumerator instead of IEnumerator<ReadRefsTask> to avoid boxing 
-        public DictionaryValueIterator<string, ReadRefsTask> GetEnumerator() {
-            return new DictionaryValueIterator<string, ReadRefsTask>(map);
+        // return ValueIterator instead of IEnumerator<ReadRefsTask> to avoid boxing 
+        public ValueIterator<string, ReadRefsTask> GetEnumerator() {
+            return new ValueIterator<string, ReadRefsTask>(map);
         }
     }
 }

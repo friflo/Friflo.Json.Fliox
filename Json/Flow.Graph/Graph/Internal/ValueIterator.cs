@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    public struct DictionaryValueIterator<TKey, TValue> : IEnumerator<TValue>
+    public struct ValueIterator<TKey, TValue> : IEnumerator<TValue>
     {
         private                 Dictionary<TKey,TValue>.Enumerator  iterator;
         private static readonly Dictionary<TKey, TValue>            EmptyMap = new Dictionary<TKey, TValue>();
         
         
-        public DictionaryValueIterator(Dictionary<TKey, TValue> map) {
+        public ValueIterator(Dictionary<TKey, TValue> map) {
             if (map != null)
                 iterator = map.GetEnumerator();
             else
