@@ -162,18 +162,36 @@ namespace Friflo.Json.Flow.Graph.Internal
             // --- ReadEntities
             if (reads.Count > 0) {
                 var ids = reads.Select(read => read.Key).ToList();
-                List<References> references = null;
+                List<ReadRef> readRefs = new List<ReadRef>();
                 if (reads.Count > 0) {
-                    references = new List<References>(reads.Count);
+                    var readRefMap = new Dictionary<string, ReadRef>();
                     foreach (var readPair in reads) {
                         ReadTask<T> read = readPair.Value;
-                        AddReferences(references, read.refsTask.subRefs);
+                        foreach (var refs in read.refsTask.subRefs) {
+                            if (!readRefMap.TryGetValue(refs.Selector, out ReadRef readRef)) {
+                                readRef = new ReadRef {
+                                    reference = new References {
+                                        selector    = refs.Selector,
+                                        container   = refs.Container,
+                                    },
+                                    ids = new List<string>()
+                                };
+                                readRefs.Add(readRef);
+                                readRefMap.Add(refs.Selector, readRef);
+                                var subRefs = refs.SubRefs;
+                                if (subRefs.Count > 0) {
+                                    readRef.reference.references = new List<References>(subRefs.Count);
+                                    AddReferences(readRef.reference.references, subRefs);
+                                }
+                            }
+                            readRef.ids.Add(read.id);
+                        }
                     }
                 }
                 var req = new ReadEntities {
-                    container = set.name,
-                    ids = ids,
-                    references = references
+                    container   = set.name,
+                    ids         = ids,
+                    readRefs    = readRefs
                 };
                 tasks.Add(req);
             }
@@ -252,9 +270,27 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (json == null || json == "null")
                     set.DeletePeer(id);
             }
-            foreach (var id in task.ids) {
-                var read = reads[id];
-                AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
+            var references          = new List<References>      ();
+            var referencesResult    = new List<ReferencesResult>();
+            if (result.readRefs != null) {
+                references.      Clear();
+                referencesResult.Clear();
+                references.      Capacity = result.readRefs.Count;
+                referencesResult.Capacity = result.readRefs.Count;
+                // prepare references & referencesResult for AddReferencesResult()
+                for (int n = 0; n < result.readRefs.Count; n++) {
+                    var readRef             = task.readRefs[n];
+                    var referenceResult     = result.readRefs[n].reference;
+                    references.Add(readRef.reference);
+                    referencesResult.Add(referenceResult);
+                }
+                // iterate all ids
+                foreach (var readRef in task.readRefs) {
+                    foreach (var id in readRef.ids) {
+                        var read = reads[id];
+                        AddReferencesResult(references, referencesResult, read.refsTask.subRefs);    
+                    }
+                }
             }
         }
         

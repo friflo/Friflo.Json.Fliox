@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph
     public class ReadTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
     {
         internal            RefsTask        refsTask;
-        private  readonly   string          id;
+        internal readonly   string          id;
         internal readonly   PeerEntity<T>   peer;
         internal            T               result;
 

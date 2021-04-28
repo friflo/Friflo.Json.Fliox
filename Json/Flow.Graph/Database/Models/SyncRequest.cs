@@ -92,16 +92,28 @@ namespace Friflo.Json.Flow.Database.Models
     {
         public  string                          container;
         public  List<string>                    ids;
-        public  List<References>                references;
+        public  List<ReadRef>                   readRefs;
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public partial class ReadEntitiesResult : TaskResult
     {
-        public   List<ReferencesResult>         references;
+        public   List<ReadRefResult>            readRefs;
         [Fri.Ignore]
         internal Dictionary<string,EntityValue> entities;
     }
+
+    public class ReadRef
+    {
+        public  List<string>                    ids;
+        public  References                      reference;
+    }
+    
+    public class ReadRefResult
+    {
+        public  ReferencesResult                reference;
+    }
+
     
     // ---
     public class References
