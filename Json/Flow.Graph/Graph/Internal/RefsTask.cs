@@ -14,12 +14,11 @@ namespace Friflo.Json.Flow.Graph.Internal
     
     internal struct RefsTask
     {
-        private readonly    ISetTask                            task;
-        internal            bool                                synced;
-        /// key: <see cref="ReadRefsTask.Selector"/>
-        internal            SubRefs                             subRefs;
+        private readonly    ISetTask    task;
+        internal            bool        synced;
+        internal            SubRefs     subRefs;
         
-        
+
         internal RefsTask(ISetTask task) {
             this.task       = task;
             this.subRefs    = new SubRefs();
@@ -45,6 +44,35 @@ namespace Friflo.Json.Flow.Graph.Internal
             var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name);
             subRefs.AddTask(selector, newQueryRefs);
             return newQueryRefs;
+        }
+    }
+    
+    internal struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
+    {
+        /// key: <see cref="ReadRefsTask.Selector"/>
+        private     Dictionary<string, ReadRefsTask>    map; // map == null if no tasks added
+        
+        internal    int                                 Count => map?.Count ?? 0;
+        internal    ReadRefsTask                        this[string key] => map[key];
+        
+        internal bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
+            if (map == null) {
+                subRefsTask = null;
+                return false;
+            }
+            return map.TryGetValue(selector, out subRefsTask);
+        }
+        
+        internal void AddTask(string selector, ReadRefsTask subRefsTask) {
+            if (map == null) {
+                map = new Dictionary<string, ReadRefsTask>();
+            }
+            map.Add(selector, subRefsTask);
+        }
+
+        // return BinaryResultEnumerator instead of IEnumerator<ReadRefsTask> to avoid boxing 
+        public DictionaryValueIterator<string, ReadRefsTask> GetEnumerator() {
+            return new DictionaryValueIterator<string, ReadRefsTask>(map);
         }
     }
 }

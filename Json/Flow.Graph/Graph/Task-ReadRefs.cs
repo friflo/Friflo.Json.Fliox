@@ -9,34 +9,14 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    internal struct SubRefs
-    {
-        internal    Dictionary<string, ReadRefsTask>    map;
-        internal    int                                 Count => map?.Count ?? 0;
-        
-        internal bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
-            if (map == null) {
-                subRefsTask = null;
-                return false;
-            }
-            return map.TryGetValue(selector, out subRefsTask);
-        }
-        
-        internal void AddTask(string selector, ReadRefsTask subRefsTask) {
-            if (map == null) {
-                map = new Dictionary<string, ReadRefsTask>();
-            }
-            map.Add(selector, subRefsTask);
-        }
 
-    }
     
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
     public abstract class ReadRefsTask
     {
-        internal abstract string                                Selector    { get; }
-        internal abstract string                                Container   { get; }
-        internal abstract SubRefs                               SubRefs     { get; }
+        internal abstract string        Selector    { get; }
+        internal abstract string        Container   { get; }
+        internal abstract SubRefs       SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
     }

@@ -223,8 +223,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void AddReferences(List<References> references, SubRefs refs) {
             if (refs.Count == 0)
                 return;
-            foreach (var refsPair in refs.map) {
-                ReadRefsTask readRefs = refsPair.Value;
+            foreach (var readRefs in refs) {
                 var queryReference = new References {
                     container = readRefs.Container,
                     selector  = readRefs.Selector
@@ -280,7 +279,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
-                ReadRefsTask        subRef       = refs.map[reference.selector];
+                ReadRefsTask        subRef       = refs[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
 
                 var subReferences = reference.references;
