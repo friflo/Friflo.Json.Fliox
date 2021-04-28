@@ -94,30 +94,11 @@ namespace Friflo.Json.Flow.Database.Models
             result.entities = null; // clear -> its not part of protocol
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(entities);
-            List<ReadRefResult> readRefResults = null;
-            if (readRefs != null && readRefs.Count > 0) {
-                readRefResults  = new List<ReadRefResult>(readRefs.Count);
-                var references  = new List<References>();
-                foreach (var readRef in readRefs) {
-                    references.Add(readRef.reference);
-                }
-                var refEntities = new Dictionary<string, EntityValue>();
-                foreach (var readRef in readRefs) {
-                    refEntities.Clear();
-                    refEntities.EnsureCapacity(ids.Count);
-                    foreach (var id in readRef.ids) {
-                        refEntities.Add(id, entities[id]);
-                    }
-                }
-                var readRefsResults = await entityContainer.ReadReferences(references, refEntities, response);
-                foreach (var readRefsResult in readRefsResults) {
-                    var readRefResult = new ReadRefResult {
-                        reference = readRefsResult
-                    };
-                    readRefResults.Add(readRefResult);
-                }
+            List<ReferencesResult> readRefResults = null;
+            if (references != null && references.Count > 0) {
+                readRefResults = await entityContainer.ReadReferences(references, entities, response);
             }
-            result.readRefs = readRefResults;
+            result.references = readRefResults;
             return result;
         }
     }

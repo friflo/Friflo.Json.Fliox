@@ -85,7 +85,6 @@ namespace Friflo.Json.Flow.Database
             foreach (var reference in references) {
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
-                    selector    = reference.selector, 
                     container   = reference.container,
                     ids         = new HashSet<string>()
                 };
