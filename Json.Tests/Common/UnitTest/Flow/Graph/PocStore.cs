@@ -62,6 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database);
+            AreSimilar("all:      0",    store);    // initial state, empty store
             var orders      = store.orders;
             var articles    = store.articles;
             var producers   = store.producers;
@@ -71,27 +72,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
             articles.Create(galaxy);
+            AreSimilar("all:      1, tasks: 1",                         store);
+            AreSimilar("Article:  1, tasks: 1 -> create #1",            articles);
+            
+            AreEqual(2, store.LogChanges());
+            AreSimilar("all:      2, tasks: 2",                         store);
+            AreSimilar("Producer: 1, tasks: 1 -> create #1",            producers); // created samsung implicit
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             var appleEmployees  = new List<Ref<Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             articles.Create(ipad);
+            AreSimilar("Article:  2, tasks: 1 -> create #2",            articles);
             
             articles.Delete("article-iphone"); // delete if exist in database
-            
-            AreEqual(2, store.StoreInfo.peers);
+            AreSimilar("Article:  2, tasks: 2 -> create #2, delete #1", articles);
+
             AreEqual(5, store.LogChanges());
-            AreEqual(5, store.StoreInfo.peers);
+            AreSimilar("all:      5, tasks: 4",                         store);
+            AreSimilar("Article:  2, tasks: 2 -> create #2, delete #1", articles);
+            AreSimilar("Employee: 1, tasks: 1 -> create #1",            employees); // created steveJobs implicit
+            AreSimilar("Producer: 2, tasks: 1 -> create #2",            producers); // created apple implicit
 
             await store.Sync(); // -------- Sync --------
+            AreSimilar("all:      5",                                   store);   // tasks executed and cleared
+            
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
             producers.Create(canon);
             var order           = new Order { id = "order-1" };
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
             var createCam1 = articles.Create(cameraCreate);
             var createCam2 = articles.Create(cameraCreate);   // Create() is idempotent
-            AreSame(createCam1, createCam2);                       // test redundant create
+            AreSame(createCam1, createCam2);                  // test redundant create
             AreEqual("article-1", createCam1.ToString());
             
             for (int n = 0; n < 1; n++) {
@@ -108,14 +121,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // StoreInfo is accessible via property an ToString()
             AreEqual(10, store.StoreInfo.peers);
             AreEqual(3,  store.StoreInfo.tasks); 
-            AreEqual("all:      10, tasks: 3",                      store.ToString());
-            AreEqual("Article:  6, tasks: 2 -> create #3, read #2", articles.ToString());
-            AreEqual("Producer: 3, tasks: 1 -> create #1",          producers.ToString());
-            AreEqual("Employee: 1",                                 employees.ToString());
+            AreSimilar("all:      10, tasks: 3",                      store);
+            AreSimilar("Article:  6, tasks: 2 -> create #3, read #2", articles);
+            AreSimilar("Producer: 3, tasks: 1 -> create #1",          producers);
+            AreSimilar("Employee: 1",                                 employees);
             
             await store.Sync(); // -------- Sync --------
-            
-            AreEqual("all:      9",                                 store.ToString()); // "article-missing" peer removed
+            AreSimilar("all:      9",                                 store); // "article-missing" peer removed, tasks cleared
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));
@@ -126,15 +138,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
-            AreEqual("all:      8", store.ToString());
+            AreSimilar("all:      8",                           store);       // tasks executed and cleared
 
-            AreEqual("Article:  4",                         articles.ToString());
+            AreSimilar("Article:  4",                           articles);
             var cameraNotSynced = articles.Read("article-1");
-            AreEqual("all:      8, tasks: 1",               store.ToString());
-            AreEqual("Article:  4, tasks: 1 -> read #1",    articles.ToString());
+            AreSimilar("all:      8, tasks: 1",                 store);
+            AreSimilar("Article:  4, tasks: 1 -> read #1",      articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
-            AreEqual("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
+            AreSimilar("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);
@@ -156,14 +168,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("Order:     0",                                 orders);
             orders.Create(order);
             AreSimilar("all:       9, tasks: 2",                       store);
-            AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // create order
+            AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // created order
             
-            AreSimilar("Article:   4, tasks: 1 -> read #1", articles.ToString());
+            AreSimilar("Article:   4, tasks: 1 -> read #1", articles);
             AreSimilar("Customer:  0",                                 customers);
             AreEqual(1,  orders.LogSetChanges());
             AreSimilar("all:      11, tasks: 4",                       store);
-            AreSimilar("Article:   5, tasks: 2 -> create #1, read #1", articles);   // create smartphone (implicit)
-            AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // create customer (implicit)
+            AreSimilar("Article:   5, tasks: 2 -> create #1, read #1", articles);   // created smartphone (implicit)
+            AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // created customer (implicit)
             
             AreEqual(3,  store.LogChanges());
             AreEqual(3,  store.LogChanges());       // LogChanges() is idempotent => state did not change
@@ -171,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             await store.Sync(); // -------- Sync --------
             
-            AreSimilar("all:      11",                                 store);      // all task executed -> tasks cleared
+            AreSimilar("all:      11",                                 store);      // tasks executed and cleared
             
             return store;
         }
