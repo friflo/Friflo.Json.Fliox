@@ -47,15 +47,15 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
-    internal struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
+    public struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         /// key: <see cref="ReadRefsTask.Selector"/>
         private     Dictionary<string, ReadRefsTask>    map; // map == null if no tasks added
         
-        internal    int                                 Count => map?.Count ?? 0;
-        internal    ReadRefsTask                        this[string key] => map[key];
+        public    int                                 Count => map?.Count ?? 0;
+        public    ReadRefsTask                        this[string key] => map[key];
         
-        internal bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
+        public bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
             if (map == null) {
                 subRefsTask = null;
                 return false;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return map.TryGetValue(selector, out subRefsTask);
         }
         
-        internal void AddTask(string selector, ReadRefsTask subRefsTask) {
+        public void AddTask(string selector, ReadRefsTask subRefsTask) {
             if (map == null) {
                 map = new Dictionary<string, ReadRefsTask>();
             }
