@@ -220,8 +220,10 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void AddReferences(List<References> references, Dictionary<string, ReadRefsTask> refs) {
-            foreach (var refsPair in refs) {
+        private void AddReferences(List<References> references, SubRefs refs) {
+            if (refs.Count == 0)
+                return;
+            foreach (var refsPair in refs.map) {
                 ReadRefsTask readRefs = refsPair.Value;
                 var queryReference = new References {
                     container = readRefs.Container,
@@ -271,14 +273,14 @@ namespace Friflo.Json.Flow.Graph.Internal
             query.refsTask.synced = true;
         }
 
-        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, Dictionary<string, ReadRefsTask> refs) {
+        private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {
             if (references == null)
                 return;
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
-                ReadRefsTask        subRef       = refs[reference.selector];
+                ReadRefsTask        subRef       = refs.map[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
 
                 var subReferences = reference.references;

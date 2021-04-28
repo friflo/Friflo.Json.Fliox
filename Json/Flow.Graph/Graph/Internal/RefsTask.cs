@@ -17,12 +17,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         private readonly    ISetTask                            task;
         internal            bool                                synced;
         /// key: <see cref="ReadRefsTask.Selector"/>
-        internal readonly   Dictionary<string, ReadRefsTask>    subRefs;
+        internal            SubRefs                             subRefs;
         
         
         internal RefsTask(ISetTask task) {
             this.task       = task;
-            this.subRefs    = new Dictionary<string, ReadRefsTask>();
+            this.subRefs    = new SubRefs();
             this.synced     = false;
         }
         
@@ -40,10 +40,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (subRefs.TryGetValue(selector, out ReadRefsTask subRefsTask))
+            if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name);
-            subRefs.Add(selector, newQueryRefs);
+            subRefs.AddTask(selector, newQueryRefs);
             return newQueryRefs;
         }
     }
