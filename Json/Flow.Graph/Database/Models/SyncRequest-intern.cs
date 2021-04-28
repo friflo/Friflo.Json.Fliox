@@ -98,12 +98,16 @@ namespace Friflo.Json.Flow.Database.Models
             if (readRefs != null && readRefs.Count > 0) {
                 readRefResults  = new List<ReadRefResult>(readRefs.Count);
                 var references  = new List<References>();
-                var refEntities = new Dictionary<string, EntityValue>(ids.Count);
                 foreach (var readRef in readRefs) {
-                    foreach (var id in ids) {
+                    references.Add(readRef.reference);
+                }
+                var refEntities = new Dictionary<string, EntityValue>();
+                foreach (var readRef in readRefs) {
+                    refEntities.Clear();
+                    refEntities.EnsureCapacity(ids.Count);
+                    foreach (var id in readRef.ids) {
                         refEntities.Add(id, entities[id]);
                     }
-                    references.Add(readRef.reference);
                 }
                 var readRefsResults = await entityContainer.ReadReferences(references, refEntities, response);
                 foreach (var readRefsResult in readRefsResults) {

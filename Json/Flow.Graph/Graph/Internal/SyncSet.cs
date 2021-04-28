@@ -270,22 +270,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (json == null || json == "null")
                     set.DeletePeer(id);
             }
-            var references          = new List<References>      ();
-            var referencesResult    = new List<ReferencesResult>();
+            var references          = new List<References>       {null};
+            var referencesResult    = new List<ReferencesResult> {null};
             if (result.readRefs != null) {
-                references.      Clear();
-                referencesResult.Clear();
-                references.      Capacity = result.readRefs.Count;
-                referencesResult.Capacity = result.readRefs.Count;
-                // prepare references & referencesResult for AddReferencesResult()
                 for (int n = 0; n < result.readRefs.Count; n++) {
                     var readRef             = task.readRefs[n];
                     var referenceResult     = result.readRefs[n].reference;
-                    references.Add(readRef.reference);
-                    referencesResult.Add(referenceResult);
-                }
-                // iterate all ids
-                foreach (var readRef in task.readRefs) {
+                    references[0]       = readRef.reference;
+                    referencesResult[0] = referenceResult;
                     foreach (var id in readRef.ids) {
                         var read = reads[id];
                         AddReferencesResult(references, referencesResult, read.refsTask.subRefs);    

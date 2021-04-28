@@ -110,11 +110,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         // ------------------------------------ test assertion methods ------------------------------------
         private static async Task TestStores(PocStore createStore, PocStore useStore) {
-            await WriteRead             (createStore);
-            await AssertEntityIdentity  (createStore);
-            await AssertQueryTask       (createStore);
-            await AssertReadTask        (createStore);
-            await AssertRefAssignment   (useStore);
+            await AssertReadIndividualSelectors (createStore);
+            await WriteRead                     (createStore);
+            await AssertEntityIdentity          (createStore);
+            await AssertQueryTask               (createStore);
+            await AssertReadTask                (createStore);
+            await AssertRefAssignment           (useStore);
+        }
+
+        // Use same Read with different selectors from same EntitySet<>
+        private static async Task AssertReadIndividualSelectors(PocStore store) {
+            EntitySet<Order> orders      = store.orders;
+            
+            ReadTask<Order> order1Task          = orders.Read("order-1");
+            var customer = order1Task.ReadRefs(o => o.customer);
+            var articles = order1Task.ReadArrayRefs(o => o.items.Select(x => x.article));
+            await store.Sync();
+            
+            AreEqual(1, customer.Results.Count);
+            AreEqual(2, articles.Results.Count);
         }
 
         private static async Task AssertRefAssignment(PocStore store) {
