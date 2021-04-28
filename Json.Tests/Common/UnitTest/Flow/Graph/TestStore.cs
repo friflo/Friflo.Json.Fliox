@@ -123,16 +123,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             EntitySet<Order> orders      = store.orders;
             
             ReadTask<Order> order1          = orders.Read("order-1");
-            var customerOrder1 = order1.ReadRefs(o => o.customer);
-            var articlesOrder1 = order1.ReadArrayRefs(o => o.items.Select(x => x.article));
+            var order1Customer              = order1.ReadRefs(o => o.customer);
+            var order1Articles              = order1.ReadArrayRefs(o => o.items.Select(x => x.article));
             
             ReadTask<Order> missingOrder    = orders.Read("order-missing");
-            var customerMissingOrder = missingOrder.ReadRefs(o => o.customer);
-            var articlesMissingOrder = missingOrder.ReadArrayRefs(o => o.items.Select(x => x.article));
+            var missingOrderCustomer        = missingOrder.ReadRefs(o => o.customer);
             await store.Sync();
             
-            AreEqual(1, customerOrder1.Results.Count);
-            AreEqual(2, articlesOrder1.Results.Count);
+            AreEqual(1, order1Customer.Results.Count);
+            AreEqual(2, order1Articles.Results.Count);
+            
+            // AreEqual(0, missingOrderCustomer.Results.Count);
         }
 
         private static async Task AssertRefAssignment(PocStore store) {

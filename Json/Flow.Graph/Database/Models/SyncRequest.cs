@@ -105,8 +105,8 @@ namespace Friflo.Json.Flow.Database.Models
 
     public class ReadRef
     {
-        public  List<string>                    ids;
         public  References                      reference;
+        public  List<string>                    ids;
     }
     
     public class ReadRefResult
@@ -127,7 +127,8 @@ namespace Friflo.Json.Flow.Database.Models
     
     public class ReferencesResult
     {
-        public  string                  container;
+        public  string                  selector;  // only for debugging ergonomics
+        public  string                  container; // only for debugging ergonomics
         public  HashSet<string>         ids;
         public  List<ReferencesResult>  references;
     }

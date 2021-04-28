@@ -304,7 +304,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
-                EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
+                EntitySet           refContainer = set.intern.store._intern.setByName[reference.container];
                 ReadRefsTask        subRef       = refs[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
 
