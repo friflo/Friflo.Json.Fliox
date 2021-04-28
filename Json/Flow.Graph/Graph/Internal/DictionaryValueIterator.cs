@@ -8,10 +8,15 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     public struct DictionaryValueIterator<TKey, TValue> : IEnumerator<TValue>
     {
-        private Dictionary<TKey,TValue>.Enumerator iterator;
+        private                 Dictionary<TKey,TValue>.Enumerator  iterator;
+        private static readonly Dictionary<TKey, TValue>            EmptyMap = new Dictionary<TKey, TValue>();
+        
         
         public DictionaryValueIterator(Dictionary<TKey, TValue> map) {
-            iterator = map.GetEnumerator();
+            if (map != null)
+                iterator = map.GetEnumerator();
+            else
+                iterator = EmptyMap.GetEnumerator();
         }
         
         public bool MoveNext() {
