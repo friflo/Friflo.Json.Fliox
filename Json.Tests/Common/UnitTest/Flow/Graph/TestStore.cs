@@ -255,7 +255,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
             var readTask = store.articles.Read();
-            var articleSet = readTask.ReadIds(new [] {"article-galaxy", "article-ipad"});
+            var articleSet = readTask.ReadIds(new [] {"article-galaxy", "article-galaxy", "article-ipad"}); // used duplicate ids
 
             await store.Sync(); // -------- Sync --------
         

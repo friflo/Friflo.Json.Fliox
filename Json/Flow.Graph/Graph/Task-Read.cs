@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
     
     public class ReadIds<T> : EntitySetTask where T : Entity
     {
-        private  readonly   List<string>            ids;
+        private  readonly   HashSet<string>            ids;
         private  readonly   ReadTask<T>             task; 
 
         public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadIds[] requires Sync().");
@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string      ToString()  => Label;
 
         internal ReadIds(ReadTask<T> task, ICollection<string> ids) {
-            this.ids    = ids.ToList();
+            this.ids    = ids.ToHashSet();
             this.task   = task;
         }
     } 
@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph
             if (Synced)
                 throw AlreadySyncedError();
             foreach (var id in ids) {
-                idMap.Add(id, null);    
+                idMap.TryAdd(id, null);
             }
             return new ReadIds<T>(this, ids);
         }
