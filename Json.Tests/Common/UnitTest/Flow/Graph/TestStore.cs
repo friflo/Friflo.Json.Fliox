@@ -255,7 +255,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
             var readTask = store.articles.Read();
-            var articleSet = readTask.ReadIds(new [] {"article-galaxy", "article-galaxy", "article-ipad"}); // used duplicate ids
+            var duplicateId = "article-galaxy"; // support duplicate ids
+            var galaxy      = readTask.ReadId(duplicateId);
+            var articleSet  = readTask.ReadIds(new [] {duplicateId, duplicateId, "article-ipad"});
 
             await store.Sync(); // -------- Sync --------
         
@@ -269,6 +271,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(2,                 articleSet.Results.Count);
             AreEqual("Galaxy S10",      articleSet["article-galaxy"].name);
             AreEqual("iPad Pro",        articleSet["article-ipad"].name);
+            AreEqual("Galaxy S10",      galaxy.Result.name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
