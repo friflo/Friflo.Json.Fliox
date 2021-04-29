@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph.Internal;
 
@@ -13,7 +14,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => Synced ? task.ids[id] : throw RequiresSyncError($"ReadId.Result requires Sync().");
+        public              T           Result      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadId.Result requires Sync().");
 
         internal override   bool        Synced      => task.Synced;
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
@@ -21,6 +22,33 @@ namespace Friflo.Json.Flow.Graph
 
         internal ReadId(ReadTask<T> task, string id) {
             this.id     = id;
+            this.task   = task;
+        }
+    }
+    
+    public class ReadIds<T> : EntitySetTask where T : Entity
+    {
+        private  readonly   List<string>            ids;
+        private  readonly   ReadTask<T>             task; 
+
+        public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadIds[] requires Sync().");
+        public              Dictionary<string, T>   Results { get {
+            if (Synced) {
+                var result = new Dictionary<string, T>(ids.Count);
+                foreach (var id in ids) {
+                    result.Add(id, task.idMap[id]);
+                }
+                return result;
+            }
+            throw RequiresSyncError($"ReadIds.Result requires Sync()."); }
+        }
+
+        internal override   bool        Synced      => task.Synced;
+        internal override   string      Label       => $"ReadIds<{typeof(T).Name}> #ids: {ids.Count}";
+        public   override   string      ToString()  => Label;
+
+        internal ReadIds(ReadTask<T> task, ICollection<string> ids) {
+            this.ids    = ids.ToList();
             this.task   = task;
         }
     } 
@@ -32,10 +60,10 @@ namespace Friflo.Json.Flow.Graph
         internal            bool                    synced;
         internal readonly   EntitySet<T>            set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<string, T>   ids = new Dictionary<string, T>();
+        internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
 
         internal override   bool                    Synced      => synced;
-        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {ids.Count}";
+        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";
         public   override   string                  ToString()  => Label;
 
         internal ReadTask(EntitySet<T> set) {
@@ -45,11 +73,22 @@ namespace Friflo.Json.Flow.Graph
 
         public ReadId<T> ReadId(string id) {
             if (id == null)
-                throw new InvalidOperationException($"EntitySet.Read() id must not be null. EntitySet: {set.name}");
+                throw new InvalidOperationException($"ReadTask.ReadId() id must not be null. EntitySet: {set.name}");
             if (Synced)
                 throw AlreadySyncedError();
-            ids.Add(id, null);
+            idMap.Add(id, null);
             return new ReadId<T>(this, id);
+        }
+        
+        public ReadIds<T> ReadIds(ICollection<string> ids) {
+            if (ids == null)
+                throw new InvalidOperationException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");
+            if (Synced)
+                throw AlreadySyncedError();
+            foreach (var id in ids) {
+                idMap.Add(id, null);    
+            }
+            return new ReadIds<T>(this, ids);
         }
 
         // lab - ReadRefs by Entity Type

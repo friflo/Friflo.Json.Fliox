@@ -254,6 +254,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
+            var readTask = store.articles.Read();
+            var articleSet = readTask.ReadIds(new [] {"article-galaxy", "article-ipad"});
+
             await store.Sync(); // -------- Sync --------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
@@ -262,6 +265,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual(1,                 articleProducerTask.Results.Count);
             AreEqual("Canon",           articleProducerTask["producer-canon"].name);
+
+            AreEqual(2,                 articleSet.Results.Count);
+            AreEqual("Galaxy S10",      articleSet["article-galaxy"].name);
+            AreEqual("iPad Pro",        articleSet["article-ipad"].name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {

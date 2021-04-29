@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     }
                     var req = new ReadEntities {
                         container = set.name,
-                        ids = read.ids.Keys.ToList(),
+                        ids = read.idMap.Keys.ToList(),
                         references = references
                     };
                     tasks.Add(req);
@@ -246,15 +246,15 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             // todo check for optimization
             foreach (var read in reads) {
-                var readIds = read.ids.Keys.ToList();
+                var readIds = read.idMap.Keys.ToList();
                 foreach (var id in readIds) {
                     var value = entities.entities[id];
                     var json = value.value.json;  // in case of RemoteClient json is "null"
                     if (json == null || json == "null") {
-                        read.ids[id] = null;
+                        read.idMap[id] = null;
                     } else {
                         var peer = set.GetPeerById(id);
-                        read.ids[id] = peer.entity;
+                        read.idMap[id] = peer.entity;
                     }
                 }
                 read.synced = true;
