@@ -15,45 +15,37 @@ namespace Friflo.Json.Flow.Graph
 
         public              T           Result      => task.synced ? task.ids[id] : throw task.RequiresSyncError("ReadId.Result requires Sync().");
 
-        public   override   string      ToString() => $"ReadId<{typeof(T).Name}> id: {id}";
+        private             string      Label => $"ReadId<{typeof(T).Name}> id: {id}";
+        public   override   string      ToString() => Label;
 
         internal ReadId(ReadTask<T> task, string id) {
             this.id     = id;
             this.task   = task;
         }
-        
     } 
     
     
     // ----------------------------------------- ReadTask -----------------------------------------
-    public class ReadTask<T> : ISetTask, IReadRefsTask<T> where T : Entity
+    public class ReadTask<T> : EntitySetTask, IReadRefsTask<T> where T : Entity
     {
-
         internal            bool                    synced;
         internal readonly   EntitySet<T>            set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   ids = new Dictionary<string, T>();
-        
-        public              string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {ids.Count}";
+
+        internal override   bool                    Synced      => synced;
+        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {ids.Count}";
         public   override   string                  ToString()  => Label;
 
         internal ReadTask(EntitySet<T> set) {
             refsTask    = new RefsTask(this);
             this.set    = set;
         }
-        
-        private Exception AlreadySyncedError() {
-            return new TaskAlreadySyncedException($"Task already synced. {Label}");
-        }
-        
-        internal Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {Label}");
-        }
 
         public ReadId<T> ReadId(string id) {
             if (id == null)
                 throw new InvalidOperationException($"EntitySet.Read() id must not be null. EntitySet: {set.name}");
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             ids.Add(id, null);
             return new ReadId<T>(this, id);
@@ -72,14 +64,14 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TValue>(path);
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             if (refsTask.subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefTask<TValue>)subRefsTask;
@@ -90,19 +82,19 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (synced)
+            if (Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }

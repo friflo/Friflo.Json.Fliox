@@ -7,32 +7,30 @@ using System.Linq.Expressions;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal interface ISetTask
+    public abstract class EntitySetTask
     {
-        string  Label { get; }
+        internal abstract string      Label  { get; }
+        internal abstract bool        Synced { get; }
+        
+        internal Exception AlreadySyncedError() {
+            return new TaskAlreadySyncedException($"Task already synced. {Label}");
+        }
+        
+        internal Exception RequiresSyncError(string message) {
+            return new TaskNotSyncedException($"{message} {Label}");
+        }
     }
     
     internal struct RefsTask
     {
-        private readonly    ISetTask    task;
-        internal            bool        synced;
-        internal            SubRefs     subRefs;
-        
+        private  readonly   EntitySetTask   task;
+        internal            SubRefs         subRefs;
 
-        internal RefsTask(ISetTask task) {
+        internal RefsTask(EntitySetTask task) {
             this.task       = task ?? throw new InvalidOperationException("Expect task not null");
             this.subRefs    = new SubRefs();
-            this.synced     = false;
         }
-        
-        internal Exception AlreadySyncedError() {
-            return new TaskAlreadySyncedException($"Task already synced. {task.Label}");
-        }
-        
-        internal Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {task.Label}");
-        }
-        
+
         internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression) where TValue : Entity {
             string path = MemberSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(path);
@@ -50,7 +48,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     public struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         /// key: <see cref="ReadRefsTask.Selector"/>
-        private     Dictionary<string, ReadRefsTask>    map; // map == null if no tasks added
+        private     Dictionary<string, ReadRefsTask>  map; // map == null if no tasks added
         
         public    int                                 Count => map?.Count ?? 0;
         public    ReadRefsTask                        this[string key] => map[key];

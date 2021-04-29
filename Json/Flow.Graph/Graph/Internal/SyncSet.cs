@@ -271,7 +271,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 entities.Add(id, peer.entity);
             }
             AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
-            query.refsTask.synced = true;
+            query.synced = true;
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {

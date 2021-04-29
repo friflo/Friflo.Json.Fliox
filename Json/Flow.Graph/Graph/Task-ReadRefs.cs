@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
 
     
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
-    public abstract class ReadRefsTask
+    public abstract class ReadRefsTask : EntitySetTask
     {
         internal abstract string        Selector    { get; }
         internal abstract string        Container   { get; }
@@ -29,17 +29,19 @@ namespace Friflo.Json.Flow.Graph
         ReadRefsTask<TValue> ReadRefsByPath <TValue>(string selector)                                        where TValue : Entity;
     }
 
-    public class ReadRefsTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T>  where T : Entity
+    // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
+    public class ReadRefsTask<T> : ReadRefsTask, IReadRefsTask<T>  where T : Entity
     {
         private             RefsTask                refsTask;
         private             Dictionary<string, T>   results;
-        private   readonly  ISetTask                parent;
+        private   readonly  EntitySetTask           parent;
             
-        public              Dictionary<string, T>   Results          => refsTask.synced ? results      : throw refsTask.RequiresSyncError("ReadRefsTask.Results requires Sync().");
-        public              T                       this[string id]  => refsTask.synced ? results[id]  : throw refsTask.RequiresSyncError("ReadRefsTask[] requires Sync().");
+        public              Dictionary<string, T>   Results          => Synced ? results      : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
+        public              T                       this[string id]  => Synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
         
-        public              string                  Label => $"{parent.Label} > {Selector}";
-        public    override  string                  ToString() => Label;
+        internal  override  bool                    Synced      => parent.Synced;
+        internal  override  string                  Label       => $"{parent.Label} > {Selector}";
+        public    override  string                  ToString()  => Label;
             
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
@@ -47,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(ISetTask parent, string selector, string container)
+        internal ReadRefsTask(EntitySetTask parent, string selector, string container)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -57,7 +59,6 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
-            refsTask.synced = true;
             results = new Dictionary<string, T>(ids.Count);
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
@@ -67,44 +68,46 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
     }
     
-    public class ReadRefTask<T> : ReadRefsTask, ISetTask, IReadRefsTask<T> where T : Entity
+    // ----------------------------------------- ReadRefTask<T> -----------------------------------------
+    public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : Entity
     {
-        private             RefsTask    refsTask;
-        private             string      id;
-        private             T           entity;
-        private   readonly  ISetTask    parent;
+        private             RefsTask        refsTask;
+        private             string          id;
+        private             T               entity;
+        private   readonly  EntitySetTask   parent;
 
-        public              string      Id      => refsTask.synced ? id      : throw refsTask.RequiresSyncError("ReadRefTask.Id requires Sync().");
-        public              T           Result  => refsTask.synced ? entity  : throw refsTask.RequiresSyncError("ReadRefTask.Result requires Sync().");
+        public              string          Id      => Synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
+        public              T               Result  => Synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
+                
+        internal override   bool            Synced      => parent.Synced;
+        internal override   string          Label       => $"{parent.Label} > {Selector}";
+        public   override   string          ToString()  => Label;
+                
+        internal override   string          Selector  { get; }
+        internal override   string          Container { get; }
             
-        public              string      Label => $"{parent.Label} > {Selector}";
-        public    override  string      ToString() => Label;
-            
-        internal override   string      Selector  { get; }
-        internal override   string      Container { get; }
-        
-        internal override   SubRefs     SubRefs => refsTask.subRefs;
+        internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(ISetTask parent, string selector, string container)
+        internal ReadRefTask(EntitySetTask parent, string selector, string container)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -114,7 +117,6 @@ namespace Friflo.Json.Flow.Graph
         
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
-            refsTask.synced = true;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
@@ -123,20 +125,20 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (refsTask.synced)
-                throw refsTask.AlreadySyncedError();
+            if (Synced)
+                throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
     }
