@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph
                 }
                 return result;
             }
-            throw RequiresSyncError($"ReadIds.Result requires Sync()."); }
+            throw RequiresSyncError($"ReadIds.Results requires Sync()."); }
         }
 
         internal override   bool        Synced      => task.Synced;
