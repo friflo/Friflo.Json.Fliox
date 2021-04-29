@@ -129,14 +129,14 @@ namespace Friflo.Json.Flow.Graph
 
         private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
             try {
-                var containerResults = response.containerResults;
+                var containerResults = response.results;
                 foreach (var containerResult in containerResults) {
                     var set = _intern.setByName[containerResult.Key];
                     set.SyncEntities(containerResult.Value);
                 }
 
-                var tasks = syncRequest.tasks;
-                var results = response.results;
+                var tasks   = syncRequest.tasks;
+                var results = response.tasks;
                 for (int n = 0; n < tasks.Count; n++) {
                     var task = tasks[n];
                     var result = results[n];

@@ -17,8 +17,8 @@ namespace Friflo.Json.Flow.Database.Models
     
     public partial class SyncResponse
     {
-        public  List<TaskResult>                        results;
-        public  Dictionary<string, ContainerEntities>   containerResults;
+        public  List<TaskResult>                        tasks;
+        public  Dictionary<string, ContainerEntities>   results;
     }
     
     // ------ ContainerEntities

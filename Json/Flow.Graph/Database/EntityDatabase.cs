@@ -37,12 +37,12 @@ namespace Friflo.Json.Flow.Database
         
         public virtual async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
-                results             = new List<TaskResult>(),
-                containerResults    = new Dictionary<string, ContainerEntities>()
+                tasks    = new List<TaskResult>(),
+                results  = new Dictionary<string, ContainerEntities>()
             };
             foreach (var task in syncRequest.tasks) {
                 var result = await task.Execute(this, response);
-                response.results.Add(result);
+                response.tasks.Add(result);
             }
             return response;
         }

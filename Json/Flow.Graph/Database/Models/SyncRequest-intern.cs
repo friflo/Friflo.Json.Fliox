@@ -12,13 +12,13 @@ namespace Friflo.Json.Flow.Database.Models
     public partial class SyncResponse
     {
         internal ContainerEntities GetContainerResult(string container) {
-            if (containerResults.TryGetValue(container, out ContainerEntities result))
+            if (results.TryGetValue(container, out ContainerEntities result))
                 return result;
             result = new ContainerEntities {
                 container = container,
                 entities = new Dictionary<string,EntityValue>()
             };
-            containerResults.Add(container, result);
+            results.Add(container, result);
             return result;
         }
     }
