@@ -61,6 +61,9 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   EntitySet<T>            set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
+        
+        public              Dictionary<string, T>   Results          => Synced ? idMap      : throw RequiresSyncError("ReadTask.Results requires Sync().");
+        public              T                       this[string id]  => Synced ? idMap[id]  : throw RequiresSyncError("ReadTask[] requires Sync().");
 
         internal override   bool                    Synced      => synced;
         internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";
