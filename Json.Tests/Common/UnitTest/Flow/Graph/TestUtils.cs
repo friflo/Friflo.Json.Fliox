@@ -8,6 +8,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestUtils
     {
+#if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
             var store = new PocStore(new MemoryDatabase());
@@ -24,5 +25,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var endBytes = GC.GetAllocatedBytesForCurrentThread();
             AreEqual(startBytes, endBytes);
         }
+#endif
     }
 }

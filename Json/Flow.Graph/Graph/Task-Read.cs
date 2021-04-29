@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Friflo.Json.Burst;  // UnityExtension.TryAdd()
 using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
@@ -96,7 +97,9 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"ReadTask.ReadIds() ids must not be null. EntitySet: {set.name}");
             if (Synced)
                 throw AlreadySyncedError();
+#if !UNITY_5_3_OR_NEWER
             idMap.EnsureCapacity(idMap.Count + ids.Count);
+#endif
             foreach (var id in ids) {
                 if (id == null)
                     throw new NullReferenceException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");

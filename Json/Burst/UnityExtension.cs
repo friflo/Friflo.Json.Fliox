@@ -16,6 +16,14 @@ namespace Friflo.Json.Burst
             dictionary.Add(key, value);
             return true;
         }
+        
+        public static HashSet<T> ToHashSet<T>(this ICollection<T> collection) {
+            var hashSet = new HashSet<T>();
+            foreach (var element in collection) {
+                hashSet.Add(element);
+            }
+            return hashSet;
+        }
     }
 }
 #endif
