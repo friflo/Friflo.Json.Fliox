@@ -191,7 +191,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
-                    entityPatches = patches.Values.ToList()
+                    patches = patches.Values.ToList()
                 };
                 tasks.Add(req);
                 patches.Clear();
@@ -294,7 +294,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, PatchEntitiesResult result) {
-            var entityPatches = task.entityPatches;
+            var entityPatches = task.patches;
             foreach (var entityPatch in entityPatches) {
                 var id = entityPatch.id;
                 var peer = set.GetPeerById(id);

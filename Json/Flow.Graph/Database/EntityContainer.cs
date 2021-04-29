@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
         public virtual async Task<PatchEntitiesResult>      PatchEntities   (PatchEntities patchEntities) {
-            var entityPatches = patchEntities.entityPatches;
+            var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.id).ToList();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};

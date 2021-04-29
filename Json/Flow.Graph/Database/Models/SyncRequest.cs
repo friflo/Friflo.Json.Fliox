@@ -144,7 +144,7 @@ namespace Friflo.Json.Flow.Database.Models
     public partial class PatchEntities : DatabaseTask
     {
         public  string              container;
-        public  List<EntityPatch>   entityPatches;
+        public  List<EntityPatch>   patches;
     }
 
     public class EntityPatch
