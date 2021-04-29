@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
     
     public class ReadIds<T> : EntitySetTask where T : Entity
     {
-        private  readonly   HashSet<string>            ids;
+        private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
         public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadIds[] requires Sync().");
@@ -107,7 +107,7 @@ namespace Friflo.Json.Flow.Graph
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
         
-        // --- Refs
+        // --- Ref
         public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (Synced)
                 throw AlreadySyncedError();
