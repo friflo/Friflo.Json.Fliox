@@ -113,21 +113,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 articles.Create(newArticle);
             }
 
-            var cameraUnknown = articles.Read("article-missing");
-            var camera =        articles.Read("article-1");
+            var readArticles = articles.Read();
+            var cameraUnknown = readArticles.ReadId("article-missing");
+            var camera =        readArticles.ReadId("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
             // StoreInfo is accessible via property an ToString()
-            AreEqual(10, store.StoreInfo.peers);
-            AreEqual(3,  store.StoreInfo.tasks); 
-            AreSimilar("all:      10, tasks: 3",                      store);
-            AreSimilar("Article:  6, tasks: 2 -> create #3, read #2", articles);
-            AreSimilar("Producer: 3, tasks: 1 -> create #1",          producers);
-            AreSimilar("Employee: 1",                                 employees);
+            AreEqual(9, store.StoreInfo.peers);
+            AreEqual(3, store.StoreInfo.tasks); 
+            AreSimilar("all:      9, tasks: 3",                         store);
+            AreSimilar("Article:  5, tasks: 2 -> create #3, reads: 1",  articles);
+            AreSimilar("Producer: 3, tasks: 1 -> create #1",            producers);
+            AreSimilar("Employee: 1",                                   employees);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("all:      9",                                 store); // "article-missing" peer removed, tasks cleared
+            AreSimilar("all:      9",                                   store); // tasks cleared
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));
@@ -141,12 +142,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("all:      8",                           store);       // tasks executed and cleared
 
             AreSimilar("Article:  4",                           articles);
-            var cameraNotSynced = articles.Read("article-1");
+            var cameraNotSynced = articles.Read().ReadId("article-1");
             AreSimilar("all:      8, tasks: 1",                 store);
-            AreSimilar("Article:  4, tasks: 1 -> read #1",      articles);
+            AreSimilar("Article:  4, tasks: 1 -> reads: 1",     articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
-            AreSimilar("ReadTask.Result requires Sync(). ReadTask<Article> id: article-1", e.Message);
+            AreSimilar("ReadId.Result requires Sync(). ReadTask<Article> #ids: 1", e.Message);
             
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);
@@ -170,11 +171,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("all:       9, tasks: 2",                       store);
             AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // created order
             
-            AreSimilar("Article:   4, tasks: 1 -> read #1", articles);
+            AreSimilar("Article:   4, tasks: 1 -> reads: 1", articles);
             AreSimilar("Customer:  0",                                 customers);
             AreEqual(1,  orders.LogSetChanges());
             AreSimilar("all:      11, tasks: 4",                       store);
-            AreSimilar("Article:   5, tasks: 2 -> create #1, read #1", articles);   // created smartphone (implicit)
+            AreSimilar("Article:   5, tasks: 2 -> create #1, reads: 1", articles);   // created smartphone (implicit)
             AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // created customer (implicit)
             
             AreEqual(3,  store.LogChanges());

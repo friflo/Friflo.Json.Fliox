@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.Utils
         }
     }
     
-    public class CommonUtils
+    public static class CommonUtils
     {
         public static string GetBasePath() {
 #if UNITY_5_3_OR_NEWER

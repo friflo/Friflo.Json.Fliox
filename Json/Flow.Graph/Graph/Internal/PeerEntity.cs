@@ -11,7 +11,6 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal readonly   T               entity; // never null
         internal            bool            assigned;
-        internal            ReadTask<T>     read;
         internal            CreateTask<T>   create;
 
         internal            T               PatchSource     { get; private set; }

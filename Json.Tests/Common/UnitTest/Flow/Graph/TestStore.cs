@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var articles    = store.articles;
             var producers   = store.producers;
             
-            var galaxyTask = articles.Read("article-galaxy"); // entity exist in database 
+            var galaxyTask = articles.Read().ReadId("article-galaxy"); // entity exist in database 
             await store.Sync();  // -------- Sync --------
 
             var galaxy = galaxyTask.Result;
@@ -131,12 +131,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Accessed unresolved reference. Ref<Producer> id: producer-samsung", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
-
-            galaxy.producer.ReadFrom(producers); // schedule resolving producer reference now
+            var readProducers = producers.Read();
+            galaxy.producer.ReadFrom(readProducers); // schedule resolving producer reference now
             
             // assign producer field with id "producer-apple"
             var iphone = new Article  { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
-            iphone.producer.ReadFrom(producers);
+            iphone.producer.ReadFrom(readProducers);
             
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
             // assign producer field with entity instance tesla
@@ -158,8 +158,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var orders = store.orders;
             var articles = store.articles;
 
-            ReadTask<Order> order1 = orders.Read("order-1");
-            AreEqual("ReadTask<Order> id: order-1", order1.ToString());
+            var readOrders = orders.Read();
+            var order1 = readOrders.ReadId("order-1");
+            AreEqual("ReadId<Order> id: order-1", order1.ToString());
             var allArticles =  articles.QueryAll();
             var allArticles2 = articles.QueryByFilter(Operation.FilterTrue);
             var producersTask = allArticles.ReadRefs(a => a.producer);
@@ -172,18 +173,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var read6 = orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
 
 
-            ReadRefTask<Customer> customer  = order1.ReadRefByPath<Customer>(".customer");
-            ReadRefTask<Customer> customer2 = order1.ReadRefByPath<Customer>(".customer");
+            ReadRefTask<Customer> customer  = readOrders.ReadRefByPath<Customer>(".customer");
+            ReadRefTask<Customer> customer2 = readOrders.ReadRefByPath<Customer>(".customer");
             AreSame(customer, customer2);
-            ReadRefTask<Customer> customer3 = order1.ReadRef(o => o.customer);
+            ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("ReadTask<Order> id: order-1 > .customer", customer.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 > .customer", customer.ToString());
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> id: order-1 > .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> #ids: 1 > .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> id: order-1 > .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> #ids: 1 > .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
             AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
@@ -195,8 +196,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // lab - test ReadRef expressions
             if (lab) {
-                ReadRefsTask<Article> articles2 = order1.ReadRefsOfType<Article>();
-                ReadRefsTask<Entity> allDeps = order1.ReadAllRefs();
+                ReadRefsTask<Article> articles2 = readOrders.ReadRefsOfType<Article>();
+                ReadRefsTask<Entity>  allDeps   = readOrders.ReadAllRefs();
             }
 
             await store.Sync(); // -------- Sync --------
@@ -222,32 +223,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static async Task AssertReadTask(PocStore store) {
             var orders = store.orders;
-            ReadTask<Order> order1Task = orders.Read("order-1");
+            var readOrders = orders.Read();
+            var order1Task = readOrders.ReadId("order-1");
             await store.Sync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            e = Throws<TaskAlreadySyncedException>(() => { order1Task.ReadRefByPath<Article>("customer"); });
-            AreEqual("Task already synced. ReadTask<Order> id: order-1", e.Message);
-            e = Throws<TaskAlreadySyncedException>(() => { order1Task.ReadRefsByPath<Article>("items[*].article"); });
-            AreEqual("Task already synced. ReadTask<Order> id: order-1", e.Message);
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefByPath<Article>("customer"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsByPath<Article>("items[*].article"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            
+            // todo add Read() without ids 
 
-            order1Task = orders.Read("order-1");
-            ReadRefsTask<Article> articleRefsTask  = order1Task.ReadRefsByPath<Article>(".items[*].article");
-            ReadRefsTask<Article> articleRefsTask2 = order1Task.ReadRefsByPath<Article>(".items[*].article");
+            readOrders = orders.Read();
+            readOrders.ReadId("order-1");
+            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsByPath<Article>(".items[*].article");
             AreSame(articleRefsTask, articleRefsTask2);
             
-            ReadRefsTask<Article> articleRefsTask3 = order1Task.ReadArrayRefs(o => o.items.Select(a => a.article));
+            ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("ReadTask<Order> id: order-1 > .items[*].article", articleRefsTask.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> id: order-1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
 
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
-            AreEqual("ReadTask<Order> id: order-1 > .items[*].article > .producer", articleProducerTask.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
             await store.Sync(); // -------- Sync --------
         
@@ -260,8 +265,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
-            var orderTask = store.orders.Read("order-1");
+            var readOrders = store.orders.Read();
+            var orderTask  = readOrders.ReadId("order-1");
             await store.Sync();
+            Exception e;
+            e = Throws<TaskAlreadySyncedException>(() => { var _ = readOrders.ReadId("order-1"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            
             
             var order = orderTask.Result;
             
@@ -269,15 +279,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers   = store.customers;
             var orders      = store.orders;
             
-            ReadTask<Order> order1Task = orders.Read("order-1");
+            var order1Task = store.orders.Read().ReadId("order-1");
+
+            var readArticles = articles.Read();
+            var article1Task            =  readArticles.ReadId("article-1");
+            // var article1TaskRedundant   =  readArticles.ReadId("article-1");
+            // AreSame(article1Task, article1TaskRedundant);
             
-            var article1Task            =  articles.Read("article-1");
-            var article1TaskRedundant   =  articles.Read("article-1");
-            AreSame(article1Task, article1TaskRedundant);
-            
-            var article2Task =  articles.Read("article-2");
-            var customer1Task = customers.Read("customer-1");
-            var unknownTask   = customers.Read("article-unknown");
+            var readCustomers = customers.Read();
+            var article2Task =  readArticles.ReadId("article-2");
+            var customer1Task = readCustomers.ReadId("customer-1");
+            var unknownTask   = readCustomers.ReadId("customer-missing");
 
             await store.Sync(); // -------- Sync --------
             
@@ -294,7 +306,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static async Task WriteRead(PocStore createStore) {
             // --- cache empty
-            var orderTask = createStore.orders.Read("order-1");
+            var orderTask = createStore.orders.Read().ReadId("order-1");
             await createStore.Sync();
 
             var order = orderTask.Result;

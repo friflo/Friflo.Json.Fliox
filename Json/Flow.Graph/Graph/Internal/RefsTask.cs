@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
 
         internal RefsTask(ISetTask task) {
-            this.task       = task;
+            this.task       = task ?? throw new InvalidOperationException("Expect task not null");
             this.subRefs    = new SubRefs();
             this.synced     = false;
         }

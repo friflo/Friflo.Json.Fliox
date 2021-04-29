@@ -30,18 +30,17 @@ namespace Friflo.Json.Flow.Graph.Internal
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
         // by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<T>                         set;
+        private readonly    EntitySet<T>                        set;
             
-        /// key: <see cref="ReadTask{T}.id"/>
-        private readonly    Dictionary<string, ReadTask<T>>      reads        = new Dictionary<string, ReadTask<T>>();
+        private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<T>>     queries      = new Dictionary<string, QueryTask<T>>();   
+        private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();   
         /// key: <see cref="CreateTask{T}.entity"/>.id
-        private readonly    Dictionary<string, CreateTask<T>>    creates      = new Dictionary<string, CreateTask<T>>();
+        private readonly    Dictionary<string, CreateTask<T>>   creates      = new Dictionary<string, CreateTask<T>>();
         /// key: <see cref="EntityPatch.id"/>
-        private readonly    Dictionary<string, EntityPatch>      patches      = new Dictionary<string, EntityPatch>();
+        private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
         /// key: entity id
-        private readonly    Dictionary<string, DeleteTask>       deletes      = new Dictionary<string, DeleteTask>();
+        private readonly    Dictionary<string, DeleteTask>      deletes      = new Dictionary<string, DeleteTask>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
@@ -57,15 +56,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             return create;
         }
         
-        internal ReadTask<T> Read(string id) {
-            if (reads.TryGetValue(id, out ReadTask<T> read))
-                return read;
-            var peer = set.GetPeerById(id);
-            read = peer.read;
-            if (read == null) {
-                peer.read = read = new ReadTask<T>(peer.entity.id, peer);
-            }
-            reads.Add(id, read);
+        internal ReadTask<T> Read() {
+            var read = new ReadTask<T>(set);
+            reads.Add(read);
             return read;
         }
         
@@ -161,21 +154,19 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             // --- ReadEntities
             if (reads.Count > 0) {
-                var ids = reads.Select(read => read.Key).ToList();
-                List<References> references = null;
-                if (reads.Count > 0) {
-                    references = new List<References>(reads.Count);
-                    foreach (var readPair in reads) {
-                        ReadTask<T> read = readPair.Value;
+                foreach (var read in reads) {
+                    List<References> references = null;
+                    if (read.refsTask.subRefs.Count >= 0) {
+                        references = new List<References>(reads.Count);
                         AddReferences(references, read.refsTask.subRefs);
                     }
+                    var req = new ReadEntities {
+                        container = set.name,
+                        ids = read.ids.Keys.ToList(),
+                        references = references
+                    };
+                    tasks.Add(req);
                 }
-                var req = new ReadEntities {
-                    container = set.name,
-                    ids = ids,
-                    references = references
-                };
-                tasks.Add(req);
             }
             // --- QueryEntities
             if (queries.Count > 0) {
@@ -249,11 +240,24 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var id in task.ids) {
                 var value = entities.entities[id];
                 var json = value.value.json;  // in case of RemoteClient json is "null"
-                if (json == null || json == "null")
+                var isNull = json == null || json == "null";
+                if (isNull)
                     set.DeletePeer(id);
             }
-            foreach (var id in task.ids) {
-                var read = reads[id];
+            // todo check for optimization
+            foreach (var read in reads) {
+                var readIds = read.ids.Keys.ToList();
+                foreach (var id in readIds) {
+                    var value = entities.entities[id];
+                    var json = value.value.json;  // in case of RemoteClient json is "null"
+                    if (json == null || json == "null") {
+                        read.ids[id] = null;
+                    } else {
+                        var peer = set.GetPeerById(id);
+                        read.ids[id] = peer.entity;
+                    }
+                }
+                read.synced = true;
                 AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
             }
         }
@@ -271,7 +275,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {
-            if (references == null)
+            // in case (references != null &&  referencesResult == null) => no reference ids found for references 
+            if (references == null || referencesResult == null)
                 return;
             for (int n = 0; n < references.Count; n++) {
                 References          reference    = references[n];
@@ -308,13 +313,13 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
-                Some(reads.Count)   +
+                reads.Count         +
                 queries.Count       +
                 Some(creates.Count) +
                 Some(patches.Count) +
                 Some(deletes.Count);
             //
-            info.read       = reads.Count;
+            info.reads      = reads.Count;
             info.queries    = queries.Count;
             info.create     = creates.Count;
             info.patch      = patches.Count;

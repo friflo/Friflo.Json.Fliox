@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph
         public  int     tasks;
         //
         public  int     create;
-        public  int     read;
+        public  int     reads;
         public  int     readRefs;
         public  int     queries;
         public  int     patch;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
             tasks   = 0;
             //
             create      = 0;
-            read        = 0;
+            reads        = 0;
             readRefs    = 0;
             queries     = 0;
             patch       = 0;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Graph
                 first = true;
                 sb.Append(" -> ");
                 Append(sb,  "create",       create,     ref first);
-                Append(sb,  "read",         read,       ref first);
+                AppendTasks(sb,  "reads",   reads,      ref first);
                 if (readRefs > 0) {
                     sb.Append("(");
                     Append(sb, "refs",      readRefs,    ref first);

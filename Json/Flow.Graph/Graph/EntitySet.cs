@@ -120,10 +120,8 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        public ReadTask<T> Read(string id) {
-            if (id == null)
-                throw new InvalidOperationException($"EntitySet.Read() id must not be null. EntitySet: {name}");
-            return sync.Read(id);
+        public ReadTask<T> Read() {
+            return sync.Read();
         }
 
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
@@ -182,24 +180,14 @@ namespace Friflo.Json.Flow.Graph
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var peer = GetPeerById(id);
-                var read = peer.read;
                 var json = entity.Value.value.json;
                 if (json != null && "null" != json) {
                     intern.jsonMapper.ReadTo(json, peer.entity);
                     peer.SetPatchSource(intern.jsonMapper.Read<T>(json));
-                    if (read != null) {
-                        read.result = peer.entity;
-                        read.refsTask.synced = true;
-                    }
                 } else {
                     peer.SetPatchSourceNull();
-                    if (read != null) {
-                        read.result = null;
-                        read.refsTask.synced = true;
-                    }
                 }
                 peer.assigned = true;
-                peer.read = null;
             }
         }
 
