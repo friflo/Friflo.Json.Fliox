@@ -9,6 +9,9 @@ using Friflo.Json.Flow.Transform.Query.Ops;
 
 namespace Friflo.Json.Flow.Transform
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class JsonEvaluator : IDisposable
     {
         private readonly ScalarSelector   scalarSelector    = new ScalarSelector();

@@ -30,6 +30,9 @@ namespace Friflo.Json.Flow.Graph
     }
 
     // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ReadRefsTask<T> : ReadRefsTask, IReadRefsTask<T>  where T : Entity
     {
         private             RefsTask                refsTask;
@@ -87,6 +90,9 @@ namespace Friflo.Json.Flow.Graph
     }
     
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : Entity
     {
         private             RefsTask    refsTask;

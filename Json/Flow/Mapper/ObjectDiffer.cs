@@ -6,6 +6,9 @@ using Friflo.Json.Flow.Mapper.Diff;
 
 namespace Friflo.Json.Flow.Mapper
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ObjectDiffer : IDisposable
     {
         private readonly Differ differ;

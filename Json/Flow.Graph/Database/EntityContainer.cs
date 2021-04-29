@@ -11,6 +11,9 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public abstract class EntityContainer : IDisposable
     {
         public  readonly    string          name;

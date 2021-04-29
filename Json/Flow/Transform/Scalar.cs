@@ -17,6 +17,9 @@ namespace Friflo.Json.Flow.Transform
         Object
     }
 
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public readonly struct Scalar
     {
         public      readonly    ScalarType      type;           // 1 byte - underlying type set to byte

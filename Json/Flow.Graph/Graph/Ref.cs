@@ -49,6 +49,9 @@ namespace Friflo.Json.Flow.Graph
     ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.Sync()"/>
     /// </para>
     /// </summary>
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct Ref<T>  where T : Entity
     {
         // invariant of Ref<T> has following cases:

@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Graph
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct SetInfo
     {
         public readonly string name;
@@ -91,6 +94,9 @@ namespace Friflo.Json.Flow.Graph
         }
     }
 
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public struct StoreInfo
     {
         public  int     peers;

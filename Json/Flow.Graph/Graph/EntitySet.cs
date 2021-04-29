@@ -48,6 +48,9 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class EntitySet<T> : EntitySet where T : Entity
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.

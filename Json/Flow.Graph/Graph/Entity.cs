@@ -3,9 +3,16 @@
 using System;
 using System.Diagnostics;
 
+#if !UNITY_5_3_OR_NEWER
+[assembly: CLSCompliant(true)]
+#endif
+
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class Entity
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

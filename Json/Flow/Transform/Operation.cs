@@ -60,6 +60,9 @@ namespace Friflo.Json.Flow.Transform
     [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- Operation --------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public abstract class Operation
     {
         public   abstract   string      Linq { get; }

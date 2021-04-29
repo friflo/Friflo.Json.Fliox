@@ -11,6 +11,9 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper
 {
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ObjectPatcher : IDisposable
     {
         public  readonly    ObjectMapper    mapper;

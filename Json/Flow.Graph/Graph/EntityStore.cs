@@ -45,6 +45,9 @@ namespace Friflo.Json.Flow.Graph
     }
     
     // --------------------------------------- EntityStore ---------------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class EntityStore : ITracerContext, IDisposable
     {
         // Keep all EntityStore fields in StoreIntern to enhance debugging overview.

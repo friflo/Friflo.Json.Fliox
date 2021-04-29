@@ -10,6 +10,9 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Graph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
         internal            bool                    synced;

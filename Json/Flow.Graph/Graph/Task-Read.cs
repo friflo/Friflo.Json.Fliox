@@ -8,7 +8,9 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ReadId<T> : SyncTask where T : Entity
     {
         private  readonly   string      id;
@@ -26,6 +28,9 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ReadIds<T> : SyncTask where T : Entity
     {
         private  readonly   HashSet<string>         ids;
@@ -55,6 +60,9 @@ namespace Friflo.Json.Flow.Graph
     
     
     // ----------------------------------------- ReadTask -----------------------------------------
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
         internal            bool                    synced;

@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Transform
 {
-
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public class JsonSelect
     {
         internal readonly   PathNodeTree<JsonSelectResult>    nodeTree = new PathNodeTree<JsonSelectResult>();
