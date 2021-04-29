@@ -2,34 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using Friflo.Json.Flow.Graph.Internal;
 
-// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph
 {
-    // Change to attribute
-    public class Entity
-    {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _id;
-        
-        public string id {
-            get => _id;
-            set {
-                if (_id == value)
-                    return;
-                if (_id == null) {
-                    _id = value;
-                    return;
-                }
-                throw new InvalidOperationException($"Entity id must not be changed. Type: {GetType()}, id: {_id}, used: {value}");
-            }
-        }
-
-        public override     string  ToString() => id ?? "null";
-    }
-    
     /// <summary>
     /// A <see cref="Ref{T}"/> is used to declare fields being references to other <see cref="Graph.Entity"/> instances in a data modal.
     /// <para>
