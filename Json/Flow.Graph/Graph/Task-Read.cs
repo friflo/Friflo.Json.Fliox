@@ -88,6 +88,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"ReadTask.ReadIds() ids must not be null. EntitySet: {set.name}");
             if (Synced)
                 throw AlreadySyncedError();
+            idMap.EnsureCapacity(idMap.Count + ids.Count);
             foreach (var id in ids) {
                 if (id == null)
                     throw new NullReferenceException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");
