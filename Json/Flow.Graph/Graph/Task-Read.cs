@@ -8,15 +8,16 @@ using Friflo.Json.Flow.Graph.Internal;
 namespace Friflo.Json.Flow.Graph
 {
 
-    public class ReadId<T> where T : Entity
+    public class ReadId<T> : EntitySetTask where T : Entity
     {
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
         public              T           Result      => task.synced ? task.ids[id] : throw task.RequiresSyncError($"ReadId.Result requires Sync() id: {id}.");
 
-        private             string      Label => $"ReadId<{typeof(T).Name}> id: {id}";
-        public   override   string      ToString() => Label;
+        internal override   bool        Synced      => task.Synced;
+        internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
+        public   override   string      ToString()  => Label;
 
         internal ReadId(ReadTask<T> task, string id) {
             this.id     = id;
