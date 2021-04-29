@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => task.synced ? task.ids[id] : throw task.RequiresSyncError($"ReadId.Result requires Sync() id: {id}.");
+        public              T           Result      => Synced ? task.ids[id] : throw RequiresSyncError($"ReadId.Result requires Sync().");
 
         internal override   bool        Synced      => task.Synced;
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
