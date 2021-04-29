@@ -4,7 +4,7 @@ using System;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    public abstract class EntitySetTask
+    public abstract class SyncTask
     {
         internal abstract string      Label  { get; }
         internal abstract bool        Synced { get; }

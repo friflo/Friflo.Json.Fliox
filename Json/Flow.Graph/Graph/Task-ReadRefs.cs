@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
 
     
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
-    public abstract class ReadRefsTask : EntitySetTask
+    public abstract class ReadRefsTask : SyncTask
     {
         internal abstract string        Selector    { get; }
         internal abstract string        Container   { get; }
@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph
     {
         private             RefsTask                refsTask;
         private             Dictionary<string, T>   results;
-        private   readonly  EntitySetTask           parent;
+        private   readonly  SyncTask                parent;
             
         public              Dictionary<string, T>   Results          => Synced ? results      : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
         public              T                       this[string id]  => Synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(EntitySetTask parent, string selector, string container)
+        internal ReadRefsTask(SyncTask parent, string selector, string container)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -89,25 +89,25 @@ namespace Friflo.Json.Flow.Graph
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
     public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : Entity
     {
-        private             RefsTask        refsTask;
-        private             string          id;
-        private             T               entity;
-        private   readonly  EntitySetTask   parent;
+        private             RefsTask    refsTask;
+        private             string      id;
+        private             T           entity;
+        private   readonly  SyncTask    parent;
 
-        public              string          Id      => Synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
-        public              T               Result  => Synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
+        public              string      Id      => Synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
+        public              T           Result  => Synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
                 
-        internal override   bool            Synced      => parent.Synced;
-        internal override   string          Label       => $"{parent.Label} > {Selector}";
-        public   override   string          ToString()  => Label;
+        internal override   bool        Synced      => parent.Synced;
+        internal override   string      Label       => $"{parent.Label} > {Selector}";
+        public   override   string      ToString()  => Label;
                 
-        internal override   string          Selector  { get; }
-        internal override   string          Container { get; }
+        internal override   string      Selector  { get; }
+        internal override   string      Container { get; }
             
-        internal override   SubRefs         SubRefs => refsTask.subRefs;
+        internal override   SubRefs     SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(EntitySetTask parent, string selector, string container)
+        internal ReadRefTask(SyncTask parent, string selector, string container)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;

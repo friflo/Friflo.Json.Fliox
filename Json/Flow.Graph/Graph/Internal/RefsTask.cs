@@ -9,10 +9,10 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct RefsTask
     {
-        private  readonly   EntitySetTask   task;
-        internal            SubRefs         subRefs;
+        private  readonly   SyncTask    task;
+        internal            SubRefs     subRefs;
 
-        internal RefsTask(EntitySetTask task) {
+        internal RefsTask(SyncTask task) {
             this.task       = task ?? throw new InvalidOperationException("Expect task not null");
             this.subRefs    = new SubRefs();
         }

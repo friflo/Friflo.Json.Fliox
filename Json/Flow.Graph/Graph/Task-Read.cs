@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Graph.Internal;
 namespace Friflo.Json.Flow.Graph
 {
 
-    public class ReadId<T> : EntitySetTask where T : Entity
+    public class ReadId<T> : SyncTask where T : Entity
     {
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public class ReadIds<T> : EntitySetTask where T : Entity
+    public class ReadIds<T> : SyncTask where T : Entity
     {
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
@@ -55,7 +55,7 @@ namespace Friflo.Json.Flow.Graph
     
     
     // ----------------------------------------- ReadTask -----------------------------------------
-    public class ReadTask<T> : EntitySetTask, IReadRefsTask<T> where T : Entity
+    public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
         internal            bool                    synced;
         internal readonly   EntitySet<T>            set;

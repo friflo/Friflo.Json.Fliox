@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Graph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
-    public class QueryTask<T> : EntitySetTask, IReadRefsTask<T> where T : Entity
+    public class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
         internal            bool                    synced;
         internal            RefsTask                refsTask;
