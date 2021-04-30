@@ -14,10 +14,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var store        = new PocStore(fileDatabase)) {
                 var orders = store.orders;
-                var customer1 = orders.Query(o => o.customer.id == "customer-1");
-                AreEqual("QueryTask<Order> filter: .customer.id == 'customer-1'", customer1.ToString());
-                // todo expect .customer
-                // AreEqual("QueryTask<Order> filter: .customer == 'customer-1'", customer1.ToString());
+                var customerId = orders.Query(o => o.customer.id == "customer-1");
+                AreEqual("QueryTask<Order> filter: .customer == 'customer-1'", customerId.ToString());
+                
+                var e = Throws<NotSupportedException>(() => { var _ = orders.Query(o => o.customer.Entity == null); });
+                AreEqual("Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: o.customer.Entity, expression: o => (o.customer.Entity == null)", e.Message);
+
                 store.SyncWait();
             }
         }

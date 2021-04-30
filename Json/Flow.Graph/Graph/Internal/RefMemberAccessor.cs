@@ -6,15 +6,22 @@ using Friflo.Json.Flow.Transform.Query;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal class GraphMemberAccessor : MemberAccessor
+    internal class RefMemberAccessor : MemberAccessor
     {
         public override string GetMemberPath(MemberExpression member, QueryCx cx) {
             switch (member.Expression) {
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);
                 case MemberExpression parentMember:
-                    var name        = QueryConverter.GetMemberName(member, cx);
+                    var type = parentMember.Type;
+                    var isRef = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Ref<>);
                     var parentName  = GetMemberPath(parentMember, cx);
+                    var name        = QueryConverter.GetMemberName(member, cx);
+                    if (isRef) {
+                        if (name == "id")
+                            return parentName;
+                        throw QueryConverter.NotSupported($"Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: {member}", cx); 
+                    }
                     return $"{parentName}.{name}";
                 default:
                     throw QueryConverter.NotSupported($"MemberExpression.Expression not supported: {member}", cx); 

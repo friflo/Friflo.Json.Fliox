@@ -166,12 +166,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var producersTask = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var read1 = orders.Query(o => o.customer.id == "customer-1");
-            var read2 = orders.Query(o => o.customer.Entity.name == "Smith  Ltd.");
             var read3 = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
             var read4 = orders.Query(o => o.items.Any(i => i.amount < 1));
             var read5 = orders.Query(o => o.items.All(i => i.amount < 1));
-            var read6 = orders.Query(o => o.items.Any(i => i.article.Entity.name == "Smartphone"));
-
 
             ReadRefTask<Customer> customer  = readOrders.ReadRefByPath<Customer>(".customer");
             ReadRefTask<Customer> customer2 = readOrders.ReadRefByPath<Customer>(".customer");

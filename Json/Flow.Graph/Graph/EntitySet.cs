@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  SyncSet Sync      { get; }
         internal  abstract  SetInfo SetInfo   { get; }
 
-        internal static readonly MemberAccessor MemberAccessor = new GraphMemberAccessor();
+        internal static readonly MemberAccessor MemberAccessor = new RefMemberAccessor();
         
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
