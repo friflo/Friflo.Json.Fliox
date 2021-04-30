@@ -30,10 +30,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
     
     public class Address
     {
-        public          string          street;
+        public          Street          street;
         public          string          city;
-        public          string          country;
     }
+    
+    public class Street
+    {
+        public          string          name;
+        public          string          houseNumber;
+    }
+
     
     
     public static class TestQuery
@@ -49,9 +55,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                         new Hobby{ name= "Travelling"},
                     },
                     address = new Address {
-                        street  = "Lombard St",
-                        city    = "San Francisco",
-                        country = "USA" 
+                        street  = new Street {
+                            name        = "Lombard St",
+                            houseNumber = "11"
+                        },
+                        city = "San Francisco"
                     }
                 },
                 new Person {
@@ -536,11 +544,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
         public static void TestField() {
           using (var mapper = new ObjectMapper()) {
             {
-                var is20 =            (Equal)          FromFilter((Person p) => p.age == 20);
+                var is20 =          (Equal)          FromFilter((Person p) => p.age == 20);
                 AreEqual(".age == 20", is20.Linq);
             } {
-                var isLombardSt =     (Equal)          FromFilter((Person p) => p.address.street == "Lombard St");
-                AreEqual(".address.street == 'Lombard St'", isLombardSt.Linq);
+                var isSf =          (Equal)          FromFilter((Person p) => p.address.city == "San Francisco");
+                AreEqual(".address.city == 'San Francisco'", isSf.Linq);
+            } {
+                var isLombardSt =   (Equal)          FromFilter((Person p) => p.address.street.name == "Lombard St");
+                AreEqual(".address.street.name == 'Lombard St'", isLombardSt.Linq);
             }
           }
         }
