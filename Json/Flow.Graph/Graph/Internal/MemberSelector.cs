@@ -6,6 +6,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
@@ -26,8 +27,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             switch (expression) {
                 case MemberExpression member:
                     MemberInfo memberInfo = member.Member;
+                    var name = memberInfo.Name;
+                    var customName = AttributeUtils.PropertyName(memberInfo.CustomAttributes);
+                    if (customName != null)
+                        name = customName;
+                    
                     sb.Append('.');
-                    sb.Append(memberInfo.Name);
+                    sb.Append(name);
                     if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
                         sb.Append("[*]");
                         isArraySelector = true;

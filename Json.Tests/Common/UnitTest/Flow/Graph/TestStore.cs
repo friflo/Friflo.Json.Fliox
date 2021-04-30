@@ -188,7 +188,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
 
-            var producerEmployees = producersTask.ReadArrayRefs(p => p.employees);
+            var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
             AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions

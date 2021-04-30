@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
@@ -31,7 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class Producer : Entity {
         public string               name;
-        public List<Ref<Employee>>  employees;
+        [Fri.Property(Name = "employees")]
+        public List<Ref<Employee>>  employeeList;
     }
     
     public class Employee : Entity {
@@ -81,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             var appleEmployees  = new List<Ref<Employee>>{ steveJobs };
-            var apple           = new Producer { id = "producer-apple", name = "Apple", employees = appleEmployees};
+            var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             articles.Create(ipad);
             AreSimilar("Article:  2, tasks: 1 -> create #2",            articles);
