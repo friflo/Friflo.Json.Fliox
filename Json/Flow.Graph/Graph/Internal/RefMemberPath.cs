@@ -6,7 +6,7 @@ using Friflo.Json.Flow.Transform.Query;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal class MemberPath : QueryMemberPath
+    internal class RefMemberPath : QueryMemberPath
     {
         public override string GetMemberPath(MemberExpression member, QueryCx cx) {
             switch (member.Expression) {
