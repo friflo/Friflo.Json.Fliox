@@ -11,8 +11,13 @@ namespace Friflo.Json.Flow.Transform.Query
 {
     internal static class QueryConverter
     {
-        public static Operation OperationFromExpression(Expression query) {
-            var cx = new QueryCx ("", "", query);
+        private static readonly DefaultMemberAccessor DefaultMemberAccessor = new DefaultMemberAccessor();
+        
+        public static Operation OperationFromExpression(Expression query, IMemberAccessor accessor) {
+            if (accessor == null)
+                accessor = DefaultMemberAccessor;
+            
+            var cx = new QueryCx ("", "", query, accessor);
             if (query is LambdaExpression lambda) {
                 var body = lambda.Body;
                 return TraceExpression(body, cx);
@@ -123,7 +128,7 @@ namespace Friflo.Json.Flow.Transform.Query
             var predicate   = (LambdaExpression)args[1];
             string sourceField = $"{sourceOp}"; // [=>]
             var lambdaParameter = predicate.Parameters[0].Name;
-            var lambdaCx = new QueryCx(lambdaParameter, cx.path + sourceField, cx.exp);
+            var lambdaCx = new QueryCx(lambdaParameter, cx.path + sourceField, cx.exp, cx.accessor);
             var predicateOp = (FilterOperation)TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
@@ -163,7 +168,7 @@ namespace Friflo.Json.Flow.Transform.Query
                 case "Max":
                 case "Sum":
                 case "Average":
-                    var lambdaCx = new QueryCx(cx.parameter, cx.path + sourceField, cx.exp);
+                    var lambdaCx = new QueryCx(cx.parameter, cx.path + sourceField, cx.exp, cx.accessor);
                     return OperationFromBinaryAggregate(methodCall, lambdaCx);
                 default:
                     throw NotSupported($"MethodCallExpression not supported: {methodCall}", cx);
@@ -188,7 +193,7 @@ namespace Friflo.Json.Flow.Transform.Query
             var predicate   = (LambdaExpression)methodCall.Arguments[1];
             string sourceField = $"{cx.path}";
             var lambdaParameter = predicate.Parameters[0].Name;
-            var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp);
+            var lambdaCx = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.accessor);
             var valueOp = TraceExpression(predicate, lambdaCx);
             
             switch (methodCall.Method.Name) {
@@ -299,14 +304,20 @@ namespace Friflo.Json.Flow.Transform.Query
 
     internal class QueryCx
     {
-        internal readonly string        parameter;
-        internal readonly string        path;
-        internal readonly Expression    exp;
+        internal readonly   string          parameter;
+        internal readonly   string          path;
+        internal readonly   Expression      exp;
+        internal readonly   IMemberAccessor accessor;
 
-        internal QueryCx(string parameter, string path, Expression exp) {
+        internal QueryCx(string parameter, string path, Expression exp, IMemberAccessor accessor) {
             this.path       = path;
             this.exp        = exp;
             this.parameter  = parameter;
+            this.accessor   = accessor;
         }
+    }
+
+    internal class DefaultMemberAccessor : IMemberAccessor {
+        
     }
 }
