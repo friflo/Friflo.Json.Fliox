@@ -3,17 +3,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Flow.Transform.Query.Ops;
 
 namespace Friflo.Json.Flow.Transform.Query
 {
-    internal static class QueryConverter
+    public static class QueryConverter
     {
-        private static readonly DefaultMemberAccessor DefaultMemberAccessor = new DefaultMemberAccessor();
+        private static readonly MemberAccessor DefaultMemberAccessor = new MemberAccessor();
         
-        public static Operation OperationFromExpression(Expression query, IMemberAccessor accessor) {
+        public static Operation OperationFromExpression(Expression query, MemberAccessor accessor) {
             if (accessor == null)
                 accessor = DefaultMemberAccessor;
             
@@ -44,41 +45,30 @@ namespace Friflo.Json.Flow.Transform.Query
                     throw NotSupported($"Body not supported: {expression}", cx);
             }
         }
+
+        private static bool IsEnumerable(Type type) {
+            return type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
+        
         private static Operation GetMember(MemberExpression member, QueryCx cx) {
-            string memberName; 
             switch (member.Expression) {
+                case ParameterExpression _:
+                    break;
                 case MemberExpression parentMember:
                     var name = GetMemberName(member, cx);
-                    if (name == "Count") {
-                        var field = (Field)GetMember(parentMember, cx);
+                    if (name == "Count" && IsEnumerable(parentMember.Type)) {
+                        var field = (Field) GetMember(parentMember, cx);
                         return new Count(field);
                     }
-                    var parentName  = GetParentMemberName(parentMember, cx);
-                    memberName = $"{parentName}.{name}";
-                    break;
-                case ParameterExpression _:
-                    memberName = GetMemberName(member, cx);
                     break;
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
+            var memberName = cx.accessor.GetMemberPath(member, cx);
             return new Field(cx.parameter + "." + memberName); // field refers to object root (.) or a lambda parameter
         }
         
-        private static string GetParentMemberName(MemberExpression member, QueryCx cx) {
-            switch (member.Expression) {
-                case MemberExpression parentMember:
-                    var name        = GetMemberName(member, cx);
-                    var parentName  = GetParentMemberName(parentMember, cx);
-                    return $"{parentName}.{name}";
-                case ParameterExpression _:
-                    return GetMemberName(member, cx);
-                default:
-                    throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
-            }
-        }
-
-        private static string GetMemberName(MemberExpression member, QueryCx cx) {
+        public static string GetMemberName(MemberExpression member, QueryCx cx) {
             MemberInfo memberInfo = member.Member;
             switch (memberInfo) {
                 case FieldInfo fieldInfo:           return fieldInfo.Name;
@@ -297,19 +287,19 @@ namespace Friflo.Json.Flow.Transform.Query
             throw NotSupported($"Constant not supported: {constant}", cx);
         }
 
-        static Exception NotSupported(string message, QueryCx cx) {
+        public static Exception NotSupported(string message, QueryCx cx) {
             return new NotSupportedException($"{message}, expression: {cx.exp}");
         }
     }
 
-    internal class QueryCx
+    public class QueryCx
     {
         internal readonly   string          parameter;
         internal readonly   string          path;
         internal readonly   Expression      exp;
-        internal readonly   IMemberAccessor accessor;
+        internal readonly   MemberAccessor  accessor;
 
-        internal QueryCx(string parameter, string path, Expression exp, IMemberAccessor accessor) {
+        internal QueryCx(string parameter, string path, Expression exp, MemberAccessor accessor) {
             this.path       = path;
             this.exp        = exp;
             this.parameter  = parameter;
@@ -317,7 +307,18 @@ namespace Friflo.Json.Flow.Transform.Query
         }
     }
 
-    internal class DefaultMemberAccessor : IMemberAccessor {
-        
+    public class MemberAccessor {
+        public virtual string GetMemberPath(MemberExpression member, QueryCx cx) {
+            switch (member.Expression) {
+                case ParameterExpression _:
+                    return QueryConverter.GetMemberName(member, cx);
+                case MemberExpression parentMember:
+                    var name        = QueryConverter.GetMemberName(member, cx);
+                    var parentName  = GetMemberPath(parentMember, cx);
+                    return $"{parentName}.{name}";
+                default:
+                    throw QueryConverter.NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
+            }
+        }       
     }
 }

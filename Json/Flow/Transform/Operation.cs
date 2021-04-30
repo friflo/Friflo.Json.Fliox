@@ -86,11 +86,11 @@ namespace Friflo.Json.Flow.Transform
             return new JsonLambda(this);
         }
         
-        public static Operation FromLambda<T>(Expression<Func<T, object>> lambda, IMemberAccessor accessor = null) {
+        public static Operation FromLambda<T>(Expression<Func<T, object>> lambda, MemberAccessor accessor = null) {
             return QueryConverter.OperationFromExpression(lambda, accessor);
         }
         
-        public static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter, IMemberAccessor accessor = null) {
+        public static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter, MemberAccessor accessor = null) {
             return (FilterOperation)QueryConverter.OperationFromExpression(filter, accessor);
         }
     }
@@ -127,6 +127,4 @@ namespace Friflo.Json.Flow.Transform
             return new JsonFilter(this);
         }
     }
-    
-    public interface IMemberAccessor { }
 }

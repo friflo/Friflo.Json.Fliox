@@ -10,6 +10,7 @@ using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Transform.Query;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -21,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  SyncSet Sync      { get; }
         internal  abstract  SetInfo SetInfo   { get; }
 
-        internal static readonly MemberAccessor MemberAccessor = new MemberAccessor();
+        internal static readonly MemberAccessor MemberAccessor = new GraphMemberAccessor();
         
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
