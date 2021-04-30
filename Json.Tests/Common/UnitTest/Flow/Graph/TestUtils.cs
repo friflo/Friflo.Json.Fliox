@@ -1,7 +1,6 @@
 ﻿using System;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
-using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -11,8 +10,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         [Test]
         public void TestQueryRef() {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var store        = new PocStore(fileDatabase)) {
+            using (var database = new MemoryDatabase())
+            using (var store    = new PocStore(database)) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.id == "customer-1");
                 AreEqual("QueryTask<Order> filter: .customer == 'customer-1'", customerId.ToString());
