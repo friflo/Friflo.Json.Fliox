@@ -6,16 +6,16 @@ using Friflo.Json.Flow.Transform.Query;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal class RefMemberPath : QueryMemberPath
+    internal class RefQueryPath : QueryPath
     {
-        public override string GetMemberPath(MemberExpression member, QueryCx cx) {
+        public override string GetQueryPath(MemberExpression member, QueryCx cx) {
             switch (member.Expression) {
                 case ParameterExpression _:
                     return QueryConverter.GetMemberName(member, cx);
                 case MemberExpression parentMember:
                     var type = parentMember.Type;
                     var isRef = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Ref<>);
-                    var parentName  = GetMemberPath(parentMember, cx);
+                    var parentName  = GetQueryPath(parentMember, cx);
                     var name        = QueryConverter.GetMemberName(member, cx);
                     if (isRef) {
                         if (name == "id")

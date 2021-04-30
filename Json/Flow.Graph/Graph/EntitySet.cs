@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  SyncSet Sync      { get; }
         internal  abstract  SetInfo SetInfo   { get; }
 
-        internal static readonly QueryMemberPath RefMemberPath = new RefMemberPath();
+        internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         public    abstract  int     LogSetChanges();
         internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
@@ -133,7 +133,7 @@ namespace Friflo.Json.Flow.Graph
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new InvalidOperationException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
-            var op = Operation.FromFilter(filter, RefMemberPath);
+            var op = Operation.FromFilter(filter, RefQueryPath);
             return sync.QueryFilter(op);
         }
         
