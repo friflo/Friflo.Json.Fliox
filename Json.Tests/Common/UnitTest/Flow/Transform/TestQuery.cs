@@ -18,6 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
     {
         public          string          name;
         public          int             age;
+        public          Address         address;
         public readonly List<Person>    children = new List<Person>();
         public readonly List<Hobby>     hobbies = new List<Hobby>();
     }
@@ -25,6 +26,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
     public class Hobby
     {
         public          string          name;
+    }
+    
+    public class Address
+    {
+        public          string          street;
+        public          string          city;
+        public          string          country;
     }
     
     
@@ -39,6 +47,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                         new Hobby{ name= "Gaming"},
                         new Hobby{ name= "Biking"},
                         new Hobby{ name= "Travelling"},
+                    },
+                    address = new Address {
+                        street  = "Lombard St",
+                        city    = "San Francisco",
+                        country = "USA" 
                     }
                 },
                 new Person {
@@ -518,5 +531,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
             }
           } 
         }
+        
+        [Test]
+        public static void TestField() {
+          using (var mapper = new ObjectMapper()) {
+            {
+                var is20 =            (Equal)          FromFilter((Person p) => p.age == 20);
+                AreEqual(".age == 20", is20.Linq);
+            } {
+                var isLombardSt =     (Equal)          FromFilter((Person p) => p.address.street == "Lombard St");
+                AreEqual(".address.street == 'Lombard St'", isLombardSt.Linq);
+            }
+          }
+        }
     }
+        
 }

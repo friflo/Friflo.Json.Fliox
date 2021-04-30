@@ -23,8 +23,7 @@ namespace Friflo.Json.Flow.Transform.Query
         private static Operation TraceExpression(Expression expression, QueryCx cx) {
             switch (expression) {
                 case MemberExpression member:
-                    string name = GetMemberName(member, cx);
-                    return new Field(cx.parameter + "." + name); // field refers to object root (.) or a lambda parameter
+                    return GetMember(member, cx);
                 case MethodCallExpression methodCall:
                     return OperationFromMethodCallExpression(methodCall, cx);
                 case LambdaExpression lambda: 
@@ -38,6 +37,39 @@ namespace Friflo.Json.Flow.Transform.Query
                     return OperationFromConstant(constant, cx);
                 default:
                     throw NotSupported($"Body not supported: {expression}", cx);
+            }
+        }
+        private static Operation GetMember(MemberExpression member, QueryCx cx) {
+            string memberName; 
+            switch (member.Expression) {
+                case MemberExpression parentMember:
+                    var name = GetMemberName(member, cx);
+                    if (name == "Count") {
+                        var field = (Field)GetMember(parentMember, cx);
+                        return new Count(field);
+                    }
+                    var parentName  = GetParentMemberName(parentMember, cx);
+                    memberName = $"{parentName}.{name}";
+                    break;
+                case ParameterExpression _:
+                    memberName = GetMemberName(member, cx);
+                    break;
+                default:
+                    throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
+            }
+            return new Field(cx.parameter + "." + memberName); // field refers to object root (.) or a lambda parameter
+        }
+        
+        private static string GetParentMemberName(MemberExpression member, QueryCx cx) {
+            switch (member.Expression) {
+                case MemberExpression parentMember:
+                    var name        = GetMemberName(member, cx);
+                    var parentName  = GetParentMemberName(parentMember, cx);
+                    return $"{parentName}.{name}";
+                case ParameterExpression _:
+                    return GetMemberName(member, cx);
+                default:
+                    throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
         }
 
@@ -197,22 +229,11 @@ namespace Friflo.Json.Flow.Transform.Query
                     return TraceExpression(unary.Operand, cx); */
                 case ExpressionType.MemberAccess:
                     var member = (MemberExpression)unary.Operand;
-                    return OperationFromMember(member, cx);
+                    return GetMember(member, cx);
                 default:
                     return TraceExpression(unary.Operand, cx);
                     // throw NotSupported($"Convert Operand not supported. operand: {type}", cx);
             }
-        }
-
-        private static Operation OperationFromMember(MemberExpression member, QueryCx cx) {
-            var name = GetMemberName(member, cx);
-            var field = (Field)TraceExpression(member.Expression, cx);
-            switch (name) {
-                case "Count":
-                    // field.name = field.name; // + "[=>]";
-                    return new Count(field);
-            }
-            throw NotSupported($"Convert MemberAccess not supported. member: {member}", cx);
         }
 
         private static Operation OperationFromBinaryExpression(BinaryExpression binary, QueryCx cx) {
