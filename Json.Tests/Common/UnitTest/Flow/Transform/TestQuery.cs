@@ -31,7 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
     public class Address
     {
         public          Street          street;
-        public          string          city;
+        [Fri.Property(Name = "city")]
+        public          string          cityName;
     }
     
     public class Street
@@ -59,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                             name        = "Lombard St",
                             houseNumber = "11"
                         },
-                        city = "San Francisco"
+                        cityName = "San Francisco"
                     }
                 },
                 new Person {
@@ -547,7 +548,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                 var is20 =          (Equal)          FromFilter((Person p) => p.age == 20);
                 AreEqual(".age == 20", is20.Linq);
             } {
-                var isSf =          (Equal)          FromFilter((Person p) => p.address.city == "San Francisco");
+                var isSf =          (Equal)          FromFilter((Person p) => p.address.cityName == "San Francisco");
                 AreEqual(".address.city == 'San Francisco'", isSf.Linq);
             } {
                 var isLombardSt =   (Equal)          FromFilter((Person p) => p.address.street.name == "Lombard St");

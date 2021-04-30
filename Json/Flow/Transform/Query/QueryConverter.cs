@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Flow.Transform.Query.Ops;
 
 namespace Friflo.Json.Flow.Transform.Query
@@ -70,12 +72,35 @@ namespace Friflo.Json.Flow.Transform.Query
         
         public static string GetMemberName(MemberExpression member, QueryCx cx) {
             MemberInfo memberInfo = member.Member;
+            var customName = CustomMemberName(memberInfo.CustomAttributes);
+            if (customName != null)
+                return customName;
+            
             switch (memberInfo) {
-                case FieldInfo fieldInfo:           return fieldInfo.Name;
-                case PropertyInfo propertyInfo:     return propertyInfo.Name;
+                case FieldInfo fieldInfo:
+                    return fieldInfo.Name;
+                case PropertyInfo propertyInfo:
+                    return propertyInfo.Name;
                 default:
                     throw NotSupported($"Member not supported: {member}", cx);
             }
+        }
+        
+        /// same implementation as <see cref="FieldQuery.PropertyName"/>
+        private static string CustomMemberName(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.PropertyAttribute)) {
+                    if (attr.NamedArguments != null) {
+                        foreach (var args in attr.NamedArguments) {
+                            if (args.MemberName == nameof(Fri.PropertyAttribute.Name)) {
+                                if (args.TypedValue.Value != null)
+                                    return args.TypedValue.Value as string;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
