@@ -26,11 +26,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             string          jsonName;
             if (property != null) {
                 memberType   = property.PropertyType;
-                jsonName = PropertyName(property.CustomAttributes);
+                jsonName = AttributeUtils.PropertyName(property.CustomAttributes);
 
             } else {
                 memberType   = field.FieldType;
-                jsonName = PropertyName(field.CustomAttributes);
+                jsonName = AttributeUtils.PropertyName(field.CustomAttributes);
             }
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
@@ -131,8 +131,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             }
             return false;
         }
+    }
+    
+    public static class AttributeUtils {
                 
-        private static string PropertyName(IEnumerable<CustomAttributeData> attributes) {
+        public static string PropertyName(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.PropertyAttribute)) {
                     if (attr.NamedArguments != null) {

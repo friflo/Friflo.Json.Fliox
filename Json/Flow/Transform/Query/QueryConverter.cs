@@ -72,7 +72,7 @@ namespace Friflo.Json.Flow.Transform.Query
         
         public static string GetMemberName(MemberExpression member, QueryCx cx) {
             MemberInfo memberInfo = member.Member;
-            var customName = CustomMemberName(memberInfo.CustomAttributes);
+            var customName = AttributeUtils.PropertyName(memberInfo.CustomAttributes);
             if (customName != null)
                 return customName;
             
@@ -84,23 +84,6 @@ namespace Friflo.Json.Flow.Transform.Query
                 default:
                     throw NotSupported($"Member not supported: {member}", cx);
             }
-        }
-        
-        /// same implementation as <see cref="FieldQuery.PropertyName"/>
-        private static string CustomMemberName(IEnumerable<CustomAttributeData> attributes) {
-            foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.PropertyAttribute)) {
-                    if (attr.NamedArguments != null) {
-                        foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(Fri.PropertyAttribute.Name)) {
-                                if (args.TypedValue.Value != null)
-                                    return args.TypedValue.Value as string;
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
         }
 
         private static Operation OperationFromMethodCallExpression(MethodCallExpression methodCall, QueryCx cx) {
