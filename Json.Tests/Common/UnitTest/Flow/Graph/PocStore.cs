@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createCam1 = articles.Create(cameraCreate);
             var createCam2 = articles.Create(cameraCreate);   // Create new CreatTask for same entity
             AreNotSame(createCam1, createCam2);               
-            AreEqual("article-1", createCam1.ToString());
+            AreEqual("CreateTask<Article> id: article-1", createCam1.ToString());
             
             for (int n = 0; n < 1; n++) {
                 var id = $"bulk-article-{n:D4}";

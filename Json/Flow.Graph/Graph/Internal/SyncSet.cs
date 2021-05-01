@@ -46,13 +46,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.set = set;
         }
         
-        internal CreateTask<T> AddCreate (PeerEntity<T> peer) {
+        internal void AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
             if (!peer.created) {
                 peer.created = true;                // sole place created set to true
                 creates.Add(peer.entity.id, peer);  // sole place a peer (entity) is added
             }
-            return new CreateTask<T>(peer.entity);
         }
         
         internal ReadTask<T> Read() {
@@ -72,7 +71,16 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
-            return AddCreate(peer);
+            AddCreate(peer);
+            return new CreateTask<T>(peer.entity);
+        }
+        
+        internal CreateRangeTask<T> CreateRange(ICollection<T> entities) {
+            foreach (var entity in entities) {
+                var peer = set.CreatePeer(entity);
+                AddCreate(peer);
+            }
+            return new CreateRangeTask<T>(entities);
         }
         
         internal DeleteTask Delete(string id) {

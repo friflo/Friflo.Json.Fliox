@@ -156,6 +156,16 @@ namespace Friflo.Json.Flow.Graph
             return sync.Create(entity);
         }
         
+        public CreateRangeTask<T> CreateRange(ICollection<T> entities) {
+            if (entities == null)
+                throw new InvalidOperationException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
+            foreach (var entity in entities) {
+                if (entity.id == null)
+                    throw new InvalidOperationException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
+            }
+            return sync.CreateRange(entities);
+        }
+
         public DeleteTask Delete(string id) {
             if (id == null)
                 throw new InvalidOperationException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
