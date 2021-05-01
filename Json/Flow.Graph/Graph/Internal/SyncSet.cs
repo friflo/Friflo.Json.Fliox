@@ -34,13 +34,17 @@ namespace Friflo.Json.Flow.Graph.Internal
             
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();   
+        private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();
+        
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<CreateTask>                    createTasks  = new List<CreateTask>();
+
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
+        private readonly    List<DeleteTask>                    deleteTasks  = new List<DeleteTask>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
@@ -72,7 +76,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
-            return new CreateTask<T>(peer.entity);
+            var create = new CreateTask<T>(peer.entity);
+            createTasks.Add(create);
+            return create;
         }
         
         internal CreateRangeTask<T> CreateRange(ICollection<T> entities) {
@@ -80,19 +86,25 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var peer = set.CreatePeer(entity);
                 AddCreate(peer);
             }
-            return new CreateRangeTask<T>(entities);
+            var create = new CreateRangeTask<T>(entities);
+            createTasks.Add(create);
+            return create;
         }
         
         internal DeleteTask<T> Delete(string id) {
             deletes.Add(id);
-            return new DeleteTask<T>(id);
+            var delete = new DeleteTask<T>(id);
+            deleteTasks.Add(delete);
+            return delete;
         }
         
         internal DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
             foreach (var id in ids) {
                 deletes.Add(id);
             }
-            return new DeleteRangeTask<T>(ids);
+            var delete = new DeleteRangeTask<T>(ids);
+            deleteTasks.Add(delete);
+            return delete;
         }
         
         internal int LogSetChanges(Dictionary<string, PeerEntity<T>> peers) {
@@ -236,6 +248,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                 peer.created = false;
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
             }
+            foreach (var createTask in createTasks) {
+                createTask.synced = true;
+            }
         }
         
         internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities entities) {
@@ -309,6 +324,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void DeleteEntitiesResult(DeleteEntities task, DeleteEntitiesResult result) {
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
+            }
+            foreach (var deleteTask in deleteTasks) {
+                deleteTask.synced = true;
             }
         }
 

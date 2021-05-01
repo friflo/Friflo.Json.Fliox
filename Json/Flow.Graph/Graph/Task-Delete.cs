@@ -3,18 +3,23 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    // ----------------------------------------- DeleteTask -----------------------------------------
+    public abstract class DeleteTask : SyncTask {
+        internal            bool        synced;
+        internal override   bool        Synced      => synced;
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DeleteTask<T> where T : Entity
+    public class DeleteTask<T> : DeleteTask where T : Entity
     {
-        private readonly    string      id;
+        private  readonly   string      id;
 
-        private             string      Label       => $"DeleteTask<{typeof(T).Name}> id: {id}";
+        internal override   string      Label       => $"DeleteTask<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
         
         internal DeleteTask(string id) {
@@ -25,12 +30,12 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DeleteRangeTask<T> where T : Entity
+    public class DeleteRangeTask<T> : DeleteTask where T : Entity
     {
-        private readonly    ICollection<string> ids;
+        private  readonly   ICollection<string> ids;
 
-        private             string      Label       => $"DeleteRangeTask<{typeof(T).Name}> #ids: {ids.Count}";
-        public   override   string      ToString()  => Label;
+        internal override   string              Label       => $"DeleteRangeTask<{typeof(T).Name}> #ids: {ids.Count}";
+        public   override   string              ToString()  => Label;
         
         internal DeleteRangeTask(ICollection<string> ids) {
             this.ids = ids;

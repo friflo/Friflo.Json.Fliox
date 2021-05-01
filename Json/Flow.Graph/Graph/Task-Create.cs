@@ -3,18 +3,23 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    // ----------------------------------------- CreateTask -----------------------------------------
+    public abstract class CreateTask : SyncTask {
+        internal            bool        synced;
+        internal override   bool        Synced      => synced;
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class CreateTask<T> where T : Entity
+    public class CreateTask<T> : CreateTask where T : Entity
     {
         private readonly    T           entity;
 
-        private             string      Label       => $"CreateTask<{typeof(T).Name}> id: {entity.id}";
+        internal override   string      Label       => $"CreateTask<{typeof(T).Name}> id: {entity.id}";
         public   override   string      ToString()  => Label;
         
         internal CreateTask(T entity) {
@@ -25,11 +30,11 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class CreateRangeTask<T> where T : Entity
+    public class CreateRangeTask<T> : CreateTask where T : Entity
     {
         private  readonly   ICollection<T>  entities;
 
-        private             string          Label       => $"CreateRangeTask<{typeof(T).Name}> #ids: {entities.Count}";
+        internal override   string          Label       => $"CreateRangeTask<{typeof(T).Name}> #ids: {entities.Count}";
         public   override   string          ToString()  => Label;
         
         internal CreateRangeTask(ICollection<T> entities) {
