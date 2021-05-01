@@ -35,8 +35,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
         private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();   
-        /// key: <see cref="CreateTask{T}.entity"/>.id
-        private readonly    Dictionary<string, CreateTask<T>>   creates      = new Dictionary<string, CreateTask<T>>();
+        /// key: <see cref="PeerEntity{T}.entity"/>.id
+        private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
         /// key: entity id
@@ -48,12 +48,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal CreateTask<T> AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
-            var create = peer.create;
-            if (create == null) {
-                peer.create = create = new CreateTask<T>(peer.entity);
+            if (!peer.created) {
+                peer.created = true;                // sole place created set to true
+                creates.Add(peer.entity.id, peer);  // sole place a peer (entity) is added
             }
-            creates.Add(peer.entity.id, create);
-            return create;
+            return new CreateTask<T>(peer.entity);
         }
         
         internal ReadTask<T> Read() {
@@ -72,11 +71,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal CreateTask<T> Create(T entity) {
-            if (creates.TryGetValue(entity.id, out CreateTask<T> create))
-                return create;
             var peer = set.CreatePeer(entity);
-            create = AddCreate(peer);
-            return create;
+            return AddCreate(peer);
         }
         
         internal DeleteTask Delete(string id) {
@@ -111,7 +107,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// In these cases <see cref="RefMapper{T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
         /// which is not already assigned) 
         private EntityPatch GetEntityChanges(PeerEntity<T> peer) {
-            if (peer.create != null) {
+            if (peer.created) {
                 set.intern.tracer.Trace(peer.entity);
                 return null;
             }
@@ -139,8 +135,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (creates.Count > 0) {
                 var entries = new Dictionary<string, EntityValue>();
                 foreach (var createPair in creates) {
-                    CreateTask<T> create = createPair.Value;
-                    var entity = create.Entity;
+                    T entity = createPair.Value.entity;
                     var json = set.intern.jsonMapper.Write(entity);
                     var entry = new EntityValue(json);
                     entries.Add(entity.id, entry);
@@ -230,7 +225,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var entities = task.entities;
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
-                peer.create = null;
+                peer.created = false;
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
             }
         }
