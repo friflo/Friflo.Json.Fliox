@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Models;
@@ -166,18 +167,31 @@ namespace Friflo.Json.Flow.Graph
             return sync.CreateRange(entities);
         }
 
+        public DeleteTask<T> Delete(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
+            return Delete(entity.id);
+        }
+
         public DeleteTask<T> Delete(string id) {
             if (id == null)
                 throw new InvalidOperationException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
             return sync.Delete(id);
         }
         
+        public DeleteRangeTask<T> DeleteRange(ICollection<T> entities) {
+            if (entities == null)
+                throw new InvalidOperationException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
+            var ids = entities.Select(e => e.id).ToList();
+            return DeleteRange(ids);
+        }
+        
         public DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
             if (ids == null)
-                throw new InvalidOperationException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
+                throw new InvalidOperationException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
             foreach (var id in ids) {
                 if (id == null)
-                    throw new InvalidOperationException($"EntitySet.DeleteRange() entity.id must not be null. EntitySet: {name}");
+                    throw new InvalidOperationException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
             return sync.DeleteRange(ids);
         }

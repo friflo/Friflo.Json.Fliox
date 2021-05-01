@@ -133,6 +133,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             await store.Sync(); // -------- Sync --------
             AreSimilar("all:      10",                                   store); // tasks cleared
+
+            articles.DeleteRange(newBulkArticles);
+            AreSimilar("all:      10, tasks: 1",                         store);
+            AreSimilar("Article:   6, tasks: 1 -> delete #2",            articles);
+            
+            await store.Sync(); // -------- Sync --------
+            AreSimilar("all:       8",                                   store); // tasks cleared
+            AreSimilar("Article:   4",                                   articles);
             
             cameraCreate.name = "Changed name";
             AreEqual(1, articles.LogEntityChanges(cameraCreate));
@@ -143,13 +151,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("all:      9",                           store);       // tasks executed and cleared
+            AreSimilar("all:      7",                           store);       // tasks executed and cleared
 
-            AreSimilar("Article:  5",                           articles);
+            AreSimilar("Article:  3",                           articles);
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
-            AreSimilar("all:      9, tasks: 1",                 store);
-            AreSimilar("Article:  5, tasks: 1 -> reads: 1",     articles);
+            AreSimilar("all:      7, tasks: 1",                 store);
+            AreSimilar("Article:  3, tasks: 1 -> reads: 1",     articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires Sync(). ReadId<Article> id: article-1", e.Message);
@@ -169,27 +177,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;
             
-            AreSimilar("all:       9, tasks: 1",                       store);
+            AreSimilar("all:       7, tasks: 1",                       store);
             
             AreSimilar("Order:     0",                                 orders);
             orders.Create(order);
-            AreSimilar("all:      10, tasks: 2",                       store);
+            AreSimilar("all:       8, tasks: 2",                       store);
             AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // created order
             
-            AreSimilar("Article:   5, tasks: 1 -> reads: 1", articles);
+            AreSimilar("Article:   3, tasks: 1 -> reads: 1", articles);
             AreSimilar("Customer:  0",                                 customers);
             AreEqual(1,  orders.LogSetChanges());
-            AreSimilar("all:      12, tasks: 4",                       store);
-            AreSimilar("Article:   6, tasks: 2 -> create #1, reads: 1", articles);   // created smartphone (implicit)
+            AreSimilar("all:      10, tasks: 4",                       store);
+            AreSimilar("Article:   4, tasks: 2 -> create #1, reads: 1", articles);   // created smartphone (implicit)
             AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // created customer (implicit)
             
             AreEqual(3,  store.LogChanges());
             AreEqual(3,  store.LogChanges());       // LogChanges() is idempotent => state did not change
-            AreSimilar("all:      12, tasks: 4",                       store);      // no new changes
+            AreSimilar("all:      10, tasks: 4",                       store);      // no new changes
 
             await store.Sync(); // -------- Sync --------
             
-            AreSimilar("all:      12",                                 store);      // tasks executed and cleared
+            AreSimilar("all:      10",                                 store);      // tasks executed and cleared
             
             return store;
         }
