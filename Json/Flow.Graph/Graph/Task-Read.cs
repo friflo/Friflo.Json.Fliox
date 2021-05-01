@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadId.Result requires Sync().");
+        public              T           Result      => Synced ? task.idMap[id] : throw RequiresSyncError($"Find.Result requires Sync().");
 
         internal override   bool        Synced      => task.Synced;
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
-        public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"ReadIds[] requires Sync().");
+        public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"FindRange[] requires Sync().");
         public              Dictionary<string, T>   Results { get {
             if (Synced) {
                 var result = new Dictionary<string, T>(ids.Count);

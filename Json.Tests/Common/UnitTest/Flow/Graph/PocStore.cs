@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("Article:  4, tasks: 1 -> reads: 1",     articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var res = cameraNotSynced.Result; });
-            AreSimilar("ReadId.Result requires Sync(). ReadId<Article> id: article-1", e.Message);
+            AreSimilar("Find.Result requires Sync(). ReadId<Article> id: article-1", e.Message);
             
             IsNull(cameraUnknown.Result);
             AreSame(camera.Result, cameraCreate);
