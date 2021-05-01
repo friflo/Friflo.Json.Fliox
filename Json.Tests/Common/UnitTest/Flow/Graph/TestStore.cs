@@ -120,8 +120,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertRefAssignment(PocStore store) {
             var articles    = store.articles;
             var producers   = store.producers;
-            
-            var galaxyTask = articles.Read().ReadId("article-galaxy"); // entity exist in database 
+
+            var readArticles    = articles.Read();
+            var galaxyTask      = readArticles.ReadId("article-galaxy"); // entity exist in database 
             await store.Sync();  // -------- Sync --------
 
             var galaxy = galaxyTask.Result;
@@ -158,8 +159,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var orders = store.orders;
             var articles = store.articles;
 
-            var readOrders = orders.Read();
-            var order1 = readOrders.ReadId("order-1");
+            var readOrders  = orders.Read();
+            var order1      = readOrders.ReadId("order-1");
             AreEqual("ReadId<Order> id: order-1", order1.ToString());
             var allArticles             =  articles.QueryAll();
             var allArticles2            = articles.QueryByFilter(Operation.FilterTrue);
@@ -286,21 +287,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
-            var readOrders = store.orders.Read();
-            var orderTask  = readOrders.ReadId("order-1");
-            await store.Sync();
-            Exception e;
-            e = Throws<TaskAlreadySyncedException>(() => { var _ = readOrders.ReadId("order-1"); });
-            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
-            
-            
-            var order = orderTask.Result;
-            
             var articles    = store.articles;
             var customers   = store.customers;
             var orders      = store.orders;
             
-            var order1Task = store.orders.Read().ReadId("order-1");
+            var readOrders = store.orders.Read();
+            var orderTask  = readOrders.ReadId("order-1");
+            
+            await store.Sync(); // -------- Sync --------
+            
+            var order = orderTask.Result;
+            
+            Exception e;
+            e = Throws<TaskAlreadySyncedException>(() => { var _ = readOrders.ReadId("order-1"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+
+            var readOrders2 = orders.Read();
+            var order1Task  = readOrders2.ReadId("order-1");
 
             var readArticles = articles.Read();
             var article1Task            =  readArticles.ReadId("article-1");
@@ -327,7 +330,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static async Task WriteRead(PocStore createStore) {
             // --- cache empty
-            var orderTask = createStore.orders.Read().ReadId("order-1");
+            var readOrders  = createStore.orders.Read();
+            var orderTask   = readOrders.ReadId("order-1");
             await createStore.Sync();
 
             var order = orderTask.Result;

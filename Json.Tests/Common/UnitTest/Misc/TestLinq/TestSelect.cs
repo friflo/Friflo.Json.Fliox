@@ -52,7 +52,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var database = new MemoryDatabase())
             using (var store = TestRelationPoC.CreateStore(database).Result)
             using (var m = new ObjectMapper(store.TypeStore)) {
-                var order1 = store.orders.Read().ReadId("order-1");
+                var readOrders = store.orders.Read(); 
+                var order1 = readOrders.ReadId("order-1");
                 store.SyncWait();
                 var orderResult = order1.Result;
                 var orders = new List<Flow.Graph.Order> { orderResult };
@@ -103,7 +104,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         private static Flow.Graph.Order GetOrder(string id) {
             using (var database = new MemoryDatabase())
             using (var store = TestRelationPoC.CreateStore(database).Result) {
-                var order = store.orders.Read().ReadId(id);
+                var readOrders = store.orders.Read(); 
+                var order = readOrders.ReadId(id);
                 store.SyncWait();
                 return order.Result;
             }
@@ -141,7 +143,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public async Task TestSelectSameInstance() {
             using (var database = new MemoryDatabase())
             using (var store = await TestRelationPoC.CreateStore(database)) {
-                var order1 = store.orders.Read().ReadId("order-1");
+                var readOrders = store.orders.Read(); 
+                var order1 = readOrders.ReadId("order-1");
                 await store.Sync();
                 var orders = new List<Flow.Graph.Order> {order1.Result};
 
