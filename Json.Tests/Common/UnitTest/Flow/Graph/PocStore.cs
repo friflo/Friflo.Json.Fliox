@@ -116,8 +116,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
 
             var readArticles    = articles.Read();
-            var cameraUnknown   = readArticles.ReadId("article-missing");
-            var camera          = readArticles.ReadId("article-1");
+            var cameraUnknown   = readArticles.Find("article-missing");
+            var camera          = readArticles.Find("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
             articles.Create(camForDelete);
@@ -145,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             AreSimilar("Article:  4",                           articles);
             var readArticles2   = articles.Read();
-            var cameraNotSynced = readArticles2.ReadId("article-1");
+            var cameraNotSynced = readArticles2.Find("article-1");
             AreSimilar("all:      8, tasks: 1",                 store);
             AreSimilar("Article:  4, tasks: 1 -> reads: 1",     articles);
             

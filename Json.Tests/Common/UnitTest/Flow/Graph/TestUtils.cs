@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void TestDictionaryValueIterator() {
             var store = new PocStore(new MemoryDatabase());
             var readArticles = store.articles.Read();
-            var read= readArticles.ReadId("none");
+            var article= readArticles.Find("missing-id");
             var task = readArticles.ReadRef(a => a.producer);
             SubRefs subRefs;
             subRefs.AddTask("someTask", task);

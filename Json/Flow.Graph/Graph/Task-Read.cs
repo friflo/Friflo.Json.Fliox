@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadId<T> : SyncTask where T : Entity
+    public class Find<T> : SyncTask where T : Entity
     {
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
 
-        internal ReadId(ReadTask<T> task, string id) {
+        internal Find(ReadTask<T> task, string id) {
             this.id     = id;
             this.task   = task;
         }
@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadIds<T> : SyncTask where T : Entity
+    public class FindRange<T> : SyncTask where T : Entity
     {
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Graph
         internal override   string      Label       => $"ReadIds<{typeof(T).Name}> #ids: {ids.Count}";
         public   override   string      ToString()  => Label;
 
-        internal ReadIds(ReadTask<T> task, ICollection<string> ids) {
+        internal FindRange(ReadTask<T> task, ICollection<string> ids) {
             this.ids    = ids.ToHashSet();
             this.task   = task;
         }
@@ -83,16 +83,16 @@ namespace Friflo.Json.Flow.Graph
             this.set    = set;
         }
 
-        public ReadId<T> ReadId(string id) {
+        public Find<T> Find(string id) {
             if (id == null)
                 throw new InvalidOperationException($"ReadTask.ReadId() id must not be null. EntitySet: {set.name}");
             if (Synced)
                 throw AlreadySyncedError();
             idMap.Add(id, null);
-            return new ReadId<T>(this, id);
+            return new Find<T>(this, id);
         }
         
-        public ReadIds<T> ReadIds(ICollection<string> ids) {
+        public FindRange<T> FindRange(ICollection<string> ids) {
             if (ids == null)
                 throw new InvalidOperationException($"ReadTask.ReadIds() ids must not be null. EntitySet: {set.name}");
             if (Synced)
@@ -105,7 +105,7 @@ namespace Friflo.Json.Flow.Graph
                     throw new NullReferenceException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");
                 idMap.TryAdd(id, null);
             }
-            return new ReadIds<T>(this, ids);
+            return new FindRange<T>(this, ids);
         }
 
         // lab - ReadRefs by Entity Type

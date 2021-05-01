@@ -139,11 +139,11 @@ namespace Friflo.Json.Flow.Graph
             return new Ref<T> (id);
         }
 
-        public ReadId<T> ReadBy(ReadTask<T> task) {
+        public Find<T> ReadBy(ReadTask<T> task) {
             // may validate that set is the same which created the PeerEntity<>
-            var readId = task.ReadId(id);
-            peer = readId.task.set.GetPeerById(id);
-            return readId;
+            var find = task.Find(id);
+            peer = find.task.set.GetPeerById(id);
+            return find;
         }
     }
 }
