@@ -161,14 +161,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readOrders = orders.Read();
             var order1 = readOrders.ReadId("order-1");
             AreEqual("ReadId<Order> id: order-1", order1.ToString());
-            var allArticles         =  articles.QueryAll();
-            var allArticles2        = articles.QueryByFilter(Operation.FilterTrue);
-            var producersTask       = allArticles.ReadRefs(a => a.producer);
-            var hasOrderCamera      = orders.Query(o => o.items.Any(i => i.name == "Camera"));
-            var ordersWithCustomer1 = orders.Query(o => o.customer.id == "customer-1");
-            var read3               = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
-            var read4               = orders.Query(o => o.items.Any(i => i.amount < 1));
-            var read5               = orders.Query(o => o.items.All(i => i.amount < 1));
+            var allArticles             =  articles.QueryAll();
+            var allArticles2            = articles.QueryByFilter(Operation.FilterTrue);
+            var producersTask           = allArticles.ReadRefs(a => a.producer);
+            var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
+            var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1");
+            var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
+            var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2));
+            var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
 
             ReadRefTask<Customer> customer  = readOrders.ReadRefByPath<Customer>(".customer");
             ReadRefTask<Customer> customer2 = readOrders.ReadRefByPath<Customer>(".customer");
@@ -200,7 +200,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
-
+            
+            AreEqual(1,                 ordersAnyAmountLower2.Results.Count);
+            NotNull(ordersAnyAmountLower2["order-1"]);
+            
+            AreEqual(1,                 ordersAllAmountGreater0.Results.Count);
+            NotNull(ordersAllAmountGreater0["order-1"]);
 
             AreEqual(5,                 allArticles.Results.Count);
             AreEqual("Galaxy S10",      allArticles.Results["article-galaxy"].name);
