@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="EntityPatch.id"/>
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
         /// key: entity id
-        private readonly    Dictionary<string, DeleteTask>      deletes      = new Dictionary<string, DeleteTask>();
+        private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
@@ -83,15 +83,16 @@ namespace Friflo.Json.Flow.Graph.Internal
             return new CreateRangeTask<T>(entities);
         }
         
-        internal DeleteTask Delete(string id) {
-            if (deletes.TryGetValue(id, out DeleteTask delete))
-                return delete;
-            delete = new DeleteTask(id);
-            deletes.Add(id, delete);
-            // todo
-            // var peer = set.CreatePeer(entity);
-            // create = AddCreate(peer);
-            return delete;
+        internal DeleteTask<T> Delete(string id) {
+            deletes.Add(id);
+            return new DeleteTask<T>(id);
+        }
+        
+        internal DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
+            foreach (var id in ids) {
+                deletes.Add(id);
+            }
+            return new DeleteRangeTask<T>(ids);
         }
         
         internal int LogSetChanges(Dictionary<string, PeerEntity<T>> peers) {
@@ -205,8 +206,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     container = set.name,
                     ids = new List<string>()
                 };
-                foreach (var deletePair in deletes) {
-                    var id = deletePair.Key;
+                foreach (var id in deletes) {
                     req.ids.Add(id);
                 }
                 tasks.Add(req);

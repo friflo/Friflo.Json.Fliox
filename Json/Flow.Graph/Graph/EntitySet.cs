@@ -166,18 +166,20 @@ namespace Friflo.Json.Flow.Graph
             return sync.CreateRange(entities);
         }
 
-        public DeleteTask Delete(string id) {
+        public DeleteTask<T> Delete(string id) {
             if (id == null)
                 throw new InvalidOperationException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
             return sync.Delete(id);
         }
         
-        public DeleteTask Delete(T entity) {
-            if (entity == null)
-                throw new InvalidOperationException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
-            if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.Delete() entity.id must not be null. EntitySet: {name}");
-            return sync.Delete(entity.id);
+        public DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
+            if (ids == null)
+                throw new InvalidOperationException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
+            foreach (var id in ids) {
+                if (id == null)
+                    throw new InvalidOperationException($"EntitySet.DeleteRange() entity.id must not be null. EntitySet: {name}");
+            }
+            return sync.DeleteRange(ids);
         }
 
         public override int LogSetChanges() {
