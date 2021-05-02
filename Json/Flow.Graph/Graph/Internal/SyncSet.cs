@@ -170,6 +170,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             // --- ReadEntities
             if (reads.Count > 0) {
+                var readList = new ReadEntitiesList {
+                    reads = new List<ReadEntities>()
+                };
                 foreach (var read in reads) {
                     List<References> references = null;
                     if (read.refsTask.subRefs.Count >= 0) {
@@ -181,8 +184,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                         ids = read.idMap.Keys.ToList(),
                         references = references
                     };
-                    tasks.Add(req);
+                    readList.reads.Add(req);
                 }
+                tasks.Add(readList);
             }
             // --- QueryEntities
             if (queries.Count > 0) {

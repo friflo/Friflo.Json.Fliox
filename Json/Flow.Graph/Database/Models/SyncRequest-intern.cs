@@ -81,13 +81,34 @@ namespace Friflo.Json.Flow.Database.Models
         internal override TaskType TaskType => TaskType.Update;
     }
     
-    // ------ ReadEntities
-    public partial class ReadEntities
+    // ------ ReadEntitiesList & ReadEntities
+    public partial class ReadEntitiesList
     {
         internal override   TaskType    TaskType => TaskType.Read;
         public   override   string      ToString() => "container: " + container;
-        
+
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
+            var result = new ReadEntitiesListResult {
+                reads = new List<ReadEntitiesResult>()
+            };
+            foreach (var read in reads) {
+                var readResult = await read.Execute(database, response);
+                result.reads.Add(readResult);
+            }
+            return result;
+        }
+    }
+    
+    public partial class ReadEntitiesListResult
+    {
+        internal override   TaskType    TaskType => TaskType.Read;
+    }
+    
+    public partial class ReadEntities
+    {
+        public   override   string      ToString() => "container: " + container;
+        
+        internal async Task<ReadEntitiesResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
             var result = await entityContainer.ReadEntities(this);
             var entities = result.entities;
@@ -105,7 +126,6 @@ namespace Friflo.Json.Flow.Database.Models
     
     public partial class ReadEntitiesResult
     {
-        internal override   TaskType    TaskType => TaskType.Read;
     }
     
     // ------ QueryEntities

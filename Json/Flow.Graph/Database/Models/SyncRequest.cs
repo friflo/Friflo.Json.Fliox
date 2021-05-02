@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Database.Models
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(UpdateEntities),          Discriminant = "update")]
-    [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
+    [Fri.Polymorph(typeof(ReadEntitiesList),        Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Database.Models
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
     [Fri.Polymorph(typeof(UpdateEntitiesResult),    Discriminant = "update")]
-    [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
+    [Fri.Polymorph(typeof(ReadEntitiesListResult),  Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
@@ -88,7 +88,18 @@ namespace Friflo.Json.Flow.Database.Models
     }
 
     // --------------------------------------- ReadEntities ---------------------------------------
-    public partial class ReadEntities : DatabaseTask
+    public partial class ReadEntitiesList : DatabaseTask
+    {
+        public  string                          container;
+        public  List<ReadEntities>              reads;
+    }
+    
+    public partial class ReadEntitiesListResult : TaskResult
+    {
+        public   List<ReadEntitiesResult>       reads;
+    }
+    
+    public partial class ReadEntities
     {
         public  string                          container;
         public  List<string>                    ids;
@@ -96,7 +107,7 @@ namespace Friflo.Json.Flow.Database.Models
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
-    public partial class ReadEntitiesResult : TaskResult
+    public partial class ReadEntitiesResult
     {
         public   List<ReferencesResult>         references;
         [Fri.Ignore]

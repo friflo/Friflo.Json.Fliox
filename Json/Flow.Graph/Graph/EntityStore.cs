@@ -153,10 +153,15 @@ namespace Friflo.Json.Flow.Graph
                             set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult) result);
                             break;
                         case TaskType.Read:
-                            var read = (ReadEntities) task;
-                            set = _intern.setByName[read.container];
-                            var entities = containerResults[read.container];
-                            set.Sync.ReadEntitiesResult(read, (ReadEntitiesResult) result, entities);
+                            var readList        = (ReadEntitiesList) task;
+                            var readListResult  = (ReadEntitiesListResult) result;
+                            for (int i = 0; i < readList.reads.Count; i++) {
+                                var read        = readList.reads[i];
+                                var readResult  = readListResult.reads[i];
+                                set = _intern.setByName[read.container];
+                                var entities = containerResults[read.container];
+                                set.Sync.ReadEntitiesResult(read, readResult, entities);
+                            }
                             break;
                         case TaskType.Query:
                             var query = (QueryEntities) task;
