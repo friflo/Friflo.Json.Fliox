@@ -34,6 +34,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // changing id throws exception
             var e = Throws<InvalidOperationException>(() => { var _ = test.id = "id-2"; });
             AreEqual("Entity id must not be changed. Type: TestEntity, was: id-1, set: id-2", e.Message);
+
+            // setting id to the already used id is valid 
+            test.id = "id-1";
         }
 
 #if !UNITY_2020_1_OR_NEWER
