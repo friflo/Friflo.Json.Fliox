@@ -101,7 +101,6 @@ namespace Friflo.Json.Flow.Database.Models
     
     public partial class ReadEntities
     {
-        public  string                          container;
         public  HashSet<string>                 ids;
         public  List<References>                references;
     }

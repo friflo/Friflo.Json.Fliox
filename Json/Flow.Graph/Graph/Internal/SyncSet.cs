@@ -179,7 +179,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                         AddReferences(references, read.refsTask.subRefs);
                     }
                     var req = new ReadEntities {
-                        container = set.name,
                         ids = read.idMap.Keys.ToHashSet(),
                         references = references
                     };

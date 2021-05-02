@@ -128,8 +128,6 @@ namespace Friflo.Json.Flow.Database.Models
     
     public partial class ReadEntities
     {
-        public   override   string      ToString() => "container: " + container;
-
         internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
             List<ReferencesResult> readRefResults = null;
             if (references != null && references.Count > 0) {

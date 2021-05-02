@@ -158,8 +158,8 @@ namespace Friflo.Json.Flow.Graph
                             for (int i = 0; i < readList.reads.Count; i++) {
                                 var read        = readList.reads[i];
                                 var readResult  = readListResult.reads[i];
-                                set = _intern.setByName[read.container];
-                                var entities = containerResults[read.container];
+                                set = _intern.setByName[readList.container];
+                                var entities = containerResults[readList.container];
                                 set.Sync.ReadEntitiesResult(read, readResult, entities);
                             }
                             break;
