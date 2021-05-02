@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Database
             }
             // Write patched entities back
             var task = new CreateEntities {entities = entities};
-            await CreateEntities(task); // should be UpdateEntities
+            await CreateEntities(task); // todo should be UpdateEntities
             return new PatchEntitiesResult();
         }
 
