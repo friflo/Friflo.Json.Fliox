@@ -89,10 +89,32 @@ namespace Friflo.Json.Flow.Database.Models
 
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var result = new ReadEntitiesListResult {
-                reads = new List<ReadEntitiesResult>()
+                reads = new List<ReadEntitiesResult>(reads.Count)
             };
+            // Optimization:
+            // Combine all reads to a single read to call ReadEntities() only once instead of #reads times
+            var combinedRead = new ReadEntities { ids = new HashSet<string>() };
             foreach (var read in reads) {
-                var readResult = await read.Execute(database, response);
+                combinedRead.ids.UnionWith(read.ids);
+            }
+            var entityContainer = database.GetContainer(container);
+            var combinedResult = await entityContainer.ReadEntities(combinedRead);
+            
+            var combinedEntities = combinedResult.entities;
+            combinedResult.entities = null;
+            var containerResult = response.GetContainerResult(container);
+            containerResult.AddEntities(combinedEntities);
+            
+            foreach (var read in reads) {
+                var readResult  = new ReadEntitiesResult {
+                    entities = new Dictionary<string, EntityValue>(read.ids.Count)
+                };
+                // distribute combinedEntities
+                foreach (var id in read.ids) {
+                    readResult.entities.Add(id, combinedEntities[id]);
+                }
+                await read.ReadReferences(readResult, entityContainer, response);
+                readResult.entities = null;
                 result.reads.Add(readResult);
             }
             return result;
@@ -107,20 +129,13 @@ namespace Friflo.Json.Flow.Database.Models
     public partial class ReadEntities
     {
         public   override   string      ToString() => "container: " + container;
-        
-        internal async Task<ReadEntitiesResult> Execute(EntityDatabase database, SyncResponse response) {
-            var entityContainer = database.GetContainer(container);
-            var result = await entityContainer.ReadEntities(this);
-            var entities = result.entities;
-            result.entities = null; // clear -> its not part of protocol
-            var containerResult = response.GetContainerResult(container);
-            containerResult.AddEntities(entities);
+
+        internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
             List<ReferencesResult> readRefResults = null;
             if (references != null && references.Count > 0) {
-                readRefResults = await entityContainer.ReadReferences(references, entities, response);
+                readRefResults = await entityContainer.ReadReferences(references, readResult.entities, response);
             }
-            result.references = readRefResults;
-            return result;
+            readResult.references = readRefResults;
         }
     }
     
