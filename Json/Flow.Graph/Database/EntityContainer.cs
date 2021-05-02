@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<PatchEntitiesResult>      PatchEntities   (PatchEntities patchEntities) {
             var entityPatches = patchEntities.patches;
-            var ids = entityPatches.Select(patch => patch.id).ToList();
+            var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
             var readResult = await ReadEntities(readTask);
@@ -59,13 +59,11 @@ namespace Friflo.Json.Flow.Database
             
             // Apply patches
             var patcher = SyncContext.jsonPatcher;
-            int n = 0;
             foreach (var entity in entities) {
-                var expectedId = ids[n];
-                var patch = entityPatches[n++];
-                if (entity.Key != expectedId) {
-                    throw new InvalidOperationException($"PatchEntities: Expect entity key of response matches request: index:{n} expect: {expectedId} got: {entity.Key}");
-                }
+                var key = entity.Key;
+                if (!ids.Contains(key))
+                    throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
+                var patch = entityPatches[key];
                 entity.Value.value.json = patcher.ApplyPatches(entity.Value.value.json, patch.patches, Pretty);
             }
             // Write patched entities back
@@ -120,7 +118,7 @@ namespace Friflo.Json.Flow.Database
                 var referenceResult = referenceResults[n];
                 var ids = referenceResult.ids;
                 if (ids.Count > 0) {
-                    var refIdList   = ids.ToList();
+                    var refIdList   = ids.ToHashSet();
                     var readRefIds  = new ReadEntities {ids = refIdList};
                     var refEntities = await refContainer.ReadEntities(readRefIds);
                     var containerResult = syncResponse.GetContainerResult(reference.container);

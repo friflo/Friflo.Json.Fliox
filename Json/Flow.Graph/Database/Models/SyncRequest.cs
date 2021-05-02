@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Database.Models
     public partial class ReadEntities
     {
         public  string                          container;
-        public  List<string>                    ids;
+        public  HashSet<string>                 ids;
         public  List<References>                references;
     }
     
@@ -154,13 +154,12 @@ namespace Friflo.Json.Flow.Database.Models
     // --------------------------------------- PatchEntities ---------------------------------------
     public partial class PatchEntities : DatabaseTask
     {
-        public  string              container;
-        public  List<EntityPatch>   patches;
+        public  string                          container;
+        public  Dictionary<string, EntityPatch> patches;
     }
 
     public class EntityPatch
     {
-        public string               id;
         public List<JsonPatch>      patches;
     }
 

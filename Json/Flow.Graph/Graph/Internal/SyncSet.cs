@@ -138,9 +138,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (diff == null)
                     return null;
                 var patchList = set.intern.objectPatcher.CreatePatches(diff);
-                var id = peer.entity.id;
                 var entityPatch = new EntityPatch {
-                    id = id,
                     patches = patchList
                 };
                 var json = set.intern.jsonMapper.writer.Write(peer.entity);
@@ -181,7 +179,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     }
                     var req = new ReadEntities {
                         container = set.name,
-                        ids = read.idMap.Keys.ToList(),
+                        ids = read.idMap.Keys.ToHashSet(),
                         references = references
                     };
                     readList.reads.Add(req);
@@ -211,7 +209,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
-                    patches = patches.Values.ToList()
+                    patches = new Dictionary<string, EntityPatch>(patches)
                 };
                 tasks.Add(req);
                 patches.Clear();
@@ -317,8 +315,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal override void PatchEntitiesResult(PatchEntities task, PatchEntitiesResult result) {
             var entityPatches = task.patches;
-            foreach (var entityPatch in entityPatches) {
-                var id = entityPatch.id;
+            foreach (var entityPatchPair in entityPatches) {
+                var id = entityPatchPair.Key;
                 var peer = set.GetPeerById(id);
                 peer.SetPatchSource(peer.NextPatchSource);
                 peer.SetNextPatchSourceNull();

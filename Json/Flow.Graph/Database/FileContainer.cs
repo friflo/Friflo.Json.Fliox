@@ -112,9 +112,9 @@ namespace Friflo.Json.Flow.Database
         
         
         // -------------------------------------- helper methods -------------------------------------- 
-        private static List<string> GetIds(string folder) {
+        private static HashSet<string> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var ids = new List<string>(fileNames.Length);
+            var ids = new HashSet<string>(fileNames.Length);
             for (int n = 0; n < fileNames.Length; n++) {
                 var fileName = fileNames[n];
                 var len = fileName.Length;
