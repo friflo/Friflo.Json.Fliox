@@ -217,12 +217,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             // --- DeleteEntities
             if (deletes.Count > 0) {
                 var req = new DeleteEntities {
-                    container = set.name,
-                    ids = new List<string>()
+                    container   = set.name,
+                    ids         = new HashSet<string>(deletes)
                 };
-                foreach (var id in deletes) {
-                    req.ids.Add(id);
-                }
                 tasks.Add(req);
                 deletes.Clear();
             }

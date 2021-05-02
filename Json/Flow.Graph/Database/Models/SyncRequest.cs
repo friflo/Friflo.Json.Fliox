@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Database.Models
     public partial class DeleteEntities : DatabaseTask
     {
         public  string              container;
-        public  List<string>        ids;
+        public  HashSet<string>     ids;
     }
     
     public partial class DeleteEntitiesResult : TaskResult
