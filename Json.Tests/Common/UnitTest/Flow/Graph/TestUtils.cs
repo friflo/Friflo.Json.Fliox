@@ -1,5 +1,6 @@
 ﻿using System;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Internal;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -21,6 +22,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 store.SyncWait();
             }
+        }
+
+        class TestEntity : Entity { }
+
+        [Test]
+        public void TestSetEntityId() {
+            var test = new TestEntity {
+                id = "id-1" // OK
+            };
+            // changing id throws exception
+            var e = Throws<InvalidOperationException>(() => { var _ = test.id = "id-2"; });
+            AreEqual("Entity id must not be changed. Type: TestEntity, was: id-1, set: id-2", e.Message);
         }
 
 #if !UNITY_2020_1_OR_NEWER

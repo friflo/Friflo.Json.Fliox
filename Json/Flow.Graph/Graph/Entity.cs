@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class Entity
+    public abstract class Entity
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string _id;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
                     _id = value;
                     return;
                 }
-                throw new InvalidOperationException($"Entity id must not be changed. Type: {GetType()}, id: {_id}, used: {value}");
+                throw new InvalidOperationException($"Entity id must not be changed. Type: {GetType().Name}, was: {_id}, set: {value}");
             }
         }
 
