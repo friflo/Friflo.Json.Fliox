@@ -127,10 +127,12 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
+        // --- Read
         public ReadTask<T> Read() {
             return sync.Read();
         }
 
+        // --- Query
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new InvalidOperationException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
@@ -149,6 +151,7 @@ namespace Friflo.Json.Flow.Graph
             return sync.QueryFilter(all);
         }
 
+        // --- Create
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new InvalidOperationException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
@@ -166,7 +169,27 @@ namespace Friflo.Json.Flow.Graph
             }
             return sync.CreateRange(entities);
         }
+        
+        // --- Update
+        public UpdateTask<T> Update(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
+            if (entity.id == null)
+                throw new InvalidOperationException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
+            return sync.Update(entity);
+        }
+        
+        public UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
+            if (entities == null)
+                throw new InvalidOperationException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
+            foreach (var entity in entities) {
+                if (entity.id == null)
+                    throw new InvalidOperationException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
+            }
+            return sync.UpdateRange(entities);
+        }
 
+        // --- Delete
         public DeleteTask<T> Delete(T entity) {
             if (entity == null)
                 throw new InvalidOperationException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
@@ -196,6 +219,7 @@ namespace Friflo.Json.Flow.Graph
             return sync.DeleteRange(ids);
         }
 
+        // --- Log changes -> create patches
         public override int LogSetChanges() {
             return sync.LogSetChanges(peers);
         }

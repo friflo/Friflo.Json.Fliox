@@ -54,8 +54,8 @@ namespace Friflo.Json.Flow.Database
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             var entities = task.entities;
             foreach (var entityPair in entities) {
-                string      key       = entityPair.Key;
-                EntityValue payload  = entityPair.Value;
+                string      key     = entityPair.Key;
+                EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
                 await WriteText(path, payload.value.json);
                 // await File.WriteAllTextAsync(path, payload);
@@ -63,8 +63,16 @@ namespace Friflo.Json.Flow.Database
             return new CreateEntitiesResult();
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
-            throw new NotImplementedException();
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
+            var entities = task.entities;
+            foreach (var entityPair in entities) {
+                string      key     = entityPair.Key;
+                EntityValue payload = entityPair.Value;
+                var path = FilePath(key);
+                await WriteText(path, payload.value.json);
+                // await File.WriteAllTextAsync(path, payload);
+            }
+            return new UpdateEntitiesResult();
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {

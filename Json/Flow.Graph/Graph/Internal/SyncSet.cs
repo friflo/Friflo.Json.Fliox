@@ -15,6 +15,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
+        internal  abstract  void    UpdateEntitiesResult    (UpdateEntities task, UpdateEntitiesResult result);
         internal  abstract void     ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result, ContainerEntities entities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
@@ -39,8 +40,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
         private readonly    List<CreateTask>                    createTasks  = new List<CreateTask>();
+        
+        /// key: <see cref="PeerEntity{T}.entity"/>.id
+        private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<UpdateTask>                    updateTasks  = new List<UpdateTask>();
 
-        /// key: <see cref="EntityPatch.id"/>
+        /// key: entity id
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
@@ -58,12 +63,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
+        internal void AddUpdate (PeerEntity<T> peer) {
+            peer.assigned = true;
+            if (!peer.updated) {
+                peer.updated = true;                // sole place created set to true
+                updates.Add(peer.entity.id, peer);  // sole place a peer (entity) is added
+            }
+        }
+        
+        // --- Read
         internal ReadTask<T> Read() {
             var read = new ReadTask<T>(set);
             reads.Add(read);
             return read;
         }
         
+        // --- Query
         internal QueryTask<T> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
             if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
@@ -73,6 +88,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return query;
         }
         
+        // --- Create
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
@@ -91,6 +107,26 @@ namespace Friflo.Json.Flow.Graph.Internal
             return create;
         }
         
+        // --- Update
+        internal UpdateTask<T> Update(T entity) {
+            var peer = set.CreatePeer(entity);
+            AddUpdate(peer);
+            var update = new UpdateTask<T>(peer.entity);
+            updateTasks.Add(update);
+            return update;
+        }
+        
+        internal UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
+            foreach (var entity in entities) {
+                var peer = set.CreatePeer(entity);
+                AddUpdate(peer);
+            }
+            var update = new UpdateRangeTask<T>(entities);
+            updateTasks.Add(update);
+            return update;
+        }
+        
+        // --- Delete
         internal DeleteTask<T> Delete(string id) {
             deletes.Add(id);
             var delete = new DeleteTask<T>(id);
@@ -107,6 +143,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return delete;
         }
         
+        // --- Log changes -> create patches
         internal int LogSetChanges(Dictionary<string, PeerEntity<T>> peers) {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
@@ -165,6 +202,22 @@ namespace Friflo.Json.Flow.Graph.Internal
                 };
                 tasks.Add(req);
                 creates.Clear();
+            }
+            // --- UpdateEntities
+            if (updates.Count > 0) {
+                var entries = new Dictionary<string, EntityValue>();
+                foreach (var updatePair in updates) {
+                    T entity = updatePair.Value.entity;
+                    var json = set.intern.jsonMapper.Write(entity);
+                    var entry = new EntityValue(json);
+                    entries.Add(entity.id, entry);
+                }
+                var req = new UpdateEntities {
+                    container = set.name,
+                    entities = entries
+                };
+                tasks.Add(req);
+                updates.Clear();
             }
             // --- ReadEntities
             if (reads.Count > 0) {
@@ -249,6 +302,18 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             foreach (var createTask in createTasks) {
                 createTask.synced = true;
+            }
+        }
+        
+        internal override void UpdateEntitiesResult (UpdateEntities task, UpdateEntitiesResult result) {
+            var entities = task.entities;
+            foreach (var entry in entities) {
+                var peer = set.GetPeerById(entry.Key);
+                peer.updated = false;
+                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
+            }
+            foreach (var updateTask in updateTasks) {
+                updateTask.synced = true;
             }
         }
         

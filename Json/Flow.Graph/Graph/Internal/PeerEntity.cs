@@ -12,6 +12,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   T               entity; // never null
         internal            bool            assigned;
         internal            bool            created;
+        internal            bool            updated;
 
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }

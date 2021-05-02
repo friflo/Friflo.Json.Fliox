@@ -152,6 +152,11 @@ namespace Friflo.Json.Flow.Graph
                             EntitySet set = _intern.setByName[create.container];
                             set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult) result);
                             break;
+                        case TaskType.Update:
+                            var update = (UpdateEntities) task;
+                            set = _intern.setByName[update.container];
+                            set.Sync.UpdateEntitiesResult(update, (UpdateEntitiesResult) result);
+                            break;
                         case TaskType.Read:
                             var readList        = (ReadEntitiesList) task;
                             var readListResult  = (ReadEntitiesListResult) result;
