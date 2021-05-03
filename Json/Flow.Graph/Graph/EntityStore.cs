@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Models;
 using Friflo.Json.Flow.Graph.Internal.Map;
@@ -26,6 +27,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   TypeStore                       typeStore;
         internal readonly   TypeCache                       typeCache;
         internal readonly   ObjectMapper                    jsonMapper;
+        // private  readonly   JsonReadError                errorHandler;
 
         internal readonly   ObjectPatcher                   objectPatcher;
         
@@ -34,13 +36,20 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   Dictionary<string, EntitySet>   setByName;
         
         internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
-            this.typeStore  = typeStore;
-            this.database   = database;
-            this.jsonMapper = jsonMapper;
-            this.typeCache  = jsonMapper.writer.TypeCache;
-            setByType = new Dictionary<Type, EntitySet>();
-            setByName = new Dictionary<string, EntitySet>();
-            objectPatcher = new ObjectPatcher(jsonMapper);
+            this.typeStore      = typeStore;
+            this.database       = database;
+            this.jsonMapper     = jsonMapper;
+            this.typeCache      = jsonMapper.writer.TypeCache;
+            setByType           = new Dictionary<Type, EntitySet>();
+            setByName           = new Dictionary<string, EntitySet>();
+            objectPatcher       = new ObjectPatcher(jsonMapper);
+        }
+    }
+
+    internal class JsonReadError : IErrorHandler
+    {
+        /// throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
+        public void HandleError(int pos, ref Bytes message) {
         }
     }
     
@@ -65,7 +74,8 @@ namespace Friflo.Json.Flow.Graph
             var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            var jsonMapper = new ObjectMapper(typeStore) {
+            var errorHandler = new JsonReadError();
+            var jsonMapper = new ObjectMapper(typeStore, errorHandler) {
                 TracerContext = this
             };
             _intern = new StoreIntern(typeStore, database, jsonMapper);

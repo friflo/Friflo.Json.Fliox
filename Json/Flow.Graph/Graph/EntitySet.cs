@@ -234,12 +234,19 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void SyncContainerEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
+                containerResults.errors = new Dictionary<string, SyncError>();
                 var id = entity.Key;
                 var peer = GetPeerById(id);
                 var json = entity.Value.value.json;
                 if (json != null && "null" != json) {
-                    intern.jsonMapper.ReadTo(json, peer.entity);
-                    peer.SetPatchSource(intern.jsonMapper.Read<T>(json));
+                    var reader = intern.jsonMapper.reader;
+                    reader.ReadTo(json, peer.entity);
+                    if (reader.Success) {
+                        peer.SetPatchSource(reader.Read<T>(json));
+                    } else {
+                        var error = new SyncError(SyncErrorType.ParseError, name, id, reader.Error.msg.ToString());
+                        containerResults.errors.Add(id, error);
+                    }
                 } else {
                     peer.SetPatchSourceNull();
                 }
