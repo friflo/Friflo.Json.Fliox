@@ -5,31 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
-using Friflo.Json.Flow.Database.Models;
 using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public readonly struct Result<T>
-    {
-        private readonly    T               entity;
-        private readonly    EntityError     error;
-
-        public              T               Entity => error == null ? entity : throw error;
-
-
-        internal Result(T entity) {
-            this.entity = entity;
-            this.error  = null;
-        }
-        
-        internal Result(EntityError error) {
-            this.entity = default;
-            this.error  = error;
-        }
-    }
-    
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -38,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => Synced ? task.idMap[id].Entity : throw RequiresSyncError($"Find.Result requires Sync().");
+        public              T           Result      => Synced ? task.idMap[id] : throw RequiresSyncError($"Find.Result requires Sync().");
 
         internal override   bool        Synced      => task.Synced;
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
@@ -55,13 +34,13 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class FindRange<T> : SyncTask where T : Entity
     {
-        private  readonly   HashSet<string>                 ids;
-        private  readonly   ReadTask<T>                     task; 
+        private  readonly   HashSet<string>         ids;
+        private  readonly   ReadTask<T>             task; 
 
-        public              T                               this[string id]      => Synced ? task.idMap[id].Entity : throw RequiresSyncError($"FindRange[] requires Sync().");
-        public              Dictionary<string, Result<T>>   Results { get {
+        public              T                       this[string id]      => Synced ? task.idMap[id] : throw RequiresSyncError($"FindRange[] requires Sync().");
+        public              Dictionary<string, T>   Results { get {
             if (Synced) {
-                var result = new Dictionary<string, Result<T>>(ids.Count);
+                var result = new Dictionary<string, T>(ids.Count);
                 foreach (var id in ids) {
                     result.Add(id, task.idMap[id]);
                 }
@@ -87,13 +66,13 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
-        internal            bool                            synced;
-        internal readonly   EntitySet<T>                    set;
-        internal            RefsTask                        refsTask;
-        internal readonly   Dictionary<string, Result<T>>   idMap = new Dictionary<string, Result<T>>();
+        internal            bool                    synced;
+        internal readonly   EntitySet<T>            set;
+        internal            RefsTask                refsTask;
+        internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
         
-        public              Dictionary<string, Result<T>>   Results          => Synced ? idMap      : throw RequiresSyncError("ReadTask.Results requires Sync().");
-        public              Result<T>                       this[string id]  => Synced ? idMap[id]  : throw RequiresSyncError("ReadTask[] requires Sync().");
+        public              Dictionary<string, T>   Results          => Synced ? idMap      : throw RequiresSyncError("ReadTask.Results requires Sync().");
+        public              T                       this[string id]  => Synced ? idMap[id]  : throw RequiresSyncError("ReadTask[] requires Sync().");
 
         internal override   bool                    Synced      => synced;
         internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";
@@ -109,7 +88,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"ReadTask.ReadId() id must not be null. EntitySet: {set.name}");
             if (Synced)
                 throw AlreadySyncedError();
-            idMap.Add(id, default);
+            idMap.Add(id, null);
             return new Find<T>(this, id);
         }
         
@@ -124,7 +103,7 @@ namespace Friflo.Json.Flow.Graph
             foreach (var id in ids) {
                 if (id == null)
                     throw new NullReferenceException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");
-                idMap.TryAdd(id, default);
+                idMap.TryAdd(id, null);
             }
             return new FindRange<T>(this, ids);
         }
