@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Graph
             SyncRequest syncRequest = CreateSyncRequest();
 
             SyncResponse response = await _intern.database.Execute(syncRequest); // <--- asynchronous Sync point
-            HandleSyncRequest(syncRequest, response);
+            HandleSyncResponse(syncRequest, response);
         }
         
         public void SyncWait() {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Flow.Graph
             var responseTask = _intern.database.Execute(syncRequest);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
-            HandleSyncRequest(syncRequest, response);
+            HandleSyncResponse(syncRequest, response);
         }
 
         public int LogChanges() {
@@ -130,12 +130,12 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
 
-        private void HandleSyncRequest(SyncRequest syncRequest, SyncResponse response) {
+        private void HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
             try {
                 var containerResults = response.results;
                 foreach (var containerResult in containerResults) {
                     var set = _intern.setByName[containerResult.Key];
-                    set.SyncEntities(containerResult.Value);
+                    set.SyncContainerEntities(containerResult.Value);
                 }
 
                 var tasks   = syncRequest.tasks;

@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         public    abstract  int     LogSetChanges();
-        internal  abstract  void    SyncEntities        (ContainerEntities containerResults);
+        internal  abstract  void    SyncContainerEntities        (ContainerEntities containerResults);
         internal  abstract  void    ResetSync           ();
 
         protected EntitySet(string name) {
@@ -232,7 +232,7 @@ namespace Friflo.Json.Flow.Graph
             return sync.LogEntityChanges(entity);
         }
 
-        internal override void SyncEntities(ContainerEntities containerResults) {
+        internal override void SyncContainerEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var peer = GetPeerById(id);
