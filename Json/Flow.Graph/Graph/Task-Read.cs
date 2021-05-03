@@ -20,7 +20,6 @@ namespace Friflo.Json.Flow.Graph
         public              T           Result      => IsValid("Find.Result requires Sync().", out Exception e) ? task.idMap[id] : throw e;
 
         internal override   TaskState   State       => task.State;
-        internal override   TaskError   Error       => task.Error;
         
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
@@ -39,9 +38,9 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
-        public              T                       this[string id]      => State.Synced ? task.idMap[id] : throw RequiresSyncError("FindRange[] requires Sync().");
+        public              T                       this[string id]      => IsValid("FindRange[] requires Sync().", out Exception e) ? task.idMap[id] : throw e;
         public              Dictionary<string, T>   Results { get {
-            if (State.Synced) {
+            if (State.synced) {
                 var result = new Dictionary<string, T>(ids.Count);
                 foreach (var id in ids) {
                     result.Add(id, task.idMap[id]);
@@ -73,8 +72,8 @@ namespace Friflo.Json.Flow.Graph
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
         
-        public              Dictionary<string, T>   Results          => State.Synced ? idMap      : throw RequiresSyncError("ReadTask.Results requires Sync().");
-        public              T                       this[string id]  => State.Synced ? idMap[id]  : throw RequiresSyncError("ReadTask[] requires Sync().");
+        public              Dictionary<string, T>   Results          => IsValid("ReadTask.Results requires Sync().", out Exception e) ? idMap : throw e;
+        public              T                       this[string id]  => IsValid("ReadTask[] requires Sync().", out Exception e) ? idMap[id]   : throw e;
 
         internal override   TaskState               State       => state;
         internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";
@@ -88,7 +87,7 @@ namespace Friflo.Json.Flow.Graph
         public Find<T> Find(string id) {
             if (id == null)
                 throw new InvalidOperationException($"ReadTask.ReadId() id must not be null. EntitySet: {set.name}");
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             idMap.Add(id, null);
             return new Find<T>(this, id);
@@ -97,7 +96,7 @@ namespace Friflo.Json.Flow.Graph
         public FindRange<T> FindRange(ICollection<string> ids) {
             if (ids == null)
                 throw new InvalidOperationException($"ReadTask.ReadIds() ids must not be null. EntitySet: {set.name}");
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
 #if !UNITY_5_3_OR_NEWER
             idMap.EnsureCapacity(idMap.Count + ids.Count);
@@ -123,14 +122,14 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Ref
         public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             string path = MemberSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TValue>(path);
         }
         
         public ReadRefTask<TValue> ReadRefByPath<TValue>(string selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             if (refsTask.subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefTask<TValue>)subRefsTask;
@@ -141,19 +140,19 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }

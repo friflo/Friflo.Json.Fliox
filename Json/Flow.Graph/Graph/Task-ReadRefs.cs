@@ -39,8 +39,8 @@ namespace Friflo.Json.Flow.Graph
         private             Dictionary<string, T>   results;
         private   readonly  SyncTask                parent;
             
-        public              Dictionary<string, T>   Results          => State.Synced ? results      : throw RequiresSyncError("ReadRefsTask.Results requires Sync().");
-        public              T                       this[string id]  => State.Synced ? results[id]  : throw RequiresSyncError("ReadRefsTask[] requires Sync().");
+        public              Dictionary<string, T>   Results          => IsValid("ReadRefsTask.Results requires Sync().", out Exception e) ? results : throw e;
+        public              T                       this[string id]  => IsValid("ReadRefsTask[] requires Sync().", out Exception e) ? results[id]   : throw e;
         
         internal  override  TaskState               State      => parent.State;
         internal  override  string                  Label       => $"{parent.Label} > {Selector}";
@@ -71,19 +71,19 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
@@ -100,8 +100,8 @@ namespace Friflo.Json.Flow.Graph
         private             T           entity;
         private   readonly  SyncTask    parent;
 
-        public              string      Id      => State.Synced ? id      : throw RequiresSyncError("ReadRefTask.Id requires Sync().");
-        public              T           Result  => State.Synced ? entity  : throw RequiresSyncError("ReadRefTask.Result requires Sync().");
+        public              string      Id      => IsValid("ReadRefTask.Id requires Sync().", out Exception e) ? id          : throw e;
+        public              T           Result  => IsValid("ReadRefTask.Result requires Sync().", out Exception e) ? entity  : throw e;
                 
         internal override   TaskState   State       => parent.State;
         internal override   string      Label       => $"{parent.Label} > {Selector}";
@@ -131,19 +131,19 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }

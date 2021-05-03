@@ -21,8 +21,8 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
         internal            Dictionary<string, T>   entities;
 
-        public              Dictionary<string, T>   Results         => State.Synced ? entities     : throw RequiresSyncError("QueryTask.Result requires Sync().");
-        public              T                       this[string id] => State.Synced ? entities[id] : throw RequiresSyncError("QueryTask[] requires Sync().");
+        public              Dictionary<string, T>   Results         => IsValid("QueryTask.Result requires Sync().", out Exception e) ? entities     : throw e;
+        public              T                       this[string id] => IsValid("QueryTask[] requires Sync().", out Exception e)      ? entities[id] : throw e;
             
         internal override   TaskState               State          => state;
         internal override   string                  Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
@@ -36,19 +36,19 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.Synced)
+            if (State.synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
