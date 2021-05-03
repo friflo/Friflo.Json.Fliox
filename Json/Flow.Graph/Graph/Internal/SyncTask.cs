@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal bool       IsSynced() { return Synced; }
 
-        public override string ToString() => Synced ? "synced" : "not synced";
+        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.Errors.Count}" : "synced" : "not synced";
     }
     
     internal struct TaskError
