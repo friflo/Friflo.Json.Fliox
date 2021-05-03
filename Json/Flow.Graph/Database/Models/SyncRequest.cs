@@ -35,8 +35,6 @@ namespace Friflo.Json.Flow.Database.Models
     {
         public  string                                  container; // only for debugging
         public  Dictionary<string, EntityValue>         entities;
-        [Fri.Ignore]
-        internal Dictionary<string,SyncError>           errors;
         
         internal void AddEntities(Dictionary<string, EntityValue> add) {
             foreach (var entity in add) {
