@@ -39,8 +39,8 @@ namespace Friflo.Json.Flow.Graph
         private             Dictionary<string, T>   results;
         private   readonly  SyncTask                parent;
             
-        public              Dictionary<string, T>   Results          => IsValid("ReadRefsTask.Results requires Sync().", out Exception e) ? results : throw e;
-        public              T                       this[string id]  => IsValid("ReadRefsTask[] requires Sync().", out Exception e) ? results[id]   : throw e;
+        public              Dictionary<string, T>   Results          => IsOk("ReadRefsTask.Results", out Exception e) ? results     : throw e;
+        public              T                       this[string id]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[id] : throw e;
         
         internal  override  TaskState               State      => parent.State;
         internal  override  string                  Label       => $"{parent.Label} > {Selector}";
@@ -100,8 +100,8 @@ namespace Friflo.Json.Flow.Graph
         private             T           entity;
         private   readonly  SyncTask    parent;
 
-        public              string      Id      => IsValid("ReadRefTask.Id requires Sync().", out Exception e) ? id          : throw e;
-        public              T           Result  => IsValid("ReadRefTask.Result requires Sync().", out Exception e) ? entity  : throw e;
+        public              string      Id      => IsOk("ReadRefTask.Id",     out Exception e) ? id      : throw e;
+        public              T           Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
         internal override   TaskState   State       => parent.State;
         internal override   string      Label       => $"{parent.Label} > {Selector}";

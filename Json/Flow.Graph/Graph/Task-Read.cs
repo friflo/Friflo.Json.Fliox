@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string      id;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => IsValid("Find.Result requires Sync().", out Exception e) ? task.idMap[id] : throw e;
+        public              T           Result      => IsOk("Find.Result", out Exception e) ? task.idMap[id] : throw e;
 
         internal override   TaskState   State       => task.State;
         
@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
-        public              T                       this[string id]      => IsValid("FindRange[] requires Sync().", out Exception e) ? task.idMap[id] : throw e;
+        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? task.idMap[id] : throw e;
         public              Dictionary<string, T>   Results { get {
             if (State.IsSynced()) {
                 var result = new Dictionary<string, T>(ids.Count);
@@ -72,8 +72,8 @@ namespace Friflo.Json.Flow.Graph
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
         
-        public              Dictionary<string, T>   Results          => IsValid("ReadTask.Results requires Sync().", out Exception e) ? idMap : throw e;
-        public              T                       this[string id]  => IsValid("ReadTask[] requires Sync().", out Exception e) ? idMap[id]   : throw e;
+        public              Dictionary<string, T>   Results          => IsOk("ReadTask.Results", out Exception e) ? idMap     : throw e;
+        public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? idMap[id] : throw e;
 
         internal override   TaskState               State       => state;
         internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";

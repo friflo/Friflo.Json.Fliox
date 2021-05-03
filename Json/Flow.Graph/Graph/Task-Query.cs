@@ -21,8 +21,8 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
         internal            Dictionary<string, T>   entities;
 
-        public              Dictionary<string, T>   Results         => IsValid("QueryTask.Result requires Sync().", out Exception e) ? entities     : throw e;
-        public              T                       this[string id] => IsValid("QueryTask[] requires Sync().", out Exception e)      ? entities[id] : throw e;
+        public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? entities     : throw e;
+        public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? entities[id] : throw e;
             
         internal override   TaskState               State          => state;
         internal override   string                  Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
