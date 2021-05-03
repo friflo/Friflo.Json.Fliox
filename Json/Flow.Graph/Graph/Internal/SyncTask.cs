@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 e = new TaskErrorException(State.Error.Errors);
                 return false;
             }
-            if (State.synced) {
+            if (State.IsSynced()) {
                 e = null;
                 return true;
             }
@@ -35,11 +35,12 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     internal struct TaskState
     {
-        internal bool        synced;
-        internal TaskError   Error  { get; set; }
+        internal bool       Synced { private get; set; }
+        internal TaskError  Error  { get; set; }
 
+        internal bool       IsSynced() { return Synced; }
 
-        public override string ToString() => synced ? "synced" : "not synced";
+        public override string ToString() => Synced ? "synced" : "not synced";
     }
     
     internal struct TaskError

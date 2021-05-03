@@ -71,19 +71,19 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Refs
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
@@ -131,19 +131,19 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.synced)
+            if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
