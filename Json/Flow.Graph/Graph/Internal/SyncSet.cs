@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
-using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Models;
 using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Transform;
@@ -322,22 +321,29 @@ namespace Friflo.Json.Flow.Graph.Internal
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = entities.entities[id];
-                var json = value.Json;  // in case of RemoteClient json is "null"
-                var isNull = json == null || json == "null";
-                if (isNull)
-                    set.DeletePeer(id);
+                if (value.Error == null) {
+                    var json = value.Json; // in case of RemoteClient json is "null"
+                    var isNull = json == null || json == "null";
+                    if (isNull)
+                        set.DeletePeer(id);
+                }
             }
             // todo check for optimization
             foreach (var read in reads) {
                 var readIds = read.idMap.Keys.ToList();
                 foreach (var id in readIds) {
                     var value = entities.entities[id];
-                    var json = value.Json;  // in case of RemoteClient json is "null"
-                    if (json == null || json == "null") {
-                        read.idMap[id] = null;
+                    if (value.Error != null) {
+                        read.idMap[id] = new Result<T>(value.Error);
                     } else {
-                        var peer = set.GetPeerById(id);
-                        read.idMap[id] = peer.entity;
+                        var json = value.Json; // in case of RemoteClient json is "null"
+                        if (json == null || json == "null") {
+                            read.idMap[id] = default;
+                        }
+                        else {
+                            var peer = set.GetPeerById(id);
+                            read.idMap[id] = new Result<T>(peer.entity);
+                        }
                     }
                 }
                 read.synced = true;

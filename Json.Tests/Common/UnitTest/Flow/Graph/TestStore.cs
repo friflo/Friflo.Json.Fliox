@@ -283,7 +283,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Smartphone",      article2.Result.name);
             
             AreEqual(3,                 readTask.Results.Count);
-            AreEqual("Galaxy S10",      readTask["article-galaxy"].name);
+            AreEqual("Galaxy S10",      readTask["article-galaxy"].Entity.name);
         }
         
         private static async Task AssertEntityIdentity(PocStore store) {
