@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -122,7 +122,11 @@ namespace Friflo.Json.Flow.Database
         // -------------------------------------- helper methods -------------------------------------- 
         private static HashSet<string> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+#if UNITY_5_3_OR_NEWER
+            var ids = new HashSet<string>();
+#else
             var ids = new HashSet<string>(fileNames.Length);
+#endif
             for (int n = 0; n < fileNames.Length; n++) {
                 var fileName = fileNames[n];
                 var len = fileName.Length;
