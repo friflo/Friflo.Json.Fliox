@@ -237,7 +237,7 @@ namespace Friflo.Json.Flow.Graph
                 containerResults.errors = new Dictionary<string, SyncError>();
                 var id = entity.Key;
                 var peer = GetPeerById(id);
-                var json = entity.Value.value.json;
+                var json = entity.Value.Json;
                 if (json != null && "null" != json) {
                     var reader = intern.jsonMapper.reader;
                     reader.ReadTo(json, peer.entity);

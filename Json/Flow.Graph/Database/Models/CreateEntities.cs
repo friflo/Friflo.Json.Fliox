@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database.Models
             if (entityContainer.Pretty) {
                 var patcher = entityContainer.SyncContext.jsonPatcher;
                 foreach (var entity in entities) {
-                    entity.Value.value.json = patcher.Copy(entity.Value.value.json, true);
+                    entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
                 }
             }
             return await entityContainer.CreateEntities(this);

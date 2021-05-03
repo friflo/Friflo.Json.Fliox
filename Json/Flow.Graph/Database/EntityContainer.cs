@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Database
                 if (!ids.Contains(key))
                     throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
                 var patch = entityPatches[key];
-                entity.Value.value.json = patcher.ApplyPatches(entity.Value.value.json, patch.patches, Pretty);
+                entity.Value.SetJson(patcher.ApplyPatches(entity.Value.Json, patch.patches, Pretty));
             }
             // Write patched entities back
             var task = new CreateEntities {entities = entities};
@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Database
             // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
             foreach (var entityPair in entities) {
                 EntityValue entity  = entityPair.Value;
-                var         json    = entity.value.json;
+                var         json    = entity.Json;
                 if (json != null) {
                     var selectorResults = jsonPath.Select(json, select);
                     for (int n = 0; n < references.Count; n++) {
@@ -135,17 +135,6 @@ namespace Friflo.Json.Flow.Database
                 }
             }
             return referenceResults;
-        }
-    }
-
-
-    public class EntityValue {
-        public JsonValue    value;
-
-        public EntityValue() { } // required for TypeMapper
-
-        public EntityValue(string json) {
-            value.json = json;
         }
     }
 }

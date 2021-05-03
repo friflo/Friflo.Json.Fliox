@@ -299,7 +299,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
                 peer.created = false;
-                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
+                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
             foreach (var createTask in createTasks) {
                 createTask.synced = true;
@@ -311,7 +311,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
                 peer.updated = false;
-                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.value.json));
+                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
             foreach (var updateTask in updateTasks) {
                 updateTask.synced = true;
@@ -322,7 +322,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = entities.entities[id];
-                var json = value.value.json;  // in case of RemoteClient json is "null"
+                var json = value.Json;  // in case of RemoteClient json is "null"
                 var isNull = json == null || json == "null";
                 if (isNull)
                     set.DeletePeer(id);
@@ -332,7 +332,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var readIds = read.idMap.Keys.ToList();
                 foreach (var id in readIds) {
                     var value = entities.entities[id];
-                    var json = value.value.json;  // in case of RemoteClient json is "null"
+                    var json = value.Json;  // in case of RemoteClient json is "null"
                     if (json == null || json == "null") {
                         read.idMap[id] = null;
                     } else {

@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Database
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
-                await WriteText(path, payload.value.json);
+                await WriteText(path, payload.Json);
                 // await File.WriteAllTextAsync(path, payload);
             }
             return new CreateEntitiesResult();
@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Database
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
-                await WriteText(path, payload.value.json);
+                await WriteText(path, payload.Json);
                 // await File.WriteAllTextAsync(path, payload);
             }
             return new UpdateEntitiesResult();
@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Database
             var result          = new Dictionary<string, EntityValue>();
             foreach (var entityPair in readEntities.entities) {
                 var key     = entityPair.Key;
-                var payload = entityPair.Value.value.json;
+                var payload = entityPair.Value.Json;
                 if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
                     var entry = new EntityValue(payload);
                     result.Add(key, entry);

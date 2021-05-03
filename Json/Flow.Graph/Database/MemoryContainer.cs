@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
-                payloads[key] = payload.value.json;
+                payloads[key] = payload.Json;
             }
             var result = new CreateEntitiesResult();
             return Task.FromResult(result);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Database
                 EntityValue payload  = entityPair.Value;
                 if (!payloads.TryGetValue(key, out string _))
                     throw new InvalidOperationException($"Expect Entity with key {key} in DatabaseContainer: {name}");
-                payloads[key] = payload.value.json;
+                payloads[key] = payload.Json;
             }
             var result = new UpdateEntitiesResult();
             return Task.FromResult(result);
