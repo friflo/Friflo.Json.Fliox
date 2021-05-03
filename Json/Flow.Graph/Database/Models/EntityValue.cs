@@ -28,21 +28,45 @@ namespace Friflo.Json.Flow.Database.Models
         public EntityValue(string json) {
             value.json = json;
         }
+        
+        public EntityValue(EntityError error) {
+            this.error = error;
+        }
     }
     
     public class EntityError : Exception
     {
-        public readonly     string      container;
-        public readonly     string      id;
-        public readonly     string      message;
+        [Fri.Property]  public      EntityErrorType type;
+        [Fri.Property]  public      string          message;
+        [Fri.Ignore]    public      string          id;
+        [Fri.Ignore]    public      string          container;
+    
+        public override     string          Message {
+            get {
+                switch (type) {
+                    case EntityErrorType.ParseError: return $"Failed parsing entity: {container} '{id}', {message}";
+                    default:
+                        return $"EntityError {type} - {container} '{id}', {message}";
+                }
+            }
+        }
 
-        public override     string      Message => $"Failed parsing entity: {container} '{id}', {message}";
-        public override     string      ToString() => Message;
+        public override     string          ToString() => Message;
 
-        public EntityError(string container, string  id, string message) {
+        public EntityError() { } // required for TypeMapper
+
+        public EntityError(EntityErrorType type, string container, string  id, string message) {
+            this.type       = type;
             this.container  = container;
             this.id         = id;
             this.message    = message;
         }
+    }
+
+    public enum EntityErrorType
+    {
+        ParseError,
+        ReadError,
+        WriteError
     }
 }

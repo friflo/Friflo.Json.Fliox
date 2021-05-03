@@ -28,6 +28,8 @@ namespace Friflo.Json.Flow.Database.Models
     
     public class CreateEntitiesResult : TaskResult
     {
+        public  Dictionary<string, EntityError> errors;
+        
         internal override TaskType TaskType => TaskType.Create;
     }
 }

@@ -243,7 +243,7 @@ namespace Friflo.Json.Flow.Graph
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {
-                        var error = new EntityError(name, id, reader.Error.msg.ToString());
+                        var error = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
                         containerResults.entities[id].SetError(error);
                     }
                 } else {

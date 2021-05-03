@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -53,14 +54,19 @@ namespace Friflo.Json.Flow.Database
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
             var entities = task.entities;
+            var result = new CreateEntitiesResult{errors = new Dictionary<string, EntityError>()};
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
-                await WriteText(path, payload.Json);
-                // await File.WriteAllTextAsync(path, payload);
+                try {
+                    await WriteText(path, payload.Json);
+                } catch (Exception e) {
+                    var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                    result.errors.Add(key, error);
+                }
             }
-            return new CreateEntitiesResult();
+            return result;
         }
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
@@ -80,12 +86,18 @@ namespace Friflo.Json.Flow.Database
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
                 var filePath = FilePath(key);
-                string payload = null;
+                EntityValue entry;
                 if (File.Exists(filePath)) {
-                    payload = await ReadText(filePath);
-                    // payload = await File.ReadAllTextAsync(filePath);
+                    try {
+                        var payload = await ReadText(filePath);
+                        entry = new EntityValue(payload);
+                    } catch (Exception e) {
+                        var error = new EntityError(EntityErrorType.ReadError, name, key, e.Message);
+                        entry = new EntityValue(error);
+                    }
+                } else {
+                    entry = new EntityValue();
                 }
-                var entry = new EntityValue(payload);
                 entities.TryAdd(key, entry);
             }
             return new ReadEntitiesResult{entities = entities};
