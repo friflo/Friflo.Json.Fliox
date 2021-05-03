@@ -8,8 +8,8 @@ namespace Friflo.Json.Flow.Database.Models
 {
 public class ReadEntitiesList : DatabaseTask
     {
-        public  string                          container;
-        public  List<ReadEntities>              reads;
+        public  string                  container;
+        public  List<ReadEntities>      reads;
         
         internal override   TaskType    TaskType => TaskType.Read;
         public   override   string      ToString() => "container: " + container;
@@ -50,15 +50,15 @@ public class ReadEntitiesList : DatabaseTask
     
     public class ReadEntitiesListResult : TaskResult
     {
-        public   List<ReadEntitiesResult>       reads;
+        public   List<ReadEntitiesResult>   reads;
         
-        internal override   TaskType    TaskType => TaskType.Read;
+        internal override   TaskType        TaskType => TaskType.Read;
     }
     
     public class ReadEntities
     {
-        public  HashSet<string>                 ids;
-        public  List<References>                references;
+        public  HashSet<string>             ids;
+        public  List<References>            references;
         
         internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
             List<ReferencesResult> readRefResults = null;

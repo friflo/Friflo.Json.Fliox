@@ -31,8 +31,8 @@ namespace Friflo.Json.Flow.Database.Models
     // ------ ContainerEntities
     public class ContainerEntities
     {
-        public  string                          container; // only for debugging
-        public  Dictionary<string, EntityValue> entities;
+        public  string                                  container; // only for debugging
+        public  Dictionary<string, EntityValue>         entities;
         
         internal void AddEntities(Dictionary<string, EntityValue> add) {
             foreach (var entity in add) {

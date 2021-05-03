@@ -10,10 +10,10 @@ namespace Friflo.Json.Flow.Database.Models
 {
     public class QueryEntities : DatabaseTask
     {
-        public  string                          container;
-        public  string                          filterLinq;
-        public  FilterOperation                 filter;
-        public  List<References>                references;
+        public  string                  container;
+        public  string                  filterLinq;
+        public  FilterOperation         filter;
+        public  List<References>        references;
         
         internal override   TaskType    TaskType => TaskType.Query;
         public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Database.Models
         [Fri.Ignore]
         internal Dictionary<string,EntityValue> entities;
         
-        internal override   TaskType    TaskType => TaskType.Query;
-        public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
+        internal override   TaskType            TaskType => TaskType.Query;
+        public   override   string              ToString() => $"container: {container}, filter: {filterLinq}";
     }
 }

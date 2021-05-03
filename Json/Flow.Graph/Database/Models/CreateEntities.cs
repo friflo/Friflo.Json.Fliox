@@ -10,8 +10,8 @@ namespace Friflo.Json.Flow.Database.Models
         public  string                          container;
         public  Dictionary<string, EntityValue> entities;
         
-        internal override   TaskType    TaskType => TaskType.Create;
-        public   override   string      ToString() => "container: " + container;
+        internal override   TaskType            TaskType => TaskType.Create;
+        public   override   string              ToString() => "container: " + container;
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetContainer(container);
