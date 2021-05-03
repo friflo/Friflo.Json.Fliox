@@ -15,16 +15,16 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : Entity
     {
-        internal            bool                    synced;
+        internal            TaskState               state;
         internal            RefsTask                refsTask;
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
         internal            Dictionary<string, T>   entities;
 
-        public              Dictionary<string, T>   Results         => Synced ? entities     : throw RequiresSyncError("QueryTask.Result requires Sync().");
-        public              T                       this[string id] => Synced ? entities[id] : throw RequiresSyncError("QueryTask[] requires Sync().");
+        public              Dictionary<string, T>   Results         => State.Synced ? entities     : throw RequiresSyncError("QueryTask.Result requires Sync().");
+        public              T                       this[string id] => State.Synced ? entities[id] : throw RequiresSyncError("QueryTask[] requires Sync().");
             
-        internal override   bool                    Synced          => synced;
+        internal override   TaskState               State          => state;
         internal override   string                  Label           => $"QueryTask<{typeof(T).Name}> filter: {filterLinq}";
         public   override   string                  ToString()      => Label;
 
@@ -36,19 +36,19 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
-            if (Synced)
+            if (State.Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
-            if (Synced)
+            if (State.Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
         
         public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (Synced)
+            if (State.Synced)
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
         }

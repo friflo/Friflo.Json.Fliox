@@ -7,9 +7,10 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public abstract class UpdateTask : SyncTask {
-        internal            bool        synced;
-        internal override   bool        Synced      => synced;
+    public abstract class UpdateTask : SyncTask
+    {
+        internal            TaskState   state;
+        internal override   TaskState   State      => state;
     }
     
 #if !UNITY_5_3_OR_NEWER

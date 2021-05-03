@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     public abstract class SyncTask
     {
         internal abstract   string      Label  { get; }
-        internal abstract   bool        Synced { get; }
+        internal abstract   TaskState   State { get; }
         internal virtual    TaskError   Error  { get; set; }
 
         internal bool IsValid(string syncError, out Exception e) {
@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 e = new TaskErrorException(Error.Errors);
                 return false;
             }
-            if (Synced) {
+            if (State.Synced) {
                 e = null;
                 return true;
             }
@@ -32,6 +32,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal Exception RequiresSyncError(string message) {
             return new TaskNotSyncedException($"{message} {Label}");
         }
+    }
+
+    internal struct TaskState
+    {
+        internal bool Synced;
     }
     
     internal struct TaskError

@@ -301,7 +301,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
             foreach (var createTask in createTasks) {
-                createTask.synced = true;
+                createTask.state.Synced = true;
             }
         }
         
@@ -313,7 +313,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
             foreach (var updateTask in updateTasks) {
-                updateTask.synced = true;
+                updateTask.state.Synced = true;
             }
         }
         
@@ -333,7 +333,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             if (error.HasErrors) {
                 foreach (var read in reads) {
-                    read.synced = true;
+                    read.state.Synced = true;
                     read.Error = error;
                 }
                 return;
@@ -352,7 +352,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                         read.idMap[id] = peer.entity;
                     }
                 }
-                read.synced = true;
+                read.state.Synced = true;
                 AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
             }
         }
@@ -366,7 +366,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 entities.Add(id, peer.entity);
             }
             AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
-            query.synced = true;
+            query.state.Synced = true;
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {
@@ -403,7 +403,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 set.DeletePeer(id);
             }
             foreach (var deleteTask in deleteTasks) {
-                deleteTask.synced = true;
+                deleteTask.state.Synced = true;
             }
         }
 
