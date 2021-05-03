@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using Friflo.Json.Flow.Database.Models;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -33,5 +35,14 @@ namespace Friflo.Json.Flow.Graph
     public class TaskAlreadySyncedException : Exception
     {
         public TaskAlreadySyncedException(string message) : base (message) { }
+    }
+    
+    public class TaskErrorException : Exception
+    {
+        private readonly  List<EntityError> errors;
+
+        public TaskErrorException(List<EntityError> errors) : base($"Task has {errors.Count} errors") {
+            this.errors = errors;
+        }
     }
 }

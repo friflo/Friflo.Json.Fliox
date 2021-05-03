@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
-using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Models;
 using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Transform;
@@ -319,14 +318,27 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities entities) {
+            var error = new TaskError();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = entities.entities[id];
+                if (value.Error != null) {
+                    error.AddError(value.Error);
+                    continue;
+                }
                 var json = value.Json;  // in case of RemoteClient json is "null"
                 var isNull = json == null || json == "null";
                 if (isNull)
                     set.DeletePeer(id);
             }
+            if (error.HasErrors) {
+                foreach (var read in reads) {
+                    read.synced = true;
+                    read.Error = error;
+                }
+                return;
+            }
+
             // todo check for optimization
             foreach (var read in reads) {
                 var readIds = read.idMap.Keys.ToList();
