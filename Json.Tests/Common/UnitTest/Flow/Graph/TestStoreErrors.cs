@@ -32,7 +32,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         private static async Task TestStoresErrors(PocStore useStore) {
             await AssertQueryTask(useStore);
+            await AssertReadTask(useStore);
         }
+
+        private const string ArticleError = @"Task failed by entity errors. Count: 1
+| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 52";
         
         private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;
@@ -82,14 +86,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 ordersAllAmountGreater0.Results.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
-            var articleErrors = @"Task failed by entity errors. Count: 1
-| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 52";
+
 
             e = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
-            AreEqual(articleErrors, e.Message);
+            AreEqual(ArticleError, e.Message);
             
             e = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
-            AreEqual(articleErrors, e.Message);
+            AreEqual(ArticleError, e.Message);
 
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
@@ -99,10 +102,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             e = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
-            AreEqual(articleErrors, e.Message);
+            AreEqual(ArticleError, e.Message);
                 
             e = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
-            AreEqual(articleErrors, e.Message);
+            AreEqual(ArticleError, e.Message);
+        }
+        
+        private static async Task AssertReadTask(PocStore store) {
+            var orders = store.orders;
+            var readOrders = orders.Read();
+            var order1Task = readOrders.Find("order-1");
+            await store.Sync();
+            
+            // schedule ReadRefs on an already synced Read operation
+            Exception e;
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefByPath<Article>("customer"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsByPath<Article>("items[*].article"); });
+            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            
+            // todo add Read() without ids 
+
+            readOrders = orders.Read();
+            readOrders.Find("order-1");
+            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsByPath<Article>(".items[*].article");
+            AreSame(articleRefsTask, articleRefsTask2);
+            
+            ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
+            AreSame(articleRefsTask, articleRefsTask3);
+            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article", articleRefsTask.ToString());
+
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
+            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
+            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
+
+            ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
+            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
+
+            var readTask = store.articles.Read();
+            var duplicateId = "article-galaxy"; // support duplicate ids
+            var galaxy      = readTask.Find(duplicateId);
+            var article2    = readTask.Find("article-2");
+            var articleSet  = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+
+            await store.Sync(); // -------- Sync --------
+        
+            AreEqual(2,                 articleRefsTask.Results.Count);
+            // AreEqual("Changed name",    articleRefsTask["article-1"].name); todo
+            
+            AreEqual(1,                 articleProducerTask.Results.Count);
+            AreEqual("Canon",           articleProducerTask["producer-canon"].name);
+
+            e = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
+            // AreEqual(ArticleError, e.Message); todo
+            
+            // AreEqual("Galaxy S10",      galaxy.Result.name);                 todo
+            
+            // AreEqual(3,                 readTask.Results.Count);             todo
+            // AreEqual("Galaxy S10",      readTask["article-galaxy"].name);    todo
         }
     }
 }
