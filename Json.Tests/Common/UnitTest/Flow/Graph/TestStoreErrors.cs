@@ -87,13 +87,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
-
-            e = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
-            AreEqual(ArticleError, e.Message);
+            TaskEntityException te;
+            te = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
             
-            e = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
-            AreEqual(ArticleError, e.Message);
-
+            te = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -101,11 +102,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("customer-1",      customer.Id);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
-            e = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
-            AreEqual(ArticleError, e.Message);
+            te = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
                 
-            e = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
-            AreEqual(ArticleError, e.Message);
+            te = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -155,8 +158,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 articleProducerTask.Results.Count);
             AreEqual("Canon",           articleProducerTask["producer-canon"].name);
 
-            e = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
-            // AreEqual(ArticleError, e.Message); todo
+            TaskEntityException te;
+            te = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
+            // AreEqual(ArticleError, te.Message); todo
+            AreEqual(1, te.errors.Count);
             
             // AreEqual("Galaxy S10",      galaxy.Result.name);                 todo
             

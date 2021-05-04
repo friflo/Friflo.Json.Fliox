@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskEntityException : Exception
     {
-        private readonly  List<EntityError> errors;
+        public readonly  List<EntityError> errors;
 
         public TaskEntityException(List<EntityError> errors) : base(GetMessage(errors)) {
             this.errors = errors;
@@ -50,7 +50,12 @@ namespace Friflo.Json.Flow.Graph
             var sb = new StringBuilder();
             sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);
+            int n = 0;
             foreach (var error in errors) {
+                if (n++ == 10) {
+                    sb.Append("\n...");
+                    break;
+                }
                 sb.Append("\n| ");
                 sb.Append(error.GetMessage());
             }
