@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database.Models
         [Fri.Property]  private     JsonValue   value;
         [Fri.Ignore]    private     EntityError error;
         
-        [Fri.Ignore]    public      string      Json    => error == null ? value.json : throw error;
+        [Fri.Ignore]    public      string      Json    => error == null ? value.json : throw new EntityException(error);
         [Fri.Ignore]    public      EntityError Error   => error;
 
         public override             string      ToString() => Json;

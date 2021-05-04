@@ -5,24 +5,22 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Database.Models
 {
-    public class EntityError : Exception
+    public class EntityError
     {
         [Fri.Property]  public      EntityErrorType type;
         [Fri.Property]  public      string          error;
         [Fri.Ignore]    public      string          id;
         [Fri.Ignore]    public      string          container;
     
-        public override     string          Message {
-            get {
-                switch (type) {
-                    case EntityErrorType.ParseError: return $"Failed parsing entity: {container} '{id}', {error}";
-                    default:
-                        return $"EntityError {type} - {container} '{id}', {error}";
-                }
+        public string GetMessage() {
+            switch (type) {
+                case EntityErrorType.ParseError: return $"Failed parsing entity: {container} '{id}', {error}";
+                default:
+                    return $"EntityError {type} - {container} '{id}', {error}";
             }
         }
 
-        public override     string          ToString() => Message;
+        public override     string          ToString() => GetMessage();
 
         public EntityError() { } // required for TypeMapper
 
@@ -32,6 +30,11 @@ namespace Friflo.Json.Flow.Database.Models
             this.id         = id;
             this.error      = error;
         }
+    }
+
+    public class EntityException : Exception
+    {
+        public EntityException(EntityError error) : base(error.GetMessage()) { }
     }
 
     public enum EntityErrorType
