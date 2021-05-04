@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal bool IsOk(string syncError, out Exception e) {
             if (State.Error.Errors != null) {
-                e = new TaskErrorException(State.Error.Errors);
+                e = new TaskEntityException(State.Error.Errors);
                 return false;
             }
             if (State.IsSynced()) {

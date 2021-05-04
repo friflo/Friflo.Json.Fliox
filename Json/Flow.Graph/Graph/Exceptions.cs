@@ -38,17 +38,17 @@ namespace Friflo.Json.Flow.Graph
         public TaskAlreadySyncedException(string message) : base (message) { }
     }
     
-    public class TaskErrorException : Exception
+    public class TaskEntityException : Exception
     {
         private readonly  List<EntityError> errors;
 
-        public TaskErrorException(List<EntityError> errors) : base(GetMessage(errors)) {
+        public TaskEntityException(List<EntityError> errors) : base(GetMessage(errors)) {
             this.errors = errors;
         }
 
         private static string GetMessage(List<EntityError> errors) {
             var sb = new StringBuilder();
-            sb.Append("Task failed retrieving entities. Count: ");
+            sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);
             foreach (var error in errors) {
                 sb.Append("\n| ");
