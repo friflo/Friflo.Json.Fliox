@@ -16,8 +16,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
         internal  abstract  void    UpdateEntitiesResult    (UpdateEntities task, UpdateEntitiesResult result);
-        internal  abstract void     ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result, ContainerEntities entities);
-        internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result);
+        internal  abstract void     ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result, ContainerEntities readEntities);
+        internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities task, DeleteEntitiesResult result);
     }
@@ -317,11 +317,11 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities entities) {
+        internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
             var error = new TaskError();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
-                var value = entities.entities[id];
+                var value = readEntities.entities[id];
                 if (value.Error != null) {
                     error.AddError(value.Error);
                     continue;
@@ -343,7 +343,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var read in reads) {
                 var readIds = read.idMap.Keys.ToList();
                 foreach (var id in readIds) {
-                    var value = entities.entities[id];
+                    var value = readEntities.entities[id];
                     var json = value.Json;  // in case of RemoteClient json is "null"
                     if (json == null || json == "null") {
                         read.idMap[id] = null;
@@ -357,13 +357,24 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void QueryEntitiesResult(QueryEntities task, QueryEntitiesResult result) {
+        internal override void QueryEntitiesResult(QueryEntities task, QueryEntitiesResult result, ContainerEntities queryEntities) {
+            var error = new TaskError();
             var filterLinq = result.filterLinq;
             var query = queries[filterLinq];
             var entities = query.entities = new Dictionary<string, T>(result.ids.Count);
             foreach (var id in result.ids) {
+                var value = queryEntities.entities[id];
+                if (value.Error != null) {
+                    error.AddError(value.Error);
+                    continue;
+                }
                 var peer = set.GetPeerById(id);
                 entities.Add(id, peer.entity);
+            }
+            if (error.HasErrors) {
+                query.state.Synced = true;
+                query.state.Error = error;
+                return;
             }
             AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
             query.state.Synced = true;

@@ -181,7 +181,8 @@ namespace Friflo.Json.Flow.Graph
                         case TaskType.Query:
                             var query = (QueryEntities) task;
                             set = _intern.setByName[query.container];
-                            set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult) result);
+                            var queryEntities = containerResults[query.container];
+                            set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult) result, queryEntities);
                             break;
                         case TaskType.Patch:
                             var patch = (PatchEntities) task;
