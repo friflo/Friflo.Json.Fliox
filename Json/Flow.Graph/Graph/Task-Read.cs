@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
-        public              T                       this[string id]      => IsOk("FindRange.FindRange[]", out Exception e) ? task.idMap[id] : throw e;
+        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? task.idMap[id] : throw e;
         public              Dictionary<string, T>   Results { get {
             if (!IsOk("FindRange.Results", out Exception e)) {
                 throw e;
