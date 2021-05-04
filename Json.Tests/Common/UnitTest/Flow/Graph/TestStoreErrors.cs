@@ -82,9 +82,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 ordersAllAmountGreater0.Results.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
-            AreEqual(4,                 allArticles.Results.Count);
-            AreEqual("Galaxy S10",      allArticles.Results["article-galaxy"].name);
-            AreEqual("iPad Pro",        allArticles.Results["article-ipad"].name);
+            var articleErrors = @"Task failed by entity errors. Count: 1
+| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 52";
+
+            e = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
+            AreEqual(articleErrors, e.Message);
+            
+            e = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
+            AreEqual(articleErrors, e.Message);
+
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -92,13 +98,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("customer-1",      customer.Id);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
-            AreEqual(3,                 producersTask.Results.Count);
-            AreEqual("Samsung",         producersTask["producer-samsung"].name);
-            AreEqual("Canon",           producersTask["producer-canon"].name);
-            AreEqual("Apple",           producersTask["producer-apple"].name);
+            e = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
+            AreEqual(articleErrors, e.Message);
                 
-            AreEqual(1,                 producerEmployees.Results.Count);
-            AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
+            e = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
+            AreEqual(articleErrors, e.Message);
         }
     }
 }
