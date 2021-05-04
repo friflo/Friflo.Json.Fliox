@@ -23,9 +23,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  FileEmptyAsync() { await FileEmpty(); }
         
         private async Task FileEmpty() {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/dbErrors"))
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
+                var articles = (TestContainer)testDatabase.GetContainer("Article");
+                articles.readError.Add("article-2", @"{""id"": ""article-2"",""name"":""Smartphone"", JSON error ""producer"": null }");
                 await TestStoresErrors(useStore);
             }
         }
@@ -36,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 1
-| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 52";
+| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
         
         private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;

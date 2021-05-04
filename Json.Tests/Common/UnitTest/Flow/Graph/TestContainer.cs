@@ -23,8 +23,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    HashSet<string> readErrorIds  = new HashSet<string>();  
-        public  readonly    HashSet<string> writeErrorIds = new HashSet<string>();
+        public  readonly    Dictionary<string, string> readError  = new Dictionary<string, string>();  
+        public  readonly    Dictionary<string, string> writeError = new Dictionary<string, string>();
         
         public  override    bool            Pretty       => local.Pretty;
         public  override    SyncContext     SyncContext  => local.SyncContext;
@@ -62,20 +62,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         // --- simulate read/write error methods
         private void SimulateReadErrors(Dictionary<string,EntityValue> entities) {
-            foreach (var id in readErrorIds) {
+            foreach (var readPair in readError) {
+                var id      = readPair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
-                    value.SetJson("null");
-                    var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
-                    value.SetError(error);
+                    var payload = readPair.Value;
+                    if (payload.StartsWith("ERROR")) {
+                        value.SetJson("null");
+                        var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
+                        value.SetError(error);
+                    } else {
+                        value.SetJson(payload);
+                    }
                 }
             }
         }
         
         private void SimulateWriteErrors(Dictionary<string, EntityValue> entities, Dictionary<string, EntityError> errors) {
-            foreach (var id in writeErrorIds) {
+            foreach (var writePair in writeError) {
+                var id      = writePair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
-                    var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write error");
-                    errors.Add(id, error);
+                    var payload = writePair.Value;
+                    if (payload.StartsWith("ERROR")) {
+                        var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write error");
+                        errors.Add(id, error);
+                    } else {
+                        value.SetJson(payload);
+                    }
                 }
             }
         }
