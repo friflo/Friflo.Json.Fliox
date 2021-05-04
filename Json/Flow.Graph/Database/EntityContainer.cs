@@ -33,8 +33,8 @@ namespace Friflo.Json.Flow.Database
         
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities task);
         public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities task);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities task);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities task);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   task);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  task);
         public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities task);
 
         /// <summary>

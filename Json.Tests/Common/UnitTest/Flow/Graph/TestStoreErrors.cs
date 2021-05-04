@@ -24,7 +24,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private async Task FileEmpty() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/dbErrors"))
-            using (var useStore     = new PocStore(fileDatabase)) {
+            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var useStore     = new PocStore(testDatabase)) {
                 await TestStoresErrors(useStore);
             }
         }
