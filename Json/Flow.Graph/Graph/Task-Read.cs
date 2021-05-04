@@ -38,17 +38,17 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   HashSet<string>         ids;
         private  readonly   ReadTask<T>             task; 
 
-        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? task.idMap[id] : throw e;
+        public              T                       this[string id]      => IsOk("FindRange.FindRange[]", out Exception e) ? task.idMap[id] : throw e;
         public              Dictionary<string, T>   Results { get {
-            if (State.IsSynced()) {
-                var result = new Dictionary<string, T>(ids.Count);
-                foreach (var id in ids) {
-                    result.Add(id, task.idMap[id]);
-                }
-                return result;
+            if (!IsOk("FindRange.Results", out Exception e)) {
+                throw e;
             }
-            throw RequiresSyncError($"ReadIds.Results requires Sync()."); }
-        }
+            var result = new Dictionary<string, T>(ids.Count);
+            foreach (var id in ids) {
+                result.Add(id, task.idMap[id]);
+            }
+            return result;
+        } }
 
         internal override   TaskState   State       => task.State;
         internal override   string      Label       => $"ReadIds<{typeof(T).Name}> #ids: {ids.Count}";

@@ -20,16 +20,12 @@ namespace Friflo.Json.Flow.Graph.Internal
                 e = null;
                 return true;
             }
-            e = RequiresSyncError($"{syncError} requires Sync().");
+            e = new TaskNotSyncedException($"{syncError} requires Sync(). {Label}");
             return false;
         }
         
         internal Exception AlreadySyncedError() {
             return new TaskAlreadySyncedException($"Task already synced. {Label}");
-        }
-        
-        internal Exception RequiresSyncError(string message) {
-            return new TaskNotSyncedException($"{message} {Label}");
         }
     }
 
