@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Database.Models
         internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
             List<ReferencesResult> readRefResults = null;
             if (references != null && references.Count > 0) {
-                readRefResults = await entityContainer.ReadReferences(references, readResult.entities, response);
+                readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response);
             }
             readResult.references = readRefResults;
         }

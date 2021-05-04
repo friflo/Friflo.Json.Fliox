@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Database.Models
             containerResult.AddEntities(entities);
             List<ReferencesResult> queryRefsResults = null;
             if (references != null && references.Count > 0) {
-                queryRefsResults = await entityContainer.ReadReferences(references, entities, response);
+                queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response);
             }
             result.container    = container;
             result.filterLinq   = filterLinq;

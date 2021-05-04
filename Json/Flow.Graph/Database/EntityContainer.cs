@@ -75,6 +75,7 @@ namespace Friflo.Json.Flow.Database
         public async Task<List<ReferencesResult>> ReadReferences(
                 List<References>                    references,
                 Dictionary<string, EntityValue>     entities,
+                string                              container,
                 SyncResponse                        syncResponse)
         {
             if (references.Count == 0)
@@ -103,7 +104,7 @@ namespace Friflo.Json.Flow.Database
                 if (json != null) {
                     var selectorResults = jsonPath.Select(json, select);
                     if (selectorResults == null) {
-                        var error = new EntityError(EntityErrorType.ParseError, name, entityPair.Key, jsonPath.ErrorMessage);
+                        var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, jsonPath.ErrorMessage);
                         entity.SetError(error);
                         continue;
                     }
@@ -134,7 +135,7 @@ namespace Friflo.Json.Flow.Database
                         foreach (var id in ids) {
                             subEntities.Add(id, refEntities.entities[id]);
                         }
-                        referenceResult.references = await ReadReferences(subReferences, subEntities, syncResponse); 
+                        referenceResult.references = await ReadReferences(subReferences, subEntities, reference.container, syncResponse); 
                     }
                 }
             }

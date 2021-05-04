@@ -151,20 +151,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
-            // AreEqual("Changed name",    articleRefsTask["article-1"].name); todo
+            AreEqual("Changed name",    articleRefsTask["article-1"].name);
             
             AreEqual(1,                 articleProducerTask.Results.Count);
             AreEqual("Canon",           articleProducerTask["producer-canon"].name);
 
             TaskEntityException te;
             te = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
-            // AreEqual(ArticleError, te.Message); todo
+            AreEqual(ArticleError, te.Message);
             AreEqual(1, te.errors.Count);
             
-            // AreEqual("Galaxy S10",      galaxy.Result.name);                 todo
+            te = Throws<TaskEntityException>(() => { var _ = galaxy.Result; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
             
-            // AreEqual(3,                 readTask.Results.Count);             todo
-            // AreEqual("Galaxy S10",      readTask["article-galaxy"].name);    todo
+            te = Throws<TaskEntityException>(() => { var _ = readTask.Results; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(1, te.errors.Count);
         }
     }
 }
