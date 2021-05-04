@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Database.Models;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper;

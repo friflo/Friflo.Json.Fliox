@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
 
-namespace Friflo.Json.Flow.Database.Models
+namespace Friflo.Json.Flow.Sync
 {
     public class References
     {

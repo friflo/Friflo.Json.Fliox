@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
 
-namespace Friflo.Json.Flow.Database.Models
+namespace Friflo.Json.Flow.Sync
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest

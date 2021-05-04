@@ -2,8 +2,9 @@
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database;
 
-namespace Friflo.Json.Flow.Database.Models
+namespace Friflo.Json.Flow.Sync
 {
     public class CreateEntities : DatabaseTask
     {

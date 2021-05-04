@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd()
-using Friflo.Json.Flow.Database.Models;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database

@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Database.Models;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {

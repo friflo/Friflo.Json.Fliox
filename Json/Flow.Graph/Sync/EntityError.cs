@@ -3,7 +3,7 @@
 using System;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Database.Models
+namespace Friflo.Json.Flow.Sync
 {
     public class EntityError
     {
