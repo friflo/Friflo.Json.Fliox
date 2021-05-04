@@ -103,6 +103,11 @@ namespace Friflo.Json.Flow.Database
                 var         json    = entity.Json;
                 if (json != null) {
                     var selectorResults = jsonPath.Select(json, select);
+                    if (selectorResults == null) {
+                        var error = new EntityError(EntityErrorType.ParseError, name, entityPair.Key, jsonPath.ErrorMessage);
+                        entity.SetError(error);
+                        continue;
+                    }
                     for (int n = 0; n < references.Count; n++) {
                         // selectorResults[n] contains Select() result of selectors[n] 
                         var entityRefs = selectorResults[n].AsStrings();

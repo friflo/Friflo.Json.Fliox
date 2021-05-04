@@ -21,12 +21,18 @@ namespace Friflo.Json.Flow.Transform
         private readonly    List<PathNode<JsonSelectResult>>    nodeStack = new List<PathNode<JsonSelectResult>>();
         private readonly    JsonSelect                          reusedSelect = new JsonSelect();
 
+        public              string                              ErrorMessage => targetParser.error.msg.ToString();
+
         public void Dispose() {
             targetParser.Dispose();
             targetJson.Dispose();
             serializer.Dispose();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>null in case of an error - error message is available via <see cref="ErrorMessage"/>.</returns>
         public List<JsonSelectResult> Select(string json, JsonSelect scalarSelect, bool pretty = false) {
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
@@ -38,6 +44,9 @@ namespace Friflo.Json.Flow.Transform
             serializer.SetPretty(pretty);
             
             TraceTree(ref targetParser);
+            if (targetParser.error.ErrSet)
+                return null;
+
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             
