@@ -26,6 +26,6 @@ namespace Friflo.Json.Flow.Sync
     {
         public   List<ReferencesResult>         references;
         [Fri.Ignore]
-        internal Dictionary<string,EntityValue> entities;
+        public   Dictionary<string,EntityValue> entities;
     }
 }

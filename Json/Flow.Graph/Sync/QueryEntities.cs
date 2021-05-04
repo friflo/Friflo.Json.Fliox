@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Sync
         public  HashSet<string>                 ids;
         public  List<ReferencesResult>          references;
         [Fri.Ignore]
-        internal Dictionary<string,EntityValue> entities;
+        public  Dictionary<string,EntityValue>  entities;
         
         internal override   TaskType            TaskType => TaskType.Query;
         public   override   string              ToString() => $"container: {container}, filter: {filterLinq}";
