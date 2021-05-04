@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
             AreEqual("ReadId<Order> id: order-1", order1.ToString());
-            var allArticles             =  articles.QueryAll();
+            var allArticles             = articles.QueryAll();
             var allArticles2            = articles.QueryByFilter(Operation.FilterTrue);
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));

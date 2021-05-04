@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
@@ -45,8 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
             AreEqual("ReadId<Order> id: order-1", order1.ToString());
-            var allArticles             =  articles.QueryAll();
-            var allArticles2            = articles.QueryByFilter(Operation.FilterTrue);
+            var allArticles             = articles.QueryAll();
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1");
