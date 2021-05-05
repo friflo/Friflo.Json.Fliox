@@ -40,30 +40,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             local = localContainer;
         }
 
-        public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities task) {
-            var result = await local.CreateEntities(task);
-            SimulateWriteErrors(task.entities, result.errors);
+        public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
+            var result = await local.CreateEntities(command);
+            SimulateWriteErrors(command.entities, result.errors);
             return result;
         }
 
-        public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities task) {
-            return await local.UpdateEntities(task);
+        public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
+            return await local.UpdateEntities(command);
         }
 
-        public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities task) {
-            var result = await local.ReadEntities(task);
+        public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
+            var result = await local.ReadEntities(command);
             SimulateReadErrors(result.entities);
             return result;
         }
         
-        public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities task) {
-            var result = await local.QueryEntities(task);
+        public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
+            var result = await local.QueryEntities(command);
             SimulateReadErrors(result.entities);
             return result;
         }
         
-        public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities task) {
-            return await local.DeleteEntities(task);
+        public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
+            return await local.DeleteEntities(command);
         }
         
         // --- simulate read/write error methods

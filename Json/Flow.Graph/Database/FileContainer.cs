@@ -52,8 +52,8 @@ namespace Friflo.Json.Flow.Database
             return folder + key + ".json";
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
-            var entities = task.entities;
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+            var entities = command.entities;
             var result = new CreateEntitiesResult{errors = new Dictionary<string, EntityError>()};
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
@@ -69,8 +69,8 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
-            var entities = task.entities;
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+            var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
@@ -81,8 +81,8 @@ namespace Friflo.Json.Flow.Database
             return new UpdateEntitiesResult();
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
-            var keys        = task.ids;
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+            var keys        = command.ids;
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
                 var filePath = FilePath(key);
@@ -103,11 +103,11 @@ namespace Friflo.Json.Flow.Database
             return new ReadEntitiesResult{entities = entities};
         }
 
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
             var keys            = GetIds(folder);
             var readIds         = new ReadEntities {ids = keys};
             var readEntities    = await ReadEntities(readIds);
-            var jsonFilter      = new JsonFilter(task.filter); // filter can be reused
+            var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
             foreach (var entityPair in readEntities.entities) {
                 var key     = entityPair.Key;
@@ -120,8 +120,8 @@ namespace Friflo.Json.Flow.Database
             return new QueryEntitiesResult{entities = result};
         }
 
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
-            var keys = task.ids;
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+            var keys = command.ids;
             foreach (var key in keys) {
                 string path = FilePath(key);
                 DeleteFile(path);

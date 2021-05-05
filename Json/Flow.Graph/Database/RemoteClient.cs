@@ -52,24 +52,24 @@ namespace Friflo.Json.Flow.Database
             : base(name, database) {
         }
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD operations");
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
     }
 }

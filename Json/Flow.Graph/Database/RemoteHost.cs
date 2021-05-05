@@ -163,24 +163,24 @@ namespace Friflo.Json.Flow.Database
         }
 
 
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
-            return await local.CreateEntities(task);
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+            return await local.CreateEntities(command);
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
-            return await local.UpdateEntities(task);
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+            return await local.UpdateEntities(command);
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
-            return await local.ReadEntities(task);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+            return await local.ReadEntities(command);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
-            return await local.QueryEntities(task);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
+            return await local.QueryEntities(command);
         }
         
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
-            return await local.DeleteEntities(task);
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+            return await local.DeleteEntities(command);
         }
     }
 }

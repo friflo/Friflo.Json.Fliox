@@ -38,11 +38,11 @@ namespace Friflo.Json.Flow.Database
         public virtual      bool            Pretty      => false;
         public virtual      SyncContext     SyncContext => null;
 
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities task);
-        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities task);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   task);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  task);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities task);
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command);
+        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command);
         
         
         protected EntityContainer(string name, EntityDatabase database) {

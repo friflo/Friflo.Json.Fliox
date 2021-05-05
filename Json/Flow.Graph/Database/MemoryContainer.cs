@@ -40,8 +40,8 @@ namespace Friflo.Json.Flow.Database
         }
 
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities task) {
-            var entities = task.entities;
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+            var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
@@ -51,8 +51,8 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities task) {
-            var entities = task.entities;
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+            var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
@@ -64,8 +64,8 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities task) {
-            var keys = task.ids;
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+            var keys = command.ids;
             var entities = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
                 payloads.TryGetValue(key, out var payload);
@@ -76,9 +76,9 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities task) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
             var entities    = new Dictionary<string, EntityValue>();
-            var jsonFilter  = new JsonFilter(task.filter); // filter can be reused
+            var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
                 var payload = payloadPair.Value;
                 if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
@@ -90,8 +90,8 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities task) {
-            var keys = task.ids;
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+            var keys = command.ids;
             foreach (var key in keys) {
                 payloads.Remove(key);
             }
