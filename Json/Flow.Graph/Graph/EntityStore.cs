@@ -155,8 +155,9 @@ namespace Friflo.Json.Flow.Graph
                     var task = tasks[n];
                     var result = results[n];
                     TaskType taskType = task.TaskType;
-                    if (taskType != result.TaskType)
-                        throw new InvalidOperationException($"Expect CommandType of response matches request. index:{n} expect: {taskType} got: {result.TaskType}");
+                    var actual = result.TaskType;
+                    if (taskType != actual)
+                        throw new InvalidOperationException($"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}");
                     switch (taskType) {
                         case TaskType.Create:
                             var create = (CreateEntities) task;
