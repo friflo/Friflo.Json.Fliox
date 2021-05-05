@@ -7,12 +7,10 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class ReadEntities : IDatabaseCommand
+    public class ReadEntities
     {
         public  HashSet<string>                 ids;
         public  List<References>                references;
-        
-        public  DatabaseError                   Error { get; set; }
         
         internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
             List<ReferencesResult> readRefResults = null;
@@ -24,10 +22,12 @@ namespace Friflo.Json.Flow.Sync
     }
     
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
-    public class ReadEntitiesResult
+    public class ReadEntitiesResult: IDatabaseResult
     {
-        public   List<ReferencesResult>         references;
+        public  List<ReferencesResult>          references;
+        public  DatabaseError                   Error { get; set; }
+
         [Fri.Ignore]
-        public   Dictionary<string,EntityValue> entities;
+        public  Dictionary<string,EntityValue>  entities;
     }
 }

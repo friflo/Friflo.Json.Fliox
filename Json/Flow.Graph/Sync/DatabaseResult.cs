@@ -2,7 +2,7 @@
 
 namespace Friflo.Json.Flow.Sync
 {
-    public interface IDatabaseCommand
+    public interface IDatabaseResult
     {
         [Fri.Property(Name = "error")]
         DatabaseError      Error { get; set;  }

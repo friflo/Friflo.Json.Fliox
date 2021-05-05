@@ -11,6 +11,14 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
+    /// <summary>
+    /// EntityContainer define the entire set of interfaces a database adapter needs to implement to enable
+    /// the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
+    /// </summary>
+    /// 
+    /// All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
+    /// <see cref="CreateEntities"/>, ... implement <see cref="IDatabaseResult"/>. In case a database command fails
+    /// completely  <see cref="IDatabaseResult.Error"/> needs to be set.
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -22,20 +30,20 @@ namespace Friflo.Json.Flow.Database
         public virtual      bool            Pretty      => false;
         public virtual      SyncContext     SyncContext => null;
 
-
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities task);
+        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities task);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   task);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  task);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities task);
+        
+        
         protected EntityContainer(string name, EntityDatabase database) {
             this.name = name;
             database.AddContainer(this);
             this.database = database;
         }
         
-        public virtual  void                            Dispose() { }
-        
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities task);
-        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities task);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   task);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  task);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities task);
+        public virtual  void                        Dispose() { }
 
         /// <summary>
         /// Default implementation to apply patches to entities.

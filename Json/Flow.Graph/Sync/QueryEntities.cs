@@ -10,14 +10,13 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class QueryEntities : DatabaseTask, IDatabaseCommand
+    public class QueryEntities : DatabaseTask
     {
         public  string                      container;
         public  string                      filterLinq;
         public  FilterOperation             filter;
         public  List<References>            references;
         
-        public              DatabaseError   Error { get; set; }
         internal override   TaskType        TaskType => TaskType.Query;
         public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
         
@@ -40,7 +39,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    public class QueryEntitiesResult : TaskResult
+    public class QueryEntitiesResult : TaskResult, IDatabaseResult
     {
         public  string                          container;  // only for debugging ergonomics
         public  string                          filterLinq;
@@ -48,6 +47,8 @@ namespace Friflo.Json.Flow.Sync
         public  List<ReferencesResult>          references;
         [Fri.Ignore]
         public  Dictionary<string,EntityValue>  entities;
+        public  DatabaseError                   Error { get; set; }
+
         
         internal override   TaskType            TaskType => TaskType.Query;
         public   override   string              ToString() => $"container: {container}, filter: {filterLinq}";
