@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Database
             // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
-                var refContainer    = database.GetContainer(reference.container);
+                var refContainer    = database.GetOrCreateContainer(reference.container);
                 var referenceResult = referenceResults[n];
                 var ids = referenceResult.ids;
                 if (ids.Count > 0) {

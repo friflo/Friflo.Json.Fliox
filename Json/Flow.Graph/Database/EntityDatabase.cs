@@ -29,8 +29,13 @@ namespace Friflo.Json.Flow.Database
         {
             containers.Add(container.name, container);
         }
+        
+        public bool TryGetContainer(string name, out EntityContainer container)
+        {
+            return containers.TryGetValue(name, out container);
+        }
 
-        public EntityContainer GetContainer(string name)
+        public EntityContainer GetOrCreateContainer(string name)
         {
             if (containers.TryGetValue(name, out EntityContainer container))
                 return container;

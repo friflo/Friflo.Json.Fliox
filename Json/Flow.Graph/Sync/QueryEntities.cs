@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
         public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
-            var entityContainer = database.GetContainer(container);
+            var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.QueryEntities(this);
             var containerResult = response.GetContainerResult(container);
             var entities = result.entities;

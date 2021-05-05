@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Sync
             foreach (var read in reads) {
                 combinedRead.ids.UnionWith(read.ids);
             }
-            var entityContainer = database.GetContainer(container);
+            var entityContainer = database.GetOrCreateContainer(container);
             var combinedResult = await entityContainer.ReadEntities(combinedRead);
             
             var combinedEntities = combinedResult.entities;
