@@ -17,7 +17,8 @@ namespace Friflo.Json.Flow.Database
     ///   the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
     /// </para>
     /// <para>
-    ///   The interface methods are designed to enable clear, compact and efficient implementations.
+    ///   The interface methods are designed to enable clear, compact and efficient implementations of database
+    ///   requests. E.g. operations like SELECT, INSERT, DELETE or UPDATE in case of an SQL database adapter.
     ///   <see cref="MemoryContainer"/> and <see cref="FileContainer"/> show straight forward implementation of
     ///   <see cref="EntityContainer"/>. 
     ///   
