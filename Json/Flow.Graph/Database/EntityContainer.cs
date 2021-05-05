@@ -15,6 +15,10 @@ namespace Friflo.Json.Flow.Database
     /// EntityContainer define the entire set of interfaces a database adapter needs to implement to enable
     /// the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
     /// </summary>
+    ///
+    /// The interface methods are designed to enable clear, compact and efficient implementations.
+    /// <see cref="MemoryContainer"/> & <see cref="FileContainer"/> show straight forward implementation of
+    /// <see cref="EntityContainer"/>. 
     /// 
     /// All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
     /// <see cref="CreateEntities"/>, ... implement <see cref="IDatabaseResult"/>. In case a database command fails
