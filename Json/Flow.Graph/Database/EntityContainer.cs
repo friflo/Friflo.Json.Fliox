@@ -12,17 +12,20 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Database
 {
     /// <summary>
-    /// EntityContainer define the entire set of interfaces a database adapter needs to implement to enable
-    /// the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
+    /// <para>
+    ///   EntityContainer define the entire set of interfaces a database adapter needs to implement to enable
+    ///   the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
+    /// </para>
+    /// <para>
+    ///   The interface methods are designed to enable clear, compact and efficient implementations.
+    ///   <see cref="MemoryContainer"/> and <see cref="FileContainer"/> show straight forward implementation of
+    ///   <see cref="EntityContainer"/>. 
+    ///   
+    ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
+    ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="IDatabaseResult"/>.
+    ///   In case a database command fails completely  <see cref="IDatabaseResult.Error"/> needs to be set.
+    /// </para>
     /// </summary>
-    ///
-    /// The interface methods are designed to enable clear, compact and efficient implementations.
-    /// <see cref="MemoryContainer"/> & <see cref="FileContainer"/> show straight forward implementation of
-    /// <see cref="EntityContainer"/>. 
-    /// 
-    /// All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
-    /// <see cref="CreateEntities"/>, ... implement <see cref="IDatabaseResult"/>. In case a database command fails
-    /// completely  <see cref="IDatabaseResult.Error"/> needs to be set.
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
