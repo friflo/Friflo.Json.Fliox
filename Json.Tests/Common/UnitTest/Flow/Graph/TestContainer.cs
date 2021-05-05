@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             value.SetError(error);
                             break;
                         case "READ-EXCEPTION":
-                            throw new InvalidOperationException("simulated EntityContainer read exception");
+                            throw new SimulationException("simulated EntityContainer read exception");
                         default:
                             value.SetJson(payload); // modify JSON
                             break;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             errors.Add(id, error);
                             break;
                         case "WRITE-EXCEPTION":
-                            throw new InvalidOperationException("simulated EntityContainer write exception");
+                            throw new SimulationException("simulated EntityContainer write exception");
                         default:
                             value.SetJson(payload); // modify JSON
                             break;
@@ -108,5 +108,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
             }
         }
+    }
+
+    public class SimulationException : Exception {
+        public SimulationException(string message) : base(message) { }
     }
 }

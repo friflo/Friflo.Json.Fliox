@@ -58,8 +58,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
-            await AssertQueryTask(useStore);
-            await AssertReadTask(useStore);
+            await AssertQueryTask       (useStore);
+            await AssertReadTask        (useStore);
+            // await AssertTaskExceptions  (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -195,6 +196,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             te = Throws<TaskResultException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.entityErrors.Count);
+        }
+
+        private static async Task AssertTaskExceptions(PocStore store) {
+            var customers = store.customers;
+
+            var readCustomers = customers.Read();
+            var customerException = readCustomers.Find("customer-exception");
+
+            await store.Sync();
         }
     }
 }
