@@ -50,8 +50,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
-            articles.readError.Add("article-2", @"{""invalidJson"" XXX}");
-            articles.readError.Add("article-1", "READ-ERROR");
+            articles.readErrors.Add("article-2", @"{""invalidJson"" XXX}");
+            articles.readErrors.Add("article-1", "READ-ERROR");
+            
+            var customers = testDatabase.GetTestContainer("Customer");
+            customers.readErrors.Add("customer-exception", "READ-EXCEPTION");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
