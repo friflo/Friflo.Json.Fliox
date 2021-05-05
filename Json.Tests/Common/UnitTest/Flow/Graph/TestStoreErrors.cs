@@ -111,12 +111,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
-            TaskEntityException te;
-            te = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
+            TaskException te;
+            te = Throws<TaskException>(() => { var _ = allArticles.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
-            te = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
+            te = Throws<TaskException>(() => { var _ = allArticles.Results["article-galaxy"]; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
@@ -126,11 +126,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("customer-1",      customer.Id);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
-            te = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
+            te = Throws<TaskException>(() => { var _ = producersTask.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
                 
-            te = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
+            te = Throws<TaskException>(() => { var _ = producerEmployees.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
         }
@@ -180,16 +180,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual(0,                 articleProducerTask.Results.Count);
 
-            TaskEntityException te;
-            te = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
+            TaskException te;
+            te = Throws<TaskException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
-            te = Throws<TaskEntityException>(() => { var _ = galaxy.Result; });
+            te = Throws<TaskException>(() => { var _ = galaxy.Result; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
-            te = Throws<TaskEntityException>(() => { var _ = readTask.Results; });
+            te = Throws<TaskException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
         }

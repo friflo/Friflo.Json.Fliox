@@ -38,11 +38,11 @@ namespace Friflo.Json.Flow.Graph
         public TaskAlreadySyncedException(string message) : base (message) { }
     }
     
-    public class TaskEntityException : Exception
+    public class TaskException : Exception
     {
         public readonly  SortedDictionary<string, EntityError> errors;
 
-        public TaskEntityException(SortedDictionary<string, EntityError> errors) : base(GetMessage(errors)) {
+        public TaskException(SortedDictionary<string, EntityError> errors) : base(GetMessage(errors)) {
             this.errors = errors;
         }
 
