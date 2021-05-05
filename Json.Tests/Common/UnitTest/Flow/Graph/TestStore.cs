@@ -65,10 +65,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        [UnityTest] public IEnumerator FileEmptyCoroutine() { yield return RunAsync.Await(FileEmpty()); }
-        [Test]      public async Task  FileEmptyAsync() { await FileEmpty(); }
+        [UnityTest] public IEnumerator FileUseCoroutine() { yield return RunAsync.Await(FileUse()); }
+        [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
-        private async Task FileEmpty() {
+        private async Task FileUse() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = new PocStore(fileDatabase))
             using (var useStore     = new PocStore(fileDatabase)) {
