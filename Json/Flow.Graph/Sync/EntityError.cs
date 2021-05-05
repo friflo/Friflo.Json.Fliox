@@ -10,6 +10,7 @@ namespace Friflo.Json.Flow.Sync
     {
         [Fri.Property]  public  EntityErrorType type;
         [Fri.Property]  public  string          message;
+        
         [Fri.Ignore]    public  string          id;
         [Fri.Ignore]    public  string          container;
 

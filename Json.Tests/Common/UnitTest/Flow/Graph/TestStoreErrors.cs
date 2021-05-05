@@ -26,10 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
-                // add simulation errors for specific keys
-                var articles = testDatabase.GetTestContainer("Article");
-                articles.readError.Add("article-2", @"{""id"": ""article-2"",""name"":""Smartphone"", JSON error ""producer"": null }");
-                articles.readError.Add("article-1", "ERROR");
+                AddSimulationErrors(testDatabase);
                 await TestStoresErrors(useStore);
             }
         }
@@ -39,7 +36,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private async Task RemoteUse() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
+            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var hostDatabase = new RemoteHost(testDatabase, "http://+:8080/")) {
+                AddSimulationErrors(testDatabase);
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new RemoteClient("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase)) {
@@ -47,6 +46,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     }
                 });
             }
+        }
+        
+        private static void AddSimulationErrors(TestDatabase testDatabase) {
+            var articles = testDatabase.GetTestContainer("Article");
+            articles.readError.Add("article-2", @"{""id"": ""article-2"",""name"":""Smartphone"", JSON error ""producer"": null }");
+            articles.readError.Add("article-1", "ERROR");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
