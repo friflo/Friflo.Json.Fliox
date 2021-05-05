@@ -114,11 +114,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskException te;
             te = Throws<TaskException>(() => { var _ = allArticles.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskException>(() => { var _ = allArticles.Results["article-galaxy"]; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -128,11 +128,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
             te = Throws<TaskException>(() => { var _ = producersTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
                 
             te = Throws<TaskException>(() => { var _ = producerEmployees.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -183,15 +183,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskException te;
             te = Throws<TaskException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskException>(() => { var _ = galaxy.Result; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.errors.Count);
+            AreEqual(2, te.entityErrors.Count);
         }
     }
 }

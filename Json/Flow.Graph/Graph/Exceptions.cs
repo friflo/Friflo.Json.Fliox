@@ -40,10 +40,10 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskException : Exception
     {
-        public readonly  SortedDictionary<string, EntityError> errors;
+        public readonly  SortedDictionary<string, EntityError> entityErrors;
 
-        public TaskException(SortedDictionary<string, EntityError> errors) : base(GetMessage(errors)) {
-            this.errors = errors;
+        public TaskException(SortedDictionary<string, EntityError> entityErrors) : base(GetMessage(entityErrors)) {
+            this.entityErrors = entityErrors;
         }
 
         private static string GetMessage(SortedDictionary<string, EntityError> errors) {
