@@ -18,6 +18,7 @@ namespace Friflo.Json.Burst
         }
         
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection) {
+            // return new HashSet<T>(collection, null); todo use this
             var hashSet = new HashSet<T>();
             foreach (var element in collection) {
                 hashSet.Add(element);

@@ -41,13 +41,14 @@ namespace Friflo.Json.Flow.Graph.Internal
     
     internal struct TaskError
     {
-        internal    List<EntityError>   Errors { get; private set; }
-        internal    bool                HasErrors => Errors != null;
+        // used sorted dictionary to ensure stable (and repeatable) order of errors
+        internal    SortedDictionary<string, EntityError>   Errors { get; private set; }
+        internal    bool                                    HasErrors => Errors != null;
 
         internal void AddError(EntityError error) {
             if (Errors == null)
-                Errors = new List<EntityError>();
-            Errors.Add(error);
+                Errors = new SortedDictionary<string, EntityError>();
+            Errors.Add(error.id, error);
         }
     }
     
