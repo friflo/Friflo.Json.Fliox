@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    public class DeleteEntitiesResult : TaskResult, IDatabaseResult
+    public class DeleteEntitiesResult : TaskResult, ICommandResult
     {
         public              DatabaseError       Error { get; set; }
 

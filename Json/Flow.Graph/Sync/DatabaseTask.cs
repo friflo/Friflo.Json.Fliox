@@ -35,6 +35,10 @@ namespace Friflo.Json.Flow.Sync
         internal abstract TaskType          TaskType { get; }
     }
     
+    public class TaskError {
+        
+    }
+    
     public enum TaskType
     {
         Read,

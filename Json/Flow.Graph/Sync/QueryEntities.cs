@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    public class QueryEntitiesResult : TaskResult, IDatabaseResult
+    public class QueryEntitiesResult : TaskResult, ICommandResult
     {
         public  string                          container;  // only for debugging ergonomics
         public  string                          filterLinq;

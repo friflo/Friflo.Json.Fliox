@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    public class UpdateEntitiesResult : TaskResult, IDatabaseResult
+    public class UpdateEntitiesResult : TaskResult, ICommandResult
     {
         public              DatabaseError       Error { get; set; }
 
