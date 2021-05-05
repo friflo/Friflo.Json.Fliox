@@ -26,8 +26,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
-                var articles = (TestContainer)testDatabase.GetContainer("Article");
+                // add simulation errors for specific keys
+                var articles = testDatabase.GetTestContainer("Article");
                 articles.readError.Add("article-2", @"{""id"": ""article-2"",""name"":""Smartphone"", JSON error ""producer"": null }");
+                articles.readError.Add("article-1", "ERROR");
                 await TestStoresErrors(useStore);
             }
         }
@@ -38,6 +40,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 1
+| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
+
+        private const string ArticleError2 = @"Task failed by entity errors. Count: 2
+| EntityError ReadError - Article 'article-1', simulated read error
 | Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
         
         private static async Task AssertQueryTask(PocStore store) {
@@ -90,12 +96,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             TaskEntityException te;
             te = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(ArticleError2, te.Message);
+            AreEqual(2, te.errors.Count);
             
             te = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(ArticleError2, te.Message);
+            AreEqual(2, te.errors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -104,12 +110,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             te = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(ArticleError2, te.Message);
+            AreEqual(2, te.errors.Count);
                 
             te = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(ArticleError2, te.Message);
+            AreEqual(2, te.errors.Count);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -154,10 +160,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
-            AreEqual("Changed name",    articleRefsTask["article-1"].name);
             
-            AreEqual(1,                 articleProducerTask.Results.Count);
-            AreEqual("Canon",           articleProducerTask["producer-canon"].name);
+            AreEqual(0,                 articleProducerTask.Results.Count);
 
             TaskEntityException te;
             te = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });

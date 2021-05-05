@@ -100,6 +100,8 @@ namespace Friflo.Json.Flow.Database
             // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
             foreach (var entityPair in entities) {
                 EntityValue entity  = entityPair.Value;
+                if (entity.Error != null)
+                    continue;
                 var         json    = entity.Json;
                 if (json != null) {
                     var selectorResults = jsonPath.Select(json, select);

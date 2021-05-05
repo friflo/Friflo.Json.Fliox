@@ -15,8 +15,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             EntityContainer localContainer = local.CreateContainer(name, local);
-            TestContainer container = new TestContainer(name, this, localContainer);
-            return container;
+            return new TestContainer(name, this, localContainer);;
+        }
+
+        public TestContainer GetTestContainer(string name) {
+            return (TestContainer) GetContainer(name);
         }
     }
     
