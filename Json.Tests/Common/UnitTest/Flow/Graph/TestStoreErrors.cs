@@ -39,10 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertReadTask(useStore);
         }
 
-        private const string ArticleError = @"Task failed by entity errors. Count: 1
-| ParseError - Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
-
-        private const string ArticleError2 = @"Task failed by entity errors. Count: 2
+        private const string ArticleError = @"Task failed by entity errors. Count: 2
 | ReadError - Article 'article-1', simulated read error
 | ParseError - Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
         
@@ -96,11 +93,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             TaskEntityException te;
             te = Throws<TaskEntityException>(() => { var _ = allArticles.Results; });
-            AreEqual(ArticleError2, te.Message);
+            AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
             te = Throws<TaskEntityException>(() => { var _ = allArticles.Results["article-galaxy"]; });
-            AreEqual(ArticleError2, te.Message);
+            AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
@@ -110,11 +107,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             te = Throws<TaskEntityException>(() => { var _ = producersTask.Results; });
-            AreEqual(ArticleError2, te.Message);
+            AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
                 
             te = Throws<TaskEntityException>(() => { var _ = producerEmployees.Results; });
-            AreEqual(ArticleError2, te.Message);
+            AreEqual(ArticleError, te.Message);
             AreEqual(2, te.errors.Count);
         }
         
@@ -151,11 +148,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
-            var readTask = store.articles.Read();
-            var duplicateId = "article-galaxy"; // support duplicate ids
-            var galaxy      = readTask.Find(duplicateId);
-            var article2    = readTask.Find("article-2");
-            var articleSet  = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+            var readTask        = store.articles.Read();
+            var duplicateId     = "article-galaxy"; // support duplicate ids
+            var galaxy          = readTask.Find(duplicateId);
+            var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"});
+            var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
 
             await store.Sync(); // -------- Sync --------
         
@@ -166,15 +163,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskEntityException te;
             te = Throws<TaskEntityException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(2, te.errors.Count);
             
             te = Throws<TaskEntityException>(() => { var _ = galaxy.Result; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(2, te.errors.Count);
             
             te = Throws<TaskEntityException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(1, te.errors.Count);
+            AreEqual(2, te.errors.Count);
         }
     }
 }

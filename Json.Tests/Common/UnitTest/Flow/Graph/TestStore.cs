@@ -260,11 +260,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
 
-            var readTask = store.articles.Read();
-            var duplicateId = "article-galaxy"; // support duplicate ids
-            var galaxy      = readTask.Find(duplicateId);
-            var article2    = readTask.Find("article-2");
-            var articleSet  = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+            var readTask        = store.articles.Read();
+            var duplicateId     = "article-galaxy"; // support duplicate ids
+            var galaxy          = readTask.Find(duplicateId);
+            var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"});
+            var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
 
             await store.Sync(); // -------- Sync --------
         
@@ -280,9 +280,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("iPad Pro",        articleSet["article-ipad"].name);
             
             AreEqual("Galaxy S10",      galaxy.Result.name);
-            AreEqual("Smartphone",      article2.Result.name);
             
-            AreEqual(3,                 readTask.Results.Count);
+            AreEqual(2,                 article1And2.Results.Count);
+            AreEqual("Smartphone",      article1And2["article-2"].name);
+            
+            AreEqual(4,                 readTask.Results.Count);
             AreEqual("Galaxy S10",      readTask["article-galaxy"].name);
         }
         
