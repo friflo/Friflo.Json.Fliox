@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var id      = readPair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
                     var payload = readPair.Value;
-                    if (payload.StartsWith("ERROR")) {
+                    if (payload == "READ-ERROR") {
                         value.SetJson("null");
                         var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
                         value.SetError(error);
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var id      = writePair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
                     var payload = writePair.Value;
-                    if (payload.StartsWith("ERROR")) {
+                    if (payload == "WRITE-ERROR") {
                         var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write error");
                         errors.Add(id, error);
                     } else {

@@ -50,8 +50,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
-            articles.readError.Add("article-2", @"{""id"": ""article-2"",""name"":""Smartphone"", JSON error ""producer"": null }");
-            articles.readError.Add("article-1", "ERROR");
+            articles.readError.Add("article-2", @"{""invalidJson"" XXX}");
+            articles.readError.Add("article-1", "READ-ERROR");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
 | ReadError - Article 'article-1', simulated read error
-| ParseError - Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
+| ParseError - Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
         private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;
