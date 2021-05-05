@@ -33,6 +33,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 await TestStoresErrors(useStore);
             }
         }
+        
+        //[UnityTest] public IEnumerator RemoteUseCoroutine() { yield return RunAsync.Await(RemoteUse()); }
+        //[Test]      public async Task  RemoteUseAsync() { await RemoteUse(); }
+        
+        private async Task RemoteUse() {
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
+                await TestStore.RunRemoteHost(hostDatabase, async () => {
+                    using (var remoteDatabase   = new RemoteClient("http://localhost:8080/"))
+                    using (var useStore         = new PocStore(remoteDatabase)) {
+                        await TestStoresErrors(useStore);
+                    }
+                });
+            }
+        }
 
         private static async Task TestStoresErrors(PocStore useStore) {
             await AssertQueryTask(useStore);

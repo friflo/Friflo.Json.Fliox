@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        private static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
+        internal static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
             remoteHost.Start();
             var hostTask = Task.Run(() => {
                 // await hostDatabase.HandleIncomingConnections();
