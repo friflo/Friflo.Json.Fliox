@@ -10,15 +10,16 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class QueryEntities : DatabaseTask
+    public class QueryEntities : DatabaseTask, IDatabaseCommand
     {
-        public  string                  container;
-        public  string                  filterLinq;
-        public  FilterOperation         filter;
-        public  List<References>        references;
+        public  string                      container;
+        public  string                      filterLinq;
+        public  FilterOperation             filter;
+        public  List<References>            references;
         
-        internal override   TaskType    TaskType => TaskType.Query;
-        public   override   string      ToString() => $"container: {container}, filter: {filterLinq}";
+        public              DatabaseError   Error { get; set; }
+        internal override   TaskType        TaskType => TaskType.Query;
+        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetOrCreateContainer(container);

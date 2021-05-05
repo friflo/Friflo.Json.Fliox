@@ -6,11 +6,12 @@ using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class CreateEntities : DatabaseTask
+    public class CreateEntities : DatabaseTask, IDatabaseCommand
     {
         public  string                          container;
         public  Dictionary<string, EntityValue> entities;
         
+        public              DatabaseError       Error { get; set; }
         internal override   TaskType            TaskType => TaskType.Create;
         public   override   string              ToString() => "container: " + container;
         

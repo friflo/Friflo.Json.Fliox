@@ -6,11 +6,12 @@ using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class DeleteEntities : DatabaseTask
+    public class DeleteEntities : DatabaseTask, IDatabaseCommand
     {
         public              string              container;
         public              HashSet<string>     ids;
         
+        public              DatabaseError       Error { get; set; }
         internal override   TaskType            TaskType => TaskType.Delete;
         public   override   string              ToString() => "container: " + container;
         
