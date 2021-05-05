@@ -7,34 +7,27 @@ namespace Friflo.Json.Flow.Sync
 {
     public class EntityError
     {
-        [Fri.Property]  public      EntityErrorType type;
-        [Fri.Property]  public      string          error;
-        [Fri.Ignore]    public      string          id;
-        [Fri.Ignore]    public      string          container;
+        [Fri.Property]  public  EntityErrorType type;
+        [Fri.Property]  public  string          message;
+        [Fri.Ignore]    public  string          id;
+        [Fri.Ignore]    public  string          container;
     
-        public string GetMessage() {
-            switch (type) {
-                case EntityErrorType.ParseError: return $"Failed parsing entity: {container} '{id}', {error}";
-                default:
-                    return $"EntityError {type} - {container} '{id}', {error}";
-            }
-        }
-
-        public override     string          ToString() => GetMessage();
+        public                  string          AsText() => $"{type} - {container} '{id}', {message}";
+        public override         string          ToString() => AsText();
 
         public EntityError() { } // required for TypeMapper
 
-        public EntityError(EntityErrorType type, string container, string  id, string error) {
+        public EntityError(EntityErrorType type, string container, string  id, string message) {
             this.type       = type;
             this.container  = container;
             this.id         = id;
-            this.error      = error;
+            this.message    = message;
         }
     }
 
     public class EntityException : Exception
     {
-        public EntityException(EntityError error) : base(error.GetMessage()) { }
+        public EntityException(EntityError error) : base(error.AsText()) { }
     }
 
     public enum EntityErrorType

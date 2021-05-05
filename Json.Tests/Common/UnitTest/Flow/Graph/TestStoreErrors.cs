@@ -40,11 +40,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 1
-| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
+| ParseError - Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
 
         private const string ArticleError2 = @"Task failed by entity errors. Count: 2
-| EntityError ReadError - Article 'article-1', simulated read error
-| Failed parsing entity: Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
+| ReadError - Article 'article-1', simulated read error
+| ParseError - Article 'article-2', JsonParser/JSON error: expect key. Found: J path: 'name' at position: 41";
         
         private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;
