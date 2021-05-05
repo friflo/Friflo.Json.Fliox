@@ -141,6 +141,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private void HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
+            response.AssertResponse(syncRequest);
             try {
                 var containerResults = response.results;
                 foreach (var containerResult in containerResults) {

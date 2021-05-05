@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
 
@@ -26,6 +27,15 @@ namespace Friflo.Json.Flow.Sync
             };
             results.Add(container, result);
             return result;
+        }
+
+        public void AssertResponse(SyncRequest request) {
+            var expect = request.tasks.Count;
+            var actual = tasks.Count;
+            if (expect != actual) {
+                var msg = $"Expect response.task.Count == request.task.Count: expect: {expect}, actual: {actual}"; 
+                throw new InvalidOperationException(msg);
+            }
         }
     }
     
