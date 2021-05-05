@@ -31,8 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        //[UnityTest] public IEnumerator RemoteUseCoroutine() { yield return RunAsync.Await(RemoteUse()); }
-        //[Test]      public async Task  RemoteUseAsync() { await RemoteUse(); }
+        [UnityTest] public IEnumerator RemoteUseCoroutine() { yield return RunAsync.Await(RemoteUse()); }
+        [Test]      public async Task  RemoteUseAsync() { await RemoteUse(); }
         
         private async Task RemoteUse() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))

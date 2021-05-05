@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Sync
     public class EntityValue
     {
         [Fri.Property]  private     JsonValue   value;
-        [Fri.Ignore]    private     EntityError error;
+        [Fri.Property]  private     EntityError error;
         
         [Fri.Ignore]    public      string      Json    => error == null ? value.json : throw new EntityException(error);
         [Fri.Ignore]    public      EntityError Error   => error;
@@ -22,6 +22,8 @@ namespace Friflo.Json.Flow.Sync
         
         public void SetError(EntityError error) {
             this.error = error;
+            // assign "null". Invalid JSON cannot be serialized. As it is invalid, it cant be processed further anyway.
+            value.json = "null";
         }
 
         public EntityValue() { } // required for TypeMapper

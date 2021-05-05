@@ -235,10 +235,16 @@ namespace Friflo.Json.Flow.Graph
         internal override void SyncContainerEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
-                if (entity.Value.Error != null)
+                var value = entity.Value;
+                if (value.Error != null) {
+                    // id & container are not serialized as they are redundant data.
+                    // Infer their values from containing dictionary & EntitySet<>
+                    value.Error.id          = id;
+                    value.Error.container   = name;
                     continue;
+                }
 
-                var json = entity.Value.Json;
+                var json = value.Json;
                 var peer = GetPeerById(id);
                 if (json != null && "null" != json) {
                     var reader = intern.jsonMapper.reader;
