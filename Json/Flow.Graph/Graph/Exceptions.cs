@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Graph
                     break;
                 }
                 sb.Append("\n| ");
-                sb.Append(error.GetMessage());
+                error.AppendAsText(sb);
             }
             return sb.ToString();
         }
