@@ -220,13 +220,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("task requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
-            AreEqual("task requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
 
-            
-
-            await store.Sync();
+            await store.Sync(); // -------- Sync --------
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerException.Result; });

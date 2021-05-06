@@ -8,13 +8,13 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     public abstract class SyncTask
     {
-        public              bool            Success  => State.IsSynced() ? !State.Error.HasErrors : throw new TaskNotSyncedException($"task requires Sync(). {Label}");  
-        public              TaskErrorInfo   Error    => State.IsSynced() ?  State.Error           : throw new TaskNotSyncedException($"task requires Sync(). {Label}");
+        public              bool            Success  => State.IsSynced() ? !State.Error.HasErrors : throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {Label}");  
+        public              TaskErrorInfo   Error    => State.IsSynced() ?  State.Error           : throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {Label}");
         
         internal abstract   string      Label  { get; }
         internal abstract   TaskState   State { get; }
 
-        internal bool IsOk(string syncError, out Exception e) {
+        internal bool IsOk(string method, out Exception e) {
             if (State.Error.HasErrors) {
                 e = new TaskResultException(State.Error);
                 return false;
@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 e = null;
                 return true;
             }
-            e = new TaskNotSyncedException($"{syncError} requires Sync(). {Label}");
+            e = new TaskNotSyncedException($"{method} requires Sync(). {Label}");
             return false;
         }
         
