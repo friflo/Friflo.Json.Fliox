@@ -230,24 +230,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerException.Result; });
-            AreEqual("Task failed. type: UnhandledException, message: simulated EntityContainer read exception", te.Message);
+            AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer read exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
             
             te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
-            AreEqual("Task failed. type: UnhandledException, message: simulated query exception", te.Message);
+            AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer query exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
 
             IsFalse(createError.Success);
             AreEqual(TaskErrorType.UnhandledException, createError.Error.TaskError.type);
-            AreEqual("simulated EntityContainer write exception", createError.Error.TaskError.message);
+            AreEqual("SimulationException: EntityContainer write exception", createError.Error.TaskError.message);
             
             IsFalse(updateError.Success);
             AreEqual(TaskErrorType.UnhandledException, updateError.Error.TaskError.type);
-            AreEqual("simulated EntityContainer write exception", updateError.Error.TaskError.message);
+            AreEqual("SimulationException: EntityContainer write exception", updateError.Error.TaskError.message);
             
             IsFalse(deleteError.Success);
             AreEqual(TaskErrorType.UnhandledException, deleteError.Error.TaskError.type);
-            AreEqual("simulated EntityContainer write exception", deleteError.Error.TaskError.message);
+            AreEqual("SimulationException: EntityContainer write exception", deleteError.Error.TaskError.message);
         }
     }
 }

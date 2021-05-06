@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var result = await local.QueryEntities(command);
             SimulateReadErrors(result.entities);
             if (queryTaskErrors.Contains(command.filterLinq)) {
-                throw new SimulationException("simulated query exception");
+                throw new SimulationException("EntityContainer query exception");
             }
             return result;
         }
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             value.SetError(error);
                             break;
                         case "READ-EXCEPTION":
-                            throw new SimulationException("simulated EntityContainer read exception");
+                            throw new SimulationException("EntityContainer read exception");
                         default:
                             value.SetJson(payload); // modify JSON
                             break;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private void SimulateWriteErrors(HashSet<string> entities) {
             foreach (var id in writeTaskErrors) {
                 if (entities.Contains(id)) {
-                    throw new SimulationException("simulated EntityContainer write exception");
+                    throw new SimulationException("EntityContainer write exception");
                 }
             }
         }

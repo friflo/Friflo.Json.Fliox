@@ -54,9 +54,10 @@ namespace Friflo.Json.Flow.Database
                     response.tasks.Add(result);
                 }
                 catch (Exception e) {
+                    var exceptionName = e.GetType().Name;
                     var result = new TaskError{
                         type    = TaskErrorType.UnhandledException,
-                        message = e.Message
+                        message = $"{exceptionName}: {e.Message}"
                     };
                     response.tasks.Add(result);
                 }
