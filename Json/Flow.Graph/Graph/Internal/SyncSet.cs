@@ -320,16 +320,23 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void ReadEntitiesListResult(ReadEntitiesList task, TaskResult result, ContainerEntities readEntities) {
-            var readListResult  = (ReadEntitiesListResult) result;
+            if (result is TaskError error) {
+                foreach (var read in reads) {
+                    read.state.Synced = true;
+                    read.state.Error = new TaskErrorInfo(error);
+                }
+                return;
+            }
+            var readListResult = (ReadEntitiesListResult) result;
             for (int i = 0; i < task.reads.Count; i++) {
-                var read        = task.reads[i];
-                var readResult  = readListResult.reads[i];
+                var read = task.reads[i];
+                var readResult = readListResult.reads[i];
                 ReadEntitiesResult(read, readResult, readEntities);
             }
         }
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
-            var error = new TaskError();
+            var error = new TaskErrorInfo();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = readEntities.entities[id];
@@ -370,7 +377,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
             var queryResult = result as QueryEntitiesResult;
-            var error = new TaskError();
+            var error = new TaskErrorInfo();
             var filterLinq = queryResult.filterLinq;
             var query = queries[filterLinq];
             var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);

@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task TestStoresErrors(PocStore useStore) {
             await AssertQueryTask       (useStore);
             await AssertReadTask        (useStore);
-            // await AssertTaskExceptions  (useStore);
+            await AssertTaskExceptions  (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -118,11 +118,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results["article-galaxy"]; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -132,11 +132,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
             te = Throws<TaskResultException>(() => { var _ = producersTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
                 
             te = Throws<TaskResultException>(() => { var _ = producerEmployees.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -187,15 +187,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = galaxy.Result; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.entityErrors.Count);
+            AreEqual(2, te.error.EntityErrors.Count);
         }
 
         private static async Task AssertTaskExceptions(PocStore store) {

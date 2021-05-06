@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     //
-    [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
+    [Fri.Polymorph(typeof(TaskError),               Discriminant = "error")]
     public abstract class TaskResult
     {
         internal abstract TaskType          TaskType { get; }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Sync
         Error
     }
     
-    public class TaskErrorResult : TaskResult
+    public class TaskError : TaskResult
     {
         public              TaskErrorType   type;
         public              string          message;

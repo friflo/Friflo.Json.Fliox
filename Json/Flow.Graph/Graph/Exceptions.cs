@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -40,13 +41,14 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
-        public readonly  SortedDictionary<string, EntityError> entityErrors;
+        public readonly  TaskErrorInfo error;
 
-        public TaskResultException(SortedDictionary<string, EntityError> entityErrors) : base(GetMessage(entityErrors)) {
-            this.entityErrors = entityErrors;
+        internal TaskResultException(TaskErrorInfo taskErrorInfo) : base(GetMessage(taskErrorInfo)) {
+            this.error = taskErrorInfo;
         }
 
-        private static string GetMessage(SortedDictionary<string, EntityError> errors) {
+        private static string GetMessage(TaskErrorInfo taskErrorInfo) {
+            var errors = taskErrorInfo.EntityErrors;
             var sb = new StringBuilder();
             sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);

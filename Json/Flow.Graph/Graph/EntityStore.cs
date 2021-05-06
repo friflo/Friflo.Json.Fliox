@@ -156,8 +156,13 @@ namespace Friflo.Json.Flow.Graph
                     var result = results[n];
                     TaskType taskType = task.TaskType;
                     var actual = result.TaskType;
-                    if (taskType != actual)
-                        throw new InvalidOperationException($"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}");
+                    if (actual != TaskType.Error) {
+                        if (taskType != actual) {
+                            var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
+                            throw new InvalidOperationException(msg);
+                        }
+                    }
+
                     switch (taskType) {
                         case TaskType.Create:
                             var create = (CreateEntities) task;
@@ -172,13 +177,13 @@ namespace Friflo.Json.Flow.Graph
                         case TaskType.Read:
                             var readList = (ReadEntitiesList) task;
                             set = _intern.setByName[readList.container];
-                            var entities = containerResults[readList.container];
+                            containerResults.TryGetValue(readList.container, out ContainerEntities entities);
                             set.Sync.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.Query:
                             var query = (QueryEntities) task;
                             set = _intern.setByName[query.container];
-                            var queryEntities = containerResults[query.container];
+                            containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                             set.Sync.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.Patch:

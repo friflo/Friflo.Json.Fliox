@@ -12,8 +12,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal abstract   TaskState   State { get; }
 
         internal bool IsOk(string syncError, out Exception e) {
-            if (State.Error.Errors != null) {
-                e = new TaskResultException(State.Error.Errors);
+            if (State.Error.HasErrors) {
+                e = new TaskResultException(State.Error);
                 return false;
             }
             if (State.IsSynced()) {
@@ -31,24 +31,32 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     internal struct TaskState
     {
-        internal bool       Synced { private get; set; }
-        internal TaskError  Error  { get; set; }
+        internal bool           Synced { private get; set; }
+        internal TaskErrorInfo  Error  { get; set; }
 
-        internal bool       IsSynced() { return Synced; }
+        internal bool           IsSynced() { return Synced; }
 
-        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.Errors.Count}" : "synced" : "not synced";
+        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.EntityErrors.Count}" : "synced" : "not synced";
     }
     
-    internal struct TaskError
+    public struct TaskErrorInfo
     {
+        public      TaskError                               TaskError { get; private set; }
+        
         // used sorted dictionary to ensure stable (and repeatable) order of errors
-        internal    SortedDictionary<string, EntityError>   Errors { get; private set; }
-        internal    bool                                    HasErrors => Errors != null;
+        public      SortedDictionary<string, EntityError>   EntityErrors { get; private set; }
+        
+        internal    bool                                    HasErrors => TaskError != null || EntityErrors != null;
+
+        internal TaskErrorInfo(TaskError taskError) {
+            TaskError       = taskError;
+            EntityErrors    = null;
+        }
 
         internal void AddError(EntityError error) {
-            if (Errors == null)
-                Errors = new SortedDictionary<string, EntityError>();
-            Errors.Add(error.id, error);
+            if (EntityErrors == null)
+                EntityErrors = new SortedDictionary<string, EntityError>();
+            EntityErrors.Add(error.id, error);
         }
     }
     
