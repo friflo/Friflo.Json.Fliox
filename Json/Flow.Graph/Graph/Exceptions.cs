@@ -2,6 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -37,10 +40,12 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
-        public readonly  TaskErrorInfo error;
+        public readonly TaskError                               taskError;
+        public readonly SortedDictionary<string, EntityError>   entityErrors;
 
         internal TaskResultException(TaskErrorInfo taskErrorInfo) : base(taskErrorInfo.GetMessage()) {
-            this.error = taskErrorInfo;
+            taskError       = taskErrorInfo.TaskError;
+            entityErrors    = taskErrorInfo.EntityErrors;
         }
     }
 }

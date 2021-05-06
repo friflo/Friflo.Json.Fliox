@@ -124,11 +124,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results["article-galaxy"]; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
@@ -138,11 +138,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
             te = Throws<TaskResultException>(() => { var _ = producersTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
                 
             te = Throws<TaskResultException>(() => { var _ = producerEmployees.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -193,15 +193,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = galaxy.Result; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
             
             te = Throws<TaskResultException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.EntityErrors.Count);
+            AreEqual(2, te.entityErrors.Count);
         }
 
         private static async Task AssertTaskExceptions(PocStore store) {
@@ -221,31 +221,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
             AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetError(); });
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetTaskError(); });
             AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetEntityErrors(); });
+            AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+
 
             await store.Sync(); // -------- Sync --------
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerException.Result; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer read exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
+            AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
             
             te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer query exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
+            AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
 
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.UnhandledException, createError.GetError().TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", createError.GetError().TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, createError.GetTaskError().type);
+            AreEqual("SimulationException: EntityContainer write exception", createError.GetTaskError().message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.UnhandledException, updateError.GetError().TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", updateError.GetError().TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, updateError.GetTaskError().type);
+            AreEqual("SimulationException: EntityContainer write exception", updateError.GetTaskError().message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.UnhandledException, deleteError.GetError().TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", deleteError.GetError().TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, deleteError.GetTaskError().type);
+            AreEqual("SimulationException: EntityContainer write exception", deleteError.GetTaskError().message);
         }
     }
 }

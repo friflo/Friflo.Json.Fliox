@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
