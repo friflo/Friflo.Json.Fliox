@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
             AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetError(); });
             AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
 
             await store.Sync(); // -------- Sync --------
@@ -236,16 +236,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
 
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.UnhandledException, createError.Error.TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", createError.Error.TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, createError.GetError().TaskError.type);
+            AreEqual("SimulationException: EntityContainer write exception", createError.GetError().TaskError.message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.UnhandledException, updateError.Error.TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", updateError.Error.TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, updateError.GetError().TaskError.type);
+            AreEqual("SimulationException: EntityContainer write exception", updateError.GetError().TaskError.message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.UnhandledException, deleteError.Error.TaskError.type);
-            AreEqual("SimulationException: EntityContainer write exception", deleteError.Error.TaskError.message);
+            AreEqual(TaskErrorType.UnhandledException, deleteError.GetError().TaskError.type);
+            AreEqual("SimulationException: EntityContainer write exception", deleteError.GetError().TaskError.message);
         }
     }
 }
