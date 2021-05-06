@@ -20,13 +20,13 @@ namespace Friflo.Json.Flow.Graph
         public TaskError   GetTaskError() {
             if (State.IsSynced())
                 return State.Error.TaskError;
-            throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {Label}");
+            throw new TaskNotSyncedException($"SyncTask.GetTaskError() requires Sync(). {Label}");
         }
         
         public SortedDictionary<string, EntityError>   GetEntityErrors() {
             if (State.IsSynced())
                 return State.Error.EntityErrors;
-            throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {Label}");
+            throw new TaskNotSyncedException($"SyncTask.GetEntityErrors() requires Sync(). {Label}");
         }
 
         internal bool IsOk(string method, out Exception e) {
