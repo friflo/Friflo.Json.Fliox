@@ -209,6 +209,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerException.Result; });
             AreEqual("Task failed. type: UnhandledException, message: simulated EntityContainer read exception", te.Message);
+            AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
         }
     }
 }

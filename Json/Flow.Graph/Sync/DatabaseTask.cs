@@ -54,9 +54,4 @@ namespace Friflo.Json.Flow.Sync
 
         internal override   TaskType        TaskType => TaskType.Error;
     }
-    
-    public enum TaskErrorType {
-        UnhandledException
-    }
-
 }

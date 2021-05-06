@@ -65,4 +65,8 @@ namespace Friflo.Json.Flow.Database
             return response;
         }
     }
+    
+    public enum TaskErrorType {
+        UnhandledException
+    }
 }
