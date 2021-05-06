@@ -43,8 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
+            SimulateWriteErrors(command.entities);
             var result = await local.CreateEntities(command);
-            SimulateWriteErrors(command.entities, result.errors);
             return result;
         }
 
@@ -93,16 +93,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        private void SimulateWriteErrors(Dictionary<string, EntityValue> entities, Dictionary<string, EntityError> errors) {
+        private void SimulateWriteErrors(Dictionary<string, EntityValue> entities) {
             foreach (var writePair in writeErrors) {
                 var id      = writePair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
                     var payload = writePair.Value;
                     switch (payload) {
-                        case "WRITE-ERROR":
-                            var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write error");
-                            errors.Add(id, error);
-                            break;
                         case "WRITE-EXCEPTION":
                             throw new SimulationException("simulated EntityContainer write exception");
                         default:

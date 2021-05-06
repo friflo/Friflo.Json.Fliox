@@ -56,6 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = testDatabase.GetTestContainer("Customer");
             customers.readErrors.Add("customer-exception", "READ-EXCEPTION");
             customers.queryErrors.Add("true"); // true == QueryAll()
+            
+            customers.writeErrors.Add("customer-write-exception", "WRITE-EXCEPTION");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -207,6 +209,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var allCustomers = customers.QueryAll();
 
+            var createError = customers.Create(new Customer{id = "customer-write-exception"});
+
             await store.Sync();
             
             TaskResultException te;
@@ -217,6 +221,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
             AreEqual("Task failed. type: UnhandledException, message: simulated query exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
+
+            IsFalse(createError.Success);
+            AreEqual(TaskErrorType.UnhandledException, createError.Error.TaskError.type);
+            AreEqual("simulated EntityContainer write exception", createError.Error.TaskError.message);
         }
     }
 }

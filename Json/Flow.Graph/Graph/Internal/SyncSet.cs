@@ -294,6 +294,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
+            if (result is TaskError taskError) {
+                foreach (var createTask in createTasks) {
+                    createTask.state.SetError(new TaskErrorInfo(taskError));
+                }
+                return;
+            }
             var createResult = result as CreateEntitiesResult;
             var entities = task.entities;
             foreach (var entry in entities) {

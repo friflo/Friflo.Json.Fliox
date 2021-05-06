@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class CreateTask<T> : CreateTask where T : Entity
     {
-        private readonly    T           entity;
+        private readonly    T               entity;
 
         internal override   string      Label       => $"CreateTask<{typeof(T).Name}> id: {entity.id}";
         public   override   string      ToString()  => Label;

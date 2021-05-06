@@ -8,6 +8,9 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     public abstract class SyncTask
     {
+        public              bool            Success  => State.IsSynced() ? !State.Error.HasErrors : throw new TaskNotSyncedException($"task requires Sync(). {Label}");  
+        public              TaskErrorInfo   Error    => State.IsSynced() ?  State.Error           : throw new TaskNotSyncedException($"task requires Sync(). {Label}");
+        
         internal abstract   string      Label  { get; }
         internal abstract   TaskState   State { get; }
 
