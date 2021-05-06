@@ -322,8 +322,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void ReadEntitiesListResult(ReadEntitiesList task, TaskResult result, ContainerEntities readEntities) {
             if (result is TaskError taskError) {
                 foreach (var read in reads) {
-                    read.state.Synced = true;
-                    read.state.Error = new TaskErrorInfo(taskError);
+                    read.state.SetError(new TaskErrorInfo(taskError));
                 }
                 return;
             }
@@ -351,8 +350,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             if (error.HasErrors) {
                 foreach (var read in reads) {
-                    read.state.Synced = true;
-                    read.state.Error = error;
+                    read.state.SetError(error);
                 }
                 return;
             }
@@ -379,8 +377,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
             if (result is TaskError taskError) {
-                query.state.Synced = true;
-                query.state.Error = new TaskErrorInfo(taskError);
+                query.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var queryResult = (QueryEntitiesResult)result;
@@ -396,8 +393,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 entities.Add(id, peer.entity);
             }
             if (error.HasErrors) {
-                query.state.Synced = true;
-                query.state.Error = error;
+                query.state.SetError(error);
                 return;
             }
             AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);

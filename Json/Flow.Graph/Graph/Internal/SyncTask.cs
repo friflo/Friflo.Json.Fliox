@@ -32,9 +32,14 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal struct TaskState
     {
         internal bool           Synced { private get; set; }
-        internal TaskErrorInfo  Error  { get; set; }
+        internal TaskErrorInfo  Error  { get; private set; }
 
         internal bool           IsSynced() { return Synced; }
+
+        internal void SetError(TaskErrorInfo error) {
+            Error  = error;
+            Synced = true;
+        }
 
         public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.EntityErrors.Count}" : "synced" : "not synced";
     }
