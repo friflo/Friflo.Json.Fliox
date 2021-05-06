@@ -313,6 +313,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void UpdateEntitiesResult (UpdateEntities task, TaskResult result) {
+            if (result is TaskError taskError) {
+                foreach (var updateTask in updateTasks) {
+                    updateTask.state.SetError(new TaskErrorInfo(taskError));
+                }
+                return;
+            }
             var updateResult = result as UpdateEntitiesResult;
             var entities = task.entities;
             foreach (var entry in entities) {
@@ -453,12 +459,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                 reads.Count         +
                 queries.Count       +
                 Some(creates.Count) +
+                Some(updates.Count) +
                 Some(patches.Count) +
                 Some(deletes.Count);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;
             info.create     = creates.Count;
+            info.update     = updates.Count;
             info.patch      = patches.Count;
             info.delete     = deletes.Count;
             // info.readRefs   = readRefsMap.Count;

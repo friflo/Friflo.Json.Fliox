@@ -49,6 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
+            SimulateWriteErrors(command.entities);
             return await local.UpdateEntities(command);
         }
 
