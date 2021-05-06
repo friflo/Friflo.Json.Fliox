@@ -320,10 +320,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void ReadEntitiesListResult(ReadEntitiesList task, TaskResult result, ContainerEntities readEntities) {
-            if (result is TaskError error) {
+            if (result is TaskError taskError) {
                 foreach (var read in reads) {
                     read.state.Synced = true;
-                    read.state.Error = new TaskErrorInfo(error);
+                    read.state.Error = new TaskErrorInfo(taskError);
                 }
                 return;
             }
@@ -376,10 +376,15 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
-            var queryResult = result as QueryEntitiesResult;
-            var error = new TaskErrorInfo();
-            var filterLinq = queryResult.filterLinq;
+            var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
+            if (result is TaskError taskError) {
+                query.state.Synced = true;
+                query.state.Error = new TaskErrorInfo(taskError);
+                return;
+            }
+            var queryResult = (QueryEntitiesResult)result;
+            var error = new TaskErrorInfo();
             var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 var value = queryEntities.entities[id];

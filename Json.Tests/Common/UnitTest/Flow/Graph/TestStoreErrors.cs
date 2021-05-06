@@ -55,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var customers = testDatabase.GetTestContainer("Customer");
             customers.readErrors.Add("customer-exception", "READ-EXCEPTION");
+            customers.queryErrors.Add("true"); // true == QueryAll()
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -204,11 +205,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readCustomers = customers.Read();
             var customerException = readCustomers.Find("customer-exception");
 
+            var allCustomers = customers.QueryAll();
+
             await store.Sync();
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerException.Result; });
             AreEqual("Task failed. type: UnhandledException, message: simulated EntityContainer read exception", te.Message);
+            AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
+            
+            te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
+            AreEqual("Task failed. type: UnhandledException, message: simulated query exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.error.TaskError.type);
         }
     }

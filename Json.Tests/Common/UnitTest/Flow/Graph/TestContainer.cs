@@ -30,8 +30,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    Dictionary<string, string> readErrors  = new Dictionary<string, string>();  
+        public  readonly    Dictionary<string, string> readErrors  = new Dictionary<string, string>();
         public  readonly    Dictionary<string, string> writeErrors = new Dictionary<string, string>();
+        public  readonly    HashSet<string>            queryErrors = new HashSet<string>();
         
         public  override    bool            Pretty       => local.Pretty;
         public  override    SyncContext     SyncContext  => local.SyncContext;
@@ -60,6 +61,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
             var result = await local.QueryEntities(command);
             SimulateReadErrors(result.entities);
+            if (queryErrors.Contains(command.filterLinq)) {
+                throw new SimulationException("simulated query exception");
+            }
             return result;
         }
         
