@@ -48,8 +48,12 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private static string GetMessage(TaskErrorInfo taskErrorInfo) {
-            var errors = taskErrorInfo.EntityErrors;
+            var taskError = taskErrorInfo.TaskError;
+            if (taskError != null) {
+                return $"Task failed. type: {taskError.type}, message: {taskError.message}";
+            }
             var sb = new StringBuilder();
+            var errors = taskErrorInfo.EntityErrors;
             sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);
             int n = 0;
