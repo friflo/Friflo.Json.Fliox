@@ -14,12 +14,12 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
-        internal  abstract  void    CreateEntitiesResult    (CreateEntities task, CreateEntitiesResult result);
-        internal  abstract  void    UpdateEntitiesResult    (UpdateEntities task, UpdateEntitiesResult result);
-        internal  abstract void     ReadEntitiesResult      (ReadEntities   task, ReadEntitiesResult   result, ContainerEntities readEntities);
-        internal  abstract  void    QueryEntitiesResult     (QueryEntities  task, QueryEntitiesResult  result, ContainerEntities queryEntities);
-        internal  abstract  void    PatchEntitiesResult     (PatchEntities  task, PatchEntitiesResult  result);
-        internal  abstract  void    DeleteEntitiesResult    (DeleteEntities task, DeleteEntitiesResult result);
+        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
+        internal  abstract  void    UpdateEntitiesResult    (UpdateEntities     task, TaskResult result);
+        internal  abstract void     ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
+        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
+        internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
+        internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
     }
 
 
@@ -293,7 +293,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void CreateEntitiesResult(CreateEntities task, CreateEntitiesResult result) {
+        internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
+            var createResult = result as CreateEntitiesResult;
             var entities = task.entities;
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
@@ -305,7 +306,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void UpdateEntitiesResult (UpdateEntities task, UpdateEntitiesResult result) {
+        internal override void UpdateEntitiesResult (UpdateEntities task, TaskResult result) {
+            var updateResult = result as UpdateEntitiesResult;
             var entities = task.entities;
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
@@ -316,8 +318,17 @@ namespace Friflo.Json.Flow.Graph.Internal
                 updateTask.state.Synced = true;
             }
         }
-        
-        internal override void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
+
+        internal override void ReadEntitiesListResult(ReadEntitiesList task, TaskResult result, ContainerEntities readEntities) {
+            var readListResult  = (ReadEntitiesListResult) result;
+            for (int i = 0; i < task.reads.Count; i++) {
+                var read        = task.reads[i];
+                var readResult  = readListResult.reads[i];
+                ReadEntitiesResult(read, readResult, readEntities);
+            }
+        }
+
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
             var error = new TaskError();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
@@ -357,12 +368,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void QueryEntitiesResult(QueryEntities task, QueryEntitiesResult result, ContainerEntities queryEntities) {
+        internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
+            var queryResult = result as QueryEntitiesResult;
             var error = new TaskError();
-            var filterLinq = result.filterLinq;
+            var filterLinq = queryResult.filterLinq;
             var query = queries[filterLinq];
-            var entities = query.entities = new Dictionary<string, T>(result.ids.Count);
-            foreach (var id in result.ids) {
+            var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);
+            foreach (var id in queryResult.ids) {
                 var value = queryEntities.entities[id];
                 if (value.Error != null) {
                     error.AddError(value.Error);
@@ -376,7 +388,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 query.state.Error = error;
                 return;
             }
-            AddReferencesResult(task.references, result.references, query.refsTask.subRefs);
+            AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);
             query.state.Synced = true;
         }
 
@@ -399,7 +411,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void PatchEntitiesResult(PatchEntities task, PatchEntitiesResult result) {
+        internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
+            var patchResult = result as PatchEntitiesResult;
             var entityPatches = task.patches;
             foreach (var entityPatchPair in entityPatches) {
                 var id = entityPatchPair.Key;
@@ -409,7 +422,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        internal override void DeleteEntitiesResult(DeleteEntities task, DeleteEntitiesResult result) {
+        internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {
+            var deleteResult = result as DeleteEntitiesResult;
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
             }

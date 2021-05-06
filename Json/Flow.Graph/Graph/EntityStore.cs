@@ -162,39 +162,34 @@ namespace Friflo.Json.Flow.Graph
                         case TaskType.Create:
                             var create = (CreateEntities) task;
                             EntitySet set = _intern.setByName[create.container];
-                            set.Sync.CreateEntitiesResult(create, (CreateEntitiesResult) result);
+                            set.Sync.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.Update:
                             var update = (UpdateEntities) task;
                             set = _intern.setByName[update.container];
-                            set.Sync.UpdateEntitiesResult(update, (UpdateEntitiesResult) result);
+                            set.Sync.UpdateEntitiesResult(update, result);
                             break;
                         case TaskType.Read:
-                            var readList        = (ReadEntitiesList) task;
-                            var readListResult  = (ReadEntitiesListResult) result;
-                            for (int i = 0; i < readList.reads.Count; i++) {
-                                var read        = readList.reads[i];
-                                var readResult  = readListResult.reads[i];
-                                set = _intern.setByName[readList.container];
-                                var entities = containerResults[readList.container];
-                                set.Sync.ReadEntitiesResult(read, readResult, entities);
-                            }
+                            var readList = (ReadEntitiesList) task;
+                            set = _intern.setByName[readList.container];
+                            var entities = containerResults[readList.container];
+                            set.Sync.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.Query:
                             var query = (QueryEntities) task;
                             set = _intern.setByName[query.container];
                             var queryEntities = containerResults[query.container];
-                            set.Sync.QueryEntitiesResult(query, (QueryEntitiesResult) result, queryEntities);
+                            set.Sync.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.Patch:
                             var patch = (PatchEntities) task;
                             set = _intern.setByName[patch.container];
-                            set.Sync.PatchEntitiesResult(patch, (PatchEntitiesResult) result);
+                            set.Sync.PatchEntitiesResult(patch, result);
                             break;
                         case TaskType.Delete:
                             var delete = (DeleteEntities) task;
                             set = _intern.setByName[delete.container];
-                            set.Sync.DeleteEntitiesResult(delete, (DeleteEntitiesResult) result);
+                            set.Sync.DeleteEntitiesResult(delete, result);
                             break;
                     }
                 }

@@ -49,8 +49,17 @@ namespace Friflo.Json.Flow.Database
                 results  = new Dictionary<string, ContainerEntities>()
             };
             foreach (var task in syncRequest.tasks) {
-                var result = await task.Execute(this, response);
-                response.tasks.Add(result);
+                try {
+                    var result = await task.Execute(this, response);
+                    response.tasks.Add(result);
+                }
+                catch (Exception e) {
+                    var result = new TaskErrorResult{
+                        type    = TaskErrorType.UnhandledException,
+                        message = e.Message
+                    };
+                    response.tasks.Add(result);
+                }
             }
             response.AssertResponse(syncRequest);
             return response;
