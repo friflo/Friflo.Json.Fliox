@@ -10,11 +10,15 @@ namespace Friflo.Json.Flow.Graph
 {
     public abstract class SyncTask
     {
-        public              bool        Success  => State.IsSynced() ? !State.Error.HasErrors : throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {Label}");  
+        internal abstract   string      Label   { get; }
+        internal abstract   TaskState   State   { get; }
         
-        internal abstract   string      Label  { get; }
-        internal abstract   TaskState   State { get; }
-        
+        public              bool        Success { get {
+            if (State.IsSynced())
+                return !State.Error.HasErrors;
+            throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {Label}");
+        }}
+
         // return error as method - not as property to avoid flooding debug view with properties.
         // error is also visible via State.Error
         public TaskError   GetTaskError() {
