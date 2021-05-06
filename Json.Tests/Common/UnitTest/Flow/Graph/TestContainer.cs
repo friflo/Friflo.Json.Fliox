@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Sync;
@@ -30,9 +31,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    Dictionary<string, string> readErrors  = new Dictionary<string, string>();
-        public  readonly    Dictionary<string, string> writeErrors = new Dictionary<string, string>();
-        public  readonly    HashSet<string>            queryErrors = new HashSet<string>();
+        public  readonly    Dictionary<string, string>  readErrors  = new Dictionary<string, string>();
+        public  readonly    HashSet<string>             writeTaskErrors = new HashSet<string>();
+        public  readonly    HashSet<string>             queryTaskErrors = new HashSet<string>();
         
         public  override    bool            Pretty       => local.Pretty;
         public  override    SyncContext     SyncContext  => local.SyncContext;
@@ -43,13 +44,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
-            SimulateWriteErrors(command.entities);
+            SimulateWriteErrors(command.entities.Keys.ToHashSet());
             var result = await local.CreateEntities(command);
             return result;
         }
 
         public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
-            SimulateWriteErrors(command.entities);
+            SimulateWriteErrors(command.entities.Keys.ToHashSet());
             return await local.UpdateEntities(command);
         }
 
@@ -62,13 +63,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
             var result = await local.QueryEntities(command);
             SimulateReadErrors(result.entities);
-            if (queryErrors.Contains(command.filterLinq)) {
+            if (queryTaskErrors.Contains(command.filterLinq)) {
                 throw new SimulationException("simulated query exception");
             }
             return result;
         }
         
         public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
+            SimulateWriteErrors(command.ids);
             return await local.DeleteEntities(command);
         }
         
@@ -94,18 +96,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        private void SimulateWriteErrors(Dictionary<string, EntityValue> entities) {
-            foreach (var writePair in writeErrors) {
-                var id      = writePair.Key;
-                if (entities.TryGetValue(id, out EntityValue value)) {
-                    var payload = writePair.Value;
-                    switch (payload) {
-                        case "WRITE-EXCEPTION":
-                            throw new SimulationException("simulated EntityContainer write exception");
-                        default:
-                            value.SetJson(payload); // modify JSON
-                            break;
-                    }
+        private void SimulateWriteErrors(HashSet<string> entities) {
+            foreach (var id in writeTaskErrors) {
+                if (entities.Contains(id)) {
+                    throw new SimulationException("simulated EntityContainer write exception");
                 }
             }
         }

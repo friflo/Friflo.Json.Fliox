@@ -55,10 +55,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var customers = testDatabase.GetTestContainer("Customer");
             customers.readErrors.Add("customer-exception", "READ-EXCEPTION");
-            customers.queryErrors.Add("true"); // true == QueryAll()
             
-            customers.writeErrors.Add("customer-create-exception", "WRITE-EXCEPTION");
-            customers.writeErrors.Add("customer-update-exception", "WRITE-EXCEPTION");
+            customers.queryTaskErrors.Add("true"); // true == QueryAll()
+            
+            customers.writeTaskErrors.Add("customer-create-exception");
+            customers.writeTaskErrors.Add("customer-update-exception");
+            customers.writeTaskErrors.Add("customer-delete-exception");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -213,6 +215,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createError = customers.Create(new Customer{id = "customer-create-exception"});
             
             var updateError = customers.Update(new Customer{id = "customer-update-exception"});
+            
+            var deleteError = customers.Update(new Customer{id = "customer-delete-exception"});
 
             await store.Sync();
             
@@ -232,6 +236,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(updateError.Success);
             AreEqual(TaskErrorType.UnhandledException, updateError.Error.TaskError.type);
             AreEqual("simulated EntityContainer write exception", updateError.Error.TaskError.message);
+            
+            IsFalse(deleteError.Success);
+            AreEqual(TaskErrorType.UnhandledException, deleteError.Error.TaskError.type);
+            AreEqual("simulated EntityContainer write exception", deleteError.Error.TaskError.message);
         }
     }
 }

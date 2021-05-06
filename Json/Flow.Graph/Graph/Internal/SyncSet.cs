@@ -443,6 +443,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {
+            if (result is TaskError taskError) {
+                foreach (var deleteTask in deleteTasks) {
+                    deleteTask.state.SetError(new TaskErrorInfo(taskError));
+                }
+                return;
+            }
             var deleteResult = result as DeleteEntitiesResult;
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
