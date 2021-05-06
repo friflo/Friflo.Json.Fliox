@@ -217,6 +217,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var updateError = customers.Update(new Customer{id = "customer-update-exception"});
             
             var deleteError = customers.Update(new Customer{id = "customer-delete-exception"});
+            
+            Exception e;
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
+            AreEqual("task requires Sync(). CreateTask<Customer> id: customer-create-exception", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
+            AreEqual("task requires Sync(). CreateTask<Customer> id: customer-create-exception", e.Message);
+
+            
 
             await store.Sync();
             
