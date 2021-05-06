@@ -54,13 +54,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.readErrors.Add("article-1", "READ-ERROR");
             
             var customers = testDatabase.GetTestContainer("Customer");
-            customers.readErrors.Add("customer-exception", "READ-EXCEPTION");
+            customers.readErrors.Add("read-exception", "READ-EXCEPTION");
             
             customers.queryTaskErrors.Add("true"); // true == QueryAll()
             
-            customers.writeTaskErrors.Add("customer-create-exception");
-            customers.writeTaskErrors.Add("customer-update-exception");
-            customers.writeTaskErrors.Add("customer-delete-exception");
+            customers.writeTaskErrors.Add("create-exception");
+            customers.writeTaskErrors.Add("update-exception");
+            customers.writeTaskErrors.Add("delete-exception");
         }
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -208,21 +208,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
 
             var readCustomers = customers.Read();
-            var customerException = readCustomers.Find("customer-exception");
+            var customerException = readCustomers.Find("read-exception");
 
             var allCustomers = customers.QueryAll();
 
-            var createError = customers.Create(new Customer{id = "customer-create-exception"});
+            var createError = customers.Create(new Customer{id = "create-exception"});
             
-            var updateError = customers.Update(new Customer{id = "customer-update-exception"});
+            var updateError = customers.Update(new Customer{id = "update-exception"});
             
-            var deleteError = customers.Update(new Customer{id = "customer-delete-exception"});
+            var deleteError = customers.Update(new Customer{id = "delete-exception"});
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("task requires Sync(). CreateTask<Customer> id: customer-create-exception", e.Message);
+            AreEqual("task requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
-            AreEqual("task requires Sync(). CreateTask<Customer> id: customer-create-exception", e.Message);
+            AreEqual("task requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
 
             
 
