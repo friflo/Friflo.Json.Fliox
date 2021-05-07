@@ -289,8 +289,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var customerQuery = customers.Query(c => c.id == "query-task-error");
             
-            // var createError = customers.Create(new Customer{id = CreateTaskException}); // todo check thrown exception
-            
             var createError = customers.Create(new Customer{id = CreateTaskError});
             
             var updateError = customers.Update(new Customer{id = UpdateTaskError});

@@ -89,14 +89,14 @@ namespace Friflo.Json.Flow.Graph
         // --- Query
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
-                throw new InvalidOperationException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
             return sync.QueryFilter(op);
         }
         
         public QueryTask<T> QueryByFilter(FilterOperation filter) {
             if (filter == null)
-                throw new InvalidOperationException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
             return sync.QueryFilter(filter);
         }
         
@@ -108,18 +108,18 @@ namespace Friflo.Json.Flow.Graph
         // --- Create
         public CreateTask<T> Create(T entity) {
             if (entity == null)
-                throw new InvalidOperationException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             return sync.Create(entity);
         }
         
         public CreateRangeTask<T> CreateRange(ICollection<T> entities) {
             if (entities == null)
-                throw new InvalidOperationException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (entity.id == null)
-                    throw new InvalidOperationException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
+                    throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
             return sync.CreateRange(entities);
         }
@@ -127,18 +127,18 @@ namespace Friflo.Json.Flow.Graph
         // --- Update
         public UpdateTask<T> Update(T entity) {
             if (entity == null)
-                throw new InvalidOperationException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
             return sync.Update(entity);
         }
         
         public UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
             if (entities == null)
-                throw new InvalidOperationException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (entity.id == null)
-                    throw new InvalidOperationException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
+                    throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
             return sync.UpdateRange(entities);
         }
@@ -146,29 +146,29 @@ namespace Friflo.Json.Flow.Graph
         // --- Delete
         public DeleteTask<T> Delete(T entity) {
             if (entity == null)
-                throw new InvalidOperationException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
             return Delete(entity.id);
         }
 
         public DeleteTask<T> Delete(string id) {
             if (id == null)
-                throw new InvalidOperationException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
             return sync.Delete(id);
         }
         
         public DeleteRangeTask<T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
-                throw new InvalidOperationException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
             var ids = entities.Select(e => e.id).ToList();
             return DeleteRange(ids);
         }
         
         public DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
             if (ids == null)
-                throw new InvalidOperationException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
             foreach (var id in ids) {
                 if (id == null)
-                    throw new InvalidOperationException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+                    throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
             return sync.DeleteRange(ids);
         }
@@ -180,9 +180,9 @@ namespace Friflo.Json.Flow.Graph
 
         public int LogEntityChanges(T entity) {
             if (entity == null)
-                throw new InvalidOperationException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
-                throw new InvalidOperationException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             return sync.LogEntityChanges(entity);
         }
         
@@ -200,7 +200,7 @@ namespace Friflo.Json.Flow.Graph
         internal PeerEntity<T> CreatePeer (T entity) {
             if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
                 if (peer.entity != entity)
-                    throw new InvalidOperationException("");
+                    throw new ArgumentException($"Another entity with same id is already tracked. id: {entity.id}");
                 return peer;
             }
             peer = new PeerEntity<T>(entity);
