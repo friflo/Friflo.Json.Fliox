@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         private readonly    EntityContainer local;
         public  readonly    Dictionary<string, string>  readErrors  = new Dictionary<string, string>();
-        public  readonly    HashSet<string>             writeErrors = new HashSet<string>();
+        public  readonly    Dictionary<string, string>  writeErrors = new Dictionary<string, string>();
         public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
         
         public  override    bool            Pretty       => local.Pretty;
@@ -45,7 +45,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
-            SimulateWriteErrors(command.entities.Keys.ToHashSet());
+            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet());
+            if (error != null)
+                return new CreateEntitiesResult {Error = error};
             var result = await local.CreateEntities(command);
             return result;
         }
@@ -111,12 +113,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return null;
         }
         
-        private void SimulateWriteErrors(HashSet<string> entities) {
-            foreach (var id in writeErrors) {
+        private DatabaseError SimulateWriteErrors(HashSet<string> entities) {
+            foreach (var errorPair in writeErrors) {
+                var id = errorPair.Key;
                 if (entities.Contains(id)) {
-                    throw new SimulationException("EntityContainer write exception");
+                    var error = errorPair.Value;
+                    switch (error) {
+                        case Simulate.WriteTaskException:
+                            throw new SimulationException("EntityContainer write exception");
+                        case Simulate.WriteTaskError:
+                            return new DatabaseError {message = "simulated write error"};
+                    }
                 }
             }
+            return null;
         }
     }
 
@@ -128,6 +138,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public const string QueryTaskException  = "QUERY-TASK-EXCEPTION";
         public const string QueryTaskError      = "QUERY-TASK-ERROR";
+        
+        public const string WriteTaskException  = "WRITE-TASK-EXCEPTION";
+        public const string WriteTaskError      = "WRITE-TASK-ERROR";
     }    
 
     public class SimulationException : Exception {

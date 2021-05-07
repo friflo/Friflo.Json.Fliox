@@ -61,15 +61,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
             customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
+            
+            customers.writeErrors.Add(CreateTaskError,      Simulate.WriteTaskError);
+            customers.writeErrors.Add(UpdateTaskError,      Simulate.WriteTaskError);
+            customers.writeErrors.Add(DeleteTaskError,      Simulate.WriteTaskError);
 
-            customers.writeErrors.Add(CreateTaskException);
-            customers.writeErrors.Add(UpdateTaskException);
-            customers.writeErrors.Add(DeleteTaskException);
+            customers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
+            customers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
+            customers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
         private const string ReadEntityError        = "read-entity-error"; 
         private const string ReadTaskError          = "read-task-error";
+        private const string CreateTaskError        = "create-task-error";
+        private const string UpdateTaskError        = "update-task-error";
+        private const string DeleteTaskError        = "delete-task-error";
         
         /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
@@ -276,6 +283,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customerRead = readCustomers.Find(ReadTaskError);
             
             var customerQuery = customers.Query(c => c.id == "query-task-error");
+            
+            // var createError = customers.Create(new Customer{id = CreateTaskException}); // todo check thrown exception
+            
+            var createError = customers.Create(new Customer{id = CreateTaskError});
 
             await store.Sync(); // -------- Sync --------
 
@@ -288,6 +299,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Task failed. type: DatabaseError, message: simulated query error", te.Message);
             AreEqual(TaskErrorType.DatabaseError, customerQuery.GetTaskError().type);
             
+            IsFalse(createError.Success);
+            AreEqual(TaskErrorType.DatabaseError, createError.GetTaskError().type);
+            AreEqual("simulated write error", createError.GetTaskError().message);
         }
     }
 }
