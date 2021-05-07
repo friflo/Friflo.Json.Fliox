@@ -23,7 +23,12 @@ namespace Friflo.Json.Flow.Sync
                     entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
                 }
             }
-            return await entityContainer.UpdateEntities(this);
+            var result = await entityContainer.UpdateEntities(this);
+            var createError = result.Error;
+            if (createError != null) {
+                return new TaskError {type = TaskErrorType.DatabaseError, message = createError.message};
+            }
+            return result;
         }
     }
     

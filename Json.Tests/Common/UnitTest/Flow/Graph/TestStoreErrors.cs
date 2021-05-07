@@ -240,7 +240,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var updateError = customers.Update(new Customer{id = UpdateTaskException});
             
-            var deleteError = customers.Update(new Customer{id = DeleteTaskException});
+            var deleteError = customers.Delete(new Customer{id = DeleteTaskException});
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
@@ -287,6 +287,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // var createError = customers.Create(new Customer{id = CreateTaskException}); // todo check thrown exception
             
             var createError = customers.Create(new Customer{id = CreateTaskError});
+            
+            var updateError = customers.Update(new Customer{id = UpdateTaskError});
 
             await store.Sync(); // -------- Sync --------
 
@@ -302,6 +304,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(createError.Success);
             AreEqual(TaskErrorType.DatabaseError, createError.GetTaskError().type);
             AreEqual("simulated write error", createError.GetTaskError().message);
+            
+            IsFalse(updateError.Success);
+            AreEqual(TaskErrorType.DatabaseError, updateError.GetTaskError().type);
+            AreEqual("simulated write error", updateError.GetTaskError().message);
         }
     }
 }

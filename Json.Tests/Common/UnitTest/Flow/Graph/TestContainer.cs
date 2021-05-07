@@ -48,12 +48,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet());
             if (error != null)
                 return new CreateEntitiesResult {Error = error};
-            var result = await local.CreateEntities(command);
-            return result;
+            return await local.CreateEntities(command);
         }
 
         public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
-            SimulateWriteErrors(command.entities.Keys.ToHashSet());
+            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet());
+            if (error != null)
+                return new UpdateEntitiesResult {Error = error};
             return await local.UpdateEntities(command);
         }
 
