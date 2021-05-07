@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
     public class ReadEntitiesResult: ICommandResult
     {
         public  List<ReferencesResult>          references;
-        public  DatabaseError                   Error { get; set; }
+        public  CommandError                    Error { get; set; }
 
         [Fri.Ignore]
         public  Dictionary<string,EntityValue>  entities;

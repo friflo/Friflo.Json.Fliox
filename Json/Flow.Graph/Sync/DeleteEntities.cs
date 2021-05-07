@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Sync
     
     public class DeleteEntitiesResult : TaskResult, ICommandResult
     {
-        public              DatabaseError       Error { get; set; }
+        public              CommandError        Error { get; set; }
 
         internal override   TaskType            TaskType => TaskType.Delete;
     }

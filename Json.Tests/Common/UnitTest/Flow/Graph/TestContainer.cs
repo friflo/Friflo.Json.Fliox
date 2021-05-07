@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     case Simulate.QueryTaskException:
                         throw new SimulationException("EntityContainer query exception");
                     case Simulate.QueryTaskError:
-                        return new QueryEntitiesResult {Error = new DatabaseError {message = "simulated query error"}};
+                        return new QueryEntitiesResult {Error = new CommandError {message = "simulated query error"}};
                 }
             }
             return result;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         // --- simulate read/write error methods
-        private DatabaseError SimulateReadErrors(Dictionary<string,EntityValue> entities) {
+        private CommandError SimulateReadErrors(Dictionary<string,EntityValue> entities) {
             foreach (var readPair in readErrors) {
                 var id      = readPair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             value.SetError(error);
                             break;
                         case Simulate.ReadTaskError:
-                            return new DatabaseError{message = "simulated read error"};
+                            return new CommandError{message = "simulated read error"};
                         case Simulate.ReadTaskException:
                             throw new SimulationException("EntityContainer read exception");
                         default:
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return null;
         }
         
-        private DatabaseError SimulateWriteErrors(HashSet<string> entities) {
+        private CommandError SimulateWriteErrors(HashSet<string> entities) {
             foreach (var errorPair in writeErrors) {
                 var id = errorPair.Key;
                 if (entities.Contains(id)) {
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         case Simulate.WriteTaskException:
                             throw new SimulationException("EntityContainer write exception");
                         case Simulate.WriteTaskError:
-                            return new DatabaseError {message = "simulated write error"};
+                            return new CommandError {message = "simulated write error"};
                     }
                 }
             }

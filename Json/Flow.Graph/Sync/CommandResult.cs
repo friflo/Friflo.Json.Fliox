@@ -7,10 +7,10 @@ namespace Friflo.Json.Flow.Sync
     public interface ICommandResult
     {
         [Fri.Property(Name = "error")]
-        DatabaseError               Error { get; set;  }
+        CommandError                Error { get; set;  }
     }
     
-    public class DatabaseError
+    public class CommandError
     {
         public          string      message;
 

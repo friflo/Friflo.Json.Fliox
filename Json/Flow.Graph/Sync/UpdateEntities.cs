@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Sync
     
     public class UpdateEntitiesResult : TaskResult, ICommandResult
     {
-        public              DatabaseError       Error { get; set; }
+        public              CommandError        Error { get; set; }
 
         internal override   TaskType            TaskType => TaskType.Update;
     }

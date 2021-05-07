@@ -34,9 +34,9 @@ namespace Friflo.Json.Flow.Sync
     
     public class CreateEntitiesResult : TaskResult, ICommandResult
     {
-        public  DatabaseError                   Error { get; set; }
+        public  CommandError                    Error { get; set; }
         public  Dictionary<string, EntityError> errors;
         
-        internal override TaskType TaskType => TaskType.Create;
+        internal override TaskType              TaskType => TaskType.Create;
     }
 }

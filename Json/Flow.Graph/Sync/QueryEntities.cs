@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Sync
         public  List<ReferencesResult>          references;
         [Fri.Ignore]
         public  Dictionary<string,EntityValue>  entities;
-        public  DatabaseError                   Error { get; set; }
+        public  CommandError                    Error { get; set; }
 
         
         internal override   TaskType            TaskType => TaskType.Query;
