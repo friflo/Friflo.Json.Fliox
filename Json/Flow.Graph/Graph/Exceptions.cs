@@ -48,4 +48,15 @@ namespace Friflo.Json.Flow.Graph
             entityErrors    = taskErrorInfo.EntityErrors;
         }
     }
+    
+    public class TaskEntityError : TaskError
+    {
+        public readonly SortedDictionary<string, EntityError> entityErrors;
+
+        internal TaskEntityError(SortedDictionary<string, EntityError> entityErrors) {
+            this.entityErrors   = entityErrors;
+            message             = $"Task failed by entity errors";
+            type                = TaskErrorType.EntityErrors;
+        }
+    } 
 }

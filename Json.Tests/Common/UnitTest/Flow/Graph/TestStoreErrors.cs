@@ -145,6 +145,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
+            var taskEntityError = (TaskEntityError)allArticles.GetTaskError();
+            AreEqual(2, taskEntityError.entityErrors.Count);
+            AreEqual("type: EntityErrors, message: Task failed by entity errors", taskEntityError.ToString());
+            
+            
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results; });
             AreEqual(ArticleError, te.Message);

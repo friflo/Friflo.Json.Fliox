@@ -21,12 +21,14 @@ namespace Friflo.Json.Flow.Graph
 
         // return error as method - not as property to avoid flooding debug view with properties.
         // error is also visible via State.Error
+        /// <returns>The error caused that task failed. Returns never null</returns>
         public TaskError   GetTaskError() {
             if (State.IsSynced())
                 return State.Error.TaskError;
             throw new TaskNotSyncedException($"SyncTask.GetTaskError() requires Sync(). {Label}");
         }
         
+        /// <returns>The entities caused that task failed. Otherwise null</returns>
         public SortedDictionary<string, EntityError>   GetEntityErrors() {
             if (State.IsSynced())
                 return State.Error.EntityErrors;
