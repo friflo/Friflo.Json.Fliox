@@ -23,6 +23,10 @@ namespace Friflo.Json.Flow.Sync
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.QueryEntities(this);
+            var queryError = result.Error;
+            if (queryError != null) {
+                return new TaskError {type = TaskErrorType.DatabaseError, message = queryError.message};
+            }
             var containerResult = response.GetContainerResult(container);
             var entities = result.entities;
             result.entities = null;  // clear -> its not part of protocol

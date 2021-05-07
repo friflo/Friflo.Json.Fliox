@@ -59,8 +59,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
-            customers.queryTaskErrors.Add("true"); // true == QueryAll()
-            
+            customers.queryTaskErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
+            customers.queryTaskErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
+
             customers.writeTaskErrors.Add(CreateTaskException);
             customers.writeTaskErrors.Add(UpdateTaskException);
             customers.writeTaskErrors.Add(DeleteTaskException);
@@ -224,9 +225,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
 
             var readCustomers = customers.Read();
-            var customerException = readCustomers.Find(ReadTaskException);
+            var customerRead = readCustomers.Find(ReadTaskException);
 
-            var allCustomers = customers.QueryAll();
+            var customerQuery = customers.Query(c => c.id == "query-task-exception");
 
             var createError = customers.Create(new Customer{id = CreateTaskException});
             
@@ -246,12 +247,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             
             TaskResultException te;
-            te = Throws<TaskResultException>(() => { var _ = customerException.Result; });
+            te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer read exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
             AreEqual("type: UnhandledException, message: SimulationException: EntityContainer read exception", te.taskError.ToString());
 
-            te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
+            te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer query exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
 
@@ -272,13 +273,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
 
             var readCustomers = customers.Read();
-            var customerError = readCustomers.Find(ReadTaskError);
+            var customerRead = readCustomers.Find(ReadTaskError);
+            
+            var customerQuery = customers.Query(c => c.id == "query-task-error");
 
             await store.Sync(); // -------- Sync --------
 
             TaskResultException te;
-            te = Throws<TaskResultException>(() => { var _ = customerError.Result; });
-            AreEqual("Task failed. type: DatabaseError, message: simulated database error", te.Message);
+            te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
+            AreEqual("Task failed. type: DatabaseError, message: simulated read error", te.Message);
+            AreEqual(TaskErrorType.DatabaseError, customerRead.GetTaskError().type);
+            
+            te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
+            AreEqual("Task failed. type: DatabaseError, message: simulated query error", te.Message);
+            AreEqual(TaskErrorType.DatabaseError, customerQuery.GetTaskError().type);
             
         }
     }
