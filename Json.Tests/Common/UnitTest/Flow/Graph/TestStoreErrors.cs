@@ -56,7 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var customers = testDatabase.GetTestContainer("Customer");
             customers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
-            customers.readErrors.Add(ReadTaskError,         Simulate.ReadEntityError);
+            customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
+            customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
             customers.queryTaskErrors.Add("true"); // true == QueryAll()
             
@@ -66,14 +67,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
-        private const string ReadTaskError       = "read-task-error"; 
+        private const string ReadEntityError        = "read-entity-error"; 
+        private const string ReadTaskError          = "read-task-error";
         
         /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
-        private const string ReadTaskException   = "read-task-exception"; // throws an exception also for a Query
-        private const string CreateTaskException = "create-task-exception";
-        private const string UpdateTaskException = "update-task-exception";
-        private const string DeleteTaskException = "delete-task-exception";
+        private const string ReadTaskException      = "read-task-exception"; // throws an exception also for a Query
+        private const string CreateTaskException    = "create-task-exception";
+        private const string UpdateTaskException    = "update-task-exception";
+        private const string DeleteTaskException    = "delete-task-exception";
         
 
         private static async Task TestStoresErrors(PocStore useStore) {

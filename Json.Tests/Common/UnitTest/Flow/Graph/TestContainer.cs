@@ -57,13 +57,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
             var result = await local.ReadEntities(command);
-            SimulateReadErrors(result.entities);
+            var databaseError = SimulateReadErrors(result.entities);
+            if (databaseError != null)
+                result.Error = databaseError;
             return result;
         }
         
         public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
             var result = await local.QueryEntities(command);
-            SimulateReadErrors(result.entities);
+            var databaseError = SimulateReadErrors(result.entities);
+            if (databaseError != null) {
+                result.Error = databaseError;
+                return result;
+            }
             if (queryTaskErrors.Contains(command.filterLinq)) {
                 throw new SimulationException("EntityContainer query exception");
             }
@@ -76,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         // --- simulate read/write error methods
-        private void SimulateReadErrors(Dictionary<string,EntityValue> entities) {
+        private DatabaseError SimulateReadErrors(Dictionary<string,EntityValue> entities) {
             foreach (var readPair in readErrors) {
                 var id      = readPair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
@@ -87,6 +93,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
                             value.SetError(error);
                             break;
+                        case Simulate.ReadTaskError:
+                            return new DatabaseError();
                         case Simulate.ReadTaskException:
                             throw new SimulationException("EntityContainer read exception");
                         default:
@@ -95,6 +103,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     }
                 }
             }
+            return null;
         }
         
         private void SimulateWriteErrors(HashSet<string> entities) {
@@ -108,8 +117,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public static class Simulate
     {
-        public const string ReadEntityError    = "READ-ENTITY-ERROR";
-        public const string ReadTaskException  = "READ-TASK-EXCEPTION";
+        public const string ReadEntityError     = "READ-ENTITY-ERROR";
+        public const string ReadTaskError       = "READ-TASK-ERROR";
+        public const string ReadTaskException   = "READ-TASK-EXCEPTION";
     }    
 
     public class SimulationException : Exception {
