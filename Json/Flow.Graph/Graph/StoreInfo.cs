@@ -119,7 +119,7 @@ namespace Friflo.Json.Flow.Graph
         
         public override string ToString() {
             var sb = new StringBuilder();
-            SetInfo.AppendName(sb, "all");
+            SetInfo.AppendName(sb, "entities");
             sb.Append(peers);
             
             if (tasks > 0) {
