@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
@@ -51,22 +52,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
             articles.readErrors.Add("article-2", @"{""invalidJson"" XXX}");
-            articles.readErrors.Add("article-1", "READ-ERROR");
+            articles.readErrors.Add("article-1",            Simulate.ReadEntityError);
             
             var customers = testDatabase.GetTestContainer("Customer");
-            customers.readErrors.Add("read-exception", "READ-EXCEPTION");
+            customers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
+            customers.readErrors.Add(ReadTaskError,         Simulate.ReadEntityError);
             
             customers.queryTaskErrors.Add("true"); // true == QueryAll()
             
-            customers.writeTaskErrors.Add("create-exception");
-            customers.writeTaskErrors.Add("update-exception");
-            customers.writeTaskErrors.Add("delete-exception");
+            customers.writeTaskErrors.Add(CreateTaskException);
+            customers.writeTaskErrors.Add(UpdateTaskException);
+            customers.writeTaskErrors.Add(DeleteTaskException);
         }
+
+        /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
+        private const string ReadTaskError       = "read-task-error"; 
+        
+        /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
+        /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
+        private const string ReadTaskException   = "read-task-exception"; // throws an exception also for a Query
+        private const string CreateTaskException = "create-task-exception";
+        private const string UpdateTaskException = "update-task-exception";
+        private const string DeleteTaskException = "delete-task-exception";
+        
 
         private static async Task TestStoresErrors(PocStore useStore) {
             await AssertQueryTask       (useStore);
             await AssertReadTask        (useStore);
             await AssertTaskExceptions  (useStore);
+            await AssertTaskError       (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -208,23 +222,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
 
             var readCustomers = customers.Read();
-            var customerException = readCustomers.Find("read-exception");
+            var customerException = readCustomers.Find(ReadTaskException);
 
             var allCustomers = customers.QueryAll();
 
-            var createError = customers.Create(new Customer{id = "create-exception"});
+            var createError = customers.Create(new Customer{id = CreateTaskException});
             
-            var updateError = customers.Update(new Customer{id = "update-exception"});
+            var updateError = customers.Update(new Customer{id = UpdateTaskException});
             
-            var deleteError = customers.Update(new Customer{id = "delete-exception"});
+            var deleteError = customers.Update(new Customer{id = DeleteTaskException});
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetTaskError(); });
-            AreEqual("SyncTask.GetTaskError() requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            AreEqual("SyncTask.GetTaskError() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetEntityErrors(); });
-            AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-exception", e.Message);
+            AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
 
 
             await store.Sync(); // -------- Sync --------
@@ -234,7 +248,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer read exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
             AreEqual("type: UnhandledException, message: SimulationException: EntityContainer read exception", te.taskError.ToString());
-            
+
             te = Throws<TaskResultException>(() => { var _ = allCustomers.Results; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: EntityContainer query exception", te.Message);
             AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
@@ -250,6 +264,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(deleteError.Success);
             AreEqual(TaskErrorType.UnhandledException, deleteError.GetTaskError().type);
             AreEqual("SimulationException: EntityContainer write exception", deleteError.GetTaskError().message);
+        }
+        
+        private static async Task AssertTaskError(PocStore store) {
+            var customers = store.customers;
+
+            var readCustomers = customers.Read();
+            var customerException = readCustomers.Find(ReadTaskError);
+
+            await store.Sync(); // -------- Sync --------
         }
     }
 }

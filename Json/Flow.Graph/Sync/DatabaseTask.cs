@@ -46,13 +46,4 @@ namespace Friflo.Json.Flow.Sync
         //
         Error
     }
-    
-    public class TaskError : TaskResult
-    {
-        public              TaskErrorType   type;
-        public              string          message;
-
-        internal override   TaskType        TaskType => TaskType.Error;
-        public   override   string          ToString() => $"type: {type}, message: {message}";
-    }
 }

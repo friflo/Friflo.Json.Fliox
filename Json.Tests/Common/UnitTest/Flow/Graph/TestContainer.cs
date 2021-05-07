@@ -82,12 +82,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 if (entities.TryGetValue(id, out EntityValue value)) {
                     var payload = readPair.Value;
                     switch (payload) {
-                        case "READ-ERROR":
+                        case Simulate.ReadEntityError:
                             value.SetJson("null");
                             var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
                             value.SetError(error);
                             break;
-                        case "READ-EXCEPTION":
+                        case Simulate.ReadTaskException:
                             throw new SimulationException("EntityContainer read exception");
                         default:
                             value.SetJson(payload); // modify JSON
@@ -105,6 +105,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
     }
+
+    public static class Simulate
+    {
+        public const string ReadEntityError    = "READ-ENTITY-ERROR";
+        public const string ReadTaskException  = "READ-TASK-EXCEPTION";
+    }    
 
     public class SimulationException : Exception {
         public SimulationException(string message) : base(message) { }
