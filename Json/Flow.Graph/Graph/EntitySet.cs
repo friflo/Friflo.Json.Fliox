@@ -72,61 +72,15 @@ namespace Friflo.Json.Flow.Graph
         
         internal override   SyncSet                             Sync => sync;
         public   override   string                              ToString() => SetInfo.ToString();
-
+        
         internal override   SetInfo                             SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
             sync.SetTaskInfo(ref info);
             return info;
         }}
 
-        public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            Type type = typeof(T);
-            store._intern.setByType[type]       = this;
-            store._intern.setByName[type.Name]  = this;
-            container   = store._intern.database.GetOrCreateContainer(name);
-            intern      = new SetIntern<T>(store);
-            sync        = new SyncSet<T>(this);
-        }
-
-        internal PeerEntity<T> CreatePeer (T entity) {
-            if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
-                if (peer.entity != entity)
-                    throw new InvalidOperationException("");
-                return peer;
-            }
-            peer = new PeerEntity<T>(entity);
-            peers.Add(entity.id, peer);
-            return peer;
-        }
         
-        internal void DeletePeer (string id) {
-            peers.Remove(id);
-        }
-        
-        internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
-            string id = reference.id;
-            PeerEntity<T> peer = reference.GetPeer();
-            if (peer == null) {
-                var entity = reference.GetEntity();
-                if (entity != null)
-                    peer = CreatePeer(entity);
-                else
-                    peer = GetPeerById(id);
-            }
-            return peer;
-        }
-
-        internal PeerEntity<T> GetPeerById(string id) {
-            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
-                return peer;
-            }
-            var entity = (T)intern.typeMapper.CreateInstance();
-            peer = new PeerEntity<T>(entity);
-            peer.entity.id = id;
-            peers.Add(id, peer);
-            return peer;
-        }
-        
+        // --------------------------------------- public interface --------------------------------------- 
         // --- Read
         public ReadTask<T> Read() {
             return sync.Read();
@@ -231,7 +185,58 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             return sync.LogEntityChanges(entity);
         }
+        
 
+        // ------------------------------------------- internals -------------------------------------------
+        public EntitySet(EntityStore store) : base (typeof(T).Name) {
+            Type type = typeof(T);
+            store._intern.setByType[type]       = this;
+            store._intern.setByName[type.Name]  = this;
+            container   = store._intern.database.GetOrCreateContainer(name);
+            intern      = new SetIntern<T>(store);
+            sync        = new SyncSet<T>(this);
+        }
+
+        internal PeerEntity<T> CreatePeer (T entity) {
+            if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
+                if (peer.entity != entity)
+                    throw new InvalidOperationException("");
+                return peer;
+            }
+            peer = new PeerEntity<T>(entity);
+            peers.Add(entity.id, peer);
+            return peer;
+        }
+        
+        internal void DeletePeer (string id) {
+            peers.Remove(id);
+        }
+        
+        internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
+            string id = reference.id;
+            PeerEntity<T> peer = reference.GetPeer();
+            if (peer == null) {
+                var entity = reference.GetEntity();
+                if (entity != null)
+                    peer = CreatePeer(entity);
+                else
+                    peer = GetPeerById(id);
+            }
+            return peer;
+        }
+
+        internal PeerEntity<T> GetPeerById(string id) {
+            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
+                return peer;
+            }
+            var entity = (T)intern.typeMapper.CreateInstance();
+            peer = new PeerEntity<T>(entity);
+            peer.entity.id = id;
+            peers.Add(id, peer);
+            return peer;
+        }
+        
+        // --- EntitySet
         internal override void SyncContainerEntities(ContainerEntities containerResults) {
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
