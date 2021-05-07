@@ -289,6 +289,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createError = customers.Create(new Customer{id = CreateTaskError});
             
             var updateError = customers.Update(new Customer{id = UpdateTaskError});
+            
+            var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
 
             await store.Sync(); // -------- Sync --------
 
@@ -308,6 +310,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(updateError.Success);
             AreEqual(TaskErrorType.DatabaseError, updateError.GetTaskError().type);
             AreEqual("simulated write error", updateError.GetTaskError().message);
+            
+            IsFalse(deleteError.Success);
+            AreEqual(TaskErrorType.DatabaseError, deleteError.GetTaskError().type);
+            AreEqual("simulated write error", deleteError.GetTaskError().message);
         }
     }
 }

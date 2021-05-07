@@ -85,7 +85,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
-            SimulateWriteErrors(command.ids);
+            var error = SimulateWriteErrors(command.ids);
+            if (error != null)
+                return new DeleteEntitiesResult {Error = error};
             return await local.DeleteEntities(command);
         }
         
