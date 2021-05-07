@@ -18,7 +18,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
-
+// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestStore : LeakTestsFixture
@@ -194,8 +194,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // lab - test ReadRef expressions
             if (lab) {
-                ReadRefsTask<Article> articles2 = readOrders.ReadRefsOfType<Article>();
-                ReadRefsTask<Entity>  allDeps   = readOrders.ReadAllRefs();
+                readOrders.ReadRefsOfType<Article>();
+                readOrders.ReadAllRefs();
             }
 
             await store.Sync(); // -------- Sync --------

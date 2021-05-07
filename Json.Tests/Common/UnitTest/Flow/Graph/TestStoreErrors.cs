@@ -16,6 +16,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestStoreErrors : LeakTestsFixture
@@ -210,7 +211,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask.Find(duplicateId);
-            var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"});
+                                  readTask.FindRange(new [] {"article-1", "article-2"});
             var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
 
             await store.Sync(); // -------- Sync --------
