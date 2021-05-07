@@ -59,12 +59,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
-            customers.queryTaskErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
-            customers.queryTaskErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
+            customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
+            customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
 
-            customers.writeTaskErrors.Add(CreateTaskException);
-            customers.writeTaskErrors.Add(UpdateTaskException);
-            customers.writeTaskErrors.Add(DeleteTaskException);
+            customers.writeErrors.Add(CreateTaskException);
+            customers.writeErrors.Add(UpdateTaskException);
+            customers.writeErrors.Add(DeleteTaskException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
