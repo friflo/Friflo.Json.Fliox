@@ -44,14 +44,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void TestDictionaryValueIterator() {
             var store = new PocStore(new MemoryDatabase());
             var readArticles = store.articles.Read();
-            var article= readArticles.Find("missing-id");
-            var task = readArticles.ReadRef(a => a.producer);
+                        readArticles.Find("missing-id");
+            var task =  readArticles.ReadRef(a => a.producer);
             SubRefs subRefs;
             subRefs.AddTask("someTask", task);
 
             // ensure iterator does not allocate something on heap by boxing
             var startBytes = GC.GetAllocatedBytesForCurrentThread();
-            foreach (var subRef in subRefs) {
+            foreach (var _ in subRefs) {
             }
             var endBytes = GC.GetAllocatedBytesForCurrentThread();
             AreEqual(startBytes, endBytes);

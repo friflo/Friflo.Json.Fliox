@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 return container;
             }
             EntityContainer localContainer = local.GetOrCreateContainer(name);
-            return new TestContainer(name, this, localContainer);;
+            return new TestContainer(name, this, localContainer);
         }
 
         public TestContainer GetTestContainer(string name) {
