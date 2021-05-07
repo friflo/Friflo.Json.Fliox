@@ -12,6 +12,8 @@ namespace Friflo.Json.Flow.Sync
     }
     
     public enum TaskErrorType {
-        UnhandledException
+        Undefined,
+        UnhandledException,
+        DatabaseError
     }
 }

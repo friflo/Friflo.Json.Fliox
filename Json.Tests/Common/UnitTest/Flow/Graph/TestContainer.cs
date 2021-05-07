@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                             value.SetError(error);
                             break;
                         case Simulate.ReadTaskError:
-                            return new DatabaseError();
+                            return new DatabaseError{message = "simulated database error"};
                         case Simulate.ReadTaskException:
                             throw new SimulationException("EntityContainer read exception");
                         default:

@@ -27,6 +27,10 @@ namespace Friflo.Json.Flow.Sync
             var entityContainer = database.GetOrCreateContainer(container);
             var combinedResult = await entityContainer.ReadEntities(combinedRead);
             
+            var readError = combinedResult.Error;
+            if (readError != null) {
+                return new TaskError {type = TaskErrorType.DatabaseError, message = readError.message};
+            }
             var combinedEntities = combinedResult.entities;
             combinedResult.entities = null;
             var containerResult = response.GetContainerResult(container);

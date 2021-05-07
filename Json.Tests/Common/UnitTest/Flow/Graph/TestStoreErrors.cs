@@ -272,9 +272,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
 
             var readCustomers = customers.Read();
-            var customerException = readCustomers.Find(ReadTaskError);
+            var customerError = readCustomers.Find(ReadTaskError);
 
             await store.Sync(); // -------- Sync --------
+
+            TaskResultException te;
+            te = Throws<TaskResultException>(() => { var _ = customerError.Result; });
+            AreEqual("Task failed. type: DatabaseError, message: simulated database error", te.Message);
+            
         }
     }
 }
