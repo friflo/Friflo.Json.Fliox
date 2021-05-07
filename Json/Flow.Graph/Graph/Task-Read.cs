@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph
 
         public Find<T> Find(string id) {
             if (id == null)
-                throw new InvalidOperationException($"ReadTask.ReadId() id must not be null. EntitySet: {set.name}");
+                throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
             idMap.Add(id, null);
@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Graph
         
         public FindRange<T> FindRange(ICollection<string> ids) {
             if (ids == null)
-                throw new InvalidOperationException($"ReadTask.ReadIds() ids must not be null. EntitySet: {set.name}");
+                throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
 #if !UNITY_5_3_OR_NEWER
@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Graph
 #endif
             foreach (var id in ids) {
                 if (id == null)
-                    throw new NullReferenceException($"ReadTask.ReadIds() id must not be null. EntitySet: {set.name}");
+                    throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
                 idMap.TryAdd(id, null);
             }
             return new FindRange<T>(this, ids);

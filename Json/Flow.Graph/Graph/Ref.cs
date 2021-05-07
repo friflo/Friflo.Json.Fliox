@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph
             this.entity = entity;
             this.peer   = null;
             if (entity != null && entity.id == null)
-                throw new InvalidOperationException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
+                throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
         
         internal Ref(PeerEntity<T> peer) {
