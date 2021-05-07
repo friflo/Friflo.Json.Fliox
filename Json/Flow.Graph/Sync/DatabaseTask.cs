@@ -53,5 +53,6 @@ namespace Friflo.Json.Flow.Sync
         public              string          message;
 
         internal override   TaskType        TaskType => TaskType.Error;
+        public   override   string          ToString() => $"type: {type}, message: {message}";
     }
 }
