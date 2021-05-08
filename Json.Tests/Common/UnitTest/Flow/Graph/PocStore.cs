@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
-            articles.Create(galaxy);
+            var createGalaxy    = articles.Create(galaxy);
             AreSimilar("entities: 1, tasks: 1",                         store);
             AreSimilar("Article:  1, tasks: 1 -> create #1",            articles);
             
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var appleEmployees  = new List<Ref<Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
-            articles.Create(ipad);
+            var createIPad      = articles.Create(ipad);
             AreSimilar("Article:  2, tasks: 1 -> create #2",            articles);
             
             articles.Delete("article-iphone"); // delete if exist in database
@@ -100,12 +100,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
+            IsTrue(createGalaxy.Success);
+            IsTrue(createIPad.Success);
+            
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
-            producers.Create(canon);
+            var createCanon     = producers.Create(canon);
             var order           = new Order { id = "order-1" };
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
-            var createCam1 = articles.Create(cameraCreate);
-            var createCam2 = articles.Create(cameraCreate);   // Create new CreatTask for same entity
+            var createCam1      = articles.Create(cameraCreate);
+            var createCam2      = articles.Create(cameraCreate);   // Create new CreatTask for same entity
             AreNotSame(createCam1, createCam2);               
             AreEqual("CreateTask<Article> id: article-1", createCam1.ToString());
 
@@ -133,6 +136,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 10",                                   store); // tasks cleared
+            
+            IsTrue(createCam1.Success);
+            IsTrue(createCanon.Success);
+            
 
             articles.DeleteRange(newBulkArticles);
             AreSimilar("entities: 10, tasks: 1",                         store);
