@@ -10,12 +10,13 @@ namespace Friflo.Json.Flow.Graph
     public class LogTask : SyncTask
     {
         internal readonly   List<EntityPatch>   patches = new List<EntityPatch>();
-        public   int        Count               => patches.Count;
+        
+        public              int                 Count   => patches.Count;
 
         internal            TaskState           state;
-        internal override   TaskState           State       => state;
+        internal override   TaskState           State   => state;
         
-        internal override   string              Label       => $"LogTask #patches: {patches.Count}";
+        internal override   string              Label   => $"LogTask #patches: {patches.Count}";
 
         internal LogTask() { }
     }

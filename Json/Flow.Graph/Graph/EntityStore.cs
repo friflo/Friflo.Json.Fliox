@@ -201,6 +201,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                     }
                 }
+                sync.LogResults();
             }
             finally
             {
@@ -209,7 +210,6 @@ namespace Friflo.Json.Flow.Graph
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
-                sync.LogResults();
                 sync = new SyncStore();
             }
         }
