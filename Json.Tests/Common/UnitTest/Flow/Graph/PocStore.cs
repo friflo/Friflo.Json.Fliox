@@ -155,9 +155,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1, store.LogChanges());
             AreEqual(1, store.LogChanges());       // LogChanges() is idempotent => state did not change
 
-            articles.Delete(camForDelete.id);
+            var deleteCamera = articles.Delete(camForDelete.id);
             
             await store.Sync(); // -------- Sync --------
+            
+            IsTrue(deleteCamera.Success);
             AreSimilar("entities: 7",                           store);       // tasks executed and cleared
 
             AreSimilar("Article:  3",                           articles);
