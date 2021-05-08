@@ -42,7 +42,26 @@ namespace Friflo.Json.Flow.Database
             containers[name] = container = CreateContainer(name, this);
             return container;
         }
-        
+
+        /// <summary>
+        /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
+        /// <para>
+        ///   <see cref="Execute"/> catches exceptions thrown by a <see cref="DatabaseTask"/> but 
+        ///   this is only a fail safe mechanism.
+        ///   Thrown exceptions need to be handled by proper error handling in the first place.
+        ///
+        ///   Reasons for the design decision: 
+        ///   <para> a) Without a proper error handling the root cause of an error cannot be traced back.</para>
+        ///   <para> b) Exceptions are expensive regarding CPU utilization and heap allocation.</para>
+        /// </para>
+        /// <para>
+        ///   An exception can have two different reasons:
+        ///   <para> 1. The implementation of an <see cref="EntityContainer"/> is missing a proper error handling.
+        ///          A proper error handling requires to set a meaningful <see cref="CommandError"/> to
+        ///          <see cref="ICommandResult.Error"/></para>
+        ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Flow.Sync"/> which must to be fixed.</para> 
+        /// </para>
+        /// </summary>
         public virtual async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 tasks    = new List<TaskResult>(syncRequest.tasks.Count),
@@ -54,20 +73,8 @@ namespace Friflo.Json.Flow.Database
                     response.tasks.Add(result);
                 }
                 catch (Exception e) {
-                    // Catching exceptions here is only a fail safe mechanism.
-                    // They need to be handled by proper error handling in the first place.
-                    //
-                    // Reasons for the design decision:
-                    // a) Without a proper error handling the root cause of an error cannot be traced back.
-                    // b) Exceptions are expensive regarding CPU utilization and heap allocation.
-                    //
-                    // An exception can have two different reasons:
-                    //
-                    // 1. The implementation of an EntityContainer is missing a proper error handling.
-                    //    A proper error handling requires to set a meaningful CommandError to ICommandResult.Error
-                    //
-                    // 2. An issue in the namespace .Sync which must to be fixed. 
-                    //
+                    // Note!
+                    // Should not happen - see documentation of this method.
                     var exceptionName = e.GetType().Name;
                     var result = new TaskError{
                         type    = TaskErrorType.UnhandledException,
