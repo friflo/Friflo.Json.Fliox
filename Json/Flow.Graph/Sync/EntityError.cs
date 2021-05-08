@@ -49,6 +49,7 @@ namespace Friflo.Json.Flow.Sync
 
     public enum EntityErrorType
     {
+        Undefined,   // Prevent implicit initialization of underlying value 0 to a valid value (ParseError) 
         ParseError,
         ReadError,
         WriteError
