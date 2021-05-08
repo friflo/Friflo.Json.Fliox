@@ -174,6 +174,8 @@ namespace Friflo.Json.Flow.Database
         }
     }
 
+    /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its
+    /// fields <see cref="references"/> and <see cref="error"/>.
     public class ReadReferencesResult
     {
         internal List<ReferencesResult> references;
