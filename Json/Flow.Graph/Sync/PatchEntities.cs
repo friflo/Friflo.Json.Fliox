@@ -26,8 +26,10 @@ namespace Friflo.Json.Flow.Sync
         public List<JsonPatch>                  patches;
     }
 
-    public class PatchEntitiesResult : TaskResult
+    public class PatchEntitiesResult : TaskResult, ICommandResult
     {
-        internal override TaskType      TaskType => TaskType.Patch;
+        public              CommandError        Error { get; set; }
+        
+        internal override   TaskType            TaskType => TaskType.Patch;
     }
 }

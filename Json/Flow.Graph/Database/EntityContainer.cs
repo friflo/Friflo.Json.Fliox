@@ -69,6 +69,9 @@ namespace Friflo.Json.Flow.Database
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
             var readResult = await ReadEntities(readTask);
+            if (readResult.Error != null) {
+                return new PatchEntitiesResult {Error = readResult.Error}; // todo add test
+            }
             var entities = readResult.entities;
             if (entities.Count != ids.Count)
                 throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
@@ -83,8 +86,11 @@ namespace Friflo.Json.Flow.Database
                 entity.Value.SetJson(patcher.ApplyPatches(entity.Value.Json, patch.patches, Pretty));
             }
             // Write patched entities back
-            var task = new CreateEntities {entities = entities};
-            await CreateEntities(task); // todo should be UpdateEntities
+            var task = new UpdateEntities {entities = entities};
+            var updateResult = await UpdateEntities(task);
+            if (updateResult.Error != null) {
+                return new PatchEntitiesResult {Error = updateResult.Error}; // todo add test
+            }
             return new PatchEntitiesResult();
         }
 
