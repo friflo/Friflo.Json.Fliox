@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
         internal  abstract  void    UpdateEntitiesResult    (UpdateEntities     task, TaskResult result);
-        internal  abstract void     ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
+        internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
@@ -299,7 +299,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
-            var createResult = result as CreateEntitiesResult;
+            // var createResult = (CreateEntitiesResult)result;
             var entities = task.entities;
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
@@ -318,7 +318,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
-            var updateResult = result as UpdateEntitiesResult;
+            // var updateResult = (UpdateEntitiesResult)result;
             var entities = task.entities;
             foreach (var entry in entities) {
                 var peer = set.GetPeerById(entry.Key);
@@ -431,7 +431,15 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            var patchResult = result as PatchEntitiesResult;
+            // patch tasks are currently not created via an EntitySet<> API -> .Patch()
+            // => no need/possibility to propagate a TaskError result 
+            /* if (result is TaskError taskError) {
+                foreach (var patchTask in patchTask) {
+                    patchTask.SetError(new TaskErrorInfo(taskError));
+                }
+                return;
+            } */
+            // var patchResult = (PatchEntitiesResult)result;
             var entityPatches = task.patches;
             foreach (var entityPatchPair in entityPatches) {
                 var id = entityPatchPair.Key;
@@ -448,7 +456,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
-            var deleteResult = result as DeleteEntitiesResult;
+            // var deleteResult = (DeleteEntitiesResult)result;
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
             }
