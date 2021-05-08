@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
 
 namespace Friflo.Json.Flow.Sync
 {

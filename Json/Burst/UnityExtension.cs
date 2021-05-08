@@ -5,9 +5,9 @@
 
 using System.Collections.Generic;
 
-namespace Friflo.Json.Burst
+namespace System.Collections.Generic
 {
-    public static class UnityExtension
+    public static class UnityExtensionGeneric
     {
         public static bool TryAdd<TKey,TValue>(this Dictionary<TKey,TValue> dictionary, TKey key, TValue value) {
             if (dictionary.ContainsKey(key))
@@ -16,7 +16,13 @@ namespace Friflo.Json.Burst
             dictionary.Add(key, value);
             return true;
         }
-        
+    }
+}
+
+namespace System.Linq
+{
+    public static class UnityExtensionLinq
+    {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection) {
             // return new HashSet<T>(collection, null); todo use this
             var hashSet = new HashSet<T>();

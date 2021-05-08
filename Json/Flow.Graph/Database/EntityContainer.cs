@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Burst;  // UnityExtension.TryAdd(), ToHashSet()
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
