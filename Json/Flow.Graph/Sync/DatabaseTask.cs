@@ -18,6 +18,10 @@ namespace Friflo.Json.Flow.Sync
     {
         internal abstract   Task<TaskResult>    Execute(EntityDatabase database, SyncResponse response);
         internal abstract   TaskType            TaskType { get; }
+
+        internal static TaskError TaskError(CommandError error) {
+            return new TaskError {type = TaskErrorType.DatabaseError, message = error.message};   
+        }
     }
     
     // ------------------------------ TaskResult ------------------------------

@@ -24,9 +24,8 @@ namespace Friflo.Json.Flow.Sync
                 }
             }
             var result = await entityContainer.UpdateEntities(this);
-            var updateError = result.Error;
-            if (updateError != null) {
-                return new TaskError {type = TaskErrorType.DatabaseError, message = updateError.message};
+            if (result.Error != null) {
+                return TaskError(result.Error);
             }
             return result;
         }
