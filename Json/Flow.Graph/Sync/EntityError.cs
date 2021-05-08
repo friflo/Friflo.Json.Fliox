@@ -2,10 +2,15 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Text;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
+    /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
+    /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or
+    /// <see cref="EntityContainer.QueryEntities"/> fails.
+    /// This implies that the previous read or query call was successful. 
     public class EntityError
     {
         [Fri.Property]  public  EntityErrorType type;
