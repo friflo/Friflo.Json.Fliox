@@ -143,20 +143,20 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Log changes -> create patches
-        internal int LogSetChanges(Dictionary<string, PeerEntity<T>> peers) {
+        internal void LogSetChanges(Dictionary<string, PeerEntity<T>> peers, LogTask logTask) {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
-                GetEntityChanges(peer);
+                var patch = GetEntityChanges(peer);
+                logTask.patches.Add(patch);
             }
-            return creates.Count + patches.Values.Count;
         }
 
-        internal int LogEntityChanges(T entity) {
+        internal void LogEntityChanges(T entity, LogTask logTask) {
             var peer = set.GetPeerById(entity.id);
             var patch = GetEntityChanges(peer);
-            if (patch != null)
-                return patch.patches.Count;
-            return 0;
+            if (patch != null) {
+                logTask.patches.Add(patch);
+            }
         }
 
         /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to

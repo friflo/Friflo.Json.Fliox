@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Mapper;
@@ -65,6 +66,7 @@ namespace Friflo.Json.Flow.Graph
         // ReSharper disable once InconsistentNaming
         internal readonly   StoreIntern     _intern;
         public              TypeStore       TypeStore => _intern.typeStore;
+        internal            SyncStore       sync;
 
         public              StoreInfo       StoreInfo  => new StoreInfo(_intern.setByType); 
         public   override   string          ToString() => StoreInfo.ToString();
@@ -78,6 +80,7 @@ namespace Friflo.Json.Flow.Graph
             var jsonMapper = new ObjectMapper(typeStore, errorHandler) {
                 TracerContext = this
             };
+            sync = new SyncStore();
             _intern = new StoreIntern(typeStore, database, jsonMapper);
         }
         
@@ -102,13 +105,13 @@ namespace Friflo.Json.Flow.Graph
             HandleSyncResponse(syncRequest, response);
         }
 
-        public int LogChanges() {
-            int count = 0;
+        public LogTask LogChanges() {
+            var logTask = sync.CreateLog();
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
-                count += set.LogSetChanges();
+                set.LogSetChangesInternal(logTask);
             }
-            return count;
+            return logTask;
         }
         
         internal EntitySet<T> EntitySet<T>() where T : Entity
@@ -206,6 +209,8 @@ namespace Friflo.Json.Flow.Graph
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
+                sync.LogResults();
+                sync = new SyncStore();
             }
         }
     }

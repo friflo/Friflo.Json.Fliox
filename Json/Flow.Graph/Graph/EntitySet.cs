@@ -25,8 +25,8 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
-        public    abstract  int     LogSetChanges();
-        internal  abstract  void    SyncContainerEntities        (ContainerEntities containerResults);
+        internal  abstract  void    LogSetChangesInternal (LogTask logTask);
+        internal  abstract  void    SyncContainerEntities (ContainerEntities containerResults);
         internal  abstract  void    ResetSync           ();
 
         protected EntitySet(string name) {
@@ -174,20 +174,28 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --- Log changes -> create patches
-        public override int LogSetChanges() {
-            return sync.LogSetChanges(peers);
+        public LogTask LogSetChanges() {
+            var logTask = intern.store.sync.CreateLog();
+            sync.LogSetChanges(peers, logTask);
+            return logTask;
         }
 
-        public int LogEntityChanges(T entity) {
+        public LogTask LogEntityChanges(T entity) {
+            var logTask = intern.store.sync.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
-            return sync.LogEntityChanges(entity);
+            sync.LogEntityChanges(entity, logTask);
+            return logTask;
         }
         
 
         // ------------------------------------------- internals -------------------------------------------
+        internal override void LogSetChangesInternal(LogTask logTask) {
+            sync.LogSetChanges(peers, logTask);
+        }
+        
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
             Type type = typeof(T);
             store._intern.setByType[type]       = this;
