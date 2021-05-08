@@ -54,6 +54,20 @@ namespace Friflo.Json.Flow.Database
                     response.tasks.Add(result);
                 }
                 catch (Exception e) {
+                    // Catching exceptions here is only a fail safe mechanism.
+                    // They need to be handled by proper error handling in the first place.
+                    //
+                    // Reasons for the design decision:
+                    // a) Without a proper error handling the root cause of an error cannot be traced back.
+                    // b) Exceptions are expensive regarding CPU utilization and heap allocation.
+                    //
+                    // An exception can have two different reasons:
+                    //
+                    // 1. The implementation of an EntityContainer is missing a proper error handling.
+                    //    A proper error handling requires to set a meaningful CommandError to ICommandResult.Error
+                    //
+                    // 2. An issue in the namespace .Sync which must to be fixed. 
+                    //
                     var exceptionName = e.GetType().Name;
                     var result = new TaskError{
                         type    = TaskErrorType.UnhandledException,
