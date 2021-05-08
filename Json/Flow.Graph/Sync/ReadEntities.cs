@@ -13,11 +13,11 @@ namespace Friflo.Json.Flow.Sync
         public  List<References>                references;
         
         internal async Task ReadReferences(ReadEntitiesResult readResult, EntityContainer entityContainer, SyncResponse response) {
-            List<ReferencesResult> readRefResults = null;
+            var readRefResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response);
             }
-            readResult.references = readRefResults;
+            readResult.references = readRefResults.references;
         }
     }
     

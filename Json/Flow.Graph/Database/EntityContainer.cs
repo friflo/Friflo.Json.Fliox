@@ -94,7 +94,7 @@ namespace Friflo.Json.Flow.Database
             return new PatchEntitiesResult();
         }
 
-        public async Task<List<ReferencesResult>> ReadReferences(
+        public async Task<ReadReferencesResult> ReadReferences(
                 List<References>                    references,
                 Dictionary<string, EntityValue>     entities,
                 string                              container,
@@ -159,11 +159,17 @@ namespace Friflo.Json.Flow.Database
                         foreach (var id in ids) {
                             subEntities.Add(id, refEntities.entities[id]);
                         }
-                        referenceResult.references = await ReadReferences(subReferences, subEntities, reference.container, syncResponse); 
+                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse);
+                        referenceResult.references = refReferencesResult.references;
                     }
                 }
             }
-            return referenceResults;
+            return new ReadReferencesResult {references = referenceResults};
         }
     }
+
+    public class ReadReferencesResult
+    {
+        internal List<ReferencesResult> references;
+    } 
 }

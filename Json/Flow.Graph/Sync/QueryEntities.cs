@@ -30,14 +30,14 @@ namespace Friflo.Json.Flow.Sync
             var entities = result.entities;
             result.entities = null;  // clear -> its not part of protocol
             containerResult.AddEntities(entities);
-            List<ReferencesResult> queryRefsResults = null;
+            var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response);
             }
             result.container    = container;
             result.filterLinq   = filterLinq;
             result.ids          = entities.Keys.ToHashSet();
-            result.references   = queryRefsResults;
+            result.references   = queryRefsResults.references;
             return result;
         }
     }
