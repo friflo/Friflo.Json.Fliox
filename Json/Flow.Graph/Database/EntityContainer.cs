@@ -151,6 +151,9 @@ namespace Friflo.Json.Flow.Database
                     var refIdList   = ids.ToHashSet();
                     var readRefIds  = new ReadEntities {ids = refIdList};
                     var refEntities = await refContainer.ReadEntities(readRefIds);
+                    if (refEntities.Error != null) {
+                        return new ReadReferencesResult {error = refEntities.Error};
+                    }
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);
                     var subReferences = reference.references;  
@@ -160,6 +163,9 @@ namespace Friflo.Json.Flow.Database
                             subEntities.Add(id, refEntities.entities[id]);
                         }
                         var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse);
+                        if (refReferencesResult.error != null) {
+                            return new ReadReferencesResult {error = refEntities.Error};
+                        }
                         referenceResult.references = refReferencesResult.references;
                     }
                 }
@@ -171,5 +177,6 @@ namespace Friflo.Json.Flow.Database
     public class ReadReferencesResult
     {
         internal List<ReferencesResult> references;
+        internal CommandError           error;
     } 
 }

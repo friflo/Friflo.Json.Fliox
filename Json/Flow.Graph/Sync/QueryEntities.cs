@@ -33,6 +33,9 @@ namespace Friflo.Json.Flow.Sync
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response);
+                if (queryRefsResults.error != null) {
+                    return TaskError(queryRefsResults.error);
+                }
             }
             result.container    = container;
             result.filterLinq   = filterLinq;
