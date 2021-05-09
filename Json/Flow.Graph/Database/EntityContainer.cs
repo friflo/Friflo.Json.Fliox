@@ -78,7 +78,7 @@ namespace Friflo.Json.Flow.Database
             
             // Apply patches
             var patcher = SyncContext.jsonPatcher;
-            var patchErrors = new Dictionary<string, EntityError>();
+            Dictionary<string, EntityError> patchErrors = null;
             foreach (var entity in entities) {
                 var key = entity.Key;
                 if (!ids.Contains(key))
@@ -86,13 +86,15 @@ namespace Friflo.Json.Flow.Database
                 var patch = entityPatches[key];
                 var value = entity.Value;
                 if (value.Error != null) {
+                    if (patchErrors == null)
+                        patchErrors = new Dictionary<string, EntityError>();
                     patchErrors.Add(key, value.Error);
                 } else {
                     var json = patcher.ApplyPatches(value.Json, patch.patches, Pretty);
                     entity.Value.SetJson(json);
                 }
             }
-            if (patchErrors.Count > 0) {
+            if (patchErrors != null) {
                 return new PatchEntitiesResult{patchErrors = patchErrors};
             }
             // Write patched entities back
