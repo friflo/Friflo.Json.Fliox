@@ -18,10 +18,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void LogResults() {
             foreach (var logTask in logTasks) {
                 logTask.state.Synced = true;
-                foreach (var patch in logTask.patches) {
-
-                    
-                }
+                logTask.SetResult();
             }
         }
     }

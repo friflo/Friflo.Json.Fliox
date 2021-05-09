@@ -76,8 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createGalaxy    = articles.Create(galaxy);
             AreSimilar("entities: 1, tasks: 1",                         store);
             AreSimilar("Article:  1, tasks: 1 -> create #1",            articles);
-            
-            AreEqual(2, store.LogChanges().Count);
+
+            var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 1);
             AreSimilar("entities: 2, tasks: 2",                         store);
             AreSimilar("Producer: 1, tasks: 1 -> create #1",            producers); // created samsung implicit
 
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.Delete("article-iphone"); // delete if exist in database
             AreSimilar("Article:  2, tasks: 2 -> create #2, delete #1", articles);
 
-            AreEqual(5, store.LogChanges().Count);
+            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
             AreSimilar("entities: 5, tasks: 4",                         store);
             AreSimilar("Article:  2, tasks: 2 -> create #2, delete #1", articles);
             AreSimilar("Employee: 1, tasks: 1 -> create #1",            employees); // created steveJobs implicit
@@ -150,10 +150,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("Article:   4",                                   articles);
             
             cameraCreate.name = "Changed name";
-            AreEqual(1, articles.LogEntityChanges(cameraCreate).Count);
-            AreEqual(4, articles.LogSetChanges().Count);
-            AreEqual(8, store.LogChanges().Count);
-            AreEqual(8, store.LogChanges().Count);       // LogChanges() is idempotent => state did not change
+            var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
+            var logSet =    articles.LogSetChanges();                   AssertLog(logSet,    1, 0);
+
+            var logStore3 = store.LogChanges();  AssertLog(logStore3, 1, 0);
+            var logStore4 = store.LogChanges();  AssertLog(logStore4, 1, 0);
 
             var deleteCamera = articles.Delete(camForDelete.id);
             
@@ -195,13 +196,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreSimilar("Article:   3, tasks: 1 -> reads: 1", articles);
             AreSimilar("Customer:  0",                                 customers);
-            AreEqual(1,  orders.LogSetChanges().Count);
+            var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 2);
             AreSimilar("entities: 10, tasks: 4",                       store);
             AreSimilar("Article:   4, tasks: 2 -> create #1, reads: 1", articles);   // created smartphone (implicit)
             AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // created customer (implicit)
             
-            AreEqual(10,  store.LogChanges().Count);
-            AreEqual(10,  store.LogChanges().Count);       // LogChanges() is idempotent => state did not change
+            AreSimilar("entities: 10, tasks: 4",                       store);
+            var logStore5 = store.LogChanges();     AssertLog(logStore5, 0, 0);
+            var logStore6 = store.LogChanges();     AssertLog(logStore6, 0, 0);
             AreSimilar("entities: 10, tasks: 4",                       store);      // no new changes
 
             await store.Sync(); // -------- Sync --------
@@ -209,6 +211,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("entities: 10",                                 store);      // tasks executed and cleared
             
             return store;
+        }
+
+        static void AssertLog(LogTask logTask, int patches, int creates) {
+            if (logTask.Patches == patches && logTask.Creates == creates)
+                return;
+            Fail($"Expect:  patches: {patches}, creates: {creates}\nbut was: patches: {logTask.Patches}, creates: {logTask.Creates}");
         }
     }
 }

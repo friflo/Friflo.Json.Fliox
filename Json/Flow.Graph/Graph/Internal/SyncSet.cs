@@ -46,6 +46,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         /// key: entity id
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
+        
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
         private readonly    List<DeleteTask>                    deleteTasks  = new List<DeleteTask>();
@@ -54,12 +55,14 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.set = set;
         }
         
-        internal void AddCreate (PeerEntity<T> peer) {
+        internal bool AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
             if (!peer.created) {
                 peer.created = true;                // sole place created set to true
                 creates.Add(peer.entity.id, peer);  // sole place a peer (entity) is added
+                return true;
             }
+            return false;
         }
         
         internal void AddUpdate (PeerEntity<T> peer) {
@@ -146,33 +149,30 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void LogSetChanges(Dictionary<string, PeerEntity<T>> peers, LogTask logTask) {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
-                var patch = GetEntityChanges(peer);
-                logTask.patches.Add(patch);
+                GetEntityChanges(peer, logTask);
             }
         }
 
         internal void LogEntityChanges(T entity, LogTask logTask) {
             var peer = set.GetPeerById(entity.id);
-            var patch = GetEntityChanges(peer);
-            if (patch != null) {
-                logTask.patches.Add(patch);
-            }
+            GetEntityChanges(peer, logTask);
         }
 
         /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to
         /// find changes in referenced entities in <see cref="Ref{T}"/> fields of the given entity.
         /// In these cases <see cref="RefMapper{T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
         /// which is not already assigned) 
-        private EntityPatch GetEntityChanges(PeerEntity<T> peer) {
+        private void GetEntityChanges(PeerEntity<T> peer, LogTask logTask) {
             if (peer.created) {
+                set.intern.store.logTask = logTask;
                 set.intern.tracer.Trace(peer.entity);
-                return null;
+                return;
             }
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
                 var diff = set.intern.objectPatcher.differ.GetDiff(patchSource, peer.entity);
                 if (diff == null)
-                    return null;
+                    return;
                 var patchList = set.intern.objectPatcher.CreatePatches(diff);
                 var entityPatch = new EntityPatch {
                     patches = patchList
@@ -180,9 +180,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var json = set.intern.jsonMapper.writer.Write(peer.entity);
                 peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
                 patches[peer.entity.id] = entityPatch;
-                return entityPatch;
+                logTask.AddPatch(entityPatch);
             }
-            return null;
         }
 
         internal override void AddTasks(List<DatabaseTask> tasks) {
@@ -431,14 +430,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            // patch tasks are currently not created via an EntitySet<> API -> .Patch()
-            // => no need/possibility to propagate a TaskError result 
-            /* if (result is TaskError taskError) {
-                foreach (var patchTask in patchTask) {
-                    patchTask.SetError(new TaskErrorInfo(taskError));
+            if (result is TaskError taskError) {
+                foreach (var patchPair in patches) {
+                    var patch = patchPair.Value;
+                    patch.taskError = taskError;
                 }
                 return;
-            } */
+            }
             // var patchResult = (PatchEntitiesResult)result;
             var entityPatches = task.patches;
             foreach (var entityPatchPair in entityPatches) {

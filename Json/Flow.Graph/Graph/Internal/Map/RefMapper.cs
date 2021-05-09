@@ -65,7 +65,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             if (peer.assigned)
                 return;
             // Track untracked entity
-            set.sync.AddCreate(peer);
+            if (set.sync.AddCreate(peer))
+                store.logTask.AddCreate(peer.entity.id);
             var mapper = GetEntityMapper(tracer.typeCache);
             mapper.Trace(tracer, peer.entity);
         }
