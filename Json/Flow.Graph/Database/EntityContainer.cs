@@ -101,7 +101,7 @@ namespace Friflo.Json.Flow.Database
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error}; // todo add test
             }
-            return new PatchEntitiesResult();
+            return new PatchEntitiesResult{ patchErrors = updateResult.updateErrors };
         }
 
         public async Task<ReadReferencesResult> ReadReferences(
