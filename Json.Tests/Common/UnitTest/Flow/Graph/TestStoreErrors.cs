@@ -52,12 +52,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
-            articles.readErrors.Add("article-2", @"{""invalidJson"" XXX}");
-            articles.readErrors.Add("article-1",            Simulate.ReadEntityError);
+            articles.readErrors.Add(Article2JsonError, @"{""invalidJson"" XXX}");
+            articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);
             
             var customers = testDatabase.GetTestContainer("Customer");
             customers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
-            customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
+            //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
             customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
@@ -73,12 +73,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
-        private const string ReadEntityError        = "read-entity-error"; 
+        private const string Article1ReadError      = "article-1";
+        private const string Article2JsonError      = "article-2"; 
+     // private const string ReadEntityError        = "read-entity-error"; 
         private const string ReadTaskError          = "read-task-error";
         private const string CreateTaskError        = "create-task-error";
         private const string UpdateTaskError        = "update-task-error";
         private const string DeleteTaskError        = "delete-task-error";
-        
+            
         /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
         private const string ReadTaskException      = "read-task-exception"; // throws an exception also for a Query
@@ -92,6 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertReadTask        (useStore);
             await AssertTaskExceptions  (useStore);
             await AssertTaskError       (useStore);
+            await AssertEntityWrite     (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -211,7 +214,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask.Find(duplicateId);
-                                  readTask.FindRange(new [] {"article-1", "article-2"});
+                                  readTask.FindRange(new [] {Article1ReadError, Article2JsonError});
             var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
 
             await store.Sync(); // -------- Sync --------
@@ -318,6 +321,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(deleteError.Success);
             AreEqual(TaskErrorType.DatabaseError, deleteError.GetTaskError().type);
             AreEqual("simulated write error", deleteError.GetTaskError().message);
+        }
+        
+        private static async Task AssertEntityWrite(PocStore store) {
+            var customers = store.customers;
         }
     }
 }
