@@ -78,13 +78,22 @@ namespace Friflo.Json.Flow.Database
             
             // Apply patches
             var patcher = SyncContext.jsonPatcher;
+            var patchErrors = new Dictionary<string, EntityError>();
             foreach (var entity in entities) {
                 var key = entity.Key;
                 if (!ids.Contains(key))
                     throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
                 var patch = entityPatches[key];
-                var json = patcher.ApplyPatches(entity.Value.Json, patch.patches, Pretty);
-                entity.Value.SetJson(json);
+                var value = entity.Value;
+                if (value.Error != null) {
+                    patchErrors.Add(key, value.Error);
+                } else {
+                    var json = patcher.ApplyPatches(value.Json, patch.patches, Pretty);
+                    entity.Value.SetJson(json);
+                }
+            }
+            if (patchErrors.Count > 0) {
+                return new PatchEntitiesResult{patchErrors = patchErrors};
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = entities};
