@@ -27,7 +27,8 @@ namespace Friflo.Json.Flow.Graph
         
         internal  abstract  void    LogSetChangesInternal (LogTask logTask);
         internal  abstract  void    SyncContainerEntities (ContainerEntities containerResults);
-        internal  abstract  void    SyncCreateErrors      (EntityErrors      createErrors);
+        internal  abstract  void    SyncCreateErrors      (EntityErrors      errors);
+        internal  abstract  void    SyncPatchErrors       (EntityErrors      errors);
         internal  abstract  void    ResetSync             ();
 
         protected EntitySet(string name) {
@@ -276,8 +277,12 @@ namespace Friflo.Json.Flow.Graph
             }
         }
 
-        internal override void SyncCreateErrors(EntityErrors createErrors) {
-            sync.createErrors = createErrors.errors;
+        internal override void SyncCreateErrors(EntityErrors errors) {
+            sync.createErrors = errors.errors;
+        }
+        
+        internal override void SyncPatchErrors(EntityErrors errors) {
+            sync.patchErrors = errors.errors;
         }
 
         internal override void ResetSync() {

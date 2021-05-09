@@ -83,7 +83,8 @@ namespace Friflo.Json.Flow.Database
                 if (!ids.Contains(key))
                     throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
                 var patch = entityPatches[key];
-                entity.Value.SetJson(patcher.ApplyPatches(entity.Value.Json, patch.patches, Pretty));
+                var json = patcher.ApplyPatches(entity.Value.Json, patch.patches, Pretty);
+                entity.Value.SetJson(json);
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = entities};

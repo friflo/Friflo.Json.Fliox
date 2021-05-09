@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
@@ -21,6 +22,10 @@ namespace Friflo.Json.Flow.Sync
             if (result.Error != null) {
                 return TaskError(result.Error); // todo add test 
             }
+            if (result.patchErrors != null && result.patchErrors.Count > 0) {
+                var patchErrors = response.GetPatchErrors(container);
+                patchErrors.AddErrors(result.patchErrors);
+            }
             return result;
         }
     }
@@ -32,7 +37,8 @@ namespace Friflo.Json.Flow.Sync
 
     public class PatchEntitiesResult : TaskResult, ICommandResult
     {
-        public              CommandError        Error { get; set; }
+                     public  CommandError                    Error { get; set; }
+        [Fri.Ignore] public  Dictionary<string, EntityError> patchErrors;
         
         internal override   TaskType            TaskType => TaskType.Patch;
     }

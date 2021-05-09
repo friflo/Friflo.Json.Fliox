@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -17,6 +18,7 @@ namespace Friflo.Json.Flow.Sync
         public  List<TaskResult>                        tasks;
         public  Dictionary<string, ContainerEntities>   results;
         public  Dictionary<string, EntityErrors>        createErrors;
+        public  Dictionary<string, EntityErrors>        patchErrors;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (results.TryGetValue(container, out ContainerEntities result))
@@ -32,11 +34,16 @@ namespace Friflo.Json.Flow.Sync
         internal EntityErrors GetCreateErrors(string container) {
             if (createErrors.TryGetValue(container, out EntityErrors result))
                 return result;
-            result = new EntityErrors {
-                container   = container,
-                errors      = new Dictionary<string,EntityError>()
-            };
+            result = new EntityErrors(container);
             createErrors.Add(container, result);
+            return result;
+        }
+        
+        internal EntityErrors GetPatchErrors(string container) {
+            if (patchErrors.TryGetValue(container, out EntityErrors result))
+                return result;
+            result = new EntityErrors(container);
+            patchErrors.Add(container, result);
             return result;
         }
 
@@ -67,6 +74,13 @@ namespace Friflo.Json.Flow.Sync
     {
         public  string                                  container; // only for debugging
         public  Dictionary<string, EntityError>         errors;
+        
+        public EntityErrors() {} // required for TypeMapper
+
+        public EntityErrors(string container) {
+            this.container  = container;
+            errors          = new Dictionary<string, EntityError>();
+        }
         
         internal void AddErrors(Dictionary<string, EntityError> errors) {
             foreach (var error in errors) {

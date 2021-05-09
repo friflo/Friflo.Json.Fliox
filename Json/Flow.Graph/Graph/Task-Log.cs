@@ -41,9 +41,9 @@ namespace Friflo.Json.Flow.Graph
         internal void SetResult() {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
-                /* if (patch.taskError != null) {
-                    state.SetError(new TaskErrorInfo(patch.taskError));
-                }*/
+                if (patch.sync.patchErrors.TryGetValue(patch.id, out EntityError error)) {
+                    entityErrorInfo.AddEntityError(error);
+                }
             }
             foreach (var create in creates) {
                 if (create.sync.createErrors.TryGetValue(create.id, out EntityError error)) {
