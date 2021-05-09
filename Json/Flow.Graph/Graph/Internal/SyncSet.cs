@@ -11,6 +11,8 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncSet
     {
+        internal    Dictionary<string, EntityError> createErrors = new Dictionary<string, EntityError>();
+
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
@@ -39,7 +41,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
         private readonly    List<CreateTask>                    createTasks  = new List<CreateTask>();
-        internal            Dictionary<string, EntityError>     createErrors;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
