@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Database
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
             var entities = command.entities;
-            var result = new CreateEntitiesResult{createErrors = new Dictionary<string, EntityError>()};
+            Dictionary<string, EntityError> createErrors = null;
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
@@ -62,22 +62,31 @@ namespace Friflo.Json.Flow.Database
                     await WriteText(path, payload.Json);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    result.createErrors.Add(key, error);
+                    if (createErrors == null)
+                        createErrors = new Dictionary<string, EntityError>();
+                    createErrors.Add(key, error);
                 }
             }
-            return result;
+            return new CreateEntitiesResult{createErrors = createErrors};
         }
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
             var entities = command.entities;
+            Dictionary<string, EntityError> updateErrors = null;
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
-                await WriteText(path, payload.Json);
-                // await File.WriteAllTextAsync(path, payload);
+                try {
+                    await WriteText(path, payload.Json);
+                } catch (Exception e) {
+                    var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                    if (updateErrors == null)
+                        updateErrors = new Dictionary<string, EntityError>();
+                    updateErrors.Add(key, error);
+                }
             }
-            return new UpdateEntitiesResult();
+            return new UpdateEntitiesResult{updateErrors = updateErrors};
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {

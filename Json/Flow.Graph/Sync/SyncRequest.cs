@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Sync
         public  List<TaskResult>                        tasks;
         public  Dictionary<string, ContainerEntities>   results;
         public  Dictionary<string, EntityErrors>        createErrors;
+        public  Dictionary<string, EntityErrors>        updateErrors;
         public  Dictionary<string, EntityErrors>        patchErrors;
         
         internal ContainerEntities GetContainerResult(string container) {
@@ -36,6 +37,14 @@ namespace Friflo.Json.Flow.Sync
                 return result;
             result = new EntityErrors(container);
             createErrors.Add(container, result);
+            return result;
+        }
+        
+        internal EntityErrors GetUpdateErrors(string container) {
+            if (updateErrors.TryGetValue(container, out EntityErrors result))
+                return result;
+            result = new EntityErrors(container);
+            updateErrors.Add(container, result);
             return result;
         }
         

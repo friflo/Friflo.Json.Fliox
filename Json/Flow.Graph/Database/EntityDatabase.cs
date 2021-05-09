@@ -67,6 +67,7 @@ namespace Friflo.Json.Flow.Database
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
                 results         = new Dictionary<string, ContainerEntities>(),
                 createErrors    = new Dictionary<string, EntityErrors>(),
+                updateErrors    = new Dictionary<string, EntityErrors>(),
                 patchErrors     = new Dictionary<string, EntityErrors>(),
             };
             foreach (var task in syncRequest.tasks) {
