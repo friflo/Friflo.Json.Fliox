@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Database
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
             var entities = command.entities;
-            var result = new CreateEntitiesResult{errors = new Dictionary<string, EntityError>()};
+            var result = new CreateEntitiesResult{createErrors = new Dictionary<string, EntityError>()};
             foreach (var entityPair in entities) {
                 string      key     = entityPair.Key;
                 EntityValue payload = entityPair.Value;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Database
                     await WriteText(path, payload.Json);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    result.errors.Add(key, error);
+                    result.createErrors.Add(key, error);
                 }
             }
             return result;

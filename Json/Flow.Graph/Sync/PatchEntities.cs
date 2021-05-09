@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
@@ -29,8 +28,6 @@ namespace Friflo.Json.Flow.Sync
     public class EntityPatch
     {
         public List<JsonPatch>                  patches;
-        [Fri.Ignore]
-        public TaskError                        taskError;
     }
 
     public class PatchEntitiesResult : TaskResult, ICommandResult

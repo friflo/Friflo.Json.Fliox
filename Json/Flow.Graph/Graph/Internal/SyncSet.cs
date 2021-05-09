@@ -39,6 +39,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
         private readonly    List<CreateTask>                    createTasks  = new List<CreateTask>();
+        internal            Dictionary<string, EntityError>     createErrors;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
@@ -180,7 +181,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var json = set.intern.jsonMapper.writer.Write(peer.entity);
                 peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
                 patches[peer.entity.id] = entityPatch;
-                logTask.AddPatch(entityPatch);
+                logTask.AddPatch(this, peer.entity.id);
             }
         }
 
@@ -298,12 +299,24 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
-            // var createResult = (CreateEntitiesResult)result;
-            var entities = task.entities;
+            // var createResult    = (CreateEntitiesResult)result;
+            var entities        = task.entities;
+            var entityErrorInfo = new TaskErrorInfo();
             foreach (var entry in entities) {
-                var peer = set.GetPeerById(entry.Key);
+                var id = entry.Key;
+                if (createErrors != null && createErrors.TryGetValue(id, out EntityError error)) {
+                    entityErrorInfo.AddEntityError(error);  // todo add test
+                    continue;
+                }
+                var peer = set.GetPeerById(id);
                 peer.created = false;
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
+            }
+            if (entityErrorInfo.HasErrors) {
+                foreach (var createTask in createTasks) {
+                    createTask.state.SetError(entityErrorInfo);
+                }
+                return;
             }
             foreach (var createTask in createTasks) {
                 createTask.state.Synced = true;
@@ -345,12 +358,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
-            var error = new TaskErrorInfo();
+            var entityErrorInfo = new TaskErrorInfo();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = readEntities.entities[id];
                 if (value.Error != null) {
-                    error.AddError(value.Error);
+                    entityErrorInfo.AddEntityError(value.Error);
                     continue;
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
@@ -358,9 +371,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (isNull)
                     set.DeletePeer(id);
             }
-            if (error.HasErrors) {
+            if (entityErrorInfo.HasErrors) {
                 foreach (var read in reads) {
-                    read.state.SetError(error);
+                    read.state.SetError(entityErrorInfo);
                 }
                 return;
             }
@@ -391,19 +404,19 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             var queryResult = (QueryEntitiesResult)result;
-            var error = new TaskErrorInfo();
+            var entityErrorInfo = new TaskErrorInfo();
             var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 var value = queryEntities.entities[id];
                 if (value.Error != null) {
-                    error.AddError(value.Error);
+                    entityErrorInfo.AddEntityError(value.Error);
                     continue;
                 }
                 var peer = set.GetPeerById(id);
                 entities.Add(id, peer.entity);
             }
-            if (error.HasErrors) {
-                query.state.SetError(error);
+            if (entityErrorInfo.HasErrors) {
+                query.state.SetError(entityErrorInfo);
                 return;
             }
             AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);
@@ -430,11 +443,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            if (result is TaskError taskError) {
-                foreach (var patchPair in patches) {
+            if (result is TaskError) {
+                /* foreach (var patchPair in patches) {
                     var patch = patchPair.Value;
-                    patch.taskError = taskError;
-                }
+                    // patch.taskError = taskError; todo
+                } */
                 return;
             }
             // var patchResult = (PatchEntitiesResult)result;

@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             EntityErrors    = null;
         }
 
-        internal void AddError(EntityError error) {
+        internal void AddEntityError(EntityError error) {
             if (EntityErrors == null) {
                 EntityErrors = new SortedDictionary<string, EntityError>();
                 TaskError = new TaskEntityError(EntityErrors);
