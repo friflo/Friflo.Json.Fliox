@@ -78,6 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("Article:  1, tasks: 1 -> create #1",            articles);
 
             var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 1);
+            
             AreSimilar("entities: 2, tasks: 2",                         store);
             AreSimilar("Producer: 1, tasks: 1 -> create #1",            producers); // created samsung implicit
 
@@ -100,6 +101,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
+            IsTrue(logStore1.Success);
+            IsTrue(logStore2.Success);
             IsTrue(createGalaxy.Success);
             IsTrue(createIPad.Success);
             
@@ -160,6 +163,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             await store.Sync(); // -------- Sync --------
             
+            IsTrue(logEntity.Success);
+            IsTrue(logSet.Success);
+            IsTrue(logStore3.Success);
+            IsTrue(logStore4.Success);
             IsTrue(deleteCamera.Success);
             AreSimilar("entities: 7",                           store);       // tasks executed and cleared
 
@@ -208,6 +215,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             await store.Sync(); // -------- Sync --------
             
+            IsTrue(logSet2.Success);
+            IsTrue(logStore5.Success);
+            IsTrue(logStore6.Success);
             AreSimilar("entities: 10",                                 store);      // tasks executed and cleared
             
             return store;
