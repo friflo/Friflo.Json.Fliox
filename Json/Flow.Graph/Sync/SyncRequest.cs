@@ -32,27 +32,11 @@ namespace Friflo.Json.Flow.Sync
             return result;
         }
         
-        internal EntityErrors GetCreateErrors(string container) {
-            if (createErrors.TryGetValue(container, out EntityErrors result))
+        internal static EntityErrors GetEntityErrors(Dictionary<string, EntityErrors> entityErrorMap, string container) {
+            if (entityErrorMap.TryGetValue(container, out EntityErrors result))
                 return result;
             result = new EntityErrors(container);
-            createErrors.Add(container, result);
-            return result;
-        }
-        
-        internal EntityErrors GetUpdateErrors(string container) {
-            if (updateErrors.TryGetValue(container, out EntityErrors result))
-                return result;
-            result = new EntityErrors(container);
-            updateErrors.Add(container, result);
-            return result;
-        }
-        
-        internal EntityErrors GetPatchErrors(string container) {
-            if (patchErrors.TryGetValue(container, out EntityErrors result))
-                return result;
-            result = new EntityErrors(container);
-            patchErrors.Add(container, result);
+            entityErrorMap.Add(container, result);
             return result;
         }
 

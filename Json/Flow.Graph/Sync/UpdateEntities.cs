@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Sync
                 return TaskError(result.Error);
             }
             if (result.updateErrors != null && result.updateErrors.Count > 0) {
-                var updateErrors = response.GetUpdateErrors(container);
+                var updateErrors = SyncResponse.GetEntityErrors(response.updateErrors, container);
                 updateErrors.AddErrors(result.updateErrors);
             }
             return result;
