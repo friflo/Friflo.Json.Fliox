@@ -26,8 +26,14 @@ namespace Friflo.Json.Flow.Graph
 
         internal void AddPatch(EntityPatch patch) {
             if (patch == null)
-                throw new ArgumentException("patch mus not be null");
+                throw new ArgumentException("patch must not be null");
             patches.Add(patch);
+        }
+        
+        internal void AddCreate(string id) {
+            if (id == null)
+                throw new ArgumentException("id must not be null");
+            creates.Add(id);
         }
 
         internal void SetResult() {
@@ -36,10 +42,6 @@ namespace Friflo.Json.Flow.Graph
                     state.SetError(new TaskErrorInfo(patch.taskError));
                 }
             }
-        }
-
-        public void AddCreate(string id) {
-            creates.Add(id);
         }
     }
     
