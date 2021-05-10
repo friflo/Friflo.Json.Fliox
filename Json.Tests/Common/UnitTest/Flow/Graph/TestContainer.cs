@@ -47,6 +47,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return new CreateEntitiesResult {Error = error};
+            if (errors != null)
+                return new CreateEntitiesResult {createErrors = errors};
             return await local.CreateEntities(command);
         }
 
@@ -54,7 +56,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return new UpdateEntitiesResult {Error = error};
+            if (errors != null)
+                return new UpdateEntitiesResult {updateErrors = errors};
             return await local.UpdateEntities(command);
+        }
+        
+        public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
+            var error = SimulateWriteErrors(command.ids, out var errors);
+            if (error != null)
+                return new DeleteEntitiesResult {Error = error};
+            if (errors != null)
+                return new DeleteEntitiesResult {deleteErrors = errors};
+            return await local.DeleteEntities(command);
         }
 
         public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
@@ -83,14 +96,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return result;
         }
         
-        public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
-            var error = SimulateWriteErrors(command.ids, out var errors);
-            if (error != null)
-                return new DeleteEntitiesResult {Error = error};
-            if (errors != null)
-                return new DeleteEntitiesResult {deleteErrors = errors};
-            return await local.DeleteEntities(command);
-        }
         
         // --- simulate read/write error methods
         private CommandError SimulateReadErrors(Dictionary<string,EntityValue> entities) {

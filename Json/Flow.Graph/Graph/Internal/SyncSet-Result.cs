@@ -64,10 +64,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                 idsBuf.Clear();
                 writeTask.GetIds(idsBuf);
                 foreach (var id in idsBuf) {
-                    var value = entities[id];
-                    var error = value.Error;
-                    if (error != null)
+                    if (writeErrors.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
+                    }
                 }
                 if (entityErrorInfo.HasErrors) {
                     writeTask.state.SetError(entityErrorInfo);
