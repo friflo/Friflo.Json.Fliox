@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Database
         
         public RemoteClient(string endpoint) {
             this.endpoint = endpoint;
-            jsonMapper = new ObjectMapper { Pretty = true };
+            jsonMapper = new ObjectMapper { Pretty = true, WriteNullMembers = false};
             httpClient = new HttpClient();
         }
         

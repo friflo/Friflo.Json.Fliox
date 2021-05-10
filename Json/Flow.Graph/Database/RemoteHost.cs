@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Database
         
         public RemoteHost(EntityDatabase local, string endpoint) {
             this.endpoint = endpoint;
-            jsonMapper = new ObjectMapper();
+            jsonMapper = new ObjectMapper {WriteNullMembers = false};
             listener = new HttpListener();
             listener.Prefixes.Add(endpoint);
             this.local = local;
