@@ -334,12 +334,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertEntityWrite(PocStore store) {
             var customers = store.customers;
             
-            var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
-            
             var createError = customers.Create(new Customer{id = CreateEntityError});
             
-            var updateError = customers.Create(new Customer{id = UpdateEntityError});
+            var updateError = customers.Update(new Customer{id = UpdateEntityError});
             
+            var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
+
             await store.Sync(); // -------- Sync --------
             
             IsFalse(deleteError.Success);
