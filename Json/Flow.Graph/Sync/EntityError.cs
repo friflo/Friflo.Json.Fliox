@@ -57,6 +57,7 @@ namespace Friflo.Json.Flow.Sync
         Undefined,   // Prevent implicit initialization of underlying value 0 to a valid value (ParseError) 
         ParseError,
         ReadError,
-        WriteError
+        WriteError,
+        DeleteError
     }
 }

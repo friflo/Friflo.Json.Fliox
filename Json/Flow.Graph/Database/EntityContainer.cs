@@ -184,6 +184,13 @@ namespace Friflo.Json.Flow.Database
             }
             return new ReadReferencesResult {references = referenceResults};
         }
+
+        protected static void AddEntityError(ref Dictionary<string, EntityError> errors, string key, EntityError error) {
+            if (errors == null) {
+                errors = new Dictionary<string, EntityError>();
+            }
+            errors.Add(key, error);
+        }
     }
 
     /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its

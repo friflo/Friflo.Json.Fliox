@@ -62,9 +62,7 @@ namespace Friflo.Json.Flow.Database
                     await WriteText(path, payload.Json);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    if (createErrors == null)
-                        createErrors = new Dictionary<string, EntityError>();
-                    createErrors.Add(key, error);
+                    AddEntityError(ref createErrors, key, error);
                 }
             }
             return new CreateEntitiesResult{createErrors = createErrors};
@@ -81,9 +79,7 @@ namespace Friflo.Json.Flow.Database
                     await WriteText(path, payload.Json);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    if (updateErrors == null)
-                        updateErrors = new Dictionary<string, EntityError>();
-                    updateErrors.Add(key, error);
+                    AddEntityError(ref updateErrors, key, error);
                 }
             }
             return new UpdateEntitiesResult{updateErrors = updateErrors};
@@ -130,11 +126,17 @@ namespace Friflo.Json.Flow.Database
 
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
             var keys = command.ids;
+            Dictionary<string, EntityError> deleteErrors = null;
             foreach (var key in keys) {
                 string path = FilePath(key);
-                DeleteFile(path);
+                try {
+                    DeleteFile(path);
+                } catch (Exception e) {
+                    var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
+                    AddEntityError(ref deleteErrors, key, error);
+                }
             }
-            var result = new DeleteEntitiesResult();
+            var result = new DeleteEntitiesResult{deleteErrors = deleteErrors};
             return Task.FromResult(result);
         }
         
