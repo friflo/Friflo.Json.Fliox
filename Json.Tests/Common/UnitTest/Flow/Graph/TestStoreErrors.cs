@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertReadTask        (useStore);
             await AssertTaskExceptions  (useStore);
             await AssertTaskError       (useStore);
-            // await AssertEntityWrite     (useStore);
+            await AssertEntityWrite     (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2

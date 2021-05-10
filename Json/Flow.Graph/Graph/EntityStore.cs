@@ -148,6 +148,7 @@ namespace Friflo.Json.Flow.Graph
             var createErrors = response.createErrors;
             if (createErrors != null) {
                 foreach (var createError in createErrors) {
+                    createError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[createError.Key];
                     set.SyncCreateErrors(createError.Value);
                 }
@@ -155,6 +156,7 @@ namespace Friflo.Json.Flow.Graph
             var updateErrors = response.updateErrors;
             if (updateErrors != null) {
                 foreach (var updateError in updateErrors) {
+                    updateError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[updateError.Key];
                     set.SyncUpdateErrors(updateError.Value);
                 }
@@ -162,6 +164,7 @@ namespace Friflo.Json.Flow.Graph
             var patchErrors = response.patchErrors;
             if (patchErrors != null) {
                 foreach (var patchError in patchErrors) {
+                    patchError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[patchError.Key];
                     set.SyncPatchErrors(patchError.Value);
                 }
@@ -169,6 +172,7 @@ namespace Friflo.Json.Flow.Graph
             var deleteErrors = response.deleteErrors;
             if (deleteErrors != null) {
                 foreach (var deleteError in deleteErrors) {
+                    deleteError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[deleteError.Key];
                     set.SyncDeleteErrors(deleteError.Value);
                 }

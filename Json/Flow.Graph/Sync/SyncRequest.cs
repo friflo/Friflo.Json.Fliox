@@ -85,5 +85,15 @@ namespace Friflo.Json.Flow.Sync
                 this.errors.TryAdd(error.Key, error.Value);
             }
         }
+
+        internal void SetInferredErrorFields() {
+            foreach (var errorEntry in errors) {
+                var error = errorEntry.Value;
+                // error .id & .container are not serialized as they are redundant data.
+                // Infer their values from containing errors dictionary
+                error.id        = errorEntry.Key;
+                error.container = container;
+            }
+        }
     }
 }
