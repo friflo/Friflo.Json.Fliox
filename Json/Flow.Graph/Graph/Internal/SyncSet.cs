@@ -312,8 +312,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             Dictionary<string, EntityError> writeErrors)
         {
             if (result is TaskError taskError) {
-                foreach (var createTask in writeTasks) {
-                    createTask.state.SetError(new TaskErrorInfo(taskError));
+                foreach (var writeTask in writeTasks) {
+                    writeTask.state.SetError(new TaskErrorInfo(taskError));
                 }
                 return;
             }
@@ -327,20 +327,20 @@ namespace Friflo.Json.Flow.Graph.Internal
                 peer.updated = false;
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
-            foreach (var createTask in writeTasks) {
+            foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();
                 idsBuf.Clear();
-                createTask.GetIds(idsBuf);
+                writeTask.GetIds(idsBuf);
                 foreach (var id in idsBuf) {
                     var value = entities[id];
                     if (value.Error != null)
                         entityErrorInfo.AddEntityError(value.Error);
                 }
                 if (entityErrorInfo.HasErrors) {
-                    createTask.state.SetError(entityErrorInfo);
+                    writeTask.state.SetError(entityErrorInfo);
                     continue;
                 }
-                createTask.state.Synced = true;
+                writeTask.state.Synced = true;
             }
         }
 
