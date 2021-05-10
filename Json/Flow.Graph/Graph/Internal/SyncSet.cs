@@ -284,7 +284,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
-                reads.Count         +
+                Some(reads.Count)   +
                 queries.Count       +
                 Some(creates.Count) +
                 Some(updates.Count) +

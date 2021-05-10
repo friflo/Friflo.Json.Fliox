@@ -222,8 +222,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask.Find(duplicateId);
-                                  readTask.FindRange(new [] {Article1ReadError, Article2JsonError});
+            var article1And2    = readTask.FindRange(new [] {Article1ReadError, Article2JsonError});
             var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+            
+            var readTask2       = store.articles.Read(); // separate Read without errors
+            var galaxy2         = readTask2.Find(duplicateId);
 
             await store.Sync(); // -------- Sync --------
         
@@ -243,6 +246,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             te = Throws<TaskResultException>(() => { var _ = readTask.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.entityErrors.Count);
+            
+            te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
+            AreEqual(ArticleError, te.Message);
+            AreEqual(2, te.entityErrors.Count);
+            
+            AreEqual("Galaxy S10", galaxy2.Result.name); 
         }
 
         private static async Task AssertTaskExceptions(PocStore store) {
