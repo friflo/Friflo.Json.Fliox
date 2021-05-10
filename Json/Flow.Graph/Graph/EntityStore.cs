@@ -144,6 +144,37 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
 
+        private void SetErrors(SyncResponse response) {
+            var createErrors = response.createErrors;
+            if (createErrors != null) {
+                foreach (var createError in createErrors) {
+                    var set = _intern.setByName[createError.Key];
+                    set.SyncCreateErrors(createError.Value);
+                }
+            }
+            var updateErrors = response.updateErrors;
+            if (updateErrors != null) {
+                foreach (var updateError in updateErrors) {
+                    var set = _intern.setByName[updateError.Key];
+                    set.SyncUpdateErrors(updateError.Value);
+                }
+            }
+            var patchErrors = response.patchErrors;
+            if (patchErrors != null) {
+                foreach (var patchError in patchErrors) {
+                    var set = _intern.setByName[patchError.Key];
+                    set.SyncPatchErrors(patchError.Value);
+                }
+            }
+            var deleteErrors = response.deleteErrors;
+            if (deleteErrors != null) {
+                foreach (var deleteError in deleteErrors) {
+                    var set = _intern.setByName[deleteError.Key];
+                    set.SyncDeleteErrors(deleteError.Value);
+                }
+            }
+        }
+
         private void HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
             response.AssertResponse(syncRequest);
             try {
@@ -152,26 +183,7 @@ namespace Friflo.Json.Flow.Graph
                     var set = _intern.setByName[containerResult.Key];
                     set.SyncContainerEntities(containerResult.Value);
                 }
-                var createErrors = response.createErrors;
-                foreach (var createError in createErrors) {
-                    var set = _intern.setByName[createError.Key];
-                    set.SyncCreateErrors(createError.Value);
-                }
-                var updateErrors = response.updateErrors;
-                foreach (var updateError in updateErrors) {
-                    var set = _intern.setByName[updateError.Key];
-                    set.SyncUpdateErrors(updateError.Value);
-                }
-                var patchErrors = response.patchErrors;
-                foreach (var patchError in patchErrors) {
-                    var set = _intern.setByName[patchError.Key];
-                    set.SyncPatchErrors(patchError.Value);
-                }
-                var deleteErrors = response.deleteErrors;
-                foreach (var deleteError in deleteErrors) {
-                    var set = _intern.setByName[deleteError.Key];
-                    set.SyncDeleteErrors(deleteError.Value);
-                }
+                SetErrors(response);
 
                 var tasks   = syncRequest.tasks;
                 var results = response.tasks;

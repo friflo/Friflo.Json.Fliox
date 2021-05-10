@@ -12,10 +12,12 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncSet
     {
-        internal    Dictionary<string, EntityError> createErrors = new Dictionary<string, EntityError>();
-        internal    Dictionary<string, EntityError> updateErrors = new Dictionary<string, EntityError>();
-        internal    Dictionary<string, EntityError> patchErrors  = new Dictionary<string, EntityError>();
-        internal    Dictionary<string, EntityError> deleteErrors = new Dictionary<string, EntityError>();
+        private static readonly Dictionary<string, EntityError> NoErrors = new Dictionary<string, EntityError>();  
+            
+        internal    Dictionary<string, EntityError> createErrors = NoErrors;
+        internal    Dictionary<string, EntityError> updateErrors = NoErrors;
+        internal    Dictionary<string, EntityError> patchErrors  = NoErrors;
+        internal    Dictionary<string, EntityError> deleteErrors = NoErrors;
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         

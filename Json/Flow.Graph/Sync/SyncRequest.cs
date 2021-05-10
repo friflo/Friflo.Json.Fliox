@@ -16,11 +16,12 @@ namespace Friflo.Json.Flow.Sync
     public class SyncResponse
     {
         public  List<TaskResult>                        tasks;
+        // key of all Dictionary's is the container name
         public  Dictionary<string, ContainerEntities>   results;
-        public  Dictionary<string, EntityErrors>        createErrors;
-        public  Dictionary<string, EntityErrors>        updateErrors;
-        public  Dictionary<string, EntityErrors>        patchErrors;
-        public  Dictionary<string, EntityErrors>        deleteErrors;
+        public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
+        public  Dictionary<string, EntityErrors>        updateErrors; // lazy instantiation
+        public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
+        public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         
         internal ContainerEntities GetContainerResult(string container) {
             if (results.TryGetValue(container, out ContainerEntities result))
@@ -33,7 +34,10 @@ namespace Friflo.Json.Flow.Sync
             return result;
         }
         
-        internal static EntityErrors GetEntityErrors(Dictionary<string, EntityErrors> entityErrorMap, string container) {
+        internal static EntityErrors GetEntityErrors(ref Dictionary<string, EntityErrors> entityErrorMap, string container) {
+            if (entityErrorMap == null) {
+                entityErrorMap = new Dictionary<string, EntityErrors>();
+            }
             if (entityErrorMap.TryGetValue(container, out EntityErrors result))
                 return result;
             result = new EntityErrors(container);

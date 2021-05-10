@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Sync
                 return TaskError(result.Error); // todo add test 
             }
             if (result.patchErrors != null && result.patchErrors.Count > 0) {
-                var patchErrors = SyncResponse.GetEntityErrors(response.patchErrors, container);
+                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
                 patchErrors.AddErrors(result.patchErrors);
             }
             return result;
