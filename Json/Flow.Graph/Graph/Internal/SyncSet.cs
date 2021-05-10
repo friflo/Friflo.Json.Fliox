@@ -36,6 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // by this instance can be mapped to their task results safely.
         
         private readonly    EntitySet<T>                        set;
+        private readonly    List<string>                        idsBuf       = new List<string>(); 
             
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
@@ -43,11 +44,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<CreateTask>                    createTasks  = new List<CreateTask>();
+        private readonly    List<WriteTask>                     createTasks  = new List<WriteTask>();
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<UpdateTask>                    updateTasks  = new List<UpdateTask>();
+        private readonly    List<WriteTask>                     updateTasks  = new List<WriteTask>();
 
         /// key: entity id
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
@@ -295,54 +296,51 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
             }
         }
-        
+
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
+            CreateUpdateEntitiesResult(task.entities, result, createTasks, createErrors);
+        }
+
+        internal override void UpdateEntitiesResult(UpdateEntities task, TaskResult result) {
+            CreateUpdateEntitiesResult(task.entities, result, updateTasks, updateErrors);
+        }
+
+        private void CreateUpdateEntitiesResult(
+            Dictionary<string, EntityValue> entities,
+            TaskResult                      result,
+            List<WriteTask>                 writeTasks,
+            Dictionary<string, EntityError> writeErrors)
+        {
             if (result is TaskError taskError) {
-                foreach (var createTask in createTasks) {
+                foreach (var createTask in writeTasks) {
                     createTask.state.SetError(new TaskErrorInfo(taskError));
                 }
                 return;
             }
-            // var createResult    = (CreateEntitiesResult)result;
-            var entities        = task.entities;
-            var entityErrorInfo = new TaskErrorInfo();
             foreach (var entry in entities) {
                 var id = entry.Key;
-                if (createErrors != null && createErrors.TryGetValue(id, out EntityError error)) {
-                    entityErrorInfo.AddEntityError(error);  // todo add test
+                if (writeErrors != null && writeErrors.TryGetValue(id, out EntityError error)) {
                     continue;
                 }
                 var peer = set.GetPeerById(id);
                 peer.created = false;
-                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
-            }
-            if (entityErrorInfo.HasErrors) {
-                foreach (var createTask in createTasks) {
-                    createTask.state.SetError(entityErrorInfo);
-                }
-                return;
-            }
-            foreach (var createTask in createTasks) {
-                createTask.state.Synced = true;
-            }
-        }
-        
-        internal override void UpdateEntitiesResult (UpdateEntities task, TaskResult result) {
-            if (result is TaskError taskError) {
-                foreach (var updateTask in updateTasks) {
-                    updateTask.state.SetError(new TaskErrorInfo(taskError));
-                }
-                return;
-            }
-            // var updateResult = (UpdateEntitiesResult)result;
-            var entities = task.entities;
-            foreach (var entry in entities) {
-                var peer = set.GetPeerById(entry.Key);
                 peer.updated = false;
                 peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
             }
-            foreach (var updateTask in updateTasks) {
-                updateTask.state.Synced = true;
+            foreach (var createTask in writeTasks) {
+                var entityErrorInfo = new TaskErrorInfo();
+                idsBuf.Clear();
+                createTask.GetIds(idsBuf);
+                foreach (var id in idsBuf) {
+                    var value = entities[id];
+                    if (value.Error != null)
+                        entityErrorInfo.AddEntityError(value.Error);
+                }
+                if (entityErrorInfo.HasErrors) {
+                    createTask.state.SetError(entityErrorInfo);
+                    continue;
+                }
+                createTask.state.Synced = true;
             }
         }
 

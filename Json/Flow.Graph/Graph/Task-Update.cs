@@ -7,11 +7,7 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public abstract class UpdateTask : SyncTask
-    {
-        internal            TaskState   state;
-        internal override   TaskState   State      => state;
-    }
+    public abstract class UpdateTask : WriteTask { }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -25,6 +21,10 @@ namespace Friflo.Json.Flow.Graph
         
         internal UpdateTask(T entity) {
             this.entity = entity;
+        }
+        
+        internal override void GetIds(List<string> ids) {
+            ids.Add(entity.id);
         }
     }
     
@@ -41,5 +41,12 @@ namespace Friflo.Json.Flow.Graph
         internal UpdateRangeTask(ICollection<T> entities) {
             this.entities = entities;
         }
+        
+        internal override void GetIds(List<string> ids) {
+            foreach (var entity in entities) {
+                ids.Add(entity.id);    
+            }
+        }
     }
+
 }
