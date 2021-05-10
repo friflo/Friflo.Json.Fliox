@@ -39,6 +39,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         
         public override string DataTypeName() { return "Entity"; }
 
+        // ReSharper disable once UnusedParameter.Local
         public EntityMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, true, true)
         {

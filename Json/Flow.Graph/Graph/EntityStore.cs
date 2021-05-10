@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   StoreIntern     _intern;
         public              TypeStore       TypeStore => _intern.typeStore;
         internal            SyncStore       sync;
-        internal            LogTask         logTask;
+        internal            LogTask         tracerLogTask;
 
         public              StoreInfo       StoreInfo  => new StoreInfo(_intern.setByType); 
         public   override   string          ToString() => StoreInfo.ToString();

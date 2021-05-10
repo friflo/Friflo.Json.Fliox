@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
-using Friflo.Json.Flow.Graph.Internal.Map;
-using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
@@ -53,7 +51,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             foreach (var entry in entities) {
                 var id = entry.Key;
-                if (writeErrors != null && writeErrors.TryGetValue(id, out EntityError error)) {
+                if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
                 var peer = set.GetPeerById(id);
