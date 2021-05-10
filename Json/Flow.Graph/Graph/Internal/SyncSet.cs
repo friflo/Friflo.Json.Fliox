@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
@@ -345,7 +346,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        internal override void ReadEntitiesListResult(ReadEntitiesList task, TaskResult result, ContainerEntities readEntities) {
+        internal override void ReadEntitiesListResult(ReadEntitiesList taskList, TaskResult result, ContainerEntities readEntities) {
             if (result is TaskError taskError) {
                 foreach (var read in reads) {
                     read.state.SetError(new TaskErrorInfo(taskError));
@@ -353,14 +354,21 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             var readListResult = (ReadEntitiesListResult) result;
-            for (int i = 0; i < task.reads.Count; i++) {
-                var read = task.reads[i];
+            var expect = reads.Count;
+            var actual = taskList.reads.Count;
+            if (expect != actual) {
+                throw new InvalidOperationException($"Expect reads.Count == result.reads.Count. expect: {expect}, actual: {actual}");
+            }
+
+            for (int i = 0; i < taskList.reads.Count; i++) {
+                var task = taskList.reads[i];
+                var read = reads[i];
                 var readResult = readListResult.reads[i];
-                ReadEntitiesResult(read, readResult, readEntities);
+                ReadEntitiesResult(task, readResult, read, readEntities);
             }
         }
 
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T> read, ContainerEntities readEntities) {
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = readEntities.entities[id];
@@ -373,31 +381,29 @@ namespace Friflo.Json.Flow.Graph.Internal
                     set.DeletePeer(id);
             }
 
-            foreach (ReadTask<T> read in reads) {
-                var entityErrorInfo = new TaskErrorInfo();
-                var readIds = read.idMap.Keys.ToList();
-                foreach (var id in readIds) {
-                    var value = readEntities.entities[id];
-                    if (value.Error != null) {
-                        entityErrorInfo.AddEntityError(value.Error);
-                        continue;
-                    }
-                    var json = value.Json;  // in case of RemoteClient json is "null"
-                    if (json == null || json == "null") {
-                        read.idMap[id] = null;
-                    } else {
-                        var peer = set.GetPeerById(id);
-                        read.idMap[id] = peer.entity;
-                    }
-                }
-                // A ReadTask is set to error if at least one of its JSON results has an error.
-                if (entityErrorInfo.HasErrors) {
-                    read.state.SetError(entityErrorInfo);
+            var entityErrorInfo = new TaskErrorInfo();
+            var readIds = read.idMap.Keys.ToList();
+            foreach (var id in readIds) {
+                var value = readEntities.entities[id];
+                if (value.Error != null) {
+                    entityErrorInfo.AddEntityError(value.Error);
                     continue;
                 }
-                read.state.Synced = true;
-                AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
+                var json = value.Json;  // in case of RemoteClient json is "null"
+                if (json == null || json == "null") {
+                    read.idMap[id] = null;
+                } else {
+                    var peer = set.GetPeerById(id);
+                    read.idMap[id] = peer.entity;
+                }
             }
+            // A ReadTask is set to error if at least one of its JSON results has an error.
+            if (entityErrorInfo.HasErrors) {
+                read.state.SetError(entityErrorInfo);
+                return;
+            }
+            read.state.Synced = true;
+            AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
         
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
