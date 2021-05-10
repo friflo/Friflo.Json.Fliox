@@ -62,6 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             customers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
             customers.writeErrors.Add(CreateEntityError,    Simulate.WriteEntityError);
+            customers.writeErrors.Add(UpdateEntityError,    Simulate.WriteEntityError);
 
             customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
             customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
@@ -81,6 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
      // private const string ReadEntityError        = "read-entity-error"; 
         private const string DeleteEntityError      = "delete-entity-error";
         private const string CreateEntityError      = "create-entity-error";
+        private const string UpdateEntityError      = "update-entity-error";
 
         private const string ReadTaskError          = "read-task-error";
         private const string CreateTaskError        = "create-task-error";
@@ -336,6 +338,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var createError = customers.Create(new Customer{id = CreateEntityError});
             
+            var updateError = customers.Create(new Customer{id = UpdateEntityError});
+            
             await store.Sync(); // -------- Sync --------
             
             IsFalse(deleteError.Success);
@@ -347,6 +351,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createErrors = createError.GetEntityErrors();
             AreEqual(1,        createErrors.Count);
             AreEqual("WriteError - Customer 'create-entity-error', simulated write entity error", createErrors[CreateEntityError].ToString());
+            
+            IsFalse(updateError.Success);
+            var updateErrors = updateError.GetEntityErrors();
+            AreEqual(1,        updateErrors.Count);
+            AreEqual("WriteError - Customer 'update-entity-error', simulated write entity error", updateErrors[UpdateEntityError].ToString());
         }
     }
 }
