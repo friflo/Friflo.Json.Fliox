@@ -253,11 +253,12 @@ namespace Friflo.Json.Flow.Graph
             foreach (var entity in containerResults.entities) {
                 var id = entity.Key;
                 var value = entity.Value;
-                if (value.Error != null) {
+                var error = value.Error;
+                if (error != null) {
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>
-                    value.Error.id          = id;
-                    value.Error.container   = name;
+                    error.id          = id;
+                    error.container   = name;
                     continue;
                 }
 
@@ -269,8 +270,8 @@ namespace Friflo.Json.Flow.Graph
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {
-                        var error = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                        containerResults.entities[id].SetError(error);
+                        var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
+                        containerResults.entities[id].SetError(entityError);
                     }
                 } else {
                     peer.SetPatchSourceNull();

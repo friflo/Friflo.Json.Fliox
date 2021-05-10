@@ -65,8 +65,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                 writeTask.GetIds(idsBuf);
                 foreach (var id in idsBuf) {
                     var value = entities[id];
-                    if (value.Error != null)
-                        entityErrorInfo.AddEntityError(value.Error);
+                    var error = value.Error;
+                    if (error != null)
+                        entityErrorInfo.AddEntityError(error);
                 }
                 if (entityErrorInfo.HasErrors) {
                     writeTask.state.SetError(entityErrorInfo);
@@ -115,8 +116,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             var readIds = read.idMap.Keys.ToList();
             foreach (var id in readIds) {
                 var value = readEntities.entities[id];
-                if (value.Error != null) {
-                    entityErrorInfo.AddEntityError(value.Error);
+                var error = value.Error;
+                if (error != null) {
+                    entityErrorInfo.AddEntityError(error);
                     continue;
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
@@ -148,8 +150,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 var value = queryEntities.entities[id];
-                if (value.Error != null) {
-                    entityErrorInfo.AddEntityError(value.Error);
+                var error = value.Error;
+                if (error != null) {
+                    entityErrorInfo.AddEntityError(error);
                     continue;
                 }
                 var peer = set.GetPeerById(id);
