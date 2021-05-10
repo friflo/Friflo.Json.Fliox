@@ -167,6 +167,11 @@ namespace Friflo.Json.Flow.Graph
                     var set = _intern.setByName[patchError.Key];
                     set.SyncPatchErrors(patchError.Value);
                 }
+                var deleteErrors = response.deleteErrors;
+                foreach (var deleteError in deleteErrors) {
+                    var set = _intern.setByName[deleteError.Key];
+                    set.SyncDeleteErrors(deleteError.Value);
+                }
 
                 var tasks   = syncRequest.tasks;
                 var results = response.tasks;

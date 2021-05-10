@@ -15,6 +15,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal    Dictionary<string, EntityError> createErrors = new Dictionary<string, EntityError>();
         internal    Dictionary<string, EntityError> updateErrors = new Dictionary<string, EntityError>();
         internal    Dictionary<string, EntityError> patchErrors  = new Dictionary<string, EntityError>();
+        internal    Dictionary<string, EntityError> deleteErrors = new Dictionary<string, EntityError>();
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -475,11 +476,22 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
-            // var deleteResult = (DeleteEntitiesResult)result;
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
             }
             foreach (var deleteTask in deleteTasks) {
+                var entityErrorInfo = new TaskErrorInfo();
+                idsBuf.Clear();
+                deleteTask.GetIds(idsBuf);
+                foreach (var id in idsBuf) {
+                    if (deleteErrors.TryGetValue(id, out EntityError error)) {
+                        entityErrorInfo.AddEntityError(error);
+                    }
+                }
+                if (entityErrorInfo.HasErrors) {
+                    deleteTask.state.SetError(entityErrorInfo);
+                    continue;
+                }
                 deleteTask.state.Synced = true;
             }
         }

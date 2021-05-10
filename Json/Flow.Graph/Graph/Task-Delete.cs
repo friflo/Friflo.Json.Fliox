@@ -10,6 +10,8 @@ namespace Friflo.Json.Flow.Graph
     public abstract class DeleteTask : SyncTask {
         internal            TaskState   state;
         internal override   TaskState   State      => state;
+        
+        internal abstract void GetIds(List<string> ids);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -24,6 +26,10 @@ namespace Friflo.Json.Flow.Graph
         
         internal DeleteTask(string id) {
             this.id = id;
+        }
+
+        internal override void GetIds(List<string> ids) {
+            ids.Add(id);
         }
     }
     
@@ -40,5 +46,10 @@ namespace Friflo.Json.Flow.Graph
         internal DeleteRangeTask(ICollection<string> ids) {
             this.ids = ids;
         }
+        
+        internal override void GetIds(List<string> ids) {
+            ids.AddRange(this.ids);
+        }
+
     }
 }

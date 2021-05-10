@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Sync
         public  Dictionary<string, EntityErrors>        createErrors;
         public  Dictionary<string, EntityErrors>        updateErrors;
         public  Dictionary<string, EntityErrors>        patchErrors;
+        public  Dictionary<string, EntityErrors>        deleteErrors;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (results.TryGetValue(container, out ContainerEntities result))

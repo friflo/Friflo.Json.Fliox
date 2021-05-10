@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -20,13 +21,18 @@ namespace Friflo.Json.Flow.Sync
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
+            if (result.deleteErrors != null && result.deleteErrors.Count > 0) {
+                var deleteErrors = SyncResponse.GetEntityErrors(response.deleteErrors, container);
+                deleteErrors.AddErrors(result.deleteErrors);
+            }
             return result;
         }
     }
     
     public class DeleteEntitiesResult : TaskResult, ICommandResult
     {
-        public              CommandError        Error { get; set; }
+                     public CommandError                    Error { get; set; }
+        [Fri.Ignore] public Dictionary<string, EntityError> deleteErrors;
 
         internal override   TaskType            TaskType => TaskType.Delete;
     }
