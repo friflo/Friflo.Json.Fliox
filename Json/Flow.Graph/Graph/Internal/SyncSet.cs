@@ -361,12 +361,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ContainerEntities readEntities) {
-            var entityErrorInfo = new TaskErrorInfo();
             // remove all requested peers from EntitySet which are not present in database
             foreach (var id in task.ids) {
                 var value = readEntities.entities[id];
                 if (value.Error != null) {
-                    entityErrorInfo.AddEntityError(value.Error);
                     continue;
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
@@ -374,18 +372,16 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (isNull)
                     set.DeletePeer(id);
             }
-            if (entityErrorInfo.HasErrors) {
-                foreach (var read in reads) {
-                    read.state.SetError(entityErrorInfo);
-                }
-                return;
-            }
 
-            // todo check for optimization
-            foreach (var read in reads) {
+            foreach (ReadTask<T> read in reads) {
+                var entityErrorInfo = new TaskErrorInfo();
                 var readIds = read.idMap.Keys.ToList();
                 foreach (var id in readIds) {
                     var value = readEntities.entities[id];
+                    if (value.Error != null) {
+                        entityErrorInfo.AddEntityError(value.Error);
+                        continue;
+                    }
                     var json = value.Json;  // in case of RemoteClient json is "null"
                     if (json == null || json == "null") {
                         read.idMap[id] = null;
@@ -393,6 +389,11 @@ namespace Friflo.Json.Flow.Graph.Internal
                         var peer = set.GetPeerById(id);
                         read.idMap[id] = peer.entity;
                     }
+                }
+                // A ReadTask is set to error if at least one of its JSON results has an error.
+                if (entityErrorInfo.HasErrors) {
+                    read.state.SetError(entityErrorInfo);
+                    continue;
                 }
                 read.state.Synced = true;
                 AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
