@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var createIPad      = articles.Create(ipad);
             AreSimilar("Article:  2, tasks: 1 -> create #2",            articles);
             
-            articles.Delete("article-iphone"); // delete if exist in database
+            var deleteIPhone    = articles.Delete("article-iphone"); // delete if exist in database
             AreSimilar("Article:  2, tasks: 2 -> create #2, delete #1", articles);
 
             var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
@@ -101,6 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
+            IsTrue(deleteIPhone.Success);
             IsTrue(logStore1.Success);
             IsTrue(logStore2.Success);
             IsTrue(createGalaxy.Success);

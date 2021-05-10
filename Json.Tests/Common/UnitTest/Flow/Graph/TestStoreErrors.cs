@@ -60,6 +60,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
+            customers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
+
             customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
             customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
             
@@ -76,6 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string Article1ReadError      = "article-1";
         private const string Article2JsonError      = "article-2"; 
      // private const string ReadEntityError        = "read-entity-error"; 
+        private const string DeleteEntityError      = "delete-entity-error";
+
         private const string ReadTaskError          = "read-task-error";
         private const string CreateTaskError        = "create-task-error";
         private const string UpdateTaskError        = "update-task-error";
@@ -94,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertReadTask        (useStore);
             await AssertTaskExceptions  (useStore);
             await AssertTaskError       (useStore);
-            await AssertEntityWrite     (useStore);
+            // await AssertEntityWrite     (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -325,6 +329,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static async Task AssertEntityWrite(PocStore store) {
             var customers = store.customers;
+            
+            var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
+            
+            await store.Sync(); // -------- Sync --------
+            
+            IsFalse(deleteError.Success);
+            var deleteErrors = deleteError.GetEntityErrors();
+            AreEqual(1,     deleteErrors.Count);
+            AreEqual("WriteError - Customer 'delete-entity-error', simulated write entity error", deleteErrors[DeleteEntityError].ToString());
         }
     }
 }
