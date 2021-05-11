@@ -8,13 +8,13 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct TaskErrorInfo
     {
-        internal    TaskError                               TaskError { get; private set; }
+        internal    TaskError                           TaskError { get; private set; }
         
         // used sorted dictionary to ensure stable (and repeatable) order of errors
-        internal    SortedDictionary<string, EntityError>   EntityErrors { get; private set; }
+        internal    IDictionary<string, EntityError>    EntityErrors { get; private set; }
         
-        internal    bool                                    HasErrors => TaskError != null;
-        public      override string                         ToString() => GetMessage();
+        internal    bool                                HasErrors => TaskError != null;
+        public      override string                     ToString() => GetMessage();
 
         internal TaskErrorInfo(TaskError taskError) {
             TaskError       = taskError;

@@ -40,8 +40,8 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
-        public readonly TaskError                               taskError;
-        public readonly SortedDictionary<string, EntityError>   entityErrors;
+        public readonly TaskError                           taskError;
+        public readonly IDictionary<string, EntityError>    entityErrors;
 
         internal TaskResultException(TaskErrorInfo taskErrorInfo) : base(taskErrorInfo.GetMessage()) {
             taskError       = taskErrorInfo.TaskError;
@@ -51,9 +51,9 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskEntityError : TaskError
     {
-        public readonly SortedDictionary<string, EntityError> entityErrors;
+        public readonly IDictionary<string, EntityError>    entityErrors;
 
-        internal TaskEntityError(SortedDictionary<string, EntityError> entityErrors) {
+        internal TaskEntityError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors;
             message             = $"Task failed by entity errors";
             type                = TaskErrorType.EntityErrors;
