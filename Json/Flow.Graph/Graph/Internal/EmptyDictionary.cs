@@ -7,6 +7,11 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
+    /// <summary>
+    /// An immutable <see cref="IDictionary{TKey,TValue>"/> implementation containing no entries.
+    /// Used for methods returning an empty dictionary instead of null reference to avoid null checks or throwing
+    /// a <see cref="NullReferenceException"/> when accessing the return value. 
+    /// </summary>
     public class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
