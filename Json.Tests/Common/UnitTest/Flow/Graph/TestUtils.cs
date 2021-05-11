@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Internal;
@@ -37,6 +38,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // setting id to the already used id is valid 
             test.id = "id-1";
+        }
+        
+        [Test]
+        public void TestEmptyDictionary() {
+            var empty = new EmptyDictionary<string, string>();
+            empty.Clear(); // no exception
+            
+            var kvPair = new KeyValuePair<string, string>("A","B");
+            IsFalse(empty.Contains(kvPair));
+            
+            IsFalse(empty.ContainsKey("X"));
+            
+            AreEqual(0, empty.Count);
+            
+            IsFalse(empty.TryGetValue("Y", out var value));
+            IsNull(value);
+            
+            foreach (var entry in empty) {
+                Fail("cant be reached - dictionary is always empty");
+            }
         }
 
 #if !UNITY_2020_1_OR_NEWER

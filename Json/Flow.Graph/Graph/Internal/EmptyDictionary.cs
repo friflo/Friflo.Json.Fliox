@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     public class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            throw new System.NotImplementedException();
+            return new EmptyDictionaryIterator<KeyValuePair<TKey, TValue>>();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
-            throw new InvalidOperationException("EmptyDictionary<> is immutable");
+            // nothing there to copy
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item) {
@@ -63,5 +63,20 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         public ICollection<TKey>    Keys    => new List<TKey>();
         public ICollection<TValue>  Values  => new List<TValue>();
+    }
+
+    public class EmptyDictionaryIterator<TValue> : IEnumerator<TValue>
+    {
+        public bool MoveNext() {
+            return false;
+        }
+
+        public void Reset() { }
+
+        public TValue Current => throw new InvalidOperationException("EmptyDictionary<> is always empty");
+
+        object IEnumerator.Current => Current;
+
+        public void Dispose() { }
     }
 }
