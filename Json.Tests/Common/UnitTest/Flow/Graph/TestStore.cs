@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new RemoteClient("http://localhost:8080/"))
+                    using (var remoteDatabase   = new HttpRemoteClient("http://localhost:8080/"))
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
                     using (var useStore         = new PocStore(remoteDatabase)) {
                         await TestStores(createStore, useStore);

@@ -2,53 +2,43 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Database
 {
-    public class RemoteClient : EntityDatabase
+    public abstract class RemoteClientDatabase : EntityDatabase
     {
         private readonly ObjectMapper   jsonMapper;
-        private readonly string         endpoint;
-        private readonly HttpClient     httpClient;
         
-        public RemoteClient(string endpoint) {
-            this.endpoint = endpoint;
+        public RemoteClientDatabase() {
             jsonMapper = new ObjectMapper { Pretty = true, WriteNullMembers = false};
-            httpClient = new HttpClient();
         }
         
         public override void Dispose() {
             base.Dispose();
-            httpClient.CancelPendingRequests();
-            httpClient.Dispose();
             jsonMapper.Dispose();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            ClientContainer container = new ClientContainer(name, this);
+            RemoteClientContainer container = new RemoteClientContainer(name, this);
             return container;
         }
 
+        protected abstract Task<string> ExecuteJson(string jsonSynRequest);
+
         public override async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var jsonRequest = jsonMapper.Write(syncRequest);
-            var body = new StringContent(jsonRequest);
-            body.Headers.ContentType.MediaType = "application/json";
-            // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
-
-            HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, body);
-            string jsonResponse = await httpResponse.Content.ReadAsStringAsync();
+            var jsonResponse = await ExecuteJson(jsonRequest);
             var response = jsonMapper.Read<SyncResponse>(jsonResponse);
             return response;
         }
     }
     
-    public class ClientContainer : EntityContainer
+    public class RemoteClientContainer : EntityContainer
     {
-        public ClientContainer(string name, EntityDatabase database)
+        public RemoteClientContainer(string name, EntityDatabase database)
             : base(name, database) {
         }
 

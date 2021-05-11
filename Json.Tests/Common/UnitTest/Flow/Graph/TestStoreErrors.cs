@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var hostDatabase = new RemoteHost(testDatabase, "http://+:8080/")) {
                 AddSimulationErrors(testDatabase);
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new RemoteClient("http://localhost:8080/"))
+                    using (var remoteDatabase   = new HttpRemoteClient("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase)) {
                         await TestStoresErrors(useStore);
                     }
