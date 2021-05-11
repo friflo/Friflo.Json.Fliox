@@ -83,7 +83,9 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         // --- Read
         public ReadTask<T> Read() {
-            return sync.Read();
+            var task = sync.Read();
+            intern.store.AddTask(task);
+            return task;
         }
 
         // --- Query
@@ -91,18 +93,24 @@ namespace Friflo.Json.Flow.Graph
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
-            return sync.QueryFilter(op);
+            var task = sync.QueryFilter(op);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public QueryTask<T> QueryByFilter(FilterOperation filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
-            return sync.QueryFilter(filter);
+            var task = sync.QueryFilter(filter);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public QueryTask<T> QueryAll() {
             var all = Operation.FilterTrue;
-            return sync.QueryFilter(all);
+            var task = sync.QueryFilter(all);
+            intern.store.AddTask(task);
+            return task;
         }
 
         // --- Create
@@ -111,7 +119,9 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
-            return sync.Create(entity);
+            var task = sync.Create(entity);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public CreateRangeTask<T> CreateRange(ICollection<T> entities) {
@@ -121,7 +131,9 @@ namespace Friflo.Json.Flow.Graph
                 if (entity.id == null)
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
-            return sync.CreateRange(entities);
+            var task = sync.CreateRange(entities);
+            intern.store.AddTask(task);
+            return task;
         }
         
         // --- Update
@@ -130,7 +142,9 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
-            return sync.Update(entity);
+            var task = sync.Update(entity);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
@@ -140,27 +154,35 @@ namespace Friflo.Json.Flow.Graph
                 if (entity.id == null)
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
-            return sync.UpdateRange(entities);
+            var task = sync.UpdateRange(entities);
+            intern.store.AddTask(task);
+            return task;
         }
 
         // --- Delete
         public DeleteTask<T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
-            return Delete(entity.id);
+            var task = Delete(entity.id);
+            intern.store.AddTask(task);
+            return task;
         }
 
         public DeleteTask<T> Delete(string id) {
             if (id == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            return sync.Delete(id);
+            var task = sync.Delete(id);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public DeleteRangeTask<T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
             var ids = entities.Select(e => e.id).ToList();
-            return DeleteRange(ids);
+            var task = DeleteRange(ids);
+            intern.store.AddTask(task);
+            return task;
         }
         
         public DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
@@ -170,24 +192,28 @@ namespace Friflo.Json.Flow.Graph
                 if (id == null)
                     throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            return sync.DeleteRange(ids);
+            var task = sync.DeleteRange(ids);
+            intern.store.AddTask(task);
+            return task;
         }
 
         // --- Log changes -> create patches
         public LogTask LogSetChanges() {
-            var logTask = intern.store._intern.sync.CreateLog();
-            sync.LogSetChanges(peers, logTask);
-            return logTask;
+            var task = intern.store._intern.sync.CreateLog();
+            sync.LogSetChanges(peers, task);
+            intern.store.AddTask(task);
+            return task;
         }
 
         public LogTask LogEntityChanges(T entity) {
-            var logTask = intern.store._intern.sync.CreateLog();
+            var task = intern.store._intern.sync.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
-            sync.LogEntityChanges(entity, logTask);
-            return logTask;
+            sync.LogEntityChanges(entity, task);
+            intern.store.AddTask(task);
+            return task;
         }
         
 

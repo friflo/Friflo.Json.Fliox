@@ -7,7 +7,8 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        private readonly    List<LogTask>  logTasks  = new List<LogTask>();
+        internal readonly   List<SyncTask>  appTasks  = new List<SyncTask>();
+        private  readonly   List<LogTask>   logTasks  = new List<LogTask>();
 
         internal LogTask CreateLog() {
             var logTask = new LogTask();

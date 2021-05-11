@@ -95,6 +95,7 @@ namespace Friflo.Json.Flow.Graph
             _intern.typeStore.Dispose();
         }
 
+        // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
 
@@ -112,12 +113,18 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public LogTask LogChanges() {
-            var logTask = _intern.sync.CreateLog();
+            var task = _intern.sync.CreateLog();
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
-                set.LogSetChangesInternal(logTask);
+                set.LogSetChangesInternal(task);
             }
-            return logTask;
+            AddTask(task);
+            return task;
+        }
+        
+        // ------------------------------------------- internals -------------------------------------------
+        internal void AddTask(SyncTask task) {
+            _intern.sync.appTasks.Add(task);
         }
         
         internal EntitySet<T> EntitySet<T>() where T : Entity
