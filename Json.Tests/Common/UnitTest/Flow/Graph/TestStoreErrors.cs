@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private async Task RemoteUse() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
-            using (var hostDatabase = new RemoteHost(testDatabase, "http://+:8080/")) {
+            using (var hostDatabase = new HttpRemoteHost(testDatabase, "http://+:8080/")) {
                 AddSimulationErrors(testDatabase);
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpRemoteClient("http://localhost:8080/"))

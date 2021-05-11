@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private async Task RemoteCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new RemoteHost(fileDatabase, "http://+:8080/")) {
+            using (var hostDatabase = new HttpRemoteHost(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpRemoteClient("http://localhost:8080/"))
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        internal static async Task RunRemoteHost(RemoteHost remoteHost, Func<Task> run) {
+        internal static async Task RunRemoteHost(HttpRemoteHost remoteHost, Func<Task> run) {
             remoteHost.Start();
             var hostTask = Task.Run(() => {
                 // await hostDatabase.HandleIncomingConnections();

@@ -26,11 +26,11 @@ namespace Friflo.Json.Flow.Database
             return container;
         }
 
-        protected abstract Task<string> ExecuteJson(string jsonSynRequest);
+        protected abstract Task<string> ExecuteSyncJson(string jsonSynRequest);
 
         public override async Task<SyncResponse> Execute(SyncRequest syncRequest) {
             var jsonRequest = jsonMapper.Write(syncRequest);
-            var jsonResponse = await ExecuteJson(jsonRequest);
+            var jsonResponse = await ExecuteSyncJson(jsonRequest);
             var response = jsonMapper.Read<SyncResponse>(jsonResponse);
             return response;
         }
