@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             if (queryErrors.TryGetValue(command.filterLinq, out string filterLinq)) {
                 switch (filterLinq) {
                     case Simulate.QueryTaskException:
-                        throw new SimulationException("EntityContainer query exception");
+                        throw new SimulationException("simulated query exception");
                     case Simulate.QueryTaskError:
                         return new QueryEntitiesResult {Error = new CommandError {message = "simulated query error"}};
                 }
@@ -106,13 +106,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     switch (payload) {
                         case Simulate.ReadEntityError:
                             value.SetJson("null");
-                            var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read error");
+                            var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read entity error");
                             value.SetError(error);
                             break;
                         case Simulate.ReadTaskError:
-                            return new CommandError{message = "simulated read error"};
+                            return new CommandError{message = "simulated read task error"};
                         case Simulate.ReadTaskException:
-                            throw new SimulationException("EntityContainer read exception");
+                            throw new SimulationException("simulated read task exception");
                         default:
                             value.SetJson(payload); // modify JSON
                             break;
@@ -130,9 +130,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     var error = errorPair.Value;
                     switch (error) {
                         case Simulate.WriteTaskException:
-                            throw new SimulationException("EntityContainer write exception");
+                            throw new SimulationException("simulated write task exception");
                         case Simulate.WriteTaskError:
-                            return new CommandError {message = "simulated write error"};
+                            return new CommandError {message = "simulated write task error"};
                         case Simulate.WriteEntityError:
                             if (errors == null)
                                 errors = new Dictionary<string, EntityError>();
