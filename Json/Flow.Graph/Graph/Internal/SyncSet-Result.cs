@@ -10,12 +10,12 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncSet
     {
-        private static readonly Dictionary<string, EntityError> NoErrors = new Dictionary<string, EntityError>();  
+        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
             
-        internal    Dictionary<string, EntityError> createErrors = NoErrors;
-        internal    Dictionary<string, EntityError> updateErrors = NoErrors;
-        internal    Dictionary<string, EntityError> patchErrors  = NoErrors;
-        internal    Dictionary<string, EntityError> deleteErrors = NoErrors;
+        internal    IDictionary<string, EntityError> createErrors = NoErrors;
+        internal    IDictionary<string, EntityError> updateErrors = NoErrors;
+        internal    IDictionary<string, EntityError> patchErrors  = NoErrors;
+        internal    IDictionary<string, EntityError> deleteErrors = NoErrors;
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -38,10 +38,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void CreateUpdateEntitiesResult(
-            Dictionary<string, EntityValue> entities,
-            TaskResult                      result,
-            List<WriteTask>                 writeTasks,
-            Dictionary<string, EntityError> writeErrors)
+            Dictionary<string, EntityValue>     entities,
+            TaskResult                          result,
+            List<WriteTask>                     writeTasks,
+            IDictionary<string, EntityError>    writeErrors)
         {
             if (result is TaskError taskError) {
                 foreach (var writeTask in writeTasks) {

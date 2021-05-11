@@ -13,6 +13,8 @@ namespace Friflo.Json.Flow.Graph
         internal abstract   string      Label   { get; }
         internal abstract   TaskState   State   { get; }
         
+        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
+        
         public              bool        Success { get {
             if (State.IsSynced())
                 return !State.Error.HasErrors;
@@ -30,8 +32,12 @@ namespace Friflo.Json.Flow.Graph
         
         /// <returns>The entities caused that task failed. Otherwise null</returns>
         public IDictionary<string, EntityError>   GetEntityErrors() {
-            if (State.IsSynced())
-                return State.Error.EntityErrors;
+            if (State.IsSynced()) {
+                var errors = State.Error.EntityErrors;
+                if (errors != null)
+                    return errors;
+                return NoErrors;
+            }
             throw new TaskNotSyncedException($"SyncTask.GetEntityErrors() requires Sync(). {Label}");
         }
 
