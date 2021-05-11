@@ -26,9 +26,10 @@ namespace Friflo.Json.Flow.Database
     ///         => <see cref="ICommandResult.Error"/> need to be set.
     ///   </para> 
     ///   <para>2. The database request was successful, but one or more entities (key/values) had an error when accessing.
-    ///         E.g. Writing an entity a file by <see cref="FileContainer"/> failed because file is used by another process.
+    ///         E.g. Writing an entity to a file with a <see cref="FileContainer"/> fails because it is used by another process.
     ///         => An <see cref="EntityError"/> need to be added to entity error dictionary of the <see cref="ICommandResult"/>
-    ///            E.g. to <see cref="CreateEntitiesResult.createErrors"/> in case of <see cref="FileContainer.CreateEntities"/>
+    ///            E.g. an error is added to <see cref="CreateEntitiesResult.createErrors"/> in case of
+    ///            <see cref="FileContainer.CreateEntities"/>
     ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
