@@ -3,10 +3,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Sync;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Database.Remote
 {
     public abstract class RemoteClientDatabase : EntityDatabase
     {

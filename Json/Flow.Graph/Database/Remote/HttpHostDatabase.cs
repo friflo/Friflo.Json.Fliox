@@ -6,10 +6,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Database.Remote
 {
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
-    public class HttpRemoteHost : RemoteHost
+    public class HttpHostDatabase : RemoteHostDatabase
     {
         private readonly    string          endpoint;
         private readonly    HttpListener    listener;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Database
         private             int             requestCount;
 
         
-        public HttpRemoteHost(EntityDatabase local, string endpoint) : base(local) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
             this.endpoint   = endpoint;
             listener        = new HttpListener();
             listener.Prefixes.Add(endpoint);

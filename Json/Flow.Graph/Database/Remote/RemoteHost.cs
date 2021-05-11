@@ -2,18 +2,18 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Sync;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Database.Remote
 {
-    public class RemoteHost : EntityDatabase
+    public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
         private readonly    ObjectMapper    jsonMapper;
 
 
-        public RemoteHost(EntityDatabase local) {
+        public RemoteHostDatabase(EntityDatabase local) {
             jsonMapper = new ObjectMapper {WriteNullMembers = false};
             this.local = local;
         }
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Database
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             EntityContainer localContainer = local.CreateContainer(name, local);
-            HostContainer container = new HostContainer(name, this, localContainer);
+            RemoteHostContainer container = new RemoteHostContainer(name, this, localContainer);
             return container;
         }
 
@@ -38,14 +38,14 @@ namespace Friflo.Json.Flow.Database
         }
     }
     
-    public class HostContainer : EntityContainer
+    public class RemoteHostContainer : EntityContainer
     {
         private readonly    EntityContainer local;
         
         public  override    bool            Pretty       => local.Pretty;
         public  override    SyncContext     SyncContext  => local.SyncContext;
 
-        public HostContainer(string name, EntityDatabase database, EntityContainer localContainer)
+        public RemoteHostContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {
             local = localContainer;
         }

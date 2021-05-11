@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper;
@@ -81,9 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private async Task RemoteCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new HttpRemoteHost(fileDatabase, "http://+:8080/")) {
+            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new HttpRemoteClient("http://localhost:8080/"))
+                    using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
                     using (var useStore         = new PocStore(remoteDatabase)) {
                         await TestStores(createStore, useStore);
@@ -92,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        internal static async Task RunRemoteHost(HttpRemoteHost remoteHost, Func<Task> run) {
+        internal static async Task RunRemoteHost(HttpHostDatabase remoteHost, Func<Task> run) {
             remoteHost.Start();
             var hostTask = Task.Run(() => {
                 // await hostDatabase.HandleIncomingConnections();
