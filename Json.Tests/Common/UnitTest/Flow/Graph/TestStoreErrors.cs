@@ -38,16 +38,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  RemoteUseAsync() { await RemoteUse(); }
         
         private async Task RemoteUse() {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var testDatabase = new TestDatabase(fileDatabase))
-            using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var testDatabase     = new TestDatabase(fileDatabase))
+            using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
+            {
                 AddSimulationErrors(testDatabase);
-                await TestStore.RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
-                    using (var useStore         = new PocStore(remoteDatabase)) {
-                        await TestStoresErrors(useStore);
-                    }
-                });
+                using (var useStore         = new PocStore(loopbackDatabase)) {
+                    await TestStoresErrors(useStore);
+                };
             }
         }
         

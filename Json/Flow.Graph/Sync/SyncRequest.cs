@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
