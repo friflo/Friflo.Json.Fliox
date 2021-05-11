@@ -19,7 +19,17 @@ namespace Friflo.Json.Flow.Database
     ///   The interface methods are designed to enable clear, compact and efficient implementations of database
     ///   requests. E.g. operations like SELECT, INSERT, DELETE or UPDATE in case of an SQL database adapter.
     ///   <see cref="MemoryContainer"/> and <see cref="FileContainer"/> show straight forward implementation of
-    ///   <see cref="EntityContainer"/>. 
+    ///   <see cref="EntityContainer"/>.
+    ///   Additional to memory implementation <see cref="FileContainer"/> shows also how to handle database errors.
+    ///   These errors fall into two categories:
+    ///   <para>1. A complete database request fails. E.g. a SELECT in SQL.
+    ///         => <see cref="ICommandResult.Error"/> need to be set.
+    ///   </para> 
+    ///   <para>2. The database request was successful, but one or more entities (key/values) had an error when accessing.
+    ///         E.g. Writing an entity a file by <see cref="FileContainer"/> failed because file is used by another process.
+    ///         => An <see cref="EntityError"/> need to be added to entity error dictionary of the <see cref="ICommandResult"/>
+    ///            E.g. to <see cref="CreateEntitiesResult.createErrors"/> in case of <see cref="FileContainer.CreateEntities"/>
+    ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
     ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="ICommandResult"/>.
