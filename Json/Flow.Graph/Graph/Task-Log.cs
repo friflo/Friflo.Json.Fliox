@@ -13,8 +13,8 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   List<Change>        patches = new List<Change>();
         private  readonly   List<Change>        creates = new List<Change>();
         
-        public              int                 Patches   => patches.Count;
-        public              int                 Creates   => creates.Count;
+        public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
+        public              int                 GetCreateCount()  => creates.Count; // count as method to avoid flooding properties
 
         internal            TaskState           state;
         internal override   TaskState           State   => state;

@@ -225,9 +225,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         static void AssertLog(LogTask logTask, int patches, int creates) {
-            if (logTask.Patches == patches && logTask.Creates == creates)
+            var patchCount  = logTask.GetPatchCount();
+            var createCount = logTask.GetCreateCount();
+            
+            if (patchCount == patches && createCount == creates)
                 return;
-            Fail($"Expect:  patches: {patches}, creates: {creates}\nbut was: patches: {logTask.Patches}, creates: {logTask.Creates}");
+            Fail($"Expect:  patches: {patches}, creates: {creates}\nbut was: patches: {patchCount}, creates: {createCount}");
         }
     }
 }
