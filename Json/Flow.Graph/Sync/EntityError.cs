@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Sync
 
         public void AppendAsText(StringBuilder sb) {
             sb.Append(type);
-            sb.Append(" - ");
+            sb.Append(": ");
             sb.Append(container);
             sb.Append(" '");
             sb.Append(id);

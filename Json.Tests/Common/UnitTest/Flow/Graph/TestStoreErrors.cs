@@ -105,8 +105,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
-| ReadError - Article 'article-1', simulated read entity error
-| ParseError - Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+| ReadError: Article 'article-1', simulated read entity error
+| ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
         private static async Task AssertQueryTask(PocStore store) {
             var orders = store.orders;
@@ -353,17 +353,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.GetEntityErrors();
             AreEqual(1,        deleteErrors.Count);
-            AreEqual("WriteError - Customer 'delete-entity-error', simulated write entity error", deleteErrors[DeleteEntityError].ToString());
+            AreEqual("WriteError: Customer 'delete-entity-error', simulated write entity error", deleteErrors[DeleteEntityError].ToString());
             
             IsFalse(createError.Success);
             var createErrors = createError.GetEntityErrors();
             AreEqual(1,        createErrors.Count);
-            AreEqual("WriteError - Customer 'create-entity-error', simulated write entity error", createErrors[CreateEntityError].ToString());
+            AreEqual("WriteError: Customer 'create-entity-error', simulated write entity error", createErrors[CreateEntityError].ToString());
             
             IsFalse(updateError.Success);
             var updateErrors = updateError.GetEntityErrors();
             AreEqual(1,        updateErrors.Count);
-            AreEqual("WriteError - Customer 'update-entity-error', simulated write entity error", updateErrors[UpdateEntityError].ToString());
+            AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[UpdateEntityError].ToString());
         }
     }
 }
