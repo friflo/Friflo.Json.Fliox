@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
 
-    internal readonly struct StoreIntern
+    internal struct StoreIntern
     {
         internal readonly   TypeStore                       typeStore;
         internal readonly   TypeCache                       typeCache;
@@ -36,6 +36,11 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
         
+        // --- non readonly
+        internal            SyncStore                       sync;
+        internal            LogTask                         tracerLogTask;
+
+        
         internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore      = typeStore;
             this.database       = database;
@@ -44,6 +49,8 @@ namespace Friflo.Json.Flow.Graph
             setByType           = new Dictionary<Type, EntitySet>();
             setByName           = new Dictionary<string, EntitySet>();
             objectPatcher       = new ObjectPatcher(jsonMapper);
+            sync                = new SyncStore();
+            tracerLogTask       = null;
         }
     }
 
@@ -64,10 +71,8 @@ namespace Friflo.Json.Flow.Graph
         // Reason: EntityStore is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
-        internal readonly   StoreIntern     _intern;
+        internal            StoreIntern     _intern;
         public              TypeStore       TypeStore => _intern.typeStore;
-        internal            SyncStore       sync;
-        internal            LogTask         tracerLogTask;
 
         public              StoreInfo       StoreInfo  => new StoreInfo(_intern.setByType); 
         public   override   string          ToString() => StoreInfo.ToString();
@@ -81,7 +86,6 @@ namespace Friflo.Json.Flow.Graph
             var jsonMapper = new ObjectMapper(typeStore, errorHandler) {
                 TracerContext = this
             };
-            sync = new SyncStore();
             _intern = new StoreIntern(typeStore, database, jsonMapper);
         }
         
@@ -107,7 +111,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public LogTask LogChanges() {
-            var logTask = sync.CreateLog();
+            var logTask = _intern.sync.CreateLog();
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 set.LogSetChangesInternal(logTask);
@@ -238,7 +242,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                     }
                 }
-                sync.LogResults();
+                _intern.sync.LogResults();
             }
             finally
             {
@@ -247,7 +251,7 @@ namespace Friflo.Json.Flow.Graph
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
-                sync = new SyncStore();
+                _intern.sync = new SyncStore();
             }
         }
     }

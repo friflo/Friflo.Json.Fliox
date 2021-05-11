@@ -153,7 +153,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// which is not already assigned) 
         private void GetEntityChanges(PeerEntity<T> peer, LogTask logTask) {
             if (peer.created) {
-                set.intern.store.tracerLogTask = logTask;
+                set.intern.store._intern.tracerLogTask = logTask;
                 set.intern.tracer.Trace(peer.entity);
                 return;
             }
