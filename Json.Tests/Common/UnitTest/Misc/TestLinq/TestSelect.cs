@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var m = new ObjectMapper(store.TypeStore)) {
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
-                store.SyncWait();
+                store.Sync().Wait();
                 var orderResult = order1.Result;
                 var orders = new List<Flow.Graph.Order> { orderResult };
 
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var store = TestRelationPoC.CreateStore(database).Result) {
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
-                store.SyncWait();
+                store.Sync().Wait();
                 return order.Result;
             }
         }

@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var e = Throws<NotSupportedException>(() => { var _ = orders.Query(o => o.customer.Entity == null); });
                 AreEqual("Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: o.customer.Entity, expression: o => (o.customer.Entity == null)", e.Message);
 
-                store.SyncWait();
+                store.Sync().Wait();
             }
         }
 
