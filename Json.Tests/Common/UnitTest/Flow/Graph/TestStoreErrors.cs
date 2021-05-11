@@ -34,10 +34,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        [UnityTest] public IEnumerator RemoteUseCoroutine() { yield return RunAsync.Await(RemoteUse()); }
-        [Test]      public async Task  RemoteUseAsync() { await RemoteUse(); }
+        [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
+        [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
-        private async Task RemoteUse() {
+        private async Task LoopbackUse() {
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AddSimulationErrors(testDatabase);
                 using (var useStore         = new PocStore(loopbackDatabase)) {
                     await TestStoresErrors(useStore);
-                };
+                }
             }
         }
         

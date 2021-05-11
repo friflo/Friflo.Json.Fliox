@@ -77,10 +77,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
         
-        [UnityTest] public IEnumerator RemoteCreateCoroutine() { yield return RunAsync.Await(RemoteCreate()); }
-        [Test]      public async Task  RemoteCreateAsync() { await RemoteCreate(); }
+        [UnityTest] public IEnumerator HttpCreateCoroutine() { yield return RunAsync.Await(HttpCreate()); }
+        [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
-        private async Task RemoteCreate() {
+        private async Task HttpCreate() {
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
@@ -90,6 +90,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         await TestStores(createStore, useStore);
                     }
                 });
+            }
+        }
+        
+        [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
+        [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
+        
+        private async Task LoopbackUse() {
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
+                using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
+                using (var useStore         = new PocStore(loopbackDatabase)) {
+                    await TestStores(createStore, useStore);
+                }
             }
         }
         
