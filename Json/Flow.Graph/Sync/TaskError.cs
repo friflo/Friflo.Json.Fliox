@@ -14,7 +14,6 @@ namespace Friflo.Json.Flow.Sync
     public enum TaskErrorType {
         Undefined,          // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException) 
         UnhandledException,
-        DatabaseError,
-        EntityErrors        // Is set only by Flow.Graph implementation - not by Flow.Database  
+        DatabaseError
     }
 }

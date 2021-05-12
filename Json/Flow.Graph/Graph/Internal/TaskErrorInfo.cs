@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Sync;
@@ -51,34 +50,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                 error.AppendAsText(sb);
             }
             return sb.ToString();
-        }
-    }
-    
-    // todo rename to TaskError
-    public class SyncError {
-        public   readonly   TaskErrorType                       type;
-        public   readonly   string                              message;
-        public   readonly   IDictionary<string, EntityError>    entityErrors;
-       
-        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
-
-        internal SyncError(TaskError error) {
-            type            = error.type;
-            message         = error.message;
-            entityErrors    = NoErrors;
-        }
-        
-        internal SyncError(IDictionary<string, EntityError> entityErrors) {
-            this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
-            type                = TaskErrorType.EntityErrors;
-            message             = "Task failed by entity errors";
-        }
-        
-        public   override   string                              ToString() {
-            if (type == TaskErrorType.EntityErrors) {
-                return $"type: {type}, message: {message}, entityErrors: {entityErrors.Count}";
-            }
-            return $"type: {type}, message: {message}";
         }
     }
 

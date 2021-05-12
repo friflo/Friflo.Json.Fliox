@@ -40,13 +40,11 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
-        public readonly     TaskErrorType                       taskError;
+        public readonly     SyncErrorType                       taskError;
         public readonly     IDictionary<string, EntityError>    entityErrors;
         
-        
-
         internal TaskResultException(TaskErrorInfo errorInfo) : base(errorInfo.GetMessage()) {
-            taskError            = errorInfo.TaskError.type;
+            taskError       = errorInfo.TaskError.type;
             entityErrors    = errorInfo.TaskError.entityErrors;
         }
     }
