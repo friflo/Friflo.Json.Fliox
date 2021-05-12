@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
         /// <returns>The entities caused that task failed. Otherwise null</returns>
         public IDictionary<string, EntityError>   GetEntityErrors() {
             if (State.IsSynced()) {
-                return State.Error.EntityErrors;
+                return State.Error.TaskError.entityErrors;
             }
             throw new TaskNotSyncedException($"SyncTask.GetEntityErrors() requires Sync(). {Label}");
         }

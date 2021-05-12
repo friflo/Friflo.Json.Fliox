@@ -11,25 +11,19 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal    SyncError                           TaskError { get; private set; }
         
-        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
-
-        // used sorted dictionary to ensure stable (and repeatable) order of errors
-        internal    IDictionary<string, EntityError>    EntityErrors { get; private set; }
-        
         internal    bool                                HasErrors => TaskError != null;
         public      override string                     ToString() => GetMessage();
 
         internal TaskErrorInfo(TaskError taskError) {
             TaskError       = new SyncError(taskError);
-            EntityErrors    = NoErrors;
         }
 
         internal void AddEntityError(EntityError error) {
             if (TaskError == null) {
-                EntityErrors = new SortedDictionary<string, EntityError>();
-                TaskError = new SyncError(EntityErrors);
+                var entityErrors = new SortedDictionary<string, EntityError>();
+                TaskError = new SyncError(entityErrors);
             }
-            EntityErrors.Add(error.id, error);
+            TaskError.entityErrors.Add(error.id, error);
         }
         
         internal string GetMessage() {
@@ -38,7 +32,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return $"Task failed. type: {taskError.type}, message: {taskError.message}";
             }
             var sb = new StringBuilder();
-            var errors = EntityErrors;
+            var errors = TaskError.entityErrors;
             sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);
             int n = 0;
@@ -67,6 +61,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             Synced = true;
         }
 
-        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.EntityErrors.Count}" : "synced" : "not synced";
+        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.TaskError.entityErrors.Count}" : "synced" : "not synced";
     }
 }
