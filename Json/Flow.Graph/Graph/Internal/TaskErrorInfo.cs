@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Text;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -12,7 +11,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal    TaskError                           TaskError { get; private set; }
         
         internal    bool                                HasErrors => TaskError != null;
-        public      override string                     ToString() => GetMessage();
+        public      override string                     ToString() => TaskError.GetMessage();
 
         internal TaskErrorInfo(TaskErrorResult taskError) {
             TaskError       = new TaskError(taskError);
@@ -26,27 +25,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             TaskError.entityErrors.Add(error.id, error);
         }
         
-        internal string GetMessage() {
-            var taskError = TaskError;
-            if (TaskError.type != TaskErrorType.EntityErrors) {
-                return $"Task failed. type: {taskError.type}, message: {taskError.message}";
-            }
-            var sb = new StringBuilder();
-            var errors = TaskError.entityErrors;
-            sb.Append("Task failed by entity errors. Count: ");
-            sb.Append(errors.Count);
-            int n = 0;
-            foreach (var errorPair in errors) {
-                var error = errorPair.Value;
-                if (n++ == 10) {
-                    sb.Append("\n...");
-                    break;
-                }
-                sb.Append("\n| ");
-                error.AppendAsText(sb);
-            }
-            return sb.ToString();
-        }
+
     }
 
     internal struct TaskState

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 
@@ -48,6 +49,27 @@ namespace Friflo.Json.Flow.Graph
                 return $"type: {type}, message: {message}, entityErrors: {entityErrors.Count}";
             }
             return $"type: {type}, message: {message}";
+        }
+        
+        internal string GetMessage() {
+            if (type != TaskErrorType.EntityErrors) {
+                return $"Task failed. type: {type}, message: {message}";
+            }
+            var sb = new StringBuilder();
+            var errors = entityErrors;
+            sb.Append("Task failed by entity errors. Count: ");
+            sb.Append(errors.Count);
+            int n = 0;
+            foreach (var errorPair in errors) {
+                var error = errorPair.Value;
+                if (n++ == 10) {
+                    sb.Append("\n...");
+                    break;
+                }
+                sb.Append("\n| ");
+                error.AppendAsText(sb);
+            }
+            return sb.ToString();
         }
     }
 }

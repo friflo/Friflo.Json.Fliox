@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -43,9 +42,9 @@ namespace Friflo.Json.Flow.Graph
         public readonly     TaskErrorType                       taskError;
         public readonly     IDictionary<string, EntityError>    entityErrors;
         
-        internal TaskResultException(TaskErrorInfo errorInfo) : base(errorInfo.GetMessage()) {
-            taskError       = errorInfo.TaskError.type;
-            entityErrors    = errorInfo.TaskError.entityErrors;
+        internal TaskResultException(TaskError error) : base(error.GetMessage()) {
+            taskError       = error.type;
+            entityErrors    = error.entityErrors;
         }
     }
 }
