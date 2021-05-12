@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public enum SyncErrorType
+    public enum TaskErrorType
     {
         Undefined, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException) 
         UnhandledException,
@@ -16,36 +16,35 @@ namespace Friflo.Json.Flow.Graph
         EntityErrors // Is set only by Flow.Graph implementation - not by Flow.Database
     }
     
-    // todo rename to TaskError
-    public class SyncError {
-        public   readonly   SyncErrorType                       type;
+    public class TaskError {
+        public   readonly   TaskErrorType                       type;
         public   readonly   string                              message;
         public   readonly   IDictionary<string, EntityError>    entityErrors;
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
-        internal SyncError(TaskErrorResult error) {
+        internal TaskError(TaskErrorResult error) {
             type            = TaskToSyncError(error.type);
             message         = error.message;
             entityErrors    = NoErrors;
         }
 
-        internal SyncError(IDictionary<string, EntityError> entityErrors) {
+        internal TaskError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
-            type                = SyncErrorType.EntityErrors;
+            type                = TaskErrorType.EntityErrors;
             message             = "Task failed by entity errors";
         }
         
-        private static SyncErrorType TaskToSyncError(TaskErrorResultType type) {
+        private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
             switch (type) {
-                case TaskErrorResultType.UnhandledException:  return SyncErrorType.UnhandledException;
-                case TaskErrorResultType.DatabaseError:       return SyncErrorType.DatabaseError;
+                case TaskErrorResultType.UnhandledException:  return TaskErrorType.UnhandledException;
+                case TaskErrorResultType.DatabaseError:       return TaskErrorType.DatabaseError;
             }
             throw new ArgumentException($"cant convert error type: {type}");
         }
         
         public   override   string                              ToString() {
-            if (type == SyncErrorType.EntityErrors) {
+            if (type == TaskErrorType.EntityErrors) {
                 return $"type: {type}, message: {message}, entityErrors: {entityErrors.Count}";
             }
             return $"type: {type}, message: {message}";

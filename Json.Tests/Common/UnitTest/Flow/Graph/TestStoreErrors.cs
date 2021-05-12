@@ -284,23 +284,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated read task exception", te.Message);
-            AreEqual(SyncErrorType.UnhandledException, te.taskError);
+            AreEqual(TaskErrorType.UnhandledException, te.taskError);
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated read task exception", te.Message);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated query exception", te.Message);
-            AreEqual(SyncErrorType.UnhandledException, te.taskError);
+            AreEqual(TaskErrorType.UnhandledException, te.taskError);
 
             IsFalse(createError.Success);
-            AreEqual(SyncErrorType.UnhandledException, createError.GetTaskError().type);
+            AreEqual(TaskErrorType.UnhandledException, createError.GetTaskError().type);
             AreEqual("SimulationException: simulated write task exception", createError.GetTaskError().message);
             
             IsFalse(updateError.Success);
-            AreEqual(SyncErrorType.UnhandledException, updateError.GetTaskError().type);
+            AreEqual(TaskErrorType.UnhandledException, updateError.GetTaskError().type);
             AreEqual("SimulationException: simulated write task exception", updateError.GetTaskError().message);
             
             IsFalse(deleteError.Success);
-            AreEqual(SyncErrorType.UnhandledException, deleteError.GetTaskError().type);
+            AreEqual(TaskErrorType.UnhandledException, deleteError.GetTaskError().type);
             AreEqual("SimulationException: simulated write task exception", deleteError.GetTaskError().message);
         }
         
@@ -324,22 +324,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("Task failed. type: DatabaseError, message: simulated read task error", te.Message);
-            AreEqual(SyncErrorType.DatabaseError, customerRead.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, customerRead.GetTaskError().type);
             
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("Task failed. type: DatabaseError, message: simulated query error", te.Message);
-            AreEqual(SyncErrorType.DatabaseError, customerQuery.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, customerQuery.GetTaskError().type);
             
             IsFalse(createError.Success);
-            AreEqual(SyncErrorType.DatabaseError, createError.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, createError.GetTaskError().type);
             AreEqual("simulated write task error", createError.GetTaskError().message);
             
             IsFalse(updateError.Success);
-            AreEqual(SyncErrorType.DatabaseError, updateError.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, updateError.GetTaskError().type);
             AreEqual("simulated write task error", updateError.GetTaskError().message);
             
             IsFalse(deleteError.Success);
-            AreEqual(SyncErrorType.DatabaseError, deleteError.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, deleteError.GetTaskError().type);
             AreEqual("simulated write task error", deleteError.GetTaskError().message);
         }
         

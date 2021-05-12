@@ -9,26 +9,26 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct TaskErrorInfo
     {
-        internal    SyncError                           TaskError { get; private set; }
+        internal    TaskError                           TaskError { get; private set; }
         
         internal    bool                                HasErrors => TaskError != null;
         public      override string                     ToString() => GetMessage();
 
         internal TaskErrorInfo(TaskErrorResult taskError) {
-            TaskError       = new SyncError(taskError);
+            TaskError       = new TaskError(taskError);
         }
 
         internal void AddEntityError(EntityError error) {
             if (TaskError == null) {
                 var entityErrors = new SortedDictionary<string, EntityError>();
-                TaskError = new SyncError(entityErrors);
+                TaskError = new TaskError(entityErrors);
             }
             TaskError.entityErrors.Add(error.id, error);
         }
         
         internal string GetMessage() {
             var taskError = TaskError;
-            if (TaskError.type != SyncErrorType.EntityErrors) {
+            if (TaskError.type != TaskErrorType.EntityErrors) {
                 return $"Task failed. type: {taskError.type}, message: {taskError.message}";
             }
             var sb = new StringBuilder();
