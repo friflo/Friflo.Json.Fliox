@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
                 sb.Append(task.Label); // todo should use appender instead of Label
                 sb.Append(" - ");
                 var error = task.GetTaskError();
-                error.AppendAsText("| ", sb);
+                error.AppendAsText("| ", sb, 3);
             }
             return sb.ToString();
         }

@@ -204,7 +204,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
-            SyncResult syncResult = null;
+            SyncResult syncResult;
             response.AssertResponse(syncRequest);
             try {
                 var containerResults = response.results;
