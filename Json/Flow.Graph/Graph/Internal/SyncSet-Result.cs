@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             List<WriteTask>                     writeTasks,
             IDictionary<string, EntityError>    writeErrors)
         {
-            if (result is TaskError taskError) {
+            if (result is TaskErrorResult taskError) {
                 foreach (var writeTask in writeTasks) {
                     writeTask.state.SetError(new TaskErrorInfo(taskError));
                 }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void ReadEntitiesListResult(ReadEntitiesList taskList, TaskResult result, ContainerEntities readEntities) {
-            if (result is TaskError taskError) {
+            if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
                     read.state.SetError(new TaskErrorInfo(taskError));
                 }
@@ -140,7 +140,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
             var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
-            if (result is TaskError taskError) {
+            if (result is TaskErrorResult taskError) {
                 query.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
@@ -185,7 +185,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            if (result is TaskError) {
+            if (result is TaskErrorResult) {
                 /* foreach (var patchPair in patches) {
                     var patch = patchPair.Value;
                     // patch.taskError = taskError; todo
@@ -203,7 +203,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {
-            if (result is TaskError taskError) {
+            if (result is TaskErrorResult taskError) {
                 foreach (var deleteTask in deleteTasks) {
                     deleteTask.state.SetError(new TaskErrorInfo(taskError));
                 }

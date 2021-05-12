@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
-        internal SyncError(TaskError error) {
+        internal SyncError(TaskErrorResult error) {
             type            = TaskToSyncError(error.type);
             message         = error.message;
             entityErrors    = NoErrors;
@@ -36,10 +36,10 @@ namespace Friflo.Json.Flow.Graph
             message             = "Task failed by entity errors";
         }
         
-        private static SyncErrorType TaskToSyncError(TaskErrorType type) {
+        private static SyncErrorType TaskToSyncError(TaskErrorResultType type) {
             switch (type) {
-                case TaskErrorType.UnhandledException:  return SyncErrorType.UnhandledException;
-                case TaskErrorType.DatabaseError:       return SyncErrorType.DatabaseError;
+                case TaskErrorResultType.UnhandledException:  return SyncErrorType.UnhandledException;
+                case TaskErrorResultType.DatabaseError:       return SyncErrorType.DatabaseError;
             }
             throw new ArgumentException($"cant convert error type: {type}");
         }

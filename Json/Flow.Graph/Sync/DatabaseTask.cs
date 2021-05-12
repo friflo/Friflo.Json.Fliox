@@ -19,8 +19,8 @@ namespace Friflo.Json.Flow.Sync
         internal abstract   Task<TaskResult>    Execute(EntityDatabase database, SyncResponse response);
         internal abstract   TaskType            TaskType { get; }
 
-        internal static TaskError TaskError(CommandError error) {
-            return new TaskError {type = TaskErrorType.DatabaseError, message = error.message};   
+        internal static TaskErrorResult TaskError(CommandError error) {
+            return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
         }
     }
     
@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     //
-    [Fri.Polymorph(typeof(TaskError),               Discriminant = "error")]
+    [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class TaskResult
     {
         internal abstract TaskType          TaskType { get; }

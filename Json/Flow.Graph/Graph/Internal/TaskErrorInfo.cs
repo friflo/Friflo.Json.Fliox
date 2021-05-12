@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal    bool                                HasErrors => TaskError != null;
         public      override string                     ToString() => GetMessage();
 
-        internal TaskErrorInfo(TaskError taskError) {
+        internal TaskErrorInfo(TaskErrorResult taskError) {
             TaskError       = new SyncError(taskError);
         }
 

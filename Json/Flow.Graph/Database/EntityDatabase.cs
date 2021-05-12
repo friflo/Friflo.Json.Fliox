@@ -76,8 +76,8 @@ namespace Friflo.Json.Flow.Database
                     // Note!
                     // Should not happen - see documentation of this method.
                     var exceptionName = e.GetType().Name;
-                    var result = new TaskError{
-                        type    = TaskErrorType.UnhandledException,
+                    var result = new TaskErrorResult{
+                        type    = TaskErrorResultType.UnhandledException,
                         message = $"{exceptionName}: {e.Message}"
                     };
                     response.tasks.Add(result);

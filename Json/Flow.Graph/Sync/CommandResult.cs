@@ -6,7 +6,7 @@ namespace Friflo.Json.Flow.Sync
 {
     public interface ICommandResult
     {
-        /// In case a command fails its <see cref="CommandError.message"/> is assigned to <see cref="TaskError.message"/>
+        /// In case a command fails its <see cref="CommandError.message"/> is assigned to <see cref="TaskErrorResult.message"/>
         [Fri.Ignore]
         CommandError                Error { get; set;  }
     }
