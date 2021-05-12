@@ -16,13 +16,6 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public static class StoreExtension
-    {
-        public static EntityStore Store(this ITracerContext store) {
-            return (EntityStore)store;
-        }
-    }
-
     internal struct StoreIntern
     {
         internal readonly   TypeStore                       typeStore;
@@ -51,13 +44,6 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher       = new ObjectPatcher(jsonMapper);
             sync                = new SyncStore();
             tracerLogTask       = null;
-        }
-    }
-
-    internal class JsonReadError : IErrorHandler
-    {
-        /// throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-        public void HandleError(int pos, ref Bytes message) {
         }
     }
 
@@ -293,6 +279,20 @@ namespace Friflo.Json.Flow.Graph
                 _intern.sync = new SyncStore();
             }
             return syncResult;
+        }
+    }
+    
+    public static class StoreExtension
+    {
+        public static EntityStore Store(this ITracerContext store) {
+            return (EntityStore)store;
+        }
+    }
+    
+    internal class JsonReadError : IErrorHandler
+    {
+        /// throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
+        public void HandleError(int pos, ref Bytes message) {
         }
     }
 }
