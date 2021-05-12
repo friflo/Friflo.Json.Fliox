@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -52,10 +53,23 @@ namespace Friflo.Json.Flow.Graph
     {
         public readonly List<SyncTask> failed;
 
-        internal SyncResultException(List<SyncTask> failed)
-            : base($"Sync() failed with task errors. Count: {failed.Count}")
+        internal SyncResultException(List<SyncTask> failed) : base(GetMessage(failed))
         {
             this.failed = failed;
+        }
+        
+        private static string GetMessage(List<SyncTask> failed) {
+            var sb = new StringBuilder();
+            sb.Append("Sync() failed with task errors. Count: ");
+            sb.Append(failed.Count);
+            foreach (var task in failed) {
+                sb.Append("\n| ");
+                sb.Append(task.Label); // todo should use appender instead of Label
+                sb.Append(" - ");
+                var error = task.GetTaskError();
+                error.AppendAsText("| ", sb);
+            }
+            return sb.ToString();
         }
     }
 }

@@ -236,7 +236,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
                 AreEqual(1, sre.failed.Count);
-                AreEqual("Sync() failed with task errors. Count: 1", sre.Message);
+                const string expect = @"Sync() failed with task errors. Count: 1
+| ReadTask<Article> #ids: 4 - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+                AreEqual(expect, sre.Message);
             }
         
             AreEqual(2,                 articleRefsTask.Results.Count);

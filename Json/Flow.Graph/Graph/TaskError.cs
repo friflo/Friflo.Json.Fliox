@@ -53,11 +53,11 @@ namespace Friflo.Json.Flow.Graph
 
         internal string GetMessage() {
             var sb = new StringBuilder();
-            AppendAsText(sb);
+            AppendAsText("", sb);
             return sb.ToString();
         }
 
-        internal void AppendAsText(StringBuilder sb) {
+        internal void AppendAsText(string prefix, StringBuilder sb) {
             if (type != TaskErrorType.EntityErrors) {
                 sb.Append("Task failed. type: ");
                 sb.Append(type);
@@ -71,11 +71,13 @@ namespace Friflo.Json.Flow.Graph
             int n = 0;
             foreach (var errorPair in errors) {
                 var error = errorPair.Value;
+                sb.Append('\n');
+                sb.Append(prefix);
                 if (n++ == 10) {
-                    sb.Append("\n...");
+                    sb.Append("...");
                     break;
                 }
-                sb.Append("\n| ");
+                sb.Append("| ");
                 error.AppendAsText(sb);
             }
         }
