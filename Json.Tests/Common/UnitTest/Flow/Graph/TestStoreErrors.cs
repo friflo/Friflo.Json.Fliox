@@ -148,6 +148,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("tasks: 7, failed: 1", sync.ToString());
             AreEqual(7, sync.tasks.Count);
             AreEqual(1, sync.failed.Count);
+            const string msg = @"Sync() failed with task errors. Count: 1
+| QueryTask<Article> filter: true - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+            AreEqual(msg, sync.Message);
             
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);

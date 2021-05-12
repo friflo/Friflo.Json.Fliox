@@ -54,6 +54,7 @@ namespace Friflo.Json.Flow.Graph
         public readonly List<SyncTask>  failed;
 
         public          bool            Success => failed.Count == 0;
+        public          string          Message => GetMessage(failed);
 
         public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
 
