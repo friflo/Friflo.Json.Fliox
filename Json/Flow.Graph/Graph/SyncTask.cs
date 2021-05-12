@@ -23,16 +23,8 @@ namespace Friflo.Json.Flow.Graph
         public              TaskError   Error { get {
             if (State.IsSynced())
                 return State.Error.TaskError;
-            throw new TaskNotSyncedException($"SyncTask.GetTaskError() requires Sync(). {Label}");
+            throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {Label}");
         } }
-
-        /// <returns>The entities caused that task failed. Return empty dictionary in case of no entity errors. Never returns null</returns>
-        public IDictionary<string, EntityError>   GetEntityErrors() {
-            if (State.IsSynced()) {
-                return State.Error.TaskError.entityErrors;
-            }
-            throw new TaskNotSyncedException($"SyncTask.GetEntityErrors() requires Sync(). {Label}");
-        }
 
         internal bool IsOk(string method, out Exception e) {
             if (State.Error.HasErrors) {
