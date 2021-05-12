@@ -163,7 +163,9 @@ namespace Friflo.Json.Flow.Graph
         public DeleteTask<T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
-            var task = Delete(entity.id);
+            if (entity.id == null)
+                throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
+            var task = sync.Delete(entity.id);
             intern.store.AddTask(task);
             return task;
         }
@@ -180,7 +182,10 @@ namespace Friflo.Json.Flow.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
             var ids = entities.Select(e => e.id).ToList();
-            var task = DeleteRange(ids);
+            foreach (var id in ids) {
+                if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+            }
+            var task = sync.DeleteRange(ids);
             intern.store.AddTask(task);
             return task;
         }
@@ -189,8 +194,7 @@ namespace Friflo.Json.Flow.Graph
             if (ids == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
             foreach (var id in ids) {
-                if (id == null)
-                    throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+                if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
             var task = sync.DeleteRange(ids);
             intern.store.AddTask(task);

@@ -280,7 +280,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 6, failed: 6", sync.ToString());
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -320,7 +320,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 6, failed: 6", sync.ToString());
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -354,7 +354,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 4, failed: 4", sync.ToString());
+            AreEqual("tasks: 3, failed: 3", sync.ToString());
             
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.GetEntityErrors();
