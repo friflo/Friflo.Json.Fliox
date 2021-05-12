@@ -50,12 +50,21 @@ namespace Friflo.Json.Flow.Graph
             }
             return $"type: {type}, message: {message}";
         }
-        
+
         internal string GetMessage() {
-            if (type != TaskErrorType.EntityErrors) {
-                return $"Task failed. type: {type}, message: {message}";
-            }
             var sb = new StringBuilder();
+            AppendAsText(sb);
+            return sb.ToString();
+        }
+
+        internal void AppendAsText(StringBuilder sb) {
+            if (type != TaskErrorType.EntityErrors) {
+                sb.Append("Task failed. type: ");
+                sb.Append(type);
+                sb.Append(", message: ");
+                sb.Append(message);
+                return;
+            }
             var errors = entityErrors;
             sb.Append("Task failed by entity errors. Count: ");
             sb.Append(errors.Count);
@@ -69,7 +78,6 @@ namespace Friflo.Json.Flow.Graph
                 sb.Append("\n| ");
                 error.AppendAsText(sb);
             }
-            return sb.ToString();
         }
     }
 }
