@@ -159,9 +159,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
-            var taskEntityError = (TaskEntityError)allArticles.GetTaskError();
+            var taskEntityError = allArticles.GetTaskError();
             AreEqual(2, taskEntityError.entityErrors.Count);
-            AreEqual("type: EntityErrors, message: Task failed by entity errors", taskEntityError.ToString());
+            AreEqual("type: EntityErrors, message: Task failed by entity errors, entityErrors: 2", taskEntityError.ToString());
             
             
             TaskResultException te;
@@ -285,12 +285,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated read task exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
-            AreEqual("type: UnhandledException, message: SimulationException: simulated read task exception", te.taskError.ToString());
+            AreEqual(TaskErrorType.UnhandledException, te.taskError);
+            AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated read task exception", te.Message);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("Task failed. type: UnhandledException, message: SimulationException: simulated query exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.taskError.type);
+            AreEqual(TaskErrorType.UnhandledException, te.taskError);
 
             IsFalse(createError.Success);
             AreEqual(TaskErrorType.UnhandledException, createError.GetTaskError().type);
