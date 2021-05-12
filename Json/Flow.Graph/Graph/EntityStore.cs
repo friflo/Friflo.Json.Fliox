@@ -66,7 +66,7 @@ namespace Friflo.Json.Flow.Graph
         public readonly List<SyncTask>  tasks;
         public readonly List<SyncTask>  failed;
 
-        public          int             Errors => failed.Count;
+        public          bool            Success => failed.Count == 0;
 
         internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed) {
             this.tasks  = tasks;
