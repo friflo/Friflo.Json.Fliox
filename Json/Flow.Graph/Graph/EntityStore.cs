@@ -54,6 +54,8 @@ namespace Friflo.Json.Flow.Graph
 
         public          bool            Success => failed.Count == 0;
 
+        public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
+
         internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed) {
             this.tasks  = tasks;
             this.failed = failed;

@@ -145,6 +145,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
 
             var sync = await store.TrySync(); // -------- Sync --------
+            AreEqual("tasks: 7, failed: 1", sync.ToString());
+            AreEqual(7, sync.tasks.Count);
             AreEqual(1, sync.failed.Count);
             
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
@@ -229,7 +231,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var galaxy2         = readTask2.Find(duplicateId);
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual(1, sync.failed.Count);
+            AreEqual("tasks: 3, failed: 1", sync.ToString());
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             
@@ -278,7 +280,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual(6, sync.failed.Count);
+            AreEqual("tasks: 6, failed: 6", sync.ToString());
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -318,7 +320,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual(6, sync.failed.Count);
+            AreEqual("tasks: 6, failed: 6", sync.ToString());
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -352,7 +354,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual(4, sync.failed.Count);
+            AreEqual("tasks: 4, failed: 4", sync.ToString());
             
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.GetEntityErrors();
