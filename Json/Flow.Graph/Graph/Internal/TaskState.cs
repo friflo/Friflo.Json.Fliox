@@ -24,8 +24,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             TaskError.entityErrors.Add(error.id, error);
         }
-        
-
     }
 
     internal struct TaskState
