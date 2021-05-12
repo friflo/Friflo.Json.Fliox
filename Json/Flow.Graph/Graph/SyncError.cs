@@ -30,18 +30,18 @@ namespace Friflo.Json.Flow.Graph
             entityErrors    = NoErrors;
         }
 
+        internal SyncError(IDictionary<string, EntityError> entityErrors) {
+            this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
+            type                = SyncErrorType.EntityErrors;
+            message             = "Task failed by entity errors";
+        }
+        
         private static SyncErrorType TaskToSyncError(TaskErrorType type) {
             switch (type) {
                 case TaskErrorType.UnhandledException:  return SyncErrorType.UnhandledException;
                 case TaskErrorType.DatabaseError:       return SyncErrorType.DatabaseError;
             }
             throw new ArgumentException($"cant convert error type: {type}");
-        }
-        
-        internal SyncError(IDictionary<string, EntityError> entityErrors) {
-            this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
-            type                = SyncErrorType.EntityErrors;
-            message             = "Task failed by entity errors";
         }
         
         public   override   string                              ToString() {

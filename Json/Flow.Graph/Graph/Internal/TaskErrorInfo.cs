@@ -11,6 +11,8 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal    SyncError                           TaskError { get; private set; }
         
+        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
+
         // used sorted dictionary to ensure stable (and repeatable) order of errors
         internal    IDictionary<string, EntityError>    EntityErrors { get; private set; }
         
@@ -19,11 +21,11 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal TaskErrorInfo(TaskError taskError) {
             TaskError       = new SyncError(taskError);
-            EntityErrors    = null;
+            EntityErrors    = NoErrors;
         }
 
         internal void AddEntityError(EntityError error) {
-            if (EntityErrors == null) {
+            if (TaskError == null) {
                 EntityErrors = new SortedDictionary<string, EntityError>();
                 TaskError = new SyncError(EntityErrors);
             }
@@ -32,7 +34,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal string GetMessage() {
             var taskError = TaskError;
-            if (EntityErrors == null) {
+            if (TaskError.type != SyncErrorType.EntityErrors) {
                 return $"Task failed. type: {taskError.type}, message: {taskError.message}";
             }
             var sb = new StringBuilder();
