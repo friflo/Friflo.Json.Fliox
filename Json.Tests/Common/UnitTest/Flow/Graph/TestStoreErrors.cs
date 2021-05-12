@@ -144,6 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
 
             var sync = await store.TrySync(); // -------- Sync --------
+            IsFalse(sync.Success);
             AreEqual("tasks: 7, failed: 1", sync.ToString());
             AreEqual(7, sync.tasks.Count);
             AreEqual(1, sync.failed.Count);
