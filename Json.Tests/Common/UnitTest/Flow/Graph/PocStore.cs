@@ -106,6 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsTrue(logStore2.Success);
             IsTrue(createGalaxy.Success);
             IsTrue(createIPad.Success);
+            IsNull(createIPad.Error); // error is null if successful
             
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
             var createCanon     = producers.Create(canon);

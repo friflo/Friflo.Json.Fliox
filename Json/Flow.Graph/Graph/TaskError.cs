@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Graph
     public class TaskError {
         public   readonly   TaskErrorType                       type;
         public   readonly   string                              message;
+        /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is nevernull.
         public   readonly   IDictionary<string, EntityError>    entityErrors;
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();

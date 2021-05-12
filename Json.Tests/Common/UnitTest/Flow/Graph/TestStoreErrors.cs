@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
-            var taskEntityError = allArticles.GetTaskError();
+            var taskEntityError = allArticles.Error;
             AreEqual(2, taskEntityError.entityErrors.Count);
             AreEqual("type: EntityErrors, message: Task failed by entity errors, entityErrors: 2", taskEntityError.ToString());
             
@@ -289,7 +289,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
             AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetTaskError(); });
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
             AreEqual("SyncTask.GetTaskError() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetEntityErrors(); });
             AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
@@ -308,16 +308,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(TaskErrorType.UnhandledException, te.taskError);
 
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.UnhandledException, createError.GetTaskError().type);
-            AreEqual("SimulationException: simulated write task exception", createError.GetTaskError().message);
+            AreEqual(TaskErrorType.UnhandledException, createError.Error.type);
+            AreEqual("SimulationException: simulated write task exception", createError.Error.message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.UnhandledException, updateError.GetTaskError().type);
-            AreEqual("SimulationException: simulated write task exception", updateError.GetTaskError().message);
+            AreEqual(TaskErrorType.UnhandledException, updateError.Error.type);
+            AreEqual("SimulationException: simulated write task exception", updateError.Error.message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.UnhandledException, deleteError.GetTaskError().type);
-            AreEqual("SimulationException: simulated write task exception", deleteError.GetTaskError().message);
+            AreEqual(TaskErrorType.UnhandledException, deleteError.Error.type);
+            AreEqual("SimulationException: simulated write task exception", deleteError.Error.message);
         }
         
         private static async Task AssertTaskError(PocStore store) {
@@ -340,23 +340,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("Task failed. type: DatabaseError, message: simulated read task error", te.Message);
-            AreEqual(TaskErrorType.DatabaseError, customerRead.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, customerRead.Error.type);
             
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("Task failed. type: DatabaseError, message: simulated query error", te.Message);
-            AreEqual(TaskErrorType.DatabaseError, customerQuery.GetTaskError().type);
+            AreEqual(TaskErrorType.DatabaseError, customerQuery.Error.type);
             
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.DatabaseError, createError.GetTaskError().type);
-            AreEqual("simulated write task error", createError.GetTaskError().message);
+            AreEqual(TaskErrorType.DatabaseError, createError.Error.type);
+            AreEqual("simulated write task error", createError.Error.message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.DatabaseError, updateError.GetTaskError().type);
-            AreEqual("simulated write task error", updateError.GetTaskError().message);
+            AreEqual(TaskErrorType.DatabaseError, updateError.Error.type);
+            AreEqual("simulated write task error", updateError.Error.message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.DatabaseError, deleteError.GetTaskError().type);
-            AreEqual("simulated write task error", deleteError.GetTaskError().message);
+            AreEqual(TaskErrorType.DatabaseError, deleteError.Error.type);
+            AreEqual("simulated write task error", deleteError.Error.message);
         }
         
         private static async Task AssertEntityWrite(PocStore store) {

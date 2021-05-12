@@ -19,16 +19,14 @@ namespace Friflo.Json.Flow.Graph
             throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {Label}");
         }}
 
-        // return error as method - not as property to avoid flooding debug view with properties.
-        // error is also visible via State.Error
-        /// <returns>The error caused that task failed. Returns never null</returns>
-        public TaskError   GetTaskError() {
+        /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
+        public              TaskError   Error { get {
             if (State.IsSynced())
                 return State.Error.TaskError;
             throw new TaskNotSyncedException($"SyncTask.GetTaskError() requires Sync(). {Label}");
-        }
-        
-        /// <returns>The entities caused that task failed. Otherwise null</returns>
+        } }
+
+        /// <returns>The entities caused that task failed. Return empty dictionary in case of no entity errors. Never returns null</returns>
         public IDictionary<string, EntityError>   GetEntityErrors() {
             if (State.IsSynced()) {
                 return State.Error.TaskError.entityErrors;
