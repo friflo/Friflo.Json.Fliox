@@ -144,8 +144,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
             AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
 
-
-            await store.Sync(); // -------- Sync --------
+            var result = await store.TrySync(); // -------- Sync --------
+            AreEqual(1, result.Errors);
+            
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             
@@ -227,7 +228,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask2       = store.articles.Read(); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId);
 
-            await store.Sync(); // -------- Sync --------
+            var result = await store.TrySync(); // -------- Sync --------
+            AreEqual(1, result.Errors);
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             
@@ -275,8 +277,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.GetEntityErrors(); });
             AreEqual("SyncTask.GetEntityErrors() requires Sync(). CreateTask<Customer> id: create-task-exception", e.Message);
 
-
-            await store.Sync(); // -------- Sync --------
+            var result = await store.TrySync(); // -------- Sync --------
+            AreEqual(6, result.Errors);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -315,7 +317,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
 
-            await store.Sync(); // -------- Sync --------
+            var result = await store.TrySync(); // -------- Sync --------
+            AreEqual(6, result.Errors);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -348,7 +351,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
 
-            await store.Sync(); // -------- Sync --------
+            var result = await store.TrySync(); // -------- Sync --------
+            AreEqual(4, result.Errors);
             
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.GetEntityErrors();
