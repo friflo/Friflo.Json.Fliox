@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
 
         public RemoteHostDatabase(EntityDatabase local) {
-            jsonMapper = new ObjectMapper {WriteNullMembers = false};
+            jsonMapper = new ObjectMapper(SyncTypeStore.Get()) {WriteNullMembers = false};
             this.local = local;
         }
         

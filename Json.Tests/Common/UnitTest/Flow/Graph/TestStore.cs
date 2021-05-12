@@ -24,6 +24,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class TestStore : LeakTestsFixture
     {
+        /// withdraw from allocation detection ny <see cref="LeakTestsFixture"/> by creating before tracking starts
+        [OneTimeSetUp]
+        public void OneTimeSetUp() { SyncTypeStore.Init(); }
+        
+
         [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task   CollectAwaitAsync() { await CollectAwait(); }
         
@@ -99,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private async Task LoopbackUse() {
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
+                using (var createStore      = new PocStore(loopbackDatabase))
                 using (var useStore         = new PocStore(loopbackDatabase)) {
                     await TestStores(createStore, useStore);
                 }

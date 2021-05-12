@@ -8,12 +8,33 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
 {
+    /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
+    /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are
+    /// a fixed set of types. 
+    public static class SyncTypeStore
+    {
+        private static TypeStore _singleton;
+
+        public static void Init() {
+            Get();
+        }
+        
+        internal static TypeStore Get() {
+            if (_singleton == null) {
+                _singleton = new TypeStore();
+                _singleton.GetTypeMapper(typeof(SyncRequest));
+                _singleton.GetTypeMapper(typeof(SyncResponse));
+            }
+            return _singleton;
+        }
+    }
+    
     public abstract class RemoteClientDatabase : EntityDatabase
     {
         private readonly ObjectMapper   jsonMapper;
         
         public RemoteClientDatabase() {
-            jsonMapper = new ObjectMapper { Pretty = true, WriteNullMembers = false};
+            jsonMapper = new ObjectMapper(SyncTypeStore.Get()) { Pretty = true, WriteNullMembers = false};
         }
         
         public override void Dispose() {
