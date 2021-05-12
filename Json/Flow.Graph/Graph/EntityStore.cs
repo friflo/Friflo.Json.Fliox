@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Graph
 
             var errorCount = result.failed.Count;
             if (errorCount > 0)
-                throw new AggregateException($"Sync() failed with task errors. Count: {errorCount}");
+                throw new SyncResultException(result.failed);
         }
         
         public async Task<SyncResult> TrySync() {

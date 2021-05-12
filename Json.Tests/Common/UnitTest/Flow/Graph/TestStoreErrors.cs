@@ -230,8 +230,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask2       = store.articles.Read(); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId);
 
-            var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 3, failed: 1", sync.ToString());
+            try {
+                // test throwing exception in case of errors
+                await store.Sync(); // -------- Sync --------
+                Fail("Sync() intended to fail - code cannot be reached");
+            } catch (SyncResultException sre) {
+                AreEqual(1, sre.failed.Count);
+                AreEqual("Sync() failed with task errors. Count: 1", sre.Message);
+            }
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             

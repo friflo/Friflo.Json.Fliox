@@ -47,4 +47,15 @@ namespace Friflo.Json.Flow.Graph
             entityErrors    = error.entityErrors;
         }
     }
+
+    public class SyncResultException : Exception
+    {
+        public readonly List<SyncTask> failed;
+
+        internal SyncResultException(List<SyncTask> failed)
+            : base($"Sync() failed with task errors. Count: {failed.Count}")
+        {
+            this.failed = failed;
+        }
+    }
 }
