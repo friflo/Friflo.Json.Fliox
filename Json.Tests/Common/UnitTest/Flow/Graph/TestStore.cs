@@ -151,11 +151,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
             var readProducers = producers.Read();
-            galaxy.producer.ReadBy(readProducers); // schedule resolving producer reference now
+            galaxy.producer.FindBy(readProducers); // schedule resolving producer reference now
             
             // assign producer field with id "producer-apple"
             var iphone = new Article  { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
-            iphone.producer.ReadBy(readProducers);
+            iphone.producer.FindBy(readProducers);
             
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
             // assign producer field with entity instance tesla

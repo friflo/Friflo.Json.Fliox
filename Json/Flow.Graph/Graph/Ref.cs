@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph
     /// </para>
     /// <para>
     ///   To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
-    ///   <para>By calling <see cref="ReadBy"/> of a <see cref="Ref{T}"/> instance.</para>
+    ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{T}"/> instance.</para>
     ///   <para>
     ///     When reading an <see cref="Graph.Entity"/> instance containing a <see cref="Ref{T}"/> field
     ///     <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
@@ -139,7 +139,7 @@ namespace Friflo.Json.Flow.Graph
             return new Ref<T> (id);
         }
 
-        public Find<T> ReadBy(ReadTask<T> task) {
+        public Find<T> FindBy(ReadTask<T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find = task.Find(id);
             peer = find.task.set.GetPeerById(id);
