@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Database
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
     ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
-    ///   See <see cref="EntityDatabase.Execute"/> for proper error handling.
+    ///   See <see cref="EntityDatabase.ExecuteSync"/> for proper error handling.
     /// </para>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER

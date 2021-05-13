@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public async Task<string> ExecuteSyncJson(string jsonSyncRequest) {
             var syncRequest = jsonMapper.Read<SyncRequest>(jsonSyncRequest);
-            SyncResponse syncResponse = await Execute(syncRequest);
+            SyncResponse syncResponse = await ExecuteSync(syncRequest);
             jsonMapper.Pretty = true;
             var jsonResponse = jsonMapper.Write(syncResponse);
             return jsonResponse;

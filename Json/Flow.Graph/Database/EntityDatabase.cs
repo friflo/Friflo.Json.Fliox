@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Database
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>
-        ///   <see cref="Execute"/> catches exceptions thrown by a <see cref="DatabaseTask"/> but 
+        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="DatabaseTask"/> but 
         ///   this is only a fail safe mechanism.
         ///   Thrown exceptions need to be handled by proper error handling in the first place.
         ///
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Database
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Flow.Sync"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<SyncResponse> Execute(SyncRequest syncRequest) {
+        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
                 results         = new Dictionary<string, ContainerEntities>()

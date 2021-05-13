@@ -84,7 +84,7 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await _intern.database.Execute(syncRequest); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest); // <--- asynchronous Sync point
             var result = HandleSyncResponse(syncRequest, response);
 
             var errorCount = result.failed.Count;
@@ -94,7 +94,7 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await _intern.database.Execute(syncRequest); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest); // <--- asynchronous Sync point
             var result = HandleSyncResponse(syncRequest, response);
 
             return result;
@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var responseTask = _intern.database.Execute(syncRequest);
+            var responseTask = _intern.database.ExecuteSync(syncRequest);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
             HandleSyncResponse(syncRequest, response);
