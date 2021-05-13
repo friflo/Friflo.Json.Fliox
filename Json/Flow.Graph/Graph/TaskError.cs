@@ -4,17 +4,33 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
+    /// Describe the type of a <see cref="TaskError"/>
     public enum TaskErrorType
     {
-        Undefined, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException) 
+        Undefined, // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException)
+        
+        /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation -> a bug.
+        /// More information at <see cref="EntityDatabase.ExecuteSync"/>.
+        /// Maps to <see cref="TaskErrorResultType.UnhandledException"/>.
         UnhandledException,
+        
+        /// Inform about an error when accessing a database.
+        /// E.g. the access is currently not available or accessing a missing table.
+        /// maps to <see cref="TaskErrorResultType.DatabaseError"/>
         DatabaseError,
-        EntityErrors // Is set only by Flow.Graph implementation - not by Flow.Database
+        
+        /// It is set for a <see cref="SyncTask"/> if a <see cref="SyncResponse"/> contains errors in its
+        /// <see cref="Dictionary{K,V}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
+        /// command by the <see cref="SyncTask"/>.
+        /// The entity errors are available via <see cref="TaskError.entityErrors"/>.  
+        /// No mapping to a <see cref="TaskErrorResultType"/> value.
+        EntityErrors
     }
     
     public class TaskError {
