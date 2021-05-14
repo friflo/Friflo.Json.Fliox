@@ -98,10 +98,10 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public QueryTask<T> QueryByFilter(FilterOperation filter) {
+        public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
-            var task = sync.QueryFilter(filter);
+            var task = sync.QueryFilter(filter.op);
             intern.store.AddTask(task);
             return task;
         }

@@ -53,5 +53,16 @@ namespace Friflo.Json.Flow.Graph
             return refsTask.ReadRefsByPath<TValue>(selector);
         }
     }
+    
+    
+    public class EntityFilter<T>
+    {
+        internal readonly FilterOperation op;
+
+        public EntityFilter(Expression<Func<T, bool>> filter) {
+            op = Operation.FromFilter(filter, EntitySet.RefQueryPath);
+        }
+    }    
+    
 }
 

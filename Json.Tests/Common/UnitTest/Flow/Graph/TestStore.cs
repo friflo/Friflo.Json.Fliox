@@ -181,12 +181,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var order1      = readOrders.Find("order-1");
             AreEqual("ReadId<Order> id: order-1", order1.ToString());
             var allArticles             = articles.QueryAll();
-            var allArticles2            = articles.QueryByFilter(Operation.FilterTrue);
+            var filterAll               = new EntityFilter<Article>(a => true);
+            var allArticles2            = articles.QueryByFilter(filterAll);
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
             var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
-            var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2));
+            var ordersAnyAmountLowerFilter = new EntityFilter<Order>(o => o.items.Any(i => i.amount < 2));
+            var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter);
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
 
             ReadRefTask<Customer> customer  = readOrders.ReadRefByPath<Customer>(".customer");
