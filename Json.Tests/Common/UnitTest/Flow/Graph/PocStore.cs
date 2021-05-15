@@ -226,11 +226,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             
             notebook.name = "Galaxy Book";
-            articles.Patch(notebook, a => a.name);
+            var patchNotebook = articles.Patch(notebook, a => a.name);
             // orders.Patch(order, o => o.items);
+            AreSimilar("entities: 11, tasks: 1",                       store);      // tasks executed and cleared
             
             await store.Sync(); // -------- Sync --------
+            AreSimilar("entities: 11",                                 store);      // tasks executed and cleared
             
+            IsTrue(patchNotebook.Success);
             return store;
         }
 

@@ -200,6 +200,21 @@ namespace Friflo.Json.Flow.Graph.Internal
                 peer.SetPatchSource(peer.NextPatchSource);
                 peer.SetNextPatchSourceNull();
             }
+            foreach (var patchTask in patchTasks) {
+                var entityErrorInfo = new TaskErrorInfo();
+                idsBuf.Clear();
+                patchTask.GetIds(idsBuf);
+                foreach (var id in idsBuf) {
+                    if (patchErrors.TryGetValue(id, out EntityError error)) {
+                        entityErrorInfo.AddEntityError(error);
+                    }
+                }
+                if (entityErrorInfo.HasErrors) {
+                    patchTask.state.SetError(entityErrorInfo);
+                } else {
+                    patchTask.state.Synced = true;
+                }
+            }
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {
