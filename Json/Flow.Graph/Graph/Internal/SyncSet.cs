@@ -182,7 +182,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };
-                SetNextPatchSource(peer);
+                SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
                 patches[peer.entity.id] = entityPatch;
                 logTask.AddPatch(this, peer.entity.id);
             }
