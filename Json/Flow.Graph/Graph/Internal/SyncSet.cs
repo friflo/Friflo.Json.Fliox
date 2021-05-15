@@ -297,7 +297,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void AddReferences(List<References> references, SubRefs refs) {
+        private static void AddReferences(List<References> references, SubRefs refs) {
             foreach (var readRefs in refs) {
                 var queryReference = new References {
                     container = readRefs.Container,
