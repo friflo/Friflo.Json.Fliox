@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities:  9",                                   store); // tasks cleared
             AreSimilar("Article:   5",                                   articles);
-            
+
             cameraCreate.name = "Changed name";
             var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
             var logSet =    articles.LogSetChanges();                   AssertLog(logSet,    1, 0);
@@ -223,6 +223,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsTrue(logStore5.Success);
             IsTrue(logStore6.Success);
             AreSimilar("entities: 11",                                 store);      // tasks executed and cleared
+            
+            
+            notebook.name = "Galaxy Book";
+            articles.Patch(notebook, a => a.name);
+            // orders.Patch(order, o => o.items);
+            
+            await store.Sync(); // -------- Sync --------
             
             return store;
         }

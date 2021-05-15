@@ -121,6 +121,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Patch
         internal PatchTask<T> Patch(T entity, string path) {
+            var peer = set.GetPeerById(entity.id);
             if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
                 patch = new EntityPatch {
                     patches = new List<JsonPatch>()
@@ -129,12 +130,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             var memberPatches = patch.patches;
             var value = new JsonValue {
-                json = "" // todo get current member value as JSON
+                json = "null" // todo get current member value as JSON
             };
             memberPatches.Add(new PatchReplace {
                 path = path,
                 value = value
             });
+            SetNextPatchSource(peer);
             var patchTask  = new PatchTask<T>(entity.id, path);
             patchTasks.Add(patchTask);
             return patchTask;
@@ -189,8 +191,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };
-                var json = set.intern.jsonMapper.writer.Write(peer.entity);
-                peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
+                SetNextPatchSource(peer);
                 patches[peer.entity.id] = entityPatch;
                 logTask.AddPatch(this, peer.entity.id);
             }
@@ -301,6 +302,11 @@ namespace Friflo.Json.Flow.Graph.Internal
                     AddReferences(queryReference.references, subRefsMap);
                 }
             }
+        }
+
+        private void SetNextPatchSource(PeerEntity<T> peer) {
+            var json = set.intern.jsonMapper.writer.Write(peer.entity);
+            peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
         }
 
         private static int Some(int count) { return count != 0 ? 1 : 0; }

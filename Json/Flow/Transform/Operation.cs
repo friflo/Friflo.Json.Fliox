@@ -94,9 +94,13 @@ namespace Friflo.Json.Flow.Transform
             return (FilterOperation)QueryConverter.OperationFromExpression(filter, queryPath);
         }
         
-        public static string PathFromFilter<T>(Expression<Func<T, object>> path, QueryPath queryPath = null) {
+        public static string PathFromLambda<T>(Expression<Func<T, object>> path, QueryPath queryPath = null) {
             var op = QueryConverter.OperationFromExpression(path, queryPath);
-            return "";
+            var field = op as Field;
+            if (field == null) {
+                throw new ArgumentException($"path must not use operations. Only use of fields and properties is valid. path: {op}");
+            }
+            return field.name;
         }
     }
     

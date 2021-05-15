@@ -163,9 +163,9 @@ namespace Friflo.Json.Flow.Graph
         public PatchTask<T> Patch(T entity, Expression<Func<T, object>> path) {
             if (path == null)
                 throw new ArgumentException($"EntitySet.Patch() path must not be null. EntitySet: {name}");
-            var memberPath = Operation.PathFromFilter(path, RefQueryPath);
+            var memberPath = Operation.PathFromLambda(path, RefQueryPath);
             var task = sync.Patch(entity, memberPath);
-            intern.store.AddTask(task);
+            // intern.store.AddTask(task); todo enable
             return task;
         }
 
