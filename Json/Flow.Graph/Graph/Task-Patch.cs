@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly   QueryPath       RefQueryPath = new RefQueryPath();
         
-        internal abstract void GetPeers(List<PeerEntity> ids);
+        internal abstract void GetPeers(List<PeerEntity> peerList);
         
         internal static void AddPatch(List<JsonPatch> patches, string memberPath) {
             var value = new JsonValue {
@@ -60,8 +60,8 @@ namespace Friflo.Json.Flow.Graph
             AddPatch(patches, member.path);
         }
 
-        internal override void GetPeers(List<PeerEntity> peers) {
-            peers.Add(peer);
+        internal override void GetPeers(List<PeerEntity> peerList) {
+            peerList.Add(peer);
         }
     }
     
@@ -94,9 +94,9 @@ namespace Friflo.Json.Flow.Graph
             set.sync.AddPatches(peers, member.path);
         }
         
-        internal override void GetPeers(List<PeerEntity> peers) {
+        internal override void GetPeers(List<PeerEntity> peerList) {
             foreach (var peer in this.peers) {
-                peers.Add(peer);    
+                peerList.Add(peer);    
             }
         }
     }
