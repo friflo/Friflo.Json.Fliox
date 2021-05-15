@@ -319,13 +319,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void AddPatches(ICollection<PeerEntity<T>> peers, string memberPath) {
             foreach (var peer in peers) {
                 var jsonPatches = AddEntityPatch(peer);
-                var value = new JsonValue {
-                    json = "null"  // todo
-                };
-                jsonPatches.Add(new PatchReplace {
-                    path = memberPath,
-                    value = value
-                });
+                PatchTask.AddPatch(jsonPatches, memberPath);
             }
         }
 

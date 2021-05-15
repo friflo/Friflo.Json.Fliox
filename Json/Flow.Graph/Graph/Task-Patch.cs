@@ -15,9 +15,19 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState   state;
         internal override   TaskState   State      => state;
 
-        protected static readonly   QueryPath       RefQueryPath = new RefQueryPath();
+        internal static readonly   QueryPath       RefQueryPath = new RefQueryPath();
         
         internal abstract void GetPeers(List<PeerEntity> ids);
+        
+        internal static void AddPatch(List<JsonPatch> patches, string memberPath) {
+            var value = new JsonValue {
+                json = "null"  // todo
+            };
+            patches.Add(new PatchReplace {
+                path = memberPath,
+                value = value
+            });
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -41,13 +51,13 @@ namespace Friflo.Json.Flow.Graph
             if (member == null)
                 throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
             var memberPath = Operation.PathFromLambda(member, RefQueryPath);
-            var value = new JsonValue {
-                json = "null" // todo get current member value as JSON
-            };
-            patches.Add(new PatchReplace {
-                path = memberPath,
-                value = value
-            });
+            AddPatch(patches, memberPath);
+        }
+        
+        public void MemberPath(MemberPath<T> member) {
+            if (member == null)
+                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
+            AddPatch(patches, member.path);
         }
 
         internal override void GetPeers(List<PeerEntity> peers) {
@@ -78,10 +88,27 @@ namespace Friflo.Json.Flow.Graph
             set.sync.AddPatches(peers, memberPath);
         }
         
+        public void MemberPath(MemberPath<T> member) {
+            if (member == null)
+                throw new ArgumentException($"PatchRangeTask<{typeof(T).Name}>.Member() member must not be null.");
+            set.sync.AddPatches(peers, member.path);
+        }
+        
         internal override void GetPeers(List<PeerEntity> peers) {
             foreach (var peer in this.peers) {
                 peers.Add(peer);    
             }
+        }
+    }
+    
+    public class MemberPath<T>
+    {
+        internal readonly string path;
+
+        public MemberPath(Expression<Func<T, object>> member) {
+            if (member == null)
+                throw new ArgumentException($"MemberPath<{typeof(T).Name}>() member must not be null.");
+            path = Operation.PathFromLambda(member, PatchTask.RefQueryPath);
         }
     }
 

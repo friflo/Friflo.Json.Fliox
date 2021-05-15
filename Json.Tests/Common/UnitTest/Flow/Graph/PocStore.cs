@@ -229,7 +229,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var patchNotebook = articles.Patch(notebook);
             patchNotebook.Member(a => a.name);
             var patchArticles = articles.PatchRange(new[] {notebook});
-            patchArticles.Member(a => a.producer);
+            var producerPath = new MemberPath<Article>(a => a.producer);
+            patchArticles.MemberPath(producerPath);
             
             AreSimilar("entities: 11, tasks: 1",                       store);      // tasks executed and cleared
             
