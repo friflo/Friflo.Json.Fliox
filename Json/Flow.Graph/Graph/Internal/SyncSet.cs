@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal.Map;
-using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -120,24 +119,16 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Patch
-        internal PatchTask<T> Patch(T entity, string path) {
-            var peer = set.GetPeerById(entity.id);
+        internal PatchTask<T> Patch(T entity) {
             if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
+                var peer = set.GetPeerById(entity.id);
                 patch = new EntityPatch {
                     patches = new List<JsonPatch>()
                 };
                 patches.Add(entity.id, patch);
+                SetNextPatchSource(peer);
             }
-            var memberPatches = patch.patches;
-            var value = new JsonValue {
-                json = "null" // todo get current member value as JSON
-            };
-            memberPatches.Add(new PatchReplace {
-                path = path,
-                value = value
-            });
-            SetNextPatchSource(peer);
-            var patchTask  = new PatchTask<T>(entity.id, path);
+            var patchTask  = new PatchTask<T>(entity.id, patch.patches);
             patchTasks.Add(patchTask);
             return patchTask;
         }

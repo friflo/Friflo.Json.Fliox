@@ -160,11 +160,8 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Patch
-        public PatchTask<T> Patch(T entity, Expression<Func<T, object>> path) {
-            if (path == null)
-                throw new ArgumentException($"EntitySet.Patch() path must not be null. EntitySet: {name}");
-            var memberPath = Operation.PathFromLambda(path, RefQueryPath);
-            var task = sync.Patch(entity, memberPath);
+        public PatchTask<T> Patch(T entity) {
+            var task = sync.Patch(entity);
             intern.store.AddTask(task);
             return task;
         }

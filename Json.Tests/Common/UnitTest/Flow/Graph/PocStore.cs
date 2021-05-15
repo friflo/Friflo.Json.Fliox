@@ -226,8 +226,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             
             notebook.name = "Galaxy Book";
-            var patchNotebook = articles.Patch(notebook, a => a.name);
-            // orders.Patch(order, o => o.items);
+            var patchNotebook = articles.Patch(notebook);
+            patchNotebook.Member(a => a.name);
+            patchNotebook.Member(a => a.producer);
             AreSimilar("entities: 11, tasks: 1",                       store);      // tasks executed and cleared
             
             await store.Sync(); // -------- Sync --------
