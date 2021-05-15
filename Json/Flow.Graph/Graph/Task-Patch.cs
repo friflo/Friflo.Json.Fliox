@@ -74,8 +74,20 @@ namespace Friflo.Json.Flow.Graph
         
         public void MemberPath(MemberPath<T> member) {
             if (member == null)
-                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
+                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPath() member must not be null.");
             members.Add(member.path);
+        }
+        
+        public void MemberPaths(ICollection<MemberPath<T>> members) {
+            if (members == null)
+                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPaths() members must not be null.");
+            int n = 0;
+            foreach (var member in members) {
+                if (member == null)
+                    throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPaths() members[{n}] must not be null.");
+                n++;
+                this.members.Add(member.path);
+            }
         }
     }
     
