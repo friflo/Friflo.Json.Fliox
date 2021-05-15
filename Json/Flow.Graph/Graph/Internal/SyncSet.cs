@@ -122,17 +122,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Patch
         internal PatchTask<T> Patch(PeerEntity<T> peer) {
-            var jsonPatches = AddEntityPatch(peer);
-            var patchTask  = new PatchTask<T>(peer, jsonPatches);
+            var patchTask  = new PatchTask<T>(peer);
             patchTasks.Add(patchTask);
             return patchTask;
         }
         
         internal PatchRangeTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
-            foreach (var peer in peers) {
-                AddEntityPatch(peer);
-            }
-            var patchTask  = new PatchRangeTask<T>(peers, set);
+            var patchTask  = new PatchRangeTask<T>(peers);
             patchTasks.Add(patchTask);
             return patchTask;
         }
@@ -265,6 +261,23 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
             }
             // --- PatchEntities
+            foreach (var patchTask in patchTasks) {
+                peersBuf.Clear();
+                patchTask.GetPeers(peersBuf);
+                foreach (var peer in peersBuf) {
+                    var peerT = (PeerEntity<T>)peer;
+                    var entityPatch = AddEntityPatch(peerT);
+                    foreach (var path in patchTask.paths) {
+                        var value = new JsonValue {
+                            json = "null"  // todo
+                        };
+                        entityPatch.Add(new PatchReplace {
+                            path = path,
+                            value = value
+                        });
+                    }
+                }
+            }
             if (patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
@@ -316,13 +329,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             return patch.patches;
         }
         
-        internal void AddPatches(ICollection<PeerEntity<T>> peers, string memberPath) {
-            foreach (var peer in peers) {
-                var jsonPatches = AddEntityPatch(peer);
-                PatchTask.AddPatch(jsonPatches, memberPath);
-            }
-        }
-
         private static int Some(int count) { return count != 0 ? 1 : 0; }
 
         internal void SetTaskInfo(ref SetInfo info) {
