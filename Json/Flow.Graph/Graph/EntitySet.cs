@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public PatchRangeTask<T> PatchRange(ICollection<T> entities) {
+        public PatchTask<T> PatchRange(ICollection<T> entities) {
             var peerList = new List<PeerEntity<T>>(entities.Count);
             foreach (var entity in entities) {
                 var peer = GetPeerById(entity.id);

@@ -21,7 +21,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         private readonly    EntitySet<T>                        set;
         private readonly    List<string>                        idsBuf       = new List<string>();
-        private readonly    List<PeerEntity>                    peersBuf     = new List<PeerEntity>();
             
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
@@ -37,7 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         /// key: entity id
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
-        private readonly    List<PatchTask>                     patchTasks   = new List<PatchTask>();
+        private readonly    List<PatchTask<T>>                  patchTasks   = new List<PatchTask<T>>();
         
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
@@ -122,13 +121,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Patch
         internal PatchTask<T> Patch(PeerEntity<T> peer) {
-            var patchTask  = new PatchTask<T>(peer);
+            var patchTask  = new PatchTask<T>(new List<PeerEntity<T>>{peer});
             patchTasks.Add(patchTask);
             return patchTask;
         }
         
-        internal PatchRangeTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
-            var patchTask  = new PatchRangeTask<T>(peers);
+        internal PatchTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
+            var patchTask  = new PatchTask<T>(peers);
             patchTasks.Add(patchTask);
             return patchTask;
         }
@@ -262,11 +261,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             // --- PatchEntities
             foreach (var patchTask in patchTasks) {
-                peersBuf.Clear();
-                patchTask.GetPeers(peersBuf);
-                foreach (var peer in peersBuf) {
-                    var peerT = (PeerEntity<T>)peer;
-                    var entityPatch = AddEntityPatch(peerT);
+                foreach (var peer in patchTask.peers) {
+                    var entityPatch = AddEntityPatch(peer);
                     foreach (var path in patchTask.paths) {
                         var value = new JsonValue {
                             json = "null"  // todo
