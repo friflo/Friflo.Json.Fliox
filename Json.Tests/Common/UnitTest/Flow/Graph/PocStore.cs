@@ -244,6 +244,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("entities: 11",                                  store);      // tasks executed and cleared
             
             IsTrue(patchNotebook.Success);
+            IsTrue(patchArticles.Success);
             return store;
         }
 
