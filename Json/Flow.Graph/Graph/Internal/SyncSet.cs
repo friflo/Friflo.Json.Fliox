@@ -337,14 +337,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                 queries.Count       +
                 Some(creates.Count) +
                 Some(updates.Count) +
-                Some(patches.Count) +
+                Some(patches.Count + patchTasks.Count) +
                 Some(deletes.Count);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;
             info.create     = creates.Count;
             info.update     = updates.Count;
-            info.patch      = patches.Count;
+            info.patch      = patches.Count + patchTasks.Count;
             info.delete     = deletes.Count;
             // info.readRefs   = readRefsMap.Count;
         }

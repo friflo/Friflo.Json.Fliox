@@ -141,7 +141,7 @@ namespace Friflo.Json.Flow.Graph
                 var setInfo = set.SetInfo;
                 var curTaskCount = syncRequest.tasks.Count;
                 set.Sync.AddTasks(syncRequest.tasks);
-                // AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount); todo enable assertion
+                AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount);
             }
             return syncRequest;
         }
