@@ -12,13 +12,7 @@ using Friflo.Json.Flow.Transform.Query;
 namespace Friflo.Json.Flow.Graph
 {
     public abstract class PatchTask : WriteTask {
-        protected readonly          List<JsonPatch> patches;
-        
         protected static readonly   QueryPath       RefQueryPath = new RefQueryPath();
-
-        protected PatchTask(List<JsonPatch> patches) {
-            this.patches = patches;
-        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -26,13 +20,16 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchTask<T> : PatchTask where T : Entity
     {
-        private readonly    string      id;
+        private readonly    string          id;
+        private readonly    List<JsonPatch> patches;
+
 
         internal override   string      Label       => $"PatchTask<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
         
-        internal PatchTask(string id, List<JsonPatch> patches) : base(patches) {
-            this.id = id;
+        internal PatchTask(string id, List<JsonPatch> patches) {
+            this.id      = id;
+            this.patches = patches;
         }
         
         public void Member(Expression<Func<T, object>> member) {
@@ -58,13 +55,22 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchRangeTask<T> : PatchTask where T : Entity
     {
-        private  readonly   ICollection<string>  ids;
+        private  readonly   ICollection<string> ids;
+        private readonly    EntitySet<T>        set;
 
         internal override   string          Label       => $"PatchRangeTask<{typeof(T).Name}> #ids: {ids.Count}";
         public   override   string          ToString()  => Label;
         
-        internal PatchRangeTask(ICollection<string> ids, List<JsonPatch> patches) : base(patches) {
+        internal PatchRangeTask(ICollection<string> ids, EntitySet<T> set) {
             this.ids = ids;
+            this.set = set;
+        }
+        
+        public void Member(Expression<Func<T, object>> member) {
+            if (member == null)
+                throw new ArgumentException($"PatchRangeTask<{typeof(T).Name}>.Member() member must not be null.");
+            var memberPath = Operation.PathFromLambda(member, RefQueryPath);
+            set.sync.AddPatches(ids, memberPath);
         }
         
         internal override void GetIds(List<string> ids) {

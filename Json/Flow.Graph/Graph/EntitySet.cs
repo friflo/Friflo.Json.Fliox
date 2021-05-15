@@ -165,6 +165,12 @@ namespace Friflo.Json.Flow.Graph
             intern.store.AddTask(task);
             return task;
         }
+        
+        public PatchRangeTask<T> PatchRange(ICollection<T> entities) {
+            var task = sync.PatchRange(entities);
+            intern.store.AddTask(task);
+            return task;
+        }
 
         // --- Delete
         public DeleteTask<T> Delete(T entity) {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal.Map;
+using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -120,15 +121,18 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Patch
         internal PatchTask<T> Patch(T entity) {
-            if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
-                var peer = set.GetPeerById(entity.id);
-                patch = new EntityPatch {
-                    patches = new List<JsonPatch>()
-                };
-                patches.Add(entity.id, patch);
-                SetNextPatchSource(peer);
+            var jsonPatches = AddPatch(entity);
+            var patchTask  = new PatchTask<T>(entity.id, jsonPatches);
+            patchTasks.Add(patchTask);
+            return patchTask;
+        }
+        
+        internal PatchRangeTask<T> PatchRange(ICollection<T> entities) {
+            foreach (var entity in entities) {
+                AddPatch(entity);
             }
-            var patchTask  = new PatchTask<T>(entity.id, patch.patches);
+            var ids = entities.Select(entity => entity.id).ToList();
+            var patchTask  = new PatchRangeTask<T>(ids, set);
             patchTasks.Add(patchTask);
             return patchTask;
         }
@@ -294,10 +298,36 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
             }
         }
-
+        
         private void SetNextPatchSource(PeerEntity<T> peer) {
             var json = set.intern.jsonMapper.writer.Write(peer.entity);
             peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
+        }
+
+        internal List<JsonPatch> AddPatch(T entity) {
+            if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
+                var peer = set.GetPeerById(entity.id);
+                patch = new EntityPatch {
+                    patches = new List<JsonPatch>()
+                };
+                patches.Add(entity.id, patch);
+                SetNextPatchSource(peer);
+            }
+            return patch.patches;
+        }
+        
+        internal void AddPatches(ICollection<string> ids, string memberPath) {
+            foreach (var id in ids) {
+                var peer = set.GetPeerById(id); // todo redundant peer lookup
+                var jsonPatches = AddPatch(peer.entity);
+                var value = new JsonValue {
+                    json = "null"  // todo
+                };
+                jsonPatches.Add(new PatchReplace {
+                    path = memberPath,
+                    value = value
+                });
+            }
         }
 
         private static int Some(int count) { return count != 0 ? 1 : 0; }
