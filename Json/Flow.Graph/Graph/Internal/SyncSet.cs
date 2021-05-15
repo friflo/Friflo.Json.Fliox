@@ -263,7 +263,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var patchTask in patchTasks) {
                 foreach (var peer in patchTask.peers) {
                     var entityPatch = AddEntityPatch(peer);
-                    foreach (var path in patchTask.paths) {
+                    foreach (var path in patchTask.members) {
                         var value = new JsonValue {
                             json = "null"  // todo
                         };

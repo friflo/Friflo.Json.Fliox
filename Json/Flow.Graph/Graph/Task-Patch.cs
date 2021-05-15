@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Transform;
 
@@ -15,16 +16,31 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchTask<T> : SyncTask where T : Entity
     {
-        internal readonly   List<string>        paths = new List<string>();
-        internal readonly   List<PeerEntity<T>> peers = new List<PeerEntity<T>>();
+        internal readonly   List<string>        members = new List<string>();
+        internal readonly   List<PeerEntity<T>> peers   = new List<PeerEntity<T>>();
         private  readonly   EntitySet<T>        set;
 
         internal            TaskState           state;
         internal override   TaskState           State      => state;
         
-        internal override   string      Label       => $"PatchTask<{typeof(T).Name}> #ids: {peers.Count}";
         public   override   string      ToString()  => Label;
-        
+        internal override   string      Label {
+            get {
+                var sb = new StringBuilder();
+                sb.Append("PatchTask<");
+                sb.Append(typeof(T).Name);
+                sb.Append("> #ids: ");
+                sb.Append(peers.Count);
+                sb.Append(", members: ");
+                for (int n = 0; n < members.Count; n++) {
+                    if (n > 0)
+                        sb.Append(", ");
+                    sb.Append(members[n]);
+                }
+                return sb.ToString();
+            }
+        }
+
         internal PatchTask(PeerEntity<T> peer, EntitySet<T> set) {
             this.set = set;
             peers.Add(peer);
@@ -53,13 +69,13 @@ namespace Friflo.Json.Flow.Graph
             if (member == null)
                 throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
             var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
-            paths.Add(memberPath);
+            members.Add(memberPath);
         }
         
         public void MemberPath(MemberPath<T> member) {
             if (member == null)
                 throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
-            paths.Add(member.path);
+            members.Add(member.path);
         }
     }
     

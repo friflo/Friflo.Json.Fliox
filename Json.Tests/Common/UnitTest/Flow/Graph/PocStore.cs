@@ -233,6 +233,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var producerPath = new MemberPath<Article>(a => a.producer);
             patchArticles.MemberPath(producerPath);
             
+            AreEqual("PatchTask<Article> #ids: 1, members: .name",     patchNotebook.ToString());
+            AreEqual("PatchTask<Article> #ids: 1, members: .producer", patchArticles.ToString());
+            
             AreSimilar("Article:   5, tasks: 1 -> patch #2",           articles);
             AreSimilar("entities: 11, tasks: 1",                       store);      // tasks executed and cleared
             
