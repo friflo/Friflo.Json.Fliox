@@ -11,8 +11,13 @@ using Friflo.Json.Flow.Transform.Query;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public abstract class PatchTask : WriteTask {
+    public abstract class PatchTask : SyncTask {
+        internal            TaskState   state;
+        internal override   TaskState   State      => state;
+
         protected static readonly   QueryPath       RefQueryPath = new RefQueryPath();
+        
+        internal abstract void GetPeers(List<PeerEntity> ids);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -20,15 +25,15 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchTask<T> : PatchTask where T : Entity
     {
-        private readonly    string          id;
+        private readonly    PeerEntity<T>   peer;
         private readonly    List<JsonPatch> patches;
 
 
-        internal override   string      Label       => $"PatchTask<{typeof(T).Name}> id: {id}";
+        internal override   string      Label       => $"PatchTask<{typeof(T).Name}> id: {peer.entity.id}";
         public   override   string      ToString()  => Label;
         
-        internal PatchTask(string id, List<JsonPatch> patches) {
-            this.id      = id;
+        internal PatchTask(PeerEntity<T> peer, List<JsonPatch> patches) {
+            this.peer    = peer;
             this.patches = patches;
         }
         
@@ -45,8 +50,8 @@ namespace Friflo.Json.Flow.Graph
             });
         }
 
-        internal override void GetIds(List<string> ids) {
-            ids.Add(id);
+        internal override void GetPeers(List<PeerEntity> peers) {
+            peers.Add(peer);
         }
     }
     
@@ -55,27 +60,27 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchRangeTask<T> : PatchTask where T : Entity
     {
-        private  readonly   ICollection<string> ids;
-        private readonly    EntitySet<T>        set;
+        private  readonly   ICollection<PeerEntity<T>>  peers;
+        private readonly    EntitySet<T>                set;
 
-        internal override   string          Label       => $"PatchRangeTask<{typeof(T).Name}> #ids: {ids.Count}";
+        internal override   string          Label       => $"PatchRangeTask<{typeof(T).Name}> #ids: {peers.Count}";
         public   override   string          ToString()  => Label;
         
-        internal PatchRangeTask(ICollection<string> ids, EntitySet<T> set) {
-            this.ids = ids;
-            this.set = set;
+        internal PatchRangeTask(ICollection<PeerEntity<T>>  peers, EntitySet<T> set) {
+            this.peers  = peers;
+            this.set    = set;
         }
         
         public void Member(Expression<Func<T, object>> member) {
             if (member == null)
                 throw new ArgumentException($"PatchRangeTask<{typeof(T).Name}>.Member() member must not be null.");
             var memberPath = Operation.PathFromLambda(member, RefQueryPath);
-            set.sync.AddPatches(ids, memberPath);
+            set.sync.AddPatches(peers, memberPath);
         }
         
-        internal override void GetIds(List<string> ids) {
-            foreach (var id in ids) {
-                ids.Add(id);    
+        internal override void GetPeers(List<PeerEntity> peers) {
+            foreach (var peer in this.peers) {
+                peers.Add(peer);    
             }
         }
     }

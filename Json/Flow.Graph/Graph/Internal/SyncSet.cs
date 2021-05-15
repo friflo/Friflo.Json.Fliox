@@ -20,7 +20,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         // by this instance can be mapped to their task results safely.
         
         private readonly    EntitySet<T>                        set;
-        private readonly    List<string>                        idsBuf       = new List<string>(); 
+        private readonly    List<string>                        idsBuf       = new List<string>();
+        private readonly    List<PeerEntity>                    peersBuf     = new List<PeerEntity>();
             
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
@@ -120,19 +121,18 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Patch
-        internal PatchTask<T> Patch(T entity) {
-            var jsonPatches = AddPatch(entity);
-            var patchTask  = new PatchTask<T>(entity.id, jsonPatches);
+        internal PatchTask<T> Patch(PeerEntity<T> peer) {
+            var jsonPatches = AddEntityPatch(peer);
+            var patchTask  = new PatchTask<T>(peer, jsonPatches);
             patchTasks.Add(patchTask);
             return patchTask;
         }
         
-        internal PatchRangeTask<T> PatchRange(ICollection<T> entities) {
-            foreach (var entity in entities) {
-                AddPatch(entity);
+        internal PatchRangeTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
+            foreach (var peer in peers) {
+                AddEntityPatch(peer);
             }
-            var ids = entities.Select(entity => entity.id).ToList();
-            var patchTask  = new PatchRangeTask<T>(ids, set);
+            var patchTask  = new PatchRangeTask<T>(peers, set);
             patchTasks.Add(patchTask);
             return patchTask;
         }
@@ -304,22 +304,21 @@ namespace Friflo.Json.Flow.Graph.Internal
             peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
         }
 
-        internal List<JsonPatch> AddPatch(T entity) {
-            if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
-                var peer = set.GetPeerById(entity.id);
+        private List<JsonPatch> AddEntityPatch(PeerEntity<T> peer) {
+            var id = peer.entity.id;
+            if (!patches.TryGetValue(id, out EntityPatch patch)) {
                 patch = new EntityPatch {
                     patches = new List<JsonPatch>()
                 };
-                patches.Add(entity.id, patch);
+                patches.Add(id, patch);
                 SetNextPatchSource(peer);
             }
             return patch.patches;
         }
         
-        internal void AddPatches(ICollection<string> ids, string memberPath) {
-            foreach (var id in ids) {
-                var peer = set.GetPeerById(id); // todo redundant peer lookup
-                var jsonPatches = AddPatch(peer.entity);
+        internal void AddPatches(ICollection<PeerEntity<T>> peers, string memberPath) {
+            foreach (var peer in peers) {
+                var jsonPatches = AddEntityPatch(peer);
                 var value = new JsonValue {
                     json = "null"  // todo
                 };

@@ -161,13 +161,19 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Patch
         public PatchTask<T> Patch(T entity) {
-            var task = sync.Patch(entity);
+            var peer = GetPeerById(entity.id);
+            var task = sync.Patch(peer);
             intern.store.AddTask(task);
             return task;
         }
         
         public PatchRangeTask<T> PatchRange(ICollection<T> entities) {
-            var task = sync.PatchRange(entities);
+            var peers = new List<PeerEntity<T>>(entities.Count);
+            foreach (var entity in entities) {
+                var peer = GetPeerById(entity.id);
+                peers.Add(peer);
+            }
+            var task = sync.PatchRange(peers);
             intern.store.AddTask(task);
             return task;
         }

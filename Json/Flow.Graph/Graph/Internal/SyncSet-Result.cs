@@ -202,10 +202,11 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             foreach (var patchTask in patchTasks) {
                 var entityErrorInfo = new TaskErrorInfo();
-                idsBuf.Clear();
-                patchTask.GetIds(idsBuf);
-                foreach (var id in idsBuf) {
-                    if (patchErrors.TryGetValue(id, out EntityError error)) {
+                peersBuf.Clear();
+                patchTask.GetPeers(peersBuf);
+                foreach (var peer in peersBuf) {
+                    var peerT = (PeerEntity<T>) peer;
+                    if (patchErrors.TryGetValue(peerT.entity.id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }
                 }

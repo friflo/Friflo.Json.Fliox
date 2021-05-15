@@ -6,8 +6,11 @@ using System;
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Graph.Internal
 {
+
+    internal class PeerEntity { }
+    
     // --- PeerEntity<>
-    internal class PeerEntity<T>  where T : Entity
+    internal class PeerEntity<T> : PeerEntity where T : Entity
     {
         internal readonly   T               entity; // never null
         internal            bool            assigned;
