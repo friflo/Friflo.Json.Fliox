@@ -15,17 +15,38 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class PatchTask<T> : SyncTask where T : Entity
     {
-        internal readonly   List<string>                paths = new List<string>();
-        internal readonly   ICollection<PeerEntity<T>>  peers;
+        internal readonly   List<string>        paths = new List<string>();
+        internal readonly   List<PeerEntity<T>> peers = new List<PeerEntity<T>>();
+        private  readonly   EntitySet<T>        set;
 
-        internal            TaskState                   state;
-        internal override   TaskState                   State      => state;
+        internal            TaskState           state;
+        internal override   TaskState           State      => state;
         
         internal override   string      Label       => $"PatchTask<{typeof(T).Name}> #ids: {peers.Count}";
         public   override   string      ToString()  => Label;
         
-        internal PatchTask(ICollection<PeerEntity<T>> peers) {
-            this.peers  = peers;
+        internal PatchTask(PeerEntity<T> peer, EntitySet<T> set) {
+            this.set = set;
+            peers.Add(peer);
+        }
+        
+        internal PatchTask(ICollection<PeerEntity<T>> peers, EntitySet<T> set) {
+            this.set = set;
+            this.peers.AddRange(peers);
+        }
+
+        public void Add(T entity) {
+            var peer = set.GetPeerById(entity.id);
+            peers.Add(peer);
+        }
+        
+        public void AddRange(ICollection<T> entities) {
+            var newPeers = new List<PeerEntity<T>>(entities.Count);
+            foreach (var entity in entities) {
+                var peer = set.GetPeerById(entity.id);
+                newPeers.Add(peer);
+            }
+            peers.AddRange(newPeers);
         }
         
         public void Member(Expression<Func<T, object>> member) {

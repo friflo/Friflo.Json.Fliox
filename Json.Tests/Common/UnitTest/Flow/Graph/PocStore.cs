@@ -228,7 +228,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             notebook.name = "Galaxy Book";
             var patchNotebook = articles.Patch(notebook);
             patchNotebook.Member(a => a.name);
-            var patchArticles = articles.PatchRange(new[] {notebook});
+            var patchArticles = articles.PatchRange(new Article[] {});
+            patchArticles.Add(notebook);
             var producerPath = new MemberPath<Article>(a => a.producer);
             patchArticles.MemberPath(producerPath);
             

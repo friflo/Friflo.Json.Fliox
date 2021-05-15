@@ -121,13 +121,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Patch
         internal PatchTask<T> Patch(PeerEntity<T> peer) {
-            var patchTask  = new PatchTask<T>(new List<PeerEntity<T>>{peer});
+            var patchTask  = new PatchTask<T>(peer, set);
             patchTasks.Add(patchTask);
             return patchTask;
         }
         
         internal PatchTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
-            var patchTask  = new PatchTask<T>(peers);
+            var patchTask  = new PatchTask<T>(peers, set);
             patchTasks.Add(patchTask);
             return patchTask;
         }
