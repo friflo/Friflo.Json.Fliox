@@ -83,6 +83,8 @@ namespace Friflo.Json.Flow.Graph
     {
         internal readonly string path;
 
+        public override string ToString() => path;
+
         public MemberPath(Expression<Func<T, object>> member) {
             if (member == null)
                 throw new ArgumentException($"MemberPath<{typeof(T).Name}>() member must not be null.");

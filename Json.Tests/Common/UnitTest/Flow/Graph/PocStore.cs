@@ -136,25 +136,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // StoreInfo is accessible via property an ToString()
             AreEqual(11, store.StoreInfo.peers);
             AreEqual(3,  store.StoreInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 3",                         store);
-            AreSimilar("Article:   7, tasks: 2 -> create #5, reads: 1",  articles);
-            AreSimilar("Producer:  3, tasks: 1 -> create #1",            producers);
-            AreSimilar("Employee:  1",                                   employees);
+            AreSimilar("entities: 11, tasks: 3",                        store);
+            AreSimilar("Article:   7, tasks: 2 -> create #5, reads: 1", articles);
+            AreSimilar("Producer:  3, tasks: 1 -> create #1",           producers);
+            AreSimilar("Employee:  1",                                  employees);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities: 11",                                   store); // tasks cleared
+            AreSimilar("entities: 11",                                  store); // tasks cleared
             
             IsTrue(createCam1.Success);
             IsTrue(createCanon.Success);
             
 
             articles.DeleteRange(newBulkArticles);
-            AreSimilar("entities: 11, tasks: 1",                         store);
-            AreSimilar("Article:   7, tasks: 1 -> delete #2",            articles);
+            AreSimilar("entities: 11, tasks: 1",                        store);
+            AreSimilar("Article:   7, tasks: 1 -> delete #2",           articles);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities:  9",                                   store); // tasks cleared
-            AreSimilar("Article:   5",                                   articles);
+            AreSimilar("entities:  9",                                  store); // tasks cleared
+            AreSimilar("Article:   5",                                  articles);
 
             cameraCreate.name = "Changed name";
             var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
@@ -198,31 +198,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;
             
-            AreSimilar("entities:  8, tasks: 1",                       store);
+            AreSimilar("entities:  8, tasks: 1",                        store);
             
-            AreSimilar("Order:     0",                                 orders);
+            AreSimilar("Order:     0",                                  orders);
             orders.Create(order);
-            AreSimilar("entities:  9, tasks: 2",                       store);
-            AreSimilar("Order:     1, tasks: 1 -> create #1",          orders);     // created order
+            AreSimilar("entities:  9, tasks: 2",                        store);
+            AreSimilar("Order:     1, tasks: 1 -> create #1",           orders);     // created order
             
             AreSimilar("Article:   4, tasks: 1 -> reads: 1", articles);
-            AreSimilar("Customer:  0",                                 customers);
+            AreSimilar("Customer:  0",                                  customers);
             var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 2);
-            AreSimilar("entities: 11, tasks: 4",                       store);
+            AreSimilar("entities: 11, tasks: 4",                        store);
             AreSimilar("Article:   5, tasks: 2 -> create #1, reads: 1", articles);   // created smartphone (implicit)
-            AreSimilar("Customer:  1, tasks: 1 -> create #1",          customers);  // created customer (implicit)
+            AreSimilar("Customer:  1, tasks: 1 -> create #1",           customers);  // created customer (implicit)
             
-            AreSimilar("entities: 11, tasks: 4",                       store);
+            AreSimilar("entities: 11, tasks: 4",                        store);
             var logStore5 = store.LogChanges();     AssertLog(logStore5, 0, 0);
             var logStore6 = store.LogChanges();     AssertLog(logStore6, 0, 0);
-            AreSimilar("entities: 11, tasks: 4",                       store);      // no new changes
+            AreSimilar("entities: 11, tasks: 4",                        store);      // no new changes
 
             await store.Sync(); // -------- Sync --------
             
             IsTrue(logSet2.Success);
             IsTrue(logStore5.Success);
             IsTrue(logStore6.Success);
-            AreSimilar("entities: 11",                                 store);      // tasks executed and cleared
+            AreSimilar("entities: 11",                                  store);      // tasks executed and cleared
             
             
             notebook.name = "Galaxy Book";
@@ -233,14 +233,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var producerPath = new MemberPath<Article>(a => a.producer);
             patchArticles.MemberPath(producerPath);
             
-            AreEqual("PatchTask<Article> #ids: 1, members: .name",     patchNotebook.ToString());
-            AreEqual("PatchTask<Article> #ids: 1, members: .producer", patchArticles.ToString());
+            AreEqual(".producer",                                       producerPath.ToString());
+            AreEqual("PatchTask<Article> #ids: 1, members: .name",      patchNotebook.ToString());
+            AreEqual("PatchTask<Article> #ids: 1, members: .producer",  patchArticles.ToString());
             
-            AreSimilar("Article:   5, tasks: 1 -> patch #2",           articles);
-            AreSimilar("entities: 11, tasks: 1",                       store);      // tasks executed and cleared
+            AreSimilar("Article:   5, tasks: 1 -> patch #2",            articles);
+            AreSimilar("entities: 11, tasks: 1",                        store);      // tasks executed and cleared
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities: 11",                                 store);      // tasks executed and cleared
+            AreSimilar("entities: 11",                                  store);      // tasks executed and cleared
             
             IsTrue(patchNotebook.Success);
             return store;
