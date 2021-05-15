@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 ordersAllAmountGreater0.Results.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
-            AreEqual(4,                 allArticles.Results.Count);
+            AreEqual(5,                 allArticles.Results.Count);
             AreEqual("Galaxy S10",      allArticles.Results["article-galaxy"].name);
             AreEqual("iPad Pro",        allArticles.Results["article-ipad"].name);
             

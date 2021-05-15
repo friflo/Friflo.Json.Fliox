@@ -93,6 +93,11 @@ namespace Friflo.Json.Flow.Transform
         public static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter, QueryPath queryPath = null) {
             return (FilterOperation)QueryConverter.OperationFromExpression(filter, queryPath);
         }
+        
+        public static string PathFromFilter<T>(Expression<Func<T, object>> path, QueryPath queryPath = null) {
+            var op = QueryConverter.OperationFromExpression(path, queryPath);
+            return "";
+        }
     }
     
     [Fri.Discriminator("op")]

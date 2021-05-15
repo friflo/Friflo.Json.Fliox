@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal.Map;
+using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -35,6 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         /// key: entity id
         private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
+        private readonly    List<PatchTask>                     patchTasks   = new List<PatchTask>();
         
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
@@ -115,6 +117,27 @@ namespace Friflo.Json.Flow.Graph.Internal
             var update = new UpdateRangeTask<T>(entities);
             updateTasks.Add(update);
             return update;
+        }
+        
+        // --- Patch
+        internal PatchTask<T> Patch(T entity, string path) {
+            if (!patches.TryGetValue(entity.id, out EntityPatch patch)) {
+                patch = new EntityPatch {
+                    patches = new List<JsonPatch>()
+                };
+                patches.Add(entity.id, patch);
+            }
+            var memberPatches = patch.patches;
+            var value = new JsonValue {
+                json = "" // todo get current member value as JSON
+            };
+            memberPatches.Add(new PatchReplace {
+                path = path,
+                value = value
+            });
+            var patchTask  = new PatchTask<T>(entity.id, path);
+            patchTasks.Add(patchTask);
+            return patchTask;
         }
         
         // --- Delete

@@ -158,6 +158,16 @@ namespace Friflo.Json.Flow.Graph
             intern.store.AddTask(task);
             return task;
         }
+        
+        // --- Patch
+        public PatchTask<T> Patch(T entity, Expression<Func<T, object>> path) {
+            if (path == null)
+                throw new ArgumentException($"EntitySet.Patch() path must not be null. EntitySet: {name}");
+            var memberPath = Operation.PathFromFilter(path, RefQueryPath);
+            var task = sync.Patch(entity, memberPath);
+            intern.store.AddTask(task);
+            return task;
+        }
 
         // --- Delete
         public DeleteTask<T> Delete(T entity) {
