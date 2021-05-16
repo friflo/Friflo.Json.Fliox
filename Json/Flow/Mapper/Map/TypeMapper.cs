@@ -7,6 +7,8 @@ using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Flow.Mapper.Map.Utils;
 using Friflo.Json.Flow.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.Select;
+using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Mapper.Map
 {
@@ -29,8 +31,8 @@ namespace Friflo.Json.Flow.Mapper.Map
 
 
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
-        public  readonly PropertyFields propFields;
-        public              ClassLayout layout;  // todo make readonly
+        public  readonly    PropertyFields  propFields;
+        public              ClassLayout     layout;  // todo make readonly
 
 
         protected TypeMapper(StoreConfig config, Type type, bool isNullable, bool isValueType) {
@@ -53,6 +55,10 @@ namespace Friflo.Json.Flow.Mapper.Map
 
         public abstract DiffNode        DiffObject(Differ differ, object left, object right);
         public virtual  void            PatchObject(Patcher patcher, object value) { }
+
+        public virtual  void            MemberObject(Selector selector, object value, PathNode<ObjectSelectResult> node) {
+            throw new InvalidOperationException("MemberObject() is intended only for classes");
+        }
 
         public abstract void            TraceObject(Tracer tracer, object slot);
         

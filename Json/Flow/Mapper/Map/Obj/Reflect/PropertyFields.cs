@@ -61,6 +61,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             return pf;
         }
         
+        public PropField GetField (string fieldName) {
+            strMap.TryGetValue(fieldName, out PropField field);
+            return field;
+        }
+        
         public void Dispose() {
             for (int i = 0; i < fields.Length; i++)
                 fields[i].Dispose();

@@ -17,6 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
             using (var jsonWriter       = new ObjectWriter(typeStore))
             using (var scalarSelector   = new ScalarSelector())
             using (var jsonSelector     = new JsonSelector())
+            using (var objectSelector   = new ObjectSelector(typeStore))
             {
                 var sample = new SampleIL();
                 var json = jsonWriter.Write(sample);
@@ -50,6 +51,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                 AreEqual(new[] {"one"},             jsonResults[4].values);
                 AreEqual(new[] {"null"},            jsonResults[5].values);
                 AreEqual(new string[0],             jsonResults[6].values);
+
+                var objectSelect = new ObjectSelect(selectors);
+                var objectResults = objectSelector.Select(sample, objectSelect);
+                AreEqual(@"{""val2"":68}",          objectResults[0].json);
+                AreEqual("69",                      objectResults[1].json);
+                AreEqual("94.0",                    objectResults[2].json);
+                AreEqual("true",                    objectResults[3].json);
+                AreEqual(@"""one""",                objectResults[4].json);
+                AreEqual("null",                    objectResults[5].json);
+                AreEqual(null,                      objectResults[6].json);
             }
         }
 

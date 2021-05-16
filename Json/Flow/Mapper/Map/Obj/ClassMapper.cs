@@ -9,7 +9,9 @@ using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Flow.Mapper.Map.Utils;
 using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Mapper.MapIL.Obj;
+using Friflo.Json.Flow.Mapper.Select;
 using Friflo.Json.Flow.Mapper.Utils;
+using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Mapper.Map.Obj
 {
@@ -164,6 +166,27 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
+                }
+            }
+        }
+
+        public override void MemberObject(Selector selector, object obj, PathNode<ObjectSelectResult> node) {
+            TypeMapper classMapper = this;
+            Type objType = obj.GetType();
+            if (type != objType)
+                classMapper = selector.TypeCache.GetTypeMapper(objType);
+
+            PropertyFields fields = classMapper.propFields;
+            var children = node.GetChildren();
+            foreach (var child in children) {
+                if (child.IsMember()) {
+                    var field = fields.GetField(child.GetName());
+                    if (field == null)
+                        continue;
+                    object elemVar = field.GetField(obj);
+                    selector.HandleResult(child, elemVar);
+                    if (field.fieldType.IsComplex && elemVar != null)
+                        field.fieldType.MemberObject(selector, elemVar, child);
                 }
             }
         }

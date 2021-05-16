@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Transform.Select
     /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node while traversing having an
     /// associated <see cref="PathSelector{T}"/> in <see cref="selectors"/>.
     /// </summary>
-    internal class PathNode<TResult>
+    public class PathNode<TResult>
     {
         /// direct access to <see cref="children"/>[*]
         internal            PathNode<TResult>                       wildcardNode;
@@ -32,6 +32,10 @@ namespace Friflo.Json.Flow.Transform.Select
         private  readonly   SelectorNode                            selectorNode;
         private  readonly   List<PathNode<TResult>>                 children = new List<PathNode<TResult>>();
         private  readonly   List<byte[]>                            keys = new List<byte[]>();
+
+        public      bool                            IsMember()      => selectorNode.selectorType == SelectorType.Member;
+        public      string                          GetName()       => selectorNode.name;
+        public      IEnumerable<PathNode<TResult>>  GetChildren()   => children;
 
         internal bool FindByBytes(ref Bytes key, out PathNode<TResult> node) {
             for (int n = 0; n < keys.Count; n++) {
@@ -107,7 +111,7 @@ namespace Friflo.Json.Flow.Transform.Select
     {
         internal SelectorNode(string name, int index, SelectorType selectorType) {
             this.name           = name;
-            this.index           = index;
+            this.index          = index;
             this.selectorType   = selectorType;
         }
         
