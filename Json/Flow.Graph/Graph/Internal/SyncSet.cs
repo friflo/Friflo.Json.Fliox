@@ -262,12 +262,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             // --- PatchEntities
             foreach (var patchTask in patchTasks) {
-                var objectSelect    = new ObjectSelect(patchTask.members);
-                var objectSelector  = new ObjectSelector(set.intern.store._intern.jsonMapper.writer);
+                var memberAccess    = new MemberAccess(patchTask.members);
+                var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
                 
                 foreach (var peer in patchTask.peers) {
                     var entityPatch     = AddEntityPatch(peer);
-                    var selectResults   = objectSelector.Select(peer.entity, objectSelect);
+                    var selectResults   = memberAccessor.GetValues(peer.entity, memberAccess);
                     int n = 0;
                     foreach (var path in patchTask.members) {
                         var value = new JsonValue {

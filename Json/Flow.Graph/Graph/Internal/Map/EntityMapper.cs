@@ -61,8 +61,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             return mapper.CreateInstance();
         }
 
-        public override void MemberObject(MemberSelector selector, object obj, PathNode<ObjectSelectResult> node) {
-            mapper.MemberObject(selector, obj, node);
+        public override void MemberObject(Accessor accessor, object obj, PathNode<MemberValue> node) {
+            mapper.MemberObject(accessor, obj, node);
         }
 
         public override DiffNode Diff (Differ differ, T left, T right) {

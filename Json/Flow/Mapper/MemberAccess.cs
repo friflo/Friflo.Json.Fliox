@@ -6,14 +6,14 @@ using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Mapper
 {
-    public class ObjectSelect
+    public class MemberAccess
     {
-        internal readonly   PathNodeTree<ObjectSelectResult>    nodeTree = new PathNodeTree<ObjectSelectResult>();
-        internal readonly   List<ObjectSelectResult>            results = new List<ObjectSelectResult>();
+        internal readonly   PathNodeTree<MemberValue>    nodeTree = new PathNodeTree<MemberValue>();
+        internal readonly   List<MemberValue>            results = new List<MemberValue>();
         
         // public           List<ObjectSelectResult>            Results => results;
         
-        public ObjectSelect(IList<string> selectors) {
+        public MemberAccess(IList<string> selectors) {
             CreateNodeTree(selectors);
             results.Capacity = selectors.Count;
         }
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper
         private void CreateNodeTree(IList<string> pathList) {
             nodeTree.CreateNodeTree(pathList);
             foreach (var selector in nodeTree.selectors) {
-                selector.result = new ObjectSelectResult ();
+                selector.result = new MemberValue ();
             }
         }
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Mapper
     }
     
     // --- Select result ---
-    public class ObjectSelectResult
+    public class MemberValue
     {
         public      string  json;
         public      object  value;

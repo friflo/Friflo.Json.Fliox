@@ -170,11 +170,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             }
         }
 
-        public override void MemberObject(MemberSelector selector, object obj, PathNode<ObjectSelectResult> node) {
+        public override void MemberObject(Accessor accessor, object obj, PathNode<MemberValue> node) {
             TypeMapper classMapper = this;
             Type objType = obj.GetType();
             if (type != objType)
-                classMapper = selector.TypeCache.GetTypeMapper(objType);
+                classMapper = accessor.TypeCache.GetTypeMapper(objType);
 
             PropertyFields fields = classMapper.propFields;
             var children = node.GetChildren();
@@ -184,9 +184,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                     if (field == null)
                         continue;
                     object elemVar = field.GetField(obj);
-                    selector.HandleResult(child, elemVar);
+                    accessor.HandleResult(child, elemVar);
                     if (field.fieldType.IsComplex && elemVar != null)
-                        field.fieldType.MemberObject(selector, elemVar, child);
+                        field.fieldType.MemberObject(accessor, elemVar, child);
                 }
             }
         }

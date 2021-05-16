@@ -7,17 +7,17 @@ using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Mapper.Select
 {
-    public class MemberSelector : IDisposable
+    public class Accessor : IDisposable
     {
         private readonly    ObjectWriter    writer;
         
         public              TypeCache       TypeCache => writer.TypeCache;
         
-        internal MemberSelector(TypeStore typeStore) {
+        internal Accessor(TypeStore typeStore) {
             writer      = new ObjectWriter(typeStore);
         }
         
-        internal MemberSelector(ObjectWriter writer) {
+        internal Accessor(ObjectWriter writer) {
             this.writer = writer;
         }
         
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Mapper.Select
             writer.Dispose();
         }
 
-        public void HandleResult(PathNode<ObjectSelectResult> node, object value) {
+        public void HandleResult(PathNode<MemberValue> node, object value) {
             if (node.selectors.Count == 0)
                 return;
             
