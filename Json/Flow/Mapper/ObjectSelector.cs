@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Mapper
             selector.Dispose();
         }
         
-        public List<ObjectSelectResult> Select<T>(T value, ObjectSelect select) {
+        public IReadOnlyList<ObjectSelectResult> Select<T>(T value, ObjectSelect select) {
             select.InitSelectorResults();
             var mapper = selector.TypeCache.GetTypeMapper(typeof(T));
             var rootNode = select.nodeTree.rootNode;

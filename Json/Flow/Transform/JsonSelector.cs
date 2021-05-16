@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Transform
         /// 
         /// </summary>
         /// <returns>null in case of an error - error message is available via <see cref="ErrorMessage"/>.</returns>
-        public List<JsonSelectResult> Select(string json, JsonSelect scalarSelect, bool pretty = false) {
+        public IReadOnlyList<JsonSelectResult> Select(string json, JsonSelect scalarSelect, bool pretty = false) {
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);

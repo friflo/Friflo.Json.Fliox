@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                 
                 // --- Scalar select
                 var scalarSelect = new ScalarSelect(selectors);
-                var scalarResults = new List<ScalarSelectResult>();
+                IReadOnlyList<ScalarSelectResult> scalarResults = new List<ScalarSelectResult>();
                 for (int n = 0; n < 2; n++) {
                     scalarResults = scalarSelector.Select(json, scalarSelect);
                 }
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
             }
         }
 
-        private void AssertScalarResults(List<ScalarSelectResult> result) {
+        private void AssertScalarResults(IReadOnlyList<ScalarSelectResult> result) {
             AreEqual(new[]{"The Lord of the Rings", "Moby Dick"},                           result[0].AsObjects());
             AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].AsObjects());
             AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].AsObjects());
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
                 jsonMapper.Pretty = true;
                 var peter  = jsonMapper.Write(TestQuery.Peter);
 
-                var result = new List<ScalarSelectResult>();
+                IReadOnlyList<ScalarSelectResult> result = new List<ScalarSelectResult>();
                 for (int n = 0; n < 100; n++) {
                     result = jsonSelector.Select(peter, select);
                     memLog.Snapshot();
