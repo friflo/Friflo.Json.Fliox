@@ -9,7 +9,9 @@ using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Obj;
 using Friflo.Json.Flow.Mapper.Map.Utils;
+using Friflo.Json.Flow.Mapper.Select;
 using Friflo.Json.Flow.Mapper.Utils;
+using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
@@ -58,7 +60,11 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public override      object  CreateInstance() {
             return mapper.CreateInstance();
         }
-        
+
+        public override void MemberObject(MemberSelector selector, object obj, PathNode<ObjectSelectResult> node) {
+            mapper.MemberObject(selector, obj, node);
+        }
+
         public override DiffNode Diff (Differ differ, T left, T right) {
             DiffNode diff = mapper.Diff(differ, left, right);
             return diff;

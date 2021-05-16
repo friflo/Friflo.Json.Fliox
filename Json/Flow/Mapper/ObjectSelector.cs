@@ -16,6 +16,10 @@ namespace Friflo.Json.Flow.Mapper
             selector = new MemberSelector(typeStore);
         }
         
+        public ObjectSelector(ObjectWriter writer) {
+            selector = new MemberSelector(writer);
+        }
+        
         public void Dispose() {
             selector.Dispose();
         }

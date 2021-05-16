@@ -17,6 +17,10 @@ namespace Friflo.Json.Flow.Mapper.Select
             writer      = new ObjectWriter(typeStore);
         }
         
+        internal MemberSelector(ObjectWriter writer) {
+            this.writer = writer;
+        }
+        
         public void Dispose() {
             writer.Dispose();
         }

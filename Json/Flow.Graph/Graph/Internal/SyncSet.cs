@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Graph.Internal.Map;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Transform;
 
@@ -263,9 +264,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var patchTask in patchTasks) {
                 foreach (var peer in patchTask.peers) {
                     var entityPatch = AddEntityPatch(peer);
+                    var objectSelect    = new ObjectSelect(patchTask.members);
+                    var objectSelector  = new ObjectSelector(set.intern.store._intern.jsonMapper.writer);
+                    var selectResults   = objectSelector.Select(peer.entity, objectSelect);
+                    int n = 0;
                     foreach (var path in patchTask.members) {
                         var value = new JsonValue {
-                            json = "null"  // todo
+                            json = selectResults[n++].json
                         };
                         entityPatch.Add(new PatchReplace {
                             path = path,
