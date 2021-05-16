@@ -7,13 +7,13 @@ using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Mapper.Select
 {
-    public class Selector : IDisposable
+    public class MemberSelector : IDisposable
     {
         private readonly    ObjectWriter    writer;
         
         public              TypeCache       TypeCache => writer.TypeCache;
         
-        internal Selector(TypeStore typeStore) {
+        internal MemberSelector(TypeStore typeStore) {
             writer      = new ObjectWriter(typeStore);
         }
         

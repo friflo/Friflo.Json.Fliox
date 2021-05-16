@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Graph
         public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            string path = MemberSelector.PathFromExpression(selector, out _);
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TValue>(path);
         }
         

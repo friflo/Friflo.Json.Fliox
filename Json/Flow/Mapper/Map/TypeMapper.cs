@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         public abstract DiffNode        DiffObject(Differ differ, object left, object right);
         public virtual  void            PatchObject(Patcher patcher, object value) { }
 
-        public virtual  void            MemberObject(Selector selector, object value, PathNode<ObjectSelectResult> node) {
+        public virtual  void            MemberObject(MemberSelector selector, object value, PathNode<ObjectSelectResult> node) {
             throw new InvalidOperationException("MemberObject() is intended only for classes");
         }
 

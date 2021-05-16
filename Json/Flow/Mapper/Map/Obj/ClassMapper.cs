@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             }
         }
 
-        public override void MemberObject(Selector selector, object obj, PathNode<ObjectSelectResult> node) {
+        public override void MemberObject(MemberSelector selector, object obj, PathNode<ObjectSelectResult> node) {
             TypeMapper classMapper = this;
             Type objType = obj.GetType();
             if (type != objType)

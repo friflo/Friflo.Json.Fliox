@@ -9,11 +9,11 @@ namespace Friflo.Json.Flow.Mapper
 {
     public class ObjectSelector : IDisposable
     {
-        private readonly Selector selector;
+        private readonly MemberSelector selector;
 
 
         public ObjectSelector(TypeStore typeStore) {
-            selector = new Selector(typeStore);
+            selector = new MemberSelector(typeStore);
         }
         
         public void Dispose() {

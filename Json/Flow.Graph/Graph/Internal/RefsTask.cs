@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression) where TValue : Entity {
-            string path = MemberSelector.PathFromExpression(expression, out _);
+            string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(path);
         }
         

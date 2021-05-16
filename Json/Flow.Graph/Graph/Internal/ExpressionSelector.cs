@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal static class MemberSelector
+    internal static class ExpressionSelector
     {
         internal static string PathFromExpression(Expression selector, out bool isArraySelector) {
             isArraySelector = false;
