@@ -185,8 +185,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                         continue;
                     object elemVar = field.GetField(obj);
                     accessor.HandleResult(child, elemVar);
-                    if (field.fieldType.IsComplex && elemVar != null)
-                        field.fieldType.MemberObject(accessor, elemVar, child);
+                    var fieldType = field.fieldType;
+                    if (fieldType.IsComplex && elemVar != null)
+                        fieldType.MemberObject(accessor, elemVar, child);
                 }
             }
         }
