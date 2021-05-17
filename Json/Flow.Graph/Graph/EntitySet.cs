@@ -124,7 +124,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public CreateRangeTask<T> CreateRange(ICollection<T> entities) {
+        public CreateTask<T> CreateRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {

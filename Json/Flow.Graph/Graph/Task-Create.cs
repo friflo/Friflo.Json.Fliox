@@ -14,47 +14,24 @@ namespace Friflo.Json.Flow.Graph
         internal abstract void GetIds(List<string> ids);
     }
     
-    public abstract class CreateTask : WriteTask {
-    }
-    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class CreateTask<T> : CreateTask where T : Entity
+    public class CreateTask<T> : WriteTask where T : Entity
     {
-        private readonly    T               entity;
+        private readonly    ICollection<T>  entities;
 
-        internal override   string      Label       => $"CreateTask<{typeof(T).Name}> id: {entity.id}";
-        public   override   string      ToString()  => Label;
-        
-        internal CreateTask(T entity) {
-            this.entity = entity;
-        }
-
-        internal override void GetIds(List<string> ids) {
-            ids.Add(entity.id);
-        }
-    }
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class CreateRangeTask<T> : CreateTask where T : Entity
-    {
-        private  readonly   ICollection<T>  entities;
-
-        internal override   string          Label       => $"CreateRangeTask<{typeof(T).Name}> #ids: {entities.Count}";
+        internal override   string          Label       => $"CreateTask<{typeof(T).Name}> #ids: {entities.Count}";
         public   override   string          ToString()  => Label;
         
-        internal CreateRangeTask(ICollection<T> entities) {
+        internal CreateTask(ICollection<T> entities) {
             this.entities = entities;
         }
-        
+
         internal override void GetIds(List<string> ids) {
             foreach (var entity in entities) {
                 ids.Add(entity.id);    
             }
         }
-
     }
 }

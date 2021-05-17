@@ -86,17 +86,17 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
-            var create = new CreateTask<T>(peer.entity);
+            var create = new CreateTask<T>(new List<T>{peer.entity});
             createTasks.Add(create);
             return create;
         }
         
-        internal CreateRangeTask<T> CreateRange(ICollection<T> entities) {
+        internal CreateTask<T> CreateRange(ICollection<T> entities) {
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
                 AddCreate(peer);
             }
-            var create = new CreateRangeTask<T>(entities);
+            var create = new CreateTask<T>(entities);
             createTasks.Add(create);
             return create;
         }
