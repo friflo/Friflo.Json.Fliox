@@ -105,6 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertTaskExceptions  (useStore);
             await AssertTaskError       (useStore);
             await AssertEntityWrite     (useStore);
+            await AssertEntityPatch     (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -336,11 +337,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
             
-            var patchNotFound  = customers.Patch (new Customer{id = "unknown-id"});
-
-
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 6, failed: 6", sync.ToString());
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -362,11 +360,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(deleteError.Success);
             AreEqual(TaskErrorType.DatabaseError, deleteError.Error.type);
             AreEqual("simulated write task error", deleteError.Error.message);
-            
-            IsFalse(patchNotFound.Success);
-            AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
-            var patchErrors = patchNotFound.Error.entityErrors;
-            AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors["unknown-id"].ToString());
         }
         
         private static async Task AssertEntityWrite(PocStore store) {
@@ -395,6 +388,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var updateErrors = updateError.Error.entityErrors;
             AreEqual(1,        updateErrors.Count);
             AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[UpdateEntityError].ToString());
+        }
+
+        private static async Task AssertEntityPatch(PocStore store) {
+            var customers = store.customers;
+            
+            var patchNotFound  = customers.Patch (new Customer{id = "unknown-id"});
+            
+            var sync = await store.TrySync(); // -------- Sync --------
+            AreEqual("tasks: 1, failed: 1", sync.ToString());
+            
+            IsFalse(patchNotFound.Success);
+            AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
+            var patchErrors = patchNotFound.Error.entityErrors;
+            AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors["unknown-id"].ToString());
         }
     }
 }
