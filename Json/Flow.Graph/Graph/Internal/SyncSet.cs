@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
-            var create = new CreateTask<T>(new List<T>{peer.entity});
+            var create = new CreateTask<T>(new List<T>{peer.entity}, set);
             createTasks.Add(create);
             return create;
         }
@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var peer = set.CreatePeer(entity);
                 AddCreate(peer);
             }
-            var create = new CreateTask<T>(entities);
+            var create = new CreateTask<T>(entities.ToList(), set);
             createTasks.Add(create);
             return create;
         }
@@ -105,7 +105,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal UpdateTask<T> Update(T entity) {
             var peer = set.CreatePeer(entity);
             AddUpdate(peer);
-            var update = new UpdateTask<T>(new List<T>{peer.entity});
+            var update = new UpdateTask<T>(new List<T>{peer.entity}, set);
             updateTasks.Add(update);
             return update;
         }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var peer = set.CreatePeer(entity);
                 AddUpdate(peer);
             }
-            var update = new UpdateTask<T>(entities);
+            var update = new UpdateTask<T>(entities.ToList(), set);
             updateTasks.Add(update);
             return update;
         }

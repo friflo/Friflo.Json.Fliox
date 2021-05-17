@@ -19,13 +19,27 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class CreateTask<T> : WriteTask where T : Entity
     {
-        private readonly    ICollection<T>  entities;
+        private readonly    EntitySet<T>    set;
+        private readonly    List<T>         entities;
 
         internal override   string          Label       => $"CreateTask<{typeof(T).Name}> #ids: {entities.Count}";
         public   override   string          ToString()  => Label;
         
-        internal CreateTask(ICollection<T> entities) {
-            this.entities = entities;
+        internal CreateTask(List<T> entities, EntitySet<T> set) {
+            this.set        = set;
+            this.entities   = entities;
+        }
+        
+        public void Add(T entity) {
+            set.CreatePeer(entity);
+            entities.Add(entity);
+        }
+        
+        public void AddRange(ICollection<T> entities) {
+            foreach (var entity in entities) {
+                set.CreatePeer(entity);
+            }
+            this.entities.AddRange(entities);
         }
 
         internal override void GetIds(List<string> ids) {

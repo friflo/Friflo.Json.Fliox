@@ -12,13 +12,27 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class UpdateTask<T> : WriteTask where T : Entity
     {
-        private  readonly   ICollection<T>  entities;
+        private readonly    EntitySet<T>    set;
+        private  readonly   List<T>         entities;
 
         internal override   string          Label       => $"UpdateTask<{typeof(T).Name}> #ids: {entities.Count}";
         public   override   string          ToString()  => Label;
         
-        internal UpdateTask(ICollection<T> entities) {
-            this.entities = entities;
+        internal UpdateTask(List<T> entities, EntitySet<T> set) {
+            this.set        = set;
+            this.entities   = entities;
+        }
+        
+        public void Add(T entity) {
+            set.CreatePeer(entity);
+            entities.Add(entity);
+        }
+        
+        public void AddRange(ICollection<T> entities) {
+            foreach (var entity in entities) {
+                set.CreatePeer(entity);
+            }
+            this.entities.AddRange(entities);
         }
         
         internal override void GetIds(List<string> ids) {
