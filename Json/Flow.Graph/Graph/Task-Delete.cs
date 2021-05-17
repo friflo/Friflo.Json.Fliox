@@ -7,6 +7,7 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
+    // todo remove class
     public abstract class DeleteTask : SyncTask {
         internal            TaskState   state;
         internal override   TaskState   State      => state;
@@ -19,37 +20,17 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class DeleteTask<T> : DeleteTask where T : Entity
     {
-        private  readonly   string      id;
-
-        internal override   string      Label       => $"DeleteTask<{typeof(T).Name}> id: {id}";
-        public   override   string      ToString()  => Label;
-        
-        internal DeleteTask(string id) {
-            this.id = id;
-        }
-
-        internal override void GetIds(List<string> ids) {
-            ids.Add(id);
-        }
-    }
-    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class DeleteRangeTask<T> : DeleteTask where T : Entity
-    {
         private  readonly   ICollection<string> ids;
 
-        internal override   string              Label       => $"DeleteRangeTask<{typeof(T).Name}> #ids: {ids.Count}";
+        internal override   string              Label       => $"DeleteTask<{typeof(T).Name}> #ids: {ids.Count}";
         public   override   string              ToString()  => Label;
         
-        internal DeleteRangeTask(ICollection<string> ids) {
+        internal DeleteTask(ICollection<string> ids) {
             this.ids = ids;
         }
-        
+
         internal override void GetIds(List<string> ids) {
             ids.AddRange(this.ids);
         }
-
     }
 }

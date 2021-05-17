@@ -197,7 +197,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public DeleteRangeTask<T> DeleteRange(ICollection<T> entities) {
+        public DeleteTask<T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
             var ids = entities.Select(e => e.id).ToList();
@@ -209,7 +209,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public DeleteRangeTask<T> DeleteRange(ICollection<string> ids) {
+        public DeleteTask<T> DeleteRange(ICollection<string> ids) {
             if (ids == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
             foreach (var id in ids) {
