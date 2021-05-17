@@ -119,10 +119,13 @@ namespace Friflo.Json.Flow.Database
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error}; // todo add test
             }
-            foreach (var errorEntry in updateResult.updateErrors) {
-                var key = errorEntry.Key;
-                var error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "failed writing patch target");
-                AddEntityError(ref patchErrors, key, error);
+            var updateErrors = updateResult.updateErrors;
+            if (updateErrors != null) {
+                foreach (var errorEntry in updateErrors) {
+                    var key = errorEntry.Key;
+                    var error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "failed writing patch target");
+                    AddEntityError(ref patchErrors, key, error);
+                }
             }
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
