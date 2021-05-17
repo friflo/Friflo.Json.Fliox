@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph
     {
         public readonly Entity entity;
         
-        public UnresolvedRefException(string message, Entity entity)
+        internal UnresolvedRefException(string message, Entity entity)
             : base ($"{message} Ref<{entity.GetType().Name}> id: {entity.id}")
         {
             this.entity = entity;
@@ -20,12 +20,12 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskNotSyncedException : Exception
     {
-        public TaskNotSyncedException(string message) : base (message) { }
+        internal TaskNotSyncedException(string message) : base (message) { }
     }
     
     public class TaskAlreadySyncedException : Exception
     {
-        public TaskAlreadySyncedException(string message) : base (message) { }
+        internal TaskAlreadySyncedException(string message) : base (message) { }
     }
     
     public class TaskResultException : Exception
