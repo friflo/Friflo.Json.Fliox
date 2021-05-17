@@ -65,6 +65,10 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
+        internal void AddDelete (string id) {
+            deletes.Add(id);
+        }
+        
         // --- Read
         internal ReadTask<T> Read() {
             var read = new ReadTask<T>(set);
@@ -135,17 +139,17 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- Delete
         internal DeleteTask<T> Delete(string id) {
-            deletes.Add(id);
-            var delete = new DeleteTask<T>(new List<string>{id});
+            AddDelete(id);
+            var delete = new DeleteTask<T>(new List<string>{id}, set);
             deleteTasks.Add(delete);
             return delete;
         }
         
         internal DeleteTask<T> DeleteRange(ICollection<string> ids) {
             foreach (var id in ids) {
-                deletes.Add(id);
+                AddDelete(id);
             }
-            var delete = new DeleteTask<T>(ids);
+            var delete = new DeleteTask<T>(ids.ToList(), set);
             deleteTasks.Add(delete);
             return delete;
         }
