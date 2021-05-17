@@ -74,10 +74,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             customers.writeErrors.Add(CreateTaskError,      Simulate.WriteTaskError);
             customers.writeErrors.Add(UpdateTaskError,      Simulate.WriteTaskError);
             customers.writeErrors.Add(DeleteTaskError,      Simulate.WriteTaskError);
+            customers.writeErrors.Add(PatchTaskError,       Simulate.WriteTaskError);
 
             customers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
             customers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
             customers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
+            customers.writeErrors.Add(PatchTaskException,   Simulate.WriteTaskException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
@@ -95,6 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string CreateTaskError        = "create-task-error";
         private const string UpdateTaskError        = "update-task-error";
         private const string DeleteTaskError        = "delete-task-error";
+        private const string PatchTaskError         = "patch-task-error";
             
         /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
@@ -102,6 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string CreateTaskException    = "create-task-exception";
         private const string UpdateTaskException    = "update-task-exception";
         private const string DeleteTaskException    = "delete-task-exception";
+        private const string PatchTaskException     = "patch-task-exception";
         
 
         private static async Task TestStoresErrors(PocStore useStore) {
@@ -425,29 +429,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[PatchWriteEntityError].ToString());
             }
             
-            // --- test task errors
-            
-            var patchTaskReadError      = customers.Patch (new Customer{id = ReadTaskError});
-            
-            
-            sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 1, failed: 1", sync.ToString());
-            
-            IsFalse(patchTaskReadError.Success);
-            AreEqual(TaskErrorType.DatabaseError, patchTaskReadError.Error.type);
-            AreEqual("simulated read task error", patchTaskReadError.Error.message);
-            
-            
-            // --- test task exception
+            // --- test read task error
+            {
+                var patchTaskReadError = customers.Patch(new Customer {id = ReadTaskError});
 
-            var patchTaskReadException  = customers.Patch (new Customer{id = ReadTaskException});
+                sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-            sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 1, failed: 1", sync.ToString());
+                IsFalse(patchTaskReadError.Success);
+                AreEqual(TaskErrorType.DatabaseError, patchTaskReadError.Error.type);
+                AreEqual("simulated read task error", patchTaskReadError.Error.message);
+            }
 
-            IsFalse(patchTaskReadException.Success);
-            AreEqual(TaskErrorType.UnhandledException, patchTaskReadException.Error.type);
-            AreEqual("SimulationException: simulated read task exception", patchTaskReadException.Error.message);
+            // --- test read task exception
+            {
+                var patchTaskReadException = customers.Patch(new Customer {id = ReadTaskException});
+
+                sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+                IsFalse(patchTaskReadException.Success);
+                AreEqual(TaskErrorType.UnhandledException, patchTaskReadException.Error.type);
+                AreEqual("SimulationException: simulated read task exception", patchTaskReadException.Error.message);
+            }
+            
+            // --- test write task error
+            {
+                var patchTaskWriteError = customers.Patch(new Customer {id = PatchTaskError});
+
+                sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+                IsFalse(patchTaskWriteError.Success);
+                AreEqual(TaskErrorType.DatabaseError, patchTaskWriteError.Error.type);
+                AreEqual("simulated write task error", patchTaskWriteError.Error.message);
+            }
+            
+            // --- test write task exception
+            {
+                var patchTaskWriteException = customers.Patch(new Customer {id = PatchTaskException});
+
+                sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+                IsFalse(patchTaskWriteException.Success);
+                AreEqual(TaskErrorType.UnhandledException, patchTaskWriteException.Error.type);
+                AreEqual("SimulationException: simulated write task exception", patchTaskWriteException.Error.message);
+            }
+
         }
     }
 }
