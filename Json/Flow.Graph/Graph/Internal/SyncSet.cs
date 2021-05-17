@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         /// key: entity id
         private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
-        private readonly    List<DeleteTask>                    deleteTasks  = new List<DeleteTask>();
+        private readonly    List<DeleteTask<T>>                 deleteTasks  = new List<DeleteTask<T>>();
 
         internal SyncSet(EntitySet<T> set) {
             this.set = set;
