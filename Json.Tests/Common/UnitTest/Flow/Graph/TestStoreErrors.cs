@@ -399,14 +399,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
-            var patchNotFound  = customers.Patch (new Customer{id = unknownId});
+            var patchNotFound   = customers.Patch (new Customer{id = unknownId});
             
-            var patchReadError = customers.Patch (new Customer{id = PatchReadEntityError});
+            var patchReadError  = customers.Patch (new Customer{id = PatchReadEntityError});
             
-            //var patchWriteError = customers.Patch (new Customer{id = PatchWriteEntityError});
+            var patchWriteError = customers.Patch (new Customer{id = PatchWriteEntityError});
             
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 2, failed: 2", sync.ToString());
+            AreEqual("tasks: 3, failed: 3", sync.ToString());
             
             {
                 IsFalse(patchNotFound.Success);
@@ -418,12 +418,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(TaskErrorType.EntityErrors, patchReadError.Error.type);
                 var patchErrors = patchReadError.Error.entityErrors;
                 AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[PatchReadEntityError].ToString());
-            } /* {
+            } {
                 IsFalse(patchWriteError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
                 var patchErrors = patchWriteError.Error.entityErrors;
-                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[PatchWriteEntityError].ToString());
-            }*/
+                AreEqual("PatchError: Customer 'patch-write-entity-error', failed writing patch target", patchErrors[PatchWriteEntityError].ToString());
+            }
         }
     }
 }

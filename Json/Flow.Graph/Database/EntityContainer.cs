@@ -88,6 +88,8 @@ namespace Friflo.Json.Flow.Database
                 throw new InvalidOperationException($"PatchEntities: Expect entities.Count of response matches request. expect: {ids.Count} got: {entities.Count}");
             
             // Apply patches
+            // targets collect entities with: successful read & successful applied patch 
+            var targets = new  Dictionary<string,EntityValue>(entities.Count);
             var patcher = SyncContext.jsonPatcher;
             Dictionary<string, EntityError> patchErrors = null;
             foreach (var entity in entities) {
@@ -107,19 +109,22 @@ namespace Friflo.Json.Flow.Database
                     } else {
                         var json = patcher.ApplyPatches(target, patch.patches, Pretty);
                         entity.Value.SetJson(json);
+                        targets.Add(key, value);
                     }
                 }
             }
-            if (patchErrors != null) {
-                return new PatchEntitiesResult{patchErrors = patchErrors};
-            }
             // Write patched entities back
-            var task = new UpdateEntities {entities = entities};
+            var task = new UpdateEntities {entities = targets};
             var updateResult = await UpdateEntities(task);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error}; // todo add test
             }
-            return new PatchEntitiesResult{ patchErrors = updateResult.updateErrors };
+            foreach (var errorEntry in updateResult.updateErrors) {
+                var key = errorEntry.Key;
+                var error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "failed writing patch target");
+                AddEntityError(ref patchErrors, key, error);
+            }
+            return new PatchEntitiesResult{patchErrors = patchErrors};
         }
 
         public async Task<ReadReferencesResult> ReadReferences(
