@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Database
             var readTask = new ReadEntities {ids = ids};
             var readResult = await ReadEntities(readTask);
             if (readResult.Error != null) {
-                return new PatchEntitiesResult {Error = readResult.Error}; // todo add test
+                return new PatchEntitiesResult {Error = readResult.Error};
             }
             var entities = readResult.entities;
             if (entities.Count != ids.Count)
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Database
             var task = new UpdateEntities {entities = targets};
             var updateResult = await UpdateEntities(task);
             if (updateResult.Error != null) {
-                return new PatchEntitiesResult {Error = updateResult.Error}; // todo add test
+                return new PatchEntitiesResult {Error = updateResult.Error};
             }
             var updateErrors = updateResult.updateErrors;
             if (updateErrors != null) {
@@ -213,7 +213,8 @@ namespace Friflo.Json.Flow.Database
             if (errors == null) {
                 errors = new Dictionary<string, EntityError>();
             }
-            errors.Add(key, error);
+            // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
+            errors.TryAdd(key, error);
         }
     }
 
