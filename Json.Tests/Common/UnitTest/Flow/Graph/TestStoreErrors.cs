@@ -65,6 +65,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             customers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
             customers.writeErrors.Add(CreateEntityError,    Simulate.WriteEntityError);
             customers.writeErrors.Add(UpdateEntityError,    Simulate.WriteEntityError);
+            customers.writeErrors.Add(PatchWriteEntityError,Simulate.WriteEntityError);
+            customers.readErrors. Add(PatchReadEntityError, Simulate.ReadEntityError);
 
             customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
             customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
@@ -85,6 +87,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string DeleteEntityError      = "delete-entity-error";
         private const string CreateEntityError      = "create-entity-error";
         private const string UpdateEntityError      = "update-entity-error";
+        
+        private const string PatchReadEntityError   = "patch-read-entity-error";
+        private const string PatchWriteEntityError  = "patch-write-entity-error";
 
         private const string ReadTaskError          = "read-task-error";
         private const string CreateTaskError        = "create-task-error";
@@ -392,16 +397,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         private static async Task AssertEntityPatch(PocStore store) {
             var customers = store.customers;
+            const string unknownId = "unknown-id";
             
-            var patchNotFound  = customers.Patch (new Customer{id = "unknown-id"});
+            var patchNotFound  = customers.Patch (new Customer{id = unknownId});
+            
+            var patchReadError = customers.Patch (new Customer{id = PatchReadEntityError});
+            
+            //var patchWriteError = customers.Patch (new Customer{id = PatchWriteEntityError});
             
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 1, failed: 1", sync.ToString());
+            AreEqual("tasks: 2, failed: 2", sync.ToString());
             
-            IsFalse(patchNotFound.Success);
-            AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
-            var patchErrors = patchNotFound.Error.entityErrors;
-            AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors["unknown-id"].ToString());
+            {
+                IsFalse(patchNotFound.Success);
+                AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
+                var patchErrors = patchNotFound.Error.entityErrors;
+                AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors[unknownId].ToString());
+            } {
+                IsFalse(patchReadError.Success);
+                AreEqual(TaskErrorType.EntityErrors, patchReadError.Error.type);
+                var patchErrors = patchReadError.Error.entityErrors;
+                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[PatchReadEntityError].ToString());
+            } /* {
+                IsFalse(patchWriteError.Success);
+                AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
+                var patchErrors = patchWriteError.Error.entityErrors;
+                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[PatchWriteEntityError].ToString());
+            }*/
         }
     }
 }
