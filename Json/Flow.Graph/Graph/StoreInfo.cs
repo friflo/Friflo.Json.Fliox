@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph
         public  int     patch;
         public  int     delete;
 
-        public SetInfo(string name) {
+        internal SetInfo(string name) {
             this.name = name;
             peers   = 0;
             tasks   = 0;
