@@ -24,13 +24,15 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Add(T entity) {
-            set.CreatePeer(entity);
+            var peer = set.CreatePeer(entity);
+            set.sync.AddUpdate(peer);
             entities.Add(entity);
         }
         
         public void AddRange(ICollection<T> entities) {
             foreach (var entity in entities) {
-                set.CreatePeer(entity);
+                var peer = set.CreatePeer(entity);
+                set.sync.AddUpdate(peer);
             }
             this.entities.AddRange(entities);
         }
