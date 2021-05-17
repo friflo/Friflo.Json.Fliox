@@ -399,11 +399,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
-            var patchNotFound   = customers.Patch (new Customer{id = unknownId});
+            var patchNotFound       = customers.Patch (new Customer{id = unknownId});
             
-            var patchReadError  = customers.Patch (new Customer{id = PatchReadEntityError});
+            var patchReadError      = customers.Patch (new Customer{id = PatchReadEntityError});
             
-            var patchWriteError = customers.Patch (new Customer{id = PatchWriteEntityError});
+            var patchWriteError     = customers.Patch (new Customer{id = PatchWriteEntityError});
             
             var sync = await store.TrySync(); // -------- Sync --------
             AreEqual("tasks: 3, failed: 3", sync.ToString());
@@ -424,6 +424,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var patchErrors = patchWriteError.Error.entityErrors;
                 AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[PatchWriteEntityError].ToString());
             }
+            
+            // --- test task errors
+            
+            var patchTaskReadError      = customers.Patch (new Customer{id = ReadTaskError});
+            
+            
+            sync = await store.TrySync(); // -------- Sync --------
+            AreEqual("tasks: 1, failed: 1", sync.ToString());
+            
+            IsFalse(patchTaskReadError.Success);
+            AreEqual(TaskErrorType.DatabaseError, patchTaskReadError.Error.type);
+            AreEqual("simulated read task error", patchTaskReadError.Error.message);
+            
+            
+            // --- test task exception
+
+            var patchTaskReadException  = customers.Patch (new Customer{id = ReadTaskException});
+
+            sync = await store.TrySync(); // -------- Sync --------
+            AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+            IsFalse(patchTaskReadException.Success);
+            AreEqual(TaskErrorType.UnhandledException, patchTaskReadException.Error.type);
+            AreEqual("SimulationException: simulated read task exception", patchTaskReadException.Error.message);
         }
     }
 }

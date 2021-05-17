@@ -185,7 +185,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            if (result is TaskErrorResult) {
+            if (result is TaskErrorResult taskError) {
+                foreach (var patchTask in patchTasks) {
+                    patchTask.state.SetError(new TaskErrorInfo(taskError));
+                }
                 /* foreach (var patchPair in patches) {
                     var patch = patchPair.Value;
                     // patch.taskError = taskError; todo
