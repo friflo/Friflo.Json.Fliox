@@ -105,17 +105,17 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal UpdateTask<T> Update(T entity) {
             var peer = set.CreatePeer(entity);
             AddUpdate(peer);
-            var update = new UpdateTask<T>(peer.entity);
+            var update = new UpdateTask<T>(new List<T>{peer.entity});
             updateTasks.Add(update);
             return update;
         }
         
-        internal UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
+        internal UpdateTask<T> UpdateRange(ICollection<T> entities) {
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
                 AddUpdate(peer);
             }
-            var update = new UpdateRangeTask<T>(entities);
+            var update = new UpdateTask<T>(entities);
             updateTasks.Add(update);
             return update;
         }

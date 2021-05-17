@@ -147,7 +147,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public UpdateRangeTask<T> UpdateRange(ICollection<T> entities) {
+        public UpdateTask<T> UpdateRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
