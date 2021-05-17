@@ -422,7 +422,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsFalse(patchWriteError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
                 var patchErrors = patchWriteError.Error.entityErrors;
-                AreEqual("PatchError: Customer 'patch-write-entity-error', failed writing patch target", patchErrors[PatchWriteEntityError].ToString());
+                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[PatchWriteEntityError].ToString());
             }
         }
     }

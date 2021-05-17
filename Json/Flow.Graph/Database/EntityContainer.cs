@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Database
             if (updateErrors != null) {
                 foreach (var errorEntry in updateErrors) {
                     var key = errorEntry.Key;
-                    var error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "failed writing patch target");
+                    var error = errorEntry.Value;
                     AddEntityError(ref patchErrors, key, error);
                 }
             }
