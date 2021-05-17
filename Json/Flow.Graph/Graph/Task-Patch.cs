@@ -31,12 +31,13 @@ namespace Friflo.Json.Flow.Graph
                 sb.Append(typeof(T).Name);
                 sb.Append("> #ids: ");
                 sb.Append(peers.Count);
-                sb.Append(", members: ");
+                sb.Append(", members: [");
                 for (int n = 0; n < members.Count; n++) {
                     if (n > 0)
                         sb.Append(", ");
                     sb.Append(members[n]);
                 }
+                sb.Append("]");
                 return sb.ToString();
             }
         }
