@@ -335,9 +335,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var updateError = customers.Update(new Customer{id = UpdateTaskError});
             
             var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
+            
+            var patchNotFound  = customers.Patch (new Customer{id = "unknown-id"});
+
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqual("tasks: 6, failed: 6", sync.ToString());
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -359,6 +362,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(deleteError.Success);
             AreEqual(TaskErrorType.DatabaseError, deleteError.Error.type);
             AreEqual("simulated write task error", deleteError.Error.message);
+            
+            IsFalse(patchNotFound.Success);
+            AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
+            var patchErrors = patchNotFound.Error.entityErrors;
+            AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors["unknown-id"].ToString());
         }
         
         private static async Task AssertEntityWrite(PocStore store) {

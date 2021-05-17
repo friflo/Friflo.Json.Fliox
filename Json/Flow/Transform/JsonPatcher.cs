@@ -35,12 +35,15 @@ namespace Friflo.Json.Flow.Transform
             serializer.Dispose();
         }
         
-        public string ApplyPatches(string root, IList<JsonPatch> patches, bool pretty = false) {
+        public string ApplyPatches(string target, IList<JsonPatch> patches, bool pretty = false) {
+            if (target == null)
+                throw new ArgumentException("ApplyPatches() target mus not be null");
+                    
             PatchNode.CreatePatchTree(rootNode, patches, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
             targetJson.Clear();
-            targetJson.AppendString(root);
+            targetJson.AppendString(target);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
             serializer.InitSerializer();

@@ -58,6 +58,7 @@ namespace Friflo.Json.Flow.Sync
         ParseError,
         ReadError,
         WriteError,
-        DeleteError
+        DeleteError,
+        PatchError
     }
 }
