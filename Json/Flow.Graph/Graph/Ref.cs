@@ -7,7 +7,9 @@ using Friflo.Json.Flow.Graph.Internal;
 namespace Friflo.Json.Flow.Graph
 {
     /// <summary>
-    /// A <see cref="Ref{T}"/> is used to declare fields being references to other <see cref="Graph.Entity"/> instances in a data modal.
+    /// A <see cref="Ref{T}"/> is used to declare type safe fields being references to other entities (extending <see cref="Entity"/>)
+    /// in a data model.
+    /// 
     /// <para>
     /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
