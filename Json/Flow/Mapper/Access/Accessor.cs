@@ -5,7 +5,7 @@ using System;
 using Friflo.Json.Flow.Mapper.Utils;
 using Friflo.Json.Flow.Transform.Select;
 
-namespace Friflo.Json.Flow.Mapper.Select
+namespace Friflo.Json.Flow.Mapper.Access
 {
     public class Accessor : IDisposable
     {

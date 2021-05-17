@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Flow.Mapper.Select;
+using Friflo.Json.Flow.Mapper.Access;
 
 namespace Friflo.Json.Flow.Mapper
 {
