@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Mapper;
@@ -54,13 +55,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
 
                 var objectSelect = new MemberAccess(selectors);
                 var objectResults = objectSelector.GetValues(sample, objectSelect);
-                AreEqual(@"{""val2"":68}",          objectResults[0].json);
-                AreEqual("69",                      objectResults[1].json);
-                AreEqual("94.0",                    objectResults[2].json);
-                AreEqual("true",                    objectResults[3].json);
-                AreEqual(@"""one""",                objectResults[4].json);
-                AreEqual("null",                    objectResults[5].json);
-                AreEqual(null,                      objectResults[6].json);
+                AreEqual(@"{""val2"":68}",          objectResults[0].Json);
+                AreEqual("69",                      objectResults[1].Json);
+                AreEqual("94.0",                    objectResults[2].Json);
+                AreEqual("true",                    objectResults[3].Json);
+                AreEqual(@"""one""",                objectResults[4].Json);
+                AreEqual("null",                    objectResults[5].Json);
+                IsFalse(                            objectResults[6].Found);
+
+                var e = Throws<InvalidOperationException>(() => _ = objectResults[6].Json);
+                AreEqual("member not found. path: .unknown", e.Message);
             }
         }
 

@@ -271,7 +271,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     int n = 0;
                     foreach (var path in patchTask.members) {
                         var value = new JsonValue {
-                            json = selectResults[n++].json
+                            json = selectResults[n++].Json
                         };
                         entityPatch.Add(new PatchReplace {
                             path = path,

@@ -31,6 +31,7 @@ namespace Friflo.Json.Flow.Mapper.Select
             
             var json = writer.WriteObject(value);
             foreach (var sel in node.selectors) {
+                sel.result.Found    = true;
                 sel.result.json     = json;
                 sel.result.value    = value;
             }

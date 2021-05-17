@@ -10,6 +10,8 @@ namespace Friflo.Json.Flow.Transform.Select
         private  readonly   bool            isArrayResult;
         internal readonly   PathNode<T>     parentGroup;
         internal            T               result;
+        
+        internal            string          Path => path;
 
         public override string ToString() => path;
         

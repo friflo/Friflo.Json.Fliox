@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Transform.Select;
 
@@ -27,7 +28,7 @@ namespace Friflo.Json.Flow.Mapper
         
         internal void InitSelectorResults() {
             foreach (var selector in nodeTree.selectors) {
-                selector.result.Init();
+                selector.result.Init(selector.Path);
             }
         }
     }
@@ -35,12 +36,19 @@ namespace Friflo.Json.Flow.Mapper
     // --- Select result ---
     public class MemberValue
     {
-        public      string  json;
-        public      object  value;
+        internal    string  json;
+        internal    object  value;
+        private     string  path;
+        public      bool    Found { get; internal set; }
+        
+        public      string  Json    => Found ? json  : throw new InvalidOperationException($"member not found. path: {path}");
+        public      object  Value   => Found ? value : throw new InvalidOperationException($"member not found. path: {path}");
 
-        internal void Init() {
-            json    = null;
-            value   = null;
+        internal void Init(string path) {
+            this.path   = path;
+            Found       = false;
+            json        = null;
+            value       = null;
         }
     }
 }
