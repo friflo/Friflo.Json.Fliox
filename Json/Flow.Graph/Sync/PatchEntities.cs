@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Sync
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.PatchEntities(this);
             if (result.Error != null) {
-                return TaskError(result.Error); // todo add test 
+                return TaskError(result.Error); 
             }
             if (result.patchErrors != null && result.patchErrors.Count > 0) {
                 var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);

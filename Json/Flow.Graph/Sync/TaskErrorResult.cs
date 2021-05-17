@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Sync
     public enum TaskErrorResultType {
         Undefined,          // Prevent implicit initialization of underlying value 0 to a valid value (UnhandledException)
         /// <summary>
-        /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation -> a bug.
+        /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
         /// More information at <see cref="EntityDatabase.ExecuteSync"/>.
         /// </summary>
         UnhandledException,
