@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Flow.Transform.Query.Ops;
 
