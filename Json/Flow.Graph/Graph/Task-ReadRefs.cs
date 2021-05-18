@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : Entity
     {
-        ReadRefsTask<TValue> Read           <TValue>(RefsPath<TValue> selector)                               where TValue : Entity;
+        ReadRefsTask<TValue> Read           <TValue>(RefsPath<TValue> selector)                              where TValue : Entity;
         ReadRefsTask<TValue> ReadRefs       <TValue>(Expression<Func<T, Ref<TValue>>> selector)              where TValue : Entity;
         ReadRefsTask<TValue> ReadArrayRefs  <TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity;
     }
@@ -160,4 +160,9 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
+    public class RefPath<T> : RefsPath<T> where T : Entity
+    {
+        internal RefPath(string path) : base (path) { }
+    }
+
 }
