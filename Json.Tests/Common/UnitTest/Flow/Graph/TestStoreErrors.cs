@@ -488,16 +488,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
             
             // --- prepare precondition for log changes
-            const string id = "log-patch-entity-write-error";
+            const string writeError = "log-patch-entity-write-error";
+            const string readError  = "log-patch-entity-read-error";
             var readCustomers = customers.Read();
-            var customer = readCustomers.Find(id);
+            var customerWriteError  = readCustomers.Find(writeError);
+            var customerReadError   = readCustomers.Find(readError);
 
             await store.Sync();
 
             // --- setup simulation errors after preconditions are established
-            _customers.writeErrors.Add(id,    Simulate.WriteEntityError);
+            _customers.writeErrors.Add(writeError,    Simulate.WriteEntityError);
+            _customers.readErrors. Add(readError,     Simulate.ReadEntityError);
 
-            customer.Result.name = "<name changed>";
+            customerWriteError.Result.name  = "<name changed>";
+            customerReadError.Result.name   = "<name changed>";
             var logChanges       = customers.LogSetChanges();
             
             var sync = await store.TrySync(); // -------- Sync --------
@@ -505,7 +509,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             IsFalse(logChanges.Success);
             AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-            AreEqual(@"Task failed by entity errors. Count: 1
+            AreEqual(@"Task failed by entity errors. Count: 2
+| ReadError: Customer 'log-patch-entity-read-error', simulated read entity error
 | WriteError: Customer 'log-patch-entity-write-error', simulated write entity error", logChanges.Error.Message);
         }
     }
