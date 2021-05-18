@@ -134,8 +134,6 @@ namespace Friflo.Json.Flow.Graph
         }
         
         private ReadRefTask<TValue> ReadRefByPath<TValue>(string path) where TValue : Entity {
-            if (State.IsSynced())
-                throw AlreadySyncedError();
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
                 return (ReadRefTask<TValue>)subRefsTask;
             var newQueryRefs = new ReadRefTask<TValue>(this, path, typeof(TValue).Name);
