@@ -348,16 +348,16 @@ namespace Friflo.Json.Flow.Graph.Internal
             peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
         }
 
-        private static int Some(int count) { return count != 0 ? 1 : 0; }
+        private static int Any(int count) { return count != 0 ? 1 : 0; }
 
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
-                Some(reads.Count)   +
+                Any(reads.Count)   +
                 queries.Count       +
-                Some(creates.Count) +
-                Some(updates.Count) +
-                Some(patches.Count + patchTasks.Count) +
-                Some(deletes.Count);
+                Any(creates.Count) +
+                Any(updates.Count) +
+                Any(patches.Count + patchTasks.Count) +
+                Any(deletes.Count);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;
