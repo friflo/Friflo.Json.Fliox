@@ -151,18 +151,28 @@ namespace Friflo.Json.Flow.Graph
     
     public class RefsPath<T> where T : Entity
     {
-        internal readonly string path;
+        public readonly string path;
 
         public override string ToString() => path;
 
         internal RefsPath(string path) {
             this.path = path;
         }
+        
+        public static RefsPath<TValue> MemberRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefsPath<TValue>(selectorPath);
+        }
     }
     
     public class RefPath<T> : RefsPath<T> where T : Entity
     {
         internal RefPath(string path) : base (path) { }
+        
+        public static RefPath<TValue> MemberRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefPath<TValue>(selectorPath);
+        }
     }
 
 }

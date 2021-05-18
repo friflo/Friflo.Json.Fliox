@@ -246,6 +246,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 producerEmployees.Results.Count);
             AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
         }
+
+        /// Optimization: <see cref="RefPath{T}"/> and <see cref="RefsPath{T}"/> can be created static as creating
+        /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
+        private static readonly RefPath<Customer> OrderCustomer = RefPath<Order>.MemberRef(o => o.customer);
+        private static readonly RefsPath<Article> ItemsArticle  = RefsPath<Order>.MemberRefs(o => o.items.Select(a => a.article));
         
         private static async Task AssertReadTask(PocStore store) {
             var orders = store.orders;
@@ -256,9 +261,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // schedule ReadRefs on an already synced Read operation
             Exception e;
             var orderCustomer = orders.MemberRef(o => o.customer);
+            AreEqual(OrderCustomer.path, orderCustomer.path);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(orderCustomer); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             var itemsArticle = orders.MemberRefs(o => o.items.Select(a => a.article));
+            AreEqual(ItemsArticle.path, itemsArticle.path);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(itemsArticle); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             
