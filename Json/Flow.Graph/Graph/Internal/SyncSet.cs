@@ -192,77 +192,94 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
+        // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<DatabaseTask> tasks) {
-            // --- CreateEntities
-            if (creates.Count > 0) {
-                var entries = new Dictionary<string, EntityValue>();
-                foreach (var createPair in creates) {
-                    T entity = createPair.Value.entity;
-                    var json = set.intern.jsonMapper.Write(entity);
-                    var entry = new EntityValue(json);
-                    entries.Add(entity.id, entry);
+            CreateEntities  (tasks);
+            UpdateEntities  (tasks);
+            ReadEntitiesList(tasks);
+            QueryEntities   (tasks);
+            PatchEntities   (tasks);
+            DeleteEntities  (tasks);
+        }
+        
+        private void CreateEntities(List<DatabaseTask> tasks) {
+            if (creates.Count == 0)
+                return;
+            var entries = new Dictionary<string, EntityValue>();
+            foreach (var createPair in creates) {
+                T entity = createPair.Value.entity;
+                var json = set.intern.jsonMapper.Write(entity);
+                var entry = new EntityValue(json);
+                entries.Add(entity.id, entry);
+            }
+            var req = new CreateEntities {
+                container = set.name,
+                entities = entries
+            };
+            tasks.Add(req);
+        }
+
+        private void UpdateEntities(List<DatabaseTask> tasks) {
+            if (updates.Count == 0)
+                return;
+            var entries = new Dictionary<string, EntityValue>();
+            foreach (var updatePair in updates) {
+                T entity = updatePair.Value.entity;
+                var json = set.intern.jsonMapper.Write(entity);
+                var entry = new EntityValue(json);
+                entries.Add(entity.id, entry);
+            }
+            var req = new UpdateEntities {
+                container = set.name,
+                entities = entries
+            };
+            tasks.Add(req);
+        }
+
+        private void ReadEntitiesList(List<DatabaseTask> tasks) {
+            if (reads.Count == 0)
+                return;
+            var readList = new ReadEntitiesList {
+                reads       = new List<ReadEntities>(),
+                container   = set.name
+            };
+            foreach (var read in reads) {
+                List<References> references = null;
+                if (read.refsTask.subRefs.Count >= 0) {
+                    references = new List<References>(reads.Count);
+                    AddReferences(references, read.refsTask.subRefs);
                 }
-                var req = new CreateEntities {
-                    container = set.name,
-                    entities = entries
+                var req = new ReadEntities {
+                    ids = read.idMap.Keys.ToHashSet(),
+                    references = references
+                };
+                readList.reads.Add(req);
+            }
+            tasks.Add(readList);
+        }
+        
+        private void QueryEntities(List<DatabaseTask> tasks) {
+            if (queries.Count == 0)
+                return;
+            foreach (var queryPair in queries) {
+                QueryTask<T> query = queryPair.Value;
+                var subRefs = query.refsTask.subRefs;
+                List<References> references = null;
+                if (subRefs.Count > 0) {
+                    references = new List<References>(subRefs.Count);
+                    AddReferences(references, subRefs);
+                }
+                var req = new QueryEntities {
+                    container   = set.name,
+                    filter      = query.filter,
+                    filterLinq  = query.filterLinq,
+                    references  = references
                 };
                 tasks.Add(req);
             }
-            // --- UpdateEntities
-            if (updates.Count > 0) {
-                var entries = new Dictionary<string, EntityValue>();
-                foreach (var updatePair in updates) {
-                    T entity = updatePair.Value.entity;
-                    var json = set.intern.jsonMapper.Write(entity);
-                    var entry = new EntityValue(json);
-                    entries.Add(entity.id, entry);
-                }
-                var req = new UpdateEntities {
-                    container = set.name,
-                    entities = entries
-                };
-                tasks.Add(req);
-            }
-            // --- ReadEntities
-            if (reads.Count > 0) {
-                var readList = new ReadEntitiesList {
-                    reads       = new List<ReadEntities>(),
-                    container   = set.name
-                };
-                foreach (var read in reads) {
-                    List<References> references = null;
-                    if (read.refsTask.subRefs.Count >= 0) {
-                        references = new List<References>(reads.Count);
-                        AddReferences(references, read.refsTask.subRefs);
-                    }
-                    var req = new ReadEntities {
-                        ids = read.idMap.Keys.ToHashSet(),
-                        references = references
-                    };
-                    readList.reads.Add(req);
-                }
-                tasks.Add(readList);
-            }
-            // --- QueryEntities
-            if (queries.Count > 0) {
-                foreach (var queryPair in queries) {
-                    QueryTask<T> query = queryPair.Value;
-                    var subRefs = query.refsTask.subRefs;
-                    List<References> references = null;
-                    if (subRefs.Count > 0) {
-                        references = new List<References>(subRefs.Count);
-                        AddReferences(references, subRefs);
-                    }
-                    var req = new QueryEntities {
-                        container   = set.name,
-                        filter      = query.filter,
-                        filterLinq  = query.filterLinq,
-                        references  = references
-                    };
-                    tasks.Add(req);
-                }
-            }
-            // --- PatchEntities
+        }
+
+        private void PatchEntities(List<DatabaseTask> tasks) {
             foreach (var patchTask in patchTasks) {
                 var memberAccess    = new MemberAccess(patchTask.members);
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
@@ -289,17 +306,20 @@ namespace Friflo.Json.Flow.Graph.Internal
                 };
                 tasks.Add(req);
             }
-            // --- DeleteEntities
-            if (deletes.Count > 0) {
-                var req = new DeleteEntities {
-                    container   = set.name,
-                    ids         = new HashSet<string>(deletes)
-                };
-                tasks.Add(req);
-                deletes.Clear();
-            }
         }
 
+        private void DeleteEntities(List<DatabaseTask> tasks) {
+            if (deletes.Count == 0)
+                return;
+            var req = new DeleteEntities {
+                container   = set.name,
+                ids         = new HashSet<string>(deletes)
+            };
+            tasks.Add(req);
+            deletes.Clear();
+        }
+        
+        // ----------------------------------- helper methods -----------------------------------
         private static void AddReferences(List<References> references, SubRefs refs) {
             foreach (var readRefs in refs) {
                 var queryReference = new References {
