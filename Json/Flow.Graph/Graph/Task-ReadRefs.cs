@@ -10,7 +10,6 @@ using Friflo.Json.Flow.Graph.Internal;
 namespace Friflo.Json.Flow.Graph
 {
 
-    
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
     public abstract class ReadRefsTask : SyncTask
     {
@@ -148,33 +147,4 @@ namespace Friflo.Json.Flow.Graph
             return refsTask.ReadRefsByExpression<TRef>(selector);
         }
     }
-
-    public class RefsPath<TEntity, TRef>    where TEntity : Entity
-                                            where TRef    : Entity 
-    {
-        public readonly string path;
-
-        public override string ToString() => path;
-
-        internal RefsPath(string path) {
-            this.path = path;
-        }
-        
-        public static RefsPath<TEntity, TRef> MemberRefs(Expression<Func<TEntity, IEnumerable<Ref<TRef>>>> selector)  {
-            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<TEntity, TRef>(selectorPath);
-        }
-    }
-    
-    public class RefPath<TEntity, TRef> : RefsPath<TEntity, TRef>   where TEntity : Entity
-                                                                    where TRef    : Entity 
-    {
-        internal RefPath(string path) : base (path) { }
-        
-        public static RefPath<TEntity, TRef> MemberRef(Expression<Func<TEntity, Ref<TRef>>> selector) {
-            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<TEntity, TRef>(selectorPath);
-        }
-    }
-
 }
