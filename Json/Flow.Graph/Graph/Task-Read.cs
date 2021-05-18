@@ -138,7 +138,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TValue> Read<TValue>(RefPath<TValue> selector) where TValue : Entity {
+        public ReadRefsTask<TValue> Read<TValue>(RefsPath<TValue> selector) where TValue : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector.path);

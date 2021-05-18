@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Graph
             this.filterLinq = filter.Linq;
         }
 
-        public ReadRefsTask<TValue> Read<TValue>(RefPath<TValue> selector) where TValue : Entity {
+        public ReadRefsTask<TValue> Read<TValue>(RefsPath<TValue> selector) where TValue : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector.path);

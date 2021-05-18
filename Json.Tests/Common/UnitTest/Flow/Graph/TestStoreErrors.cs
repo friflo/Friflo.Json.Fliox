@@ -217,7 +217,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefByPath<Article>("customer"); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
-            var itemsArticle = RefPath<Order>.Array(o => o.items.Select(a => a.article));
+            var itemsArticle = orders.RefPathArray(o => o.items.Select(a => a.article));
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(itemsArticle); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             
