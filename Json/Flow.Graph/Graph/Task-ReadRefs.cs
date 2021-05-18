@@ -27,7 +27,6 @@ namespace Friflo.Json.Flow.Graph
         ReadRefsTask<TValue> Read           <TValue>(RefPath<TValue> selector)                               where TValue : Entity;
         ReadRefsTask<TValue> ReadRefs       <TValue>(Expression<Func<T, Ref<TValue>>> selector)              where TValue : Entity;
         ReadRefsTask<TValue> ReadArrayRefs  <TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity;
-        ReadRefsTask<TValue> ReadRefsByPath <TValue>(string selector)                                        where TValue : Entity;
     }
 
     // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
@@ -88,12 +87,6 @@ namespace Friflo.Json.Flow.Graph
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
-        
-        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.IsSynced())
-                throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TValue>(selector);
-        }
     }
     
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
@@ -153,12 +146,6 @@ namespace Friflo.Json.Flow.Graph
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
-        }
-        
-        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.IsSynced())
-                throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TValue>(selector);
         }
     }
     

@@ -155,11 +155,5 @@ namespace Friflo.Json.Flow.Graph
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TValue>(selector);
         }
-        
-        public ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector) where TValue : Entity {
-            if (State.IsSynced())
-                throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TValue>(selector);
-        }
     }
 }
