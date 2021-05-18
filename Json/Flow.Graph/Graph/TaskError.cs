@@ -44,6 +44,8 @@ namespace Friflo.Json.Flow.Graph
         public   readonly   string                              message;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
         public   readonly   IDictionary<string, EntityError>    entityErrors;
+
+        public              string                              Message => GetMessage();
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
