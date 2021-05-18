@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Graph
             return ReadRefByPath<TRef>(path);
         }
         
-        public ReadRefTask<TRef> Read<TRef>(RefPath<T, TRef> selector) where TRef : Entity {
+        public ReadRefTask<TRef> ReadRefPath<TRef>(RefPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return ReadRefByPath<TRef>(selector.path);
@@ -142,7 +142,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TRef> Read<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
+        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path);

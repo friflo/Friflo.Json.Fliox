@@ -137,8 +137,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
 
             var orderCustomer = orders.MemberRef(o => o.customer);
-            ReadRefTask<Customer> customer  = readOrders.Read(orderCustomer);
-            ReadRefTask<Customer> customer2 = readOrders.Read(orderCustomer);
+            ReadRefTask<Customer> customer  = readOrders.ReadRefPath(orderCustomer);
+            ReadRefTask<Customer> customer2 = readOrders.ReadRefPath(orderCustomer);
             AreSame(customer, customer2);
             ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
@@ -217,18 +217,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // schedule ReadRefs on an already synced Read operation
             Exception e;
             var orderCustomer = orders.MemberRef(o => o.customer);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(orderCustomer); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             var itemsArticle = orders.MemberRefs(o => o.items.Select(a => a.article));
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(itemsArticle); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             
             // todo add Read() without ids 
 
             readOrders = orders.Read();
             readOrders.Find("order-1");
-            ReadRefsTask<Article> articleRefsTask  = readOrders.Read(itemsArticle);
-            ReadRefsTask<Article> articleRefsTask2 = readOrders.Read(itemsArticle);
+            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsPath(itemsArticle);
+            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsPath(itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
             
             ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));

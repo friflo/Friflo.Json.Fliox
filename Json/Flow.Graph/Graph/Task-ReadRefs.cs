@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : Entity
     {
-        ReadRefsTask<TRef> Read           <TRef>(RefsPath<T, TRef> selector)                           where TRef : Entity;
+        ReadRefsTask<TRef> ReadRefsPath   <TRef>(RefsPath<T, TRef> selector)                           where TRef : Entity;
         ReadRefsTask<TRef> ReadRefs       <TRef>(Expression<Func<T, Ref<TRef>>> selector)              where TRef : Entity;
         ReadRefsTask<TRef> ReadArrayRefs  <TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity;
     }
@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TRef> Read<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
+        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path);
@@ -130,7 +130,7 @@ namespace Friflo.Json.Flow.Graph
             entity = peer.entity;
         }
         
-        public ReadRefsTask<TRef> Read<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
+        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path);
