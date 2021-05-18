@@ -1,4 +1,6 @@
-﻿using System; // for DEBUG
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System; // for DEBUG
 using Friflo.Json.Burst;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;

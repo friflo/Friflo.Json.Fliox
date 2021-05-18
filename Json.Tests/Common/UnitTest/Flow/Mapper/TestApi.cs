@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;

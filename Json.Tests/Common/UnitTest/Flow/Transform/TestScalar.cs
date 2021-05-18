@@ -1,4 +1,6 @@
-﻿using Friflo.Json.Flow.Transform;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using Friflo.Json.Flow.Transform;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

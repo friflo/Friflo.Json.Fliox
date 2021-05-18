@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System.Linq;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
