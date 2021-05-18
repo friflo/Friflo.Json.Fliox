@@ -24,6 +24,7 @@ namespace Friflo.Json.Flow.Graph
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : Entity
     {
+        ReadRefsTask<TValue> Read           <TValue>(RefPath<TValue> selector)                               where TValue : Entity;
         ReadRefsTask<TValue> ReadRefs       <TValue>(Expression<Func<T, Ref<TValue>>> selector)              where TValue : Entity;
         ReadRefsTask<TValue> ReadArrayRefs  <TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity;
         ReadRefsTask<TValue> ReadRefsByPath <TValue>(string selector)                                        where TValue : Entity;
@@ -70,6 +71,12 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
+        public ReadRefsTask<TValue> Read<TValue>(RefPath<TValue> selector) where TValue : Entity {
+            if (State.IsSynced())
+                throw AlreadySyncedError();
+            return refsTask.ReadRefsByPath<TValue>(selector.path);
+        }
+        
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
@@ -130,6 +137,12 @@ namespace Friflo.Json.Flow.Graph
             entity = peer.entity;
         }
         
+        public ReadRefsTask<TValue> Read<TValue>(RefPath<TValue> selector) where TValue : Entity {
+            if (State.IsSynced())
+                throw AlreadySyncedError();
+            return refsTask.ReadRefsByPath<TValue>(selector.path);
+        }
+        
         public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
@@ -146,6 +159,27 @@ namespace Friflo.Json.Flow.Graph
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TValue>(selector);
+        }
+    }
+    
+    public class RefPath<T> where T : Entity
+    {
+        internal readonly string path;
+
+        public override string ToString() => path;
+
+        private RefPath(string path) {
+            this.path = path;
+        }
+
+        public static RefPath<TValue> Member<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefPath<TValue>(path);
+        }
+        
+        public static RefPath<TValue> Array<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefPath<TValue>(path);
         }
     }
     

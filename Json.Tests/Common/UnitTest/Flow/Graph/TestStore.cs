@@ -256,15 +256,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefByPath<Article>("customer"); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsByPath<Article>("items[*].article"); });
+            var itemsArticle = RefPath<Order>.Array(o => o.items.Select(a => a.article));
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.Read(itemsArticle); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             
             // todo add Read() without ids 
 
             readOrders = orders.Read();
             readOrders.Find("order-1");
-            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsByPath<Article>(".items[*].article");
-            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsByPath<Article>(".items[*].article");
+            ReadRefsTask<Article> articleRefsTask  = readOrders.Read(itemsArticle);
+            ReadRefsTask<Article> articleRefsTask2 = readOrders.Read(itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
             
             ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
