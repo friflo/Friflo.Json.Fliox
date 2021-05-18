@@ -10,8 +10,8 @@ namespace Friflo.Json.Flow.Graph
 {
     public class LogTask : SyncTask
     {
-        private  readonly   List<Change>        patches = new List<Change>(); // todo use PatchTask<> instead
-        private  readonly   List<Change>        creates = new List<Change>(); // todo use CreateTask<> instead
+        private  readonly   List<Change>        patches = new List<Change>();
+        private  readonly   List<Change>        creates = new List<Change>();
         
         public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
         public              int                 GetCreateCount()  => creates.Count; // count as method to avoid flooding properties
