@@ -497,21 +497,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync();
 
             // --- setup simulation errors after preconditions are established
-            _customers.writeErrors.Add(writeError,    Simulate.WriteEntityError);
-            _customers.readErrors. Add(readError,     Simulate.ReadEntityError);
+            {
+                _customers.writeErrors.Add(writeError, Simulate.WriteEntityError);
+                _customers.readErrors.Add(readError, Simulate.ReadEntityError);
 
-            customerWriteError.Result.name  = "<name changed>";
-            customerReadError.Result.name   = "<name changed>";
-            var logChanges       = customers.LogSetChanges();
-            
-            var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 1, failed: 1", sync.ToString());
-            
-            IsFalse(logChanges.Success);
-            AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-            AreEqual(@"Task failed by entity errors. Count: 2
+                customerWriteError.Result.name = "<name change 1>";
+                customerReadError.Result.name = "<name change 1>";
+                var logChanges = customers.LogSetChanges();
+
+                var sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+                IsFalse(logChanges.Success);
+                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(@"Task failed by entity errors. Count: 2
 | ReadError: Customer 'log-patch-entity-read-error', simulated read entity error
 | WriteError: Customer 'log-patch-entity-write-error', simulated write entity error", logChanges.Error.Message);
+            } {
+                _customers.readErrors[readError] = Simulate.ReadTaskException;
+                customerReadError.Result.name = "<name change 2>";
+                var logChanges = customers.LogSetChanges();
+
+                var sync = await store.TrySync(); // -------- Sync --------
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+
+                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(@"Task failed by entity errors. Count: 1
+| PatchError: Customer 'log-patch-entity-read-error', SimulationException: simulated read task exception", logChanges.Error.Message);
+            }
         }
     }
 }
