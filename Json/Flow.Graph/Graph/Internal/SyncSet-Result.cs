@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncSet
     {
-        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
+        internal static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
             
         internal    IDictionary<string, EntityError> createErrors = NoErrors;
         internal    IDictionary<string, EntityError> updateErrors = NoErrors;
@@ -29,12 +29,31 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     internal partial class SyncSet<T>
     {
+        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.createErrors"/> for all
+        /// <see cref="creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
             CreateUpdateEntitiesResult(task.entities, result, createTasks, createErrors);
+            if (result is TaskErrorResult taskError) {
+                if (createErrors == NoErrors) {
+                    createErrors = new Dictionary<string, EntityError>();
+                }
+                foreach (var createPair in creates) {
+                    var id = createPair.Key;
+                    var error = new EntityError(EntityErrorType.WriteError, set.name, id, taskError.message);
+                    createErrors.TryAdd(id, error);
+                }
+            }
+            // enable GC to collect references in containers which are not needed anymore
+            creates.Clear();
+            createTasks.Clear();
         }
 
         internal override void UpdateEntitiesResult(UpdateEntities task, TaskResult result) {
             CreateUpdateEntitiesResult(task.entities, result, updateTasks, updateErrors);
+            
+            // enable GC to collect references in containers which are not needed anymore
+            updates.Clear();
+            updateTasks.Clear();
         }
 
         private void CreateUpdateEntitiesResult(
@@ -184,38 +203,47 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
+        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.patchErrors"/> for all
+        /// <see cref="patches"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
                 foreach (var patchTask in patchTasks) {
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
                 }
-                /* foreach (var patchPair in patches) {
-                    var patch = patchPair.Value;
-                    // patch.taskError = taskError; todo
-                } */
-                return;
-            }
-            // var patchResult = (PatchEntitiesResult)result;
-            var entityPatches = task.patches;
-            foreach (var entityPatchPair in entityPatches) {
-                var id = entityPatchPair.Key;
-                var peer = set.GetPeerById(id);
-                peer.SetPatchSource(peer.NextPatchSource);
-                peer.SetNextPatchSourceNull();
-            }
-            foreach (var patchTask in patchTasks) {
-                var entityErrorInfo = new TaskErrorInfo();
-                foreach (var peer in patchTask.peers) {
-                    if (patchErrors.TryGetValue(peer.entity.id, out EntityError error)) {
-                        entityErrorInfo.AddEntityError(error);
+                if (patchErrors == NoErrors) {
+                    patchErrors = new Dictionary<string, EntityError>();
+                }
+                foreach (var patchPair in patches) {
+                    var id = patchPair.Key;
+                    var error = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message);
+                    patchErrors.TryAdd(id, error);
+                }
+            } else {
+                // var patchResult = (PatchEntitiesResult)result;
+                var entityPatches = task.patches;
+                foreach (var entityPatchPair in entityPatches) {
+                    var id = entityPatchPair.Key;
+                    var peer = set.GetPeerById(id);
+                    peer.SetPatchSource(peer.NextPatchSource);
+                    peer.SetNextPatchSourceNull();
+                }
+                foreach (var patchTask in patchTasks) {
+                    var entityErrorInfo = new TaskErrorInfo();
+                    foreach (var peer in patchTask.peers) {
+                        if (patchErrors.TryGetValue(peer.entity.id, out EntityError error)) {
+                            entityErrorInfo.AddEntityError(error);
+                        }
+                    }
+                    if (entityErrorInfo.HasErrors) {
+                        patchTask.state.SetError(entityErrorInfo);
+                    } else {
+                        patchTask.state.Synced = true;
                     }
                 }
-                if (entityErrorInfo.HasErrors) {
-                    patchTask.state.SetError(entityErrorInfo);
-                } else {
-                    patchTask.state.Synced = true;
-                }
             }
+            // enable GC to collect references in containers which are not needed anymore
+            patches.Clear();
+            patchTasks.Clear();
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {

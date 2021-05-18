@@ -207,7 +207,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                     entities = entries
                 };
                 tasks.Add(req);
-                creates.Clear();
             }
             // --- UpdateEntities
             if (updates.Count > 0) {
@@ -223,7 +222,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                     entities = entries
                 };
                 tasks.Add(req);
-                updates.Clear();
             }
             // --- ReadEntities
             if (reads.Count > 0) {
@@ -290,7 +288,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                     patches = new Dictionary<string, EntityPatch>(patches)
                 };
                 tasks.Add(req);
-                patches.Clear();
             }
             // --- DeleteEntities
             if (deletes.Count > 0) {
