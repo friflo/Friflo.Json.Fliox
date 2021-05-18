@@ -81,14 +81,14 @@ namespace Friflo.Json.Flow.Graph
 
         
         // --------------------------------------- public interface --------------------------------------- 
-        public RefPath<TValue> MemberRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public RefPath<T, TRef> MemberRef<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<TValue>(path);
+            return new RefPath<T, TRef>(path);
         }
         
-        public RefsPath<TValue> MemberRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public RefsPath<T, TRef> MemberRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<TValue>(path);
+            return new RefsPath<T, TRef>(path);
         }
         
         // --- Read

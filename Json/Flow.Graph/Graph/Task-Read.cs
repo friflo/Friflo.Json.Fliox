@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // lab - ReadRefs by Entity Type
-        public ReadRefsTask<TValue> ReadRefsOfType<TValue>() where TValue : Entity {
+        public ReadRefsTask<TRef> ReadRefsOfType<TRef>() where TRef : Entity {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
@@ -120,44 +120,44 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Ref
-        public ReadRefTask<TValue> ReadRef<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public ReadRefTask<TRef> ReadRef<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return ReadRefByPath<TValue>(path);
+            return ReadRefByPath<TRef>(path);
         }
         
-        public ReadRefTask<TValue> Read<TValue>(RefPath<TValue> selector) where TValue : Entity {
+        public ReadRefTask<TRef> Read<TRef>(RefPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return ReadRefByPath<TValue>(selector.path);
+            return ReadRefByPath<TRef>(selector.path);
         }
         
-        private ReadRefTask<TValue> ReadRefByPath<TValue>(string path) where TValue : Entity {
+        private ReadRefTask<TRef> ReadRefByPath<TRef>(string path) where TRef : Entity {
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
-                return (ReadRefTask<TValue>)subRefsTask;
-            var newQueryRefs = new ReadRefTask<TValue>(this, path, typeof(TValue).Name);
+                return (ReadRefTask<TRef>)subRefsTask;
+            var newQueryRefs = new ReadRefTask<TRef>(this, path, typeof(TRef).Name);
             refsTask.subRefs.AddTask(path, newQueryRefs);
             return newQueryRefs;
         }
         
         // --- Refs
-        public ReadRefsTask<TValue> Read<TValue>(RefsPath<TValue> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> Read<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TValue>(selector.path);
+            return refsTask.ReadRefsByPath<TRef>(selector.path);
         }
 
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TValue>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector);
         }
         
-        public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TValue>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector);
         }
     }
 }

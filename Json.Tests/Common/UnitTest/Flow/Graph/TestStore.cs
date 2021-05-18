@@ -247,10 +247,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
         }
 
-        /// Optimization: <see cref="RefPath{T}"/> and <see cref="RefsPath{T}"/> can be created static as creating
+        /// Optimization: <see cref="RefPath{TEntity,TRef}"/> and <see cref="RefsPath{TEntity,TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
-        private static readonly RefPath<Customer> OrderCustomer = RefPath<Order>.MemberRef(o => o.customer);
-        private static readonly RefsPath<Article> ItemsArticle  = RefsPath<Order>.MemberRefs(o => o.items.Select(a => a.article));
+        private static readonly RefPath<Order, Customer> OrderCustomer = RefPath<Order, Customer>.MemberRef(o => o.customer);
+        private static readonly RefsPath<Order, Article> ItemsArticle  = RefsPath<Order, Article>.MemberRefs(o => o.items.Select(a => a.article));
         
         private static async Task AssertReadTask(PocStore store) {
             var orders = store.orders;

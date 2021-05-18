@@ -35,22 +35,22 @@ namespace Friflo.Json.Flow.Graph
             this.filterLinq = filter.Linq;
         }
 
-        public ReadRefsTask<TValue> Read<TValue>(RefsPath<TValue> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> Read<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TValue>(selector.path);
+            return refsTask.ReadRefsByPath<TRef>(selector.path);
         }
 
-        public ReadRefsTask<TValue> ReadRefs<TValue>(Expression<Func<T, Ref<TValue>>> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TValue>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector);
         }
         
-        public ReadRefsTask<TValue> ReadArrayRefs<TValue>(Expression<Func<T, IEnumerable<Ref<TValue>>>> selector) where TValue : Entity {
+        public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TValue>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector);
         }
     }
     
