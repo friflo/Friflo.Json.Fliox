@@ -281,6 +281,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         private void PatchEntities(List<DatabaseTask> tasks) {
             foreach (var patchTask in patchTasks) {
+                // todo performance: cache MemberAccess instances with members as key
                 var memberAccess    = new MemberAccess(patchTask.members);
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
                 
