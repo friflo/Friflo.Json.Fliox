@@ -285,14 +285,22 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
                 
                 foreach (var peer in patchTask.peers) {
-                    var entityPatch     = AddEntityPatch(peer);
+                    var id = peer.entity.id;
+                    if (!patches.TryGetValue(id, out EntityPatch patch)) {
+                        patch = new EntityPatch {
+                            patches = new List<JsonPatch>()
+                        };
+                        patches.Add(id, patch);
+                        SetNextPatchSource(peer);
+                    }
+                    var entityPatches   = patch.patches;
                     var selectResults   = memberAccessor.GetValues(peer.entity, memberAccess);
                     int n = 0;
                     foreach (var path in patchTask.members) {
                         var value = new JsonValue {
                             json = selectResults[n++].Json
                         };
-                        entityPatch.Add(new PatchReplace {
+                        entityPatches.Add(new PatchReplace {
                             path = path,
                             value = value
                         });
@@ -340,18 +348,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
         }
 
-        private List<JsonPatch> AddEntityPatch(PeerEntity<T> peer) {
-            var id = peer.entity.id;
-            if (!patches.TryGetValue(id, out EntityPatch patch)) {
-                patch = new EntityPatch {
-                    patches = new List<JsonPatch>()
-                };
-                patches.Add(id, patch);
-                SetNextPatchSource(peer);
-            }
-            return patch.patches;
-        }
-        
         private static int Some(int count) { return count != 0 ? 1 : 0; }
 
         internal void SetTaskInfo(ref SetInfo info) {
