@@ -79,6 +79,8 @@ namespace Friflo.Json.Flow.Graph
 
         internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors) {
             if (type != TaskErrorType.EntityErrors) {
+                sb.Append(type);
+                sb.Append(" - ");
                 sb.Append(taskMessage);
                 return;
             }
