@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
-            var combinedResult = await entityContainer.ReadEntities(combinedRead);
+            var combinedResult = await entityContainer.ReadEntities(combinedRead).ConfigureAwait(false);
             if (combinedResult.Error != null) {
                 return TaskError(combinedResult.Error);
             }
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Sync
                 var references = read.references;
                 var readRefResults = new ReadReferencesResult();
                 if (references != null && references.Count > 0) {
-                    readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response);
+                    readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response).ConfigureAwait(false);
                     if (readRefResults.error != null) {
                         return TaskError(readRefResults.error);
                     }

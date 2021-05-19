@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public async Task<string> ExecuteSyncJson(string jsonSyncRequest) {
             var syncRequest = jsonMapper.Read<SyncRequest>(jsonSyncRequest);
-            SyncResponse syncResponse = await ExecuteSync(syncRequest);
+            SyncResponse syncResponse = await ExecuteSync(syncRequest).ConfigureAwait(false);
             jsonMapper.Pretty = true;
             var jsonResponse = jsonMapper.Write(syncResponse);
             return jsonResponse;
@@ -52,23 +52,23 @@ namespace Friflo.Json.Flow.Database.Remote
 
 
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
-            return await local.CreateEntities(command);
+            return await local.CreateEntities(command).ConfigureAwait(false);
         }
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
-            return await local.UpdateEntities(command);
+            return await local.UpdateEntities(command).ConfigureAwait(false);
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
-            return await local.ReadEntities(command);
+            return await local.ReadEntities(command).ConfigureAwait(false);
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
-            return await local.QueryEntities(command);
+            return await local.QueryEntities(command).ConfigureAwait(false);
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
-            return await local.DeleteEntities(command);
+            return await local.DeleteEntities(command).ConfigureAwait(false);
         }
     }
 }

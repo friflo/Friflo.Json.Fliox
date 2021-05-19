@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
-            var readResult = await ReadEntities(readTask);
+            var readResult = await ReadEntities(readTask).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult {Error = readResult.Error};
             }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Database
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = targets};
-            var updateResult = await UpdateEntities(task);
+            var updateResult = await UpdateEntities(task).ConfigureAwait(false);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error};
             }
@@ -186,7 +186,7 @@ namespace Friflo.Json.Flow.Database
                 if (ids.Count > 0) {
                     var refIdList   = ids.ToHashSet();
                     var readRefIds  = new ReadEntities {ids = refIdList};
-                    var refEntities = await refContainer.ReadEntities(readRefIds);
+                    var refEntities = await refContainer.ReadEntities(readRefIds).ConfigureAwait(false);
                     if (refEntities.Error != null) {
                         return new ReadReferencesResult {error = refEntities.Error};
                     }
@@ -198,7 +198,7 @@ namespace Friflo.Json.Flow.Database
                         foreach (var id in ids) {
                             subEntities.Add(id, refEntities.entities[id]);
                         }
-                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse);
+                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse).ConfigureAwait(false);
                         if (refReferencesResult.error != null) {
                             return refReferencesResult;
                         }

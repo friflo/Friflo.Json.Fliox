@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.QueryEntities(this);
+            var result = await entityContainer.QueryEntities(this).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Sync
             containerResult.AddEntities(entities);
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
-                queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response);
+                queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response).ConfigureAwait(false);
                 if (queryRefsResults.error != null) {
                     return TaskError(queryRefsResults.error);
                 }

@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest) {
             var jsonRequest = jsonMapper.Write(syncRequest);
-            var jsonResponse = await ExecuteSyncJson(jsonRequest);
+            var jsonResponse = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
             var response = jsonMapper.Read<SyncResponse>(jsonResponse);
             return response;
         }

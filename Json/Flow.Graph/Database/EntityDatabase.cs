@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Database
             };
             foreach (var task in syncRequest.tasks) {
                 try {
-                    var result = await task.Execute(this, response);
+                    var result = await task.Execute(this, response).ConfigureAwait(false);
                     response.tasks.Add(result);
                 }
                 catch (Exception e) {

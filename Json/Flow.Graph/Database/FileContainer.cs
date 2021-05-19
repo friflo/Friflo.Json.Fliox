@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Database
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
                 try {
-                    await WriteText(path, payload.Json);
+                    await WriteText(path, payload.Json).ConfigureAwait(false);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                     AddEntityError(ref createErrors, key, error);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Database
                 EntityValue payload = entityPair.Value;
                 var path = FilePath(key);
                 try {
-                    await WriteText(path, payload.Json);
+                    await WriteText(path, payload.Json).ConfigureAwait(false);
                 } catch (Exception e) {
                     var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                     AddEntityError(ref updateErrors, key, error);
@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Database
                 EntityValue entry;
                 if (File.Exists(filePath)) {
                     try {
-                        var payload = await ReadText(filePath);
+                        var payload = await ReadText(filePath).ConfigureAwait(false);
                         entry = new EntityValue(payload);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.ReadError, name, key, e.Message);
@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Database
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
             var keys            = GetIds(folder);
             var readIds         = new ReadEntities {ids = keys};
-            var readEntities    = await ReadEntities(readIds);
+            var readEntities    = await ReadEntities(readIds).ConfigureAwait(false);
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
             foreach (var entityPair in readEntities.entities) {
@@ -161,7 +161,7 @@ namespace Friflo.Json.Flow.Database
         private static async Task WriteText(string filePath, string text) {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
             using (var destStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: false)) {
-                await destStream.WriteAsync(encodedText, 0, encodedText.Length);
+                await destStream.WriteAsync(encodedText, 0, encodedText.Length).ConfigureAwait(false);
             }
         }
         
@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Database
                 var sb = new StringBuilder();
                 byte[] buffer = new byte[0x1000];
                 int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0) {
+                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0) {
                     string text = Encoding.UTF8.GetString(buffer, 0, numRead);
                     sb.Append(text);
                 }

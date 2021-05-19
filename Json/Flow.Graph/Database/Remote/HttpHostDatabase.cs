@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Database.Remote
             while (runServer) {
                 try {
                     // Will wait here until we hear from a connection
-                    HttpListenerContext ctx = await listener.GetContextAsync();
+                    HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
 
                     // Peel out the requests and response objects
                     HttpListenerRequest  req  = ctx.Request;
@@ -45,13 +45,13 @@ namespace Friflo.Json.Flow.Database.Remote
                     if (req.HttpMethod == "POST") {
                         var inputStream = req.InputStream;
                         System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
-                        string requestContent = await reader.ReadToEndAsync();
+                        string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
                         if (req.Url.AbsolutePath == "/shutdown") {
                             Log("Shutdown requested");
                             runServer = false;
                         } else {
-                            byte[] data = await HandlePost(requestContent, resp);
-                            await resp.OutputStream.WriteAsync(data, 0, data.Length);
+                            byte[] data = await HandlePost(requestContent, resp).ConfigureAwait(false);
+                            await resp.OutputStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
                             resp.Close();
                         }
                     }
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         private async Task<byte[]> HandlePost (string requestContent, HttpListenerResponse resp) {
-            var jsonResponse = await ExecuteSyncJson(requestContent);
+            var jsonResponse = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
 
             // Write the response info
             byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public async Task Stop() {
-            await Task.Delay(1);
+            await Task.Delay(1).ConfigureAwait(false);
             runServer = false;
             listener.Stop();
         }

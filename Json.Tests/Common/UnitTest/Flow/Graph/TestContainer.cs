@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 return new CreateEntitiesResult {Error = error};
             if (errors != null)
                 return new CreateEntitiesResult {createErrors = errors};
-            return await local.CreateEntities(command);
+            return await local.CreateEntities(command).ConfigureAwait(false);
         }
 
         public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 return new UpdateEntitiesResult {Error = error};
             if (errors != null)
                 return new UpdateEntitiesResult {updateErrors = errors};
-            return await local.UpdateEntities(command);
+            return await local.UpdateEntities(command).ConfigureAwait(false);
         }
         
         public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
@@ -69,11 +69,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 return new DeleteEntitiesResult {Error = error};
             if (errors != null)
                 return new DeleteEntitiesResult {deleteErrors = errors};
-            return await local.DeleteEntities(command);
+            return await local.DeleteEntities(command).ConfigureAwait(false);
         }
 
         public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
-            var result = await local.ReadEntities(command);
+            var result = await local.ReadEntities(command).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
-            var result = await local.QueryEntities(command);
+            var result = await local.QueryEntities(command).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null) {
                 result.Error = databaseError;

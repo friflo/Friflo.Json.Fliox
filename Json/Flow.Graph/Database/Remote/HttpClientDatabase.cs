@@ -27,8 +27,8 @@ namespace Friflo.Json.Flow.Database.Remote
             body.Headers.ContentType.MediaType = "application/json";
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
 
-            HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, body);
-            return await httpResponse.Content.ReadAsStringAsync();
+            HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, body).ConfigureAwait(false);
+            return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
     }
 }

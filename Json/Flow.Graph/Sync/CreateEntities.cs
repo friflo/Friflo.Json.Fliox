@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Sync
                     entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
                 }
             }
-            var result = await entityContainer.CreateEntities(this);
+            var result = await entityContainer.CreateEntities(this).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
