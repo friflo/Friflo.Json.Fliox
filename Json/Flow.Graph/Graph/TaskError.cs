@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph
         public   readonly   string                              taskMessage;
         /// Return the stacktrace for an <see cref="TaskErrorType.UnhandledException"/> if provided. Otherwise null.
         private  readonly   string                              stacktrace;
-        /// Note: Does not contain <see cref="stacktrace"/> in any case to avoid leaking internal when using <see cref="Message"/>
+        /// Note: Does not contain <see cref="stacktrace"/> in any case to avoid leaking internals when using <see cref="Message"/>
         public              string                              Message     => GetMessage(false);
         public   override   string                              ToString()  => GetMessage(true);
        
