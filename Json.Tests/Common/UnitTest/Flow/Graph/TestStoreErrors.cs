@@ -324,16 +324,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
-            AreEqual("SimulationException: simulated query exception", te.error.taskMessage);
+            AreEqual("UnhandledException - SimulationException: simulated query exception", te.error.Message);
 
             IsFalse(createError.Success);
-            AreEqual("SimulationException: simulated write task exception", createError.Error.taskMessage);
+            AreEqual("UnhandledException - SimulationException: simulated write task exception", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual("SimulationException: simulated write task exception", updateError.Error.taskMessage);
+            AreEqual("UnhandledException - SimulationException: simulated write task exception", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("SimulationException: simulated write task exception", deleteError.Error.taskMessage);
+            AreEqual("UnhandledException - SimulationException: simulated write task exception", deleteError.Error.Message);
         }
         
         private static async Task AssertTaskError(PocStore store) {
@@ -449,7 +449,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqual("SimulationException: simulated read task exception", patchTaskReadException.Error.taskMessage);
+                AreEqual("UnhandledException - SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
             }
             
             // --- test write task error
@@ -471,7 +471,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual("SimulationException: simulated write task exception", patchTaskWriteException.Error.taskMessage);
+                AreEqual("UnhandledException - SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
             }
         }
 
