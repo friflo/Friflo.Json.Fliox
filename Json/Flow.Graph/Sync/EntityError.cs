@@ -13,13 +13,14 @@ namespace Friflo.Json.Flow.Sync
     /// This implies that the previous read or query call was successful. 
     public class EntityError
     {
-        [Fri.Property]  public  EntityErrorType type;
-        [Fri.Property]  public  string          message;
-        
-        [Fri.Ignore]    public  string          id;
-        [Fri.Ignore]    public  string          container;
+        [Fri.Property]  public  EntityErrorType     type;
+        [Fri.Property]  public  string              message;
+            
+        [Fri.Ignore]    public  string              id;
+        [Fri.Ignore]    public  string              container;
+        [Fri.Ignore]    public  TaskErrorResultType taskErrorType;
 
-        public override         string          ToString() => AsText();
+        public override         string              ToString() => AsText();
 
         public EntityError() { } // required for TypeMapper
 
@@ -43,6 +44,10 @@ namespace Friflo.Json.Flow.Sync
             sb.Append(" '");
             sb.Append(id);
             sb.Append("', ");
+            if (taskErrorType != TaskErrorResultType.Undefined) {
+                sb.Append(taskErrorType);
+                sb.Append(" - ");
+            }
             sb.Append(message);
         }
     }

@@ -514,7 +514,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"Task failed by entity errors. Count: 1
-| PatchError: Customer 'log-patch-entity-read-error', SimulationException: simulated read task exception", logChanges.Error.Message);
+| PatchError: Customer 'log-patch-entity-read-error', UnhandledException - SimulationException: simulated read task exception", logChanges.Error.Message);
             } {
                 _customers.readErrors [readError]    = Simulate.ReadTaskError;
                 customerReadError.Result.name   = "<change read 3>";
@@ -525,7 +525,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"Task failed by entity errors. Count: 1
-| PatchError: Customer 'log-patch-entity-read-error', simulated read task error", logChanges.Error.Message);
+| PatchError: Customer 'log-patch-entity-read-error', DatabaseError - simulated read task error", logChanges.Error.Message);
             } {
                 _customers.readErrors.Remove(readError);
                 _customers.writeErrors [writeError]    = Simulate.WriteTaskException;
@@ -538,7 +538,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"Task failed by entity errors. Count: 1
-| PatchError: Customer 'log-patch-entity-write-error', SimulationException: simulated write task exception", logChanges.Error.Message);
+| PatchError: Customer 'log-patch-entity-write-error', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             } {
                 _customers.writeErrors [writeError]    = Simulate.WriteTaskError;
                 customerWriteError.Result.name   = "<change write 4>";
@@ -549,7 +549,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"Task failed by entity errors. Count: 1
-| PatchError: Customer 'log-patch-entity-write-error', simulated write task error", logChanges.Error.Message);
+| PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
             }
         }
     }
