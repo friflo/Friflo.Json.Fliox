@@ -321,23 +321,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
             AreEqual("UnhandledException - SimulationException: simulated read task exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.error.type);
-            AreEqual("UnhandledException - SimulationException: simulated read task exception", te.Message);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
             AreEqual("UnhandledException - SimulationException: simulated query exception", te.Message);
-            AreEqual(TaskErrorType.UnhandledException, te.error.type);
 
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.UnhandledException, createError.Error.type);
             AreEqual("UnhandledException - SimulationException: simulated write task exception", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.UnhandledException, updateError.Error.type);
             AreEqual("UnhandledException - SimulationException: simulated write task exception", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.UnhandledException, deleteError.Error.type);
             AreEqual("UnhandledException - SimulationException: simulated write task exception", deleteError.Error.Message);
         }
         
@@ -368,15 +362,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(TaskErrorType.DatabaseError, customerQuery.Error.type);
             
             IsFalse(createError.Success);
-            AreEqual(TaskErrorType.DatabaseError, createError.Error.type);
             AreEqual("DatabaseError - simulated write task error", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual(TaskErrorType.DatabaseError, updateError.Error.type);
             AreEqual("DatabaseError - simulated write task error", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual(TaskErrorType.DatabaseError, deleteError.Error.type);
             AreEqual("DatabaseError - simulated write task error", deleteError.Error.Message);
         }
         
@@ -446,7 +437,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadError.Success);
-                AreEqual(TaskErrorType.DatabaseError, patchTaskReadError.Error.type);
                 AreEqual("DatabaseError - simulated read task error", patchTaskReadError.Error.Message);
             }
 
@@ -458,7 +448,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqual(TaskErrorType.UnhandledException, patchTaskReadException.Error.type);
                 AreEqual("UnhandledException - SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
             }
             
@@ -470,7 +459,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteError.Success);
-                AreEqual(TaskErrorType.DatabaseError, patchTaskWriteError.Error.type);
                 AreEqual("DatabaseError - simulated write task error", patchTaskWriteError.Error.Message);
             }
             
@@ -482,7 +470,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual(TaskErrorType.UnhandledException, patchTaskWriteException.Error.type);
                 AreEqual("UnhandledException - SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
             }
         }
