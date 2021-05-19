@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Sync
             sb.Append(" '");
             sb.Append(id);
             sb.Append("', ");
-            if (taskErrorType != TaskErrorResultType.Undefined) {
+            if (taskErrorType != TaskErrorResultType.None) {
                 sb.Append(taskErrorType);
                 sb.Append(" - ");
             }
