@@ -18,9 +18,13 @@ namespace Friflo.Json.Flow.Sync
             
         [Fri.Ignore]    public  string              id;
         [Fri.Ignore]    public  string              container;
+        /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="DatabaseTask"/> error.</summary>
         [Fri.Ignore]    public  TaskErrorResultType taskErrorType;
+        /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
+        /// and the accessed <see cref="EntityDatabase"/> expose this data.</summary>
+        [Fri.Ignore]    public  string              stacktrace;
 
-        public override         string              ToString() => AsText();
+        public override         string              ToString() => AsText(true);
 
         public EntityError() { } // required for TypeMapper
 
@@ -31,13 +35,13 @@ namespace Friflo.Json.Flow.Sync
             this.message    = message;
         }
         
-        public string AsText() {
+        public string AsText(bool showStack) {
             var sb = new StringBuilder();
-            AppendAsText(sb);
+            AppendAsText(sb, showStack);
             return sb.ToString();
         }
 
-        public void AppendAsText(StringBuilder sb) {
+        public void AppendAsText(StringBuilder sb, bool showStack) {
             sb.Append(type);
             sb.Append(": ");
             sb.Append(container);
@@ -49,12 +53,16 @@ namespace Friflo.Json.Flow.Sync
                 sb.Append(" - ");
             }
             sb.Append(message);
+            if (showStack && stacktrace != null) {
+                sb.Append('\n');
+                sb.Append(stacktrace);
+            }
         }
     }
 
     public class EntityException : Exception
     {
-        public EntityException(EntityError error) : base(error.AsText()) { }
+        public EntityException(EntityError error) : base(error.AsText(false)) { }
     }
 
     public enum EntityErrorType

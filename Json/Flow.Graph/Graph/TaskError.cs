@@ -105,7 +105,7 @@ namespace Friflo.Json.Flow.Graph
                     break;
                 }
                 sb.Append("| ");
-                error.AppendAsText(sb);
+                error.AppendAsText(sb, showStack);
             }
         }
     }

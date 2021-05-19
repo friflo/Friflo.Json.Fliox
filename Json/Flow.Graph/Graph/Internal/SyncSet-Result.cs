@@ -40,7 +40,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 foreach (var createPair in creates) {
                     var id = createPair.Key;
                     var error = new EntityError(EntityErrorType.WriteError, set.name, id, taskError.message) {
-                        taskErrorType = taskError.type
+                        taskErrorType   = taskError.type,
+                        stacktrace      = taskError.stacktrace
                     };
                     createErrors.TryAdd(id, error);
                 }
@@ -218,7 +219,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 foreach (var patchPair in patches) {
                     var id = patchPair.Key;
                     var error = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message){
-                        taskErrorType = taskError.type
+                        taskErrorType   = taskError.type,
+                        stacktrace      = taskError.stacktrace
                     };
                     patchErrors.TryAdd(id, error);
                 }
