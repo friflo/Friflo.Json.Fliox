@@ -10,7 +10,9 @@
 The EGM strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping (ORM) by relaxing constraints.
 This enables simple and performant database adapters for various database types.
 Flow.Graph provides a clear &amp; compact API. It is trimmed towards performance by maximizing CPU utilization and minimizing memory footprint.
-The API enables collecting multiple database task into a single Sync request to minimize latency caused by a chatty protocol via Internet.</Description>
+The API enables collecting multiple database task into a single Sync request to minimize latency caused by a chatty protocol via Internet.
+The Flow.Graph client &amp; server implementation is asynchronous to be responsive even under high load.
+The Flow.Graph server requires no database schema to enable running as a microservice in distributed environments and avoiding database migrations.</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Burst</PackageProjectUrl>
         <RepositoryUrl>git@github.com:friflo/Friflo.Json.Burst.git</RepositoryUrl>
