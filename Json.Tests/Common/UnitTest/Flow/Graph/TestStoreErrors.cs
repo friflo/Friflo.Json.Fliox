@@ -320,19 +320,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
-            AreEqual("UnhandledException - SimulationException: simulated read task exception", te.Message);
+            AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
-            AreEqual("UnhandledException - SimulationException: simulated query exception", te.Message);
+            AreEqual("SimulationException: simulated query exception", te.error.taskMessage);
 
             IsFalse(createError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", createError.Error.Message);
+            AreEqual("SimulationException: simulated write task exception", createError.Error.taskMessage);
             
             IsFalse(updateError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", updateError.Error.Message);
+            AreEqual("SimulationException: simulated write task exception", updateError.Error.taskMessage);
             
             IsFalse(deleteError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", deleteError.Error.Message);
+            AreEqual("SimulationException: simulated write task exception", deleteError.Error.taskMessage);
         }
         
         private static async Task AssertTaskError(PocStore store) {
@@ -448,7 +448,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqual("UnhandledException - SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
+                AreEqual("SimulationException: simulated read task exception", patchTaskReadException.Error.taskMessage);
             }
             
             // --- test write task error
@@ -470,7 +470,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual("UnhandledException - SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
+                AreEqual("SimulationException: simulated write task exception", patchTaskWriteException.Error.taskMessage);
             }
         }
 

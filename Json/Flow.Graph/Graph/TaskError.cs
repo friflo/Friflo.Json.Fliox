@@ -44,7 +44,9 @@ namespace Friflo.Json.Flow.Graph
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
         public   readonly   IDictionary<string, EntityError>    entityErrors;
         /// Return a single line error message. Is never null.
-        private  readonly   string                              taskMessage;
+        public   readonly   string                              taskMessage;
+        /// Return the stacktrace for an <see cref="TaskErrorType.UnhandledException"/> if provided. Otherwise null.
+        private  readonly   string                              stacktrace;
 
         public              string                              Message     => GetMessage();
         public   override   string                              ToString()  => GetMessage();
@@ -54,6 +56,7 @@ namespace Friflo.Json.Flow.Graph
         internal TaskError(TaskErrorResult error) {
             type                = TaskToSyncError(error.type);
             taskMessage         = error.message;
+            stacktrace          = error.stacktrace;
             entityErrors        = NoErrors;
         }
 
@@ -82,6 +85,10 @@ namespace Friflo.Json.Flow.Graph
                 sb.Append(type);
                 sb.Append(" - ");
                 sb.Append(taskMessage);
+                if (stacktrace != null) {
+                    sb.Append("\n");
+                    sb.Append(stacktrace);
+                }
                 return;
             }
             var errors = entityErrors;

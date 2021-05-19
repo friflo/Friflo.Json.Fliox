@@ -9,6 +9,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public              TaskErrorResultType type;
         public              string              message;
+        public              string              stacktrace;
 
         internal override   TaskType            TaskType => TaskType.Error;
         public   override   string              ToString() => $"type: {type}, message: {message}";
