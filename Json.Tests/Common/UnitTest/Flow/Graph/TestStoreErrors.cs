@@ -320,6 +320,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
+            AreEqual("UnhandledException - SimulationException: simulated read task exception", te.Message); // No stacktrace by intention
             AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });

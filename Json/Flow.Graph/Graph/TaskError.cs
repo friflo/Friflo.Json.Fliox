@@ -48,8 +48,8 @@ namespace Friflo.Json.Flow.Graph
         /// Return the stacktrace for an <see cref="TaskErrorType.UnhandledException"/> if provided. Otherwise null.
         private  readonly   string                              stacktrace;
 
-        public              string                              Message     => GetMessage();
-        public   override   string                              ToString()  => GetMessage();
+        public              string                              Message     => GetMessage(false);
+        public   override   string                              ToString()  => GetMessage(true);
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
@@ -74,18 +74,19 @@ namespace Friflo.Json.Flow.Graph
             throw new ArgumentException($"cant convert error type: {type}");
         }
         
-        internal string GetMessage() {
+        /// Note: The library itself set <param name="showStack"/> to true only when called from <see cref="object.ToString"/>
+        public string GetMessage(bool showStack) {
             var sb = new StringBuilder();
-            AppendAsText("", sb, 10);
+            AppendAsText("", sb, 10, showStack);
             return sb.ToString();
         }
 
-        internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors) {
+        internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors, bool showStack) {
             if (type != TaskErrorType.EntityErrors) {
                 sb.Append(type);
                 sb.Append(" - ");
                 sb.Append(taskMessage);
-                if (stacktrace != null) {
+                if (showStack && stacktrace != null) {
                     sb.Append("\n");
                     sb.Append(stacktrace);
                 }

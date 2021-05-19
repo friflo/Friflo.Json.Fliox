@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Graph
     {
         public readonly     TaskError       error;
         
-        internal TaskResultException(TaskError error) : base(error.GetMessage()) {
+        internal TaskResultException(TaskError error) : base(error.GetMessage(false)) {
             this.error      = error;
         }
     }

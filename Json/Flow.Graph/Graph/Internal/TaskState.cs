@@ -8,10 +8,10 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct TaskErrorInfo
     {
-        internal    TaskError                           TaskError { get; private set; }
+        internal    TaskError           TaskError { get; private set; }
         
-        internal    bool                                HasErrors => TaskError != null;
-        public      override string                     ToString() => TaskError.GetMessage();
+        internal    bool                HasErrors   => TaskError != null;
+        public      override string     ToString()  => TaskError.GetMessage(true);
 
         internal TaskErrorInfo(TaskErrorResult taskError) {
             TaskError       = new TaskError(taskError);
