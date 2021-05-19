@@ -40,10 +40,13 @@ namespace Friflo.Json.Flow.Graph
     }
     
     public class TaskError {
-        public   readonly   TaskErrorType                       type;
-        private  readonly   string                              taskMessage;
+        /// Note: same as <see cref="TaskResultException.taskError"/>
+        public   readonly   TaskErrorType                       taskError;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
+        /// Note: same as <see cref="TaskResultException.entityErrors"/>
         public   readonly   IDictionary<string, EntityError>    entityErrors;
+        
+        private  readonly   string                              taskMessage;
 
         public              string                              Message     => GetMessage();
         public   override   string                              ToString()  => GetMessage();
@@ -51,14 +54,14 @@ namespace Friflo.Json.Flow.Graph
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
         internal TaskError(TaskErrorResult error) {
-            type            = TaskToSyncError(error.type);
+            taskError       = TaskToSyncError(error.type);
             taskMessage     = error.message;
             entityErrors    = NoErrors;
         }
 
         internal TaskError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
-            type                = TaskErrorType.EntityErrors;
+            taskError           = TaskErrorType.EntityErrors;
             taskMessage         = null; // entity errors have no task message
         }
         
@@ -77,7 +80,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors) {
-            if (type != TaskErrorType.EntityErrors) {
+            if (taskError != TaskErrorType.EntityErrors) {
                 sb.Append(taskMessage);
                 return;
             }

@@ -30,11 +30,14 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
+        /// Note: same as to <see cref="TaskError.taskError"/>
         public readonly     TaskErrorType                       taskError;
+        /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
+        /// Note: same as to <see cref="TaskError.entityErrors"/>
         public readonly     IDictionary<string, EntityError>    entityErrors;
         
         internal TaskResultException(TaskError error) : base(error.GetMessage()) {
-            taskError       = error.type;
+            taskError       = error.taskError;
             entityErrors    = error.entityErrors;
         }
     }
