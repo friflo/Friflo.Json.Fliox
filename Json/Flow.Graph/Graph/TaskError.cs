@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Graph
         internal TaskError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
             type                = TaskErrorType.EntityErrors;
-            taskMessage         = "Task failed by entity errors";
+            taskMessage         = null; // entity errors have no task message
         }
         
         private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
