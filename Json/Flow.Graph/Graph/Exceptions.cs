@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public class UnresolvedRefException : Exception
     {
-        public readonly Entity entity;
+        public readonly     Entity          entity;
         
         internal UnresolvedRefException(string message, Entity entity)
             : base ($"{message} Ref<{entity.GetType().Name}> id: {entity.id}")
@@ -30,21 +30,16 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskResultException : Exception
     {
-        /// Note: same as to <see cref="TaskError.taskError"/>
-        public readonly     TaskErrorType                       taskError;
-        /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
-        /// Note: same as to <see cref="TaskError.entityErrors"/>
-        public readonly     IDictionary<string, EntityError>    entityErrors;
+        public readonly     TaskError       error;
         
         internal TaskResultException(TaskError error) : base(error.GetMessage()) {
-            taskError       = error.taskError;
-            entityErrors    = error.entityErrors;
+            this.error      = error;
         }
     }
 
     public class SyncResultException : Exception
     {
-        public readonly List<SyncTask> failed;
+        public readonly     List<SyncTask>  failed;
 
         internal SyncResultException(List<SyncTask> failed) : base(SyncResult.GetMessage(failed)) {
             this.failed = failed;

@@ -40,12 +40,10 @@ namespace Friflo.Json.Flow.Graph
     }
     
     public class TaskError {
-        /// Note: same as <see cref="TaskResultException.taskError"/>
-        public   readonly   TaskErrorType                       taskError;
+        public   readonly   TaskErrorType                       type;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
-        /// Note: same as <see cref="TaskResultException.entityErrors"/>
         public   readonly   IDictionary<string, EntityError>    entityErrors;
-        
+        /// Return a single line error message. Is never null.
         private  readonly   string                              taskMessage;
 
         public              string                              Message     => GetMessage();
@@ -54,15 +52,15 @@ namespace Friflo.Json.Flow.Graph
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
         internal TaskError(TaskErrorResult error) {
-            taskError       = TaskToSyncError(error.type);
-            taskMessage     = error.message;
-            entityErrors    = NoErrors;
+            type                = TaskToSyncError(error.type);
+            taskMessage         = error.message;
+            entityErrors        = NoErrors;
         }
 
         internal TaskError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
-            taskError           = TaskErrorType.EntityErrors;
-            taskMessage         = null; // entity errors have no task message
+            type                = TaskErrorType.EntityErrors;
+            taskMessage         = "Task failed by entity errors";
         }
         
         private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
@@ -80,7 +78,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors) {
-            if (taskError != TaskErrorType.EntityErrors) {
+            if (type != TaskErrorType.EntityErrors) {
                 sb.Append(taskMessage);
                 return;
             }
