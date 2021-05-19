@@ -41,24 +41,25 @@ namespace Friflo.Json.Flow.Graph
     
     public class TaskError {
         public   readonly   TaskErrorType                       type;
-        public   readonly   string                              message;
+        private  readonly   string                              taskMessage;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
         public   readonly   IDictionary<string, EntityError>    entityErrors;
 
-        public              string                              Message => GetMessage();
+        public              string                              Message     => GetMessage();
+        public   override   string                              ToString()  => GetMessage();
        
         private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
 
         internal TaskError(TaskErrorResult error) {
             type            = TaskToSyncError(error.type);
-            message         = error.message;
+            taskMessage     = error.message;
             entityErrors    = NoErrors;
         }
 
         internal TaskError(IDictionary<string, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
             type                = TaskErrorType.EntityErrors;
-            message             = "Task failed by entity errors";
+            taskMessage         = "Task failed by entity errors";
         }
         
         private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
@@ -69,13 +70,6 @@ namespace Friflo.Json.Flow.Graph
             throw new ArgumentException($"cant convert error type: {type}");
         }
         
-        public   override   string                              ToString() {
-            if (type == TaskErrorType.EntityErrors) {
-                return $"type: {type}, message: {message}, entityErrors: {entityErrors.Count}";
-            }
-            return $"type: {type}, message: {message}";
-        }
-
         internal string GetMessage() {
             var sb = new StringBuilder();
             AppendAsText("", sb, 10);
@@ -84,10 +78,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors) {
             if (type != TaskErrorType.EntityErrors) {
-                sb.Append("Task failed. type: ");
-                sb.Append(type);
-                sb.Append(", message: ");
-                sb.Append(message);
+                sb.Append(taskMessage);
                 return;
             }
             var errors = entityErrors;
