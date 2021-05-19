@@ -6,7 +6,7 @@
         <LangVersion>7.3</LangVersion>
         <Title>friflo Json.Mapper</Title>
         <Authors>Ullrich Praetz</Authors>
-        <Description>JSON ObjectMapper - C#. Compatible to .NET Standard &amp; Unity</Description>
+        <Description>JSON ObjectMapper - C#. Compatible to .NET &amp; Unity</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Burst</PackageProjectUrl>
         <RepositoryUrl>git@github.com:friflo/Friflo.Json.Burst.git</RepositoryUrl>
