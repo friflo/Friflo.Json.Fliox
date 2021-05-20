@@ -571,7 +571,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
             patchArticle.Result.producer = new Producer{id = createError};
 
-            /*
+
             var logChanges = store.LogChanges();
             AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
 
@@ -580,8 +580,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("tasks: 1, failed: 1", sync.ToString());           
             AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
             AreEqual(@"Task failed by entity errors. Count: 1
-| PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
-            */
+| WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
+
+            patchArticle.Result.producer = new Ref<Producer>(); // restore precondition
+            store.LogChanges();
+            await store.Sync();
         }
     }
 }
