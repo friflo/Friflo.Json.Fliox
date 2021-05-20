@@ -247,6 +247,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             IsTrue(patchNotebook.Success);
             IsTrue(patchArticles.Success);
+
+            customers.Create(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});
+            customers.Create(new Customer{id = "log-patch-entity-write-error",  name = "used for successful read"});
+            
+            customers.Create(new Customer{id = "patch-task-error",              name = "used for successful patch-read"});
+            customers.Create(new Customer{id = "patch-task-exception",          name = "used for successful patch-read"});
+            customers.Create(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
+            await store.Sync();
+            
             return store;
         }
 

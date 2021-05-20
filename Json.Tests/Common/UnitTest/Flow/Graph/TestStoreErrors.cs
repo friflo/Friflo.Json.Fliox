@@ -119,7 +119,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertTaskError       (useStore);
             await AssertEntityWrite     (useStore);
             await AssertEntityPatch     (useStore);
-            await AssertEntityLogChanges (useStore);
+            await AssertLogChangesPatch (useStore);
+            await AssertLogChangesCreate(useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -475,7 +476,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        private static async Task AssertEntityLogChanges(PocStore store) {
+        private static async Task AssertLogChangesPatch(PocStore store) {
             var customers = store.customers;
             
             // --- prepare precondition for log changes
@@ -551,6 +552,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(@"Task failed by entity errors. Count: 1
 | PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
             }
+        }
+
+        private static async Task AssertLogChangesCreate(PocStore store) {
         }
     }
 }
