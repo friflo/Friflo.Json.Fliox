@@ -86,8 +86,8 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.id     = peer.entity.id;  // peer.entity never null
-            this.entity = peer.entity;
+            this.id     = peer.id;      // peer.id is never null
+            this.entity = null;
             this.peer   = peer;
         }
 
@@ -96,8 +96,8 @@ namespace Friflo.Json.Flow.Graph
                 if (peer == null)
                     return entity;
                 if (peer.assigned)
-                    return peer.entity;
-                throw new UnresolvedRefException("Accessed unresolved reference.", peer.entity);
+                    return peer.Entity;
+                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Graph
                 return true;
             }
             if (peer.assigned) {
-                entity = peer.entity;
+                entity = peer.GetEntity();
                 return true;
             }
             entity = null;

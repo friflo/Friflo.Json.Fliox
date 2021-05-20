@@ -266,8 +266,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal PeerEntity<T> CreatePeer (T entity) {
             if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
-                if (peer.entity != entity)
-                    throw new ArgumentException($"Another entity with same id is already tracked. id: {entity.id}");
+                peer.SetEntity(entity);
                 return peer;
             }
             peer = new PeerEntity<T>(entity);
@@ -296,9 +295,7 @@ namespace Friflo.Json.Flow.Graph
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
             }
-            var entity = (T)intern.typeMapper.CreateInstance();
-            peer = new PeerEntity<T>(entity);
-            peer.entity.id = id;
+            peer = new PeerEntity<T>(id, this);
             peers.Add(id, peer);
             return peer;
         }
@@ -321,7 +318,7 @@ namespace Friflo.Json.Flow.Graph
                 var peer = GetPeerById(id);
                 if (json != null && "null" != json) {
                     var reader = intern.jsonMapper.reader;
-                    reader.ReadTo(json, peer.entity);
+                    reader.ReadTo(json, peer.GetEntity());
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {

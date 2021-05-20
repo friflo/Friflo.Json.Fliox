@@ -9,12 +9,12 @@ namespace Friflo.Json.Flow.Graph
 {
     public class UnresolvedRefException : Exception
     {
-        public readonly     Entity          entity;
+        public readonly     string          id;
         
-        internal UnresolvedRefException(string message, Entity entity)
-            : base ($"{message} Ref<{entity.GetType().Name}> id: {entity.id}")
+        internal UnresolvedRefException(string message, Type type, string id)
+            : base ($"{message} Ref<{type.Name}> id: {id}")
         {
-            this.entity = entity;
+            this.id = id;
         }
     }
     

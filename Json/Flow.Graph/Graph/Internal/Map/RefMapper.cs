@@ -66,10 +66,11 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             if (peer.assigned)
                 return;
             // Track untracked entity
+            var entity = peer.GetEntity();
             if (set.sync.AddCreate(peer))
-                store._intern.tracerLogTask.AddCreate(set.sync, peer.entity.id);
+                store._intern.tracerLogTask.AddCreate(set.sync, entity.id);
             var mapper = GetEntityMapper(tracer.typeCache);
-            mapper.Trace(tracer, peer.entity);
+            mapper.Trace(tracer, entity);
         }
 
         public override void Write(ref Writer writer, Ref<T> value) {

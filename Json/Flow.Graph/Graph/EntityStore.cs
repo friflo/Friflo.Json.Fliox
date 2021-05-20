@@ -197,9 +197,10 @@ namespace Friflo.Json.Flow.Graph
                     var set = _intern.setByName[containerResult.Key];
                     set.SyncContainerEntities(containerResult.Value);
                 }
+
                 SetErrors(response);
 
-                var tasks   = syncRequest.tasks;
+                var tasks = syncRequest.tasks;
                 var results = response.tasks;
                 for (int n = 0; n < tasks.Count; n++) {
                     var task = tasks[n];
@@ -253,7 +254,7 @@ namespace Friflo.Json.Flow.Graph
             finally {
                 var failed = new List<SyncTask>();
                 foreach (var task in _intern.sync.appTasks) {
-                    if (!task.Success) {
+                    if (task.State.Error.HasErrors) {
                         failed.Add(task);
                     }
                 }

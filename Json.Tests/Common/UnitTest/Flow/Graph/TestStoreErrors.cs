@@ -571,9 +571,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
             patchArticle.Result.producer = new Producer{id = createError};
 
-            var logChanges = store.LogChanges();
-
             /*
+            var logChanges = store.LogChanges();
+            AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
+
             var sync = await store.TrySync();
             
             AreEqual("tasks: 1, failed: 1", sync.ToString());           
