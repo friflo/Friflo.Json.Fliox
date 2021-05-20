@@ -254,6 +254,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             customers.Create(new Customer{id = "patch-task-error",              name = "used for successful patch-read"});
             customers.Create(new Customer{id = "patch-task-exception",          name = "used for successful patch-read"});
             customers.Create(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
+
+            articles.Create (new Article {id = "log-create-read-error",         name = "used for successful read"});
             await store.Sync();
             
             return store;

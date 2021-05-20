@@ -55,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static TestContainer _customers;
+        private static TestContainer _producers;
         
         private static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
@@ -62,6 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);
             
             _customers = testDatabase.GetTestContainer("Customer");
+            _producers = testDatabase.GetTestContainer("Producer");
             _customers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
             //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             _customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
@@ -551,10 +553,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"Task failed by entity errors. Count: 1
 | PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
+                
+                customerWriteError.Result.name   = "<change write 1>";  // restore original value
             }
         }
 
         private static async Task AssertLogChangesCreate(PocStore store) {
+            var customers = store.customers;
+            var articles  = store.articles;
+            
+            // --- prepare precondition for log changes
+            var readArticles = articles.Read();
+            var patchArticle = readArticles.Find("log-create-read-error");
+            await store.Sync();
+
+            var createError = "create-error";
+            _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
+            patchArticle.Result.producer = new Producer{id = createError};
+
+            var logChanges = store.LogChanges();
+
+            /*
+            var sync = await store.TrySync();
+            
+            AreEqual("tasks: 1, failed: 1", sync.ToString());           
+            AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+            AreEqual(@"Task failed by entity errors. Count: 1
+| PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
+            */
         }
     }
 }
