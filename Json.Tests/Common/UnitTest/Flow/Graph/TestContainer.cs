@@ -30,6 +30,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
     }
     
+    /// <summary>
+    /// Used to create all possible errors and exceptions which can be made by a <see cref="EntityContainer"/> implementation.
+    /// These are:
+    /// <para>1. A task error set to <see cref="ICommandResult.Error"/> in a <see cref="ICommandResult"/>.</para>
+    /// <para>2. Exceptions thrown by a <see cref="EntityContainer"/> command by a buggy implementation.</para>
+    /// <para>3. One or more <see cref="EntityError"/>'s added to a <see cref="TaskResult"/> entity error dictionary.</para>
+    /// <br></br>
+    /// Note: The <see cref="TestContainer"/> dont modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
+    /// to avoid side effects by error tests.
+    /// </summary>
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
@@ -45,31 +55,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             local = localContainer;
         }
 
-        public override async Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
+        public override Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
-                return new CreateEntitiesResult {Error = error};
+                return Task.FromResult(new CreateEntitiesResult {Error = error});
             if (errors != null)
-                return new CreateEntitiesResult {createErrors = errors};
-            return await local.CreateEntities(command).ConfigureAwait(false);
+                return Task.FromResult(new CreateEntitiesResult {createErrors = errors});
+            return Task.FromResult(new CreateEntitiesResult());
         }
 
-        public override async Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
+        public override Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
-                return new UpdateEntitiesResult {Error = error};
+                return Task.FromResult(new UpdateEntitiesResult {Error = error});
             if (errors != null)
-                return new UpdateEntitiesResult {updateErrors = errors};
-            return await local.UpdateEntities(command).ConfigureAwait(false);
+                return Task.FromResult(new UpdateEntitiesResult {updateErrors = errors});
+            return Task.FromResult(new UpdateEntitiesResult());
         }
         
-        public override async Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
+        public override Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
             var error = SimulateWriteErrors(command.ids, out var errors);
             if (error != null)
-                return new DeleteEntitiesResult {Error = error};
+                return Task.FromResult(new DeleteEntitiesResult {Error = error});
             if (errors != null)
-                return new DeleteEntitiesResult {deleteErrors = errors};
-            return await local.DeleteEntities(command).ConfigureAwait(false);
+                return Task.FromResult(new DeleteEntitiesResult {deleteErrors = errors});
+            return Task.FromResult(new DeleteEntitiesResult());
         }
 
         public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
