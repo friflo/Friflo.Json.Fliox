@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Graph
             results = new Dictionary<string, T>(ids.Count);
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
-                results.Add(id, peer.NullableEntity);
+                results.Add(id, peer.NullableEntity);  // todo should be Entity. check preceded error
             }
         }
         
