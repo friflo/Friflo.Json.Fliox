@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.id = id;
         }
         
-        internal T Entity           => entity ?? throw new InvalidOperationException("Caller expect entity not null");
+        internal T Entity           => entity ?? throw new InvalidOperationException("Caller ensure & expect entity not null");
         internal T NullableEntity   => entity;
         
         internal void SetEntity(T entity) {
