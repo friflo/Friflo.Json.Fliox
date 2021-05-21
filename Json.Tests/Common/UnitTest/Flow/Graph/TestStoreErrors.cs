@@ -559,7 +559,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertLogChangesCreate(PocStore store) {
-            var customers = store.customers;
             var articles  = store.articles;
             
             // --- prepare precondition for log changes
@@ -567,20 +566,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var patchArticle = readArticles.Find("log-create-read-error");
             await store.Sync();
 
-            var createError = "create-error";
-            _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
-            patchArticle.Result.producer = new Producer{id = createError};
+            {
+                var createError = "create-error";
+                _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
+                patchArticle.Result.producer = new Producer {id = createError};
 
+                var logChanges = store.LogChanges();
+                AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
 
-            var logChanges = store.LogChanges();
-            AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
+                var sync = await store.TrySync();
 
-            var sync = await store.TrySync();
-            
-            AreEqual("tasks: 1, failed: 1", sync.ToString());           
-            AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-            AreEqual(@"Task failed by entity errors. Count: 1
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(@"Task failed by entity errors. Count: 1
 | WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
+            } {
+                var createException = "create-exception";
+                _producers.writeErrors.Add(createException, Simulate.WriteTaskException);
+                patchArticle.Result.producer = new Producer {id = createException};
+
+                var logChanges = store.LogChanges();
+                AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
+
+                var sync = await store.TrySync();
+
+                AreEqual("tasks: 1, failed: 1", sync.ToString());
+                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(@"Task failed by entity errors. Count: 1
+| WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
+            }
 
             patchArticle.Result.producer = default; // restore precondition
             store.LogChanges();
