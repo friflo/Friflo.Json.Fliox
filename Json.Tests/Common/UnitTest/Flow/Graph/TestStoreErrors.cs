@@ -582,7 +582,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(@"Task failed by entity errors. Count: 1
 | WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
 
-            patchArticle.Result.producer = new Ref<Producer>(); // restore precondition
+            patchArticle.Result.producer = default; // restore precondition
             store.LogChanges();
             await store.Sync();
         }
