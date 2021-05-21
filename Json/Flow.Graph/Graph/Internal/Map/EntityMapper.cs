@@ -101,7 +101,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                     var set = store.EntitySet<T>();
                     success = true;
                     var peer = set.GetPeerById(id);
-                    return peer.GetEntity();
+                    return peer.Entity;
                 }
                 T entity = mapper.Read(ref reader, slot, out success);                
                 return entity;

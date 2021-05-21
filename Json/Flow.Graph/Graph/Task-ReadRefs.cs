@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Graph
             results = new Dictionary<string, T>(ids.Count);
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
-                results.Add(id, peer.GetEntity());
+                results.Add(id, peer.NullableEntity);
             }
         }
         
@@ -126,7 +126,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
             var peer = entitySet.GetPeerById(id);
-            entity = peer.GetEntity();
+            entity = peer.Entity;
         }
         
         public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {

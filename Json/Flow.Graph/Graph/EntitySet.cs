@@ -172,6 +172,7 @@ namespace Friflo.Json.Flow.Graph
         // --- Patch
         public PatchTask<T> Patch(T entity) {
             var peer = GetPeerById(entity.id);
+            peer.SetEntity(entity);
             var task = sync.Patch(peer);
             intern.store.AddTask(task);
             return task;
@@ -181,6 +182,7 @@ namespace Friflo.Json.Flow.Graph
             var peerList = new List<PeerEntity<T>>(entities.Count);
             foreach (var entity in entities) {
                 var peer = GetPeerById(entity.id);
+                peer.SetEntity(entity);
                 peerList.Add(peer);
             }
             var task = sync.PatchRange(peerList);
@@ -280,13 +282,14 @@ namespace Friflo.Json.Flow.Graph
         
         internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
             string id = reference.id;
+            if (id == null)
+                return null; // todo add test
             PeerEntity<T> peer = reference.GetPeer();
             if (peer == null) {
                 var entity = reference.GetEntity();
                 if (entity != null)
-                    peer = CreatePeer(entity);
-                else
-                    peer = GetPeerById(id);
+                    return CreatePeer(entity);
+                return GetPeerById(id);
             }
             return peer;
         }
@@ -295,16 +298,16 @@ namespace Friflo.Json.Flow.Graph
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
             }
-            peer = new PeerEntity<T>(id, this);
+            peer = new PeerEntity<T>(id);
             peers.Add(id, peer);
             return peer;
         }
         
         // --- EntitySet
         internal override void SyncContainerEntities(ContainerEntities containerResults) {
-            foreach (var entity in containerResults.entities) {
-                var id = entity.Key;
-                var value = entity.Value;
+            foreach (var entityPair in containerResults.entities) {
+                var id = entityPair.Key;
+                var value = entityPair.Value;
                 var error = value.Error;
                 if (error != null) {
                     // id & container are not serialized as they are redundant data.
@@ -318,7 +321,13 @@ namespace Friflo.Json.Flow.Graph
                 var peer = GetPeerById(id);
                 if (json != null && "null" != json) {
                     var reader = intern.jsonMapper.reader;
-                    reader.ReadTo(json, peer.GetEntity());
+                    var entity = peer.NullableEntity;
+                    if (entity == null) {
+                        entity = (T)intern.typeMapper.CreateInstance();
+                        entity.id = id;
+                        peer.SetEntity(entity);
+                    }
+                    reader.ReadTo(json, entity);
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {

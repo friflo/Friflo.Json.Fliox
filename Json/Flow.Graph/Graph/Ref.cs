@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Graph
                 return true;
             }
             if (peer.assigned) {
-                entity = peer.GetEntity();
+                entity = peer.Entity;
                 return true;
             }
             entity = null;

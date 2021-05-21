@@ -147,7 +147,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     read.idMap[id] = null;
                 } else {
                     var peer = set.GetPeerById(id);
-                    read.idMap[id] = peer.GetEntity();
+                    read.idMap[id] = peer.Entity;
                 }
             }
             // A ReadTask is set to error if at least one of its JSON results has an error.
@@ -177,7 +177,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var peer = set.GetPeerById(id);
-                entities.Add(id, peer.GetEntity());
+                entities.Add(id, peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);

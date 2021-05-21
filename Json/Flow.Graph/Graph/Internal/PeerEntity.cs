@@ -13,7 +13,6 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal class PeerEntity<T> : PeerEntity where T : Entity
     {
         internal  readonly  string          id;      // never null
-        private   readonly  EntitySet<T>    set;
         private             T               entity;
         
         internal            bool            assigned;
@@ -32,25 +31,21 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.id     = entity.id;
         }
         
-        internal PeerEntity(string id, EntitySet<T> set) {
+        internal PeerEntity(string id) {
             if (id == null)
                 throw new NullReferenceException($"id must not be null. Type: {typeof(T)}");
             this.id = id;
-            this.set = set;
         }
         
-        internal T Entity => entity;
+        internal T Entity           => entity ?? throw new InvalidOperationException("Caller expect entity not null");
+        internal T NullableEntity   => entity;
         
-        internal T GetEntity() {
-            if (entity != null)
-                return entity;
-            entity = (T)set.intern.typeMapper.CreateInstance();
-            entity.id = id;
-            return entity;
-        }
-
-        public void SetEntity(T entity) {
+        internal void SetEntity(T entity) {
+            if (entity == null)
+                throw new InvalidOperationException("Expect entity not null");
             if (this.entity == null) {
+                if (entity.id != id)
+                    throw new InvalidOperationException("Expect entity.id == id");
                 this.entity = entity;
                 return;
             }

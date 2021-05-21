@@ -49,9 +49,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal bool AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
+            var entity = peer.Entity;
             if (!peer.created) {
                 peer.created = true;                    // sole place created set to true
-                creates.Add(peer.GetEntity().id, peer); // sole place a peer (entity) is added
+                creates.Add(entity.id, peer); // sole place a peer (entity) is added
                 return true;
             }
             return false;
@@ -59,9 +60,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void AddUpdate (PeerEntity<T> peer) {
             peer.assigned = true;
+            var entity = peer.Entity;
             if (!peer.updated) {
                 peer.updated = true;                    // sole place created set to true
-                updates.Add(peer.GetEntity().id, peer); // sole place a peer (entity) is added
+                updates.Add(entity.id, peer); // sole place a peer (entity) is added
             }
         }
         
@@ -90,7 +92,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal CreateTask<T> Create(T entity) {
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
-            var create = new CreateTask<T>(new List<T>{peer.GetEntity()}, set);
+            var create = new CreateTask<T>(new List<T>{entity}, set);
             createTasks.Add(create);
             return create;
         }
@@ -109,7 +111,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal UpdateTask<T> Update(T entity) {
             var peer = set.CreatePeer(entity);
             AddUpdate(peer);
-            var update = new UpdateTask<T>(new List<T>{peer.GetEntity()}, set);
+            var update = new UpdateTask<T>(new List<T>{entity}, set);
             updateTasks.Add(update);
             return update;
         }
@@ -174,12 +176,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void GetEntityChanges(PeerEntity<T> peer, LogTask logTask) {
             if (peer.created) {
                 set.intern.store._intern.tracerLogTask = logTask;
-                set.intern.tracer.Trace(peer.GetEntity());
+                set.intern.tracer.Trace(peer.Entity);
                 return;
             }
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
-                var entity = peer.GetEntity();
+                var entity = peer.Entity;
                 var diff = set.intern.objectPatcher.differ.GetDiff(patchSource, entity);
                 if (diff == null)
                     return;
@@ -211,7 +213,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             var entries = new Dictionary<string, EntityValue>();
             foreach (var createPair in creates) {
-                T entity = createPair.Value.GetEntity();
+                T entity = createPair.Value.Entity;
                 var json = set.intern.jsonMapper.Write(entity);
                 var entry = new EntityValue(json);
                 entries.Add(entity.id, entry);
@@ -228,7 +230,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             var entries = new Dictionary<string, EntityValue>();
             foreach (var updatePair in updates) {
-                T entity = updatePair.Value.GetEntity();
+                T entity = updatePair.Value.Entity;
                 var json = set.intern.jsonMapper.Write(entity);
                 var entry = new EntityValue(json);
                 entries.Add(entity.id, entry);
@@ -290,7 +292,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
                 
                 foreach (var peer in patchTask.peers) {
-                    var entity = peer.GetEntity();
+                    var entity = peer.Entity;
                     var id = entity.id;
                     if (!patches.TryGetValue(id, out EntityPatch patch)) {
                         patch = new EntityPatch {
@@ -350,7 +352,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         private void SetNextPatchSource(PeerEntity<T> peer) {
-            var json = set.intern.jsonMapper.writer.Write(peer.GetEntity());
+            var json = set.intern.jsonMapper.writer.Write(peer.Entity);
             peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
         }
 
