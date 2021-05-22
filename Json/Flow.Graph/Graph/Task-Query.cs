@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
         internal            Dictionary<string, T>   entities;
+        private  readonly   EntityStore             store;
 
         public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? entities     : throw e;
         public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? entities[id] : throw e;
@@ -29,28 +30,29 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  ToString()      => Label;
 
 
-        internal QueryTask(FilterOperation filter) {
+        internal QueryTask(FilterOperation filter, EntityStore store) {
             refsTask        = new RefsTask(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;
+            this.store      = store;
         }
 
         public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRef>(selector.path);
+            return refsTask.ReadRefsByPath<TRef>(selector.path, store);
         }
 
         public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector, store);
         }
         
         public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector);
+            return refsTask.ReadRefsByExpression<TRef>(selector, store);
         }
     }
     

@@ -168,11 +168,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var sync = await store.TrySync(); // -------- Sync --------
             IsFalse(sync.Success);
-            AreEqual("tasks: 7, failed: 1", sync.ToString());
-            AreEqual(7, sync.tasks.Count);
-            AreEqual(1, sync.failed.Count);
-            const string msg = @"Sync() failed with task errors. Count: 1
+            AreEqual("tasks: 9, failed: 3", sync.ToString());
+            AreEqual(9, sync.tasks.Count);
+            AreEqual(3, sync.failed.Count);
+            const string msg = @"Sync() failed with task errors. Count: 3
 | QueryTask<Article> filter: true - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+| QueryTask<Article> filter: true > .producer - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+| QueryTask<Article> filter: true > .producer > .employees[*] - Task failed by entity errors. Count: 2
 | | ReadError: Article 'article-1', simulated read entity error
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
@@ -266,8 +272,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 await store.Sync(); // -------- Sync --------
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
-                AreEqual(1, sre.failed.Count);
-                const string expect = @"Sync() failed with task errors. Count: 1
+                AreEqual(3, sre.failed.Count);
+                const string expect = @"Sync() failed with task errors. Count: 3
+| ReadTask<Order> #ids: 1 > .items[*].article - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+| ReadTask<Order> #ids: 1 > .items[*].article > .producer - Task failed by entity errors. Count: 2
+| | ReadError: Article 'article-1', simulated read entity error
+| | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | ReadTask<Article> #ids: 4 - Task failed by entity errors. Count: 2
 | | ReadError: Article 'article-1', simulated read entity error
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
