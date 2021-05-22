@@ -39,8 +39,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.id = id;
         }
         
-        internal T Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
+        /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
         internal T NullableEntity   => entity;
+        internal T Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
         
         internal void SetEntity(T entity) {
             if (entity == null)
