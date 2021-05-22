@@ -159,12 +159,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> #ids: 1 > .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
+            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: .items.Any(i => i.name == 'Camera')", e.Message);
+            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("QueryTask<Article> filter: true > .producer > .employees[*]", producerEmployees.ToString());
+            AreEqual("QueryTask<Article> filter: (true) > .producer > .employees[*]", producerEmployees.ToString());
 
             var sync = await store.TrySync(); // -------- Sync --------
             IsFalse(sync.Success);
@@ -172,13 +172,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(9, sync.tasks.Count);
             AreEqual(3, sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 3
-| QueryTask<Article> filter: true - Task failed by entity errors. Count: 2
+| QueryTask<Article> filter: (true) - Task failed by entity errors. Count: 2
 | | ReadError: Article 'article-1', simulated read entity error
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Article> filter: true > .producer - Task failed by entity errors. Count: 2
+| QueryTask<Article> filter: (true) > .producer - Task failed by entity errors. Count: 2
 | | ReadError: Article 'article-1', simulated read entity error
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Article> filter: true > .producer > .employees[*] - Task failed by entity errors. Count: 2
+| QueryTask<Article> filter: (true) > .producer > .employees[*] - Task failed by entity errors. Count: 2
 | | ReadError: Article 'article-1', simulated read entity error
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);

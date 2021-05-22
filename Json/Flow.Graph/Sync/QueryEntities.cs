@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Sync
         public  List<References>            references;
         
         internal override   TaskType        TaskType => TaskType.Query;
-        public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
+        public   override   string          ToString() => $"container: {container}, filter: ({filterLinq})";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
             var entityContainer = database.GetOrCreateContainer(container);
@@ -56,6 +56,6 @@ namespace Friflo.Json.Flow.Sync
 
         
         internal override   TaskType            TaskType => TaskType.Query;
-        public   override   string              ToString() => $"container: {container}, filter: {filterLinq}";
+        public   override   string              ToString() => $"container: {container}, filter: ({filterLinq})";
     }
 }
