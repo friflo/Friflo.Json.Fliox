@@ -37,11 +37,12 @@ namespace Friflo.Json.Flow.Sync
         
         public string AsText(bool showStack) {
             var sb = new StringBuilder();
-            AppendAsText(sb, showStack);
+            AppendAsText("", sb, showStack);
             return sb.ToString();
         }
 
-        public void AppendAsText(StringBuilder sb, bool showStack) {
+        public void AppendAsText(string prefix, StringBuilder sb, bool showStack) {
+            sb.Append(prefix);
             sb.Append(type);
             sb.Append(": ");
             sb.Append(container);

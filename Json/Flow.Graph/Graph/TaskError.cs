@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Graph
         /// Note: The library itself set <param name="showStack"/> to true only when called from <see cref="object.ToString"/>
         public string GetMessage(bool showStack) {
             var sb = new StringBuilder();
-            AppendAsText("", sb, 10, showStack);
+            AppendAsText("| ", sb, 10, showStack);
             return sb.ToString();
         }
 
@@ -99,13 +99,12 @@ namespace Friflo.Json.Flow.Graph
             foreach (var errorPair in errors) {
                 var error = errorPair.Value;
                 sb.Append('\n');
-                sb.Append(prefix);
                 if (n++ == maxEntityErrors) {
+                    sb.Append(prefix);
                     sb.Append("...");
                     break;
                 }
-                sb.Append("| ");
-                error.AppendAsText(sb, showStack);
+                error.AppendAsText(prefix, sb, showStack);
             }
         }
     }
