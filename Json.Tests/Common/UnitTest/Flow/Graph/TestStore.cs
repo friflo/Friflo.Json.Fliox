@@ -198,13 +198,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSame(customer, customer2);
             ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("ReadTask<Order> #ids: 1 > .customer", customer.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 -> .customer", customer.ToString());
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> #ids: 1 > .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> #ids: 1 -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> #ids: 1 > .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> #ids: 1 -> .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
             AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("QueryTask<Article> filter: (true) > .producer > .employees[*]", producerEmployees.ToString());
+            AreEqual("QueryTask<Article> filter: (true) -> .producer -> .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions
             if (lab) {
@@ -281,15 +281,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article", articleRefsTask.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> #ids: 1 -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> #ids: 1 > .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> #ids: 1 -> .items[*].article", e.Message);
 
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
-            AreEqual("ReadTask<Order> #ids: 1 > .items[*].article > .producer", articleProducerTask.ToString());
+            AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article -> .producer", articleProducerTask.ToString());
 
             var readTask        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
