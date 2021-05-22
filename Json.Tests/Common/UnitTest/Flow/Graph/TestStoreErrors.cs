@@ -273,6 +273,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
                 AreEqual(expect, sre.Message);
             }
+            
+            IsTrue(readOrders.Success);
+            AreEqual(3, readOrders.Results["order-1"].items.Count);
         
             IsFalse(articleRefsTask.Success);
             AreEqual(@"Task failed by entity errors. Count: 2
