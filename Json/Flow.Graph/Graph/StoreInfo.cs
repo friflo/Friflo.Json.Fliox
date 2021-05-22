@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph
                 bool first = false;
                 AppendTasks(sb, "tasks",    tasks,      ref first);
                 first = true;
-                sb.Append(" -> ");
+                sb.Append(" >> ");
                 Append(sb,  "create",       create,     ref first);
                 Append(sb,  "update",       update,     ref first);
                 AppendTasks(sb,  "reads",   reads,      ref first);
