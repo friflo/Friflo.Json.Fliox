@@ -559,8 +559,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertLogChangesCreate(PocStore store) {
-            var articles  = store.articles;
-            
+            var articles = store.articles;
+
             // --- prepare precondition for log changes
             var readArticles = articles.Read();
             var patchArticle = readArticles.Find("log-create-read-error");
@@ -596,9 +596,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             }
 
-            patchArticle.Result.producer = default; // restore precondition
-            store.LogChanges();
-            await store.Sync();
+            /*  // not required as TestContainer as database dont mutate
+                patchArticle.Result.producer = default; // restore precondition
+                store.LogChanges();
+                await store.Sync();
+            */
         }
     }
 }
