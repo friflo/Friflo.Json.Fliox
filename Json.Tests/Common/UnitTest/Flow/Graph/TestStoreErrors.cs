@@ -274,9 +274,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(expect, sre.Message);
             }
         
-            AreEqual(2,                 articleRefsTask.Results.Count);
+            IsFalse(articleRefsTask.Success);
+            AreEqual(@"Task failed by entity errors. Count: 2
+| ReadError: Article 'article-1', simulated read entity error
+| ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleRefsTask.Error.ToString());
             
-            AreEqual(0,                 articleProducerTask.Results.Count);
+            IsFalse(articleProducerTask.Success);
+            AreEqual(@"Task failed by entity errors. Count: 2
+| ReadError: Article 'article-1', simulated read entity error
+| ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16",                 articleProducerTask.Error.ToString());
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = articleSet.Results; });

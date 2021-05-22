@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Flow.Sync;
 
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Graph.Internal
@@ -14,6 +15,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal  readonly  string          id;      // never null
         private             T               entity;
+        internal            EntityError     error;
         
         internal            bool            assigned;
         internal            bool            created;

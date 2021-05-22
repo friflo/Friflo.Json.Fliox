@@ -309,16 +309,18 @@ namespace Friflo.Json.Flow.Graph
                 var id = entityPair.Key;
                 var value = entityPair.Value;
                 var error = value.Error;
+                var peer = GetPeerById(id);
                 if (error != null) {
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>
-                    error.id          = id;
-                    error.container   = name;
+                    error.id        = id;
+                    error.container = name;
+                    peer.error      = error;
                     continue;
                 }
 
+                peer.error = null;
                 var json = value.Json;
-                var peer = GetPeerById(id);
                 if (json != null && "null" != json) {
                     var reader = intern.jsonMapper.reader;
                     var entity = peer.NullableEntity;

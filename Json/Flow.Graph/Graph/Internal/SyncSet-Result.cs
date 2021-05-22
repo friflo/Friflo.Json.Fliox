@@ -163,7 +163,9 @@ namespace Friflo.Json.Flow.Graph.Internal
             var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
             if (result is TaskErrorResult taskError) {
-                query.state.SetError(new TaskErrorInfo(taskError));
+                var taskErrorInfo = new TaskErrorInfo(taskError);
+                query.state.SetError(taskErrorInfo);
+                SetSubRefsError(query.refsTask.subRefs, taskErrorInfo);
                 return;
             }
             var queryResult = (QueryEntitiesResult)result;
@@ -181,6 +183,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);
+                SetSubRefsError(query.refsTask.subRefs, entityErrorInfo);
                 return;
             }
             AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);
@@ -197,7 +200,11 @@ namespace Friflo.Json.Flow.Graph.Internal
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
                 ReadRefsTask        subRef       = refs[reference.selector];
                 subRef.SetResult(refContainer, refResult.ids);
-
+                if (subRef.state.Error.HasErrors) {
+                    SetSubRefsError(subRef.SubRefs,subRef.state.Error);
+                    continue;
+                }
+                subRef.state.Synced = true;
                 var subReferences = reference.references;
                 if (subReferences != null) {
                     var readRefs = subRef.SubRefs;
@@ -205,7 +212,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
             }
         }
-        
+
+        private static void SetSubRefsError(SubRefs refs, TaskErrorInfo taskErrorInfo) {
+            foreach (var subRef in refs) {
+                subRef.state.SetError(taskErrorInfo);
+                SetSubRefsError(subRef.SubRefs, taskErrorInfo);
+            }
+        }
+
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.patchErrors"/> for all
         /// <see cref="patches"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {

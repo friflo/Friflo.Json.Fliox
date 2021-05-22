@@ -13,9 +13,10 @@ namespace Friflo.Json.Flow.Graph
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
     public abstract class ReadRefsTask : SyncTask
     {
-        internal abstract string        Selector    { get; }
-        internal abstract string        Container   { get; }
-        internal abstract SubRefs       SubRefs     { get; }
+        internal            TaskState   state;
+        internal abstract   string      Selector    { get; }
+        internal abstract   string      Container   { get; }
+        internal abstract   SubRefs     SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
     }
@@ -41,7 +42,7 @@ namespace Friflo.Json.Flow.Graph
         public              Dictionary<string, T>   Results          => IsOk("ReadRefsTask.Results", out Exception e) ? results     : throw e;
         public              T                       this[string id]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[id] : throw e;
         
-        internal  override  TaskState               State      => parent.State;
+        internal  override  TaskState               State       => state;
         internal  override  string                  Label       => $"{parent.Label} > {Selector}";
         public    override  string                  ToString()  => Label;
             
@@ -62,9 +63,17 @@ namespace Friflo.Json.Flow.Graph
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
             var entitySet = (EntitySet<T>) set;
             results = new Dictionary<string, T>(ids.Count);
+            var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
-                results.Add(id, peer.NullableEntity);  // todo should be Entity. check preceded error
+                if (peer.error == null) {
+                    results.Add(id, peer.Entity);
+                } else {
+                    entityErrorInfo.AddEntityError(peer.error);
+                }
+            }
+            if (entityErrorInfo.HasErrors) {
+                state.SetError(entityErrorInfo);
             }
         }
         
@@ -102,7 +111,7 @@ namespace Friflo.Json.Flow.Graph
         public              string      Id      => IsOk("ReadRefTask.Id",     out Exception e) ? id      : throw e;
         public              T           Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
-        internal override   TaskState   State       => parent.State;
+        internal override   TaskState   State       => state;
         internal override   string      Label       => $"{parent.Label} > {Selector}";
         public   override   string      ToString()  => Label;
                 
@@ -126,7 +135,13 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
             var peer = entitySet.GetPeerById(id);
-            entity = peer.Entity;
+            if (peer.error == null) {
+                entity = peer.Entity;
+            } else {
+                var entityErrorInfo = new TaskErrorInfo();
+                entityErrorInfo.AddEntityError(peer.error);
+                state.SetError(entityErrorInfo);
+            }
         }
         
         public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : Entity {
