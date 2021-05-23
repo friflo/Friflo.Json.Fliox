@@ -257,11 +257,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article -> .producer", articleProducerTask.ToString());
 
-            var readTask        = store.articles.Read();
+            var readTask1        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
-            var galaxy          = readTask.Find(duplicateId);
-            var article1And2    = readTask.FindRange(new [] {Article1ReadError, Article2JsonError});
-            var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+            var galaxy          = readTask1.Find(duplicateId);
+            var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError});
+            var articleSet      = readTask1.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
             
             var readTask2       = store.articles.Read(); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId);
@@ -300,6 +300,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleProducerTask.Error.ToString());
 
+            // readTask1 failed - A ReadTask<> fails, if any FindTask<> of it failed.
+            IsFalse(readTask1.Success);
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = articleSet.Results; });
             AreEqual(ArticleError, te.Message);
@@ -309,7 +311,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
-            te = Throws<TaskResultException>(() => { var _ = readTask.Results; });
+            te = Throws<TaskResultException>(() => { var _ = readTask1.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
@@ -317,6 +319,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
+            // readTask2 succeed - All it FindTask<> were successful
+            IsTrue(readTask2.Success);
+            IsTrue(galaxy2.Success);
             AreEqual("Galaxy S10", galaxy2.Result.name); 
         }
 
