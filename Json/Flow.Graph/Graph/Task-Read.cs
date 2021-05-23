@@ -26,7 +26,6 @@ namespace Friflo.Json.Flow.Graph
     {
         private  readonly   string      id;
         private             T           result;
-        internal readonly   ReadTask<T> task; 
 
         public              T           Result      => IsOk("Find.Result", out Exception e) ? result : throw e;
 
@@ -35,9 +34,8 @@ namespace Friflo.Json.Flow.Graph
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
 
-        internal Find(ReadTask<T> task, string id) {
+        internal Find(string id) {
             this.id     = id;
-            this.task   = task;
         }
         
         internal override void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities) {
@@ -125,7 +123,7 @@ namespace Friflo.Json.Flow.Graph
             if (State.IsSynced())
                 throw AlreadySyncedError();
             idMap.Add(id, null);
-            var find = new Find<T>(this, id);
+            var find = new Find<T>(id);
             findTasks.Add(find);
             return find;
         }
