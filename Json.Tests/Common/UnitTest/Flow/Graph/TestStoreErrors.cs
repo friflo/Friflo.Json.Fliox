@@ -301,20 +301,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleProducerTask.Error.ToString());
 
             // readTask1 failed - A ReadTask<> fails, if any FindTask<> of it failed.
-            IsFalse(readTask1.Success);
             TaskResultException te;
-            te = Throws<TaskResultException>(() => { var _ = articleSet.Results; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.entityErrors.Count);
             
-            te = Throws<TaskResultException>(() => { var _ = galaxy.Result; });
-            AreEqual(ArticleError, te.Message);
-            AreEqual(2, te.error.entityErrors.Count);
-            
+            IsFalse(readTask1.Success);
             te = Throws<TaskResultException>(() => { var _ = readTask1.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
+            IsTrue(articleSet.Success);
+            AreEqual(2,             articleSet.Results.Count);
+            AreEqual("Galaxy S10",  articleSet.Results[duplicateId].name);
+            AreEqual("iPad Pro",    articleSet.Results["article-ipad"].name);
+
+            IsTrue(galaxy.Success);
+            AreEqual("Galaxy S10",  galaxy.Result.name);
+
             te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);

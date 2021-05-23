@@ -5,17 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
     
     public abstract  class FindTask<T> : SyncTask where T : Entity {
-        internal                    TaskState   state;
+        internal                    TaskState   findState;
         
         internal abstract override  string      Label { get; }
         internal abstract override  TaskState   State { get; }
 
-        internal abstract void SetFindResult(Dictionary<string, T> entities);
+        internal abstract void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -29,7 +30,7 @@ namespace Friflo.Json.Flow.Graph
 
         public              T           Result      => IsOk("Find.Result", out Exception e) ? result : throw e;
 
-        internal override   TaskState   State       => task.State;
+        internal override   TaskState   State       => findState;
 
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
@@ -39,8 +40,16 @@ namespace Friflo.Json.Flow.Graph
             this.task   = task;
         }
         
-        internal override void SetFindResult(Dictionary<string, T> entities) {
-            result = entities[id];
+        internal override void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities) {
+            TaskErrorInfo error = new TaskErrorInfo();
+            var entityError = entities[id].Error;
+            if (entityError == null) {
+                findState.Synced = true;
+                result = values[id];
+                return;
+            }
+            error.AddEntityError(entityError);
+            findState.SetError(error);
         }
     }
     
@@ -50,7 +59,6 @@ namespace Friflo.Json.Flow.Graph
     public class FindRange<T> : FindTask<T> where T : Entity
     {
         private  readonly   HashSet<string>         ids;
-        private  readonly   ReadTask<T>             task;
         private  readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
 
         public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? results[id] : throw e;
@@ -60,19 +68,29 @@ namespace Friflo.Json.Flow.Graph
             throw e;
         } }
 
-        internal override   TaskState   State       => task.State;
+        internal override   TaskState   State       => findState;
         internal override   string      Label       => $"ReadIds<{typeof(T).Name}> #ids: {ids.Count}";
         public   override   string      ToString()  => Label;
 
-        internal FindRange(ReadTask<T> task, ICollection<string> ids) {
+        internal FindRange(ICollection<string> ids) {
             this.ids    = ids.ToHashSet();
-            this.task   = task;
         }
         
-        internal override void SetFindResult(Dictionary<string, T> entities) {
+        internal override void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities) {
+            TaskErrorInfo error = new TaskErrorInfo();
             foreach (var id in ids) {
-                results.Add(id, entities[id]);
+                var entityError = entities[id].Error;
+                if (entityError == null) {
+                    results.Add(id, values[id]);    
+                } else {
+                    error.AddEntityError(entityError);
+                }
             }
+            if (error.HasErrors) {
+                findState.SetError(error);
+                return;
+            }
+            findState.Synced = true;
         }
     } 
     
@@ -123,7 +141,7 @@ namespace Friflo.Json.Flow.Graph
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
                 idMap.TryAdd(id, null);
             }
-            var find = new FindRange<T>(this, ids);
+            var find = new FindRange<T>(ids);
             findTasks.Add(find);
             return find;
         }
