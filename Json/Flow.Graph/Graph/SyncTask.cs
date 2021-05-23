@@ -25,13 +25,13 @@ namespace Friflo.Json.Flow.Graph
         } }
 
         internal bool IsOk(string method, out Exception e) {
-            if (State.Error.HasErrors) {
+            if (State.IsSynced()) {
+                if (!State.Error.HasErrors) {
+                    e = null;
+                    return true;
+                }
                 e = new TaskResultException(State.Error.TaskError);
                 return false;
-            }
-            if (State.IsSynced()) {
-                e = null;
-                return true;
             }
             e = new TaskNotSyncedException($"{method} requires Sync(). {Label}");
             return false;
