@@ -53,10 +53,9 @@ namespace Friflo.Json.Flow.Graph
 
         public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? results[id] : throw e;
         public              Dictionary<string, T>   Results { get {
-            if (!IsOk("FindRange.Results", out Exception e)) {
-                throw e;
-            }
-            return results;
+            if (IsOk("FindRange.Results", out Exception e))
+                return results;
+            throw e;
         } }
 
         internal override   TaskState   State       => task.State;
