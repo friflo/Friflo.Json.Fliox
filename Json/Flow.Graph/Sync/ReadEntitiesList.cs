@@ -42,16 +42,15 @@ namespace Friflo.Json.Flow.Sync
                 foreach (var id in read.ids) {
                     readResult.entities.Add(id, combinedEntities[id]);
                 }
-                // await read.ReadReferences(readResult, entityContainer, response);
                 var references = read.references;
-                var readRefResults = new ReadReferencesResult();
                 if (references != null && references.Count > 0) {
-                    readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response).ConfigureAwait(false);
-                    if (readRefResults.error != null) {
-                        return TaskError(readRefResults.error);
+                    var readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response).ConfigureAwait(false);
+                    if (readRefResults.error == null) {
+                        readResult.references = readRefResults.references;
+                    } else {
+                        readResult.Error = readRefResults.error; // todo add test
                     }
                 }
-                readResult.references = readRefResults.references;
                 readResult.entities = null;
                 result.reads.Add(readResult);
             }
