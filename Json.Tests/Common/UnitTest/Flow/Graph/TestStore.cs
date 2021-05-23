@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
-            AreEqual("ReadId<Order> id: order-1", order1.ToString());
+            AreEqual("Find<Order> id: order-1", order1.ToString());
             var allArticles             = articles.QueryAll();
             var filterAll               = new EntityFilter<Article>(a => true);
             var allArticles2            = articles.QueryByFilter(filterAll);

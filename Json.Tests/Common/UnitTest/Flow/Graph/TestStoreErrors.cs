@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
-            AreEqual("ReadId<Order> id: order-1", order1.ToString());
+            AreEqual("Find<Order> id: order-1", order1.ToString());
             var allArticles             = articles.QueryAll();
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
@@ -280,9 +280,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ReadTask<Order> #ids: 1 -> .items[*].article -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| ReadId<Article> id: article-1 - Task failed by entity errors. Count: 1
+| Find<Article> id: article-1 - Task failed by entity errors. Count: 1
 |   ReadError: Article 'article-1', simulated read entity error
-| ReadIds<Article> #ids: 2 - Task failed by entity errors. Count: 2
+| FindRange<Article> #ids: 2 - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
                 AreEqual(expect, sre.Message);
