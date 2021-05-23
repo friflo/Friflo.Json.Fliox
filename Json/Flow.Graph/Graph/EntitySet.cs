@@ -93,9 +93,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Read
         public ReadTask<T> Read() {
-            var task = sync.Read();
-            intern.store.AddTask(task);
-            return task;
+            return sync.Read();
         }
 
         // --- Query

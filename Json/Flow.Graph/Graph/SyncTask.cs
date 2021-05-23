@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
@@ -39,6 +40,12 @@ namespace Friflo.Json.Flow.Graph
         
         internal Exception AlreadySyncedError() {
             return new TaskAlreadySyncedException($"Task already synced. {Label}");
+        }
+
+        internal virtual void AddFailedTask(List<SyncTask> failed) {
+            if (!State.Error.HasErrors)
+                return;
+            failed.Add(this);
         }
     }
 }

@@ -253,10 +253,8 @@ namespace Friflo.Json.Flow.Graph
             }
             finally {
                 var failed = new List<SyncTask>();
-                foreach (var task in _intern.sync.appTasks) {
-                    if (task.State.Error.HasErrors) {
-                        failed.Add(task);
-                    }
+                foreach (SyncTask task in _intern.sync.appTasks) {
+                    task.AddFailedTask(failed);
                 }
                 syncResult = new SyncResult(_intern.sync.appTasks, failed);
                 // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 

@@ -125,6 +125,7 @@ namespace Friflo.Json.Flow.Graph
             idMap.Add(id, null);
             var find = new Find<T>(id);
             findTasks.Add(find);
+            set.intern.store.AddTask(find);
             return find;
         }
         
@@ -141,6 +142,7 @@ namespace Friflo.Json.Flow.Graph
             }
             var find = new FindRange<T>(ids);
             findTasks.Add(find);
+            set.intern.store.AddTask(find);
             return find;
         }
 
@@ -194,6 +196,14 @@ namespace Friflo.Json.Flow.Graph
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(selector, set.intern.store);
+        }
+        
+        internal override void AddFailedTask(List<SyncTask> failed) {
+            foreach (var findTask in findTasks) {
+                if (findTask.State.Error.HasErrors) {
+                    failed.Add(findTask);
+                }
+            }
         }
     }
 }

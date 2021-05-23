@@ -260,6 +260,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask1        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
             var galaxy          = readTask1.Find(duplicateId);
+            var article1        = readTask1.Find(Article1ReadError);
             var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError});
             var articleSet      = readTask1.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
             
@@ -271,15 +272,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 await store.Sync(); // -------- Sync --------
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
-                AreEqual(3, sre.failed.Count);
-                const string expect = @"Sync() failed with task errors. Count: 3
+                AreEqual(4, sre.failed.Count);
+                const string expect = @"Sync() failed with task errors. Count: 4
 | ReadTask<Order> #ids: 1 -> .items[*].article - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | ReadTask<Order> #ids: 1 -> .items[*].article -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| ReadTask<Article> #ids: 4 - Task failed by entity errors. Count: 2
+| ReadId<Article> id: article-1 - Task failed by entity errors. Count: 1
+|   ReadError: Article 'article-1', simulated read entity error
+| ReadIds<Article> #ids: 2 - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
                 AreEqual(expect, sre.Message);
@@ -315,6 +318,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             IsTrue(galaxy.Success);
             AreEqual("Galaxy S10",  galaxy.Result.name);
+            
+            IsFalse(article1.Success);
+            AreEqual(@"Task failed by entity errors. Count: 1
+| ReadError: Article 'article-1', simulated read entity error", article1.Error.ToString());
 
             te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
             AreEqual(ArticleError, te.Message);
