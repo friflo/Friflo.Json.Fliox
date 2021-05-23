@@ -101,7 +101,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void ReadEntitiesListResult(ReadEntitiesList taskList, TaskResult result, ContainerEntities readEntities) {
             if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
-                    read.state.SetError(new TaskErrorInfo(taskError));
+                    var taskErrorInfo = new TaskErrorInfo(taskError);
+                    read.state.SetError(taskErrorInfo);
+                    SetFindTasksError(read, taskErrorInfo);
                 }
                 return;
             }
@@ -156,10 +158,17 @@ namespace Friflo.Json.Flow.Graph.Internal
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
                 read.state.SetError(entityErrorInfo);
+                SetFindTasksError(read, entityErrorInfo);
                 return;
             }
             read.state.Synced = true;
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
+        }
+
+        private static void SetFindTasksError(ReadTask<T> read, TaskErrorInfo error) {
+            foreach (var findTask in read.findTasks) {
+                findTask.state.SetError(error);
+            }
         }
         
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {

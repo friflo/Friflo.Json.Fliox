@@ -10,8 +10,10 @@ namespace Friflo.Json.Flow.Graph
 {
     
     public abstract  class FindTask<T> : SyncTask where T : Entity {
-        internal abstract override string       Label { get; }
-        internal abstract override TaskState    State { get; }
+        internal                    TaskState   state;
+        
+        internal abstract override  string      Label { get; }
+        internal abstract override  TaskState   State { get; }
 
         internal abstract void SetFindResult(Dictionary<string, T> entities);
     }
