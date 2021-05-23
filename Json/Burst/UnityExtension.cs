@@ -16,6 +16,11 @@ namespace System.Collections.Generic
             dictionary.Add(key, value);
             return true;
         }
+
+        public static int EnsureCapacity<TKey,TValue>(this Dictionary<TKey,TValue> dictionary, int capacity) {
+            return 0;
+        }
+
     }
 }
 

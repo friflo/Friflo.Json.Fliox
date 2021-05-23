@@ -97,9 +97,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
-#if !UNITY_5_3_OR_NEWER
             idMap.EnsureCapacity(idMap.Count + ids.Count);
-#endif
             foreach (var id in ids) {
                 if (id == null)
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
