@@ -256,7 +256,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     AddReferences(references, read.refsTask.subRefs);
                 }
                 var req = new ReadEntities {
-                    ids = read.idMap.Keys.ToHashSet(),
+                    ids = read.results.Keys.ToHashSet(),
                     references = references
                 };
                 readList.reads.Add(req);

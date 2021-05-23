@@ -102,14 +102,14 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState               state;
         internal readonly   EntitySet<T>            set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<string, T>   idMap       = new Dictionary<string, T>();
+        internal readonly   Dictionary<string, T>   results     = new Dictionary<string, T>();
         internal readonly   List<FindTask<T>>       findTasks   = new List<FindTask<T>>();
 
-        public              Dictionary<string, T>   Results          => IsOk("ReadTask.Results", out Exception e) ? idMap     : throw e;
-        public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? idMap[id] : throw e;
+        public              Dictionary<string, T>   Results          => IsOk("ReadTask.Results", out Exception e) ? results     : throw e;
+        public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? results[id] : throw e;
 
         internal override   TaskState               State       => state;
-        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {idMap.Count}";
+        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {results.Count}";
         public   override   string                  ToString()  => Label;
 
         internal ReadTask(EntitySet<T> set) {
@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            idMap.Add(id, null);
+            results.Add(id, null);
             var find = new Find<T>(id);
             findTasks.Add(find);
             set.intern.store.AddTask(find);
@@ -134,11 +134,11 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            idMap.EnsureCapacity(idMap.Count + ids.Count);
+            results.EnsureCapacity(results.Count + ids.Count);
             foreach (var id in ids) {
                 if (id == null)
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
-                idMap.TryAdd(id, null);
+                results.TryAdd(id, null);
             }
             var find = new FindRange<T>(ids);
             findTasks.Add(find);

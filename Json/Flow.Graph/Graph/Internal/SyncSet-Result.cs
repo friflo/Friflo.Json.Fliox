@@ -141,7 +141,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
 
             var entityErrorInfo = new TaskErrorInfo();
-            var readIds = read.idMap.Keys.ToList();
+            var readIds = read.results.Keys.ToList();
             foreach (var id in readIds) {
                 var value = readEntities.entities[id];
                 var error = value.Error;
@@ -151,14 +151,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
                 if (json == null || json == "null") {
-                    read.idMap[id] = null;
+                    read.results[id] = null;
                 } else {
                     var peer = set.GetPeerById(id);
-                    read.idMap[id] = peer.Entity;
+                    read.results[id] = peer.Entity;
                 }
             }
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.idMap, readEntities.entities);
+                findTask.SetFindResult(read.results, readEntities.entities);
             }
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
