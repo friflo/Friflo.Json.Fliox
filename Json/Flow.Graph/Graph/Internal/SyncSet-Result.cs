@@ -150,6 +150,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                     read.idMap[id] = peer.Entity;
                 }
             }
+            foreach (var findTask in read.findTasks) {
+                findTask.SetFindResult(read.idMap);
+            }
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
                 read.state.SetError(entityErrorInfo);

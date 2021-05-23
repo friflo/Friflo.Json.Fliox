@@ -8,18 +8,27 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
+    
+    public abstract  class FindTask<T> : SyncTask where T : Entity {
+        internal abstract override string       Label { get; }
+        internal abstract override TaskState    State { get; }
+
+        internal abstract void SetFindResult(Dictionary<string, T> entities);
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class Find<T> : SyncTask where T : Entity
+    public class Find<T> : FindTask<T> where T : Entity
     {
         private  readonly   string      id;
+        private             T           result;
         internal readonly   ReadTask<T> task; 
 
-        public              T           Result      => IsOk("Find.Result", out Exception e) ? task.idMap[id] : throw e;
+        public              T           Result      => IsOk("Find.Result", out Exception e) ? result : throw e;
 
         internal override   TaskState   State       => task.State;
-        
+
         internal override   string      Label       => $"ReadId<{typeof(T).Name}> id: {id}";
         public   override   string      ToString()  => Label;
 
@@ -27,26 +36,27 @@ namespace Friflo.Json.Flow.Graph
             this.id     = id;
             this.task   = task;
         }
+        
+        internal override void SetFindResult(Dictionary<string, T> entities) {
+            result = entities[id];
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class FindRange<T> : SyncTask where T : Entity
+    public class FindRange<T> : FindTask<T> where T : Entity
     {
         private  readonly   HashSet<string>         ids;
-        private  readonly   ReadTask<T>             task; 
+        private  readonly   ReadTask<T>             task;
+        private  readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
 
-        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? task.idMap[id] : throw e;
+        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? results[id] : throw e;
         public              Dictionary<string, T>   Results { get {
             if (!IsOk("FindRange.Results", out Exception e)) {
                 throw e;
             }
-            var result = new Dictionary<string, T>(ids.Count);
-            foreach (var id in ids) {
-                result.Add(id, task.idMap[id]);
-            }
-            return result;
+            return results;
         } }
 
         internal override   TaskState   State       => task.State;
@@ -56,6 +66,12 @@ namespace Friflo.Json.Flow.Graph
         internal FindRange(ReadTask<T> task, ICollection<string> ids) {
             this.ids    = ids.ToHashSet();
             this.task   = task;
+        }
+        
+        internal override void SetFindResult(Dictionary<string, T> entities) {
+            foreach (var id in ids) {
+                results.Add(id, entities[id]);
+            }
         }
     } 
     
@@ -69,8 +85,9 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState               state;
         internal readonly   EntitySet<T>            set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<string, T>   idMap = new Dictionary<string, T>();
-        
+        internal readonly   Dictionary<string, T>   idMap       = new Dictionary<string, T>();
+        internal readonly   List<FindTask<T>>       findTasks   = new List<FindTask<T>>();
+
         public              Dictionary<string, T>   Results          => IsOk("ReadTask.Results", out Exception e) ? idMap     : throw e;
         public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? idMap[id] : throw e;
 
@@ -89,7 +106,9 @@ namespace Friflo.Json.Flow.Graph
             if (State.IsSynced())
                 throw AlreadySyncedError();
             idMap.Add(id, null);
-            return new Find<T>(this, id);
+            var find = new Find<T>(this, id);
+            findTasks.Add(find);
+            return find;
         }
         
         public FindRange<T> FindRange(ICollection<string> ids) {
@@ -103,7 +122,9 @@ namespace Friflo.Json.Flow.Graph
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
                 idMap.TryAdd(id, null);
             }
-            return new FindRange<T>(this, ids);
+            var find = new FindRange<T>(this, ids);
+            findTasks.Add(find);
+            return find;
         }
 
         // lab - ReadRefs by Entity Type
