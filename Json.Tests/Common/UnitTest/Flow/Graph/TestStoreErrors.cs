@@ -257,8 +257,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article -> .producer", articleProducerTask.ToString());
 
-            var readTask1        = store.articles.Read();
             var duplicateId     = "article-galaxy"; // support duplicate ids
+            
+            var readTask1       = store.articles.Read();
             var galaxy          = readTask1.Find(duplicateId);
             var article1        = readTask1.Find(Article1ReadError);
             var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError});
