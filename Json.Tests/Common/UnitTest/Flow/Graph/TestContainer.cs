@@ -48,7 +48,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
         
         public  override    bool            Pretty       => local.Pretty;
-        public  override    SyncContext     SyncContext  => local.SyncContext;
 
         public TestContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {

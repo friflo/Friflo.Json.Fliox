@@ -27,18 +27,11 @@ namespace Friflo.Json.Flow.Database
         private readonly    Dictionary<string, string>  payloads    = new Dictionary<string, string>();
         
         public  override    bool            Pretty      { get; }
-        public  override    SyncContext     SyncContext { get; }
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty) : base(name, database) {
-            SyncContext = new SyncContext();
             Pretty = pretty;
         }
         
-        public override void Dispose() {
-            SyncContext.Dispose();
-        }
-
-
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
@@ -80,7 +73,7 @@ namespace Friflo.Json.Flow.Database
             var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
                 var payload = payloadPair.Value;
-                if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
+                if (syncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
                     var entry = new EntityValue(payload);
                     entities.Add(payloadPair.Key, entry);
                 }

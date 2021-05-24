@@ -33,18 +33,12 @@ namespace Friflo.Json.Flow.Database
         private readonly    string          folder;
 
         public  override    bool            Pretty      { get; }
-        public  override    SyncContext     SyncContext { get; }
 
 
         public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {
             this.Pretty = pretty;
-            SyncContext = new SyncContext();
             this.folder = folder + "/";
             Directory.CreateDirectory(folder);
-        }
-
-        public override void Dispose() {
-            SyncContext.Dispose();
         }
 
         private string FilePath(string key) {
@@ -116,7 +110,7 @@ namespace Friflo.Json.Flow.Database
             foreach (var entityPair in readEntities.entities) {
                 var key     = entityPair.Key;
                 var payload = entityPair.Value.Json;
-                if (SyncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
+                if (syncContext.jsonEvaluator.Filter(payload, jsonFilter)) {
                     var entry = new EntityValue(payload);
                     result.Add(key, entry);
                 }

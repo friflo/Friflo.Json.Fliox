@@ -43,7 +43,6 @@ namespace Friflo.Json.Flow.Database.Remote
         private readonly    EntityContainer local;
         
         public  override    bool            Pretty       => local.Pretty;
-        public  override    SyncContext     SyncContext  => local.SyncContext;
 
         public RemoteHostContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {

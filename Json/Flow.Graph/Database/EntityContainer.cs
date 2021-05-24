@@ -47,7 +47,6 @@ namespace Friflo.Json.Flow.Database
         private readonly    EntityDatabase  database;
 
         public virtual      bool            Pretty      => false;
-        public virtual      SyncContext     SyncContext => null;
 
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, SyncContext syncContext);
         public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, SyncContext syncContext);
@@ -90,7 +89,7 @@ namespace Friflo.Json.Flow.Database
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
             var targets = new  Dictionary<string,EntityValue>(entities.Count);
-            var patcher = SyncContext.jsonPatcher;
+            var patcher = syncContext.jsonPatcher;
             Dictionary<string, EntityError> patchErrors = null;
             foreach (var entity in entities) {
                 var key = entity.Key;
@@ -152,7 +151,7 @@ namespace Friflo.Json.Flow.Database
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            var jsonPath    = SyncContext.scalarSelector;
+            var jsonPath    = syncContext.scalarSelector;
             
             // Get the selected refs for all entities.
             // Select() is expensive as it requires a full JSON parse. By using an selector array only one
