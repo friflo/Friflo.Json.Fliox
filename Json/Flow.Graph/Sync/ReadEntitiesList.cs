@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Sync
                     if (readRefResults.error == null) {
                         readResult.references = readRefResults.references;
                     } else {
-                        readResult.Error = readRefResults.error; // todo add test
+                        readResult.Error = readRefResults.error; // todo add error test
                     }
                 }
                 readResult.entities = null;

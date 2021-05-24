@@ -200,7 +200,7 @@ namespace Friflo.Json.Flow.Database
                         }
                         var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse).ConfigureAwait(false);
                         if (refReferencesResult.error != null) {
-                            return refReferencesResult;
+                            return refReferencesResult; // todo add error test
                         }
                         referenceResult.references = refReferencesResult.references;
                     }
