@@ -62,6 +62,7 @@ namespace Friflo.Json.Flow.Database
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Flow.Sync"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
+        // todo add SyncContext as a parameter to enable parallel request execution
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest) {
             var response = new SyncResponse {
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
