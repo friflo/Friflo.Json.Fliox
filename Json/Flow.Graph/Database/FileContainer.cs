@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Database
             return folder + key + ".json";
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> createErrors = null;
             foreach (var entityPair in entities) {
@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Database
             return new CreateEntitiesResult{createErrors = createErrors};
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> updateErrors = null;
             foreach (var entityPair in entities) {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Database
             return new UpdateEntitiesResult{updateErrors = updateErrors};
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
@@ -107,10 +107,10 @@ namespace Friflo.Json.Flow.Database
             return new ReadEntitiesResult{entities = entities};
         }
 
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             var keys            = GetIds(folder);
             var readIds         = new ReadEntities {ids = keys};
-            var readEntities    = await ReadEntities(readIds).ConfigureAwait(false);
+            var readEntities    = await ReadEntities(readIds, syncContext).ConfigureAwait(false);
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
             foreach (var entityPair in readEntities.entities) {
@@ -124,7 +124,7 @@ namespace Friflo.Json.Flow.Database
             return new QueryEntitiesResult{entities = result};
         }
 
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var keys = command.ids;
             Dictionary<string, EntityError> deleteErrors = null;
             foreach (var key in keys) {

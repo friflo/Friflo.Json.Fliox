@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType    TaskType => TaskType.Read;
         public   override   string      ToString() => "container: " + container;
 
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var result = new ReadEntitiesListResult {
                 reads = new List<ReadEntitiesResult>(reads.Count)
             };
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
-            var combinedResult = await entityContainer.ReadEntities(combinedRead).ConfigureAwait(false);
+            var combinedResult = await entityContainer.ReadEntities(combinedRead, syncContext).ConfigureAwait(false);
             if (combinedResult.Error != null) {
                 return TaskError(combinedResult.Error);
             }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Sync
                 }
                 var references = read.references;
                 if (references != null && references.Count > 0) {
-                    var readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response).ConfigureAwait(false);
+                    var readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response, syncContext).ConfigureAwait(false);
                     if (readRefResults.error == null) {
                         readResult.references = readRefResults.references;
                     } else {

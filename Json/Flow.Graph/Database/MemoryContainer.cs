@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Database
         }
 
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var keys = command.ids;
             var entities = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
@@ -75,7 +75,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             var entities    = new Dictionary<string, EntityValue>();
             var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
             foreach (var payloadPair in payloads) {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var keys = command.ids;
             foreach (var key in keys) {
                 payloads.Remove(key);

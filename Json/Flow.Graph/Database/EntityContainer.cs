@@ -49,11 +49,11 @@ namespace Friflo.Json.Flow.Database
         public virtual      bool            Pretty      => false;
         public virtual      SyncContext     SyncContext => null;
 
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command);
-        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command);
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, SyncContext syncContext);
+        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, SyncContext syncContext);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, SyncContext syncContext);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, SyncContext syncContext);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, SyncContext syncContext);
         
         
         protected EntityContainer(string name, EntityDatabase database) {
@@ -74,12 +74,12 @@ namespace Friflo.Json.Flow.Database
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual async Task<PatchEntitiesResult>      PatchEntities   (PatchEntities patchEntities) {
+        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncContext syncContext) {
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
-            var readResult = await ReadEntities(readTask).ConfigureAwait(false);
+            var readResult = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult {Error = readResult.Error};
             }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Database
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = targets};
-            var updateResult = await UpdateEntities(task).ConfigureAwait(false);
+            var updateResult = await UpdateEntities(task, syncContext).ConfigureAwait(false);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error};
             }
@@ -134,7 +134,8 @@ namespace Friflo.Json.Flow.Database
                 List<References>                    references,
                 Dictionary<string, EntityValue>     entities,
                 string                              container,
-                SyncResponse                        syncResponse)
+                SyncResponse                        syncResponse,
+                SyncContext                         syncContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");
@@ -186,7 +187,7 @@ namespace Friflo.Json.Flow.Database
                 if (ids.Count > 0) {
                     var refIdList   = ids.ToHashSet();
                     var readRefIds  = new ReadEntities {ids = refIdList};
-                    var refEntities = await refContainer.ReadEntities(readRefIds).ConfigureAwait(false);
+                    var refEntities = await refContainer.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                     if (refEntities.Error != null) {
                         return new ReadReferencesResult {error = refEntities.Error};
                     }
@@ -198,7 +199,7 @@ namespace Friflo.Json.Flow.Database
                         foreach (var id in ids) {
                             subEntities.Add(id, refEntities.entities[id]);
                         }
-                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse).ConfigureAwait(false);
+                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse, syncContext).ConfigureAwait(false);
                         if (refReferencesResult.error != null) {
                             return refReferencesResult; // todo add error test
                         }

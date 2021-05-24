@@ -18,6 +18,8 @@ namespace Friflo.Json.Flow.Database.Remote
     public class LoopbackDatabase : RemoteClientDatabase
     {
         private readonly RemoteHostDatabase loopbackHost;
+        private readonly SyncContext        syncContext = new SyncContext();
+            
         
         public LoopbackDatabase(EntityDatabase local) {
             loopbackHost = new RemoteHostDatabase(local);
@@ -25,11 +27,12 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public override void Dispose() {
             base.Dispose();
+            syncContext.Dispose();
             loopbackHost.Dispose();
         }
 
         protected override async Task<string> ExecuteSyncJson(string jsonSynRequest) {
-            var jsonResponse = await loopbackHost.ExecuteSyncJson(jsonSynRequest).ConfigureAwait(false);
+            var jsonResponse = await loopbackHost.ExecuteSyncJson(jsonSynRequest, syncContext).ConfigureAwait(false);
             return jsonResponse;
         }
     }

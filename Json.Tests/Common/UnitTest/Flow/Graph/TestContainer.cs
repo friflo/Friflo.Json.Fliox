@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             local = localContainer;
         }
 
-        public override Task<CreateEntitiesResult>    CreateEntities  (CreateEntities command) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult {Error = error});
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return Task.FromResult(new CreateEntitiesResult());
         }
 
-        public override Task<UpdateEntitiesResult>    UpdateEntities  (UpdateEntities command) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return Task.FromResult(new UpdateEntitiesResult {Error = error});
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return Task.FromResult(new UpdateEntitiesResult());
         }
         
-        public override Task<DeleteEntitiesResult>    DeleteEntities  (DeleteEntities command) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var error = SimulateWriteErrors(command.ids, out var errors);
             if (error != null)
                 return Task.FromResult(new DeleteEntitiesResult {Error = error});
@@ -82,16 +82,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return Task.FromResult(new DeleteEntitiesResult());
         }
 
-        public override async Task<ReadEntitiesResult>      ReadEntities    (ReadEntities command) {
-            var result = await local.ReadEntities(command).ConfigureAwait(false);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+            var result = await local.ReadEntities(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
             return result;
         }
         
-        public override async Task<QueryEntitiesResult>     QueryEntities   (QueryEntities command) {
-            var result = await local.QueryEntities(command).ConfigureAwait(false);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+            var result = await local.QueryEntities(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null) {
                 result.Error = databaseError;

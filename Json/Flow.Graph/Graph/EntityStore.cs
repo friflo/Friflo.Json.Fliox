@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   EntityDatabase                  database;
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
+        internal readonly   SyncContext                     syncContext;
         
         // --- non readonly
         internal            SyncStore                       sync;
@@ -43,6 +44,7 @@ namespace Friflo.Json.Flow.Graph
             setByName           = new Dictionary<string, EntitySet>();
             objectPatcher       = new ObjectPatcher(jsonMapper);
             sync                = new SyncStore();
+            syncContext         = new SyncContext();
             tracerLogTask       = null;
         }
     }
@@ -76,6 +78,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Dispose() {
+            _intern.syncContext.Dispose();
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
             _intern.typeStore.Dispose();
@@ -84,7 +87,7 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest).ConfigureAwait(false); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, _intern.syncContext).ConfigureAwait(false); // <--- asynchronous Sync point
             var result = HandleSyncResponse(syncRequest, response);
 
             var errorCount = result.failed.Count;
@@ -94,7 +97,7 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest).ConfigureAwait(false); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, _intern.syncContext).ConfigureAwait(false); // <--- asynchronous Sync point
             var result = HandleSyncResponse(syncRequest, response);
 
             return result;
@@ -103,7 +106,7 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var responseTask = _intern.database.ExecuteSync(syncRequest);
+            var responseTask = _intern.database.ExecuteSync(syncRequest, _intern.syncContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
             HandleSyncResponse(syncRequest, response);

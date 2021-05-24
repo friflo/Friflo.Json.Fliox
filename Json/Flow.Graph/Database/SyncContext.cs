@@ -23,6 +23,8 @@ namespace Friflo.Json.Flow.Database
         public readonly  JsonPatcher        jsonPatcher     = new JsonPatcher();
         public readonly  ScalarSelector     scalarSelector  = new ScalarSelector();
         public readonly  JsonEvaluator      jsonEvaluator   = new JsonEvaluator();
+        
+        public SyncContext () {}
 
         public void Dispose() {
             jsonEvaluator.Dispose();

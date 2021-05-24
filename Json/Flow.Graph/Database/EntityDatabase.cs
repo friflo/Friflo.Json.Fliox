@@ -62,15 +62,14 @@ namespace Friflo.Json.Flow.Database
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Flow.Sync"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        // todo add SyncContext as a parameter to enable parallel request execution
-        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest) {
+        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             var response = new SyncResponse {
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
                 results         = new Dictionary<string, ContainerEntities>()
             };
             foreach (var task in syncRequest.tasks) {
                 try {
-                    var result = await task.Execute(this, response).ConfigureAwait(false);
+                    var result = await task.Execute(this, response, syncContext).ConfigureAwait(false);
                     response.tasks.Add(result);
                 }
                 catch (Exception e) {

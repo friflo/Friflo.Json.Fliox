@@ -29,9 +29,9 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
 
-        public async Task<string> ExecuteSyncJson(string jsonSyncRequest) {
+        public async Task<string> ExecuteSyncJson(string jsonSyncRequest, SyncContext syncContext) {
             var syncRequest = jsonMapper.Read<SyncRequest>(jsonSyncRequest);
-            SyncResponse syncResponse = await ExecuteSync(syncRequest).ConfigureAwait(false);
+            SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             jsonMapper.Pretty = true;
             var jsonResponse = jsonMapper.Write(syncResponse);
             return jsonResponse;
@@ -51,24 +51,24 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
 
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
-            return await local.CreateEntities(command).ConfigureAwait(false);
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+            return await local.CreateEntities(command, syncContext).ConfigureAwait(false);
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
-            return await local.UpdateEntities(command).ConfigureAwait(false);
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
+            return await local.UpdateEntities(command, syncContext).ConfigureAwait(false);
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
-            return await local.ReadEntities(command).ConfigureAwait(false);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+            return await local.ReadEntities(command, syncContext).ConfigureAwait(false);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
-            return await local.QueryEntities(command).ConfigureAwait(false);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+            return await local.QueryEntities(command, syncContext).ConfigureAwait(false);
         }
         
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
-            return await local.DeleteEntities(command).ConfigureAwait(false);
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+            return await local.DeleteEntities(command, syncContext).ConfigureAwait(false);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType            TaskType => TaskType.Patch;
         public   override   string              ToString() => "container: " + container;
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.PatchEntities(this).ConfigureAwait(false);
+            var result = await entityContainer.PatchEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

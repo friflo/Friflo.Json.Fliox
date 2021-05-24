@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     public abstract class DatabaseTask
     {
-        internal abstract   Task<TaskResult>    Execute(EntityDatabase database, SyncResponse response);
+        internal abstract Task<TaskResult>      Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         internal abstract   TaskType            TaskType { get; }
 
         internal static TaskErrorResult TaskError(CommandError error) {

@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         protected abstract Task<string> ExecuteSyncJson(string jsonSynRequest);
 
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest) {
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             var jsonRequest = jsonMapper.Write(syncRequest);
             var jsonResponse = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
             var response = jsonMapper.Read<SyncResponse>(jsonResponse);
@@ -63,23 +63,23 @@ namespace Friflo.Json.Flow.Database.Remote
             : base(name, database) {
         }
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
         }
     }
