@@ -58,6 +58,9 @@ namespace Friflo.Json.Flow.Database
         public readonly  ObjectPool<ScalarSelector> scalarSelector  = new ObjectPool<ScalarSelector>(() => new ScalarSelector());
         public readonly  ObjectPool<JsonEvaluator>  jsonEvaluator   = new ObjectPool<JsonEvaluator> (() => new JsonEvaluator());
         public readonly  ObjectPool<ObjectMapper>   objectMapper    = new ObjectPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+        
+        // constructor present for code navigation
+        internal Pools() { }
 
         public void Dispose() {
             jsonPatcher.Dispose();
