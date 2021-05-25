@@ -11,7 +11,6 @@ namespace Friflo.Json.Flow.Database.Remote
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
     public class HttpHostDatabase : RemoteHostDatabase
     {
-        private readonly    ContextPools    contextPools = new ContextPools();
         private readonly    string          endpoint;
         private readonly    HttpListener    listener;
         private             bool            runServer;
@@ -25,11 +24,6 @@ namespace Friflo.Json.Flow.Database.Remote
             listener.Prefixes.Add(endpoint);
         }
         
-        public override void Dispose() {
-            base.Dispose();
-            contextPools.Dispose();
-        }
-
         private async Task HandleIncomingConnections()
         {
             runServer = true;
@@ -82,8 +76,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         private async Task<byte[]> HandlePost (string requestContent, HttpListenerResponse resp) {
-            var syncContext = new SyncContext(contextPools.pools);
-            var jsonResponse = await ExecuteSyncJson(requestContent, syncContext).ConfigureAwait(false);
+            var jsonResponse = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
 
             // Write the response info
             byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
