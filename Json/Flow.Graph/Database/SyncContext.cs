@@ -11,14 +11,10 @@ namespace Friflo.Json.Flow.Database
 {
     // ------------------------------------ SyncContext ------------------------------------
     /// <summary>
-    /// One <see cref="SyncContext"/> is created per <see cref="EntityContainer"/> to enable multi threaded
-    /// request handling for different <see cref="EntityContainer"/> instances.
-    ///
-    /// The <see cref="SyncContext"/> for a specific <see cref="EntityContainer"/> must not be used
-    /// multi threaded.
-    ///
-    /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
-    /// for a <see cref="SyncResponse"/> in <see cref="DatabaseTask.Execute"/> need to be single threaded. 
+    /// One <see cref="SyncContext"/> is created per <see cref="SyncRequest"/> instance to enable
+    /// multi threaded and concurrent request handling.
+    /// <br></br>
+    /// Note: In case of adding transaction support in future transaction data/state will be stored here.
     /// </summary>
     public class SyncContext
     {
