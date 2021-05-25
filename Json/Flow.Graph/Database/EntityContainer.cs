@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Database
             
             Dictionary<string, EntityError> patchErrors = null;
             using (var pooledPatcher = syncContext.pools.jsonPatcher.Get()) {
-                var patcher = pooledPatcher.value;
+                JsonPatcher patcher = pooledPatcher.value;
                 foreach (var entity in entities) {
                     var key = entity.Key;
                     if (!ids.Contains(key))
@@ -155,7 +155,7 @@ namespace Friflo.Json.Flow.Database
             }
             var select      = new ScalarSelect(selectors);  // can be reused
             using (var pooledSelector    = syncContext.pools.scalarSelector.Get()) {
-                var selector = pooledSelector.value;
+                ScalarSelector selector = pooledSelector.value;
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.

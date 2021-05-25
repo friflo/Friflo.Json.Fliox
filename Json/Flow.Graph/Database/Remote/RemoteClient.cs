@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.objectMapper.Get()) {
-                var mapper = pooledMapper.value;
+                ObjectMapper mapper = pooledMapper.value;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
                 var jsonRequest = mapper.Write(syncRequest);

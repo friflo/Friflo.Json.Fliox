@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
@@ -22,7 +23,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public async Task<string> ExecuteSyncJson(string jsonSyncRequest, SyncContext syncContext) {
             using (var jsonMapper = syncContext.pools.objectMapper.Get()) {
-                var mapper = jsonMapper.value;
+                ObjectMapper mapper = jsonMapper.value;
                 var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
                 SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                 mapper.WriteNullMembers = false;

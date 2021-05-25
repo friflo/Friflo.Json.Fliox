@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -20,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
                 using (var pooledPatcher = syncContext.pools.jsonPatcher.Get()) {
-                    var patcher = pooledPatcher.value;
+                    JsonPatcher patcher = pooledPatcher.value;
                     foreach (var entity in entities) {
                         entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
                     }
