@@ -88,7 +88,7 @@ namespace Friflo.Json.Flow.Graph
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
             var syncContext = new SyncContext(_intern.contextPools.pools);
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
             var errorCount = result.failed.Count;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Graph
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
             var syncContext = new SyncContext(_intern.contextPools.pools);
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false); // <--- asynchronous Sync point
+            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
             return result;
@@ -111,7 +111,7 @@ namespace Friflo.Json.Flow.Graph
             var syncContext = new SyncContext(_intern.contextPools.pools);
             var responseTask = _intern.database.ExecuteSync(syncRequest, syncContext);
             // responseTask.Wait();  
-            SyncResponse response = responseTask.Result;  // <--- synchronous Sync point
+            SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
             HandleSyncResponse(syncRequest, response);
         }
 
