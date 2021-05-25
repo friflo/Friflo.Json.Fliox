@@ -7,16 +7,16 @@ namespace Friflo.Json.Flow.Database
 {
     public readonly struct Pooled<T> : IDisposable where T : IDisposable
     {
-        public  readonly T              value;
+        public  readonly T              instance;
         private readonly ObjectPool<T>  pool;
         
-        internal Pooled(ObjectPool<T> pool, T value) {
-            this.value  = value;
-            this.pool   = pool;
+        internal Pooled(ObjectPool<T> pool, T instance) {
+            this.instance   = instance;
+            this.pool       = pool;
         }
 
         public void Dispose() {
-            pool.Return(value);
+            pool.Return(instance);
         }
     }
     

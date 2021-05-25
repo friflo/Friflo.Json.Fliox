@@ -72,7 +72,7 @@ namespace Friflo.Json.Flow.Database
             var entities    = new Dictionary<string, EntityValue>();
             var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
             using (var pooledEvaluator = syncContext.pools.jsonEvaluator.Get()) {
-                JsonEvaluator evaluator = pooledEvaluator.value;
+                JsonEvaluator evaluator = pooledEvaluator.instance;
                 foreach (var payloadPair in payloads) {
                     var payload = payloadPair.Value;
                     if (evaluator.Filter(payload, jsonFilter)) {
