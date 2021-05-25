@@ -35,32 +35,32 @@ namespace Friflo.Json.Flow.Utils
     
     public class SharedPool<T> : ObjectPool<T> where T : IDisposable
     {
-        private readonly    ConcurrentQueue<T>  queue = new ConcurrentQueue<T>();
+        private readonly    ConcurrentStack<T>  stack = new ConcurrentStack<T>();
         private readonly    Func<T>             factory;
         
-        public              int                 Count => queue.Count;
-        public  override    string              ToString() => $"Count: {queue.Count}";
+        public              int                 Count => stack.Count;
+        public  override    string              ToString() => $"Count: {stack.Count}";
 
         public SharedPool(Func<T> factory) {
             this.factory = factory;
         }
 
         public override void Dispose() {
-            foreach (var obj in queue) {
+            foreach (var obj in stack) {
                 obj.Dispose();
             }
-            queue.Clear();
+            stack.Clear();
         }
         
         internal override T Get() {
-            if (!queue.TryDequeue(out T obj)) {
+            if (!stack.TryPop(out T obj)) {
                 obj = factory();
             }
             return obj;
         }
         
         internal override void Return(T obj) {
-            queue.Enqueue(obj);
+            stack.Push(obj);
         }
 
         public override void AssertNoLeaks() {
