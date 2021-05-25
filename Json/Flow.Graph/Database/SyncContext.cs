@@ -22,12 +22,22 @@ namespace Friflo.Json.Flow.Database
     /// </summary>
     public class SyncContext : IDisposable
     {
-        public  readonly     Pools  pools = new Pools(); // todo use static Pools instance
+        public  readonly        Pools  pools;
+        private readonly        Pools  ownedPools;
         
-        public SyncContext () {}
+        public  static          bool   useSharedPools = true;
+        private static readonly Pools  SharedPools = new Pools();
+        
+        public SyncContext () {
+            if (useSharedPools) {
+                pools = SharedPools;
+            } else {
+                pools = ownedPools = new Pools();
+            }
+        }
 
         public void Dispose() {
-            pools.Dispose();
+            ownedPools?.Dispose();
         }
     }
 
