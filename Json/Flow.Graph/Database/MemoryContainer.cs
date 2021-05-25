@@ -71,10 +71,11 @@ namespace Friflo.Json.Flow.Database
         public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             var entities    = new Dictionary<string, EntityValue>();
             var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
-            using (var jsonEvaluator = syncContext.pools.jsonEvaluator.Get()) {
+            using (var pooledEvaluator = syncContext.pools.jsonEvaluator.Get()) {
+                var evaluator = pooledEvaluator.value;
                 foreach (var payloadPair in payloads) {
                     var payload = payloadPair.Value;
-                    if (jsonEvaluator.value.Filter(payload, jsonFilter)) {
+                    if (evaluator.Filter(payload, jsonFilter)) {
                         var entry = new EntityValue(payload);
                         entities.Add(payloadPair.Key, entry);
                     }

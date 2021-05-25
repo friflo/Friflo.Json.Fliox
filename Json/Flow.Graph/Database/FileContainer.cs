@@ -107,11 +107,12 @@ namespace Friflo.Json.Flow.Database
             var readEntities    = await ReadEntities(readIds, syncContext).ConfigureAwait(false);
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
-            using (var jsonEvaluator = syncContext.pools.jsonEvaluator.Get()) {
+            using (var pooledEvaluator = syncContext.pools.jsonEvaluator.Get()) {
+                var evaluator = pooledEvaluator.value;
                 foreach (var entityPair in readEntities.entities) {
                     var key     = entityPair.Key;
                     var payload = entityPair.Value.Json;
-                    if (jsonEvaluator.value.Filter(payload, jsonFilter)) {
+                    if (evaluator.Filter(payload, jsonFilter)) {
                         var entry = new EntityValue(payload);
                         result.Add(key, entry);
                     }

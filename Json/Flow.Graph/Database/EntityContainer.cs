@@ -91,7 +91,8 @@ namespace Friflo.Json.Flow.Database
             var targets = new  Dictionary<string,EntityValue>(entities.Count);
             
             Dictionary<string, EntityError> patchErrors = null;
-            using (var patcher = syncContext.pools.jsonPatcher.Get()) {
+            using (var pooledPatcher = syncContext.pools.jsonPatcher.Get()) {
+                var patcher = pooledPatcher.value;
                 foreach (var entity in entities) {
                     var key = entity.Key;
                     if (!ids.Contains(key))
@@ -107,7 +108,7 @@ namespace Friflo.Json.Flow.Database
                             error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
                             AddEntityError(ref patchErrors, key, error);
                         } else {
-                            var json = patcher.value.ApplyPatches(target, patch.patches, Pretty);
+                            var json = patcher.ApplyPatches(target, patch.patches, Pretty);
                             entity.Value.SetJson(json);
                             targets.Add(key, value);
                         }
@@ -153,8 +154,9 @@ namespace Friflo.Json.Flow.Database
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            using (var jsonPath    = syncContext.pools.scalarSelector.Get()) {
-                    // Get the selected refs for all entities.
+            using (var pooledSelector    = syncContext.pools.scalarSelector.Get()) {
+                var selector = pooledSelector.value;
+                // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
                 foreach (var entityPair in entities) {
@@ -163,9 +165,9 @@ namespace Friflo.Json.Flow.Database
                         continue;
                     var         json    = entity.Json;
                     if (json != null) {
-                        var selectorResults = jsonPath.value.Select(json, select);
+                        var selectorResults = selector.Select(json, select);
                         if (selectorResults == null) {
-                            var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, jsonPath.value.ErrorMessage);
+                            var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, selector.ErrorMessage);
                             entity.SetError(error);
                             continue;
                         }

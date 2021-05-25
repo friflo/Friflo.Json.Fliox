@@ -19,9 +19,10 @@ namespace Friflo.Json.Flow.Sync
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var patcher = syncContext.pools.jsonPatcher.Get()) {
+                using (var pooledPatcher = syncContext.pools.jsonPatcher.Get()) {
+                    var patcher = pooledPatcher.value;
                     foreach (var entity in entities) {
-                        entity.Value.SetJson(patcher.value.Copy(entity.Value.Json, true));
+                        entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
                     }
                 }
             }

@@ -22,8 +22,10 @@ namespace Friflo.Json.Flow.Database
     
     public class ObjectPool<T> : IDisposable where T : IDisposable
     {
-        private readonly ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
-        private readonly Func<T>            factory;
+        private readonly    ConcurrentQueue<T>  queue = new ConcurrentQueue<T>();
+        private readonly    Func<T>             factory;
+
+        public  override    string              ToString() => $"Count: {queue.Count}";
 
         public ObjectPool(Func<T> factory) {
             this.factory = factory;
@@ -44,6 +46,7 @@ namespace Friflo.Json.Flow.Database
             foreach (var obj in queue) {
                 obj.Dispose();
             }
+            queue.Clear();
         }
     }
 }
