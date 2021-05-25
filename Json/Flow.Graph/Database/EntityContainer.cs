@@ -89,26 +89,28 @@ namespace Friflo.Json.Flow.Database
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
             var targets = new  Dictionary<string,EntityValue>(entities.Count);
-            var patcher = syncContext.jsonPatcher;
+            
             Dictionary<string, EntityError> patchErrors = null;
-            foreach (var entity in entities) {
-                var key = entity.Key;
-                if (!ids.Contains(key))
-                    throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
-                var patch = entityPatches[key];
-                var value = entity.Value;
-                var error = value.Error; 
-                if (error != null) {
-                    AddEntityError(ref patchErrors, key, error);
-                } else {
-                    string target = value.Json;
-                    if (target == null) {
-                        error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
+            using (var patcher = syncContext.pools.jsonPatcher.Get()) {
+                foreach (var entity in entities) {
+                    var key = entity.Key;
+                    if (!ids.Contains(key))
+                        throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
+                    var patch = entityPatches[key];
+                    var value = entity.Value;
+                    var error = value.Error; 
+                    if (error != null) {
                         AddEntityError(ref patchErrors, key, error);
                     } else {
-                        var json = patcher.ApplyPatches(target, patch.patches, Pretty);
-                        entity.Value.SetJson(json);
-                        targets.Add(key, value);
+                        string target = value.Json;
+                        if (target == null) {
+                            error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
+                            AddEntityError(ref patchErrors, key, error);
+                        } else {
+                            var json = patcher.value.ApplyPatches(target, patch.patches, Pretty);
+                            entity.Value.SetJson(json);
+                            targets.Add(key, value);
+                        }
                     }
                 }
             }
@@ -151,28 +153,28 @@ namespace Friflo.Json.Flow.Database
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            var jsonPath    = syncContext.scalarSelector;
-            
-            // Get the selected refs for all entities.
-            // Select() is expensive as it requires a full JSON parse. By using an selector array only one
-            // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
-            foreach (var entityPair in entities) {
-                EntityValue entity  = entityPair.Value;
-                if (entity.Error != null)
-                    continue;
-                var         json    = entity.Json;
-                if (json != null) {
-                    var selectorResults = jsonPath.Select(json, select);
-                    if (selectorResults == null) {
-                        var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, jsonPath.ErrorMessage);
-                        entity.SetError(error);
+            using (var jsonPath    = syncContext.pools.scalarSelector.Get()) {
+                    // Get the selected refs for all entities.
+                // Select() is expensive as it requires a full JSON parse. By using an selector array only one
+                // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
+                foreach (var entityPair in entities) {
+                    EntityValue entity  = entityPair.Value;
+                    if (entity.Error != null)
                         continue;
-                    }
-                    for (int n = 0; n < references.Count; n++) {
-                        // selectorResults[n] contains Select() result of selectors[n] 
-                        var entityRefs = selectorResults[n].AsStrings();
-                        var referenceResult = referenceResults[n];
-                        referenceResult.ids.UnionWith(entityRefs);
+                    var         json    = entity.Json;
+                    if (json != null) {
+                        var selectorResults = jsonPath.value.Select(json, select);
+                        if (selectorResults == null) {
+                            var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, jsonPath.value.ErrorMessage);
+                            entity.SetError(error);
+                            continue;
+                        }
+                        for (int n = 0; n < references.Count; n++) {
+                            // selectorResults[n] contains Select() result of selectors[n] 
+                            var entityRefs = selectorResults[n].AsStrings();
+                            var referenceResult = referenceResults[n];
+                            referenceResult.ids.UnionWith(entityRefs);
+                        }
                     }
                 }
             }

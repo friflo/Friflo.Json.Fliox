@@ -20,16 +20,25 @@ namespace Friflo.Json.Flow.Database
     /// </summary>
     public class SyncContext : IDisposable
     {
-        public readonly  JsonPatcher        jsonPatcher     = new JsonPatcher();
-        public readonly  ScalarSelector     scalarSelector  = new ScalarSelector();
-        public readonly  JsonEvaluator      jsonEvaluator   = new JsonEvaluator();
+        public  readonly     Pools  pools = new Pools(); // todo use static Pools instance
         
         public SyncContext () {}
 
         public void Dispose() {
-            jsonEvaluator.Dispose();
-            scalarSelector.Dispose();
+            pools.Dispose();
+        }
+    }
+
+    public class Pools : IDisposable
+    {
+        public readonly  ObjectPool<JsonPatcher>    jsonPatcher     = new ObjectPool<JsonPatcher>   (() => new JsonPatcher());
+        public readonly  ObjectPool<ScalarSelector> scalarSelector  = new ObjectPool<ScalarSelector>(() => new ScalarSelector());
+        public readonly  ObjectPool<JsonEvaluator>  jsonEvaluator   = new ObjectPool<JsonEvaluator> (() => new JsonEvaluator());
+        
+        public void Dispose() {
             jsonPatcher.Dispose();
+            scalarSelector.Dispose();
+            jsonEvaluator.Dispose();
         }
     }
 }
