@@ -23,13 +23,13 @@ namespace Friflo.Json.Flow.Utils
     
     public abstract class ObjectPool<T> where T : IDisposable
     {
-        internal abstract T     Get();
+        internal abstract T     GetInstance();
         internal abstract void  Return(T obj);
         public   abstract void  Dispose();
         public   abstract void  AssertNoLeaks();
         
-        public Pooled<T>     GetPooled() {
-            return new Pooled<T>(this, Get());
+        public Pooled<T>        Get() {
+            return new Pooled<T>(this, GetInstance());
         }
     }
     
@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Utils
             stack.Clear();
         }
         
-        internal override T Get() {
+        internal override T GetInstance() {
             if (!stack.TryPop(out T obj)) {
                 obj = factory();
             }
@@ -83,9 +83,9 @@ namespace Friflo.Json.Flow.Utils
 
         public override void Dispose() { }
         
-        internal override T Get() {
+        internal override T GetInstance() {
             count++;
-            return pool.Get();
+            return pool.GetInstance();
         }
         
         internal override void Return(T obj) {
