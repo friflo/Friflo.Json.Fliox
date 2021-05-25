@@ -20,15 +20,23 @@ namespace Friflo.Json.Flow.Database
     /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
     /// for a <see cref="SyncResponse"/> in <see cref="DatabaseTask.Execute"/> need to be single threaded. 
     /// </summary>
-    public class SyncContext : IDisposable
+    public class SyncContext
     {
         public  readonly        Pools  pools;
-        private readonly        Pools  ownedPools;
         
-        public  static          bool   useSharedPools = true;
-        private static readonly Pools  SharedPools = new Pools();
+        public SyncContext (Pools pools) {
+            this.pools = pools;
+        }
+    }
+    
+    public class ContextPools : IDisposable {
+        internal readonly           Pools  pools;
+        private  readonly           Pools  ownedPools;
         
-        public SyncContext () {
+        public   static             bool   useSharedPools = true;
+        private  static readonly    Pools  SharedPools = new Pools();
+        
+        public ContextPools () {
             if (useSharedPools) {
                 pools = SharedPools;
             } else {
