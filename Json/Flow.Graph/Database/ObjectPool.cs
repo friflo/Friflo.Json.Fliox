@@ -24,13 +24,21 @@ namespace Friflo.Json.Flow.Database
     {
         private readonly    ConcurrentQueue<T>  queue = new ConcurrentQueue<T>();
         private readonly    Func<T>             factory;
-
+        
+        public              int                 Count => queue.Count;
         public  override    string              ToString() => $"Count: {queue.Count}";
 
         public ObjectPool(Func<T> factory) {
             this.factory = factory;
         }
 
+        public void Dispose() {
+            foreach (var obj in queue) {
+                obj.Dispose();
+            }
+            queue.Clear();
+        }
+        
         public Pooled<T> Get() {
             if (!queue.TryDequeue(out T obj)) {
                 obj = factory();
@@ -42,11 +50,10 @@ namespace Friflo.Json.Flow.Database
             queue.Enqueue(obj);
         }
 
-        public void Dispose() {
-            foreach (var obj in queue) {
-                obj.Dispose();
-            }
-            queue.Clear();
+        internal void AssertSingleUsage(string field) {
+            int count = Count;
+            if (count > 1)
+                throw new InvalidOperationException($"Used more than one ObjectPool<{typeof(T)}> instance. Count: {count}, field: {field}");
         }
     }
 }

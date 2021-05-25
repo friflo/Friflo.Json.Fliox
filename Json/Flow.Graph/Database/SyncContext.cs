@@ -45,7 +45,10 @@ namespace Friflo.Json.Flow.Database
         }
 
         public void Dispose() {
-            ownedPools?.Dispose();
+            if (ownedPools != null) {
+                ownedPools.AssertSingleUsage();
+                ownedPools.Dispose();
+            }
         }
     }
 
@@ -61,6 +64,13 @@ namespace Friflo.Json.Flow.Database
             scalarSelector.Dispose();
             jsonEvaluator.Dispose();
             objectMapper.Dispose();
+        }
+        
+        internal void AssertSingleUsage() {
+            jsonPatcher.    AssertSingleUsage("jsonPatcher");
+            scalarSelector. AssertSingleUsage("scalarSelector");
+            jsonEvaluator.  AssertSingleUsage("jsonEvaluator");
+            objectMapper.   AssertSingleUsage("objectMapper");
         }
     }
 }
