@@ -29,15 +29,17 @@ namespace Friflo.Json.Flow.Database.Remote
 
         public async Task<string> ExecuteSyncJson(string jsonSyncRequest) {
             var syncContext = new SyncContext(contextPools.pools);
-            using (var pooledMapper = syncContext.pools.objectMapper.Get()) {
+            string jsonResponse;
+            using (var pooledMapper = syncContext.pools.ObjectMapper.GetPooled()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
                 SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                 mapper.WriteNullMembers = false;
                 mapper.Pretty = true;
-                var jsonResponse = mapper.Write(syncResponse);
-                return jsonResponse;
+                jsonResponse = mapper.Write(syncResponse);
             }
+            syncContext.pools.AssertNoLeaks();
+            return jsonResponse;
         }
     }
     

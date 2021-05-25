@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
+using Friflo.Json.Flow.Utils;
 
 namespace Friflo.Json.Flow.Database
 {
@@ -18,58 +19,79 @@ namespace Friflo.Json.Flow.Database
     /// </summary>
     public class SyncContext
     {
-        public  readonly        Pools  pools;
+        public  readonly        IPools  pools;
         
-        public SyncContext (Pools pools) {
+        public SyncContext (IPools pools) {
             this.pools = pools;
         }
     }
     
     public class ContextPools : IDisposable {
-        internal readonly           Pools  pools;
-        private  readonly           Pools  ownedPools;
+        internal readonly           IPools  pools;
+        private  readonly           Pools   ownedPools;
         
-        public   static             bool   useSharedPools = true;
-        private  static readonly    Pools  SharedPools = new Pools();
+        public   static             bool    useSharedPools = true;
+        private  static readonly    Pools   SharedPools = new Pools(null);
         
         public ContextPools () {
             if (useSharedPools) {
-                pools = SharedPools;
+                pools = new Pools(SharedPools);
             } else {
-                pools = ownedPools = new Pools();
+                ownedPools = new Pools(null);
+                pools = new Pools (ownedPools);
             }
         }
 
         public void Dispose() {
-            if (ownedPools != null) {
-                ownedPools.AssertSingleUsage();
-                ownedPools.Dispose();
-            }
+            ownedPools?.Dispose();
         }
     }
-
-    public class Pools : IDisposable
+    
+    public interface IPools
     {
-        public readonly  ObjectPool<JsonPatcher>    jsonPatcher     = new ObjectPool<JsonPatcher>   (() => new JsonPatcher());
-        public readonly  ObjectPool<ScalarSelector> scalarSelector  = new ObjectPool<ScalarSelector>(() => new ScalarSelector());
-        public readonly  ObjectPool<JsonEvaluator>  jsonEvaluator   = new ObjectPool<JsonEvaluator> (() => new JsonEvaluator());
-        public readonly  ObjectPool<ObjectMapper>   objectMapper    = new ObjectPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+        ObjectPool<JsonPatcher>     JsonPatcher     { get; }
+        ObjectPool<ScalarSelector>  ScalarSelector  { get; }
+        ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
+        ObjectPool<ObjectMapper>    ObjectMapper    { get; }
+        
+        void                        AssertNoLeaks ();
+    }
+    
+    public class Pools : IPools, IDisposable 
+    {
+        public ObjectPool<JsonPatcher>      JsonPatcher     { get; }
+        public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
+        public ObjectPool<JsonEvaluator>    JsonEvaluator   { get; }
+        public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
+        
         
         // constructor present for code navigation
-        internal Pools() { }
+        internal Pools(Pools sharedPools) {
+            if (sharedPools != null) {
+                JsonPatcher      = new LocalPool<JsonPatcher>    (sharedPools.JsonPatcher,      "JsonPatcher");
+                ScalarSelector   = new LocalPool<ScalarSelector> (sharedPools.ScalarSelector,   "ScalarSelector");
+                JsonEvaluator    = new LocalPool<JsonEvaluator>  (sharedPools.JsonEvaluator,    "JsonEvaluator");
+                ObjectMapper     = new LocalPool<ObjectMapper>   (sharedPools.ObjectMapper,     "ObjectMapper");
+            } else {
+                JsonPatcher      = new SharedPool<JsonPatcher>   (() => new JsonPatcher());
+                ScalarSelector   = new SharedPool<ScalarSelector>(() => new ScalarSelector());
+                JsonEvaluator    = new SharedPool<JsonEvaluator> (() => new JsonEvaluator());
+                ObjectMapper     = new SharedPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+            }
+        }
 
         public void Dispose() {
-            jsonPatcher.Dispose();
-            scalarSelector.Dispose();
-            jsonEvaluator.Dispose();
-            objectMapper.Dispose();
+            JsonPatcher.Dispose();
+            ScalarSelector.Dispose();
+            JsonEvaluator.Dispose();
+            ObjectMapper.Dispose();
         }
         
-        internal void AssertSingleUsage() {
-            jsonPatcher.    AssertSingleUsage("jsonPatcher");
-            scalarSelector. AssertSingleUsage("scalarSelector");
-            jsonEvaluator.  AssertSingleUsage("jsonEvaluator");
-            objectMapper.   AssertSingleUsage("objectMapper");
+        public void AssertNoLeaks() {
+            JsonPatcher.    AssertNoLeaks();
+            ScalarSelector. AssertNoLeaks();
+            JsonEvaluator.  AssertNoLeaks();
+            ObjectMapper.   AssertNoLeaks();
         }
     }
 }
