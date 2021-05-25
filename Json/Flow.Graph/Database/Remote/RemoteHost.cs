@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
@@ -10,19 +9,11 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    ObjectMapper    jsonMapper;
-
 
         public RemoteHostDatabase(EntityDatabase local) {
-            jsonMapper = new ObjectMapper(SyncTypeStore.Get()) {WriteNullMembers = false};
             this.local = local;
         }
         
-        public override void Dispose() {
-            base.Dispose();
-            jsonMapper.Dispose();
-        }
-
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             EntityContainer localContainer = local.CreateContainer(name, local);
             RemoteHostContainer container = new RemoteHostContainer(name, this, localContainer);
@@ -30,11 +21,15 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         public async Task<string> ExecuteSyncJson(string jsonSyncRequest, SyncContext syncContext) {
-            var syncRequest = jsonMapper.Read<SyncRequest>(jsonSyncRequest);
-            SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
-            jsonMapper.Pretty = true;
-            var jsonResponse = jsonMapper.Write(syncResponse);
-            return jsonResponse;
+            using (var jsonMapper = syncContext.pools.objectMapper.Get()) {
+                var mapper = jsonMapper.value;
+                var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
+                SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                mapper.WriteNullMembers = false;
+                mapper.Pretty = true;
+                var jsonResponse = mapper.Write(syncResponse);
+                return jsonResponse;
+            }
         }
     }
     

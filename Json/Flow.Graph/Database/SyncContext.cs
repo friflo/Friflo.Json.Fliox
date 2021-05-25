@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
@@ -12,7 +14,7 @@ namespace Friflo.Json.Flow.Database
     /// One <see cref="SyncContext"/> is created per <see cref="EntityContainer"/> to enable multi threaded
     /// request handling for different <see cref="EntityContainer"/> instances.
     ///
-    /// The <see cref="EntityContainer.SyncContext"/> for a specific <see cref="EntityContainer"/> must not be used
+    /// The <see cref="SyncContext"/> for a specific <see cref="EntityContainer"/> must not be used
     /// multi threaded.
     ///
     /// E.g. Reading key/values of a database can be executed multi threaded, but serializing for them
@@ -34,11 +36,13 @@ namespace Friflo.Json.Flow.Database
         public readonly  ObjectPool<JsonPatcher>    jsonPatcher     = new ObjectPool<JsonPatcher>   (() => new JsonPatcher());
         public readonly  ObjectPool<ScalarSelector> scalarSelector  = new ObjectPool<ScalarSelector>(() => new ScalarSelector());
         public readonly  ObjectPool<JsonEvaluator>  jsonEvaluator   = new ObjectPool<JsonEvaluator> (() => new JsonEvaluator());
-        
+        public readonly  ObjectPool<ObjectMapper>   objectMapper    = new ObjectPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+
         public void Dispose() {
             jsonPatcher.Dispose();
             scalarSelector.Dispose();
             jsonEvaluator.Dispose();
+            objectMapper.Dispose();
         }
     }
 }

@@ -31,15 +31,8 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        private readonly ObjectMapper   jsonMapper;
         
         public RemoteClientDatabase() {
-            jsonMapper = new ObjectMapper(SyncTypeStore.Get()) { Pretty = true, WriteNullMembers = false};
-        }
-        
-        public override void Dispose() {
-            base.Dispose();
-            jsonMapper.Dispose();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -50,10 +43,15 @@ namespace Friflo.Json.Flow.Database.Remote
         protected abstract Task<string> ExecuteSyncJson(string jsonSynRequest);
 
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var jsonRequest = jsonMapper.Write(syncRequest);
-            var jsonResponse = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
-            var response = jsonMapper.Read<SyncResponse>(jsonResponse);
-            return response;
+            using (var jsonMapper = syncContext.pools.objectMapper.Get()) {
+                var mapper = jsonMapper.value;
+                mapper.Pretty = true;
+                mapper.WriteNullMembers = false;
+                var jsonRequest = mapper.Write(syncRequest);
+                var jsonResponse = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
+                var response = mapper.Read<SyncResponse>(jsonResponse);
+                return response;
+            }
         }
     }
     
