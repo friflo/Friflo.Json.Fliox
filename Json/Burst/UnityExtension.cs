@@ -20,7 +20,16 @@ namespace System.Collections.Generic
         public static int EnsureCapacity<TKey,TValue>(this Dictionary<TKey,TValue> dictionary, int capacity) {
             return 0;
         }
+    }
+}
 
+namespace System.Collections.Concurrent
+{
+    public static class UnityExtensionConcurrent
+    {
+        public static void Clear<T>(this ConcurrentQueue<T> queue) {
+            while (queue.TryDequeue(out T _)) { }
+        }
     }
 }
 
