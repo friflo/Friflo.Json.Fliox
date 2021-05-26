@@ -276,9 +276,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var readTask2       = store.articles.Read(); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId);
 
+            // test throwing exception in case of task or entity errors
             try {
-                // test throwing exception in case of errors
                 await store.Sync(); // -------- Sync --------
+                
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
                 AreEqual(4, sre.failed.Count);
@@ -658,9 +659,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             {
                 var syncError = store.Echo(EchoSyncError);
                 
+                // test throwing exception in case of Sync errors
                 try {
-                    // test throwing exception in case of errors
                     await store.Sync(); // -------- Sync --------
+                    
                     Fail("Sync() intended to fail - code cannot be reached");
                 } catch (SyncResultException sre) {
                     AreEqual("simulated SyncError", sre.Message);
