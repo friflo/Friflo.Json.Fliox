@@ -68,23 +68,23 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 
         public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 
         public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
         
         public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            throw new InvalidOperationException("ClientContainer does not execute CRUD commands");
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
     }
 }
