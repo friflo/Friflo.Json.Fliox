@@ -24,6 +24,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 _singleton = new TypeStore();
                 _singleton.GetTypeMapper(typeof(SyncRequest));
                 _singleton.GetTypeMapper(typeof(SyncResponse));
+                _singleton.GetTypeMapper(typeof(SyncErrorResponse));
             }
             return _singleton;
         }

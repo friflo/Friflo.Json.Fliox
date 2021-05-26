@@ -654,6 +654,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("Hello World", helloTask.Result);
 
+            // --- Sync error
             {
                 var syncError = store.Echo(EchoSyncError);
                 
@@ -668,17 +669,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
                 AreEqual("SyncError - simulated SyncError", syncError.Error.ToString());
             }
-            /* {
+            // --- Sync exception
+            {
                 var syncException = store.Echo(EchoSyncException);
                 
                 var sync = await store.TrySync(); // -------- Sync --------
                 
+                IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.error);
                 AreEqual(1, sync.failed.Count);
                 AreEqual("SyncError - SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
                 
                 AreEqual("SyncError - SimulationException: simulated SyncException", syncException.Error.ToString());
-            } */
+            }
             
         }
     }
