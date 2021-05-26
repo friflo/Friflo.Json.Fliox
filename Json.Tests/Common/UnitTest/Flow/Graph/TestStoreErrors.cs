@@ -654,9 +654,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("Hello World", helloTask.Result);
 
-            // var syncError = store.Echo(EchoSyncError);
+            {
+                var syncError = store.Echo(EchoSyncError);
+                
+                try {
+                    // test throwing exception in case of errors
+                    await store.Sync(); // -------- Sync --------
+                    Fail("Sync() intended to fail - code cannot be reached");
+                } catch (SyncResultException sre) {
+                    AreEqual("simulated SyncError", sre.Message);
+                    AreEqual(1, sre.failed.Count);
+                    AreEqual("SyncError - simulated SyncError", sre.failed[0].Error.ToString());
+                }
+                AreEqual("SyncError - simulated SyncError", syncError.Error.ToString());
+            }
+            /* {
+                var syncException = store.Echo(EchoSyncException);
+                
+                var sync = await store.TrySync(); // -------- Sync --------
+                
+                AreEqual("SimulationException: simulated SyncException", sync.error);
+                AreEqual(1, sync.failed.Count);
+                AreEqual("SyncError - SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
+                
+                AreEqual("SyncError - SimulationException: simulated SyncException", syncException.Error.ToString());
+            } */
             
-            // await store.Sync(); // -------- Sync --------
         }
     }
 }

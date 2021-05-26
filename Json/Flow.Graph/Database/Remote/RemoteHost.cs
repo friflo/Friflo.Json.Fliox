@@ -27,6 +27,11 @@ namespace Friflo.Json.Flow.Database.Remote
             RemoteHostContainer container = new RemoteHostContainer(name, this, localContainer);
             return container;
         }
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            var result = await local.ExecuteSync(syncRequest, syncContext);
+            return result;
+        }
 
         public async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
             var syncContext = new SyncContext(contextPools.pools);
