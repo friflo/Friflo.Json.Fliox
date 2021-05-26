@@ -12,6 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
+        public  readonly    Dictionary<string, string>  syncErrors  = new Dictionary<string, string>();
         
         public TestDatabase(EntityDatabase local) {
             this.local = local;
@@ -23,6 +24,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
             EntityContainer localContainer = local.GetOrCreateContainer(name);
             return new TestContainer(name, this, localContainer);
+        }
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            foreach (var task in syncRequest.tasks) {
+                if (task is Echo echo) {
+                    if (!syncErrors.TryGetValue(echo.message, out string error))
+                        continue;
+                    switch (error) {
+                        case Simulate.SyncError:
+                            return new SyncResponse{error = "simulated SyncError"};
+                        case Simulate.SyncException:
+                            throw new SimulationException ("simulated SyncException");
+                    }
+                }
+            }
+            var response = await base.ExecuteSync(syncRequest, syncContext);
+            return response;
         }
 
         public TestContainer GetTestContainer(string name) {
@@ -170,6 +188,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public const string WriteTaskException  = "WRITE-TASK-EXCEPTION";
         public const string WriteTaskError      = "WRITE-TASK-ERROR";
+        
+        public const string SyncError           = "SYNC-ERROR";
+        public const string SyncException       = "SYNC-EXCEPTION";
     }    
 
     public class SimulationException : Exception {

@@ -86,6 +86,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             _customers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
             _customers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
             _customers.writeErrors.Add(PatchTaskException,   Simulate.WriteTaskException);
+            
+            testDatabase.syncErrors.Add(EchoSyncError,       Simulate.SyncError);
+            testDatabase.syncErrors.Add(EchoSyncException,   Simulate.SyncException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
@@ -113,6 +116,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string DeleteTaskException    = "delete-task-exception";
         private const string PatchTaskException     = "patch-task-exception";
         
+        // use Echo to simulate error/exception
+        private const string EchoSyncError          = "echo-sync-error";
+        private const string EchoSyncException      = "echo-sync-exception";
+        
 
         private static async Task TestStoresErrors(PocStore useStore) {
             await AssertQueryTask       (useStore);
@@ -123,6 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertEntityPatch     (useStore);
             await AssertLogChangesPatch (useStore);
             await AssertLogChangesCreate(useStore);
+            await AssertSyncErrors      (useStore);
         }
 
         private const string ArticleError = @"Task failed by entity errors. Count: 2
@@ -637,6 +645,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 store.LogChanges();
                 await store.Sync();
             */
+        }
+        
+        private static async Task AssertSyncErrors(PocStore store) {
+            var helloTask = store.Echo("Hello World");
+            
+            await store.Sync(); // -------- Sync --------
+            
+            AreEqual("Hello World", helloTask.Result);
+
+            // var syncError = store.Echo(EchoSyncError);
+            
+            // await store.Sync(); // -------- Sync --------
         }
     }
 }

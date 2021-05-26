@@ -14,6 +14,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
+    [Fri.Polymorph(typeof(Echo),                    Discriminant = "echo")]
     public abstract class DatabaseTask
     {
         internal abstract Task<TaskResult>      Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
@@ -32,6 +33,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
+    [Fri.Polymorph(typeof(EchoResult),              Discriminant = "echo")]
     //
     [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class TaskResult
@@ -47,6 +49,7 @@ namespace Friflo.Json.Flow.Sync
         Update,
         Patch,
         Delete,
+        Echo,
         //
         Error
     }

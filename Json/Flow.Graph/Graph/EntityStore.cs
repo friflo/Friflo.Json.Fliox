@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph
             setByName           = new Dictionary<string, EntitySet>();
             objectPatcher       = new ObjectPatcher(jsonMapper);
             sync                = new SyncStore();
-            contextPools        = new  ContextPools();
+            contextPools        = new ContextPools();
             tracerLogTask       = null;
         }
     }
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
         internal            StoreIntern     _intern;
         public              TypeStore       TypeStore => _intern.typeStore;
 
-        public              StoreInfo       StoreInfo  => new StoreInfo(_intern.setByType); 
+        public              StoreInfo       StoreInfo  => new StoreInfo(_intern.sync, _intern.setByType); 
         public   override   string          ToString() => StoreInfo.ToString();
 
 
@@ -126,6 +126,13 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        public EchoTask Echo(string message) {
+            var task = new EchoTask(message);
+            _intern.sync.echoTasks.Add(message, task);
+            AddTask(task);
+            return task;
+        }
+        
         // ------------------------------------------- internals -------------------------------------------
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             SyncResponse response;
@@ -162,6 +169,7 @@ namespace Friflo.Json.Flow.Graph
                 set.Sync.AddTasks(syncRequest.tasks);
                 AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount);
             }
+            AddEchoTasks(syncRequest.tasks);
             return syncRequest;
         }
 
@@ -281,6 +289,10 @@ namespace Friflo.Json.Flow.Graph
                             set = _intern.setByName[delete.container];
                             set.Sync.DeleteEntitiesResult(delete, result);
                             break;
+                        case TaskType.Echo:
+                            var echo = (Echo) task;
+                            EchoResult(echo, result);
+                            break;
                     }
                 }
                 _intern.sync.LogResults();
@@ -299,6 +311,28 @@ namespace Friflo.Json.Flow.Graph
                 _intern.sync = new SyncStore();
             }
             return syncResult;
+        }
+        
+                
+        private void AddEchoTasks(List<DatabaseTask> tasks) {
+            foreach (var entry in _intern.sync.echoTasks) {
+                EchoTask echoTask = entry.Value;
+                var req = new Echo {
+                    message   = echoTask.message,
+                };
+                tasks.Add(req);
+            }
+        }
+        
+        private void EchoResult (Echo task, TaskResult result) {
+            EchoTask echoTask = _intern.sync.echoTasks[task.message];
+            if (result is TaskErrorResult taskError) {
+                echoTask.state.SetError(new TaskErrorInfo(taskError));
+                return;
+            }
+            var echoResult = (EchoResult)result;
+            echoTask.result = echoResult.message;
+            echoTask.state.Synced = true;
         }
     }
     
