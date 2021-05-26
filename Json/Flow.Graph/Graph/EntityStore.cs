@@ -88,7 +88,7 @@ namespace Friflo.Json.Flow.Graph
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
             var syncContext = new SyncContext(_intern.contextPools.pools);
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            SyncResponse response = await ExecuteSync(syncRequest, syncContext);
             var result = HandleSyncResponse(syncRequest, response);
 
             var errorCount = result.failed.Count;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Graph
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
             var syncContext = new SyncContext(_intern.contextPools.pools);
-            SyncResponse response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            SyncResponse response = await ExecuteSync(syncRequest, syncContext);
             var result = HandleSyncResponse(syncRequest, response);
             syncContext.pools.AssertNoLeaks();
             return result;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Graph
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
             var syncContext = new SyncContext(_intern.contextPools.pools);
-            var responseTask = _intern.database.ExecuteSync(syncRequest, syncContext);
+            var responseTask = ExecuteSync(syncRequest, syncContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
             HandleSyncResponse(syncRequest, response);
@@ -128,6 +128,17 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
+        private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            SyncResponse response;
+            try {
+                response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            }
+            catch (Exception e) {
+                response = new SyncResponse{error = $"{e.GetType().Name}: {e.Message}"};
+            }
+            return response;
+        }
+        
         internal void AddTask(SyncTask task) {
             _intern.sync.appTasks.Add(task);
         }
