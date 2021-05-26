@@ -198,11 +198,11 @@ namespace Friflo.Json.Flow.Graph
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
             SyncResult syncResult;
-            response.AssertResponse(syncRequest);
             try {
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;
                 if (response.error == null) {
+                    response.AssertResponse(syncRequest);
                     syncError = null;
                     containerResults = response.results;
                     foreach (var containerResult in containerResults) {

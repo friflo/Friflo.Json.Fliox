@@ -40,6 +40,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     mapper.Pretty = true;
                     jsonResponse = mapper.Write(syncResponse);
                 }
+                // throw new Exception("xxxxxxxxxxxxxxx");
                 syncContext.pools.AssertNoLeaks();
                 return new SyncJsonResult{body = jsonResponse, success = true };
             } catch (Exception e) {
