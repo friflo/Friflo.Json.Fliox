@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Flow.Database.Remote
 {
     public class RemoteHostDatabase : EntityDatabase
