@@ -49,14 +49,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 syncContext.pools.AssertNoLeaks();
                 return new SyncJsonResult(jsonResponse, true);
             } catch (Exception e) {
-                string jsonResponse;
-                using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
-                    ObjectMapper mapper = pooledMapper.instance;
-                    var errorMsg = SyncError.ErrorFromException(e).ToString();
-                    var syncError = new SyncError{message = errorMsg};
-                    jsonResponse = mapper.Write(syncError);
-                }
-                return new SyncJsonResult(jsonResponse, false);
+                var errorMsg = SyncError.ErrorFromException(e).ToString();
+                return SyncJsonResult.CreateSyncError(syncContext, errorMsg);
             }
         }
     }
@@ -69,6 +63,15 @@ namespace Friflo.Json.Flow.Database.Remote
         public SyncJsonResult(string body, bool success) {
             this.body       = body;
             this.success    = success;
+        }
+        
+        public static SyncJsonResult CreateSyncError(SyncContext syncContext, string message) {
+            var syncError = new SyncError {message = message};
+            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+                ObjectMapper mapper = pooledMapper.instance;
+                var body = mapper.Write(syncError);
+                return new SyncJsonResult(body, false);
+            }
         }
     }
     

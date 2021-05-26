@@ -39,12 +39,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var error = SyncError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                var syncError = new SyncError {message = error.ToString()};
-                using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
-                    var mapper = pooledMapper.instance;
-                    var body = mapper.Write(syncError);
-                    return new SyncJsonResult(body, false);
-                }
+                return SyncJsonResult.CreateSyncError(syncContext, error.ToString());
             }
         }
     }
