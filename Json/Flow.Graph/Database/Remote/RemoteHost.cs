@@ -51,7 +51,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                     ObjectMapper mapper = pooledMapper.instance;
-                    var error = new SyncErrorResponse{error = $"{e.GetType().Name}: {e.Message}"};
+                    var errorMsg = SyncErrorResponse.ErrorFromException(e).ToString();
+                    var error = new SyncErrorResponse{error = errorMsg};
                     jsonResponse = mapper.Write(error);
                 }
                 return new SyncJsonResult{body=jsonResponse, success = false};
