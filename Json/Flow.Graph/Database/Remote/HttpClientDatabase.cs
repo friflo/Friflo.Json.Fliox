@@ -33,19 +33,18 @@ namespace Friflo.Json.Flow.Database.Remote
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var body = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var success = httpResponse.StatusCode == HttpStatusCode.OK;
-                return new SyncJsonResult{body = body, success = success};
+                return new SyncJsonResult(body, success);
             }
             catch (HttpRequestException e) {
                 var error = SyncError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var syncError = new SyncError {message = error.ToString()};
-                string body;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                     var mapper = pooledMapper.instance;
-                    body = mapper.Write(syncError);
+                    var body = mapper.Write(syncError);
+                    return new SyncJsonResult(body, false);
                 }
-                return new SyncJsonResult{body = body, success = false };
             }
         }
     }

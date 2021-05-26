@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     jsonResponse = mapper.Write(syncResponse);
                 }
                 syncContext.pools.AssertNoLeaks();
-                return new SyncJsonResult{body = jsonResponse, success = true };
+                return new SyncJsonResult(jsonResponse, true);
             } catch (Exception e) {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
@@ -56,15 +56,20 @@ namespace Friflo.Json.Flow.Database.Remote
                     var syncError = new SyncError{message = errorMsg};
                     jsonResponse = mapper.Write(syncError);
                 }
-                return new SyncJsonResult{body=jsonResponse, success = false};
+                return new SyncJsonResult(jsonResponse, false);
             }
         }
     }
     
     public class SyncJsonResult
     {
-        public string   body;
-        public bool     success;
+        public readonly     string   body;
+        public readonly     bool     success;
+        
+        public SyncJsonResult(string body, bool success) {
+            this.body       = body;
+            this.success    = success;
+        }
     }
     
     public class RemoteHostContainer : EntityContainer
