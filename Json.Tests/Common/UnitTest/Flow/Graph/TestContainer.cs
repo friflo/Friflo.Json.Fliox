@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         continue;
                     switch (error) {
                         case Simulate.SyncError:
-                            return new SyncResponse{error = "simulated SyncError"};
+                            return new SyncResponse{error = new SyncError{message = "simulated SyncError"}};
                         case Simulate.SyncException:
                             throw new SimulationException ("simulated SyncException");
                     }

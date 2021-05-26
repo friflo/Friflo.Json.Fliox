@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 _singleton = new TypeStore();
                 _singleton.GetTypeMapper(typeof(SyncRequest));
                 _singleton.GetTypeMapper(typeof(SyncResponse));
-                _singleton.GetTypeMapper(typeof(SyncErrorResponse));
+                _singleton.GetTypeMapper(typeof(SyncError));
             }
             return _singleton;
         }
@@ -55,8 +55,8 @@ namespace Friflo.Json.Flow.Database.Remote
                     var response = mapper.Read<SyncResponse>(result.body);
                     return response;
                 }
-                var errorResponse = mapper.Read<SyncErrorResponse>(result.body);
-                return new SyncResponse{error=errorResponse.error};
+                var syncError = mapper.Read<SyncError>(result.body);
+                return new SyncResponse{error=syncError};
             }
         }
     }

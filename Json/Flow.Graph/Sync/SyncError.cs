@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class SyncErrorResponse
+    public class SyncError
     {
-        public string error;
+        public string message;
         
         public static StringBuilder ErrorFromException(Exception e) {
             var sb = new StringBuilder();

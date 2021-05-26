@@ -36,10 +36,10 @@ namespace Friflo.Json.Flow.Database.Remote
                 return new SyncJsonResult{body = body, success = success};
             }
             catch (HttpRequestException e) {
-                var error = SyncErrorResponse.ErrorFromException(e);
+                var error = SyncError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                var syncError = new SyncErrorResponse {error = error.ToString()};
+                var syncError = new SyncError {message = error.ToString()};
                 string body;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                     var mapper = pooledMapper.instance;

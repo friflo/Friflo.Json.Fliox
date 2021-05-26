@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -14,7 +15,7 @@ namespace Friflo.Json.Flow.Sync
     
     public class SyncResponse
     {
-        public  string                                  error;
+        public  SyncError                               error;
         public  List<TaskResult>                        tasks;
         // key of all Dictionary's is the container name
         public  Dictionary<string, ContainerEntities>   results;
