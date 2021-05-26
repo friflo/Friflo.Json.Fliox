@@ -678,7 +678,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var sync = await store.TrySync(); // -------- Sync --------
                 
                 IsFalse(sync.Success);
-                AreEqual("SimulationException: simulated SyncException", sync.error);
+                AreEqual("SimulationException: simulated SyncException", sync.Message);
                 AreEqual(1, sync.failed.Count);
                 AreEqual("SyncError - SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
                 
