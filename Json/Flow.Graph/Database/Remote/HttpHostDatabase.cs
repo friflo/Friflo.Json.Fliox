@@ -85,7 +85,8 @@ namespace Friflo.Json.Flow.Database.Remote
             resp.ContentType = "application/json";
             resp.ContentEncoding = Encoding.UTF8;
             resp.ContentLength64 = len;
-            resp.StatusCode = result.success ? 200 : 500;
+            HttpStatusCode statusCode = result.success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+            resp.StatusCode = (int)statusCode;
             return data;
         }
 
