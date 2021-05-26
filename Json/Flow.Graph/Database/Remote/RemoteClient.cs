@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
 
-        protected abstract Task<string> ExecuteSyncJson(string jsonSynRequest);
+        protected abstract Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest);
 
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
@@ -48,9 +48,13 @@ namespace Friflo.Json.Flow.Database.Remote
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
                 var jsonRequest = mapper.Write(syncRequest);
-                var jsonResponse = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
-                var response = mapper.Read<SyncResponse>(jsonResponse);
-                return response;
+                var result = await ExecuteSyncJson(jsonRequest).ConfigureAwait(false);
+                if (result.success) {
+                    var response = mapper.Read<SyncResponse>(result.body);
+                    return response;
+                }
+                var errorResponse = mapper.Read<SyncErrorResponse>(result.body);
+                return new SyncResponse{error=errorResponse.error};
             }
         }
     }

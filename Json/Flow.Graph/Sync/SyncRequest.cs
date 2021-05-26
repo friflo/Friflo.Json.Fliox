@@ -14,6 +14,7 @@ namespace Friflo.Json.Flow.Sync
     
     public class SyncResponse
     {
+        public  string                                  error;
         public  List<TaskResult>                        tasks;
         // key of all Dictionary's is the container name
         public  Dictionary<string, ContainerEntities>   results;

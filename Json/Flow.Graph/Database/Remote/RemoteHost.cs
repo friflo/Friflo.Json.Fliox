@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
@@ -27,20 +28,36 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
 
-        public async Task<string> ExecuteSyncJson(string jsonSyncRequest) {
+        public async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
             var syncContext = new SyncContext(contextPools.pools);
-            string jsonResponse;
-            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
-                ObjectMapper mapper = pooledMapper.instance;
-                var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
-                SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
-                mapper.WriteNullMembers = false;
-                mapper.Pretty = true;
-                jsonResponse = mapper.Write(syncResponse);
+            try {
+                string jsonResponse;
+                using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+                    ObjectMapper mapper = pooledMapper.instance;
+                    var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
+                    SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                    mapper.WriteNullMembers = false;
+                    mapper.Pretty = true;
+                    jsonResponse = mapper.Write(syncResponse);
+                }
+                syncContext.pools.AssertNoLeaks();
+                return new SyncJsonResult{body = jsonResponse, success = true };
+            } catch (Exception e) {
+                string jsonResponse;
+                using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+                    ObjectMapper mapper = pooledMapper.instance;
+                    var error = new SyncErrorResponse{error = $"{e.GetType().Name}: {e.Message}"};
+                    jsonResponse = mapper.Write(error);
+                }
+                return new SyncJsonResult{body=jsonResponse, success = false};
             }
-            syncContext.pools.AssertNoLeaks();
-            return jsonResponse;
         }
+    }
+    
+    public class SyncJsonResult
+    {
+        public string   body;
+        public bool     success;
     }
     
     public class RemoteHostContainer : EntityContainer

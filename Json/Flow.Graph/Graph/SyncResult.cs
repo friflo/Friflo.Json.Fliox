@@ -7,6 +7,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public class SyncResult
     {
+        public readonly string          error;
         public readonly List<SyncTask>  tasks;
         public readonly List<SyncTask>  failed;
 
@@ -14,8 +15,9 @@ namespace Friflo.Json.Flow.Graph
         public          string          Message => GetMessage(failed);
 
         public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
-
-        internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed) {
+        
+        internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed, string error) {
+            this.error  = error;
             this.tasks  = tasks;
             this.failed = failed;
         }

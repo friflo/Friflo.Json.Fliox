@@ -29,6 +29,8 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         DatabaseError,
         
+        SyncError,
+        
         /// <summary>
         /// It is set for a <see cref="SyncTask"/> if a <see cref="SyncResponse"/> contains errors in its
         /// <see cref="Dictionary{K,V}"/> fields containing <see cref="EntityErrors"/> for entities accessed via a CRUD
@@ -68,8 +70,9 @@ namespace Friflo.Json.Flow.Graph
         
         private static TaskErrorType TaskToSyncError(TaskErrorResultType type) {
             switch (type) {
-                case TaskErrorResultType.UnhandledException:  return TaskErrorType.UnhandledException;
-                case TaskErrorResultType.DatabaseError:       return TaskErrorType.DatabaseError;
+                case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
+                case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
+                case TaskErrorResultType.SyncError:             return TaskErrorType.SyncError;
             }
             throw new ArgumentException($"cant convert error type: {type}");
         }

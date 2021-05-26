@@ -28,8 +28,8 @@ namespace Friflo.Json.Flow.Database.Remote
             loopbackHost.Dispose();
         }
 
-        protected override async Task<string> ExecuteSyncJson(string jsonSynRequest) {
-            var jsonResponse = await loopbackHost.ExecuteSyncJson(jsonSynRequest).ConfigureAwait(false);
+        protected override async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
+            var jsonResponse = await loopbackHost.ExecuteSyncJson(jsonSyncRequest).ConfigureAwait(false);
             return jsonResponse;
         }
     }

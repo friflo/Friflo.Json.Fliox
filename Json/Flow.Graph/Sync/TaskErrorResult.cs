@@ -28,6 +28,8 @@ namespace Friflo.Json.Flow.Sync
         /// Inform about an error when accessing a database.
         /// E.g. the access is currently not available or accessing a missing table.
         /// </summary>
-        DatabaseError
+        DatabaseError,
+        
+        SyncError
     }
 }

@@ -200,26 +200,41 @@ namespace Friflo.Json.Flow.Graph
             SyncResult syncResult;
             response.AssertResponse(syncRequest);
             try {
-                var containerResults = response.results;
-                foreach (var containerResult in containerResults) {
-                    var set = _intern.setByName[containerResult.Key];
-                    set.SyncContainerEntities(containerResult.Value);
+                TaskErrorResult                         syncError;
+                Dictionary<string, ContainerEntities>   containerResults;
+                if (response.error == null) {
+                    syncError = null;
+                    containerResults = response.results;
+                    foreach (var containerResult in containerResults) {
+                        var set = _intern.setByName[containerResult.Key];
+                        set.SyncContainerEntities(containerResult.Value);
+                    }
+                    SetErrors(response);
+                } else {
+                    syncError = new TaskErrorResult {
+                        message = response.error,
+                        type    = TaskErrorResultType.SyncError
+                    };
+                    containerResults = new Dictionary<string, ContainerEntities>();
                 }
-
-                SetErrors(response);
 
                 var tasks = syncRequest.tasks;
                 var results = response.tasks;
                 for (int n = 0; n < tasks.Count; n++) {
                     var task = tasks[n];
-                    var result = results[n];
-                    TaskType taskType = task.TaskType;
-                    var actual = result.TaskType;
-                    if (actual != TaskType.Error) {
-                        if (taskType != actual) {
-                            var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
-                            throw new InvalidOperationException(msg);
+                    TaskType    taskType = task.TaskType;
+                    TaskResult  result;
+                    if (syncError == null) {
+                        result = results[n];
+                        var actual = result.TaskType;
+                        if (actual != TaskType.Error) {
+                            if (taskType != actual) {
+                                var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
+                                throw new InvalidOperationException(msg);
+                            }
                         }
+                    } else {
+                        result = syncError;
                     }
 
                     switch (taskType) {
@@ -264,7 +279,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (SyncTask task in _intern.sync.appTasks) {
                     task.AddFailedTask(failed);
                 }
-                syncResult = new SyncResult(_intern.sync.appTasks, failed);
+                syncResult = new SyncResult(_intern.sync.appTasks, failed, response.error);
                 // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;

@@ -76,16 +76,16 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         private async Task<byte[]> HandlePost (string requestContent, HttpListenerResponse resp) {
-            var jsonResponse = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+            var result = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
 
             // Write the response info
-            byte[] data = Encoding.UTF8.GetBytes(jsonResponse);
+            byte[] data = Encoding.UTF8.GetBytes(result.body);
             int len = data.Length;
 
             resp.ContentType = "application/json";
             resp.ContentEncoding = Encoding.UTF8;
             resp.ContentLength64 = len;
-
+            resp.StatusCode = result.success ? 200 : 500;
             return data;
         }
 
