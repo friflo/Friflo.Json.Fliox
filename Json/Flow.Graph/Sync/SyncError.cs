@@ -7,8 +7,10 @@ namespace Friflo.Json.Flow.Sync
 {
     public class SyncError
     {
-        public string message;
-        
+        public          string  message;
+
+        public override string  ToString() => message;
+
         public static StringBuilder ErrorFromException(Exception e) {
             var sb = new StringBuilder();
             sb.Append(e.GetType().Name);
