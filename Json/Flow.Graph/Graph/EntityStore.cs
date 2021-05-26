@@ -138,7 +138,6 @@ namespace Friflo.Json.Flow.Graph
             SyncResponse response;
             try {
                 response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
-                // throw new Exception("xxxxxxxxxxxxxxxxxx");
             }
             catch (Exception e) {
                 response = new SyncResponse{error = $"{e.GetType().Name}: {e.Message}"};
