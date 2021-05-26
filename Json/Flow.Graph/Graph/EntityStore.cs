@@ -91,8 +91,7 @@ namespace Friflo.Json.Flow.Graph
             SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
-            var errorCount = result.failed.Count;
-            if (errorCount > 0)
+            if (!result.Success)
                 throw new SyncResultException(result.failed);
             syncContext.pools.AssertNoLeaks();
         }
