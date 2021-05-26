@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph
     {
         public readonly     List<SyncTask>  failed;
 
-        internal SyncResultException(List<SyncTask> failed) : base(SyncResult.GetMessage(failed)) {
+        internal SyncResultException(string syncError, List<SyncTask> failed) : base(SyncResult.GetMessage(syncError, failed)) {
             this.failed = failed;
         }
     }

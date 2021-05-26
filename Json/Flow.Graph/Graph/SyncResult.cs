@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
         public readonly List<SyncTask>  failed;
 
         public          bool            Success => failed.Count == 0 && error == null;
-        public          string          Message => GetMessage(failed);
+        public          string          Message => GetMessage(error, failed);
 
         public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
         
@@ -22,7 +22,10 @@ namespace Friflo.Json.Flow.Graph
             this.failed = failed;
         }
         
-        internal static string GetMessage(List<SyncTask> failed) {
+        internal static string GetMessage(string syncError, List<SyncTask> failed) {
+            if (syncError != null) {
+                return syncError;
+            }
             var sb = new StringBuilder();
             sb.Append("Sync() failed with task errors. Count: ");
             sb.Append(failed.Count);
@@ -30,8 +33,8 @@ namespace Friflo.Json.Flow.Graph
                 sb.Append("\n| ");
                 sb.Append(task.Label); // todo should use appender instead of Label
                 sb.Append(" - ");
-                var error = task.Error;
-                error.AppendAsText("|   ", sb, 3, false);
+                var taskError = task.Error;
+                taskError.AppendAsText("|   ", sb, 3, false);
             }
             return sb.ToString();
         }

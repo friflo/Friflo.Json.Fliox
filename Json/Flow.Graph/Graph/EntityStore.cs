@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
             var result = HandleSyncResponse(syncRequest, response);
 
             if (!result.Success)
-                throw new SyncResultException(result.failed);
+                throw new SyncResultException(response.error, result.failed);
             syncContext.pools.AssertNoLeaks();
         }
         
@@ -131,6 +131,7 @@ namespace Friflo.Json.Flow.Graph
             SyncResponse response;
             try {
                 response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                // throw new Exception("xxxxxxxxxxxxxxxxxx");
             }
             catch (Exception e) {
                 response = new SyncResponse{error = $"{e.GetType().Name}: {e.Message}"};
