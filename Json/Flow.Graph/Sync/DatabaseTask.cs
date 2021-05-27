@@ -24,8 +24,8 @@ namespace Friflo.Json.Flow.Sync
             return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
         }
         
-        internal TaskErrorResult InvalidTask(string message) {
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - {message}"};   
+        internal TaskErrorResult MissingField(string field) {
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - missing field: {field}"};   
         }
         
         internal TaskErrorResult MissingContainer() {

@@ -19,6 +19,8 @@ namespace Friflo.Json.Flow.Sync
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
+            if (entities == null)
+                return MissingField("entities");
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {

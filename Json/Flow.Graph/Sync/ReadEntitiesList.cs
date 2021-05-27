@@ -17,6 +17,8 @@ namespace Friflo.Json.Flow.Sync
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
+            if (reads == null)
+                return MissingField("reads");
             var result = new ReadEntitiesListResult {
                 reads = new List<ReadEntitiesResult>(reads.Count)
             };
@@ -25,7 +27,7 @@ namespace Friflo.Json.Flow.Sync
             var combinedRead = new ReadEntities { ids = new HashSet<string>() };
             foreach (var read in reads) {
                 if (read.ids == null)
-                    return InvalidTask("missing field: ids");
+                    return MissingField("ids");
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
