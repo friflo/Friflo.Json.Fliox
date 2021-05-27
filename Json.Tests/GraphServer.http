@@ -1,16 +1,70 @@
 
 # use with: [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
+### read entities by their ids
+POST http://localhost:8080/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+    {
+		"task":"read",	"container": "Article",
+		"reads": [
+			{ "ids": ["article-galaxy", "article-ipad"] }
+		]
+	}
+] }
+
+### simple echo task
 POST http://localhost:8080/ HTTP/1.1
 content-type: application/json
 
 { "tasks": [
 	{
-		"task":			"read",
-		"container": 	"Article",
-		"reads": [
-			{ "ids": ["article-galaxy"] },
-            { "ids": ["article-ipad"] }
-		]
+		"task":"echo",
+		"message": "Hello"		
 	}
+] }
+
+### read entity "order-1" and its referenced .customer
+POST http://localhost:8080/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"read",   "container": "Order",
+        "reads": [ {
+                "ids": ["order-1"],
+                "references": [
+                    {
+                        "selector": ".customer",
+                        "container": "Customer"
+                    }
+                ]
+            }
+        ]
+    }
+] }
+
+### query all articles, their referenced .producer (and .employees[*] referenced by .producer)
+POST http://localhost:8080/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"query",        "container": "Article",
+        "filterLinq": "true",
+        "filter": { "op":"true" },
+        "references": [
+            {
+                "selector": ".producer",
+                "container": "Producer",
+                "references": [
+                    {
+                        "selector": ".employees[*]",
+                        "container": "Employee"
+                    }
+                ]
+            }
+        ]
+    }
 ] }
