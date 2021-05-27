@@ -58,6 +58,20 @@ content-type: application/json
 ] }
 
 
+### query articles with => .name == "Smartphone"
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"query",        "container": "Article",
+        "filterLinq": "true",
+        "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
+                                 "right":{"op":"string", "value": "Smartphone"}}
+    }
+] }
+
+
 ### query all articles, their referenced .producer (and .employees[*] referenced by .producer)
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
