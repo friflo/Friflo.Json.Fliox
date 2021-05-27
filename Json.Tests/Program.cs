@@ -22,8 +22,9 @@ namespace Friflo.Json.Tests
         // run GraphServer via one of the following methods:
         // > dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer
         // > dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
-        // VSCode > Run > GraphServer
-        // Rider > Run > GraphServer
+        // VSCode        > Run > GraphServer
+        // Rider         > Run > GraphServer
+        // Visual Studio > Debug > GraphServer
         public static void Main(string[] args)
         {
             Console.WriteLine($"Friflo.Json.Tests directory: {Directory.GetCurrentDirectory()}");

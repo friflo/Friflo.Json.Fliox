@@ -1,8 +1,5 @@
 {
   "profiles": {
-    "Friflo.Json.Tests": {
-      "commandName": "Project"
-    },
     "GraphServer": {
       "commandName": "Project",
       "commandLineArgs": "--module GraphServer",
