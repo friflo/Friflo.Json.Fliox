@@ -20,8 +20,8 @@ namespace Friflo.Json.Tests
         }
         
         // run GraphServer via one of the following methods:
-        // > dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer
         // > dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
+        // > dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer   (requires Debug build)
         // VSCode        > Run > GraphServer
         // Rider         > Run > GraphServer
         // Visual Studio > Debug > GraphServer
