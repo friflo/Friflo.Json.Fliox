@@ -2,7 +2,7 @@
 # use with: [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 ### read entities by their ids
-POST http://localhost:8080/ HTTP/1.1
+POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "tasks": [
@@ -15,7 +15,7 @@ content-type: application/json
 ] }
 
 ### simple echo task
-POST http://localhost:8080/ HTTP/1.1
+POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "tasks": [
@@ -26,7 +26,7 @@ content-type: application/json
 ] }
 
 ### read entity "order-1" and its referenced .customer
-POST http://localhost:8080/ HTTP/1.1
+POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "tasks": [
@@ -45,8 +45,21 @@ content-type: application/json
     }
 ] }
 
+### query all articles -> "filter": { "op":"true" }
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"query",        "container": "Article",
+        "filterLinq": "true",
+        "filter": { "op":"true" }
+    }
+] }
+
+
 ### query all articles, their referenced .producer (and .employees[*] referenced by .producer)
-POST http://localhost:8080/ HTTP/1.1
+POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "tasks": [
@@ -66,5 +79,52 @@ content-type: application/json
                 ]
             }
         ]
+    }
+] }
+
+### create an article - creates file ./Json.Tests/assets/db/Article/new-article.json
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"create",   "container": "Article",
+        "entities": {
+            "new-article": {
+                "value": {"id": "new-article","name":"New Article S10"}
+            }
+        }
+    }
+] }
+
+### delete an article
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"delete",     "container": "Article",
+        "ids": ["new-article"]
+    }
+] }
+
+### patch article member .name (article need to be present)
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+        "task":"patch",        "container": "Article",
+        "patches": {
+            "new-article": {
+                "patches": [
+                    {
+                        "op":"replace",
+                        "path": ".name",
+                        "value": "pachted Name"
+                    }
+                ]
+            }
+        }
     }
 ] }
