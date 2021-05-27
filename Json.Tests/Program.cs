@@ -19,9 +19,11 @@ namespace Friflo.Json.Tests
             GraphServer
         }
         
-        // run examples:
-        // dotnet Friflo.Json.Tests.dll --module GraphServer
-        // dotnet run --project .\Json.Tests\Friflo.Json.Tests.csproj -- --module GraphServer
+        // run GraphServer via one of the following methods:
+        // > dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer
+        // > dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
+        // VSCode > Run > GraphServer
+        // Rider > Run > GraphServer
         public static void Main(string[] args)
         {
             Console.WriteLine($"Friflo.Json.Tests directory: {Directory.GetCurrentDirectory()}");
@@ -38,7 +40,7 @@ namespace Friflo.Json.Tests
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
-                    case Module.GraphServer:    GraphHttp(database);                                break;
+                    case Module.GraphServer:    GraphServer(database);                             break;
                     default:                    Console.WriteLine($"unknown module: {module}");    break;
                 }
             });
@@ -54,7 +56,7 @@ namespace Friflo.Json.Tests
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphHttp(string database) {
+        private static void GraphServer(string database) {
             using (var fileDatabase = new FileDatabase(database))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8081/")) {
                 hostDatabase.Start();

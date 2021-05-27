@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Friflo.Json.Tests" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="GraphServer" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll" />
     <option name="PROGRAM_PARAMETERS" value="--module GraphServer" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
