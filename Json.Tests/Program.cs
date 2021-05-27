@@ -2,7 +2,6 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Collections;
 using System.CommandLine.Invocation;
 using System.IO;
 using Friflo.Json.Flow.Database;
@@ -64,7 +63,6 @@ namespace Friflo.Json.Tests
             hostDatabase.Start();
             hostDatabase.Run();
         }
-
     }
 }
 
