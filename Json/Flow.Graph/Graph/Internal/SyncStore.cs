@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
@@ -22,6 +23,32 @@ namespace Friflo.Json.Flow.Graph.Internal
                 logTask.state.Synced = true;
                 logTask.SetResult();
             }
+        }
+        
+        // ----------------------------------- add tasks methods -----------------------------------
+        internal void AddTasks(List<DatabaseTask> tasks) {
+            Echo(tasks);
+        }
+                
+        private void Echo(List<DatabaseTask> tasks) {
+            foreach (var entry in echoTasks) {
+                EchoTask echoTask = entry.Value;
+                var req = new Echo {
+                    message   = echoTask.message,
+                };
+                tasks.Add(req);
+            }
+        }
+        
+        internal void EchoResult (Echo task, TaskResult result) {
+            EchoTask echoTask = echoTasks[task.message];
+            if (result is TaskErrorResult taskError) {
+                echoTask.state.SetError(new TaskErrorInfo(taskError));
+                return;
+            }
+            var echoResult = (EchoResult)result;
+            echoTask.result = echoResult.message;
+            echoTask.state.Synced = true;
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   TypeStore                       typeStore;
         internal readonly   TypeCache                       typeCache;
         internal readonly   ObjectMapper                    jsonMapper;
-        // private  readonly   JsonReadError                errorHandler;
 
         internal readonly   ObjectPatcher                   objectPatcher;
         
@@ -169,8 +168,7 @@ namespace Friflo.Json.Flow.Graph
                 set.Sync.AddTasks(syncRequest.tasks);
                 AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount);
             }
-            AddTasks(syncRequest.tasks);
-
+            _intern.sync.AddTasks(syncRequest.tasks);
             return syncRequest;
         }
 
@@ -292,7 +290,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.Echo:
                             var echo = (Echo) task;
-                            EchoResult(echo, result);
+                            _intern.sync.EchoResult(echo, result);
                             break;
                     }
                 }
@@ -312,32 +310,6 @@ namespace Friflo.Json.Flow.Graph
                 _intern.sync = new SyncStore();
             }
             return syncResult;
-        }
-        
-        // ----------------------------------- add tasks methods -----------------------------------
-        private void AddTasks(List<DatabaseTask> tasks) {
-            Echo(tasks);
-        }
-                
-        private void Echo(List<DatabaseTask> tasks) {
-            foreach (var entry in _intern.sync.echoTasks) {
-                EchoTask echoTask = entry.Value;
-                var req = new Echo {
-                    message   = echoTask.message,
-                };
-                tasks.Add(req);
-            }
-        }
-        
-        private void EchoResult (Echo task, TaskResult result) {
-            EchoTask echoTask = _intern.sync.echoTasks[task.message];
-            if (result is TaskErrorResult taskError) {
-                echoTask.state.SetError(new TaskErrorInfo(taskError));
-                return;
-            }
-            var echoResult = (EchoResult)result;
-            echoTask.result = echoResult.message;
-            echoTask.state.Synced = true;
         }
     }
     
