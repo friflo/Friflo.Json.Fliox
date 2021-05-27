@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests
         public static void Main(string[] args)
         {
             Console.WriteLine($"Friflo.Json.Tests directory: {Directory.GetCurrentDirectory()}");
-            var modules = new SymbolSet();
+
             var moduleOpt = new Option<Module>("--module",  "the module inside Friflo.Json.Tests") {IsRequired = true};
 
             var rootCommand = new RootCommand {
@@ -41,8 +41,9 @@ namespace Friflo.Json.Tests
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
-                    case Module.GraphServer:    GraphServer(database);                             break;
-                    default:                    Console.WriteLine($"unknown module: {module}");    break;
+                    case Module.GraphServer:
+                        GraphServer(database);
+                        break;
                 }
             });
             rootCommand.Invoke(args);
@@ -58,11 +59,10 @@ namespace Friflo.Json.Tests
         //     $env:UserName
         //     $env:UserDomain 
         private static void GraphServer(string database) {
-            using (var fileDatabase = new FileDatabase(database))
-            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8081/")) {
-                hostDatabase.Start();
-                hostDatabase.Run();
-            }
+            var fileDatabase = new FileDatabase(database);
+            var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8081/");
+            hostDatabase.Start();
+            hostDatabase.Run();
         }
 
     }

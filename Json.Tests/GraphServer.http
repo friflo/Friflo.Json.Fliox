@@ -1,6 +1,6 @@
 
 # use with: [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
-# example request bellow send to GraphServer in ./Program.cs 
+# example requests bellow send to GraphServer in ./Program.cs 
 
 ### read entities by their ids
 POST http://localhost:8081/ HTTP/1.1
@@ -8,7 +8,7 @@ content-type: application/json
 
 { "tasks": [
     {
-		"task":"read",	"container": "Article",
+		"task": "read",	"container": "Article",
 		"reads": [
 			{ "ids": ["article-galaxy", "article-ipad"] }
 		]
@@ -21,7 +21,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-		"task":"echo",
+		"task": "echo",
 		"message": "Hello"		
 	}
 ] }
@@ -32,7 +32,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"read",   "container": "Order",
+        "task": "read",         "container": "Order",
         "reads": [ {
                 "ids": ["order-1"],
                 "references": [
@@ -52,7 +52,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"query",        "container": "Article",
+        "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": { "op":"true" }
     }
@@ -65,7 +65,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"query",        "container": "Article",
+        "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
                                  "right":{"op":"string", "value": "Smartphone"}}
@@ -79,7 +79,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"query",        "container": "Article",
+        "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": { "op":"true" },
         "references": [
@@ -103,7 +103,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"create",   "container": "Article",
+        "task": "create",       "container": "Article",
         "entities": {
             "new-article": {
                 "value": {"id": "new-article","name":"New Article S10"}
@@ -118,7 +118,7 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"delete",     "container": "Article",
+        "task": "delete",       "container": "Article",
         "ids": ["new-article"]
     }
 ] }
@@ -129,14 +129,14 @@ content-type: application/json
 
 { "tasks": [
 	{
-        "task":"patch",        "container": "Article",
+        "task": "patch",        "container": "Article",
         "patches": {
             "new-article": {
                 "patches": [
                     {
                         "op":"replace",
                         "path": ".name",
-                        "value": "pachted Name"
+                        "value": "patched Name"
                     }
                 ]
             }
