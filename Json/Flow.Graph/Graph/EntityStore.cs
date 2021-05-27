@@ -169,7 +169,8 @@ namespace Friflo.Json.Flow.Graph
                 set.Sync.AddTasks(syncRequest.tasks);
                 AssertTaskCount(setInfo, syncRequest.tasks.Count - curTaskCount);
             }
-            AddEchoTasks(syncRequest.tasks);
+            AddTasks(syncRequest.tasks);
+
             return syncRequest;
         }
 
@@ -313,8 +314,12 @@ namespace Friflo.Json.Flow.Graph
             return syncResult;
         }
         
+        // ----------------------------------- add tasks methods -----------------------------------
+        private void AddTasks(List<DatabaseTask> tasks) {
+            Echo(tasks);
+        }
                 
-        private void AddEchoTasks(List<DatabaseTask> tasks) {
+        private void Echo(List<DatabaseTask> tasks) {
             foreach (var entry in _intern.sync.echoTasks) {
                 EchoTask echoTask = entry.Value;
                 var req = new Echo {
