@@ -2,9 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Sync;
 
-namespace Friflo.Json.Flow.Database.Remote
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     ///<summary>
     /// Provide same behavior as <see cref="HttpClientDatabase"/> / <see cref="HttpHostDatabase"/> regarding
