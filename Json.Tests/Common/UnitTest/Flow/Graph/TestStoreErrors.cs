@@ -53,6 +53,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
             }
         }
+        
+        [UnityTest] public IEnumerator HttpUseCoroutine() { yield return RunAsync.Await(HttpUse()); }
+        [Test]      public async Task  HttpUseAsync() { await HttpUse(); }
+        
+        private async Task HttpUse() {
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {
+                AddSimulationErrors(testDatabase);
+                await TestStore.RunRemoteHost(hostDatabase, async () => {
+                    using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
+                    using (var useStore         = new PocStore(remoteDatabase)) {
+                        await TestStoresErrors(useStore);
+                    }
+                });
+            }
+        }
 
         private static TestContainer _customers;
         private static TestContainer _producers;
