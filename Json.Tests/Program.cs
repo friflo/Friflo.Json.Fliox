@@ -58,6 +58,7 @@ namespace Friflo.Json.Tests
         //     $env:UserName
         //     $env:UserDomain 
         private static void GraphServer(string database) {
+            Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase = new FileDatabase(database);
             var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8081/");
             hostDatabase.Start();
