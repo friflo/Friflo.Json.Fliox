@@ -43,6 +43,15 @@ namespace Friflo.Json.Tests
             rootCommand.Invoke(args);
         }
         
+        // Http server requires setting permission to run an http server.
+        // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
+        // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
+        //     netsh http add urlacl url=http://+:8080/ user=<DOMAIN>\<USER> listen=yes
+        //     netsh http delete urlacl http://+:8080/
+        // 
+        // Get DOMAIN\USER via  PowerShell
+        //     $env:UserName
+        //     $env:UserDomain 
         private static void GraphHttp(string database) {
             using (var fileDatabase = new FileDatabase(database))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
