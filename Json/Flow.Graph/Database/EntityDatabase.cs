@@ -63,6 +63,8 @@ namespace Friflo.Json.Flow.Database
         /// </para>
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            if (syncRequest.tasks == null)
+                return new SyncResponse{error = new SyncError{message = "missing field: tasks (array)"}};
             var response = new SyncResponse {
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
                 results         = new Dictionary<string, ContainerEntities>()
