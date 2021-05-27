@@ -2,9 +2,9 @@
 using System.CommandLine;
 using System.CommandLine.Collections;
 using System.CommandLine.Invocation;
+using System.IO;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
-using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests
 {
@@ -22,13 +22,13 @@ namespace Friflo.Json.Tests
         // dotnet run --project .\Json.Tests\Friflo.Json.Tests.csproj -- --module GraphServer
         public static void Main(string[] args)
         {
-            // Console.WriteLine("Friflo.Json.Tests");
+            Console.WriteLine($"Friflo.Json.Tests directory: {Directory.GetCurrentDirectory()}");
             var modules = new SymbolSet();
             var moduleOpt = new Option<Module>("--module",  "the module inside Friflo.Json.Tests") {IsRequired = true};
 
             var rootCommand = new RootCommand {
                 moduleOpt, 
-                new Option<string>("--database", () => "assets/db",  "folder of the file database")
+                new Option<string>("--database", () => "./Json.Tests/assets/db",  "folder of the file database")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests
         }
         
         private static void GraphHttp(string database) {
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + database))
+            using (var fileDatabase = new FileDatabase(database))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
                 hostDatabase.Start();
                 hostDatabase.Run();

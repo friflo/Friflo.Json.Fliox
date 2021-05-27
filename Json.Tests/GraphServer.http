@@ -1,4 +1,5 @@
 
+# use with: [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 POST http://localhost:8080/ HTTP/1.1
 content-type: application/json
