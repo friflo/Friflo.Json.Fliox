@@ -245,7 +245,7 @@ namespace Friflo.Json.Flow.Graph
                     if (syncError == null) {
                         result = results[n];
                         var actual = result.TaskType;
-                        if (actual != TaskType.Error) {
+                        if (actual != TaskType.error) {
                             if (taskType != actual) {
                                 var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
                                 throw new InvalidOperationException(msg);
@@ -256,39 +256,39 @@ namespace Friflo.Json.Flow.Graph
                     }
 
                     switch (taskType) {
-                        case TaskType.Create:
+                        case TaskType.create:
                             var create = (CreateEntities) task;
                             EntitySet set = _intern.setByName[create.container];
                             set.Sync.CreateEntitiesResult(create, result);
                             break;
-                        case TaskType.Update:
+                        case TaskType.update:
                             var update = (UpdateEntities) task;
                             set = _intern.setByName[update.container];
                             set.Sync.UpdateEntitiesResult(update, result);
                             break;
-                        case TaskType.Read:
+                        case TaskType.read:
                             var readList = (ReadEntitiesList) task;
                             set = _intern.setByName[readList.container];
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
                             set.Sync.ReadEntitiesListResult(readList, result, entities);
                             break;
-                        case TaskType.Query:
+                        case TaskType.query:
                             var query = (QueryEntities) task;
                             set = _intern.setByName[query.container];
                             containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                             set.Sync.QueryEntitiesResult(query, result, queryEntities);
                             break;
-                        case TaskType.Patch:
+                        case TaskType.patch:
                             var patch = (PatchEntities) task;
                             set = _intern.setByName[patch.container];
                             set.Sync.PatchEntitiesResult(patch, result);
                             break;
-                        case TaskType.Delete:
+                        case TaskType.delete:
                             var delete = (DeleteEntities) task;
                             set = _intern.setByName[delete.container];
                             set.Sync.DeleteEntitiesResult(delete, result);
                             break;
-                        case TaskType.Echo:
+                        case TaskType.echo:
                             var echo = (Echo) task;
                             _intern.sync.EchoResult(echo, result);
                             break;

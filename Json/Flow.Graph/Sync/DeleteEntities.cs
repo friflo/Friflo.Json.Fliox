@@ -12,10 +12,12 @@ namespace Friflo.Json.Flow.Sync
         public              string              container;
         public              HashSet<string>     ids;
         
-        internal override   TaskType            TaskType => TaskType.Delete;
+        internal override   TaskType            TaskType => TaskType.delete;
         public   override   string              ToString() => "container: " + container;
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (container == null)
+                return MissingContainer();
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.DeleteEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
@@ -34,6 +36,6 @@ namespace Friflo.Json.Flow.Sync
                      public CommandError                    Error { get; set; }
         [Fri.Ignore] public Dictionary<string, EntityError> deleteErrors;
 
-        internal override   TaskType            TaskType => TaskType.Delete;
+        internal override   TaskType            TaskType => TaskType.delete;
     }
 }

@@ -11,10 +11,12 @@ namespace Friflo.Json.Flow.Sync
         public  string                  container;
         public  List<ReadEntities>      reads;
         
-        internal override   TaskType    TaskType => TaskType.Read;
+        internal override   TaskType    TaskType => TaskType.read;
         public   override   string      ToString() => "container: " + container;
 
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (container == null)
+                return MissingContainer();
             var result = new ReadEntitiesListResult {
                 reads = new List<ReadEntitiesResult>(reads.Count)
             };
@@ -22,6 +24,8 @@ namespace Friflo.Json.Flow.Sync
             // Combine all reads to a single read to call ReadEntities() only once instead of #reads times
             var combinedRead = new ReadEntities { ids = new HashSet<string>() };
             foreach (var read in reads) {
+                if (read.ids == null)
+                    return InvalidTask("missing field: ids");
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
@@ -62,6 +66,6 @@ namespace Friflo.Json.Flow.Sync
     {
         public   List<ReadEntitiesResult>   reads;
         
-        internal override   TaskType        TaskType => TaskType.Read;
+        internal override   TaskType        TaskType => TaskType.read;
     }
 }

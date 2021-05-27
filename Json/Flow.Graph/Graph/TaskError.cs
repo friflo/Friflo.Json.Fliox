@@ -29,6 +29,8 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         DatabaseError,
         
+        InvalidTask,
+        
         SyncError,
         
         /// <summary>
@@ -72,6 +74,7 @@ namespace Friflo.Json.Flow.Graph
             switch (type) {
                 case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
                 case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
+                case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
                 case TaskErrorResultType.SyncError:             return TaskErrorType.SyncError;
             }
             throw new ArgumentException($"cant convert error type: {type}");

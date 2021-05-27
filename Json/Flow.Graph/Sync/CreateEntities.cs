@@ -13,10 +13,12 @@ namespace Friflo.Json.Flow.Sync
         public  string                          container;
         public  Dictionary<string, EntityValue> entities;
         
-        internal override   TaskType            TaskType => TaskType.Create;
+        internal override   TaskType            TaskType => TaskType.create;
         public   override   string              ToString() => "container: " + container;
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (container == null)
+                return MissingContainer();
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
@@ -44,6 +46,6 @@ namespace Friflo.Json.Flow.Sync
                      public CommandError                    Error { get; set; }
         [Fri.Ignore] public Dictionary<string, EntityError> createErrors;
         
-        internal override TaskType              TaskType => TaskType.Create;
+        internal override TaskType              TaskType => TaskType.create;
     }
 }

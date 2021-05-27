@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Sync
         public              string              message;
         public              string              stacktrace;
 
-        internal override   TaskType            TaskType => TaskType.Error;
+        internal override   TaskType            TaskType => TaskType.error;
         public   override   string              ToString() => $"type: {type}, message: {message}";
     }
     
@@ -29,6 +29,8 @@ namespace Friflo.Json.Flow.Sync
         /// E.g. the access is currently not available or accessing a missing table.
         /// </summary>
         DatabaseError,
+        
+        InvalidTask,
         
         SyncError
     }

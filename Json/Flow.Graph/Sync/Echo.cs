@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public              string          message;
             
-        internal override   TaskType        TaskType => TaskType.Echo;
+        internal override   TaskType        TaskType => TaskType.echo;
         
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             TaskResult result = new EchoResult{message = message};
@@ -23,6 +23,6 @@ namespace Friflo.Json.Flow.Sync
         
         public CommandError                 Error { get; set; }
 
-        internal override   TaskType        TaskType => TaskType.Echo;
+        internal override   TaskType        TaskType => TaskType.echo;
     }
 }

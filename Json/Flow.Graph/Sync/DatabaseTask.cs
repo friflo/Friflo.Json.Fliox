@@ -17,11 +17,19 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(Echo),                    Discriminant = "echo")]
     public abstract class DatabaseTask
     {
-        internal abstract Task<TaskResult>      Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
-        internal abstract   TaskType            TaskType { get; }
+        internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
+        internal abstract   TaskType                TaskType { get; }
 
         internal static TaskErrorResult TaskError(CommandError error) {
             return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
+        }
+        
+        internal TaskErrorResult InvalidTask(string message) {
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - {message}"};   
+        }
+        
+        internal TaskErrorResult MissingContainer() {
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - missing field: container"};   
         }
     }
     
@@ -41,16 +49,17 @@ namespace Friflo.Json.Flow.Sync
         internal abstract TaskType          TaskType { get; }
     }
     
+    // ReSharper disable InconsistentNaming
     public enum TaskType
     {
-        Read,
-        Query,
-        Create,
-        Update,
-        Patch,
-        Delete,
-        Echo,
+        read,
+        query,
+        create,
+        update,
+        patch,
+        delete,
+        echo,
         //
-        Error
+        error
     }
 }
