@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     HttpListenerRequest  req  = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
-                    string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
+                    string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                     Log(reqMsg);
 
                     if (req.HttpMethod == "POST") {
@@ -51,12 +51,10 @@ namespace Friflo.Json.Flow.Database.Remote
                             await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
                             resp.Close();
                         } else {
-                            var     body            = $"invalid url: {req.Url}, method: {req.HttpMethod}";
-                            byte[]  resultBytes     = Encoding.UTF8.GetBytes(body);
-                            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, resultBytes.Length);
-                            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
-                            resp.Close();
+                            await WriteInvalidUrl(req, resp);
                         }
+                    } else {
+                        await WriteInvalidUrl(req, resp);
                     }
                 }
 #if UNITY_5_3_OR_NEWER
@@ -76,6 +74,14 @@ namespace Friflo.Json.Flow.Database.Remote
                      Log($"RemoteHost error: {e}");
                 }
             }
+        }
+        
+        private static async Task WriteInvalidUrl(HttpListenerRequest req, HttpListenerResponse resp) {
+            var     body            = $"invalid url: {req.Url}, method: {req.HttpMethod}";
+            byte[]  resultBytes     = Encoding.UTF8.GetBytes(body);
+            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, resultBytes.Length);
+            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+            resp.Close();
         }
         
         private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
