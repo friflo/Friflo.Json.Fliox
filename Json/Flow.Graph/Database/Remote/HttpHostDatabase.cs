@@ -32,8 +32,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 try {
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
-                    await HandleListenerContext(ctx);
-                    // _ = Task.Run(() => HandleListenerContext(ctx));
+                    // await HandleListenerContext(ctx);            // handle incoming requests serial
+                    _ = Task.Run(() => HandleListenerContext(ctx)); // handle incoming requests parallel
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
@@ -58,8 +58,10 @@ namespace Friflo.Json.Flow.Database.Remote
             HttpListenerRequest  req  = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
 
-            string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
-            Log(reqMsg);
+            if (requestCount++ == 0 || requestCount % 500 == 0) {
+                string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
+                Log(reqMsg);
+            }
 
             if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
                 var inputStream = req.InputStream;
