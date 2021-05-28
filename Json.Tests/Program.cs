@@ -48,7 +48,10 @@ namespace Friflo.Json.Tests
             rootCommand.Invoke(args);
         }
         
-        // Http server requires setting permission to run an http server.
+        // Example requests to the GraphServer are at: ./GraphServer.http
+        //
+        //   Note:
+        // Http server may require a permission to listen to the given host/port.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
         //     netsh http add urlacl url=http://+:8081/ user=<DOMAIN>\<USER> listen=yes
