@@ -28,30 +28,33 @@ namespace Friflo.Json.Flow.Database.Remote
         {
             runServer = true;
 
-            // While a user hasn't visited the `shutdown` url, keep on handling requests
             while (runServer) {
                 try {
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
 
-                    // Peel out the requests and response objects
                     HttpListenerRequest  req  = ctx.Request;
                     HttpListenerResponse resp = ctx.Response;
 
                     string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserHostName} {req.UserAgent}";
                     Log(reqMsg);
 
-                    // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
                     if (req.HttpMethod == "POST") {
                         var inputStream = req.InputStream;
                         System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
                         string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        if (req.Url.AbsolutePath == "/shutdown") {
-                            Log("Shutdown requested");
-                            runServer = false;
+                        if (req.Url.AbsolutePath == "/") {
+                            var     result      = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+                            byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
+                            HttpStatusCode statusCode = result.success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+                            SetResponseHeader(resp, "application/json", statusCode, resultBytes.Length);
+                            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+                            resp.Close();
                         } else {
-                            byte[] data = await HandlePost(requestContent, resp).ConfigureAwait(false);
-                            await resp.OutputStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                            var     body            = $"invalid url: {req.Url}, method: {req.HttpMethod}";
+                            byte[]  resultBytes     = Encoding.UTF8.GetBytes(body);
+                            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, resultBytes.Length);
+                            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
                             resp.Close();
                         }
                     }
@@ -74,20 +77,12 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
             }
         }
-
-        private async Task<byte[]> HandlePost (string requestContent, HttpListenerResponse resp) {
-            var result = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
-
-            // Write the response info
-            byte[] data = Encoding.UTF8.GetBytes(result.body);
-            int len = data.Length;
-
-            resp.ContentType = "application/json";
-            resp.ContentEncoding = Encoding.UTF8;
-            resp.ContentLength64 = len;
-            HttpStatusCode statusCode = result.success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
-            resp.StatusCode = (int)statusCode;
-            return data;
+        
+        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
+            resp.ContentType        = contentType;
+            resp.ContentEncoding    = Encoding.UTF8;
+            resp.ContentLength64    = len;
+            resp.StatusCode         = (int)statusCode;
         }
 
         // Http server requires setting permission to run an http server.
