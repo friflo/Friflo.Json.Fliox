@@ -32,31 +32,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 try {
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
-
-                    HttpListenerRequest  req  = ctx.Request;
-                    HttpListenerResponse resp = ctx.Response;
-
-                    string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
-                    Log(reqMsg);
-
-                    if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
-                        var inputStream = req.InputStream;
-                        System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
-                        string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
-
-                        var     result      = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
-                        byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
-                        HttpStatusCode statusCode = result.success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
-                        SetResponseHeader(resp, "application/json", statusCode, resultBytes.Length);
-                        await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
-                        resp.Close();
-                        continue;
-                    }
-                    var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
-                    byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
-                    SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
-                    await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
-                    resp.Close();
+                    await HandleListenerContext(ctx);
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
@@ -75,6 +51,33 @@ namespace Friflo.Json.Flow.Database.Remote
                      Log($"RemoteHost error: {e}");
                 }
             }
+        }
+        
+        private async Task HandleListenerContext (HttpListenerContext ctx) {
+            HttpListenerRequest  req  = ctx.Request;
+            HttpListenerResponse resp = ctx.Response;
+
+            string reqMsg = $@"request {++requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
+            Log(reqMsg);
+
+            if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
+                var inputStream = req.InputStream;
+                System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
+                string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
+
+                var     result      = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+                byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
+                HttpStatusCode statusCode = result.success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+                SetResponseHeader(resp, "application/json", statusCode, resultBytes.Length);
+                await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+                resp.Close();
+                return;
+            }
+            var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
+            byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
+            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
+            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+            resp.Close();
         }
 
         private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
