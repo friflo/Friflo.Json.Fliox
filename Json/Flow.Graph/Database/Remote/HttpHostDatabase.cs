@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 namespace Friflo.Json.Flow.Database.Remote
 {
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
+    //
+    // Note:
+    // Alternatively a HTTP web server could be implemented by using Kestrel.
+    // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
+    // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public class HttpHostDatabase : RemoteHostDatabase
     {
         private readonly    string          endpoint;
