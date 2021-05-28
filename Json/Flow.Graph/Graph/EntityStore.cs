@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   EntityDatabase                  database;
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
-        internal readonly   ContextPools                    contextPools;
+        internal readonly   Pools                           contextPools;
         
         // --- non readonly
         internal            SyncStore                       sync;
@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Graph
             setByName           = new Dictionary<string, EntitySet>();
             objectPatcher       = new ObjectPatcher(jsonMapper);
             sync                = new SyncStore();
-            contextPools        = new ContextPools();
+            contextPools        = new Pools(Pools.SharedPools);
             tracerLogTask       = null;
         }
     }
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools.pools);
+            var syncContext = new SyncContext(_intern.contextPools);
             SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools.pools);
+            var syncContext = new SyncContext(_intern.contextPools);
             SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
             syncContext.pools.AssertNoLeaks();
@@ -106,7 +106,7 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools.pools);
+            var syncContext = new SyncContext(_intern.contextPools);
             var responseTask = ExecuteSync(syncRequest, syncContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!

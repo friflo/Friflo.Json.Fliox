@@ -26,16 +26,6 @@ namespace Friflo.Json.Flow.Database
         }
     }
     
-    public class ContextPools {
-        internal readonly           IPools  pools;
-        
-        public   static readonly    Pools   SharedPools = new Pools(null);
-
-        public ContextPools () {
-            pools = new Pools(SharedPools);
-        }
-    }
-    
     public interface IPools
     {
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
@@ -53,20 +43,21 @@ namespace Friflo.Json.Flow.Database
         public ObjectPool<JsonEvaluator>    JsonEvaluator   { get; }
         public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
         
+        public   static readonly    Pools   SharedPools = new Pools();
         
         // constructor present for code navigation
+        private Pools() {
+            JsonPatcher      = new SharedPool<JsonPatcher>   (() => new JsonPatcher());
+            ScalarSelector   = new SharedPool<ScalarSelector>(() => new ScalarSelector());
+            JsonEvaluator    = new SharedPool<JsonEvaluator> (() => new JsonEvaluator());
+            ObjectMapper     = new SharedPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+        }
+        
         internal Pools(Pools sharedPools) {
-            if (sharedPools != null) {
-                JsonPatcher      = new LocalPool<JsonPatcher>    (sharedPools.JsonPatcher,      "JsonPatcher");
-                ScalarSelector   = new LocalPool<ScalarSelector> (sharedPools.ScalarSelector,   "ScalarSelector");
-                JsonEvaluator    = new LocalPool<JsonEvaluator>  (sharedPools.JsonEvaluator,    "JsonEvaluator");
-                ObjectMapper     = new LocalPool<ObjectMapper>   (sharedPools.ObjectMapper,     "ObjectMapper");
-            } else {
-                JsonPatcher      = new SharedPool<JsonPatcher>   (() => new JsonPatcher());
-                ScalarSelector   = new SharedPool<ScalarSelector>(() => new ScalarSelector());
-                JsonEvaluator    = new SharedPool<JsonEvaluator> (() => new JsonEvaluator());
-                ObjectMapper     = new SharedPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
-            }
+            JsonPatcher      = new LocalPool<JsonPatcher>    (sharedPools.JsonPatcher,      "JsonPatcher");
+            ScalarSelector   = new LocalPool<ScalarSelector> (sharedPools.ScalarSelector,   "ScalarSelector");
+            JsonEvaluator    = new LocalPool<JsonEvaluator>  (sharedPools.JsonEvaluator,    "JsonEvaluator");
+            ObjectMapper     = new LocalPool<ObjectMapper>   (sharedPools.ObjectMapper,     "ObjectMapper");
         }
 
         public void Dispose() {

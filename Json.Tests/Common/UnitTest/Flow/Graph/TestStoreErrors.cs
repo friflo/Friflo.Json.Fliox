@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private async Task FileUse() {
-            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
         private async Task LoopbackUse() {
-            using (var _                = ContextPools.SharedPools) // for LeakTestsFixture
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  HttpUseAsync() { await HttpUse(); }
         
         private async Task HttpUse() {
-            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {

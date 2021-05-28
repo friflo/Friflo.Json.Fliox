@@ -29,8 +29,8 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         public async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
-            var contextPools    = new ContextPools();
-            var syncContext     = new SyncContext(contextPools.pools);
+            var contextPools    = new Pools(Pools.SharedPools);
+            var syncContext     = new SyncContext(contextPools);
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
