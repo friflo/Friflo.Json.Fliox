@@ -49,9 +49,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void RunLinq() {
+            using (var _        = ContextPools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store = TestRelationPoC.CreateStore(database).Result)
-            using (var m = new ObjectMapper(store.TypeStore)) {
+            using (var store    = TestRelationPoC.CreateStore(database).Result)
+            using (var m        = new ObjectMapper(store.TypeStore)) {
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
                 store.Sync().Wait();
@@ -113,36 +114,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void DebugLinqQuery() {
+            using (var _ = ContextPools.SharedPools) // for LeakTestsFixture
+            {
+                var order1 = GetOrder("order-1");
 
-            var order1 = GetOrder("order-1");
+                var orders = new List<Flow.Graph.Order> {order1};
 
-            var orders = new List<Flow.Graph.Order> {order1};
+                IQueryable<Flow.Graph.Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
 
-            IQueryable<Flow.Graph.Order> queryable = orders.AsQueryable(); // for illustration only: Create queryable explicit from orders
+                var gqlOrders = new GqlEnumerable<Flow.Graph.Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
+                // var gqlOrders = new GqlEnumerable<Order>(orders);
 
-            var gqlOrders = new GqlEnumerable<Flow.Graph.Order>(queryable); // <=> new GqlEnumerable<Order>(orders)
-            // var gqlOrders = new GqlEnumerable<Order>(orders);
+                var orderQuery =
+                    from order in gqlOrders
+                    orderby order.customer
+                    where WhereOrderEqual(order, "order-1") // where  order.id == "order-1"
+                    select SelectOrder(order); // select order;
 
-
-
-            var orderQuery =
-                from order in gqlOrders
-                orderby order.customer
-                where WhereOrderEqual(order, "order-1") // where  order.id == "order-1"
-                select SelectOrder(order); // select order;
-
-            int n = 0;
-            foreach (var order in orderQuery) {
-                n++;
-                IsTrue(order1 == order);
+                int n = 0;
+                foreach (var order in orderQuery) {
+                    n++;
+                    IsTrue(order1 == order);
+                }
+                AreEqual(1, n);
             }
-            AreEqual(1, n);
         }
 
         [Test]
         public async Task TestSelectSameInstance() {
+            using (var _        = ContextPools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store = await TestRelationPoC.CreateStore(database)) {
+            using (var store    = await TestRelationPoC.CreateStore(database)) {
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
                 await store.Sync();

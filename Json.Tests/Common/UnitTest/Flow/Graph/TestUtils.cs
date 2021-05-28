@@ -14,6 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         [Test]
         public void TestQueryRef() {
+            using (var __       = ContextPools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var store    = new PocStore(database)) {
                 var orders = store.orders;
