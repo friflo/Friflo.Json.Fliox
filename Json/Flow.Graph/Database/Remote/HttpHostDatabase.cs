@@ -33,6 +33,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
                     await HandleListenerContext(ctx);
+                    // _ = Task.Run(() => HandleListenerContext(ctx));
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {

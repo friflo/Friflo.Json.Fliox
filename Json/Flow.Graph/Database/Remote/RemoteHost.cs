@@ -12,15 +12,9 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    ContextPools    contextPools = new ContextPools();
 
         public RemoteHostDatabase(EntityDatabase local) {
             this.local = local;
-        }
-
-        public override void Dispose() {
-            base.Dispose();
-            contextPools.Dispose();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -35,7 +29,8 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         public async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
-            var syncContext = new SyncContext(contextPools.pools);
+            var contextPools    = new ContextPools();
+            var syncContext     = new SyncContext(contextPools.pools);
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {

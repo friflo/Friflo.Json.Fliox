@@ -77,7 +77,6 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Dispose() {
-            _intern.contextPools.Dispose();
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
             _intern.typeStore.Dispose();

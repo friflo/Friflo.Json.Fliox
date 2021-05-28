@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestStore : LeakTestsFixture
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
-        static TestStore() { SyncTypeStore.Init(); ContextPools.useSharedPools = false; }
+        static TestStore() { SyncTypeStore.Init(); }
         
 
         [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Logger.Info("--- " + i)); }
@@ -53,6 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
         private async Task MemoryCreate() {
+            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var createStore  = await TestRelationPoC.CreateStore(database))
             using (var useStore     = new PocStore(database))  {
@@ -64,6 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private async Task FileCreate() {
+            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
             using (var useStore     = new PocStore(fileDatabase)) {
@@ -75,6 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private async Task FileUse() {
+            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = new PocStore(fileDatabase))
             using (var useStore     = new PocStore(fileDatabase)) {
@@ -86,6 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
         private async Task HttpCreate() {
+            using (var _            = ContextPools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
@@ -102,6 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
         private async Task LoopbackUse() {
+            using (var _                = ContextPools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
                 using (var createStore      = new PocStore(loopbackDatabase))

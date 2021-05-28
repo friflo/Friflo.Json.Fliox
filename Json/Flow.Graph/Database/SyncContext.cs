@@ -26,24 +26,13 @@ namespace Friflo.Json.Flow.Database
         }
     }
     
-    public class ContextPools : IDisposable {
+    public class ContextPools {
         internal readonly           IPools  pools;
-        private  readonly           Pools   ownedPools;
         
-        public   static             bool    useSharedPools = true;
-        private  static readonly    Pools   SharedPools = new Pools(null);
-        
-        public ContextPools () {
-            if (useSharedPools) {
-                pools = new Pools(SharedPools);
-            } else {
-                ownedPools = new Pools(null);
-                pools = new Pools (ownedPools);
-            }
-        }
+        public   static readonly    Pools   SharedPools = new Pools(null);
 
-        public void Dispose() {
-            ownedPools?.Dispose();
+        public ContextPools () {
+            pools = new Pools(SharedPools);
         }
     }
     
