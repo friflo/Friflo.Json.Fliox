@@ -26,6 +26,8 @@ namespace Friflo.Json.Flow.Sync
             // Combine all reads to a single read to call ReadEntities() only once instead of #reads times
             var combinedRead = new ReadEntities { ids = new HashSet<string>() };
             foreach (var read in reads) {
+                if (read == null)
+                    return InvalidTask("elements in reads must not be null");
                 if (read.ids == null)
                     return MissingField(nameof(read.ids));
                 foreach (var id in read.ids) {
