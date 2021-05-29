@@ -33,15 +33,16 @@ content-type: application/json
 { "tasks": [
 	{
         "task": "read",         "container": "Order",
-        "reads": [ {
-                "ids": ["order-1"],
-                "references": [
-                    {
-                        "selector": ".customer",
-                        "container": "Customer"
-                    }
-                ]
-            }
+        "reads": [
+        {
+            "ids": ["order-1"],
+            "references": [
+                {
+                    "selector": ".customer",
+                    "container": "Customer"
+                }
+            ]
+        }
         ]
     }
 ] }
@@ -83,16 +84,16 @@ content-type: application/json
         "filterLinq": "true",
         "filter": { "op":"true" },
         "references": [
-            {
-                "selector": ".producer",
-                "container": "Producer",
-                "references": [
-                    {
-                        "selector": ".employees[*]",
-                        "container": "Employee"
-                    }
-                ]
-            }
+        {
+            "selector": ".producer",
+            "container": "Producer",
+            "references": [
+                {
+                    "selector": ".employees[*]",
+                    "container": "Employee"
+                }
+            ]
+        }
         ]
     }
 ] }
