@@ -54,8 +54,11 @@ namespace Friflo.Json.Flow.Database.Remote
     }
     
     public enum SyncStatusType {
-        Ok,
+        /// maps to HTTP 200
+        Ok,         
+        /// maps to HTTP 400
         Error,
+        /// maps to HTTP 500
         Exception
     }
     
