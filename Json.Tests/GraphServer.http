@@ -4,6 +4,17 @@
 # Hint:
 # use with [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
+### simple echo task
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "tasks": [
+	{
+		"task": "echo",
+		"message": "Hello"		
+	}
+] }
+
 ### read entities by their ids
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
@@ -14,17 +25,6 @@ content-type: application/json
 		"reads": [
 			{ "ids": ["article-galaxy", "article-ipad"] }
 		]
-	}
-] }
-
-### simple echo task
-POST http://localhost:8081/ HTTP/1.1
-content-type: application/json
-
-{ "tasks": [
-	{
-		"task": "echo",
-		"message": "Hello"		
 	}
 ] }
 
