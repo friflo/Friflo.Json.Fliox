@@ -3,6 +3,8 @@
 		"**/*.meta": true
     },
     "cSpell.words": [
+        "Ullrich",
+        "Praetz",
         "Linq",
         "SIMD",
         "netsh"
