@@ -36,13 +36,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                     ObjectMapper mapper = pooledMapper.instance;
                     var syncRequest = mapper.Read<SyncRequest>(jsonSyncRequest);
+                    if (mapper.reader.Error.ErrSet)
+                        return SyncJsonResult.CreateSyncError(syncContext, mapper.reader.Error.msg.ToString());
                     SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
                     jsonResponse = mapper.Write(syncResponse);
                 }
                 syncContext.pools.AssertNoLeaks();
-                return new SyncJsonResult(jsonResponse, SyncStatusType.None);
+                return new SyncJsonResult(jsonResponse, SyncStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = SyncError.ErrorFromException(e).ToString();
                 return SyncJsonResult.CreateSyncError(syncContext, errorMsg);
@@ -51,7 +53,7 @@ namespace Friflo.Json.Flow.Database.Remote
     }
     
     public enum SyncStatusType {
-        None,
+        Ok,
         Error,
         Exception
     }

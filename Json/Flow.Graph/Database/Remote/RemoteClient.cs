@@ -29,9 +29,11 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             return _singleton;
         }
-        
+
+        /// <summary> Returned <see cref="ObjectMapper"/> dont throw Read() exceptions. To handle errors its
+        /// <see cref="ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal static ObjectMapper CreateObjectMapper() {
-            var mapper = new ObjectMapper(Get());
+            var mapper = new ObjectMapper(Get(), new NoThrowHandler());
             return mapper;
         }
     }
@@ -56,11 +58,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 mapper.WriteNullMembers = false;
                 var jsonRequest = mapper.Write(syncRequest);
                 var result = await ExecuteSyncJson(jsonRequest, syncContext).ConfigureAwait(false);
-                if (result.statusType == SyncStatusType.None) {
+                if (result.statusType == SyncStatusType.Ok) {
                     var response = mapper.Read<SyncResponse>(result.body);
+                    if (mapper.reader.Error.ErrSet)
+                        return new SyncResponse {error = new SyncError{message = mapper.reader.Error.msg.ToString()}};
                     return response;
                 }
                 var syncError = mapper.Read<SyncError>(result.body);
+                if (mapper.reader.Error.ErrSet)
+                    return new SyncResponse {error = new SyncError{message = mapper.reader.Error.msg.ToString()}};
                 return new SyncResponse{error=syncError};
             }
         }

@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
                 switch (result.statusType){
-                    case SyncStatusType.None:   statusCode = HttpStatusCode.OK;                     break;
+                    case SyncStatusType.Ok:     statusCode = HttpStatusCode.OK;                     break;
                     case SyncStatusType.Error:  statusCode = HttpStatusCode.BadRequest;             break;
                     default:                    statusCode = HttpStatusCode.InternalServerError;    break;
                 } 
