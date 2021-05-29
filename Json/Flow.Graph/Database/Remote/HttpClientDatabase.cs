@@ -34,9 +34,10 @@ namespace Friflo.Json.Flow.Database.Remote
                 var body = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 SyncStatusType statusType;
                 switch (httpResponse.StatusCode) {
-                    case HttpStatusCode.OK:         statusType = SyncStatusType.Ok;         break; 
-                    case HttpStatusCode.BadRequest: statusType = SyncStatusType.Error;      break;
-                    default:                        statusType = SyncStatusType.Exception;  break;
+                    case HttpStatusCode.OK:                     statusType = SyncStatusType.Ok;         break; 
+                    case HttpStatusCode.BadRequest:             statusType = SyncStatusType.Error;      break;
+                    case HttpStatusCode.InternalServerError:    statusType = SyncStatusType.Exception;  break;
+                    default:                                    statusType = SyncStatusType.Exception;  break;
                 }
                 return new SyncJsonResult(body, statusType);
             }
