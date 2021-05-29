@@ -58,15 +58,16 @@ namespace Friflo.Json.Flow.Database.Remote
                 mapper.WriteNullMembers = false;
                 var jsonRequest = mapper.Write(syncRequest);
                 var result = await ExecuteSyncJson(jsonRequest, syncContext).ConfigureAwait(false);
+                ObjectReader reader = mapper.reader;
                 if (result.statusType == SyncStatusType.Ok) {
-                    var response = mapper.Read<SyncResponse>(result.body);
-                    if (mapper.reader.Error.ErrSet)
-                        return new SyncResponse {error = new SyncError{message = mapper.reader.Error.msg.ToString()}};
+                    var response = reader.Read<SyncResponse>(result.body);
+                    if (reader.Error.ErrSet)
+                        return new SyncResponse {error = new SyncError{message = reader.Error.msg.ToString()}};
                     return response;
                 }
-                var syncError = mapper.Read<SyncError>(result.body);
-                if (mapper.reader.Error.ErrSet)
-                    return new SyncResponse {error = new SyncError{message = mapper.reader.Error.msg.ToString()}};
+                var syncError = reader.Read<SyncError>(result.body);
+                if (reader.Error.ErrSet)
+                    return new SyncResponse {error = new SyncError{message = reader.Error.msg.ToString()}};
                 return new SyncResponse{error=syncError};
             }
         }
