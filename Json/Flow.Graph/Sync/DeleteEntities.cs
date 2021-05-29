@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Sync
             if (container == null)
                 return MissingContainer();
             if (ids == null)
-                return MissingField("ids");
+                return MissingField(nameof(ids));
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.DeleteEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {

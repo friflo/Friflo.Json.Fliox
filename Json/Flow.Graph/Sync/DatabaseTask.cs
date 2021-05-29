@@ -25,24 +25,24 @@ namespace Friflo.Json.Flow.Sync
         internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         internal abstract   TaskType                TaskType { get; }
         
-        private string TaskError(string error) {
-            return $"{error} - tasks[{index}]: {TaskType}";
-        }
-
         internal static TaskErrorResult TaskError(CommandError error) {
             return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
         }
         
+        private string InvalidTaskMessage(string error) {
+            return $"{error} - tasks[{index}]: {TaskType}";
+        }
+        
         internal TaskErrorResult MissingField(string field) {
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = TaskError($"missing field: {field}")};   
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = InvalidTaskMessage($"missing field: {field}")};   
         }
         
         internal TaskErrorResult MissingContainer() {
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = TaskError("missing field: container")};   
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = InvalidTaskMessage($"missing field: container")};   
         }
         
         internal TaskErrorResult InvalidTask(string error) {
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = TaskError(error)};
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = InvalidTaskMessage(error)};
         }
 
         internal bool ValidReferences(List<References> references, out TaskErrorResult error) {
@@ -52,11 +52,11 @@ namespace Friflo.Json.Flow.Sync
             }
             foreach (var reference in references) {
                 if (reference.selector == null) {
-                    error = new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = TaskError("missing reference selector")};
+                    error = new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = InvalidTaskMessage("missing reference selector")};
                     return false;
                 }
                 if (reference.container == null) {
-                    error =  new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = TaskError("missing reference container")};
+                    error =  new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = InvalidTaskMessage("missing reference container")};
                     return false;
                 }
                 var subReferences = reference.references;

@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Sync
             if (container == null)
                 return MissingContainer();
             if (reads == null)
-                return MissingField("reads");
+                return MissingField(nameof(reads));
             var result = new ReadEntitiesListResult {
                 reads = new List<ReadEntitiesResult>(reads.Count)
             };
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Sync
             var combinedRead = new ReadEntities { ids = new HashSet<string>() };
             foreach (var read in reads) {
                 if (read.ids == null)
-                    return MissingField("ids");
+                    return MissingField(nameof(read.ids));
                 foreach (var id in read.ids) {
                     if (id == null)
                         return InvalidTask("elements in ids must not be null");

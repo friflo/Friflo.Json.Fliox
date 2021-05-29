@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Sync
             if (container == null)
                 return MissingContainer();
             if (patches == null)
-                return MissingField("patches");
+                return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.PatchEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {

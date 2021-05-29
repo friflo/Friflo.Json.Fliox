@@ -23,9 +23,9 @@ namespace Friflo.Json.Flow.Sync
             if (container == null)
                 return MissingContainer();
             if (filter == null)
-                return MissingField("filter");
+                return MissingField(nameof(filter));
             if (filterLinq == null)
-                return MissingField("filterLinq");
+                return MissingField(nameof(filterLinq));
             if (!ValidReferences(references, out var error))
                 return error;
             var entityContainer = database.GetOrCreateContainer(container);
