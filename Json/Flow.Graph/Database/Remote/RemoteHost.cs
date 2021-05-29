@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     ObjectReader reader = mapper.reader;
                     var syncRequest = reader.Read<SyncRequest>(jsonSyncRequest);
                     if (reader.Error.ErrSet)
-                        return SyncJsonResult.CreateSyncError(syncContext, reader.Error.msg.ToString());
+                        return SyncJsonResult.CreateSyncError(syncContext, reader.Error.msg.ToString(), SyncStatusType.Error);
                     SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 return new SyncJsonResult(jsonResponse, SyncStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = SyncError.ErrorFromException(e).ToString();
-                return SyncJsonResult.CreateSyncError(syncContext, errorMsg);
+                return SyncJsonResult.CreateSyncError(syncContext, errorMsg, SyncStatusType.Exception);
             }
         }
     }
@@ -69,12 +69,12 @@ namespace Friflo.Json.Flow.Database.Remote
             this.statusType  = statusType;
         }
         
-        public static SyncJsonResult CreateSyncError(SyncContext syncContext, string message) {
+        public static SyncJsonResult CreateSyncError(SyncContext syncContext, string message, SyncStatusType type) {
             var syncError = new SyncError {message = message};
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 var body = mapper.Write(syncError);
-                return new SyncJsonResult(body, SyncStatusType.Error);
+                return new SyncJsonResult(body, type);
             }
         }
     }

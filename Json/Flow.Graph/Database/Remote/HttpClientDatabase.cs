@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var error = SyncError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return SyncJsonResult.CreateSyncError(syncContext, error.ToString());
+                return SyncJsonResult.CreateSyncError(syncContext, error.ToString(), SyncStatusType.Exception);
             }
         }
     }
