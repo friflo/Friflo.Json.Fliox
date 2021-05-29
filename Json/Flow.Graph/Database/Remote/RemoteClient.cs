@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 mapper.WriteNullMembers = false;
                 var jsonRequest = mapper.Write(syncRequest);
                 var result = await ExecuteSyncJson(jsonRequest, syncContext).ConfigureAwait(false);
-                if (result.success) {
+                if (result.statusType == SyncStatusType.None) {
                     var response = mapper.Read<SyncResponse>(result.body);
                     return response;
                 }

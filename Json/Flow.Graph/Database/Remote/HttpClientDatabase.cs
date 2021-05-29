@@ -32,8 +32,13 @@ namespace Friflo.Json.Flow.Database.Remote
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var body = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var success = httpResponse.StatusCode == HttpStatusCode.OK;
-                return new SyncJsonResult(body, success);
+                SyncStatusType statusType;
+                switch (httpResponse.StatusCode) {
+                    case HttpStatusCode.OK:         statusType = SyncStatusType.None;       break; 
+                    case HttpStatusCode.BadRequest: statusType = SyncStatusType.Error;      break;
+                    default:                        statusType = SyncStatusType.Exception;  break;
+                }
+                return new SyncJsonResult(body, statusType);
             }
             catch (HttpRequestException e) {
                 var error = SyncError.ErrorFromException(e);
