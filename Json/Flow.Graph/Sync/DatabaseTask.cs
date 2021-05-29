@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
@@ -30,6 +32,34 @@ namespace Friflo.Json.Flow.Sync
         
         internal TaskErrorResult MissingContainer() {
             return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - missing field: container"};   
+        }
+        
+        internal TaskErrorResult InvalidTask(string error) {
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - {error}"};   
+        }
+
+        internal bool ValidReferences(List<References> references, out TaskErrorResult error) {
+            if (references == null) {
+                error = null;
+                return true;
+            }
+            foreach (var reference in references) {
+                if (reference.selector == null) {
+                    error = new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - missing reference selector"};
+                    return false;
+                }
+                if (reference.container == null) {
+                    error =  new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = $"invalid task: {TaskType} - missing reference container"};
+                    return false;
+                }
+                var subReferences = reference.references;
+                if (subReferences != null) {
+                    if (!ValidReferences(subReferences, out error))
+                        return false;
+                }
+            }
+            error = null;
+            return true;
         }
     }
     

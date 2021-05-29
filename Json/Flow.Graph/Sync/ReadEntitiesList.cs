@@ -28,6 +28,12 @@ namespace Friflo.Json.Flow.Sync
             foreach (var read in reads) {
                 if (read.ids == null)
                     return MissingField("ids");
+                foreach (var id in read.ids) {
+                    if (id == null)
+                        return InvalidTask("elements in ids must not be null");
+                }
+                if (!ValidReferences(read.references, out var error))
+                    return error;
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
