@@ -6,7 +6,7 @@
         <LangVersion>7.3</LangVersion>
         <Title>friflo Json.EntityGraph</Title>
         <Authors>Ullrich Praetz</Authors>
-        <Description>Json.Flow.Graph is an Entity Graph Mapper (EGM) used to map objects represented as .NET types to entities in a NoSQL database or records in a relational database.
+        <Description>Json.Flow.Graph is an Entity/Graph-Mapper - E/G-M used to map objects represented as .NET types to entities in a NoSQL database or records in a relational database.
 The EGM strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping (ORM) by relaxing constraints.
 This enables simple and performant database adapters for various database types.
 Flow.Graph provides a clear &amp; compact API. It is trimmed towards performance by maximizing CPU utilization and minimizing memory footprint.
