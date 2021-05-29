@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Database.Remote
             Get();
         }
         
-        internal static TypeStore Get() {
+        private static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
                 _singleton.GetTypeMapper(typeof(SyncRequest));
@@ -28,6 +28,11 @@ namespace Friflo.Json.Flow.Database.Remote
                 _singleton.GetTypeMapper(typeof(SyncError));
             }
             return _singleton;
+        }
+        
+        internal static ObjectMapper CreateObjectMapper() {
+            var mapper = new ObjectMapper(Get());
+            return mapper;
         }
     }
     

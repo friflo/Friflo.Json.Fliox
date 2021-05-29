@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Database
             JsonPatcher      = new SharedPool<JsonPatcher>   (() => new JsonPatcher());
             ScalarSelector   = new SharedPool<ScalarSelector>(() => new ScalarSelector());
             JsonEvaluator    = new SharedPool<JsonEvaluator> (() => new JsonEvaluator());
-            ObjectMapper     = new SharedPool<ObjectMapper>  (() => new ObjectMapper(SyncTypeStore.Get()));
+            ObjectMapper     = new SharedPool<ObjectMapper>  (SyncTypeStore.CreateObjectMapper);
         }
         
         internal Pools(Pools sharedPools) {

@@ -69,8 +69,8 @@ namespace Friflo.Json.Flow.Graph
             var typeStore = new TypeStore();
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            var errorHandler = new JsonReadError();
-            var jsonMapper = new ObjectMapper(typeStore, errorHandler) {
+            // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
+            var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
                 TracerContext = this
             };
             _intern = new StoreIntern(typeStore, database, jsonMapper);
@@ -316,13 +316,6 @@ namespace Friflo.Json.Flow.Graph
     {
         public static EntityStore Store(this ITracerContext store) {
             return (EntityStore)store;
-        }
-    }
-    
-    internal class JsonReadError : IErrorHandler
-    {
-        /// throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-        public void HandleError(int pos, ref Bytes message) {
         }
     }
 }
