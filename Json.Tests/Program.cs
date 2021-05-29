@@ -9,8 +9,6 @@ using Friflo.Json.Flow.Database.Remote;
 
 namespace Friflo.Json.Tests
 {
-    // [Creating Modern And Helpful Command Line Utilities With System.CommandLine - .NET Core Tutorials]
-    // https://dotnetcoretutorials.com/2021/01/16/creating-modern-and-helpful-command-line-utilities-with-system-commandline/
     static class Program
     {
         enum Module
@@ -19,15 +17,17 @@ namespace Friflo.Json.Tests
         }
         
         // run GraphServer via one of the following methods:
-        // > dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
-        // > dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer   (requires Debug build)
-        // VSCode        > Run > GraphServer
-        // Rider         > Run > GraphServer
-        // Visual Studio > Debug > GraphServer
+        //   dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
+        //   dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer   (requires Debug build)
+        //   VSCode        > Run > GraphServer
+        //   Rider         > Run > GraphServer
+        //   Visual Studio > Debug > GraphServer
         public static void Main(string[] args)
         {
-            Console.WriteLine($"Friflo.Json.Tests directory: {Directory.GetCurrentDirectory()}");
+            Console.WriteLine($"Friflo.Json.Tests - current directory: {Directory.GetCurrentDirectory()}");
 
+            // [Creating Modern And Helpful Command Line Utilities With System.CommandLine - .NET Core Tutorials]
+            // https://dotnetcoretutorials.com/2021/01/16/creating-modern-and-helpful-command-line-utilities-with-system-commandline/
             var moduleOpt = new Option<Module>("--module",  "the module inside Friflo.Json.Tests") {IsRequired = true};
 
             var rootCommand = new RootCommand {

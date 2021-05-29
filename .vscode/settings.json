@@ -4,5 +4,8 @@
     },
     "cSpell.words": [
         "SIMD"
+    ],
+    "cSpell.enableFiletypes": [
+        "http"
     ]
 }

@@ -1,6 +1,8 @@
 
-# use with: [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
-# example requests bellow send to GraphServer in ./Program.cs 
+# Example requests bellow send to GraphServer in ./Program.cs 
+#
+# Hint:
+# use with [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 ### read entities by their ids
 POST http://localhost:8081/ HTTP/1.1
