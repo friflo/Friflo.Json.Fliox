@@ -27,7 +27,10 @@ namespace Friflo.Json.Flow.Sync
                 using (var pooledPatcher = syncContext.pools.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooledPatcher.instance;
                     foreach (var entity in entities) {
-                        entity.Value.SetJson(patcher.Copy(entity.Value.Json, true));
+                        var value = entity.Value;
+                        if (value.Json == null)
+                            return InvalidTask("value of entities key/value elements not be null");
+                        value.SetJson(patcher.Copy(value.Json, true));
                     }
                 }
             }
