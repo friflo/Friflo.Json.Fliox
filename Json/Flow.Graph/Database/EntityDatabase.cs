@@ -69,7 +69,19 @@ namespace Friflo.Json.Flow.Database
                 tasks           = new List<TaskResult>(syncRequest.tasks.Count),
                 results         = new Dictionary<string, ContainerEntities>()
             };
+            int index = -1;
             foreach (var task in syncRequest.tasks) {
+                index++;
+                if (task == null) {
+                    var taskResult = new TaskErrorResult{
+                        type        = TaskErrorResultType.InvalidTask,
+                        message     = $"element must not be null. tasks[{index}]",
+                    };
+                    response.tasks.Add(taskResult);
+                    continue;
+                }
+                task.index = index;
+                    
                 try {
                     var result = await task.Execute(this, response, syncContext).ConfigureAwait(false);
                     response.tasks.Add(result);
