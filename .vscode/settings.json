@@ -3,7 +3,9 @@
 		"**/*.meta": true
     },
     "cSpell.words": [
-        "SIMD"
+        "Linq",
+        "SIMD",
+        "netsh"
     ],
     "cSpell.enableFiletypes": [
         "http"
