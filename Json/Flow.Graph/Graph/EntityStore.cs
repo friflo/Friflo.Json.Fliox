@@ -214,11 +214,12 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
-            SyncResult syncResult;
+            SyncResult  syncResult;
+            SyncError   error = response.error;
             try {
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;
-                if (response.error == null) {
+                if (error == null) {
                     response.AssertResponse(syncRequest);
                     syncError = null;
                     containerResults = response.results;
@@ -229,7 +230,7 @@ namespace Friflo.Json.Flow.Graph
                     SetErrors(response);
                 } else {
                     syncError = new TaskErrorResult {
-                        message = response.error.message,
+                        message = error.message,
                         type    = TaskErrorResultType.SyncError
                     };
                     containerResults = new Dictionary<string, ContainerEntities>();
@@ -300,7 +301,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (SyncTask task in _intern.sync.appTasks) {
                     task.AddFailedTask(failed);
                 }
-                syncResult = new SyncResult(_intern.sync.appTasks, failed, response.error);
+                syncResult = new SyncResult(_intern.sync.appTasks, failed, error);
                 // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
