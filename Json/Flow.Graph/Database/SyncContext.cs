@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Database
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> dont throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        ObjectPool<JsonValidator>   JsonValidator   { get; }
+        ObjectPool<EntityValidator> EntityValidator   { get; }
         
         void                        AssertNoLeaks ();
     }
@@ -45,33 +45,33 @@ namespace Friflo.Json.Flow.Database
         public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
         public ObjectPool<JsonEvaluator>    JsonEvaluator   { get; }
         public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
-        public ObjectPool<JsonValidator>    JsonValidator   { get; }
+        public ObjectPool<EntityValidator>  EntityValidator   { get; }
         
         public   static readonly    Pools   SharedPools = new Pools();
         
         // constructor present for code navigation
         private Pools() {
-            JsonPatcher      = new SharedPool<JsonPatcher>   (() => new JsonPatcher());
-            ScalarSelector   = new SharedPool<ScalarSelector>(() => new ScalarSelector());
-            JsonEvaluator    = new SharedPool<JsonEvaluator> (() => new JsonEvaluator());
-            ObjectMapper     = new SharedPool<ObjectMapper>  (SyncTypeStore.CreateObjectMapper);
-            JsonValidator    = new SharedPool<JsonValidator> (() => new JsonValidator());
+            JsonPatcher      = new SharedPool<JsonPatcher>      (() => new JsonPatcher());
+            ScalarSelector   = new SharedPool<ScalarSelector>   (() => new ScalarSelector());
+            JsonEvaluator    = new SharedPool<JsonEvaluator>    (() => new JsonEvaluator());
+            ObjectMapper     = new SharedPool<ObjectMapper>     (SyncTypeStore.CreateObjectMapper);
+            EntityValidator  = new SharedPool<EntityValidator>  (() => new EntityValidator());
         }
         
         internal Pools(Pools sharedPools) {
-            JsonPatcher      = new LocalPool<JsonPatcher>    (sharedPools.JsonPatcher,      "JsonPatcher");
-            ScalarSelector   = new LocalPool<ScalarSelector> (sharedPools.ScalarSelector,   "ScalarSelector");
-            JsonEvaluator    = new LocalPool<JsonEvaluator>  (sharedPools.JsonEvaluator,    "JsonEvaluator");
-            ObjectMapper     = new LocalPool<ObjectMapper>   (sharedPools.ObjectMapper,     "ObjectMapper");
-            JsonValidator    = new LocalPool<JsonValidator>  (sharedPools.JsonValidator,    "JsonValidator");
+            JsonPatcher      = new LocalPool<JsonPatcher>       (sharedPools.JsonPatcher,      "JsonPatcher");
+            ScalarSelector   = new LocalPool<ScalarSelector>    (sharedPools.ScalarSelector,   "ScalarSelector");
+            JsonEvaluator    = new LocalPool<JsonEvaluator>     (sharedPools.JsonEvaluator,    "JsonEvaluator");
+            ObjectMapper     = new LocalPool<ObjectMapper>      (sharedPools.ObjectMapper,     "ObjectMapper");
+            EntityValidator  = new LocalPool<EntityValidator>   (sharedPools.EntityValidator,  "EntityValidator");
         }
 
         public void Dispose() {
-            JsonPatcher.Dispose();
-            ScalarSelector.Dispose();
-            JsonEvaluator.Dispose();
-            ObjectMapper.Dispose();
-            JsonValidator.Dispose();
+            JsonPatcher.    Dispose();
+            ScalarSelector. Dispose();
+            JsonEvaluator.  Dispose();
+            ObjectMapper.   Dispose();
+            EntityValidator.Dispose();
         }
         
         public void AssertNoLeaks() {
@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database
             ScalarSelector. AssertNoLeaks();
             JsonEvaluator.  AssertNoLeaks();
             ObjectMapper.   AssertNoLeaks();
-            JsonValidator.  AssertNoLeaks();
+            EntityValidator.AssertNoLeaks();
         }
     }
 }

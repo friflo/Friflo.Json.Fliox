@@ -4,14 +4,14 @@
 using System;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Flow.Transform
+namespace Friflo.Json.Flow.Database
 {
-    public class JsonValidator : IDisposable
+    public class EntityValidator : IDisposable
     {
         private             Bytes           jsonBytes = new Bytes(128);
         private             JsonParser      parser;
         
-        public bool IsValidJson(string json, out string error) {
+        public bool IsValidEntity(string json, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);

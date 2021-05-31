@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Sync
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
         public void ValidateEntities(string container, SyncContext syncContext) {
-            using (var pooledValidator = syncContext.pools.JsonValidator.Get()) {
+            using (var pooledValidator = syncContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Sync
                         continue;
                     }
                     var json = entity.Json;
-                    if (json != null && !validator.ValidJson(json, out string error)) {
+                    if (json != null && !validator.IsValidEntity(json, out string error)) {
                         var entityError = new EntityError {
                             type        = EntityErrorType.ParseError,
                             message     = error,
