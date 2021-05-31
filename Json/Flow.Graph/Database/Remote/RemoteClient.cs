@@ -63,6 +63,16 @@ namespace Friflo.Json.Flow.Database.Remote
                     var response = reader.Read<SyncResponse>(result.body);
                     if (reader.Error.ErrSet)
                         return new SyncResponse {error = new SyncError{message = reader.Error.msg.ToString()}};
+                    if (response.results != null) {
+                        // At this point the given jsonSyncRequest is valid JSON.
+                        // => All entities in response.results have either a valid JSON value or an error. 
+                        foreach (var containerEntry in response.results) {
+                            var container = containerEntry.Value;
+                            foreach (var entity in container.entities) {
+                                entity.Value.validated = true;
+                            }
+                        }
+                    }
                     return response;
                 }
                 var syncError = reader.Read<SyncError>(result.body);

@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Database
             var entities = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
                 payloads.TryGetValue(key, out var payload);
-                var entry = new EntityValue(payload);
+                var entry = new EntityValue(payload) {validated = true};
                 entities.TryAdd(key, entry);
             }
             var result = new ReadEntitiesResult{entities = entities};

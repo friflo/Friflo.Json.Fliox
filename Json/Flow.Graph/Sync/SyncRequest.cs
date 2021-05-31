@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -64,6 +65,27 @@ namespace Friflo.Json.Flow.Sync
         internal void AddEntities(Dictionary<string, EntityValue> add) {
             foreach (var entity in add) {
                 entities.TryAdd(entity.Key, entity.Value);
+            }
+        }
+        
+        internal static void ValidateEntities(Dictionary<string, EntityValue> entities, SyncContext syncContext) {
+            using (var pooledValidator = syncContext.pools.JsonValidator.Get()) {
+                var validator = pooledValidator.instance;
+                foreach (var entityEntry in entities) {
+                    var entity = entityEntry.Value;
+                    if (entity.Error != null || entity.validated) {
+                        continue;
+                    }
+                    var json = entity.Json;
+                    if (json != null && !validator.ValidJson(json, out string error)) {
+                        var entityError = new EntityError {
+                            type    = EntityErrorType.ParseError,
+                            message = error
+                        };
+                        entity.SetError(entityError);
+                    }
+                    entity.validated = true;
+                }
             }
         }
     }
