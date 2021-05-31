@@ -81,6 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var articles = testDatabase.GetTestContainer("Article");
             articles.readErrors.Add(Article2JsonError, @"{""invalidJson"" XXX}");
             articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);
+            articles.readErrors.Add(ArticleInvalidJson, @"{""invalidJson"" YYY}");
             
             _customers = testDatabase.GetTestContainer("Customer");
             _producers = testDatabase.GetTestContainer("Producer");
@@ -113,7 +114,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
         private const string Article1ReadError      = "article-1";
-        private const string Article2JsonError      = "article-2"; 
+        private const string Article2JsonError      = "article-2";
+        private const string ArticleInvalidJson     = "article-invalidJson";
      // private const string ReadEntityError        = "read-entity-error"; 
         private const string DeleteEntityError      = "delete-entity-error";
         private const string CreateEntityError      = "create-entity-error";
@@ -295,6 +297,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var readTask2       = store.articles.Read(); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId);
+            
+            var readTask3       = store.articles.Read();
+            var invalidJson     = readTask3.Find(ArticleInvalidJson);
 
             // test throwing exception in case of task or entity errors
             try {
@@ -302,8 +307,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
-                AreEqual(4, sre.failed.Count);
-                const string expect = @"Sync() failed with task errors. Count: 4
+                AreEqual(5, sre.failed.Count);
+                const string expect = @"Sync() failed with task errors. Count: 5
 | ReadTask<Order> #ids: 1 -> .items[*].article - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
@@ -314,7 +319,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 |   ReadError: Article 'article-1', simulated read entity error
 | FindRange<Article> #ids: 2 - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
-|   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+|   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+| Find<Article> id: article-invalidJson - Task failed by entity errors. Count: 1
+|   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16";
                 AreEqual(expect, sre.Message);
             }
             
@@ -361,6 +368,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsTrue(readTask2.Success);
             IsTrue(galaxy2.Success);
             AreEqual("Galaxy S10", galaxy2.Result.name); 
+            
+            IsFalse(invalidJson.Success);
+            AreEqual(@"Task failed by entity errors. Count: 1
+| ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString()); 
         }
 
         private static async Task AssertTaskExceptions(PocStore store) {
