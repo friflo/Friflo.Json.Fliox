@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
-using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
@@ -68,21 +68,10 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            var entities    = new Dictionary<string, EntityValue>();
-            var jsonFilter  = new JsonFilter(command.filter); // filter can be reused
-            using (var pooledEvaluator = syncContext.pools.JsonEvaluator.Get()) {
-                JsonEvaluator evaluator = pooledEvaluator.instance;
-                foreach (var payloadPair in payloads) {
-                    var payload = payloadPair.Value;
-                    if (evaluator.Filter(payload, jsonFilter)) {
-                        var entry = new EntityValue(payload);
-                        entities.Add(payloadPair.Key, entry);
-                    }
-                }
-            }
-            var result = new QueryEntitiesResult {entities = entities};
-            return Task.FromResult(result);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+            var ids     = payloads.Keys.ToHashSet();
+            var result  = await FilterEntities(command, ids, syncContext);
+            return result;
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {

@@ -131,6 +131,30 @@ namespace Friflo.Json.Flow.Database
             }
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
+        
+        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<string> ids, SyncContext syncContext) {
+            var readIds         = new ReadEntities {ids = ids};
+            var readEntities    = await ReadEntities(readIds, syncContext).ConfigureAwait(false);
+            if (readEntities.Error != null) {
+                return new QueryEntitiesResult {Error = readEntities.Error};
+            }
+            readEntities.ValidateEntities(command.container, syncContext); // todo is redundant - entities are checked bellow by Filter()
+            
+            var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
+            var result          = new Dictionary<string, EntityValue>();
+            using (var pooledEvaluator = syncContext.pools.JsonEvaluator.Get()) {
+                JsonEvaluator evaluator = pooledEvaluator.instance;
+                foreach (var entityPair in readEntities.entities) {
+                    var key     = entityPair.Key;
+                    var payload = entityPair.Value.Json;
+                    if (evaluator.Filter(payload, jsonFilter)) {
+                        var entry = new EntityValue(payload);
+                        result.Add(key, entry);
+                    }
+                }
+            }
+            return new QueryEntitiesResult{entities = result};
+        }
 
         public async Task<ReadReferencesResult> ReadReferences(
                 List<References>                    references,
@@ -194,6 +218,7 @@ namespace Friflo.Json.Flow.Database
                     if (refEntities.Error != null) {
                         return new ReadReferencesResult {error = refEntities.Error};
                     }
+                    refEntities.ValidateEntities(container, syncContext);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);
                     var subReferences = reference.references;  
