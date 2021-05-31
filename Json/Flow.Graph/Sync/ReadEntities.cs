@@ -17,16 +17,20 @@ namespace Friflo.Json.Flow.Sync
     {
         public  List<ReferencesResult>          references;
         public  CommandError                    Error { get; set; }
+        [Fri.Ignore]
+        public  bool                            entitiesValidated;
 
         [Fri.Ignore]
         public  Dictionary<string,EntityValue>  entities;
         
         internal void ValidateEntities(string container, SyncContext syncContext) {
+            if (entitiesValidated)
+                return;
             using (var pooledValidator = syncContext.pools.JsonValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;
-                    if (entity.validated || entity.Error != null) {
+                    if (entity.Error != null) {
                         continue;
                     }
                     var json = entity.Json;
@@ -39,8 +43,8 @@ namespace Friflo.Json.Flow.Sync
                         };
                         entity.SetError(entityError);
                     }
-                    entity.validated = true;
                 }
+                entitiesValidated = true;
             }
         }
     }
