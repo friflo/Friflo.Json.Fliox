@@ -1,9 +1,23 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+using System.Collections.Generic;
+
+// ReSharper disable CheckNamespace
+namespace System.Collections.Generic
+{
+    public static class Helper
+    {
+        public static HashSet<T> CreateHashSet<T>(int capacity) {
+#if UNITY_5_3_OR_NEWER
+            return new HashSet<T>();
+#else
+            return new HashSet<T>(capacity);
+#endif
+        }
+    }
+}
 
 #if UNITY_5_3_OR_NEWER
-
-using System.Collections.Generic;
 
 namespace System.Collections.Generic
 {
