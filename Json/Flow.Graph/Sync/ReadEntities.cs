@@ -17,15 +17,25 @@ namespace Friflo.Json.Flow.Sync
     {
         public  List<ReferencesResult>          references;
         public  CommandError                    Error { get; set; }
-        [Fri.Ignore]
-        public  bool                            entitiesValidated;
 
         [Fri.Ignore]
         public  Dictionary<string,EntityValue>  entities;
         
-        internal void ValidateEntities(string container, SyncContext syncContext) {
-            if (entitiesValidated)
-                return;
+        /// <summary>
+        /// Validate all <see cref="EntityValue.value"/>'s in the result set.
+        /// Validation is required for all <see cref="EntityContainer"/> implementations which cannot ensure that the
+        /// value is valid JSON.
+        /// 
+        /// E.g. <see cref="FileContainer"/> cannot ensure this, as the file content can be written
+        /// or modified from an extern processes - for example by manually changing its JSON content with an editor.
+        /// 
+        /// A <see cref="MemoryContainer"/> does not require validation as its key/values are always written via
+        /// Database/Graph library - which generate valid JSON.
+        /// 
+        /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
+        /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB 
+        /// </summary>
+        public void ValidateEntities(string container, SyncContext syncContext) {
             using (var pooledValidator = syncContext.pools.JsonValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
@@ -44,7 +54,6 @@ namespace Friflo.Json.Flow.Sync
                         entity.SetError(entityError);
                     }
                 }
-                entitiesValidated = true;
             }
         }
     }

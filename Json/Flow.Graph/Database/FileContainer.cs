@@ -97,7 +97,9 @@ namespace Friflo.Json.Flow.Database
                 }
                 entities.TryAdd(key, entry);
             }
-            return new ReadEntitiesResult{entities = entities};
+            var result = new ReadEntitiesResult{entities = entities};
+            result.ValidateEntities(name, syncContext);
+            return result;
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {

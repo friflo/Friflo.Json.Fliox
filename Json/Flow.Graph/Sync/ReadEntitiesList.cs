@@ -43,7 +43,6 @@ namespace Friflo.Json.Flow.Sync
             if (combinedResult.Error != null) {
                 return TaskError(combinedResult.Error);
             }
-            combinedResult.ValidateEntities(container, syncContext);
             var combinedEntities = combinedResult.entities;
             combinedResult.entities = null;
             var containerResult = response.GetContainerResult(container);

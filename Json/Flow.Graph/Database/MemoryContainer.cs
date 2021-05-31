@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Database
                 var entry = new EntityValue(payload);
                 entities.TryAdd(key, entry);
             }
-            var result = new ReadEntitiesResult{entities = entities, entitiesValidated = true};
+            var result = new ReadEntitiesResult{entities = entities};
             return Task.FromResult(result);
         }
         

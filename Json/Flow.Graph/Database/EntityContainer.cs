@@ -138,7 +138,6 @@ namespace Friflo.Json.Flow.Database
             if (readEntities.Error != null) {
                 return new QueryEntitiesResult {Error = readEntities.Error};
             }
-            readEntities.ValidateEntities(command.container, syncContext); // todo is redundant - entities are checked bellow by Filter()
             
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
@@ -218,7 +217,6 @@ namespace Friflo.Json.Flow.Database
                     if (refEntities.Error != null) {
                         return new ReadReferencesResult {error = refEntities.Error};
                     }
-                    refEntities.ValidateEntities(container, syncContext);
                     var containerResult = syncResponse.GetContainerResult(reference.container);
                     containerResult.AddEntities(refEntities.entities);
                     var subReferences = reference.references;  
