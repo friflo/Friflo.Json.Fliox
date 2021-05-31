@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Database
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (parser.key.IsEqualBytes(ref idKey) && !parser.value.IsEqualString(id)) {
-                            error = $"Invalid entity id. expect: {id}, was: {parser.value.ToString()}";
+                            error = $"entity id does not match key. id: {parser.value.ToString()}";
                             return false;
                         }
                         break;

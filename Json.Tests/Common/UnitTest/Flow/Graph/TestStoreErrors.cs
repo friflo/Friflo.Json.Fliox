@@ -82,6 +82,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.readErrors.Add(Article2JsonError, @"{""invalidJson"" XXX}");
             articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);
             articles.readErrors.Add(ArticleInvalidJson, @"{""invalidJson"" YYY}");
+            articles.readErrors.Add(ArticleIdDontMatch, @"{""id"": ""article-unexpected-id""");
+            
             
             _customers = testDatabase.GetTestContainer("Customer");
             _producers = testDatabase.GetTestContainer("Producer");
@@ -116,6 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string Article1ReadError      = "article-1";
         private const string Article2JsonError      = "article-2";
         private const string ArticleInvalidJson     = "article-invalidJson";
+        private const string ArticleIdDontMatch     = "article-idDontMatch";
      // private const string ReadEntityError        = "read-entity-error"; 
         private const string DeleteEntityError      = "delete-entity-error";
         private const string CreateEntityError      = "create-entity-error";
@@ -300,6 +303,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var readTask3       = store.articles.Read();
             var invalidJson     = readTask3.Find(ArticleInvalidJson);
+            var idDontMatch     = readTask3.Find(ArticleIdDontMatch);
 
             // test throwing exception in case of task or entity errors
             try {
@@ -307,8 +311,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
-                AreEqual(5, sre.failed.Count);
-                const string expect = @"Sync() failed with task errors. Count: 5
+                AreEqual(6, sre.failed.Count);
+                const string expect = @"Sync() failed with task errors. Count: 6
 | ReadTask<Order> #ids: 1 -> .items[*].article - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
@@ -321,7 +325,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | Find<Article> id: article-invalidJson - Task failed by entity errors. Count: 1
-|   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16";
+|   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
+| Find<Article> id: article-idDontMatch - Task failed by entity errors. Count: 1
+|   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
             
@@ -371,7 +377,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             IsFalse(invalidJson.Success);
             AreEqual(@"Task failed by entity errors. Count: 1
-| ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString()); 
+| ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString());
+            
+            IsFalse(idDontMatch.Success);
+            AreEqual(@"Task failed by entity errors. Count: 1
+| ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id", idDontMatch.Error.ToString());
+            
         }
 
         private static async Task AssertTaskExceptions(PocStore store) {
