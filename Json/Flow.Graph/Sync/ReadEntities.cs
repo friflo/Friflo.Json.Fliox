@@ -43,8 +43,9 @@ namespace Friflo.Json.Flow.Sync
                     if (entity.Error != null) {
                         continue;
                     }
-                    var json = entity.Json;
-                    if (json != null && !validator.IsValidEntity(json, out string error)) {
+                    var id      = entityEntry.Key;
+                    var json    = entity.Json;
+                    if (json != null && !validator.IsValidEntity(json, id, out string error)) {
                         var entityError = new EntityError {
                             type        = EntityErrorType.ParseError,
                             message     = error,
