@@ -232,7 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(1,                 ordersAnyAmountLower2.Results.Count);
             NotNull(ordersAnyAmountLower2["order-1"]);
             
-            AreEqual(2,                 ordersAllAmountGreater0.Results.Count); // todo expect 1
+            AreEqual(2,                 ordersAllAmountGreater0.Results.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
