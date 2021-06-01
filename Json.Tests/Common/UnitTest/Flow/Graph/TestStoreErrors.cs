@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var orders2WithTaskError    = orders.Query(o => o.customer.id == ReadTaskError);
             var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer);
 
-            var orderCustomer = orders.MemberRef(o => o.customer);
+            var orderCustomer = orders.RefPath(o => o.customer);
             ReadRefTask<Customer> customer  = readOrders.ReadRefPath(orderCustomer);
             ReadRefTask<Customer> customer2 = readOrders.ReadRefPath(orderCustomer);
             AreSame(customer, customer2);
@@ -286,10 +286,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            var orderCustomer = orders.MemberRef(o => o.customer);
+            var orderCustomer = orders.RefPath(o => o.customer);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
-            var itemsArticle = orders.MemberRefs(o => o.items.Select(a => a.article));
+            var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
             AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
             

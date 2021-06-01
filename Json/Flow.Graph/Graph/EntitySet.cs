@@ -81,16 +81,6 @@ namespace Friflo.Json.Flow.Graph
 
         
         // --------------------------------------- public interface --------------------------------------- 
-        public RefPath<T, TRef> MemberRef<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
-            string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<T, TRef>(path);
-        }
-        
-        public RefsPath<T, TRef> MemberRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
-            string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<T, TRef>(path);
-        }
-        
         // --- Read
         public ReadTask<T> Read() {
             return sync.Read();
@@ -249,7 +239,17 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-
+        // --- create RefPath / RefsPath
+        public RefPath<T, TRef> RefPath<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefPath<T, TRef>(path);
+        }
+        
+        public RefsPath<T, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RefsPath<T, TRef>(path);
+        }
+        
         // ------------------------------------------- internals -------------------------------------------
         internal override void LogSetChangesInternal(LogTask logTask) {
             sync.LogSetChanges(peers, logTask);
