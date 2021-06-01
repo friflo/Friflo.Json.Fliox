@@ -157,14 +157,12 @@ namespace Friflo.Json.Flow.Database
             }
             return new QueryEntitiesResult{entities = result};
         }
-
-        public async Task<ReadReferencesResult> ReadReferences(
-                List<References>                    references,
-                Dictionary<string, EntityValue>     entities,
-                string                              container,
-                string                              selectorPath,
-                SyncResponse                        syncResponse,
-                SyncContext                         syncContext)
+        
+        private static List<ReferencesResult> GetReferences(
+            List<References>                    references,
+            Dictionary<string, EntityValue>     entities,
+            string                              container,
+            SyncContext                         syncContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");
@@ -207,6 +205,18 @@ namespace Friflo.Json.Flow.Database
                     }
                 }
             }
+            return referenceResults;
+        }
+
+        public async Task<ReadReferencesResult> ReadReferences(
+                List<References>                    references,
+                Dictionary<string, EntityValue>     entities,
+                string                              container,
+                string                              selectorPath,
+                SyncResponse                        syncResponse,
+                SyncContext                         syncContext)
+        {
+            var referenceResults = GetReferences(references, entities, container, syncContext);
             
             // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
