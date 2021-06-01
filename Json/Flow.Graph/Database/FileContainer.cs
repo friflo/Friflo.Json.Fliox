@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Database
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
             var ids     = GetIds(folder);
-            var result  = await FilterEntities(command, ids, syncContext);
+            var result  = await FilterEntities(command, ids, syncContext).ConfigureAwait(false);
             return result;
         }
 

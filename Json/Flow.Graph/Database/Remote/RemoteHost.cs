@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var result = await local.ExecuteSync(syncRequest, syncContext);
+            var result = await local.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             return result;
         }
 
