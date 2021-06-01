@@ -210,21 +210,21 @@ namespace Friflo.Json.Flow.Database
             // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
                 var reference       = references[n];
-                var refContainer    = database.GetOrCreateContainer(reference.container);
+                var refContName     = reference.container;
+                var refCont         = database.GetOrCreateContainer(refContName);
                 var referenceResult = referenceResults[n];
                 var ids = referenceResult.ids;
-                
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids.ToHashSet();
                 var readRefIds  = new ReadEntities {ids = refIdList};
-                var refEntities = await refContainer.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                 if (refEntities.Error != null) {
                     var message = $"failed reading references of '{container} -> {reference.selector}' - {refEntities.Error.message}";
                     var error = new CommandError{message = message};
                     return new ReadReferencesResult {error = error};
                 }
-                var containerResult = syncResponse.GetContainerResult(reference.container);
+                var containerResult = syncResponse.GetContainerResult(refContName);
                 containerResult.AddEntities(refEntities.entities);
                 var subReferences = reference.references;  
                 
@@ -234,7 +234,7 @@ namespace Friflo.Json.Flow.Database
                 foreach (var id in ids) {
                     subEntities.Add(id, refEntities.entities[id]);
                 }
-                var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse, syncContext).ConfigureAwait(false);
+                var refReferencesResult = await ReadReferences(subReferences, subEntities, refContName, syncResponse, syncContext).ConfigureAwait(false);
                 if (refReferencesResult.error != null) {
                     return refReferencesResult; // todo add error test
                 }
