@@ -176,6 +176,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2));
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
+            var orders2WithTaskError    = orders.Query(o => o.customer.id == ReadTaskError);
+            var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer);
 
             var orderCustomer = orders.MemberRef(o => o.customer);
             ReadRefTask<Customer> customer  = readOrders.ReadRefPath(orderCustomer);
@@ -206,16 +208,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var sync = await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);
-            AreEqual("tasks: 10, failed: 4", sync.ToString());
-            AreEqual(10, sync.tasks.Count);
-            AreEqual(4, sync.failed.Count);
-            const string msg = @"Sync() failed with task errors. Count: 4
+            AreEqual("tasks: 12, failed: 6", sync.ToString());
+            AreEqual(12, sync.tasks.Count);
+            AreEqual(6, sync.failed.Count);
+            const string msg = @"Sync() failed with task errors. Count: 6
 | QueryTask<Article> filter: (true) - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | QueryTask<Article> filter: (true) -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+| QueryTask<Order> filter: (.customer == 'read-task-error') - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
+| QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
 | Find<Order> id: order-2 - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
 | QueryTask<Article> filter: (true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
@@ -267,6 +271,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", readOrders2.      Error.ToString());
             AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2.           Error.ToString());
             AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
+            
+            IsFalse(orders2WithTaskError.Success);
+            IsFalse(order2CustomerError.Success);
+            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", orders2WithTaskError. Error.ToString());
+            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
         }
         
         private static async Task AssertReadTask(PocStore store) {

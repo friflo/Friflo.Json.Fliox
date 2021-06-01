@@ -41,7 +41,8 @@ namespace Friflo.Json.Flow.Sync
             if (references != null && references.Count > 0) {
                 queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response, syncContext).ConfigureAwait(false);
                 if (queryRefsResults.error != null) {
-                    return TaskError(queryRefsResults.error); // todo add error test
+                    // tested with "order-2" -> "read-task-error"
+                    return TaskError(queryRefsResults.error);
                 }
             }
             result.container    = container;
