@@ -258,6 +258,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.Create (new Article {id = "log-create-read-error",         name = "used for successful read"});
             await store.Sync();
             
+            var errorRefTask = new Customer{ id = "read-task-error" };
+            var order2 = new Order{id = "order-2", customer = errorRefTask};
+            orders.Create(order2);
+            
+            await store.Sync();
+            
             return store;
         }
 

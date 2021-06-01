@@ -101,9 +101,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal override void ReadEntitiesListResult(ReadEntitiesList taskList, TaskResult result, ContainerEntities readEntities) {
             if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
-                    var taskErrorInfo = new TaskErrorInfo(taskError);
-                    read.state.SetError(taskErrorInfo);
-                    SetFindTasksError(read, taskErrorInfo);
+                    SetReadTaskError(read, taskError);
                 }
                 return;
             }
@@ -124,8 +122,8 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
-                throw new NotImplementedException("add SetFindTasksError()");
-                // SetFindTasksError(read, new TaskErrorInfo(result.Error));
+                var taskError = DatabaseTask.TaskError(result.Error);
+                SetReadTaskError(read, taskError);
                 return;
             }
             // remove all requested peers from EntitySet which are not present in database
@@ -163,14 +161,17 @@ namespace Friflo.Json.Flow.Graph.Internal
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
                 read.state.SetError(entityErrorInfo);
-                // SetFindTasksError(read, entityErrorInfo); <- must not be called
+                // SetReadTaskError(read, entityErrorInfo); <- must not be called
                 return;
             }
             read.state.Synced = true;
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
 
-        private static void SetFindTasksError(ReadTask<T> read, TaskErrorInfo error) {
+        private static void SetReadTaskError(ReadTask<T> read, TaskErrorResult taskError) {
+            TaskErrorInfo error = new TaskErrorInfo(taskError);
+            read.state.SetError(error);
+            SetSubRefsError(read.refsTask.subRefs, error);
             foreach (var findTask in read.findTasks) {
                 findTask.findState.SetError(error);
             }
