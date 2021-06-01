@@ -213,30 +213,32 @@ namespace Friflo.Json.Flow.Database
                 var refContainer    = database.GetOrCreateContainer(reference.container);
                 var referenceResult = referenceResults[n];
                 var ids = referenceResult.ids;
-                if (ids.Count > 0) {
-                    var refIdList   = ids.ToHashSet();
-                    var readRefIds  = new ReadEntities {ids = refIdList};
-                    var refEntities = await refContainer.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
-                    if (refEntities.Error != null) {
-                        var message = $"failed reading references of '{container} -> {reference.selector}' - {refEntities.Error.message}";
-                        var error = new CommandError{message = message};
-                        return new ReadReferencesResult {error = error};
-                    }
-                    var containerResult = syncResponse.GetContainerResult(reference.container);
-                    containerResult.AddEntities(refEntities.entities);
-                    var subReferences = reference.references;  
-                    if (subReferences != null) {
-                        var subEntities = new Dictionary<string, EntityValue>(ids.Count);
-                        foreach (var id in ids) {
-                            subEntities.Add(id, refEntities.entities[id]);
-                        }
-                        var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse, syncContext).ConfigureAwait(false);
-                        if (refReferencesResult.error != null) {
-                            return refReferencesResult; // todo add error test
-                        }
-                        referenceResult.references = refReferencesResult.references;
-                    }
+                
+                if (ids.Count == 0)
+                    continue;
+                var refIdList   = ids.ToHashSet();
+                var readRefIds  = new ReadEntities {ids = refIdList};
+                var refEntities = await refContainer.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                if (refEntities.Error != null) {
+                    var message = $"failed reading references of '{container} -> {reference.selector}' - {refEntities.Error.message}";
+                    var error = new CommandError{message = message};
+                    return new ReadReferencesResult {error = error};
                 }
+                var containerResult = syncResponse.GetContainerResult(reference.container);
+                containerResult.AddEntities(refEntities.entities);
+                var subReferences = reference.references;  
+                
+                if (subReferences == null)
+                    continue;
+                var subEntities = new Dictionary<string, EntityValue>(ids.Count);
+                foreach (var id in ids) {
+                    subEntities.Add(id, refEntities.entities[id]);
+                }
+                var refReferencesResult = await ReadReferences(subReferences, subEntities, reference.container, syncResponse, syncContext).ConfigureAwait(false);
+                if (refReferencesResult.error != null) {
+                    return refReferencesResult; // todo add error test
+                }
+                referenceResult.references = refReferencesResult.references;
             }
             return new ReadReferencesResult {references = referenceResults};
         }
