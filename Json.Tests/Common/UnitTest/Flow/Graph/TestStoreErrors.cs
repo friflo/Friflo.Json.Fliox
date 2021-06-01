@@ -218,9 +218,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | QueryTask<Article> filter: (true) -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Order> filter: (.customer == 'read-task-error') - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
-| QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
-| Find<Order> id: order-2 - DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error
+| QueryTask<Order> filter: (.customer == 'read-task-error') - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
+| QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
+| Find<Order> id: order-2 - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
 | QueryTask<Article> filter: (true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
@@ -268,14 +268,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(readOrders2.Success);
             IsFalse(order2.Success);
             IsFalse(order2Customer.Success);
-            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", readOrders2.      Error.ToString());
-            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2.           Error.ToString());
-            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
+            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", readOrders2.      Error.ToString());
+            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2.           Error.ToString());
+            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
             
             IsFalse(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
-            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", orders2WithTaskError. Error.ToString());
-            AreEqual("DatabaseError - failed reading references of 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
+            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", orders2WithTaskError. Error.ToString());
+            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
         }
         
         private static async Task AssertReadTask(PocStore store) {

@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Sync
             containerResult.AddEntities(entities);
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
-                queryRefsResults = await entityContainer.ReadReferences(references, entities, container, response, syncContext).ConfigureAwait(false);
+                queryRefsResults = await entityContainer.ReadReferences(references, entities, container, "", response, syncContext).ConfigureAwait(false);
                 if (queryRefsResults.error != null) {
                     // tested with "order-2" -> "read-task-error"
                     return TaskError(queryRefsResults.error);

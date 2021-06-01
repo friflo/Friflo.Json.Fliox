@@ -162,6 +162,7 @@ namespace Friflo.Json.Flow.Database
                 List<References>                    references,
                 Dictionary<string, EntityValue>     entities,
                 string                              container,
+                string                              selectorPath,
                 SyncResponse                        syncResponse,
                 SyncContext                         syncContext)
         {
@@ -219,8 +220,9 @@ namespace Friflo.Json.Flow.Database
                 var refIdList   = ids.ToHashSet();
                 var readRefIds  = new ReadEntities {ids = refIdList};
                 var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                var subPath = $"{selectorPath} -> {reference.selector}";
                 if (refEntities.Error != null) {
-                    var message = $"failed reading references of '{container} -> {reference.selector}' - {refEntities.Error.message}";
+                    var message = $"read references failed: '{container}{subPath}' - {refEntities.Error.message}";
                     var error = new CommandError{message = message};
                     return new ReadReferencesResult {error = error};
                 }
@@ -234,7 +236,8 @@ namespace Friflo.Json.Flow.Database
                 foreach (var id in ids) {
                     subEntities.Add(id, refEntities.entities[id]);
                 }
-                var refReferencesResult = await ReadReferences(subReferences, subEntities, refContName, syncResponse, syncContext).ConfigureAwait(false);
+                var refReferencesResult =
+                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
                 if (refReferencesResult.error != null) {
                     return refReferencesResult; // todo add error test
                 }

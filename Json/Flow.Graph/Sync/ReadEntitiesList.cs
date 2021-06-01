@@ -53,12 +53,13 @@ namespace Friflo.Json.Flow.Sync
                     entities = new Dictionary<string, EntityValue>(read.ids.Count)
                 };
                 // distribute combinedEntities
+                var entities = readResult.entities;
                 foreach (var id in read.ids) {
-                    readResult.entities.Add(id, combinedEntities[id]);
+                    entities.Add(id, combinedEntities[id]);
                 }
                 var references = read.references;
                 if (references != null && references.Count > 0) {
-                    var readRefResults = await entityContainer.ReadReferences(references, readResult.entities, entityContainer.name, response, syncContext).ConfigureAwait(false);
+                    var readRefResults = await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
                     if (readRefResults.error == null) {
                         readResult.references = readRefResults.references;
                     } else {
