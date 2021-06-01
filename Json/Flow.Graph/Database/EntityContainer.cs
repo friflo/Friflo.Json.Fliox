@@ -190,19 +190,19 @@ namespace Friflo.Json.Flow.Database
                     if (entity.Error != null)
                         continue;
                     var         json    = entity.Json;
-                    if (json != null) {
-                        var selectorResults = selector.Select(json, select);
-                        if (selectorResults == null) {
-                            var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, selector.ErrorMessage);
-                            entity.SetError(error);
-                            continue;
-                        }
-                        for (int n = 0; n < references.Count; n++) {
-                            // selectorResults[n] contains Select() result of selectors[n] 
-                            var entityRefs = selectorResults[n].AsStrings();
-                            var referenceResult = referenceResults[n];
-                            referenceResult.ids.UnionWith(entityRefs);
-                        }
+                    if (json == null)
+                        continue;
+                    var selectorResults = selector.Select(json, select);
+                    if (selectorResults == null) {
+                        var error = new EntityError(EntityErrorType.ParseError, container, entityPair.Key, selector.ErrorMessage);
+                        entity.SetError(error);
+                        continue;
+                    }
+                    for (int n = 0; n < references.Count; n++) {
+                        // selectorResults[n] contains Select() result of selectors[n] 
+                        var entityRefs = selectorResults[n].AsStrings();
+                        var referenceResult = referenceResults[n];
+                        referenceResult.ids.UnionWith(entityRefs);
                     }
                 }
             }
