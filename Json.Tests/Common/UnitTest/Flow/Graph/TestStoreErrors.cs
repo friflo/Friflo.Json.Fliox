@@ -264,6 +264,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(readOrders2.Success);
             IsFalse(order2.Success);
             IsFalse(order2Customer.Success);
+            AreEqual("DatabaseError - simulated read task error", readOrders2.      Error.ToString());
+            AreEqual("DatabaseError - simulated read task error", order2.           Error.ToString());
+            AreEqual("DatabaseError - simulated read task error", order2Customer.   Error.ToString());
         }
         
         private static async Task AssertReadTask(PocStore store) {
