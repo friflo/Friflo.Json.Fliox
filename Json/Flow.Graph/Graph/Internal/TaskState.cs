@@ -38,6 +38,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             Synced = true;
         }
 
-        public override string ToString() => Synced ? Error.HasErrors ? $"synced - errors: {Error.TaskError.entityErrors.Count}" : "synced" : "not synced";
+        public override string ToString() => Synced ? Error.HasErrors ? $"synced with error" : "synced" : "not synced";
     }
 }
