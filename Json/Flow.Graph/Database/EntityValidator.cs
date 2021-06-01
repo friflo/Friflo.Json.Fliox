@@ -3,9 +3,16 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
+    /// <summary>
+    /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>
+    /// contains valid <see cref="ReadEntitiesResult.entities"/>.
+    /// Validation is required for <see cref="EntityDatabase"/> implementations which cannot ensure that the value of
+    /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.
+    /// </summary>
     public class EntityValidator : IDisposable
     {
         private             Bytes           jsonBytes = new Bytes(128);
