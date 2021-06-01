@@ -215,7 +215,7 @@ namespace Friflo.Json.Flow.Database
                     var readRefIds  = new ReadEntities {ids = refIdList};
                     var refEntities = await refContainer.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                     if (refEntities.Error != null) {
-                        var message = $"failed reading references of '{container}' - {refEntities.Error.message}";
+                        var message = $"failed reading references of '{container} -> {reference.selector}' - {refEntities.Error.message}";
                         var error = new CommandError{message = message};
                         return new ReadReferencesResult {error = error};
                     }
