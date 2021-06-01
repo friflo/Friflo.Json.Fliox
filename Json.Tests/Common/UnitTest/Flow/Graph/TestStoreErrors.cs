@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static TestContainer _customers;
         private static TestContainer _producers;
         
-        private static void AddSimulationErrors(TestDatabase testDatabase) {
+        public static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
             articles.readErrors.Add(Article2JsonError, @"{""invalidJson"" XXX}");
             articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);

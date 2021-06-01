@@ -6,6 +6,7 @@ using System.CommandLine.Invocation;
 using System.IO;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 
 namespace Friflo.Json.Tests
 {
@@ -41,7 +42,7 @@ namespace Friflo.Json.Tests
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.GraphServer:
-                        GraphServer(database);
+                        GraphServer(database, false);
                         break;
                 }
             });
@@ -60,10 +61,16 @@ namespace Friflo.Json.Tests
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphServer(string database) {
+        private static void GraphServer(string database, bool simulateErrors) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase = new FileDatabase(database);
-            var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8081/");
+            EntityDatabase localDatabase = fileDatabase;
+            if (simulateErrors) {
+                var testDatabase = new TestDatabase(fileDatabase);
+                TestStoreErrors.AddSimulationErrors(testDatabase);
+                localDatabase = testDatabase;
+            }
+            var hostDatabase = new HttpHostDatabase(localDatabase, "http://+:8081/");
             hostDatabase.Start();
             hostDatabase.Run();
         }
