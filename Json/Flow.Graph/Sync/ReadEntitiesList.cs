@@ -63,8 +63,7 @@ namespace Friflo.Json.Flow.Sync
                         readResult.references = readRefResults.references;
                     } else {
                         // tested with test "order-2" -> "read-task-error"
-                        var message = $"failed reading references of '{entityContainer.name}' - {readRefResults.error.message}";
-                        readResult.Error = new CommandError{message = message};
+                        readResult.Error = readRefResults.error;
                     }
                 }
                 readResult.entities = null;
