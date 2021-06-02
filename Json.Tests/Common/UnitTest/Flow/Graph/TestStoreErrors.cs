@@ -433,7 +433,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> (#ids: 1)", e.Message);
 
             var sync = await store.TrySync(); // -------- Sync --------
+            
             AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqual(@"Sync() failed with task errors. Count: 5
+| Find<Customer> (id: read-task-exception) - UnhandledException - SimulationException: simulated read task exception
+| QueryTask<Customer> (filter: .id == 'query-task-exception') - UnhandledException - SimulationException: simulated query exception
+| CreateTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception
+| UpdateTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception
+| DeleteTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception", sync.Message);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -469,6 +476,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var sync = await store.TrySync(); // -------- Sync --------
             AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqual("tasks: 5, failed: 5", sync.ToString());
+            AreEqual(@"Sync() failed with task errors. Count: 5
+| Find<Customer> (id: read-task-error) - DatabaseError - simulated read task error
+| QueryTask<Customer> (filter: .id == 'query-task-error') - DatabaseError - simulated query error
+| CreateTask<Customer> (#ids: 1) - DatabaseError - simulated write task error
+| UpdateTask<Customer> (#ids: 1) - DatabaseError - simulated write task error
+| DeleteTask<Customer> (#ids: 1) - DatabaseError - simulated write task error", sync.Message);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -499,8 +513,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
 
             var sync = await store.TrySync(); // -------- Sync --------
-            AreEqual("tasks: 3, failed: 3", sync.ToString());
             
+            AreEqual("tasks: 3, failed: 3", sync.ToString());
+            AreEqual(@"Sync() failed with task errors. Count: 3
+| CreateTask<Customer> (#ids: 1) - Task failed by entity errors. Count: 1
+|   WriteError: Customer 'create-entity-error', simulated write entity error
+| UpdateTask<Customer> (#ids: 1) - Task failed by entity errors. Count: 1
+|   WriteError: Customer 'update-entity-error', simulated write entity error
+| DeleteTask<Customer> (#ids: 1) - Task failed by entity errors. Count: 1
+|   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
+
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.Error.entityErrors;
             AreEqual(1,        deleteErrors.Count);
@@ -528,7 +550,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var patchWriteError     = customers.Patch (new Customer{id = PatchWriteEntityError});
             
             var sync = await store.TrySync(); // -------- Sync --------
+            
             AreEqual("tasks: 3, failed: 3", sync.ToString());
+            AreEqual(@"Sync() failed with task errors. Count: 3
+| PatchTask<Customer> #ids: 1, members: [] - Task failed by entity errors. Count: 1
+|   PatchError: Customer 'unknown-id', patch target not found
+| PatchTask<Customer> #ids: 1, members: [] - Task failed by entity errors. Count: 1
+|   ReadError: Customer 'patch-read-entity-error', simulated read entity error
+| PatchTask<Customer> #ids: 1, members: [] - Task failed by entity errors. Count: 1
+|   WriteError: Customer 'patch-write-entity-error', simulated write entity error", sync.Message);
             
             {
                 IsFalse(patchNotFound.Success);
