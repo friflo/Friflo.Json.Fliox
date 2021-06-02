@@ -16,6 +16,7 @@ namespace Friflo.Json.Flow.Sync
     
     public class ReferencesResult
     {
+        public  string                  error;
         public  string                  container;
         public  HashSet<string>         ids;
         public  List<ReferencesResult>  references;

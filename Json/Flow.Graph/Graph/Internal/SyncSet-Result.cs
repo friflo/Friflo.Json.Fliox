@@ -217,9 +217,21 @@ namespace Friflo.Json.Flow.Graph.Internal
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.setByName[refResult.container];
                 ReadRefsTask        subRef       = refs[reference.selector];
+                if (refResult.error != null) {
+                    var taskErrorInfo = new TaskErrorInfo(new TaskErrorResult {
+                        type    = TaskErrorResultType.DatabaseError,
+                        message = refResult.error 
+                    });
+                    subRef.state.SetError(taskErrorInfo);
+                    continue;
+                }
                 subRef.SetResult(refContainer, refResult.ids);
-                if (subRef.state.Error.HasErrors) {
-                    SetSubRefsError(subRef.SubRefs,subRef.state.Error);
+                // handle entity errors of subRef task
+                var subRefError = subRef.state.Error;
+                if (subRefError.HasErrors) {
+                    if (subRefError.TaskError.type != TaskErrorType.EntityErrors)
+                        throw new InvalidOperationException("Expect subRef Error.type == EntityErrors");
+                    SetSubRefsError(subRef.SubRefs, subRefError);
                     continue;
                 }
                 subRef.state.Synced = true;

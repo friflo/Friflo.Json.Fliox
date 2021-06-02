@@ -59,13 +59,10 @@ namespace Friflo.Json.Flow.Sync
                 }
                 var references = read.references;
                 if (references != null && references.Count > 0) {
-                    var readRefResults = await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
-                    if (readRefResults.error == null) {
-                        readResult.references = readRefResults.references;
-                    } else {
-                        // tested with test "order-2" -> "read-task-error"
-                        readResult.Error = readRefResults.error;
-                    }
+                    var readRefResults =
+                        await entityContainer.ReadReferences(references, entities, entityContainer.name, "", response, syncContext).ConfigureAwait(false);
+                    // returned readRefResults.references is always set. Each references[] item contain either a result or an error.
+                    readResult.references = readRefResults.references;
                 }
                 readResult.entities = null;
                 result.reads.Add(readResult);

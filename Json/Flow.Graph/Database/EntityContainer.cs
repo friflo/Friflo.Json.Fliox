@@ -231,10 +231,12 @@ namespace Friflo.Json.Flow.Database
                 var readRefIds  = new ReadEntities {ids = refIdList};
                 var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
+                // In case of ReadEntities error: Assign error to result and continue with other references.
+                // Resolving other references are independent may be successful.
                 if (refEntities.Error != null) {
                     var message = $"read references failed: '{container}{subPath}' - {refEntities.Error.message}";
-                    var error = new CommandError{message = message};
-                    return new ReadReferencesResult {error = error};
+                    referenceResult.error = message;
+                    continue;
                 }
                 var containerResult = syncResponse.GetContainerResult(refContName);
                 containerResult.AddEntities(refEntities.entities);
@@ -248,9 +250,7 @@ namespace Friflo.Json.Flow.Database
                 }
                 var refReferencesResult =
                     await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
-                if (refReferencesResult.error != null) {
-                    return refReferencesResult; // todo add error test
-                }
+                // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
                 referenceResult.references = refReferencesResult.references;
             }
             return new ReadReferencesResult {references = referenceResults};
@@ -266,10 +266,9 @@ namespace Friflo.Json.Flow.Database
     }
 
     /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its
-    /// fields <see cref="references"/> and <see cref="error"/>.
+    /// fields <see cref="references"/>.
     public class ReadReferencesResult
     {
         internal List<ReferencesResult> references;
-        internal CommandError           error;
     } 
 }

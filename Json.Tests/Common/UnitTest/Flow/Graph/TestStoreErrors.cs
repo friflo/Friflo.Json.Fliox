@@ -208,19 +208,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var sync = await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);
-            AreEqual("tasks: 12, failed: 6", sync.ToString());
+            AreEqual("tasks: 12, failed: 4", sync.ToString());
             AreEqual(12, sync.tasks.Count);
-            AreEqual(6, sync.failed.Count);
-            const string msg = @"Sync() failed with task errors. Count: 6
+            AreEqual(4, sync.failed.Count);
+            const string msg = @"Sync() failed with task errors. Count: 4
 | QueryTask<Article> filter: (true) - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | QueryTask<Article> filter: (true) -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Order> filter: (.customer == 'read-task-error') - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
 | QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
-| Find<Order> id: order-2 - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
 | QueryTask<Article> filter: (true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
@@ -265,16 +263,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
-            IsFalse(readOrders2.Success);
-            IsFalse(order2.Success);
+            IsTrue(readOrders2.Success);
+            IsTrue(order2.Success);
             IsFalse(order2Customer.Success);
-            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", readOrders2.      Error.ToString());
-            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2.           Error.ToString());
+            AreEqual("read-task-error", readOrders2["order-2"].customer.id);
+            AreEqual("read-task-error", order2.Result.customer.id);
             AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
             
-            IsFalse(orders2WithTaskError.Success);
+            IsTrue(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
-            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", orders2WithTaskError. Error.ToString());
+            AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.id);
             AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
         }
         
