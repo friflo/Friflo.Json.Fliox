@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertSyncErrors      (useStore);
         }
 
-        private const string ArticleError = @"EntityErrors - Count: 2
+        private const string ArticleError = @"EntityErrors / count: 2
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
@@ -212,15 +212,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 5
-| QueryTask<Article> (filter: true) - EntityErrors - Count: 2
+| QueryTask<Article> (filter: true) # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Article> (filter: true) -> .producer - EntityErrors - Count: 2
+| QueryTask<Article> (filter: true) -> .producer # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
-| ReadTask<Order> (#ids: 1) -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
-| QueryTask<Article> (filter: true) -> .producer -> .employees[*] - EntityErrors - Count: 2
+| QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer # DatabaseError / read references failed: 'Order -> .customer' - simulated read task error
+| ReadTask<Order> (#ids: 1) -> .customer # DatabaseError / read references failed: 'Order -> .customer' - simulated read task error
+| QueryTask<Article> (filter: true) -> .producer -> .employees[*] # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
@@ -237,7 +237,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             IsFalse(allArticles.Success);
             AreEqual(2, allArticles.Error.entityErrors.Count);
-            AreEqual(@"EntityErrors - Count: 2
+            AreEqual(@"EntityErrors / count: 2
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", allArticles.Error.ToString());
             
@@ -271,12 +271,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(order2Customer.Success);
             AreEqual("read-task-error", readOrders2["order-2"].customer.id);
             AreEqual("read-task-error", order2.Result.customer.id);
-            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
+            AreEqual("DatabaseError / read references failed: 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
             
             IsTrue(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
             AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.id);
-            AreEqual("DatabaseError - read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
+            AreEqual("DatabaseError / read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
         }
         
         private static async Task AssertReadTask(PocStore store) {
@@ -337,20 +337,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } catch (SyncResultException sre) {
                 AreEqual(6, sre.failed.Count);
                 const string expect = @"Sync() failed with task errors. Count: 6
-| ReadTask<Order> (#ids: 1) -> .items[*].article - EntityErrors - Count: 2
+| ReadTask<Order> (#ids: 1) -> .items[*].article # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer - EntityErrors - Count: 2
+| ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: article-1) - EntityErrors - Count: 1
+| Find<Article> (id: article-1) # EntityErrors / count: 1
 |   ReadError: Article 'article-1', simulated read entity error
-| FindRange<Article> (#ids: 2) - EntityErrors - Count: 2
+| FindRange<Article> (#ids: 2) # EntityErrors / count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: article-invalidJson) - EntityErrors - Count: 1
+| Find<Article> (id: article-invalidJson) # EntityErrors / count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-| Find<Article> (id: article-idDontMatch) - EntityErrors - Count: 1
+| Find<Article> (id: article-idDontMatch) # EntityErrors / count: 1
 |   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
@@ -361,12 +361,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // but resolving its Ref<>'s (.items[*].article and .items[*].article > .producer) failed:
             
             IsFalse(articleRefsTask.Success);
-            AreEqual(@"EntityErrors - Count: 2
+            AreEqual(@"EntityErrors / count: 2
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleRefsTask.Error.ToString());
             
             IsFalse(articleProducerTask.Success);
-            AreEqual(@"EntityErrors - Count: 2
+            AreEqual(@"EntityErrors / count: 2
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", articleProducerTask.Error.ToString());
 
@@ -387,7 +387,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Galaxy S10",  galaxy.Result.name);
             
             IsFalse(article1.Success);
-            AreEqual(@"EntityErrors - Count: 1
+            AreEqual(@"EntityErrors / count: 1
 | ReadError: Article 'article-1', simulated read entity error", article1.Error.ToString());
 
             te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
@@ -400,11 +400,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Galaxy S10", galaxy2.Result.name); 
             
             IsFalse(invalidJson.Success);
-            AreEqual(@"EntityErrors - Count: 1
+            AreEqual(@"EntityErrors / count: 1
 | ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString());
             
             IsFalse(idDontMatch.Success);
-            AreEqual(@"EntityErrors - Count: 1
+            AreEqual(@"EntityErrors / count: 1
 | ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id", idDontMatch.Error.ToString());
             
         }
@@ -436,28 +436,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: read-task-exception) - UnhandledException - SimulationException: simulated read task exception
-| QueryTask<Customer> (filter: .id == 'query-task-exception') - UnhandledException - SimulationException: simulated query exception
-| CreateTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception
-| UpdateTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception
-| DeleteTask<Customer> (#ids: 1) - UnhandledException - SimulationException: simulated write task exception", sync.Message);
+| Find<Customer> (id: read-task-exception) # UnhandledException / SimulationException: simulated read task exception
+| QueryTask<Customer> (filter: .id == 'query-task-exception') # UnhandledException / SimulationException: simulated query exception
+| CreateTask<Customer> (#ids: 1) # UnhandledException / SimulationException: simulated write task exception
+| UpdateTask<Customer> (#ids: 1) # UnhandledException / SimulationException: simulated write task exception
+| DeleteTask<Customer> (#ids: 1) # UnhandledException / SimulationException: simulated write task exception", sync.Message);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
-            AreEqual("UnhandledException - SimulationException: simulated read task exception", te.Message); // No stacktrace by intention
+            AreEqual("UnhandledException / SimulationException: simulated read task exception", te.Message); // No stacktrace by intention
             AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
-            AreEqual("UnhandledException - SimulationException: simulated query exception", te.error.Message);
+            AreEqual("UnhandledException / SimulationException: simulated query exception", te.error.Message);
 
             IsFalse(createError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", createError.Error.Message);
+            AreEqual("UnhandledException / SimulationException: simulated write task exception", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", updateError.Error.Message);
+            AreEqual("UnhandledException / SimulationException: simulated write task exception", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("UnhandledException - SimulationException: simulated write task exception", deleteError.Error.Message);
+            AreEqual("UnhandledException / SimulationException: simulated write task exception", deleteError.Error.Message);
         }
         
         private static async Task AssertTaskError(PocStore store) {
@@ -478,29 +478,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: read-task-error) - DatabaseError - simulated read task error
-| QueryTask<Customer> (filter: .id == 'query-task-error') - DatabaseError - simulated query error
-| CreateTask<Customer> (#ids: 1) - DatabaseError - simulated write task error
-| UpdateTask<Customer> (#ids: 1) - DatabaseError - simulated write task error
-| DeleteTask<Customer> (#ids: 1) - DatabaseError - simulated write task error", sync.Message);
+| Find<Customer> (id: read-task-error) # DatabaseError / simulated read task error
+| QueryTask<Customer> (filter: .id == 'query-task-error') # DatabaseError / simulated query error
+| CreateTask<Customer> (#ids: 1) # DatabaseError / simulated write task error
+| UpdateTask<Customer> (#ids: 1) # DatabaseError / simulated write task error
+| DeleteTask<Customer> (#ids: 1) # DatabaseError / simulated write task error", sync.Message);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
-            AreEqual("DatabaseError - simulated read task error", te.Message);
+            AreEqual("DatabaseError / simulated read task error", te.Message);
             AreEqual(TaskErrorType.DatabaseError, customerRead.Error.type);
             
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
-            AreEqual("DatabaseError - simulated query error", te.Message);
+            AreEqual("DatabaseError / simulated query error", te.Message);
             AreEqual(TaskErrorType.DatabaseError, customerQuery.Error.type);
             
             IsFalse(createError.Success);
-            AreEqual("DatabaseError - simulated write task error", createError.Error.Message);
+            AreEqual("DatabaseError / simulated write task error", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual("DatabaseError - simulated write task error", updateError.Error.Message);
+            AreEqual("DatabaseError / simulated write task error", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("DatabaseError - simulated write task error", deleteError.Error.Message);
+            AreEqual("DatabaseError / simulated write task error", deleteError.Error.Message);
         }
         
         private static async Task AssertEntityWrite(PocStore store) {
@@ -516,11 +516,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-| CreateTask<Customer> (#ids: 1) - EntityErrors - Count: 1
+| CreateTask<Customer> (#ids: 1) # EntityErrors / count: 1
 |   WriteError: Customer 'create-entity-error', simulated write entity error
-| UpdateTask<Customer> (#ids: 1) - EntityErrors - Count: 1
+| UpdateTask<Customer> (#ids: 1) # EntityErrors / count: 1
 |   WriteError: Customer 'update-entity-error', simulated write entity error
-| DeleteTask<Customer> (#ids: 1) - EntityErrors - Count: 1
+| DeleteTask<Customer> (#ids: 1) # EntityErrors / count: 1
 |   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
 
             IsFalse(deleteError.Success);
@@ -553,11 +553,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-| PatchTask<Customer> #ids: 1, members: [] - EntityErrors - Count: 1
+| PatchTask<Customer> #ids: 1, members: [] # EntityErrors / count: 1
 |   PatchError: Customer 'unknown-id', patch target not found
-| PatchTask<Customer> #ids: 1, members: [] - EntityErrors - Count: 1
+| PatchTask<Customer> #ids: 1, members: [] # EntityErrors / count: 1
 |   ReadError: Customer 'patch-read-entity-error', simulated read entity error
-| PatchTask<Customer> #ids: 1, members: [] - EntityErrors - Count: 1
+| PatchTask<Customer> #ids: 1, members: [] # EntityErrors / count: 1
 |   WriteError: Customer 'patch-write-entity-error', simulated write entity error", sync.Message);
             
             {
@@ -585,7 +585,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadError.Success);
-                AreEqual("DatabaseError - simulated read task error", patchTaskReadError.Error.Message);
+                AreEqual("DatabaseError / simulated read task error", patchTaskReadError.Error.Message);
             }
 
             // --- test read task exception
@@ -596,7 +596,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqual("UnhandledException - SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
+                AreEqual("UnhandledException / SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
             }
             
             // --- test write task error
@@ -607,7 +607,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteError.Success);
-                AreEqual("DatabaseError - simulated write task error", patchTaskWriteError.Error.Message);
+                AreEqual("DatabaseError / simulated write task error", patchTaskWriteError.Error.Message);
             }
             
             // --- test write task exception
@@ -618,7 +618,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual("UnhandledException - SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
+                AreEqual("UnhandledException / SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
             }
         }
 
@@ -648,7 +648,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 IsFalse(logChanges.Success);
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 2
+                AreEqual(@"EntityErrors / count: 2
 | ReadError: Customer 'log-patch-entity-read-error', simulated read entity error
 | WriteError: Customer 'log-patch-entity-write-error', simulated write entity error", logChanges.Error.Message);
             } {
@@ -660,7 +660,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | PatchError: Customer 'log-patch-entity-read-error', UnhandledException - SimulationException: simulated read task exception", logChanges.Error.Message);
             } {
                 _customers.readErrors [readError]    = Simulate.ReadTaskError;
@@ -671,7 +671,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | PatchError: Customer 'log-patch-entity-read-error', DatabaseError - simulated read task error", logChanges.Error.Message);
             } {
                 _customers.readErrors.Remove(readError);
@@ -684,7 +684,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | PatchError: Customer 'log-patch-entity-write-error', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             } {
                 _customers.writeErrors [writeError]    = Simulate.WriteTaskError;
@@ -695,7 +695,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | PatchError: Customer 'log-patch-entity-write-error', DatabaseError - simulated write task error", logChanges.Error.Message);
                 
                 customerWriteError.Result.name   = "<change write 1>";  // restore original value
@@ -722,7 +722,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
             } {
                 var createException = "create-exception";
@@ -736,7 +736,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors - Count: 1
+                AreEqual(@"EntityErrors / count: 1
 | WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             }
 
@@ -767,9 +767,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 } catch (SyncResultException sre) {
                     AreEqual("simulated SyncError", sre.Message);
                     AreEqual(1, sre.failed.Count);
-                    AreEqual("SyncError - simulated SyncError", sre.failed[0].Error.ToString());
+                    AreEqual("SyncError / simulated SyncError", sre.failed[0].Error.ToString());
                 }
-                AreEqual("SyncError - simulated SyncError", syncError.Error.ToString());
+                AreEqual("SyncError / simulated SyncError", syncError.Error.ToString());
             }
             // --- Sync exception
             {
@@ -780,9 +780,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.Message);
                 AreEqual(1, sync.failed.Count);
-                AreEqual("SyncError - SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
+                AreEqual("SyncError / SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
                 
-                AreEqual("SyncError - SimulationException: simulated SyncException", syncException.Error.ToString());
+                AreEqual("SyncError / SimulationException: simulated SyncException", syncException.Error.ToString());
             }
             
         }

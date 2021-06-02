@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
         internal void AppendAsText(string prefix, StringBuilder sb, int maxEntityErrors, bool showStack) {
             if (type != TaskErrorType.EntityErrors) {
                 sb.Append(type);
-                sb.Append(" - ");
+                sb.Append(" / ");
                 sb.Append(taskMessage);
                 if (showStack && stacktrace != null) {
                     sb.Append("\n");
@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Graph
                 return;
             }
             var errors = entityErrors;
-            sb.Append("EntityErrors - Count: ");
+            sb.Append("EntityErrors / count: ");
             sb.Append(errors.Count);
             int n = 0;
             foreach (var errorPair in errors) {
