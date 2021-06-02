@@ -208,10 +208,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var sync = await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);
-            AreEqual("tasks: 12, failed: 4", sync.ToString());
-            AreEqual(12, sync.tasks.Count);
-            AreEqual(4, sync.failed.Count);
-            const string msg = @"Sync() failed with task errors. Count: 4
+            AreEqual("tasks: 14, failed: 5", sync.ToString());
+            AreEqual(14, sync.tasks.Count);
+            AreEqual(5,  sync.failed.Count);
+            const string msg = @"Sync() failed with task errors. Count: 5
 | QueryTask<Article> filter: (true) - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
@@ -219,6 +219,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 | QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
+| ReadTask<Order> #ids: 1 -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
 | QueryTask<Article> filter: (true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";

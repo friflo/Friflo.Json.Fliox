@@ -176,6 +176,7 @@ namespace Friflo.Json.Flow.Graph
                 return (ReadRefTask<TRef>)subRefsTask;
             var newQueryRefs = new ReadRefTask<TRef>(this, path, typeof(TRef).Name, set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
+            set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;
         }
         
@@ -199,11 +200,11 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal override void AddFailedTask(List<SyncTask> failed) {
-            foreach (var findTask in findTasks) {
+            /*foreach (var findTask in findTasks) {
                 if (findTask.State.Error.HasErrors) {
                     failed.Add(findTask);
                 }
-            }
+            }*/
         }
     }
 }
