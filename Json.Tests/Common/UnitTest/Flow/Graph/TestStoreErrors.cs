@@ -418,16 +418,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customerQuery = customers.Query(c => c.id == "query-task-exception");
 
             var createError = customers.Create(new Customer{id = CreateTaskException});
+            AreEqual("CreateTask<Customer> (#ids: 1)", createError.ToString());
             
             var updateError = customers.Update(new Customer{id = UpdateTaskException});
+            AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.ToString());
             
             var deleteError = customers.Delete(new Customer{id = DeleteTaskException});
+            AreEqual("DeleteTask<Customer> (#ids: 1)", deleteError.ToString());
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> #ids: 1", e.Message);
+            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> (#ids: 1)", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
-            AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> #ids: 1", e.Message);
+            AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> (#ids: 1)", e.Message);
 
             var sync = await store.TrySync(); // -------- Sync --------
             AreEqual("tasks: 5, failed: 5", sync.ToString());
@@ -683,7 +686,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 patchArticle.Result.producer = new Producer {id = createError};
 
                 var logChanges = store.LogChanges();
-                AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
+                AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
                 var sync = await store.TrySync();
 
@@ -697,7 +700,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 patchArticle.Result.producer = new Producer {id = createException};
 
                 var logChanges = store.LogChanges();
-                AreEqual("LogTask patches: 1, creates: 1", logChanges.ToString());
+                AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
                 var sync = await store.TrySync();
 
@@ -716,6 +719,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         private static async Task AssertSyncErrors(PocStore store) {
             var helloTask = store.Echo("Hello World");
+            AreEqual("EchoTask (message: Hello World)", helloTask.ToString());
             
             await store.Sync(); // -------- Sync --------
             

@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                                   articles.Create(notebook);
             var createCam2      = articles.Create(cameraCreate);   // Create new CreatTask for same entity
             AreNotSame(createCam1, createCam2);               
-            AreEqual("CreateTask<Article> #ids: 1", createCam1.ToString());
+            AreEqual("CreateTask<Article> (#ids: 1)", createCam1.ToString());
 
             var newBulkArticles = new List<Article>();
             for (int n = 0; n < 2; n++) {
@@ -161,6 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             cameraCreate.name = "Changed name";
             var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
             var logSet =    articles.LogSetChanges();                   AssertLog(logSet,    1, 0);
+            AreEqual("LogTask (patches: 1, creates: 0)", logSet.ToString());
 
             var logStore3 = store.LogChanges();  AssertLog(logStore3, 1, 0);
             var logStore4 = store.LogChanges();  AssertLog(logStore4, 1, 0);
