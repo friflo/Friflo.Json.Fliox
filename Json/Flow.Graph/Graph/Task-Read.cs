@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState   State       => findState;
 
-        internal override   string      Label       => $"Find<{typeof(T).Name}> id: {id}";
+        internal override   string      Label       => $"Find<{typeof(T).Name}> (id: {id})";
         public   override   string      ToString()  => Label;
 
         internal Find(string id) {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
         } }
 
         internal override   TaskState   State       => findState;
-        internal override   string      Label       => $"FindRange<{typeof(T).Name}> #ids: {ids.Count}";
+        internal override   string      Label       => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
         public   override   string      ToString()  => Label;
 
         internal FindRange(ICollection<string> ids) {
@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? results[id] : throw e;
 
         internal override   TaskState               State       => state;
-        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> #ids: {results.Count}";
+        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         public   override   string                  ToString()  => Label;
 
         internal ReadTask(EntitySet<T> set) {

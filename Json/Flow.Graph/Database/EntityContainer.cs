@@ -137,7 +137,7 @@ namespace Friflo.Json.Flow.Database
             var readEntities    = await ReadEntities(readIds, syncContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
-                var message = $"failed filter entities of '{name}' filter: ({command.filterLinq}) - {readEntities.Error.message}";
+                var message = $"failed filter entities of '{name}' (filter: {command.filterLinq}) - {readEntities.Error.message}";
                 var error = new CommandError{message = message};
                 return new QueryEntitiesResult {Error = error};
             }

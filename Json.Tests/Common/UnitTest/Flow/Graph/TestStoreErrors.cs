@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
-            AreEqual("Find<Order> id: order-1", order1.ToString());
+            AreEqual("Find<Order> (id: order-1)", order1.ToString());
             var allArticles             = articles.QueryAll();
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSame(customer, customer2);
             ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("ReadTask<Order> #ids: 1 -> .customer", customer.ToString());
+            AreEqual("ReadTask<Order> (#ids: 1) -> .customer", customer.ToString());
 
             var readOrders2     = orders.Read();
             var order2          = readOrders2.Find("order-2");
@@ -193,17 +193,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> #ids: 1 -> .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> (#ids: 1) -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> #ids: 1 -> .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> (#ids: 1) -> .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
+            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> filter: (.items.Any(i => i.name == 'Camera'))", e.Message);
+            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("QueryTask<Article> filter: (true) -> .producer -> .employees[*]", producerEmployees.ToString());
+            AreEqual("QueryTask<Article> (filter: true) -> .producer -> .employees[*]", producerEmployees.ToString());
             
             var sync = await store.TrySync(); // -------- Sync --------
             
@@ -212,15 +212,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 5
-| QueryTask<Article> filter: (true) - Task failed by entity errors. Count: 2
+| QueryTask<Article> (filter: true) - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Article> filter: (true) -> .producer - Task failed by entity errors. Count: 2
+| QueryTask<Article> (filter: true) -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Order> filter: (.customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
-| ReadTask<Order> #ids: 1 -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
-| QueryTask<Article> filter: (true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
+| QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
+| ReadTask<Order> (#ids: 1) -> .customer - DatabaseError - read references failed: 'Order -> .customer' - simulated read task error
+| QueryTask<Article> (filter: true) -> .producer -> .employees[*] - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
@@ -289,10 +289,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
-            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
-            AreEqual("Task already synced. ReadTask<Order> #ids: 1", e.Message);
+            AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
             
             // todo add Read() without ids 
 
@@ -304,15 +304,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article", articleRefsTask.ToString());
+            AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> #ids: 1 -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> (#ids: 1) -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> #ids: 1 -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> (#ids: 1) -> .items[*].article", e.Message);
 
             ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
-            AreEqual("ReadTask<Order> #ids: 1 -> .items[*].article -> .producer", articleProducerTask.ToString());
+            AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer", articleProducerTask.ToString());
 
             var duplicateId     = "article-galaxy"; // support duplicate ids
             
@@ -337,20 +337,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } catch (SyncResultException sre) {
                 AreEqual(6, sre.failed.Count);
                 const string expect = @"Sync() failed with task errors. Count: 6
-| ReadTask<Order> #ids: 1 -> .items[*].article - Task failed by entity errors. Count: 2
+| ReadTask<Order> (#ids: 1) -> .items[*].article - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| ReadTask<Order> #ids: 1 -> .items[*].article -> .producer - Task failed by entity errors. Count: 2
+| ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> id: article-1 - Task failed by entity errors. Count: 1
+| Find<Article> (id: article-1) - Task failed by entity errors. Count: 1
 |   ReadError: Article 'article-1', simulated read entity error
-| FindRange<Article> #ids: 2 - Task failed by entity errors. Count: 2
+| FindRange<Article> (#ids: 2) - Task failed by entity errors. Count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> id: article-invalidJson - Task failed by entity errors. Count: 1
+| Find<Article> (id: article-invalidJson) - Task failed by entity errors. Count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-| Find<Article> id: article-idDontMatch - Task failed by entity errors. Count: 1
+| Find<Article> (id: article-idDontMatch) - Task failed by entity errors. Count: 1
 |   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
