@@ -235,11 +235,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
-            var taskEntityError = allArticles.Error;
-            AreEqual(2, taskEntityError.entityErrors.Count);
+            IsFalse(allArticles.Success);
+            AreEqual(2, allArticles.Error.entityErrors.Count);
             AreEqual(@"Task failed by entity errors. Count: 2
 | ReadError: Article 'article-1', simulated read entity error
-| ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", taskEntityError.ToString());
+| ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16", allArticles.Error.ToString());
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = allArticles.Results; });
@@ -256,10 +256,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("customer-1",      customer.Id);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
+            IsFalse(producersTask.Success);
             te = Throws<TaskResultException>(() => { var _ = producersTask.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
                 
+            IsFalse(producerEmployees.Success);
             te = Throws<TaskResultException>(() => { var _ = producerEmployees.Results; });
             AreEqual(ArticleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
