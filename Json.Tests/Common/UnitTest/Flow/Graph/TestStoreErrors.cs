@@ -212,15 +212,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 5
-| QueryTask<Article> (filter: true) # EntityErrors ~ count: 2
+|-QueryTask<Article> (filter: true) # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Article> (filter: true) -> .producer # EntityErrors ~ count: 2
+|-QueryTask<Article> (filter: true) -> .producer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-| ReadTask<Order> (#ids: 1) -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-| QueryTask<Article> (filter: true) -> .producer -> .employees[*] # EntityErrors ~ count: 2
+|-QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|-ReadTask<Order> (#ids: 1) -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|-QueryTask<Article> (filter: true) -> .producer -> .employees[*] # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
@@ -337,20 +337,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } catch (SyncResultException sre) {
                 AreEqual(6, sre.failed.Count);
                 const string expect = @"Sync() failed with task errors. Count: 6
-| ReadTask<Order> (#ids: 1) -> .items[*].article # EntityErrors ~ count: 2
+|-ReadTask<Order> (#ids: 1) -> .items[*].article # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer # EntityErrors ~ count: 2
+|-ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: 'article-1') # EntityErrors ~ count: 1
+|-Find<Article> (id: 'article-1') # EntityErrors ~ count: 1
 |   ReadError: Article 'article-1', simulated read entity error
-| FindRange<Article> (#ids: 2) # EntityErrors ~ count: 2
+|-FindRange<Article> (#ids: 2) # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: 'article-invalidJson') # EntityErrors ~ count: 1
+|-Find<Article> (id: 'article-invalidJson') # EntityErrors ~ count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-| Find<Article> (id: 'article-idDontMatch') # EntityErrors ~ count: 1
+|-Find<Article> (id: 'article-idDontMatch') # EntityErrors ~ count: 1
 |   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
@@ -436,11 +436,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: 'read-task-exception') # UnhandledException ~ SimulationException: simulated read task exception
-| QueryTask<Customer> (filter: .id == 'query-task-exception') # UnhandledException ~ SimulationException: simulated query exception
-| CreateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
-| UpdateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
-| DeleteTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception", sync.Message);
+|-Find<Customer> (id: 'read-task-exception') # UnhandledException ~ SimulationException: simulated read task exception
+|-QueryTask<Customer> (filter: .id == 'query-task-exception') # UnhandledException ~ SimulationException: simulated query exception
+|-CreateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
+|-UpdateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
+|-DeleteTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception", sync.Message);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -478,11 +478,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: 'read-task-error') # DatabaseError ~ simulated read task error
-| QueryTask<Customer> (filter: .id == 'query-task-error') # DatabaseError ~ simulated query error
-| CreateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
-| UpdateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
-| DeleteTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error", sync.Message);
+|-Find<Customer> (id: 'read-task-error') # DatabaseError ~ simulated read task error
+|-QueryTask<Customer> (filter: .id == 'query-task-error') # DatabaseError ~ simulated query error
+|-CreateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
+|-UpdateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
+|-DeleteTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error", sync.Message);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -516,11 +516,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-| CreateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|-CreateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
 |   WriteError: Customer 'create-entity-error', simulated write entity error
-| UpdateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|-UpdateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
 |   WriteError: Customer 'update-entity-error', simulated write entity error
-| DeleteTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|-DeleteTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
 |   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
 
             IsFalse(deleteError.Success);
@@ -553,11 +553,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-| PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|-PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
 |   PatchError: Customer 'unknown-id', patch target not found
-| PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|-PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
 |   ReadError: Customer 'patch-read-entity-error', simulated read entity error
-| PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|-PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
 |   WriteError: Customer 'patch-write-entity-error', simulated write entity error", sync.Message);
             
             {

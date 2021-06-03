@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph
             sb.Append("Sync() failed with task errors. Count: ");
             sb.Append(failed.Count);
             foreach (var task in failed) {
-                sb.Append("\n| ");
+                sb.Append("\n|-");
                 sb.Append(task.Label); // todo should use appender instead of Label
                 sb.Append(" # ");
                 var taskError = task.Error;
