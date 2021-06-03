@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
         public readonly     string          id;
         
         internal UnresolvedRefException(string message, Type type, string id)
-            : base ($"{message} Ref<{type.Name}> id: {id}")
+            : base ($"{message} Ref<{type.Name}> (id: '{id}')")
         {
             this.id = id;
         }

@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // the referenced entity "producer-samsung" is not resolved until now.
             Exception e;
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> id: producer-samsung", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'producer-samsung')", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
             var readProducers = producers.Read();
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
-            AreEqual("Find<Order> (id: order-1)", order1.ToString());
+            AreEqual("Find<Order> (id: 'order-1')", order1.ToString());
             var allArticles             = articles.QueryAll();
             var filterAll               = new EntityFilter<Article>(a => true);
             var allArticles2            = articles.QueryByFilter(filterAll);

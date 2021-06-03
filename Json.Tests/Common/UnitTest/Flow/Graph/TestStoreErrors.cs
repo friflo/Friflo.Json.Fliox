@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             var readOrders  = orders.Read();
             var order1      = readOrders.Find("order-1");
-            AreEqual("Find<Order> (id: order-1)", order1.ToString());
+            AreEqual("Find<Order> (id: 'order-1')", order1.ToString());
             var allArticles             = articles.QueryAll();
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
@@ -343,14 +343,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: article-1) # EntityErrors ~ count: 1
+| Find<Article> (id: 'article-1') # EntityErrors ~ count: 1
 |   ReadError: Article 'article-1', simulated read entity error
 | FindRange<Article> (#ids: 2) # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-| Find<Article> (id: article-invalidJson) # EntityErrors ~ count: 1
+| Find<Article> (id: 'article-invalidJson') # EntityErrors ~ count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-| Find<Article> (id: article-idDontMatch) # EntityErrors ~ count: 1
+| Find<Article> (id: 'article-idDontMatch') # EntityErrors ~ count: 1
 |   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
@@ -436,7 +436,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: read-task-exception) # UnhandledException ~ SimulationException: simulated read task exception
+| Find<Customer> (id: 'read-task-exception') # UnhandledException ~ SimulationException: simulated read task exception
 | QueryTask<Customer> (filter: .id == 'query-task-exception') # UnhandledException ~ SimulationException: simulated query exception
 | CreateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
 | UpdateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
@@ -478,7 +478,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-| Find<Customer> (id: read-task-error) # DatabaseError ~ simulated read task error
+| Find<Customer> (id: 'read-task-error') # DatabaseError ~ simulated read task error
 | QueryTask<Customer> (filter: .id == 'query-task-error') # DatabaseError ~ simulated query error
 | CreateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
 | UpdateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error

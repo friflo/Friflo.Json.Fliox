@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState   State       => findState;
 
-        internal override   string      Label       => $"Find<{typeof(T).Name}> (id: {id})";
+        internal override   string      Label       => $"Find<{typeof(T).Name}> (id: '{id}')";
         public   override   string      ToString()  => Label;
 
         internal Find(string id) {
