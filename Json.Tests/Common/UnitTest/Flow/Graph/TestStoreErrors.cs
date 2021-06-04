@@ -171,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("Find<Order> (id: 'order-1')", order1.Details);
             var allArticles             = articles.QueryAll().TaskName("allArticles")               .TaskName("allArticles");
             var producersTask           = allArticles.ReadRefs(a => a.producer);
-            var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");;
+            var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1")          .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
@@ -313,38 +313,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // todo add Read() without ids 
 
-            readOrders = orders.Read();
-            readOrders.Find("order-1");
-            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsPath(itemsArticle);
-            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsPath(itemsArticle);
+            readOrders              = orders.Read()                                                 .TaskName("readOrders");
+            var order1              = readOrders.Find("order-1")                                    .TaskName("order1");
+            var articleRefsTask     = readOrders.ReadRefsPath(itemsArticle);
+            var articleRefsTask2    = readOrders.ReadRefsPath(itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
             
-            ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
+            var articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
-            AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article", articleRefsTask.ToString());
+            AreEqual("readOrders -> .items[*].article", articleRefsTask.ToString());
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). ReadTask<Order> (#ids: 1) -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires Sync(). readOrders -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> (#ids: 1) -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires Sync(). readOrders -> .items[*].article", e.Message);
 
-            ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
-            AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer", articleProducerTask.ToString());
+            var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
+            AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.ToString());
 
             var duplicateId     = "article-galaxy"; // support duplicate ids
             
-            var readTask1       = store.articles.Read();
-            var galaxy          = readTask1.Find(duplicateId);
-            var article1        = readTask1.Find(Article1ReadError);
-            var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError});
-            var articleSet      = readTask1.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+            var readTask1       = store.articles.Read()                                             .TaskName("readTask1");
+            var galaxy          = readTask1.Find(duplicateId)                                       .TaskName("galaxy");
+            var article1        = readTask1.Find(Article1ReadError)                                 .TaskName("article1");
+            var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError}).TaskName("article1And2");
+            var articleSet      = readTask1.FindRange(new [] {duplicateId, duplicateId, "article-ipad"}).TaskName("articleSet");
             
-            var readTask2       = store.articles.Read(); // separate Read without errors
-            var galaxy2         = readTask2.Find(duplicateId);
+            var readTask2       = store.articles.Read()                                             .TaskName("readTask2"); // separate Read without errors
+            var galaxy2         = readTask2.Find(duplicateId)                                       .TaskName("galaxy2");
             
-            var readTask3       = store.articles.Read();
-            var invalidJson     = readTask3.Find(ArticleInvalidJson);
-            var idDontMatch     = readTask3.Find(ArticleIdDontMatch);
+            var readTask3       = store.articles.Read()                                             .TaskName("readTask3");
+            var invalidJson     = readTask3.Find(ArticleInvalidJson)                                .TaskName("invalidJson");
+            var idDontMatch     = readTask3.Find(ArticleIdDontMatch)                                .TaskName("idDontMatch");
 
             // test throwing exception in case of task or entity errors
             try {
@@ -354,20 +354,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             } catch (SyncResultException sre) {
                 AreEqual(6, sre.failed.Count);
                 const string expect = @"Sync() failed with task errors. Count: 6
-|- ReadTask<Order> (#ids: 1) -> .items[*].article # EntityErrors ~ count: 2
+|- readOrders -> .items[*].article # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer # EntityErrors ~ count: 2
+|- readOrders -> .items[*].article -> .producer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- Find<Article> (id: 'article-1') # EntityErrors ~ count: 1
+|- article1 # EntityErrors ~ count: 1
 |   ReadError: Article 'article-1', simulated read entity error
-|- FindRange<Article> (#ids: 2) # EntityErrors ~ count: 2
+|- article1And2 # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- Find<Article> (id: 'article-invalidJson') # EntityErrors ~ count: 1
+|- invalidJson # EntityErrors ~ count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-|- Find<Article> (id: 'article-idDontMatch') # EntityErrors ~ count: 1
+|- idDontMatch # EntityErrors ~ count: 1
 |   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
