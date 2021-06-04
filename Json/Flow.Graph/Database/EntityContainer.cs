@@ -102,17 +102,17 @@ namespace Friflo.Json.Flow.Database
                     var error = value.Error; 
                     if (error != null) {
                         AddEntityError(ref patchErrors, key, error);
-                    } else {
-                        string target = value.Json;
-                        if (target == null) {
-                            error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
-                            AddEntityError(ref patchErrors, key, error);
-                        } else {
-                            var json = patcher.ApplyPatches(target, patch.patches, Pretty);
-                            entity.Value.SetJson(json);
-                            targets.Add(key, value);
-                        }
+                        continue;
                     }
+                    string target = value.Json;
+                    if (target == null) {
+                        error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
+                        AddEntityError(ref patchErrors, key, error);
+                        continue;
+                    }
+                    var json = patcher.ApplyPatches(target, patch.patches, Pretty);
+                    entity.Value.SetJson(json);
+                    targets.Add(key, value);
                 }
             }
             // Write patched entities back
