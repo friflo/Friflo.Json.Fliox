@@ -14,7 +14,6 @@ namespace Friflo.Json.Flow.Graph
         internal override   TaskState   State       => state;
         
         public   override   string      Details     => $"EchoTask (message: {message})";
-        public   override   string      ToString()  => GetLabel();
         
         
         public              string      Result      => IsOk("EchoTask.Result", out Exception e) ? result : throw e;

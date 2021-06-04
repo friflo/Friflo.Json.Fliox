@@ -27,7 +27,6 @@ namespace Friflo.Json.Flow.Graph
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
-        public   override   string                  ToString()      => GetLabel();
         
 
         internal QueryTask(FilterOperation filter, EntityStore store) {

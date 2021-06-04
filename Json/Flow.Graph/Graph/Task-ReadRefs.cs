@@ -45,8 +45,6 @@ namespace Friflo.Json.Flow.Graph
         
         internal  override  TaskState               State       => state;
         public    override  string                  Details     => $"{parent.GetLabel()} -> {Selector}";
-        public    override  string                  ToString()  => GetLabel();
-        
             
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
@@ -117,8 +115,6 @@ namespace Friflo.Json.Flow.Graph
                 
         internal override   TaskState       State       => state;
         public   override   string          Details     => $"{parent.GetLabel()} -> {Selector}";
-        public   override   string          ToString()  => GetLabel();
-        
                 
         internal override   string          Selector  { get; }
         internal override   string          Container { get; }

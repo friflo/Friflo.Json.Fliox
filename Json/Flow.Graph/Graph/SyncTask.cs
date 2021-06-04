@@ -17,6 +17,8 @@ namespace Friflo.Json.Flow.Graph
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal abstract   TaskState   State   { get; }
         
+        public   override   string      ToString()  => GetLabel();
+
         public              bool        Success { get {
             if (State.IsSynced())
                 return !State.Error.HasErrors;
