@@ -429,35 +429,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertTaskExceptions(PocStore store) {
             var customers = store.customers;
 
-            var readCustomers = customers.Read();
-            var customerRead = readCustomers.Find(ReadTaskException);
+            var readCustomers = customers.Read()                                        .TaskName("readCustomers");
+            var customerRead = readCustomers.Find(ReadTaskException)                    .TaskName("customerRead");
 
-            var customerQuery = customers.Query(c => c.id == "query-task-exception");
+            var customerQuery = customers.Query(c => c.id == "query-task-exception")    .TaskName("customerQuery");
 
-            var createError = customers.Create(new Customer{id = CreateTaskException});
-            AreEqual("CreateTask<Customer> (#ids: 1)", createError.ToString());
+            var createError = customers.Create(new Customer{id = CreateTaskException})  .TaskName("createError");
+            AreEqual("CreateTask<Customer> (#ids: 1)", createError.Details);
             
-            var updateError = customers.Update(new Customer{id = UpdateTaskException});
-            AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.ToString());
+            var updateError = customers.Update(new Customer{id = UpdateTaskException})  .TaskName("updateError");
+            AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.Details);
             
-            var deleteError = customers.Delete(new Customer{id = DeleteTaskException});
-            AreEqual("DeleteTask<Customer> (#ids: 1)", deleteError.ToString());
+            var deleteError = customers.Delete(new Customer{id = DeleteTaskException})  .TaskName("deleteError");
+            AreEqual("DeleteTask<Customer> (#ids: 1)", deleteError.Details);
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("SyncTask.Success requires Sync(). CreateTask<Customer> (#ids: 1)", e.Message);
+            AreEqual("SyncTask.Success requires Sync(). createError", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
-            AreEqual("SyncTask.Error requires Sync(). CreateTask<Customer> (#ids: 1)", e.Message);
+            AreEqual("SyncTask.Error requires Sync(). createError", e.Message);
 
             var sync = await store.TrySync(); // -------- Sync --------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-|- Find<Customer> (id: 'read-task-exception') # UnhandledException ~ SimulationException: simulated read task exception
-|- QueryTask<Customer> (filter: .id == 'query-task-exception') # UnhandledException ~ SimulationException: simulated query exception
-|- CreateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
-|- UpdateTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception
-|- DeleteTask<Customer> (#ids: 1) # UnhandledException ~ SimulationException: simulated write task exception", sync.Message);
+|- customerRead # UnhandledException ~ SimulationException: simulated read task exception
+|- customerQuery # UnhandledException ~ SimulationException: simulated query exception
+|- createError # UnhandledException ~ SimulationException: simulated write task exception
+|- updateError # UnhandledException ~ SimulationException: simulated write task exception
+|- deleteError # UnhandledException ~ SimulationException: simulated write task exception", sync.Message);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
