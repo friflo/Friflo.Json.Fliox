@@ -26,8 +26,8 @@ namespace Friflo.Json.Flow.Graph
         public   override   string      ToString()  => Label;
         internal override   string      Label {
             get {
-                if (tag != null)
-                    return tag;
+                if (name != null)
+                    return name;
                 var sb = new StringBuilder();
                 sb.Append("PatchTask<");
                 sb.Append(typeof(T).Name);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        public              PatchTask<T>            Tag (string tag) { this.tag = tag; return this; }
+        public              PatchTask<T>            TaskName (string name) { this.name = name; return this; }
 
         internal PatchTask(PeerEntity<T> peer, EntitySet<T> set) {
             this.set = set;
