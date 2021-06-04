@@ -65,9 +65,10 @@ namespace Friflo.Json.Flow.Database
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             if (syncRequest.tasks == null)
                 return new SyncResponse{error = new SyncError{message = "missing field: tasks (array)"}};
+            var tasks = new List<TaskResult>(syncRequest.tasks.Count);
             var response = new SyncResponse {
-                tasks           = new List<TaskResult>(syncRequest.tasks.Count),
-                results         = new Dictionary<string, ContainerEntities>()
+                tasks   = tasks,
+                results = new Dictionary<string, ContainerEntities>()
             };
             int index = -1;
             foreach (var task in syncRequest.tasks) {
@@ -77,14 +78,14 @@ namespace Friflo.Json.Flow.Database
                         type        = TaskErrorResultType.InvalidTask,
                         message     = $"element must not be null. tasks[{index}]",
                     };
-                    response.tasks.Add(taskResult);
+                    tasks.Add(taskResult);
                     continue;
                 }
                 task.index = index;
                     
                 try {
                     var result = await task.Execute(this, response, syncContext).ConfigureAwait(false);
-                    response.tasks.Add(result);
+                    tasks.Add(result);
                 }
                 catch (Exception e) {
                     // Note!
@@ -97,7 +98,7 @@ namespace Friflo.Json.Flow.Database
                         message     = message,
                         stacktrace  = stacktrace
                     };
-                    response.tasks.Add(result);
+                    tasks.Add(result);
                 }
             }
             response.AssertResponse(syncRequest);
