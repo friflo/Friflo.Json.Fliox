@@ -44,8 +44,10 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[id] : throw e;
         
         internal  override  TaskState               State       => state;
-        internal  override  string                  Label       => $"{parent.Label} -> {Selector}";
+        internal  override  string                  Label       => tag ?? $"{parent.Label} -> {Selector}";
         public    override  string                  ToString()  => Label;
+        
+        public              ReadRefsTask<T>         Tag (string tag) { this.tag = tag; return this; }
             
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
@@ -105,23 +107,25 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : Entity
     {
-        private             RefsTask    refsTask;
-        private             string      id;
-        private             T           entity;
-        private   readonly  SyncTask    parent;
-        private   readonly  EntityStore store;
-
-        public              string      Id      => IsOk("ReadRefTask.Id",     out Exception e) ? id      : throw e;
-        public              T           Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
+        private             RefsTask        refsTask;
+        private             string          id;
+        private             T               entity;
+        private   readonly  SyncTask        parent;
+        private   readonly  EntityStore     store;
+    
+        public              string          Id      => IsOk("ReadRefTask.Id",     out Exception e) ? id      : throw e;
+        public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
-        internal override   TaskState   State       => state;
-        internal override   string      Label       => $"{parent.Label} -> {Selector}";
-        public   override   string      ToString()  => Label;
+        internal override   TaskState       State       => state;
+        internal override   string          Label       => tag ?? $"{parent.Label} -> {Selector}";
+        public   override   string          ToString()  => Label;
+        
+        public              ReadRefTask<T>  Tag (string tag) { this.tag = tag; return this; }
                 
-        internal override   string      Selector  { get; }
-        internal override   string      Container { get; }
+        internal override   string          Selector  { get; }
+        internal override   string          Container { get; }
             
-        internal override   SubRefs     SubRefs => refsTask.subRefs;
+        internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
         internal ReadRefTask(SyncTask parent, string selector, string container, EntityStore store)

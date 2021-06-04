@@ -19,8 +19,10 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState           state;
         internal override   TaskState           State   => state;
         
-        internal override   string              Label   => $"LogTask (patches: {patches.Count}, creates: {creates.Count})";
+        internal override   string              Label   => tag ?? $"LogTask (patches: {patches.Count}, creates: {creates.Count})";
         public   override   string              ToString()  => Label;
+        
+        public              LogTask             Tag (string tag) { this.tag = tag; return this; }
 
         internal LogTask() { }
 

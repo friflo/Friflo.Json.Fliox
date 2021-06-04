@@ -22,8 +22,10 @@ namespace Friflo.Json.Flow.Graph
         private readonly    EntitySet<T>    set;
         private readonly    List<T>         entities;
 
-        internal override   string          Label       => $"CreateTask<{typeof(T).Name}> (#ids: {entities.Count})";
+        internal override   string          Label       => tag ?? $"CreateTask<{typeof(T).Name}> (#ids: {entities.Count})";
         public   override   string          ToString()  => Label;
+        
+        public              CreateTask<T>   Tag (string tag) { this.tag = tag; return this; }
         
         internal CreateTask(List<T> entities, EntitySet<T> set) {
             this.set        = set;

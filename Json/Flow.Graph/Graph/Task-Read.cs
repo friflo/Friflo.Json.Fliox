@@ -31,8 +31,10 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState   State       => findState;
 
-        internal override   string      Label       => $"Find<{typeof(T).Name}> (id: '{id}')";
+        internal override   string      Label       => tag ?? $"Find<{typeof(T).Name}> (id: '{id}')";
         public   override   string      ToString()  => Label;
+        
+        public              Find<T>     Tag (string tag) { this.tag = tag; return this; }
 
         internal Find(string id) {
             this.id     = id;
@@ -66,9 +68,11 @@ namespace Friflo.Json.Flow.Graph
             throw e;
         } }
 
-        internal override   TaskState   State       => findState;
-        internal override   string      Label       => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
-        public   override   string      ToString()  => Label;
+        internal override   TaskState       State       => findState;
+        internal override   string          Label       => tag ?? $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
+        public   override   string          ToString()  => Label;
+        
+        public              FindRange<T>    Tag (string tag) { this.tag = tag; return this; }
 
         internal FindRange(ICollection<string> ids) {
             this.ids    = ids.ToHashSet();
@@ -109,8 +113,10 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? results[id] : throw e;
 
         internal override   TaskState               State       => state;
-        internal override   string                  Label       => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
+        internal override   string                  Label       => tag ?? $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         public   override   string                  ToString()  => Label;
+        
+        public              ReadTask<T>             Tag (string tag) { this.tag = tag; return this; }
 
         internal ReadTask(EntitySet<T> set) {
             refsTask    = new RefsTask(this);

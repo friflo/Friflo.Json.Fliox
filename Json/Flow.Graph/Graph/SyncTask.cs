@@ -9,6 +9,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public abstract class SyncTask
     {
+        internal            string      tag;
         internal abstract   string      Label   { get; }
         internal abstract   TaskState   State   { get; }
         
