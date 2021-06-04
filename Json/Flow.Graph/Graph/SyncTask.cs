@@ -6,16 +6,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Flow.Graph.Internal;
 
+using static System.Diagnostics.DebuggerBrowsableState;
+
 namespace Friflo.Json.Flow.Graph
 {
     public abstract class SyncTask
     {
-        internal            string      name;
-        internal            string      GetLabel() => name ?? Details;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public   abstract   string      Details { get; }
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal abstract   TaskState   State   { get; }
+                                    internal            string      name;
+                                    internal            string      GetLabel() => name ?? Details;
+        [DebuggerBrowsable(Never)]  public    abstract  string      Details { get; }
+        [DebuggerBrowsable(Never)]  internal  abstract  TaskState   State   { get; }
         
         public   override   string      ToString()  => GetLabel();
 
