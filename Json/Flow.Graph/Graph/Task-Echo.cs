@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Graph
         internal override   TaskState   State       => state;
         
         public   override   string      Details     => $"EchoTask (message: {message})";
-        public   override   string      ToString()  => Label;
+        public   override   string      ToString()  => GetLabel();
         
         public              EchoTask    TaskName (string name) { this.name = name; return this; }
         

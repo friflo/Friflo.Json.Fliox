@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Graph
         internal override   TaskState   State       => findState;
 
         public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{id}')";
-        public   override   string      ToString()  => Label;
+        public   override   string      ToString()  => GetLabel();
         
         public              Find<T>     TaskName (string name) { this.name = name; return this; }
 
@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState       State       => findState;
         public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
-        public   override   string          ToString()  => Label;
+        public   override   string          ToString()  => GetLabel();
         
         public              FindRange<T>    TaskName (string name) { this.name = name; return this; }
 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState               State       => state;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
-        public   override   string                  ToString()  => Label;
+        public   override   string                  ToString()  => GetLabel();
         
         public              ReadTask<T>             TaskName (string name) { this.name = name; return this; }
 

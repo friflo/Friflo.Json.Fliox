@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
-        public   override   string                  ToString()      => Label;
+        public   override   string                  ToString()      => GetLabel();
         
         public              QueryTask<T>            TaskName (string name) { this.name = name; return this; }
 

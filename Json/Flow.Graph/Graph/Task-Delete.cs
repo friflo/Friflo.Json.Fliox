@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph
         internal override   TaskState           State       => state;
 
         public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
-        public   override   string              ToString()  => Label;
+        public   override   string              ToString()  => GetLabel();
         
         public              DeleteTask<T>       TaskName (string name) { this.name = name; return this; }
         

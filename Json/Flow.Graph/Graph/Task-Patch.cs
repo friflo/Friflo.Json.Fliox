@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState           state;
         internal override   TaskState           State      => state;
         
-        public   override   string      ToString()  => Label;
+        public   override   string      ToString()  => GetLabel();
         public   override   string      Details {
             get {
                 var sb = new StringBuilder();

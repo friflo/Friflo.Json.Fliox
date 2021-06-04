@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
@@ -10,21 +11,23 @@ namespace Friflo.Json.Flow.Graph
     public abstract class SyncTask
     {
         internal            string      name;
-        internal            string      Label   => name ?? Details;
+        internal            string      GetLabel() => name ?? Details;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public   abstract   string      Details { get; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal abstract   TaskState   State   { get; }
         
         public              bool        Success { get {
             if (State.IsSynced())
                 return !State.Error.HasErrors;
-            throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {Label}");
+            throw new TaskNotSyncedException($"SyncTask.Success requires Sync(). {GetLabel()}");
         }}
 
         /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
         public              TaskError   Error { get {
             if (State.IsSynced())
                 return State.Error.TaskError;
-            throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {Label}");
+            throw new TaskNotSyncedException($"SyncTask.Error requires Sync(). {GetLabel()}");
         } }
 
         internal bool IsOk(string method, out Exception e) {
@@ -36,12 +39,12 @@ namespace Friflo.Json.Flow.Graph
                 e = new TaskResultException(State.Error.TaskError);
                 return false;
             }
-            e = new TaskNotSyncedException($"{method} requires Sync(). {Label}");
+            e = new TaskNotSyncedException($"{method} requires Sync(). {GetLabel()}");
             return false;
         }
         
         internal Exception AlreadySyncedError() {
-            return new TaskAlreadySyncedException($"Task already synced. {Label}");
+            return new TaskAlreadySyncedException($"Task already synced. {GetLabel()}");
         }
 
         internal virtual void AddFailedTask(List<SyncTask> failed) {
