@@ -16,7 +16,6 @@ namespace Friflo.Json.Flow.Graph
         public   override   string      Details     => $"EchoTask (message: {message})";
         public   override   string      ToString()  => GetLabel();
         
-        public              EchoTask    TaskName (string name) { this.name = name; return this; }
         
         public              string      Result      => IsOk("EchoTask.Result", out Exception e) ? result : throw e;
         

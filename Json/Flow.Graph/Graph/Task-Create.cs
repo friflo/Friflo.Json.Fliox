@@ -25,7 +25,6 @@ namespace Friflo.Json.Flow.Graph
         public   override   string          Details     => $"CreateTask<{typeof(T).Name}> (#ids: {entities.Count})";
         public   override   string          ToString()  => GetLabel();
         
-        public              CreateTask<T>   TaskName (string name) { this.name = name; return this; }
         
         internal CreateTask(List<T> entities, EntitySet<T> set) {
             this.set        = set;

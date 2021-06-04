@@ -22,7 +22,6 @@ namespace Friflo.Json.Flow.Graph
         public   override   string              Details   => $"LogTask (patches: {patches.Count}, creates: {creates.Count})";
         public   override   string              ToString()  => GetLabel();
         
-        public              LogTask             TaskName (string name) { this.name = name; return this; }
 
         internal LogTask() { }
 

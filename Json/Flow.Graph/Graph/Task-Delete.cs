@@ -20,7 +20,6 @@ namespace Friflo.Json.Flow.Graph
         public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
         public   override   string              ToString()  => GetLabel();
         
-        public              DeleteTask<T>       TaskName (string name) { this.name = name; return this; }
         
         internal DeleteTask(List<string> ids, EntitySet<T> set) {
             this.set = set;

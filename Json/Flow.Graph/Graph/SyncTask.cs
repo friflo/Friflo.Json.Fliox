@@ -53,4 +53,12 @@ namespace Friflo.Json.Flow.Graph
             failed.Add(this);
         }
     }
+    
+    public static class SyncTaskExtension
+    {
+        public static T TaskName<T> (this T task, string name) where T : SyncTask {
+            task.name = name;
+            return task;
+        }
+    }
 }

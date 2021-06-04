@@ -42,7 +42,6 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        public              PatchTask<T>            TaskName (string name) { this.name = name; return this; }
 
         internal PatchTask(PeerEntity<T> peer, EntitySet<T> set) {
             this.set = set;
