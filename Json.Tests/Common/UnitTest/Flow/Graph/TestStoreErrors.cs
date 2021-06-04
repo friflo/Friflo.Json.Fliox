@@ -480,26 +480,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertTaskError(PocStore store) {
             var customers = store.customers;
 
-            var readCustomers = customers.Read();
-            var customerRead = readCustomers.Find(ReadTaskError);
+            var readCustomers = customers.Read()                                    .TaskName("readCustomers");
+            var customerRead = readCustomers.Find(ReadTaskError)                    .TaskName("customerRead");
             
-            var customerQuery = customers.Query(c => c.id == "query-task-error");
+            var customerQuery = customers.Query(c => c.id == "query-task-error")    .TaskName("customerQuery");
             
-            var createError = customers.Create(new Customer{id = CreateTaskError});
+            var createError = customers.Create(new Customer{id = CreateTaskError})  .TaskName("createError");
             
-            var updateError = customers.Update(new Customer{id = UpdateTaskError});
+            var updateError = customers.Update(new Customer{id = UpdateTaskError})  .TaskName("updateError");
             
-            var deleteError = customers.Delete(new Customer{id = DeleteTaskError});
+            var deleteError = customers.Delete(new Customer{id = DeleteTaskError})  .TaskName("deleteError");
             
             var sync = await store.TrySync(); // -------- Sync --------
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 5
-|- Find<Customer> (id: 'read-task-error') # DatabaseError ~ simulated read task error
-|- QueryTask<Customer> (filter: .id == 'query-task-error') # DatabaseError ~ simulated query error
-|- CreateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
-|- UpdateTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error
-|- DeleteTask<Customer> (#ids: 1) # DatabaseError ~ simulated write task error", sync.Message);
+|- customerRead # DatabaseError ~ simulated read task error
+|- customerQuery # DatabaseError ~ simulated query error
+|- createError # DatabaseError ~ simulated write task error
+|- updateError # DatabaseError ~ simulated write task error
+|- deleteError # DatabaseError ~ simulated write task error", sync.Message);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -523,21 +523,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertEntityWrite(PocStore store) {
             var customers = store.customers;
             
-            var createError = customers.Create(new Customer{id = CreateEntityError});
+            var createError = customers.Create(new Customer{id = CreateEntityError})    .TaskName("createError");
             
-            var updateError = customers.Update(new Customer{id = UpdateEntityError});
+            var updateError = customers.Update(new Customer{id = UpdateEntityError})    .TaskName("updateError");
             
-            var deleteError = customers.Delete(new Customer{id = DeleteEntityError});
+            var deleteError = customers.Delete(new Customer{id = DeleteEntityError})    .TaskName("deleteError");
 
             var sync = await store.TrySync(); // -------- Sync --------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-|- CreateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|- createError # EntityErrors ~ count: 1
 |   WriteError: Customer 'create-entity-error', simulated write entity error
-|- UpdateTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|- updateError # EntityErrors ~ count: 1
 |   WriteError: Customer 'update-entity-error', simulated write entity error
-|- DeleteTask<Customer> (#ids: 1) # EntityErrors ~ count: 1
+|- deleteError # EntityErrors ~ count: 1
 |   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
 
             IsFalse(deleteError.Success);
@@ -560,21 +560,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
-            var patchNotFound       = customers.Patch (new Customer{id = unknownId});
+            var patchNotFound       = customers.Patch (new Customer{id = unknownId})            .TaskName("patchNotFound");
             
-            var patchReadError      = customers.Patch (new Customer{id = PatchReadEntityError});
+            var patchReadError      = customers.Patch (new Customer{id = PatchReadEntityError}) .TaskName("patchReadError");
             
-            var patchWriteError     = customers.Patch (new Customer{id = PatchWriteEntityError});
+            var patchWriteError     = customers.Patch (new Customer{id = PatchWriteEntityError}).TaskName("patchWriteError");
             
             var sync = await store.TrySync(); // -------- Sync --------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
-|- PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|- patchNotFound # EntityErrors ~ count: 1
 |   PatchError: Customer 'unknown-id', patch target not found
-|- PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|- patchReadError # EntityErrors ~ count: 1
 |   ReadError: Customer 'patch-read-entity-error', simulated read entity error
-|- PatchTask<Customer> #ids: 1, members: [] # EntityErrors ~ count: 1
+|- patchWriteError # EntityErrors ~ count: 1
 |   WriteError: Customer 'patch-write-entity-error', simulated write entity error", sync.Message);
             
             {
