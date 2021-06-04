@@ -197,11 +197,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter);
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
 
-            var orderCustomer = orders.RefPath(o => o.customer);
-            ReadRefTask<Customer> customer  = readOrders.ReadRefPath(orderCustomer);
-            ReadRefTask<Customer> customer2 = readOrders.ReadRefPath(orderCustomer);
+            var orderCustomer           = orders.RefPath(o => o.customer);
+            var customer                = readOrders.ReadRefPath(orderCustomer);
+            var customer2               = readOrders.ReadRefPath(orderCustomer);
             AreSame(customer, customer2);
-            ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
+            var customer3               = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
             AreEqual("ReadTask<Order> (#ids: 1) -> .customer", customer.ToString());
 
@@ -280,11 +280,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             readOrders = orders.Read();
             readOrders.Find("order-1");
-            ReadRefsTask<Article> articleRefsTask  = readOrders.ReadRefsPath(itemsArticle);
-            ReadRefsTask<Article> articleRefsTask2 = readOrders.ReadRefsPath(itemsArticle);
+            var articleRefsTask  = readOrders.ReadRefsPath(itemsArticle);
+            var articleRefsTask2 = readOrders.ReadRefsPath(itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
             
-            ReadRefsTask<Article> articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
+            var articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article", articleRefsTask.ToString());
 
@@ -293,7 +293,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires Sync(). ReadTask<Order> (#ids: 1) -> .items[*].article", e.Message);
 
-            ReadRefsTask<Producer> articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
+            var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer", articleProducerTask.ToString());
 
             var readTask        = store.articles.Read();
@@ -301,6 +301,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var galaxy          = readTask.Find(duplicateId);
             var article1And2    = readTask.FindRange(new [] {"article-1", "article-2"});
             var articleSet      = readTask.FindRange(new [] {duplicateId, duplicateId, "article-ipad"});
+
+            AreEqual(@"Find<Order> (id: 'order-1')
+ReadTask<Order> (#ids: 1) -> .items[*].article
+ReadTask<Order> (#ids: 1) -> .items[*].article -> .producer
+Find<Article> (id: 'article-galaxy')
+FindRange<Article> (#ids: 2)
+FindRange<Article> (#ids: 2)", string.Join('\n', store.Tasks));
 
             await store.Sync(); // -------- Sync --------
         
@@ -340,18 +347,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             e = Throws<TaskAlreadySyncedException>(() => { var _ = readOrders.Find("order-1"); });
             AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
 
-            var readOrders2 = orders.Read();
-            var order1Task  = readOrders2.Find("order-1");
+            var readOrders2     = orders.Read();
+            var order1Task      = readOrders2.Find("order-1");
 
-            var readArticles = articles.Read();
-            var article1Task            =  readArticles.Find("article-1");
+            var readArticles    = articles.Read();
+            var article1Task    = readArticles.Find("article-1");
             // var article1TaskRedundant   =  readArticles.ReadId("article-1");
             // AreSame(article1Task, article1TaskRedundant);
             
-            var readCustomers = customers.Read();
-            var article2Task =  readArticles.Find("article-2");
-            var customer1Task = readCustomers.Find("customer-1");
-            var unknownTask   = readCustomers.Find("customer-missing");
+            var readCustomers   = customers.Read();
+            var article2Task    = readArticles.Find("article-2");
+            var customer1Task   = readCustomers.Find("customer-1");
+            var unknownTask     = readCustomers.Find("customer-missing");
 
             await store.Sync(); // -------- Sync --------
             

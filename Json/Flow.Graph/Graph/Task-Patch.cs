@@ -24,10 +24,8 @@ namespace Friflo.Json.Flow.Graph
         internal override   TaskState           State      => state;
         
         public   override   string      ToString()  => Label;
-        internal override   string      Label {
+        internal override   string      Details {
             get {
-                if (name != null)
-                    return name;
                 var sb = new StringBuilder();
                 sb.Append("PatchTask<");
                 sb.Append(typeof(T).Name);

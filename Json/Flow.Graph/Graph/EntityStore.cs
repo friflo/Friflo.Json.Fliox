@@ -57,12 +57,12 @@ namespace Friflo.Json.Flow.Graph
         // Reason: EntityStore is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
-        internal            StoreIntern     _intern;
-        public              TypeStore       TypeStore => _intern.typeStore;
-
-        public              StoreInfo       StoreInfo  => new StoreInfo(_intern.sync, _intern.setByType); 
-        public   override   string          ToString() => StoreInfo.ToString();
-
+        internal            StoreIntern             _intern;
+        public              TypeStore               TypeStore   => _intern.typeStore;
+        
+        public              StoreInfo               StoreInfo   => new StoreInfo(_intern.sync, _intern.setByType); 
+        public   override   string                  ToString()  => StoreInfo.ToString();
+        public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
 
         protected EntityStore(EntityDatabase database) {
             var typeStore = new TypeStore();
