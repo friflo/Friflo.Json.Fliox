@@ -308,7 +308,7 @@ readOrders -> .items[*].article
 readOrders -> .items[*].article -> .producer
 galaxy
 article1And2
-articleSet", string.Join('\n', store.Tasks));
+articleSet", string.Join("\n", store.Tasks));
 
             await store.Sync(); // -------- Sync --------
         
