@@ -429,18 +429,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertTaskExceptions(PocStore store) {
             var customers = store.customers;
 
-            var readCustomers = customers.Read()                                        .TaskName("readCustomers");
-            var customerRead = readCustomers.Find(ReadTaskException)                    .TaskName("customerRead");
+            var readCustomers   = customers.Read()                                          .TaskName("readCustomers");
+            var customerRead    = readCustomers.Find(ReadTaskException)                     .TaskName("customerRead");
+            var customerQuery   = customers.Query(c => c.id == "query-task-exception")      .TaskName("customerQuery");
 
-            var customerQuery = customers.Query(c => c.id == "query-task-exception")    .TaskName("customerQuery");
-
-            var createError = customers.Create(new Customer{id = CreateTaskException})  .TaskName("createError");
+            var createError     = customers.Create(new Customer{id = CreateTaskException})  .TaskName("createError");
+            var updateError     = customers.Update(new Customer{id = UpdateTaskException})  .TaskName("updateError");
+            var deleteError     = customers.Delete(new Customer{id = DeleteTaskException})  .TaskName("deleteError");
+            
             AreEqual("CreateTask<Customer> (#ids: 1)", createError.Details);
-            
-            var updateError = customers.Update(new Customer{id = UpdateTaskException})  .TaskName("updateError");
             AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.Details);
-            
-            var deleteError = customers.Delete(new Customer{id = DeleteTaskException})  .TaskName("deleteError");
             AreEqual("DeleteTask<Customer> (#ids: 1)", deleteError.Details);
             
             Exception e;
@@ -480,16 +478,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private static async Task AssertTaskError(PocStore store) {
             var customers = store.customers;
 
-            var readCustomers = customers.Read()                                    .TaskName("readCustomers");
-            var customerRead = readCustomers.Find(ReadTaskError)                    .TaskName("customerRead");
+            var readCustomers   = customers.Read()                                      .TaskName("readCustomers");
+            var customerRead    = readCustomers.Find(ReadTaskError)                     .TaskName("customerRead");
+            var customerQuery   = customers.Query(c => c.id == "query-task-error")      .TaskName("customerQuery");
             
-            var customerQuery = customers.Query(c => c.id == "query-task-error")    .TaskName("customerQuery");
-            
-            var createError = customers.Create(new Customer{id = CreateTaskError})  .TaskName("createError");
-            
-            var updateError = customers.Update(new Customer{id = UpdateTaskError})  .TaskName("updateError");
-            
-            var deleteError = customers.Delete(new Customer{id = DeleteTaskError})  .TaskName("deleteError");
+            var createError     = customers.Create(new Customer{id = CreateTaskError})  .TaskName("createError");
+            var updateError     = customers.Update(new Customer{id = UpdateTaskError})  .TaskName("updateError");
+            var deleteError     = customers.Delete(new Customer{id = DeleteTaskError})  .TaskName("deleteError");
             
             var sync = await store.TrySync(); // -------- Sync --------
             AreEqual("tasks: 5, failed: 5", sync.ToString());
@@ -524,9 +519,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var customers = store.customers;
             
             var createError = customers.Create(new Customer{id = CreateEntityError})    .TaskName("createError");
-            
             var updateError = customers.Update(new Customer{id = UpdateEntityError})    .TaskName("updateError");
-            
             var deleteError = customers.Delete(new Customer{id = DeleteEntityError})    .TaskName("deleteError");
 
             var sync = await store.TrySync(); // -------- Sync --------
