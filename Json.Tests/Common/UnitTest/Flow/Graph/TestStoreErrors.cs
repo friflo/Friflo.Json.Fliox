@@ -166,44 +166,61 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var orders = store.orders;
             var articles = store.articles;
 
-            var readOrders  = orders.Read();
-            var order1      = readOrders.Find("order-1");
-            AreEqual("Find<Order> (id: 'order-1')", order1.ToString());
-            var allArticles             = articles.QueryAll();
+            var readOrders  = orders.Read()                                                         .TaskName("readOrders");
+            var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
+            AreEqual("Find<Order> (id: 'order-1')", order1.Details);
+            var allArticles             = articles.QueryAll().TaskName("allArticles")               .TaskName("allArticles");
             var producersTask           = allArticles.ReadRefs(a => a.producer);
-            var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"));
-            var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1");
-            var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0);
-            var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2));
-            var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0));
-            var orders2WithTaskError    = orders.Query(o => o.customer.id == ReadTaskError);
+            var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");;
+            var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1")          .TaskName("ordersWithCustomer1");
+            var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
+            var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
+            var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
+            var orders2WithTaskError    = orders.Query(o => o.customer.id == ReadTaskError)         .TaskName("orders2WithTaskError");
             var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer);
+            
+            AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
+            AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
+            AreEqual("QueryTask<Article> (filter: true)",                               allArticles             .Details);
+            AreEqual("allArticles -> .producer",                                        producersTask           .Details);
+            AreEqual("QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))",  hasOrderCamera          .Details);
+            AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')",            ordersWithCustomer1     .Details);
+            AreEqual("QueryTask<Order> (filter: .items.Count() > 0)",                   read3                   .Details);
+            AreEqual("QueryTask<Order> (filter: .items.Any(i => i.amount < 2))",        ordersAnyAmountLower2   .Details);
+            AreEqual("QueryTask<Order> (filter: .items.All(i => i.amount > 0))",        ordersAllAmountGreater0 .Details);
+            AreEqual("QueryTask<Order> (filter: .customer == 'read-task-error')",       orders2WithTaskError    .Details);
+            AreEqual("orders2WithTaskError -> .customer",                               order2CustomerError     .Details);
 
-            var orderCustomer = orders.RefPath(o => o.customer);
-            ReadRefTask<Customer> customer  = readOrders.ReadRefPath(orderCustomer);
-            ReadRefTask<Customer> customer2 = readOrders.ReadRefPath(orderCustomer);
+            var orderCustomer   = orders.RefPath(o => o.customer);
+            var customer        = readOrders.ReadRefPath(orderCustomer);
+            var customer2       = readOrders.ReadRefPath(orderCustomer);
             AreSame(customer, customer2);
-            ReadRefTask<Customer> customer3 = readOrders.ReadRef(o => o.customer);
+            var customer3       = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
-            AreEqual("ReadTask<Order> (#ids: 1) -> .customer", customer.ToString());
+            AreEqual("readOrders -> .customer", customer.ToString());
 
-            var readOrders2     = orders.Read();
-            var order2          = readOrders2.Find("order-2");
+            var readOrders2     = orders.Read()                                                     .TaskName("readOrders2");
+            var order2          = readOrders2.Find("order-2")                                       .TaskName("order2");
             var order2Customer  = readOrders2.ReadRefPath(orderCustomer);
+            
+            AreEqual("readOrders -> .customer",         customer        .Details);
+            AreEqual("ReadTask<Order> (#ids: 1)",       readOrders2     .Details);
+            AreEqual("Find<Order> (id: 'order-2')",     order2          .Details);
+            AreEqual("readOrders2 -> .customer",        order2Customer  .Details);
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
-            AreEqual("ReadRefTask.Id requires Sync(). ReadTask<Order> (#ids: 1) -> .customer", e.Message);
+            AreEqual("ReadRefTask.Id requires Sync(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). ReadTask<Order> (#ids: 1) -> .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires Sync(). readOrders -> .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires Sync(). QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))", e.Message);
+            AreEqual("QueryTask.Result requires Sync(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires Sync(). QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))", e.Message);
+            AreEqual("QueryTask[] requires Sync(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("QueryTask<Article> (filter: true) -> .producer -> .employees[*]", producerEmployees.ToString());
+            AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.Details);
             
             var sync = await store.TrySync(); // -------- Sync --------
             
@@ -212,15 +229,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 5
-|- QueryTask<Article> (filter: true) # EntityErrors ~ count: 2
+|- allArticles # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- QueryTask<Article> (filter: true) -> .producer # EntityErrors ~ count: 2
+|- allArticles -> .producer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- QueryTask<Order> (filter: .customer == 'read-task-error') -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-|- ReadTask<Order> (#ids: 1) -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-|- QueryTask<Article> (filter: true) -> .producer -> .employees[*] # EntityErrors ~ count: 2
+|- orders2WithTaskError -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|- readOrders2 -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|- allArticles -> .producer -> .employees[*] # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);

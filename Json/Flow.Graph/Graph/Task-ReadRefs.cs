@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[id] : throw e;
         
         internal  override  TaskState               State       => state;
-        internal  override  string                  Details     => $"{parent.Label} -> {Selector}";
+        public    override  string                  Details     => $"{parent.Label} -> {Selector}";
         public    override  string                  ToString()  => Label;
         
         public              ReadRefsTask<T>         TaskName (string name) { this.name = name; return this; }
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Graph
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
         internal override   TaskState       State       => state;
-        internal override   string          Details     => $"{parent.Label} -> {Selector}";
+        public   override   string          Details     => $"{parent.Label} -> {Selector}";
         public   override   string          ToString()  => Label;
         
         public              ReadRefTask<T>  TaskName (string name) { this.name = name; return this; }

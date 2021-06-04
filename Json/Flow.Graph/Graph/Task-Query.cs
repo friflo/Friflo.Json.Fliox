@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? entities[id] : throw e;
             
         internal override   TaskState               State           => state;
-        internal override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
+        public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
         public   override   string                  ToString()      => Label;
         
         public              QueryTask<T>            TaskName (string name) { this.name = name; return this; }

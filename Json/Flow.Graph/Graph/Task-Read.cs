@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph
     public abstract  class FindTask<T> : SyncTask where T : Entity {
         internal                    TaskState   findState;
         
-        internal abstract override  string      Details { get; }
+        public   abstract override  string      Details { get; }
         internal abstract override  TaskState   State   { get; }
 
         internal abstract void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities);
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override   TaskState   State       => findState;
 
-        internal override   string      Details     => $"Find<{typeof(T).Name}> (id: '{id}')";
+        public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{id}')";
         public   override   string      ToString()  => Label;
         
         public              Find<T>     TaskName (string name) { this.name = name; return this; }
@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Graph
         } }
 
         internal override   TaskState       State       => findState;
-        internal override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
+        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
         public   override   string          ToString()  => Label;
         
         public              FindRange<T>    TaskName (string name) { this.name = name; return this; }
@@ -113,7 +113,7 @@ namespace Friflo.Json.Flow.Graph
         public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? results[id] : throw e;
 
         internal override   TaskState               State       => state;
-        internal override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
+        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         public   override   string                  ToString()  => Label;
         
         public              ReadTask<T>             TaskName (string name) { this.name = name; return this; }
