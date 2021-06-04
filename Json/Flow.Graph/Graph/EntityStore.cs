@@ -58,8 +58,8 @@ namespace Friflo.Json.Flow.Graph
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
         internal            StoreIntern             _intern;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              TypeStore               TypeStore   => _intern.typeStore;
-        
         public              StoreInfo               StoreInfo   => new StoreInfo(_intern.sync, _intern.setByType); 
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
