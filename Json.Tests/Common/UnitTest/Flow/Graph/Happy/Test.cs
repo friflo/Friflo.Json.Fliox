@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
-using Friflo.Json.Flow.Graph;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
-using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -138,6 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             await AssertRead            (createStore);
             await AssertRefAssignment   (useStore);
         }
+        
 
         private static async Task TestCreate(Func<PocStore, Task> test) {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
@@ -146,41 +145,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 await test(createStore);
             }
         }
-
-        private static async Task AssertRefAssignment(PocStore store) {
-            var articles    = store.articles;
-            var producers   = store.producers;
-
-            var readArticles    = articles.Read();
-            var galaxyTask      = readArticles.Find("article-galaxy"); // entity exist in database 
-            await store.Sync();  // -------- Sync --------
-
-            var galaxy = galaxyTask.Result;
-            // the referenced entity "producer-samsung" is not resolved until now.
-            Exception e;
-            e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'producer-samsung')", e.Message);
-            IsFalse(galaxy.producer.TryEntity(out Producer result));
-            IsNull(result);
-            var readProducers = producers.Read();
-            galaxy.producer.FindBy(readProducers); // schedule resolving producer reference now
-            
-            // assign producer field with id "producer-apple"
-            var iphone = new Article  { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
-            iphone.producer.FindBy(readProducers);
-            
-            var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
-            // assign producer field with entity instance tesla
-            var model3 = new Article  { id = "article-model3", name = "Model 3", producer = tesla };
-            IsTrue(model3.producer.TryEntity(out result));
-            AreSame(tesla, result);
-            
-            AreEqual("Tesla",   model3.producer.Entity.name);   // Entity is directly accessible
-
-            await store.Sync();  // -------- Sync --------
-            
-            AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible
-            AreEqual("Apple",   iphone.producer.Entity.name);   // after Sync() Entity is accessible
+        
+        private static async Task TestUse(Func<PocStore, Task> test) {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var createStore  = new PocStore(fileDatabase)) {
+                await test(createStore);
+            }
         }
     }
 }
