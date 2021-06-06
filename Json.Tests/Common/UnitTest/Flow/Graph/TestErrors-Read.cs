@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestReadTask       () { await Test(async (store, database) => await AssertReadTask         (store, database)); }
 
-                private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
+        private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             const string articleError = @"EntityErrors ~ count: 2
 | ReadError: Article 'article-1', simulated read entity error

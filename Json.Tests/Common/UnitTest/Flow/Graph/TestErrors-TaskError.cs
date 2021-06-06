@@ -18,6 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestTaskError      () { await Test(async (store, database) => await AssertTaskError        (store, database)); }
+        
         private static async Task AssertTaskError(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             TestContainer testCustomers = testDatabase.GetTestContainer("Customer");

@@ -11,7 +11,6 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public partial class TestErrors
@@ -19,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestLogChangesPatch() { await Test(async (store, database) => await AssertLogChangesPatch  (store, database)); }
 
-                private static async Task AssertLogChangesPatch(PocStore store, TestDatabase testDatabase) {
+        private static async Task AssertLogChangesPatch(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
             var customers = store.customers;

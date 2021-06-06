@@ -15,7 +15,6 @@ using UnityEngine.TestTools;
     using NUnit.Framework;
 #endif
 
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public partial class TestErrors : LeakTestsFixture

@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestTaskExceptions () { await Test(async (store, database) => await AssertTaskExceptions   (store, database)); }
 
-                private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
+        private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
             const string readTaskException      = "read-task-exception"; // throws an exception also for a Query
