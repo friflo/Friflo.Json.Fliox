@@ -35,7 +35,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
-                AddSimulationErrors(testDatabase);
                 await TestStoresErrors(useStore, testDatabase);
             }
         }
@@ -49,7 +48,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
             using (var useStore         = new PocStore(loopbackDatabase)) {
-                AddSimulationErrors(testDatabase);
                 await TestStoresErrors(useStore, testDatabase);
             }
         }
@@ -65,37 +63,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase)) {
-                        AddSimulationErrors(testDatabase);
                         await TestStoresErrors(useStore, testDatabase);
                     }
                 });
             }
         }
 
-        
-        public static void AddSimulationErrors(TestDatabase testDatabase) {
-            var articles = testDatabase.GetTestContainer("Article");
-            articles.readErrors.Add(Article2JsonError, @"{""invalidJson"" XXX}");
-            articles.readErrors.Add(Article1ReadError,      Simulate.ReadEntityError);
-            articles.readErrors.Add(ArticleInvalidJson, @"{""invalidJson"" YYY}");
-            articles.readErrors.Add(ArticleIdDontMatch, @"{""id"": ""article-unexpected-id""");
-            
-            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
-            //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
-            testCustomers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
-        }
+        // following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
 
-        /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
-        private const string Article1ReadError      = "article-1";
-        private const string Article2JsonError      = "article-2";
-        private const string ArticleInvalidJson     = "article-invalidJson";
-        private const string ArticleIdDontMatch     = "article-idDontMatch";
-     // private const string ReadEntityError        = "read-entity-error"; 
-
-        
-        private const string ReadTaskError          = "read-task-error";
-
-            
         // following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         // These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
 
@@ -116,6 +91,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
         private static async Task AssertQueryTask(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
+            const string article1ReadError      = "article-1";
+            const string article2JsonError      = "article-2";
+            const string readTaskError          = "read-task-error";
+            
+            var testArticles  = testDatabase.GetTestContainer("Article");
+            var testCustomers = testDatabase.GetTestContainer("Customer");
+            
+            testArticles. readErrors.Add(article2JsonError, @"{""invalidJson"" XXX}");
+            testArticles. readErrors.Add(article1ReadError, Simulate.ReadEntityError);
+            testCustomers.readErrors.Add(readTaskError,     Simulate.ReadTaskError);
+
             var orders = store.orders;
             var articles = store.articles;
 
@@ -129,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
-            var orders2WithTaskError    = orders.Query(o => o.customer.id == ReadTaskError)         .TaskName("orders2WithTaskError");
+            var orders2WithTaskError    = orders.Query(o => o.customer.id == readTaskError)         .TaskName("orders2WithTaskError");
             var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer);
             
             AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
@@ -248,6 +235,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
+            
+            TestContainer testArticles = testDatabase.GetTestContainer("Article");
+            const string article1ReadError      = "article-1";
+            const string article2JsonError      = "article-2";
+            const string articleInvalidJson     = "article-invalidJson";
+            const string articleIdDontMatch     = "article-idDontMatch";
+            
+            testArticles.readErrors.Add(article2JsonError, @"{""invalidJson"" XXX}");
+            testArticles.readErrors.Add(article1ReadError,      Simulate.ReadEntityError);
+            testArticles.readErrors.Add(articleInvalidJson, @"{""invalidJson"" YYY}");
+            testArticles.readErrors.Add(articleIdDontMatch, @"{""id"": ""article-unexpected-id""");
+            
             var orders = store.orders;
             var readOrders = orders.Read();
             var order1Task = readOrders.Find("order-1");
@@ -286,16 +286,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var readTask1       = store.articles.Read()                                             .TaskName("readTask1");
             var galaxy          = readTask1.Find(duplicateId)                                       .TaskName("galaxy");
-            var article1        = readTask1.Find(Article1ReadError)                                 .TaskName("article1");
-            var article1And2    = readTask1.FindRange(new [] {Article1ReadError, Article2JsonError}).TaskName("article1And2");
+            var article1        = readTask1.Find(article1ReadError)                                 .TaskName("article1");
+            var article1And2    = readTask1.FindRange(new [] {article1ReadError, article2JsonError}).TaskName("article1And2");
             var articleSet      = readTask1.FindRange(new [] {duplicateId, duplicateId, "article-ipad"}).TaskName("articleSet");
             
             var readTask2       = store.articles.Read()                                             .TaskName("readTask2"); // separate Read without errors
             var galaxy2         = readTask2.Find(duplicateId)                                       .TaskName("galaxy2");
             
             var readTask3       = store.articles.Read()                                             .TaskName("readTask3");
-            var invalidJson     = readTask3.Find(ArticleInvalidJson)                                .TaskName("invalidJson");
-            var idDontMatch     = readTask3.Find(ArticleIdDontMatch)                                .TaskName("idDontMatch");
+            var invalidJson     = readTask3.Find(articleInvalidJson)                                .TaskName("invalidJson");
+            var idDontMatch     = readTask3.Find(articleIdDontMatch)                                .TaskName("idDontMatch");
 
             // test throwing exception in case of task or entity errors
             try {

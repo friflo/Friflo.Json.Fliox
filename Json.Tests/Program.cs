@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests
             EntityDatabase localDatabase = fileDatabase;
             if (simulateErrors) {
                 var testDatabase = new TestDatabase(fileDatabase);
-                TestStoreErrors.AddSimulationErrors(testDatabase);
+                // TestStoreErrors.AddSimulationErrors(testDatabase);
                 localDatabase = testDatabase;
             }
             var hostDatabase = new HttpHostDatabase(localDatabase, "http://+:8081/");
