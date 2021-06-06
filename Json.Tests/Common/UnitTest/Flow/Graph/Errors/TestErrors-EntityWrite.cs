@@ -10,7 +10,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
-namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 {
     public partial class TestErrors
     {
