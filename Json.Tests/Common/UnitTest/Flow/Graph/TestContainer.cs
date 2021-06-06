@@ -26,7 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var container = pair.Value;
                 container.readEntityErrors.Clear();
                 container.readTaskErrors.Clear();
-                container.writeErrors.Clear();
+                container.writeEntityErrors.Clear();
+                container.writeTaskErrors.Clear();
                 container.queryErrors.Clear();
             }
         }
@@ -68,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     /// These are:
     /// <para>1. A task error set to <see cref="ICommandResult.Error"/> in a <see cref="ICommandResult"/>.</para>
     /// <para>2. Exceptions thrown by a <see cref="EntityContainer"/> command by a buggy implementation.</para>
-    /// <para>3. One or more <see cref="EntityError"/>'s added to a <see cref="TaskResult"/> entity error dictionary.</para>
+    /// <para>3. One or more <see cref="ReadError"/>'s added to a <see cref="TaskResult"/> entity error dictionary.</para>
     /// <br></br>
     /// Note: The <see cref="TestContainer"/> dont modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
     /// to avoid side effects by error tests.
@@ -78,8 +79,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private readonly    EntityContainer local;
         public  readonly    Dictionary<string, Action<EntityValue>> readEntityErrors    = new Dictionary<string, Action<EntityValue>>();
         public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
-        
-        public  readonly    Dictionary<string, string>  writeErrors = new Dictionary<string, string>();
+
+        public  readonly    Dictionary<string, Func<EntityError>>   writeEntityErrors   = new Dictionary<string, Func<EntityError>>();
+        public  readonly    Dictionary<string, Func<CommandError>>  writeTaskErrors     = new Dictionary<string, Func<CommandError>>();
+
         public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
         
 
@@ -168,29 +171,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return null;
         }
         
-        public EntityError EntityError(string id) {
+        public EntityError ReadError(string id) {
             var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read entity error");
+            return error;
+        }
+        
+        public EntityError WriteError(string id) {
+            var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write entity error");
             return error;
         }
         
         private CommandError SimulateWriteErrors(HashSet<string> entities, out Dictionary<string, EntityError> errors) {
             errors = null;
-            foreach (var errorPair in writeErrors) {
-                var id = errorPair.Key;
+            foreach (var pair in writeEntityErrors) {
+                var id = pair.Key;
                 if (entities.Contains(id)) {
-                    var error = errorPair.Value;
-                    switch (error) {
-                        case Simulate.WriteTaskException:
-                            throw new SimulationException("simulated write task exception");
-                        case Simulate.WriteTaskError:
-                            return new CommandError {message = "simulated write task error"};
-                        case Simulate.WriteEntityError:
-                            if (errors == null)
-                                errors = new Dictionary<string, EntityError>();
-                            var entityError = new EntityError(EntityErrorType.WriteError, name, id, "simulated write entity error");
-                            errors.Add(id, entityError);
-                            break;
-                    }
+                    if (errors == null)
+                        errors = new Dictionary<string, EntityError>();
+                    var fcn = pair.Value;
+                    var entityError = fcn();
+                    errors.Add(id, entityError);
+                }
+            }
+            foreach (var pair in writeTaskErrors) {
+                var id = pair.Key;
+                if (entities.Contains(id)) {
+                    var func = pair.Value;
+                    return func();
                 }
             }
             return null;
@@ -199,13 +206,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public static class Simulate
     {
-        public const string WriteEntityError    = "WRITE-ENTITY-ERROR";
-
         public const string QueryTaskException  = "QUERY-TASK-EXCEPTION";
         public const string QueryTaskError      = "QUERY-TASK-ERROR";
-        
-        public const string WriteTaskException  = "WRITE-TASK-EXCEPTION";
-        public const string WriteTaskError      = "WRITE-TASK-ERROR";
         
         public const string SyncError           = "SYNC-ERROR";
         public const string SyncException       = "SYNC-EXCEPTION";
