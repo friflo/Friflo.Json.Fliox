@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private async Task FileUse() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var createStore  = new PocStore(fileDatabase))
+            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
             using (var useStore     = new PocStore(fileDatabase)) {
                 await TestStores(createStore, useStore);
             }
@@ -134,11 +134,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         // ------------------------------------ test assertion methods ------------------------------------
         private static async Task TestStores(PocStore createStore, PocStore useStore) {
-            await WriteRead             (createStore);
+            await AssertWriteRead       (createStore);
             await AssertEntityIdentity  (createStore);
-            await AssertQueryTask       (createStore);
-            await AssertReadTask        (createStore);
+            await AssertQuery           (createStore);
+            await AssertRead            (createStore);
             await AssertRefAssignment   (useStore);
+        }
+        
+        [Test] public async Task TestWriteRead      () { await TestCreate(async (store) => await AssertWriteRead        (store)); }
+        [Test] public async Task TestEntityIdentity () { await TestCreate(async (store) => await AssertEntityIdentity   (store)); }
+        [Test] public async Task TestQueryTask      () { await TestCreate(async (store) => await AssertQuery            (store)); }
+        [Test] public async Task TestReadTask       () { await TestCreate(async (store) => await AssertRead             (store)); }
+        
+        
+        private static async Task TestCreate(Func<PocStore, Task> test) {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase)) {
+                await test(createStore);
+            }
         }
 
         private static async Task AssertRefAssignment(PocStore store) {
@@ -179,7 +193,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         private static bool lab = false;
 
-        private static async Task AssertQueryTask(PocStore store) {
+        private static async Task AssertQuery(PocStore store) {
             var orders = store.orders;
             var articles = store.articles;
 
@@ -259,7 +273,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static readonly RefPath<Order, Customer> OrderCustomer = RefPath<Order, Customer>.MemberRef(o => o.customer);
         private static readonly RefsPath<Order, Article> ItemsArticle  = RefsPath<Order, Article>.MemberRefs(o => o.items.Select(a => a.article));
         
-        private static async Task AssertReadTask(PocStore store) {
+        private static async Task AssertRead(PocStore store) {
             var orders = store.orders;
             var readOrders = orders.Read()                                      .TaskName("readOrders");
             var order1Task = readOrders.Find("order-1")                         .TaskName("order1Task");
@@ -374,7 +388,7 @@ articleSet", string.Join("\n", store.Tasks));
             IsNull(unknownTask.     Result);
         }
         
-        private static async Task WriteRead(PocStore createStore) {
+        private static async Task AssertWriteRead(PocStore createStore) {
             // --- cache empty
             var readOrders  = createStore.orders.Read();
             var orderTask   = readOrders.Find("order-1");

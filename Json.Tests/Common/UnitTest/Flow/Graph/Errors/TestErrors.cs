@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             await AssertSyncErrors      (useStore, testDatabase);
         }
         
-        private async Task Test(Func<PocStore, TestDatabase, Task> test) {
+        private static async Task Test(Func<PocStore, TestDatabase, Task> test) {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
