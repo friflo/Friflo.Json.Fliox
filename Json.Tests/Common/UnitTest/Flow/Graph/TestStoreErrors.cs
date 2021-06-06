@@ -771,8 +771,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // use Echo to simulate error/exception
             const string echoSyncError = "echo-sync-error";
             const string echoSyncException      = "echo-sync-exception";
-            testDatabase.syncErrors.Add(echoSyncError,       Simulate.SyncError);
-            testDatabase.syncErrors.Add(echoSyncException,   Simulate.SyncException);
+            testDatabase.syncErrors.Add(echoSyncError,       () => new SyncResponse{error = new SyncError{message = "simulated SyncError"}});
+            testDatabase.syncErrors.Add(echoSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask = store.Echo("Hello World");
             AreEqual("EchoTask (message: Hello World)", helloTask.ToString());

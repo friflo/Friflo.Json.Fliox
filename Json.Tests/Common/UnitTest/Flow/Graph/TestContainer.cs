@@ -12,8 +12,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
-        public  readonly    Dictionary<string, string>          syncErrors      = new Dictionary<string, string>();
+        private readonly    Dictionary<string, TestContainer>       testContainers  = new Dictionary<string, TestContainer>();
+        public  readonly    Dictionary<string, Func<SyncResponse>>  syncErrors      = new Dictionary<string, Func<SyncResponse>>();
         
         
         public TestDatabase(EntityDatabase local) {
@@ -45,14 +45,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is Echo echo) {
-                    if (!syncErrors.TryGetValue(echo.message, out string error))
+                    if (!syncErrors.TryGetValue(echo.message, out var fcn))
                         continue;
-                    switch (error) {
-                        case Simulate.SyncError:
-                            return new SyncResponse{error = new SyncError{message = "simulated SyncError"}};
-                        case Simulate.SyncException:
-                            throw new SimulationException ("simulated SyncException");
-                    }
+                    return fcn();
                 }
             }
             var response = await base.ExecuteSync(syncRequest, syncContext);
@@ -198,12 +193,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return null;
         }
     }
-
-    public static class Simulate
-    {
-        public const string SyncError           = "SYNC-ERROR";
-        public const string SyncException       = "SYNC-EXCEPTION";
-    }    
 
     public class SimulationException : Exception {
         public SimulationException(string message) : base(message) { }
