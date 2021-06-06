@@ -12,10 +12,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        public  readonly    Dictionary<string, string>  syncErrors  = new Dictionary<string, string>();
+        private readonly    Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
+        public  readonly    Dictionary<string, string>          syncErrors      = new Dictionary<string, string>();
+        
         
         public TestDatabase(EntityDatabase local) {
             this.local = local;
+        }
+        
+        public void ClearErrors() {
+            syncErrors.Clear();
+            foreach (var pair in testContainers) {
+                var container = pair.Value;
+                container.readErrors.Clear();
+                container.writeErrors.Clear();
+                container.queryErrors.Clear();
+            }
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -23,7 +35,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 return container;
             }
             EntityContainer localContainer = local.GetOrCreateContainer(name);
-            return new TestContainer(name, this, localContainer);
+            var testContainer = new TestContainer(name, this, localContainer);
+            testContainers.Add(name, testContainer);
+            return testContainer;
         }
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
@@ -64,6 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    Dictionary<string, string>  readErrors  = new Dictionary<string, string>();
         public  readonly    Dictionary<string, string>  writeErrors = new Dictionary<string, string>();
         public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
+        
+        
         
         public  override    bool            Pretty       => local.Pretty;
 

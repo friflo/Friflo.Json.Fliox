@@ -141,22 +141,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
 
         private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
-            await AssertQueryTask       (useStore);
-            await AssertReadTask        (useStore);
-            await AssertTaskExceptions  (useStore);
-            await AssertTaskError       (useStore);
-            await AssertEntityWrite     (useStore);
-            await AssertEntityPatch     (useStore);
+            await AssertQueryTask       (useStore, testDatabase);
+            await AssertReadTask        (useStore, testDatabase);
+            await AssertTaskExceptions  (useStore, testDatabase);
+            await AssertTaskError       (useStore, testDatabase);
+            await AssertEntityWrite     (useStore, testDatabase);
+            await AssertEntityPatch     (useStore, testDatabase);
             await AssertLogChangesPatch (useStore, testDatabase);
             await AssertLogChangesCreate(useStore, testDatabase);
-            await AssertSyncErrors      (useStore);
+            await AssertSyncErrors      (useStore, testDatabase);
         }
 
         private const string ArticleError = @"EntityErrors ~ count: 2
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
-        private static async Task AssertQueryTask(PocStore store) {
+        private static async Task AssertQueryTask(PocStore store, TestDatabase testDatabase) {
             var orders = store.orders;
             var articles = store.articles;
 
@@ -290,7 +290,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
         }
         
-        private static async Task AssertReadTask(PocStore store) {
+        private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
             var orders = store.orders;
             var readOrders = orders.Read();
             var order1Task = readOrders.Find("order-1");
@@ -420,7 +420,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
         }
 
-        private static async Task AssertTaskExceptions(PocStore store) {
+        private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                          .TaskName("readCustomers");
@@ -469,7 +469,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("UnhandledException ~ SimulationException: simulated write task exception", deleteError.Error.Message);
         }
         
-        private static async Task AssertTaskError(PocStore store) {
+        private static async Task AssertTaskError(PocStore store, TestDatabase testDatabase) {
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                      .TaskName("readCustomers");
@@ -509,7 +509,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("DatabaseError ~ simulated write task error", deleteError.Error.Message);
         }
         
-        private static async Task AssertEntityWrite(PocStore store) {
+        private static async Task AssertEntityWrite(PocStore store, TestDatabase testDatabase) {
             var customers = store.customers;
             
             var createError = customers.Create(new Customer{id = CreateEntityError})    .TaskName("createError");
@@ -543,7 +543,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[UpdateEntityError].ToString());
         }
 
-        private static async Task AssertEntityPatch(PocStore store) {
+        private static async Task AssertEntityPatch(PocStore store, TestDatabase testDatabase) {
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
@@ -753,7 +753,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             */
         }
         
-        private static async Task AssertSyncErrors(PocStore store) {
+        private static async Task AssertSyncErrors(PocStore store, TestDatabase testDatabase) {
             var helloTask = store.Echo("Hello World");
             AreEqual("EchoTask (message: Hello World)", helloTask.ToString());
             
