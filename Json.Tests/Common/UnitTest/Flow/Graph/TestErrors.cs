@@ -22,10 +22,10 @@ using static NUnit.Framework.Assert;
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
-    public class TestStoreErrors : LeakTestsFixture
+    public class TestErrors : LeakTestsFixture
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
-        static TestStoreErrors() { SyncTypeStore.Init(); }
+        static TestErrors() { SyncTypeStore.Init(); }
 
         
         [UnityTest] public IEnumerator FileUseCoroutine() { yield return RunAsync.Await(FileUse()); }
