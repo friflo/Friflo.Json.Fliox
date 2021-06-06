@@ -35,6 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var updateError = customers.Update(new Customer{id = updateEntityError})    .TaskName("updateError");
             var deleteError = customers.Delete(new Customer{id = deleteEntityError})    .TaskName("deleteError");
 
+            AreEqual(3, store.Tasks.Count);
             var sync = await store.TrySync(); // -------- Sync --------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());

@@ -89,6 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
             // test throwing exception in case of task or entity errors
             try {
+                AreEqual(10, store.Tasks.Count);
                 await store.Sync(); // -------- Sync --------
                 
                 Fail("Sync() intended to fail - code cannot be reached");

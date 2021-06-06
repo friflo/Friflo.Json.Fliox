@@ -44,6 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             
             var patchWriteError     = customers.Patch (new Customer{id = patchWriteEntityError}).TaskName("patchWriteError");
             
+            AreEqual(3, store.Tasks.Count);
             var sync = await store.TrySync(); // -------- Sync --------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());

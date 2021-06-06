@@ -98,6 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
+            AreEqual(14, store.Tasks.Count);
             var sync = await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);

@@ -54,7 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
                 customerReadError.Result.name   = "<change read 2>";
                 var logChanges = customers.LogSetChanges();
 
+                AreEqual(1, store.Tasks.Count);
                 var sync = await store.TrySync(); // -------- Sync --------
+                
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);

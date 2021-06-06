@@ -50,7 +50,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
                 var logChanges = store.LogChanges();
                 AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
-                var sync = await store.TrySync();
+                AreEqual(1, store.Tasks.Count);
+                var sync = await store.TrySync(); // -------- Sync --------
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
