@@ -81,16 +81,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.readErrors.Add(ArticleIdDontMatch, @"{""id"": ""article-unexpected-id""");
             
             TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
-            testCustomers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
             //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
             testCustomers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
-            
-            testCustomers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
-            testCustomers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
-            
-            testCustomers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
-            testCustomers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
-            testCustomers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
@@ -104,12 +96,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string ReadTaskError          = "read-task-error";
 
             
-        /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
-        /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
-        private const string ReadTaskException      = "read-task-exception"; // throws an exception also for a Query
-        private const string CreateTaskException    = "create-task-exception";
-        private const string UpdateTaskException    = "update-task-exception";
-        private const string DeleteTaskException    = "delete-task-exception";
+        // following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
+        // These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
+
         
         private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
             await AssertQueryTask       (useStore, testDatabase);
@@ -385,15 +374,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
+            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            const string readTaskException      = "read-task-exception"; // throws an exception also for a Query
+            const string createTaskException    = "create-task-exception";
+            const string updateTaskException    = "update-task-exception";
+            const string deleteTaskException    = "delete-task-exception";
+            
+            testCustomers.readErrors.Add(readTaskException,     Simulate.ReadTaskException);
+            testCustomers.writeErrors.Add(createTaskException,  Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(updateTaskException,  Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(deleteTaskException,  Simulate.WriteTaskException);
+            testCustomers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
+
+            
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                          .TaskName("readCustomers");
-            var customerRead    = readCustomers.Find(ReadTaskException)                     .TaskName("customerRead");
+            var customerRead    = readCustomers.Find(readTaskException)                     .TaskName("customerRead");
             var customerQuery   = customers.Query(c => c.id == "query-task-exception")      .TaskName("customerQuery");
 
-            var createError     = customers.Create(new Customer{id = CreateTaskException})  .TaskName("createError");
-            var updateError     = customers.Update(new Customer{id = UpdateTaskException})  .TaskName("updateError");
-            var deleteError     = customers.Delete(new Customer{id = DeleteTaskException})  .TaskName("deleteError");
+            var createError     = customers.Create(new Customer{id = createTaskException})  .TaskName("createError");
+            var updateError     = customers.Update(new Customer{id = updateTaskException})  .TaskName("updateError");
+            var deleteError     = customers.Delete(new Customer{id = deleteTaskException})  .TaskName("deleteError");
             
             AreEqual("CreateTask<Customer> (#ids: 1)", createError.Details);
             AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.Details);
