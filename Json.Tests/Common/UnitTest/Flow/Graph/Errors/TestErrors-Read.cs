@@ -37,9 +37,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             testArticles.readEntityErrors.Add(articleInvalidJson,   (value) => value.SetJson(@"{""invalidJson"" YYY}"));
             testArticles.readEntityErrors.Add(articleIdDontMatch,   (value) => value.SetJson(@"{""id"": ""article-unexpected-id"""));
             
-            var orders = store.orders;
-            var readOrders = orders.Read();
-            var order1Task = readOrders.Find("order-1");
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var readOrders  = orders.Read();
+            var order1Task  = readOrders.Find("order-1");
             await store.Sync();
             
             // schedule ReadRefs on an already synced Read operation
@@ -73,16 +74,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
             var duplicateId     = "article-galaxy"; // support duplicate ids
             
-            var readArticles    = store.articles.Read()                                             .TaskName("readArticles");
+            var readArticles    = articles.Read()                                                   .TaskName("readArticles");
             var galaxy          = readArticles.Find(duplicateId)                                    .TaskName("galaxy");
             var article1        = readArticles.Find(article1ReadError)                              .TaskName("article1");
             var article1And2    = readArticles.FindRange(new [] {article1ReadError, article2JsonError}).TaskName("article1And2");
             var articleSet      = readArticles.FindRange(new [] {duplicateId, duplicateId, "article-ipad"}).TaskName("articleSet");
             
-            var readArticles2   = store.articles.Read()                                             .TaskName("readArticles2"); // separate Read without errors
+            var readArticles2   = articles.Read()                                                   .TaskName("readArticles2"); // separate Read without errors
             var galaxy2         = readArticles2.Find(duplicateId)                                   .TaskName("galaxy2");
             
-            var readArticles3   = store.articles.Read()                                             .TaskName("readArticles3");
+            var readArticles3   = articles.Read()                                                   .TaskName("readArticles3");
             var invalidJson     = readArticles3.Find(articleInvalidJson)                            .TaskName("invalidJson");
             var idDontMatch     = readArticles3.Find(articleIdDontMatch)                            .TaskName("idDontMatch");
 
