@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var useStore     = new PocStore(testDatabase)) {
                 AddSimulationErrors(testDatabase);
-                await TestStoresErrors(useStore);
+                await TestStoresErrors(useStore, testDatabase);
             }
         }
         
@@ -48,11 +48,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
-            {
+            using (var useStore         = new PocStore(loopbackDatabase)) {
                 AddSimulationErrors(testDatabase);
-                using (var useStore         = new PocStore(loopbackDatabase)) {
-                    await TestStoresErrors(useStore);
-                }
+                await TestStoresErrors(useStore, testDatabase);
             }
         }
         
@@ -64,18 +62,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
             using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {
-                AddSimulationErrors(testDatabase);
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase)) {
-                        await TestStoresErrors(useStore);
+                        AddSimulationErrors(testDatabase);
+                        await TestStoresErrors(useStore, testDatabase);
                     }
                 });
             }
         }
 
-        private static TestContainer _customers;
-        private static TestContainer _producers;
         
         public static void AddSimulationErrors(TestDatabase testDatabase) {
             var articles = testDatabase.GetTestContainer("Article");
@@ -84,31 +80,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles.readErrors.Add(ArticleInvalidJson, @"{""invalidJson"" YYY}");
             articles.readErrors.Add(ArticleIdDontMatch, @"{""id"": ""article-unexpected-id""");
             
-            
-            _customers = testDatabase.GetTestContainer("Customer");
-            _producers = testDatabase.GetTestContainer("Producer");
-            _customers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
+            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            testCustomers.readErrors.Add(ReadTaskException,     Simulate.ReadTaskException);
             //customers.readErrors.Add(ReadEntityError,       Simulate.ReadEntityError);
-            _customers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
+            testCustomers.readErrors.Add(ReadTaskError,         Simulate.ReadTaskError);
             
-            _customers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
-            _customers.writeErrors.Add(CreateEntityError,    Simulate.WriteEntityError);
-            _customers.writeErrors.Add(UpdateEntityError,    Simulate.WriteEntityError);
-            _customers.writeErrors.Add(PatchWriteEntityError,Simulate.WriteEntityError);
-            _customers.readErrors. Add(PatchReadEntityError, Simulate.ReadEntityError);
+            testCustomers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
+            testCustomers.writeErrors.Add(CreateEntityError,    Simulate.WriteEntityError);
+            testCustomers.writeErrors.Add(UpdateEntityError,    Simulate.WriteEntityError);
+            testCustomers.writeErrors.Add(PatchWriteEntityError,Simulate.WriteEntityError);
+            testCustomers.readErrors. Add(PatchReadEntityError, Simulate.ReadEntityError);
 
-            _customers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
-            _customers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
+            testCustomers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
+            testCustomers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
             
-            _customers.writeErrors.Add(CreateTaskError,      Simulate.WriteTaskError);
-            _customers.writeErrors.Add(UpdateTaskError,      Simulate.WriteTaskError);
-            _customers.writeErrors.Add(DeleteTaskError,      Simulate.WriteTaskError);
-            _customers.writeErrors.Add(PatchTaskError,       Simulate.WriteTaskError);
+            testCustomers.writeErrors.Add(CreateTaskError,      Simulate.WriteTaskError);
+            testCustomers.writeErrors.Add(UpdateTaskError,      Simulate.WriteTaskError);
+            testCustomers.writeErrors.Add(DeleteTaskError,      Simulate.WriteTaskError);
+            testCustomers.writeErrors.Add(PatchTaskError,       Simulate.WriteTaskError);
 
-            _customers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
-            _customers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
-            _customers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
-            _customers.writeErrors.Add(PatchTaskException,   Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(PatchTaskException,   Simulate.WriteTaskException);
             
             testDatabase.syncErrors.Add(EchoSyncError,       Simulate.SyncError);
             testDatabase.syncErrors.Add(EchoSyncException,   Simulate.SyncException);
@@ -146,15 +140,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string EchoSyncException      = "echo-sync-exception";
         
 
-        private static async Task TestStoresErrors(PocStore useStore) {
+        private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
             await AssertQueryTask       (useStore);
             await AssertReadTask        (useStore);
             await AssertTaskExceptions  (useStore);
             await AssertTaskError       (useStore);
             await AssertEntityWrite     (useStore);
             await AssertEntityPatch     (useStore);
-            await AssertLogChangesPatch (useStore);
-            await AssertLogChangesCreate(useStore);
+            await AssertLogChangesPatch (useStore, testDatabase);
+            await AssertLogChangesCreate(useStore, testDatabase);
             await AssertSyncErrors      (useStore);
         }
 
@@ -632,7 +626,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        private static async Task AssertLogChangesPatch(PocStore store) {
+        private static async Task AssertLogChangesPatch(PocStore store, TestDatabase testDatabase) {
+            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
             var customers = store.customers;
             
             // --- prepare precondition for log changes
@@ -646,8 +641,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // --- setup simulation errors after preconditions are established
             {
-                _customers.writeErrors.Add(writeError,  Simulate.WriteEntityError);
-                _customers.readErrors. Add(readError,   Simulate.ReadEntityError);
+                testCustomers.writeErrors.Add(writeError,  Simulate.WriteEntityError);
+                testCustomers.readErrors. Add(readError,   Simulate.ReadEntityError);
 
                 customerWriteError.Result.name  = "<change write 1>";
                 customerReadError.Result.name   = "<change read 1>";
@@ -662,7 +657,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ReadError: Customer 'log-patch-entity-read-error', simulated read entity error
 | WriteError: Customer 'log-patch-entity-write-error', simulated write entity error", logChanges.Error.Message);
             } {
-                _customers.readErrors [readError]    = Simulate.ReadTaskException;
+                testCustomers.readErrors [readError]    = Simulate.ReadTaskException;
                 customerReadError.Result.name   = "<change read 2>";
                 var logChanges = customers.LogSetChanges();
 
@@ -673,7 +668,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(@"EntityErrors ~ count: 1
 | PatchError: Customer 'log-patch-entity-read-error', UnhandledException - SimulationException: simulated read task exception", logChanges.Error.Message);
             } {
-                _customers.readErrors [readError]    = Simulate.ReadTaskError;
+                testCustomers.readErrors [readError]    = Simulate.ReadTaskError;
                 customerReadError.Result.name   = "<change read 3>";
                 var logChanges = customers.LogSetChanges();
 
@@ -684,8 +679,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(@"EntityErrors ~ count: 1
 | PatchError: Customer 'log-patch-entity-read-error', DatabaseError - simulated read task error", logChanges.Error.Message);
             } {
-                _customers.readErrors.Remove(readError);
-                _customers.writeErrors [writeError]    = Simulate.WriteTaskException;
+                testCustomers.readErrors.Remove(readError);
+                testCustomers.writeErrors [writeError]    = Simulate.WriteTaskException;
                 customerWriteError.Result.name   = "<change write 3>";
                 customerReadError.Result.name   = "<change read 1>"; // restore original value
                 var logChanges = customers.LogSetChanges();
@@ -697,7 +692,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual(@"EntityErrors ~ count: 1
 | PatchError: Customer 'log-patch-entity-write-error', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             } {
-                _customers.writeErrors [writeError]    = Simulate.WriteTaskError;
+                testCustomers.writeErrors [writeError]    = Simulate.WriteTaskError;
                 customerWriteError.Result.name   = "<change write 4>";
                 var logChanges = customers.LogSetChanges();
 
@@ -712,7 +707,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
-        private static async Task AssertLogChangesCreate(PocStore store) {
+        private static async Task AssertLogChangesCreate(PocStore store, TestDatabase testDatabase) {
+            TestContainer testProducers = testDatabase.GetTestContainer("Producer");
             var articles = store.articles;
 
             // --- prepare precondition for log changes
@@ -722,7 +718,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             {
                 var createError = "create-error";
-                _producers.writeErrors.Add(createError, Simulate.WriteTaskError);
+                testProducers.writeErrors.Add(createError, Simulate.WriteTaskError);
                 patchArticle.Result.producer = new Producer {id = createError};
 
                 var logChanges = store.LogChanges();
@@ -736,7 +732,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
             } {
                 var createException = "create-exception";
-                _producers.writeErrors.Add(createException, Simulate.WriteTaskException);
+                testProducers.writeErrors.Add(createException, Simulate.WriteTaskException);
                 patchArticle.Result.producer = new Producer {id = createException};
 
                 var logChanges = store.LogChanges();
