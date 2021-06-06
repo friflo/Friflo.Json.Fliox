@@ -24,7 +24,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             syncErrors.Clear();
             foreach (var pair in testContainers) {
                 var container = pair.Value;
-                container.readErrors.Clear();
+                container.readEntityErrors.Clear();
+                container.readTaskErrors.Clear();
                 container.writeErrors.Clear();
                 container.queryErrors.Clear();
             }
@@ -75,11 +76,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class TestContainer : EntityContainer
     {
         private readonly    EntityContainer local;
-        public  readonly    Dictionary<string, string>  readErrors  = new Dictionary<string, string>();
+        public  readonly    Dictionary<string, Action<EntityValue>> readEntityErrors    = new Dictionary<string, Action<EntityValue>>();
+        public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
+        
         public  readonly    Dictionary<string, string>  writeErrors = new Dictionary<string, string>();
         public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
         
-        
+
         
         public  override    bool            Pretty       => local.Pretty;
 
@@ -148,27 +151,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         // --- simulate read/write error methods
         private CommandError SimulateReadErrors(Dictionary<string,EntityValue> entities) {
-            foreach (var readPair in readErrors) {
-                var id      = readPair.Key;
+            foreach (var pair in readEntityErrors) {
+                var id      = pair.Key;
                 if (entities.TryGetValue(id, out EntityValue value)) {
-                    var payload = readPair.Value;
-                    switch (payload) {
-                        case Simulate.ReadEntityError:
-                            value.SetJson("null");
-                            var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read entity error");
-                            value.SetError(error);
-                            break;
-                        case Simulate.ReadTaskError:
-                            return new CommandError{message = "simulated read task error"};
-                        case Simulate.ReadTaskException:
-                            throw new SimulationException("simulated read task exception");
-                        default:
-                            value.SetJson(payload); // modify JSON
-                            break;
-                    }
+                    var action = pair.Value;
+                    action(value);
+                }
+            }
+            foreach (var pair in readTaskErrors) {
+                var id      = pair.Key;
+                if (entities.TryGetValue(id, out EntityValue value)) {
+                    var func = pair.Value;
+                    return func();
                 }
             }
             return null;
+        }
+        
+        public EntityError EntityError(string id) {
+            var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read entity error");
+            return error;
         }
         
         private CommandError SimulateWriteErrors(HashSet<string> entities, out Dictionary<string, EntityError> errors) {
@@ -197,12 +199,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public static class Simulate
     {
-        public const string ReadEntityError     = "READ-ENTITY-ERROR";
         public const string WriteEntityError    = "WRITE-ENTITY-ERROR";
 
-        public const string ReadTaskError       = "READ-TASK-ERROR";
-        public const string ReadTaskException   = "READ-TASK-EXCEPTION";
-        
         public const string QueryTaskException  = "QUERY-TASK-EXCEPTION";
         public const string QueryTaskError      = "QUERY-TASK-ERROR";
         
