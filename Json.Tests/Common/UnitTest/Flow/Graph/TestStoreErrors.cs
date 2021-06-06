@@ -382,9 +382,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             const string deleteTaskException    = "delete-task-exception";
             
             testCustomers.readTaskErrors. Add(readTaskException,    () => throw new SimulationException("simulated read task exception"));
-            testCustomers.writeTaskErrors.Add(createTaskException,  () => throw new SimulationException("simulated write task exception"));
-            testCustomers.writeTaskErrors.Add(updateTaskException,  () => throw new SimulationException("simulated write task exception"));
-            testCustomers.writeTaskErrors.Add(deleteTaskException,  () => throw new SimulationException("simulated write task exception"));
+            testCustomers.writeTaskErrors.Add(createTaskException,  () => throw new SimulationException("simulated create task exception"));
+            testCustomers.writeTaskErrors.Add(updateTaskException,  () => throw new SimulationException("simulated update task exception"));
+            testCustomers.writeTaskErrors.Add(deleteTaskException,  () => throw new SimulationException("simulated delete task exception"));
             // Query(c => c.id == "query-task-exception")
             testCustomers.queryErrors.Add(".id == 'query-task-exception'", () => throw new SimulationException("simulated query exception"));
 
@@ -415,9 +415,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(@"Sync() failed with task errors. Count: 5
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
-|- createError # UnhandledException ~ SimulationException: simulated write task exception
-|- updateError # UnhandledException ~ SimulationException: simulated write task exception
-|- deleteError # UnhandledException ~ SimulationException: simulated write task exception", sync.Message);
+|- createError # UnhandledException ~ SimulationException: simulated create task exception
+|- updateError # UnhandledException ~ SimulationException: simulated update task exception
+|- deleteError # UnhandledException ~ SimulationException: simulated delete task exception", sync.Message);
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -428,13 +428,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual("UnhandledException ~ SimulationException: simulated query exception", te.error.Message);
 
             IsFalse(createError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated write task exception", createError.Error.Message);
+            AreEqual("UnhandledException ~ SimulationException: simulated create task exception", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated write task exception", updateError.Error.Message);
+            AreEqual("UnhandledException ~ SimulationException: simulated update task exception", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated write task exception", deleteError.Error.Message);
+            AreEqual("UnhandledException ~ SimulationException: simulated delete task exception", deleteError.Error.Message);
         }
         
         private static async Task AssertTaskError(PocStore store, TestDatabase testDatabase) {
@@ -446,9 +446,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             const string deleteTaskError        = "delete-task-error";
             const string readTaskError          = "read-task-error";
             
-            testCustomers.writeTaskErrors.Add(createTaskError,  () => new CommandError {message = "simulated write task error"});
-            testCustomers.writeTaskErrors.Add(updateTaskError,  () => new CommandError {message = "simulated write task error"});
-            testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new CommandError {message = "simulated write task error"});
+            testCustomers.writeTaskErrors.Add(createTaskError,  () => new CommandError {message = "simulated create task error"});
+            testCustomers.writeTaskErrors.Add(updateTaskError,  () => new CommandError {message = "simulated update task error"});
+            testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new CommandError {message = "simulated delete task error"});
             testCustomers.readTaskErrors. Add(readTaskError,    () => new CommandError{message = "simulated read task error"});
             // Query(c => c.id == "query-task-error")
             testCustomers.queryErrors.Add(".id == 'query-task-error'", () => new QueryEntitiesResult {Error = new CommandError {message = "simulated query error"}});
@@ -469,9 +469,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(@"Sync() failed with task errors. Count: 5
 |- customerRead # DatabaseError ~ simulated read task error
 |- customerQuery # DatabaseError ~ simulated query error
-|- createError # DatabaseError ~ simulated write task error
-|- updateError # DatabaseError ~ simulated write task error
-|- deleteError # DatabaseError ~ simulated write task error", sync.Message);
+|- createError # DatabaseError ~ simulated create task error
+|- updateError # DatabaseError ~ simulated update task error
+|- deleteError # DatabaseError ~ simulated delete task error", sync.Message);
 
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
@@ -483,13 +483,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreEqual(TaskErrorType.DatabaseError, customerQuery.Error.type);
             
             IsFalse(createError.Success);
-            AreEqual("DatabaseError ~ simulated write task error", createError.Error.Message);
+            AreEqual("DatabaseError ~ simulated create task error", createError.Error.Message);
             
             IsFalse(updateError.Success);
-            AreEqual("DatabaseError ~ simulated write task error", updateError.Error.Message);
+            AreEqual("DatabaseError ~ simulated update task error", updateError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("DatabaseError ~ simulated write task error", deleteError.Error.Message);
+            AreEqual("DatabaseError ~ simulated delete task error", deleteError.Error.Message);
         }
         
         private static async Task AssertEntityWrite(PocStore store, TestDatabase testDatabase) {
@@ -549,8 +549,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             testCustomers.writeEntityErrors.Add(patchWriteEntityError,  () => testCustomers.WriteError(patchWriteEntityError));
             testCustomers.readEntityErrors. Add(patchReadEntityError,   (value) => value.SetError(testCustomers.ReadError(patchReadEntityError)));
-            testCustomers.writeTaskErrors.  Add(patchTaskException,     () => throw new SimulationException("simulated write task exception"));
-            testCustomers.writeTaskErrors.  Add(patchTaskError,         () => new CommandError {message = "simulated write task error"});
+            testCustomers.writeTaskErrors.  Add(patchTaskException,     () => throw new SimulationException("simulated patch task exception"));
+            testCustomers.writeTaskErrors.  Add(patchTaskError,         () => new CommandError {message = "simulated patch task error"});
             testCustomers.readTaskErrors.   Add(readTaskError,          () => new CommandError{message = "simulated read task error"});
             testCustomers.readTaskErrors.   Add(readTaskException,      () => throw new SimulationException("simulated read task exception"));
 
@@ -621,7 +621,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteError.Success);
-                AreEqual("DatabaseError ~ simulated write task error", patchTaskWriteError.Error.Message);
+                AreEqual("DatabaseError ~ simulated patch task error", patchTaskWriteError.Error.Message);
             }
             
             // --- test write task exception
@@ -632,7 +632,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual("UnhandledException ~ SimulationException: simulated write task exception", patchTaskWriteException.Error.Message);
+                AreEqual("UnhandledException ~ SimulationException: simulated patch task exception", patchTaskWriteException.Error.Message);
             }
         }
 
@@ -730,7 +730,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             {
                 var createError = "create-error";
-                testProducers.writeTaskErrors.Add(createError, () => new CommandError {message = "simulated write task error"});
+                testProducers.writeTaskErrors.Add(createError, () => new CommandError {message = "simulated create task error"});
                 patchArticle.Result.producer = new Producer {id = createError};
 
                 var logChanges = store.LogChanges();
@@ -741,10 +741,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| WriteError: Producer 'create-error', DatabaseError - simulated write task error", logChanges.Error.Message);
+| WriteError: Producer 'create-error', DatabaseError - simulated create task error", logChanges.Error.Message);
             } {
                 var createException = "create-exception";
-                testProducers.writeTaskErrors.Add(createException, () => throw new SimulationException("simulated write task exception"));
+                testProducers.writeTaskErrors.Add(createException, () => throw new SimulationException("simulated create task exception"));
                 patchArticle.Result.producer = new Producer {id = createException};
 
                 var logChanges = store.LogChanges();
@@ -755,7 +755,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
+| WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
             }
 
             /*  // not required as TestContainer as database dont mutate
