@@ -70,6 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
         }
 
+        // ------ Test all topics on different EntityDatabase implementations
         private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
             await AssertQueryTask       (useStore, testDatabase);
             await AssertReadTask        (useStore, testDatabase);
@@ -80,6 +81,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertLogChangesPatch (useStore, testDatabase);
             await AssertLogChangesCreate(useStore, testDatabase);
             await AssertSyncErrors      (useStore, testDatabase);
+        }
+        
+        // ------ Test each topic individual - using a FileDatabase
+        [Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
+        [Test] public async Task TestReadTask       () { await Test(async (store, database) => await AssertReadTask         (store, database)); }
+        [Test] public async Task TestTaskExceptions () { await Test(async (store, database) => await AssertTaskExceptions   (store, database)); }
+        [Test] public async Task TestTaskError      () { await Test(async (store, database) => await AssertTaskError        (store, database)); }
+        [Test] public async Task TestEntityWrite    () { await Test(async (store, database) => await AssertEntityWrite      (store, database)); }
+        [Test] public async Task TestEntityPatch    () { await Test(async (store, database) => await AssertEntityPatch      (store, database)); }
+        [Test] public async Task TestLogChangesPatch() { await Test(async (store, database) => await AssertLogChangesPatch  (store, database)); }
+        [Test] public async Task TestLogChangesCreate(){ await Test(async (store, database) => await AssertLogChangesCreate (store, database)); }
+        [Test] public async Task TestSyncErrors     () { await Test(async (store, database) => await AssertSyncErrors       (store, database)); }
+        
+        private async Task Test(Func<PocStore, TestDatabase, Task> test) {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var useStore     = new PocStore(testDatabase)) {
+                await test(useStore, testDatabase);
+            }
         }
         
         
