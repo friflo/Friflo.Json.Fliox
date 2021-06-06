@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    Dictionary<string, Func<EntityError>>   writeEntityErrors   = new Dictionary<string, Func<EntityError>>();
         public  readonly    Dictionary<string, Func<CommandError>>  writeTaskErrors     = new Dictionary<string, Func<CommandError>>();
 
-        public  readonly    Dictionary<string, string>  queryErrors = new Dictionary<string, string>();
+        public  readonly    Dictionary<string, Func<QueryEntitiesResult>>  queryErrors = new Dictionary<string,  Func<QueryEntitiesResult>>();
         
 
         
@@ -140,13 +140,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 result.Error = databaseError;
                 return result;
             }
-            if (queryErrors.TryGetValue(command.filterLinq, out string filterLinq)) {
-                switch (filterLinq) {
-                    case Simulate.QueryTaskException:
-                        throw new SimulationException("simulated query exception");
-                    case Simulate.QueryTaskError:
-                        return new QueryEntitiesResult {Error = new CommandError {message = "simulated query error"}};
-                }
+            if (queryErrors.TryGetValue(command.filterLinq, out var func)) {
+                return func();
             }
             return result;
         }
@@ -206,9 +201,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public static class Simulate
     {
-        public const string QueryTaskException  = "QUERY-TASK-EXCEPTION";
-        public const string QueryTaskError      = "QUERY-TASK-ERROR";
-        
         public const string SyncError           = "SYNC-ERROR";
         public const string SyncException       = "SYNC-EXCEPTION";
     }    

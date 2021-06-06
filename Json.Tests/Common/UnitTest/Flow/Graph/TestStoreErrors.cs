@@ -386,7 +386,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             testCustomers.writeTaskErrors.Add(createTaskException,  () => throw new SimulationException("simulated write task exception"));
             testCustomers.writeTaskErrors.Add(updateTaskException,  () => throw new SimulationException("simulated write task exception"));
             testCustomers.writeTaskErrors.Add(deleteTaskException,  () => throw new SimulationException("simulated write task exception"));
-            testCustomers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
+            // Query(c => c.id == "query-task-exception")
+            testCustomers.queryErrors.Add(".id == 'query-task-exception'", () => throw new SimulationException("simulated query exception"));
 
             
             var customers = store.customers;
@@ -450,7 +451,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             testCustomers.writeTaskErrors.Add(updateTaskError,  () => new CommandError {message = "simulated write task error"});
             testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new CommandError {message = "simulated write task error"});
             testCustomers.readTaskErrors.Add(readTaskError,     () => new CommandError{message = "simulated read task error"});
-            testCustomers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
+            // Query(c => c.id == "query-task-error")
+            testCustomers.queryErrors.Add(".id == 'query-task-error'", () => new QueryEntitiesResult {Error = new CommandError {message = "simulated query error"}});
         
             var customers = store.customers;
 
