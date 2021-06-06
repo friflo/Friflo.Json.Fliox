@@ -88,8 +88,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             testCustomers.writeErrors.Add(DeleteEntityError,    Simulate.WriteEntityError);
             testCustomers.writeErrors.Add(CreateEntityError,    Simulate.WriteEntityError);
             testCustomers.writeErrors.Add(UpdateEntityError,    Simulate.WriteEntityError);
-            testCustomers.writeErrors.Add(PatchWriteEntityError,Simulate.WriteEntityError);
-            testCustomers.readErrors. Add(PatchReadEntityError, Simulate.ReadEntityError);
 
             testCustomers.queryErrors.Add(".id == 'query-task-exception'",  Simulate.QueryTaskException); // == Query(c => c.id == "query-task-exception")
             testCustomers.queryErrors.Add(".id == 'query-task-error'",      Simulate.QueryTaskError);     // == Query(c => c.id == "query-task-error")
@@ -97,15 +95,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             testCustomers.writeErrors.Add(CreateTaskError,      Simulate.WriteTaskError);
             testCustomers.writeErrors.Add(UpdateTaskError,      Simulate.WriteTaskError);
             testCustomers.writeErrors.Add(DeleteTaskError,      Simulate.WriteTaskError);
-            testCustomers.writeErrors.Add(PatchTaskError,       Simulate.WriteTaskError);
 
             testCustomers.writeErrors.Add(CreateTaskException,  Simulate.WriteTaskException);
             testCustomers.writeErrors.Add(UpdateTaskException,  Simulate.WriteTaskException);
             testCustomers.writeErrors.Add(DeleteTaskException,  Simulate.WriteTaskException);
-            testCustomers.writeErrors.Add(PatchTaskException,   Simulate.WriteTaskException);
-            
-            testDatabase.syncErrors.Add(EchoSyncError,       Simulate.SyncError);
-            testDatabase.syncErrors.Add(EchoSyncException,   Simulate.SyncException);
         }
 
         /// following strings are used as entity ids to invoke a handled <see cref="TaskError"/> via <see cref="TestContainer"/>
@@ -118,14 +111,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string CreateEntityError      = "create-entity-error";
         private const string UpdateEntityError      = "update-entity-error";
         
-        private const string PatchReadEntityError   = "patch-read-entity-error";
-        private const string PatchWriteEntityError  = "patch-write-entity-error";
-
         private const string ReadTaskError          = "read-task-error";
         private const string CreateTaskError        = "create-task-error";
         private const string UpdateTaskError        = "update-task-error";
         private const string DeleteTaskError        = "delete-task-error";
-        private const string PatchTaskError         = "patch-task-error";
             
         /// following strings are used as entity ids to invoke an <see cref="TaskErrorType.UnhandledException"/> via <see cref="TestContainer"/>
         /// These test assertions ensure that all unhandled exceptions (bugs) are caught in a <see cref="EntityContainer"/> implementation.
@@ -133,13 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private const string CreateTaskException    = "create-task-exception";
         private const string UpdateTaskException    = "update-task-exception";
         private const string DeleteTaskException    = "delete-task-exception";
-        private const string PatchTaskException     = "patch-task-exception";
         
-        // use Echo to simulate error/exception
-        private const string EchoSyncError          = "echo-sync-error";
-        private const string EchoSyncException      = "echo-sync-exception";
-        
-
         private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
             await AssertQueryTask       (useStore, testDatabase);
             await AssertReadTask        (useStore, testDatabase);
@@ -149,8 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await AssertEntityPatch     (useStore, testDatabase);
             await AssertLogChangesPatch (useStore, testDatabase);
             await AssertLogChangesCreate(useStore, testDatabase);
-            await AssertSyncErrors      (useStore, testDatabase);
-        }
+            await AssertSyncErrors      (useStore, testDatabase); }
 
         private const string ArticleError = @"EntityErrors ~ count: 2
 | ReadError: Article 'article-1', simulated read entity error
@@ -538,14 +520,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertEntityPatch(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
+            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            const string patchReadEntityError   = "patch-read-entity-error";
+            const string patchWriteEntityError  = "patch-write-entity-error";
+            const string patchTaskException     = "patch-task-exception";
+            const string patchTaskError         = "patch-task-error";
+            const string readTaskError          = "read-task-error";
+            const string readTaskException      = "read-task-exception";
+
+            testCustomers.writeErrors.Add(patchWriteEntityError,Simulate.WriteEntityError);
+            testCustomers.readErrors. Add(patchReadEntityError, Simulate.ReadEntityError);
+            testCustomers.writeErrors.Add(patchTaskException,   Simulate.WriteTaskException);
+            testCustomers.writeErrors.Add(patchTaskError,       Simulate.WriteTaskError);
+            testCustomers.readErrors .Add(readTaskError,        Simulate.ReadTaskError);
+            testCustomers.readErrors .Add(readTaskException,    Simulate.ReadTaskException);
+
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
             var patchNotFound       = customers.Patch (new Customer{id = unknownId})            .TaskName("patchNotFound");
             
-            var patchReadError      = customers.Patch (new Customer{id = PatchReadEntityError}) .TaskName("patchReadError");
+            var patchReadError      = customers.Patch (new Customer{id = patchReadEntityError}) .TaskName("patchReadError");
             
-            var patchWriteError     = customers.Patch (new Customer{id = PatchWriteEntityError}).TaskName("patchWriteError");
+            var patchWriteError     = customers.Patch (new Customer{id = patchWriteEntityError}).TaskName("patchWriteError");
             
             var sync = await store.TrySync(); // -------- Sync --------
             
@@ -567,17 +565,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 IsFalse(patchReadError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchReadError.Error.type);
                 var patchErrors = patchReadError.Error.entityErrors;
-                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[PatchReadEntityError].ToString());
+                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[patchReadEntityError].ToString());
             } {
                 IsFalse(patchWriteError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
                 var patchErrors = patchWriteError.Error.entityErrors;
-                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[PatchWriteEntityError].ToString());
+                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[patchWriteEntityError].ToString());
             }
             
             // --- test read task error
             {
-                var patchTaskReadError = customers.Patch(new Customer {id = ReadTaskError});
+                var patchTaskReadError = customers.Patch(new Customer {id = readTaskError});
 
                 sync = await store.TrySync(); // -------- Sync --------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -588,7 +586,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // --- test read task exception
             {
-                var patchTaskReadException = customers.Patch(new Customer {id = ReadTaskException});
+                var patchTaskReadException = customers.Patch(new Customer {id = readTaskException});
 
                 sync = await store.TrySync(); // -------- Sync --------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -599,7 +597,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // --- test write task error
             {
-                var patchTaskWriteError = customers.Patch(new Customer {id = PatchTaskError});
+                var patchTaskWriteError = customers.Patch(new Customer {id = patchTaskError});
 
                 sync = await store.TrySync(); // -------- Sync --------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -610,7 +608,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             // --- test write task exception
             {
-                var patchTaskWriteException = customers.Patch(new Customer {id = PatchTaskException});
+                var patchTaskWriteException = customers.Patch(new Customer {id = patchTaskException});
 
                 sync = await store.TrySync(); // -------- Sync --------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -621,6 +619,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertLogChangesPatch(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
             TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
             var customers = store.customers;
             
@@ -702,6 +701,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         private static async Task AssertLogChangesCreate(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
             TestContainer testProducers = testDatabase.GetTestContainer("Producer");
             var articles = store.articles;
 
@@ -748,6 +748,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         private static async Task AssertSyncErrors(PocStore store, TestDatabase testDatabase) {
+            testDatabase.ClearErrors();
+            // use Echo to simulate error/exception
+            const string echoSyncError = "echo-sync-error";
+            const string echoSyncException      = "echo-sync-exception";
+            testDatabase.syncErrors.Add(echoSyncError,       Simulate.SyncError);
+            testDatabase.syncErrors.Add(echoSyncException,   Simulate.SyncException);
+            
             var helloTask = store.Echo("Hello World");
             AreEqual("EchoTask (message: Hello World)", helloTask.ToString());
             
@@ -757,7 +764,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
             // --- Sync error
             {
-                var syncError = store.Echo(EchoSyncError);
+                var syncError = store.Echo(echoSyncError);
                 
                 // test throwing exception in case of Sync errors
                 try {
@@ -773,7 +780,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
             // --- Sync exception
             {
-                var syncException = store.Echo(EchoSyncException);
+                var syncException = store.Echo(echoSyncException);
                 
                 var sync = await store.TrySync(); // -------- Sync --------
                 
