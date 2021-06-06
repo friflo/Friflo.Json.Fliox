@@ -668,7 +668,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 | ReadError: Customer 'log-patch-entity-read-error', simulated read entity error
 | WriteError: Customer 'log-patch-entity-write-error', simulated write entity error", logChanges.Error.Message);
             } {
-                testCustomers.readTaskErrors [readError]    = () => throw new SimulationException("simulated read task exception");;
+                testCustomers.readTaskErrors [readError]    = () => throw new SimulationException("simulated read task exception");
                 customerReadError.Result.name   = "<change read 2>";
                 var logChanges = customers.LogSetChanges();
 

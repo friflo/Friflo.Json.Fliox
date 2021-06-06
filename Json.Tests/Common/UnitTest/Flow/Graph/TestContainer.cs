@@ -118,7 +118,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         /// Validation of JSON entity values in result set is required, as this this implementation is able to
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
-        /// E.g. the invalid JSON value used for <see cref="TestStoreErrors.Article2JsonError"/> 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
             var result = await local.ReadEntities(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
@@ -153,7 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
             foreach (var pair in readTaskErrors) {
                 var id      = pair.Key;
-                if (entities.TryGetValue(id, out EntityValue value)) {
+                if (entities.ContainsKey(id)) {
                     var func = pair.Value;
                     return func();
                 }
