@@ -46,19 +46,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
             AreEqual("Find<Order> (id: 'order-1')", order1.Details);
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
-            var producersTask           = allArticles.ReadRefs(a => a.producer);
+            var articleProducer         = allArticles.ReadRefs(a => a.producer)                     .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1")          .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             var orders2WithTaskError    = orders.Query(o => o.customer.id == readTaskError)         .TaskName("orders2WithTaskError");
-            var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer);
+            var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer)            .TaskName("order2CustomerError");
             
             AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
             AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
             AreEqual("QueryTask<Article> (filter: true)",                               allArticles             .Details);
-            AreEqual("allArticles -> .producer",                                        producersTask           .Details);
+            AreEqual("allArticles -> .producer",                                        articleProducer         .Details);
             AreEqual("QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))",  hasOrderCamera          .Details);
             AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')",            ordersWithCustomer1     .Details);
             AreEqual("QueryTask<Order> (filter: .items.Count() > 0)",                   read3                   .Details);
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
             var readOrders2     = orders.Read()                                                     .TaskName("readOrders2");
             var order2          = readOrders2.Find("order-2")                                       .TaskName("order2");
-            var order2Customer  = readOrders2.ReadRefPath(orderCustomer);
+            var order2Customer  = readOrders2.ReadRefPath(orderCustomer)                            .TaskName("order2Customer");
             
             AreEqual("readOrders -> .customer",         customer        .Details);
             AreEqual("ReadTask<Order> (#ids: 1)",       readOrders2     .Details);
@@ -95,8 +95,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires Sync(). hasOrderCamera", e.Message);
 
-            var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.Details);
+            var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
+            AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             var sync = await store.TrySync(); // -------- Sync --------
             
@@ -108,12 +108,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 |- allArticles # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- allArticles -> .producer # EntityErrors ~ count: 2
+|- articleProducer # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
-|- orders2WithTaskError -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-|- readOrders2 -> .customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
-|- allArticles -> .producer -> .employees[*] # EntityErrors ~ count: 2
+|- order2CustomerError # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|- order2Customer # DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error
+|- producerEmployees # EntityErrors ~ count: 2
 |   ReadError: Article 'article-1', simulated read entity error
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
@@ -147,8 +147,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             AreEqual("customer-1",      customer.Id);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
-            IsFalse(producersTask.Success);
-            te = Throws<TaskResultException>(() => { var _ = producersTask.Results; });
+            IsFalse(articleProducer.Success);
+            te = Throws<TaskResultException>(() => { var _ = articleProducer.Results; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
                 
