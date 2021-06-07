@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Graph
         ///
         /// Optimization note:
         /// In case an application create many (> 10) <see cref="EntityStore"/> instances it should provide
-        /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused.
+        /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
         protected EntityStore(EntityDatabase database, TypeStore typeStore) {
