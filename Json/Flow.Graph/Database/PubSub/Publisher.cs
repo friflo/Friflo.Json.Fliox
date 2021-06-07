@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
+using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database.PubSub
 {
@@ -34,6 +35,8 @@ namespace Friflo.Json.Flow.Database.PubSub
     
     public class Publisher : ISyncObserver
     {
+        private readonly JsonEvaluator jsonEvaluator = new JsonEvaluator();
+            
         public void Subscribe (EntityDatabase database, Subscription subscription) {
             var subscriber = new Subscriber {
                 database        = database,
@@ -67,29 +70,27 @@ namespace Friflo.Json.Flow.Database.PubSub
         }
         
         private DatabaseTask FilterTask (DatabaseTask task, Subscription subscription) {
-            ContainerFilter filter;
+            ContainerFilter containerFilter;
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
-                    filter = FindFilter(subscription, create.container, TaskType.create);
-                    if (filter == null)
+                    containerFilter = FindFilter(subscription, create.container, TaskType.create);
+                    if (containerFilter == null)
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = create.entities // new Dictionary<string, EntityValue>()
+                        entities    = FilterEntities(containerFilter.filter, create.entities)
                     };
-                    // todo apply filter to create.entities
                     return createResult;
                 case TaskType.update:
                     var update = (UpdateEntities) task;
-                    filter = FindFilter(subscription, update.container, TaskType.update);
-                    if (filter == null)
+                    containerFilter = FindFilter(subscription, update.container, TaskType.update);
+                    if (containerFilter == null)
                         return null;
                     var updateResult = new UpdateEntities {
                         container   = update.container,
-                        entities    = update.entities // new Dictionary<string, EntityValue>()
+                        entities    = FilterEntities(containerFilter.filter, update.entities)
                     };
-                    // todo apply filter to update.entities
                     return updateResult;
                 case TaskType.delete:
                     // todo
@@ -100,6 +101,23 @@ namespace Friflo.Json.Flow.Database.PubSub
                 default:
                     return null;
             }
+        }
+        
+        private Dictionary<string, EntityValue> FilterEntities (FilterOperation filter, Dictionary<string, EntityValue> entities) {
+            if (filter == null)
+                return entities;
+            var jsonFilter      = new JsonFilter(filter); // filter can be reused
+            var result          = new Dictionary<string, EntityValue>();
+
+            foreach (var entityPair in entities) {
+                string      key     = entityPair.Key;
+                EntityValue value   = entityPair.Value;
+                var         payload = value.Json;
+                if (jsonEvaluator.Filter(payload, jsonFilter)) {
+                    result.Add(key, value);
+                }
+            }
+            return result;
         }
         
         private static ContainerFilter FindFilter (Subscription subscription, string container, TaskType taskType) {
