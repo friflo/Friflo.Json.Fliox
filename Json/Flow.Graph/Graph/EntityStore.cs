@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Graph
     internal struct StoreIntern
     {
         internal readonly   TypeStore                       typeStore;
+        internal readonly   TypeStore                       ownedTypeStore;
         internal readonly   TypeCache                       typeCache;
         internal readonly   ObjectMapper                    jsonMapper;
 
@@ -33,8 +34,9 @@ namespace Friflo.Json.Flow.Graph
         internal            LogTask                         tracerLogTask;
 
         
-        internal StoreIntern(TypeStore typeStore, EntityDatabase database, ObjectMapper jsonMapper) {
+        internal StoreIntern(TypeStore typeStore, TypeStore owned, EntityDatabase database, ObjectMapper jsonMapper) {
             this.typeStore      = typeStore;
+            this.ownedTypeStore = owned;
             this.database       = database;
             this.jsonMapper     = jsonMapper;
             this.typeCache      = jsonMapper.writer.TypeCache;
@@ -64,46 +66,39 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
         
-        private static TypeStore _entityTypeStore;
-        
-        private static TypeStore GetEntityTypeStore() {
-            if (_entityTypeStore != null)
-                return _entityTypeStore;
-            
-            _entityTypeStore = new TypeStore();
-            _entityTypeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-            _entityTypeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
-            return _entityTypeStore;
-        }
-        
-        public static void InitTypeStore(EntityStore store) {
-            var ts = GetEntityTypeStore();
-            foreach (var pair in store._intern.setByType) {
-                Type type = pair.Key;
-                ts.GetTypeMapper(type);
+        protected EntityStore(EntityDatabase database, TypeStore typeStore) {
+            TypeStore owned = null;
+            if (typeStore == null) {
+                typeStore = owned = new TypeStore();
             }
-        }
-
-        public static void DisposeTypeStore() {
-            if (_entityTypeStore == null)
-                return;
-            _entityTypeStore.Dispose();
-            _entityTypeStore = null;
-        }
-
-        protected EntityStore(EntityDatabase database) {
-            var ts = GetEntityTypeStore();
+            AddTypeMappers(typeStore);
+            
             // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-            var jsonMapper = new ObjectMapper(ts, new NoThrowHandler()) {
+            var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
                 TracerContext = this
             };
-            _intern = new StoreIntern(ts, database, jsonMapper);
+            _intern = new StoreIntern(typeStore, owned, database, jsonMapper);
         }
         
         public void Dispose() {
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
-            // _intern.typeStore.Dispose();
+            var owned = _intern.ownedTypeStore;
+            owned?.Dispose();
+        }
+        
+        public static void InitTypeStore(EntityStore store) {
+            var ts = store._intern.typeStore;
+            AddTypeMappers(ts);
+            foreach (var pair in store._intern.setByType) {
+                Type type = pair.Key;
+                ts.GetTypeMapper(type);
+            }
+        }
+        
+        private static void AddTypeMappers (TypeStore typeStore) {
+            typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+            typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
         }
 
         // --------------------------------------- public interface --------------------------------------- 

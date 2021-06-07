@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --- store containers
     public class PocStore : EntityStore
     {
-        public PocStore(EntityDatabase database) : base (database) {
+        public PocStore(EntityDatabase database) : base (database, TestGlobals.typeStore) {
             orders      = new EntitySet<Order>       (this);
             customers   = new EntitySet<Customer>    (this);
             articles    = new EntitySet<Article>     (this);
@@ -63,15 +63,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
     public static class TestGlobals {
+        public static TypeStore typeStore;
+        
         public static void Init() {
             SyncTypeStore.Init();
+            typeStore = new TypeStore();
             using (var store    = new PocStore(new MemoryDatabase())) {
                 EntityStore.InitTypeStore(store);
             }
         }
         
         public static void Dispose() {
-            EntityStore.DisposeTypeStore();
+            typeStore.Dispose();
+            typeStore = null;
             SyncTypeStore.Dispose();
         }
     }
