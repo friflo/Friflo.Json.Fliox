@@ -213,7 +213,7 @@ namespace Friflo.Json.Burst
         }
 
         public bool IsEqualArray(byte[] array) {
-#if JSON_BURST
+#if UNITY_5_3_OR_NEWER
             if (Len != array.Length)
                 return false;
             int pos = 0;
