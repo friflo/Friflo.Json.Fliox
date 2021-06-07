@@ -2,8 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Net;
+using System.Net.WebSockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Friflo.Json.Flow.Database.Remote
@@ -67,10 +70,13 @@ namespace Friflo.Json.Flow.Database.Remote
                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                 Log(reqMsg);
             }
-
+            if (req.IsWebSocketRequest) {
+                await AcceptWebSocket (ctx);
+                return;
+            }
             if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
                 var inputStream = req.InputStream;
-                System.IO.StreamReader reader = new System.IO.StreamReader(inputStream, Encoding.UTF8);
+                StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
                 var     result      = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
@@ -92,6 +98,33 @@ namespace Friflo.Json.Flow.Database.Remote
             SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
             await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
             resp.Close();
+        }
+        
+        /// todo untested
+        private async Task AcceptWebSocket(HttpListenerContext ctx) {
+            var         wsContext   = await ctx.AcceptWebSocketAsync(null);
+            WebSocket   ws          = wsContext.WebSocket;
+            var         buffer      = new ArraySegment<byte>(new byte[8192]);
+            using (var memoryStream = new MemoryStream()) {
+                while (ws.State == WebSocketState.Open) {
+                    memoryStream.Position = 0;
+                    memoryStream.SetLength(0);
+                    WebSocketReceiveResult wsResult;
+                    do {
+                        wsResult = await ws.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
+                        memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
+                    }
+                    while(wsResult.EndOfMessage);
+                    
+                    if (wsResult.MessageType == WebSocketMessageType.Text) {
+                        var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        var result          = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+                        byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
+                        await ws.SendAsync(resultBytes, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
+                    }
+                }
+                Log("WebSocket closed");
+            }
         }
 
         private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
