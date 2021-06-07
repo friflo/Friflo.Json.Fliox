@@ -66,6 +66,14 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
         
+        /// <summary>
+        /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
+        ///
+        /// Optimization note:
+        /// In case an application create many (> 10) <see cref="EntityStore"/> instances it should provide
+        /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused.
+        /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
+        /// </summary>
         protected EntityStore(EntityDatabase database, TypeStore typeStore) {
             TypeStore owned = null;
             if (typeStore == null) {
