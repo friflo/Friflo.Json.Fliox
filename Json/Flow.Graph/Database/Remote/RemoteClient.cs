@@ -20,6 +20,14 @@ namespace Friflo.Json.Flow.Database.Remote
             Get();
         }
         
+        public static void Dispose() {
+            var s = _singleton;
+            if (s == null)
+                return;
+            _singleton = null;
+            s.Dispose();
+        }
+        
         private static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
