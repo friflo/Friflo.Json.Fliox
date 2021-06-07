@@ -68,9 +68,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public static void Init() {
             SyncTypeStore.Init();
             typeStore = new TypeStore();
-            using (var store    = new PocStore(new MemoryDatabase())) {
-                EntityStore.InitTypeStore(store);
-            }
+            // by new PocStore() all TypeMappers for model classes are created before leak tracking of LeakTestsFixture starts. 
+            using (var _= new PocStore(new MemoryDatabase())) { }
         }
         
         public static void Dispose() {

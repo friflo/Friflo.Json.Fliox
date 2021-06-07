@@ -94,15 +94,6 @@ namespace Friflo.Json.Flow.Graph
             _intern.ownedTypeStore?.Dispose();
         }
         
-        public static void InitTypeStore(EntityStore store) {
-            var ts = store._intern.typeStore;
-            AddTypeMappers(ts);
-            foreach (var pair in store._intern.setByType) {
-                Type type = pair.Key;
-                ts.GetTypeMapper(type);
-            }
-        }
-        
         private static void AddTypeMappers (TypeStore typeStore) {
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
