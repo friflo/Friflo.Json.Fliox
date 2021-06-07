@@ -96,6 +96,8 @@ namespace Friflo.Json.Flow.Mapper.Map
         }
         
         public void AddGenericTypeMapper(ITypeMatcher matcher) {
+            if (genericTypeMatcher.IndexOf(matcher) != -1)
+                return;
             genericTypeMatcher.Add(matcher);
             UpdateMapperList();
         }
