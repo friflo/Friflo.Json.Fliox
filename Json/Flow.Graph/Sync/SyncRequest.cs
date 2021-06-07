@@ -7,14 +7,16 @@ using System.Collections.Generic;
 namespace Friflo.Json.Flow.Sync
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
-    public class SyncRequest
+    public class SyncRequest : DatabaseRequest
     {
-        public  List<DatabaseTask>                      tasks;
+        public              List<DatabaseTask>          tasks;
+        
+        internal override   RequestType                 requestType => RequestType.sync;
     }
     
-    public class SyncResponse
+    public class SyncResponse : DatabaseResponse
     {
-        public  SyncError                               error;
+        public  ResponseError                           error;
         public  List<TaskResult>                        tasks;
         // key of all Dictionary's is the container name
         public  Dictionary<string, ContainerEntities>   results;
@@ -22,6 +24,8 @@ namespace Friflo.Json.Flow.Sync
         public  Dictionary<string, EntityErrors>        updateErrors; // lazy instantiation
         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
+        
+        internal override   RequestType                 requestType => RequestType.sync;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (results.TryGetValue(container, out ContainerEntities result))

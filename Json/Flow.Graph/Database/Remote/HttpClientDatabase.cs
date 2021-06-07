@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Database.Remote
             httpClient.Dispose();
         }
 
-        protected override async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest, SyncContext syncContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, SyncContext syncContext) {
             var content = new StringContent(jsonSyncRequest);
             content.Headers.ContentType.MediaType = "application/json";
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
@@ -39,13 +39,13 @@ namespace Friflo.Json.Flow.Database.Remote
                     case HttpStatusCode.InternalServerError:    statusType = SyncStatusType.Exception;  break;
                     default:                                    statusType = SyncStatusType.Exception;  break;
                 }
-                return new SyncJsonResult(body, statusType);
+                return new JsonResponse(body, statusType);
             }
             catch (HttpRequestException e) {
-                var error = SyncError.ErrorFromException(e);
+                var error = ResponseError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return SyncJsonResult.CreateSyncError(syncContext, error.ToString(), SyncStatusType.Exception);
+                return JsonResponse.CreateResponseError(syncContext, error.ToString(), SyncStatusType.Exception);
             }
         }
     }

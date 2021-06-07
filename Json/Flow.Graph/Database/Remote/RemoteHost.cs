@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return result;
         }
 
-        public async Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest) {
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest) {
             var contextPools    = new Pools(Pools.SharedPools);
             var syncContext     = new SyncContext(contextPools);
             try {
@@ -36,19 +36,19 @@ namespace Friflo.Json.Flow.Database.Remote
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                     ObjectMapper mapper = pooledMapper.instance;
                     ObjectReader reader = mapper.reader;
-                    var syncRequest = reader.Read<SyncRequest>(jsonSyncRequest);
+                    var request = reader.Read<DatabaseRequest>(jsonRequest);
                     if (reader.Error.ErrSet)
-                        return SyncJsonResult.CreateSyncError(syncContext, reader.Error.msg.ToString(), SyncStatusType.Error);
-                    SyncResponse syncResponse = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                        return JsonResponse.CreateResponseError(syncContext, reader.Error.msg.ToString(), SyncStatusType.Error);
+                    DatabaseResponse response = await ExecuteRequest(request, syncContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
-                    jsonResponse = mapper.Write(syncResponse);
+                    jsonResponse = mapper.Write(response);
                 }
                 syncContext.pools.AssertNoLeaks();
-                return new SyncJsonResult(jsonResponse, SyncStatusType.Ok);
+                return new JsonResponse(jsonResponse, SyncStatusType.Ok);
             } catch (Exception e) {
-                var errorMsg = SyncError.ErrorFromException(e).ToString();
-                return SyncJsonResult.CreateSyncError(syncContext, errorMsg, SyncStatusType.Exception);
+                var errorMsg = ResponseError.ErrorFromException(e).ToString();
+                return JsonResponse.CreateResponseError(syncContext, errorMsg, SyncStatusType.Exception);
             }
         }
     }
@@ -62,22 +62,22 @@ namespace Friflo.Json.Flow.Database.Remote
         Exception
     }
     
-    public class SyncJsonResult
+    public class JsonResponse
     {
         public readonly     string          body;
         public readonly     SyncStatusType  statusType;
         
-        public SyncJsonResult(string body, SyncStatusType statusType) {
+        public JsonResponse(string body, SyncStatusType statusType) {
             this.body       = body;
             this.statusType  = statusType;
         }
         
-        public static SyncJsonResult CreateSyncError(SyncContext syncContext, string message, SyncStatusType type) {
-            var syncError = new SyncError {message = message};
+        public static JsonResponse CreateResponseError(SyncContext syncContext, string message, SyncStatusType type) {
+            var responseError = new ResponseError {message = message};
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var body = mapper.Write(syncError);
-                return new SyncJsonResult(body, type);
+                var body = mapper.Write(responseError);
+                return new JsonResponse(body, type);
             }
         }
     }

@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-                var     result      = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+                var     result      = await ExecuteRequestJson(requestContent).ConfigureAwait(false);
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
                 switch (result.statusType){
@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                        var result          = await ExecuteSyncJson(requestContent).ConfigureAwait(false);
+                        var result          = await ExecuteRequestJson(requestContent).ConfigureAwait(false);
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                         await ws.SendAsync(resultBytes, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
                     }

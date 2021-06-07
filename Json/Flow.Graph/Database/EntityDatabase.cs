@@ -45,6 +45,17 @@ namespace Friflo.Json.Flow.Database
             return container;
         }
         
+        public virtual async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
+            switch (request.requestType) {
+                case RequestType.sync:
+                    return await ExecuteSync((SyncRequest)request, syncContext);
+                case RequestType.subscribe:
+                    throw new NotImplementedException();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>
@@ -67,7 +78,7 @@ namespace Friflo.Json.Flow.Database
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
-                return new SyncResponse{error = new SyncError{message = "missing field: tasks (array)"}};
+                return new SyncResponse{error = new ResponseError{message = "missing field: tasks (array)"}};
             var tasks = new List<TaskResult>(requestTasks.Count);
             var response = new SyncResponse {
                 tasks   = tasks,

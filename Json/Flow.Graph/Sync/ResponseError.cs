@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class SyncError
+    public class ResponseError
     {
         public          string  message;
 

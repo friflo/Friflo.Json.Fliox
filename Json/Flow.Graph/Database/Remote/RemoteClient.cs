@@ -31,9 +31,9 @@ namespace Friflo.Json.Flow.Database.Remote
         private static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
-                _singleton.GetTypeMapper(typeof(SyncRequest));
-                _singleton.GetTypeMapper(typeof(SyncResponse));
-                _singleton.GetTypeMapper(typeof(SyncError));
+                _singleton.GetTypeMapper(typeof(DatabaseRequest));
+                _singleton.GetTypeMapper(typeof(DatabaseResponse));
+                _singleton.GetTypeMapper(typeof(ResponseError));
             }
             return _singleton;
         }
@@ -57,27 +57,27 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
 
-        protected abstract Task<SyncJsonResult> ExecuteSyncJson(string jsonSyncRequest, SyncContext syncContext);
+        protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);
 
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                var jsonRequest = mapper.Write(syncRequest);
-                var result = await ExecuteSyncJson(jsonRequest, syncContext).ConfigureAwait(false);
+                var jsonRequest = mapper.Write(request);
+                var result = await ExecuteRequestJson(jsonRequest, syncContext).ConfigureAwait(false);
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == SyncStatusType.Ok) {
-                    var response = reader.Read<SyncResponse>(result.body);
+                    var response = reader.Read<DatabaseResponse>(result.body);
                     if (reader.Error.ErrSet)
-                        return new SyncResponse {error = new SyncError{message = reader.Error.msg.ToString()}};
+                        return new SyncResponse {error = new ResponseError{message = reader.Error.msg.ToString()}};
                     // At this point the given jsonSyncRequest is valid JSON.
                     // => All entities in response.results have either a valid JSON value or an error. 
                     return response;
                 }
-                var syncError = reader.Read<SyncError>(result.body);
+                var syncError = reader.Read<ResponseError>(result.body);
                 if (reader.Error.ErrSet)
-                    return new SyncResponse {error = new SyncError{message = reader.Error.msg.ToString()}};
+                    return new SyncResponse {error = new ResponseError{message = reader.Error.msg.ToString()}};
                 return new SyncResponse{error=syncError};
             }
         }
