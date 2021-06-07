@@ -20,8 +20,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
     public partial class TestErrors : LeakTestsFixture
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
-        [NUnit.Framework.OneTimeSetUp]    public void  Init()       { TestGlobals.Init(); }
-        [NUnit.Framework.OneTimeTearDown] public void  Dispose()    { TestGlobals.Dispose(); }
+        [NUnit.Framework.OneTimeSetUp]    public static void  Init()       { TestGlobals.Init(); }
+        [NUnit.Framework.OneTimeTearDown] public static void  Dispose()    { TestGlobals.Dispose(); }
 
         [UnityTest] public IEnumerator FileUseCoroutine() { yield return RunAsync.Await(FileUse()); }
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
