@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     public partial class TestStore : LeakTestsFixture
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
-        static                                  TestStore()  { SyncTypeStore.Init(); }
-        [NUnit.Framework.TearDown] public void  Dispose()    { SyncTypeStore.Dispose(); }
+        [NUnit.Framework.OneTimeSetUp]    public void  Init()       { TestGlobals.Init(); }
+        [NUnit.Framework.OneTimeTearDown] public void  Dispose()    { TestGlobals.Dispose(); }
         
 
         [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Logger.Info("--- " + i)); }

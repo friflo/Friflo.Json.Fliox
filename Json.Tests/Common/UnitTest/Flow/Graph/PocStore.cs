@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using static NUnit.Framework.Assert;
@@ -59,6 +60,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public readonly EntitySet<Article>    articles;
         public readonly EntitySet<Producer>   producers;
         public readonly EntitySet<Employee>   employees;
+    }
+    
+    public static class TestGlobals {
+        public static void Init() {
+            SyncTypeStore.Init();
+        }
+        
+        public static void Dispose() {
+            SyncTypeStore.Dispose();
+        }
     }
         
     // --------------------------------------------------------------------
