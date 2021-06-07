@@ -91,8 +91,7 @@ namespace Friflo.Json.Flow.Graph
         public void Dispose() {
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
-            var owned = _intern.ownedTypeStore;
-            owned?.Dispose();
+            _intern.ownedTypeStore?.Dispose();
         }
         
         public static void InitTypeStore(EntityStore store) {
