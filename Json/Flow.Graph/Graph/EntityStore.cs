@@ -63,22 +63,47 @@ namespace Friflo.Json.Flow.Graph
         public              StoreInfo               StoreInfo   => new StoreInfo(_intern.sync, _intern.setByType); 
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
+        
+        private static TypeStore _entityTypeStore;
+        
+        private static TypeStore GetEntityTypeStore() {
+            if (_entityTypeStore != null)
+                return _entityTypeStore;
+            
+            _entityTypeStore = new TypeStore();
+            _entityTypeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
+            _entityTypeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            return _entityTypeStore;
+        }
+        
+        public static void InitTypeStore(EntityStore store) {
+            var ts = GetEntityTypeStore();
+            foreach (var pair in store._intern.setByType) {
+                Type type = pair.Key;
+                ts.GetTypeMapper(type);
+            }
+        }
+
+        public static void DisposeTypeStore() {
+            if (_entityTypeStore == null)
+                return;
+            _entityTypeStore.Dispose();
+            _entityTypeStore = null;
+        }
 
         protected EntityStore(EntityDatabase database) {
-            var typeStore = new TypeStore();
-            typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-            typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            var ts = GetEntityTypeStore();
             // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-            var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
+            var jsonMapper = new ObjectMapper(ts, new NoThrowHandler()) {
                 TracerContext = this
             };
-            _intern = new StoreIntern(typeStore, database, jsonMapper);
+            _intern = new StoreIntern(ts, database, jsonMapper);
         }
         
         public void Dispose() {
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
-            _intern.typeStore.Dispose();
+            // _intern.typeStore.Dispose();
         }
 
         // --------------------------------------- public interface --------------------------------------- 

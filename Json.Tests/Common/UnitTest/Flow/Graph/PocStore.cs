@@ -65,9 +65,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public static class TestGlobals {
         public static void Init() {
             SyncTypeStore.Init();
+            using (var store    = new PocStore(new MemoryDatabase())) {
+                EntityStore.InitTypeStore(store);
+            }
         }
         
         public static void Dispose() {
+            EntityStore.DisposeTypeStore();
             SyncTypeStore.Dispose();
         }
     }
