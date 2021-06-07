@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.PubSub;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
@@ -16,6 +17,7 @@ namespace Friflo.Json.Flow.Database
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<string, EntityContainer>    containers = new Dictionary<string, EntityContainer>();
+        public           ISyncObserver                          syncObserver;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -42,7 +44,7 @@ namespace Friflo.Json.Flow.Database
             containers[name] = container = CreateContainer(name, this);
             return container;
         }
-
+        
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>
@@ -103,6 +105,9 @@ namespace Friflo.Json.Flow.Database
                 }
             }
             response.AssertResponse(syncRequest);
+            
+            syncObserver?.EnqueueSyncRequest(syncRequest);
+            
             return response;
         }
     }
