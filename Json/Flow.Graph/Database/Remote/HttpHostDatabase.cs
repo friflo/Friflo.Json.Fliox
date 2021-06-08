@@ -134,7 +134,8 @@ namespace Friflo.Json.Flow.Database.Remote
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                         var result          = await ExecuteRequestJson(requestContent).ConfigureAwait(false);
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
-                        await ws.SendAsync(resultBytes, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
+                        var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
+                        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
                     }
                 }
                 Log("WebSocket closed");
