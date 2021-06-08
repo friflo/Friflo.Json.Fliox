@@ -38,17 +38,17 @@ namespace Friflo.Json.Flow.Database.Remote
                     ObjectReader reader = mapper.reader;
                     var request = reader.Read<DatabaseRequest>(jsonRequest);
                     if (reader.Error.ErrSet)
-                        return JsonResponse.CreateResponseError(syncContext, reader.Error.msg.ToString(), SyncStatusType.Error);
+                        return JsonResponse.CreateResponseError(syncContext, reader.Error.msg.ToString(), RequestStatusType.Error);
                     DatabaseResponse response = await ExecuteRequest(request, syncContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
                     jsonResponse = mapper.Write(response);
                 }
                 syncContext.pools.AssertNoLeaks();
-                return new JsonResponse(jsonResponse, SyncStatusType.Ok);
+                return new JsonResponse(jsonResponse, RequestStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = ResponseError.ErrorFromException(e).ToString();
-                return JsonResponse.CreateResponseError(syncContext, errorMsg, SyncStatusType.Exception);
+                return JsonResponse.CreateResponseError(syncContext, errorMsg, RequestStatusType.Exception);
             }
         }
         
@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    public enum SyncStatusType {
+    public enum RequestStatusType {
         /// maps to HTTP 200 OK
         Ok,         
         /// maps to HTTP 400 Bad Request
@@ -75,15 +75,15 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public class JsonResponse
     {
-        public readonly     string          body;
-        public readonly     SyncStatusType  statusType;
+        public readonly     string              body;
+        public readonly     RequestStatusType   statusType;
         
-        public JsonResponse(string body, SyncStatusType statusType) {
+        public JsonResponse(string body, RequestStatusType statusType) {
             this.body       = body;
             this.statusType  = statusType;
         }
         
-        public static JsonResponse CreateResponseError(SyncContext syncContext, string message, SyncStatusType type) {
+        public static JsonResponse CreateResponseError(SyncContext syncContext, string message, RequestStatusType type) {
             var responseError = new ResponseError {message = message};
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;

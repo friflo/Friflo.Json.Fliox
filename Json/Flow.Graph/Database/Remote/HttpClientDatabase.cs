@@ -32,12 +32,12 @@ namespace Friflo.Json.Flow.Database.Remote
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var body = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                SyncStatusType statusType;
+                RequestStatusType statusType;
                 switch (httpResponse.StatusCode) {
-                    case HttpStatusCode.OK:                     statusType = SyncStatusType.Ok;         break; 
-                    case HttpStatusCode.BadRequest:             statusType = SyncStatusType.Error;      break;
-                    case HttpStatusCode.InternalServerError:    statusType = SyncStatusType.Exception;  break;
-                    default:                                    statusType = SyncStatusType.Exception;  break;
+                    case HttpStatusCode.OK:                     statusType = RequestStatusType.Ok;         break; 
+                    case HttpStatusCode.BadRequest:             statusType = RequestStatusType.Error;      break;
+                    case HttpStatusCode.InternalServerError:    statusType = RequestStatusType.Exception;  break;
+                    default:                                    statusType = RequestStatusType.Exception;  break;
                 }
                 return new JsonResponse(body, statusType);
             }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var error = ResponseError.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return JsonResponse.CreateResponseError(syncContext, error.ToString(), SyncStatusType.Exception);
+                return JsonResponse.CreateResponseError(syncContext, error.ToString(), RequestStatusType.Exception);
             }
         }
     }
