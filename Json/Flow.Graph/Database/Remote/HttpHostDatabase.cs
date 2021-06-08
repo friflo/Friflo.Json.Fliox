@@ -8,6 +8,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
 {
@@ -97,7 +98,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
                 var contextPools    = new Pools(Pools.SharedPools);
-                var syncContext     = new SyncContext(contextPools);
+                var syncContext     = new SyncContext(contextPools, null);
                 var     result      = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
                 syncContext.pools.AssertNoLeaks();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
@@ -130,6 +131,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var         wsContext   = await ctx.AcceptWebSocketAsync(null);
             WebSocket   ws          = wsContext.WebSocket;
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
+            WebSocketTarget target  = new WebSocketTarget(ws);
             using (var memoryStream = new MemoryStream()) {
                 while (ws.State == WebSocketState.Open) {
                     memoryStream.Position = 0;
@@ -144,7 +146,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                         var contextPools    = new Pools(Pools.SharedPools);
-                        var syncContext     = new SyncContext(contextPools);
+                        var syncContext     = new SyncContext(contextPools, target);
                         var result          = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
                         syncContext.pools.AssertNoLeaks();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
@@ -198,6 +200,18 @@ namespace Friflo.Json.Flow.Database.Remote
 #else
             Console.WriteLine(msg);
 #endif
+        }
+    }
+    
+    class WebSocketTarget : IMessageTarget
+    {
+        readonly WebSocket webSocket;
+        
+        internal WebSocketTarget (WebSocket webSocket) {
+            this.webSocket = webSocket;
+        }
+        public Task ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+            throw new NotImplementedException();
         }
     }
 }

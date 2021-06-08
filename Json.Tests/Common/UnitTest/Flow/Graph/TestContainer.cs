@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         private readonly    Dictionary<string, TestContainer>       testContainers  = new Dictionary<string, TestContainer>();
         public  readonly    Dictionary<string, Func<SyncResponse>>  syncErrors      = new Dictionary<string, Func<SyncResponse>>();
         
-        public  override    IBroker                                 Broker { get => local.Broker; set => local.Broker = value; }
+        public  override    MessageBroker                           MessageBroker { get => local.MessageBroker; set => local.MessageBroker = value; }
         
         
         public TestDatabase(EntityDatabase local) {

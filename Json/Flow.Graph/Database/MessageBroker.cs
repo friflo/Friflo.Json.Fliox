@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Database.PubSub
+namespace Friflo.Json.Flow.Database
 {
     public class Subscriber {
-        internal            EntityDatabase                  database;
+        internal            IMessageTarget                  messageTarget;
         internal            Subscription                    subscription;
         internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
         
         internal async Task Publish () {
             var contextPools    = new Pools(Pools.SharedPools);
             while (queue.TryDequeue(out var changeMessage)) {
-                var syncContext     = new SyncContext(contextPools);
+                var syncContext     = new SyncContext(contextPools, messageTarget);
                 try {
-                    await database.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
                     syncContext.pools.AssertNoLeaks();
                 } catch (Exception e) {
                     Console.WriteLine(e.ToString());
@@ -29,19 +29,26 @@ namespace Friflo.Json.Flow.Database.PubSub
         }
     }
     
-    public class Broker : IBroker
+    public interface IMessageTarget {
+        Task ExecuteChange(ChangeMessage change, SyncContext syncContext);
+    }
+    
+    public class MessageBroker
     {
         private readonly JsonEvaluator jsonEvaluator = new JsonEvaluator();
             
-        public void Subscribe (EntityDatabase database, Subscription subscription) {
+        public void Subscribe (Subscription subscription, SyncContext syncContext) {
+            var messageTarget = syncContext.messageTarget;
+            if (messageTarget == null)
+                return;
             var subscriber = new Subscriber {
-                database        = database,
+                messageTarget   = messageTarget,
                 subscription    = subscription
             };
-            subscribers.Add(database, subscriber);
+            subscribers.Add(messageTarget, subscriber);
         }
         
-        private readonly Dictionary<EntityDatabase, Subscriber> subscribers = new Dictionary<EntityDatabase, Subscriber>();
+        private readonly Dictionary<IMessageTarget, Subscriber> subscribers = new Dictionary<IMessageTarget, Subscriber>();
         
         public void EnqueueSync (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {

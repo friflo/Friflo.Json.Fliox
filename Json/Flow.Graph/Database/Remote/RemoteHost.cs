@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        public  override    IBroker         Broker { get => local.Broker; set => local.Broker = value; }
+        public  override    MessageBroker   MessageBroker { get => local.MessageBroker; set => local.MessageBroker = value; }
 
 
         public RemoteHostDatabase(EntityDatabase local) {
@@ -55,8 +55,6 @@ namespace Friflo.Json.Flow.Database.Remote
             switch (request.RequestType) {
                 case RequestType.sync:
                     return await ExecuteSync((SyncRequest)request, syncContext).ConfigureAwait(false);
-                case RequestType.subscribe:
-                    throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
             }
