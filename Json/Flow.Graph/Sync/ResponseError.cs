@@ -5,9 +5,11 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class ResponseError
+    public class ResponseError : DatabaseResponse
     {
         public          string  message;
+        
+        internal override   RequestType  requestType => RequestType.error;
 
         public override string  ToString() => message;
 

@@ -60,7 +60,11 @@ namespace Friflo.Json.Flow.Database.Remote
         protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            return (SyncResponse)await ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
+            var response = await ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
+            if (response is SyncResponse syncResponse)
+                return syncResponse;
+            var error = (ResponseError)response;
+            return new SyncResponse {error = error};
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
@@ -74,15 +78,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 if (result.statusType == SyncStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);
                     if (reader.Error.ErrSet)
-                        return new SyncResponse {error = new ResponseError{message = reader.Error.msg.ToString()}};
-                    // At this point the given jsonSyncRequest is valid JSON.
-                    // => All entities in response.results have either a valid JSON value or an error. 
+                        return new ResponseError{message = reader.Error.msg.ToString()};
+                    // At this point the returned result.body is valid JSON.
+                    // => All entities of a SyncResponse.results have either a valid JSON value or an error. 
                     return response;
                 }
-                var syncError = reader.Read<ResponseError>(result.body);
+                var responseError = reader.Read<ResponseError>(result.body);
                 if (reader.Error.ErrSet)
-                    return new SyncResponse {error = new ResponseError{message = reader.Error.msg.ToString()}};
-                return new SyncResponse{error=syncError};
+                    return new ResponseError{message = reader.Error.msg.ToString()};
+                return responseError;
             }
         }
     }

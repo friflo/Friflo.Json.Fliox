@@ -12,8 +12,9 @@ namespace Friflo.Json.Flow.Sync
     }
     
     [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(SyncResponse),         Discriminant = "sync")]
-    [Fri.Polymorph(typeof(SubscribeResponse),    Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "sync")]
+    [Fri.Polymorph(typeof(SubscribeResponse),   Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(ResponseError),       Discriminant = "error")]
     public abstract class DatabaseResponse {
         internal abstract   RequestType  requestType { get; }
     }
@@ -31,6 +32,7 @@ namespace Friflo.Json.Flow.Sync
     // ReSharper disable InconsistentNaming
     public enum RequestType {
         sync,
-        subscribe
+        subscribe,
+        error
     }
 }
