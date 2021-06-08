@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private async Task HttpCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/")) {
+            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) {
                 await RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))

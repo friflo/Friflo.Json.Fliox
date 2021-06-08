@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 
 namespace Friflo.Json.Flow.Database.Remote
 {
+    
+    public interface IHttpContextHandler
+    {
+        Task<bool> HandleContext(HttpListenerContext context);
+    }
+    
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
     //
     // Note:
@@ -19,16 +25,18 @@ namespace Friflo.Json.Flow.Database.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public class HttpHostDatabase : RemoteHostDatabase
     {
-        private readonly    string          endpoint;
-        private readonly    HttpListener    listener;
-        private             bool            runServer;
+        private readonly    string              endpoint;
+        private readonly    HttpListener        listener;
+        private readonly    IHttpContextHandler contextHandler;
+        private             bool                runServer;
         
-        private             int             requestCount;
+        private             int                 requestCount;
 
         
-        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
-            this.endpoint   = endpoint;
-            listener        = new HttpListener();
+        public HttpHostDatabase(EntityDatabase local, string endpoint, IHttpContextHandler contextHandler) : base(local) {
+            this.endpoint       = endpoint;
+            this.contextHandler = contextHandler;
+            listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
         }
         
@@ -74,6 +82,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 await AcceptWebSocket (ctx);
                 return;
             }
+
             if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
                 var inputStream = req.InputStream;
                 StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
@@ -92,6 +101,11 @@ namespace Friflo.Json.Flow.Database.Remote
                 await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
                 resp.Close();
                 return;
+            }
+            if (contextHandler != null) {
+                var success = await contextHandler.HandleContext(ctx).ConfigureAwait(false);
+                if (success)
+                    return;
             }
             var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
             byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
@@ -127,7 +141,7 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
 
-        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
+        public static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
             resp.ContentType        = contentType;
             resp.ContentEncoding    = Encoding.UTF8;
             resp.ContentLength64    = len;

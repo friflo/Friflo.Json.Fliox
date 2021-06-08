@@ -4,6 +4,9 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
@@ -33,16 +36,17 @@ namespace Friflo.Json.Tests
 
             var rootCommand = new RootCommand {
                 moduleOpt, 
-                new Option<string>("--database", () => "./Json.Tests/assets/db",  "folder of the file database")
+                new Option<string>("--database", () => "./Json.Tests/assets/db",  "folder of the file database"),
+                new Option<string>("--www",      () => "./Json.Tests/assets/www", "folder of static web files")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
-            rootCommand.Handler = CommandHandler.Create<Module, string>((module, database) =>
+            rootCommand.Handler = CommandHandler.Create<Module, string, string>((module, database, www) =>
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.GraphServer:
-                        GraphServer(database, false);
+                        GraphServer(database, www, false);
                         break;
                 }
             });
@@ -61,7 +65,7 @@ namespace Friflo.Json.Tests
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphServer(string database, bool simulateErrors) {
+        private static void GraphServer(string database, string wwwRoot, bool simulateErrors) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase = new FileDatabase(database);
             EntityDatabase localDatabase = fileDatabase;
@@ -70,9 +74,69 @@ namespace Friflo.Json.Tests
                 // TestStoreErrors.AddSimulationErrors(testDatabase);
                 localDatabase = testDatabase;
             }
-            var hostDatabase = new HttpHostDatabase(localDatabase, "http://+:8081/");
+            var contextHandler = new HttpContextHandler(wwwRoot);
+            var hostDatabase = new HttpHostDatabase(localDatabase, "http://+:8081/", contextHandler);
             hostDatabase.Start();
             hostDatabase.Run();
+        }
+    }
+    
+    public class HttpContextHandler : IHttpContextHandler
+    {
+        private readonly string wwwRoot;
+        
+        public HttpContextHandler (string wwwRoot) {
+            this.wwwRoot = wwwRoot;    
+        }
+            
+        public async Task<bool> HandleContext(HttpListenerContext context) {
+            var req = context.Request;
+            var resp = context.Response;
+            try {
+                if (req.HttpMethod == "GET") {
+                    var path = req.Url.AbsolutePath;
+                    if (path == "/")
+                        path = "/index.html";
+                    var filePath = wwwRoot + path;
+                    var content = await ReadFile(filePath);
+                    var contentType = ContentTypeFromPath(path);
+                    HttpHostDatabase.SetResponseHeader(resp, contentType, HttpStatusCode.OK, content.Length);
+                    await resp.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+                    resp.Close();
+                    return true;
+                }
+            }
+            catch (Exception e) {
+                var     response        = $"error: method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
+                byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
+                HttpHostDatabase.SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
+                await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+            }
+            return true;
+        }
+        
+        private static string ContentTypeFromPath(string path) {
+            if (path.EndsWith(".html"))
+                return "text/html";
+            if (path.EndsWith(".js"))
+                return "application/javascript";
+            if (path.EndsWith(".png"))
+                return "image/png";
+            if (path.EndsWith(".css"))
+                return "text/css";
+            return "text/plain";
+        }
+        
+        private static async Task<byte[]> ReadFile(string filePath) {
+            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
+                var memoryStream = new MemoryStream();
+                byte[] buffer = new byte[0x1000];
+                int numRead;
+                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0) {
+                    memoryStream.Write(buffer, 0, numRead);
+                }
+                return memoryStream.ToArray();
+            }
         }
     }
 }
