@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests
                     return true;
                 }
             }
-            catch (Exception e) {
+            catch (Exception ) {
                 var     response        = $"error: method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
                 byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
                 HttpHostDatabase.SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
