@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public              List<DatabaseTask>          tasks;
         
-        internal override   RequestType                 requestType => RequestType.sync;
+        internal override   RequestType                 RequestType => RequestType.sync;
     }
     
     public class SyncResponse : DatabaseResponse
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         
-        internal override   RequestType                 requestType => RequestType.sync;
+        internal override   RequestType                 RequestType => RequestType.sync;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (results.TryGetValue(container, out ContainerEntities result))

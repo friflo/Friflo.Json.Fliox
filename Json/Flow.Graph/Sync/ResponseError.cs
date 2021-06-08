@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public          string  message;
         
-        internal override   RequestType  requestType => RequestType.error;
+        internal override   RequestType  RequestType => RequestType.error;
 
         public override string  ToString() => message;
 

@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
-            switch (request.requestType) {
+            switch (request.RequestType) {
                 case RequestType.sync:
                     return await ExecuteSync((SyncRequest)request, syncContext).ConfigureAwait(false);
                 case RequestType.subscribe:
