@@ -35,18 +35,19 @@ namespace Friflo.Json.Tests
             var moduleOpt = new Option<Module>("--module",  "the module inside Friflo.Json.Tests") {IsRequired = true};
 
             var rootCommand = new RootCommand {
-                moduleOpt, 
+                moduleOpt,
+                new Option<string>("--endpoint", () => "http://+:8081/",          "endpoint the server listen at"),
                 new Option<string>("--database", () => "./Json.Tests/assets/db",  "folder of the file database"),
                 new Option<string>("--www",      () => "./Json.Tests/assets/www", "folder of static web files")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
-            rootCommand.Handler = CommandHandler.Create<Module, string, string>((module, database, www) =>
+            rootCommand.Handler = CommandHandler.Create<Module, string, string, string>((module, endpoint, database, www) =>
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.GraphServer:
-                        GraphServer(database, www, false);
+                        GraphServer(endpoint, database, www, false);
                         break;
                 }
             });
@@ -65,7 +66,7 @@ namespace Friflo.Json.Tests
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphServer(string database, string wwwRoot, bool simulateErrors) {
+        private static void GraphServer(string endpoint, string database, string wwwRoot, bool simulateErrors) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase = new FileDatabase(database);
             EntityDatabase localDatabase = fileDatabase;
@@ -75,7 +76,7 @@ namespace Friflo.Json.Tests
                 localDatabase = testDatabase;
             }
             var contextHandler = new HttpContextHandler(wwwRoot);
-            var hostDatabase = new HttpHostDatabase(localDatabase, "http://+:8081/", contextHandler);
+            var hostDatabase = new HttpHostDatabase(localDatabase, endpoint, contextHandler);
             hostDatabase.Start();
             hostDatabase.Run();
         }
