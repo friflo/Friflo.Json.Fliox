@@ -12,7 +12,7 @@
             var uri = "ws://" + loc.host + "/ws";
             connection = new WebSocket(uri);
             connection.onopen = function () {
-                connection.send('Ping'); // Send the message 'Ping' to the server
+                console.log('WebSocket connected');
             };
 
             // Log errors
@@ -22,14 +22,19 @@
 
             // Log messages from the server
             connection.onmessage = function (e) {
-                console.log('Server: ' + e.data);
+                var data = JSON.parse(e.data);
+                console.log('Server:', data);
             };
         }
 
-        function sendEcho() {
+        function sendSyncEcho() {
             var request = {type:"sync", tasks: [{ task: "echo", message: "test echo"}]};
             var json = JSON.stringify(request);
             connection.send(json);
+        }
+        function sendSyncRequest() {
+            var jsonRequest = document.getElementById("jsonRequest").value;
+            connection.send(jsonRequest);
         }
     </script>
 </head>
@@ -37,7 +42,11 @@
 <body>
     friflo Graph Server
     <br><br>
-    Websocket   <button type="button" onclick="connectWebsocket()">Connect</button> <br>
-    Echo        <button type="button" onclick="sendEcho()">Send</button> <br>
+    Websocket
+    <button type="button" onclick="connectWebsocket()">Connect</button>
+    <button type="button" onclick="sendSyncEcho()">Send sync echo</button> <br><br>
+
+    <textarea id="jsonRequest" cols="80" rows="15"></textarea> <br>
+    <button type="button" onclick="sendSyncRequest()">Send sync</button>
 </body>
 </html>

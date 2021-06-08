@@ -9,10 +9,10 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
-		"task": "echo",
-		"message": "Hello"		
-	}
+    {
+        "task": "echo",
+        "message": "Hello"		
+    }
 ] }
 
 ### read entities by their ids
@@ -21,11 +21,11 @@ content-type: application/json
 
 { "type": "sync", "tasks": [
     {
-		"task": "read",	"container": "Article",
-		"reads": [
-			{ "ids": ["article-galaxy", "article-ipad"] }
-		]
-	}
+        "task": "read",	"container": "Article",
+        "reads": [
+            { "ids": ["article-galaxy", "article-ipad"] }
+        ]
+    }
 ] }
 
 ### read entity "order-1" and its referenced .customer
@@ -33,7 +33,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "read",         "container": "Order",
         "reads": [
         {
@@ -54,7 +54,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": { "op":"true" }
@@ -67,7 +67,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
@@ -81,7 +81,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "query",        "container": "Article",
         "filterLinq": "true",
         "filter": { "op":"true" },
@@ -105,7 +105,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "create",       "container": "Article",
         "entities": {
             "new-article": {
@@ -120,7 +120,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "delete",       "container": "Article",
         "ids": ["new-article"]
     }
@@ -131,7 +131,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-	{
+    {
         "task": "patch",        "container": "Article",
         "patches": {
             "new-article": {
