@@ -4,11 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Database.PubSub;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
+    public interface IBroker
+    {
+        void EnqueueSync (SyncRequest syncRequest);
+        void Subscribe   (EntityDatabase database, Subscription subscription);
+    }
+    
     // ----------------------------------------- EntityDatabase -----------------------------------------
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -16,8 +21,8 @@ namespace Friflo.Json.Flow.Database
     public abstract class EntityDatabase : IDisposable
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Dictionary<string, EntityContainer>    containers = new Dictionary<string, EntityContainer>();
-        public           ISyncObserver                          syncObserver;
+        private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        public  virtual     IBroker                             Broker { get; set; }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -106,9 +111,12 @@ namespace Friflo.Json.Flow.Database
             }
             response.AssertResponse(syncRequest);
             
-            syncObserver?.EnqueueSyncRequest(syncRequest);
+            Broker?.EnqueueSync(syncRequest);
             
             return response;
+        }
+        
+        public virtual async Task ExecuteChange(ChangeMessage change, SyncContext syncContext) {
         }
     }
 }

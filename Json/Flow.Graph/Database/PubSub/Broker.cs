@@ -10,22 +10,17 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database.PubSub
 {
-    public interface ISyncObserver
-    {
-        void EnqueueSyncRequest (SyncRequest syncRequest);
-    }
-    
     public class Subscriber {
         internal            EntityDatabase                  database;
         internal            Subscription                    subscription;
-        internal readonly   ConcurrentQueue<SyncRequest>    queue = new ConcurrentQueue<SyncRequest>();
+        internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
         
         internal async Task Publish () {
-            while (queue.TryDequeue(out var syncRequest)) {
-                var contextPools    = new Pools(Pools.SharedPools);
+            var contextPools    = new Pools(Pools.SharedPools);
+            while (queue.TryDequeue(out var changeMessage)) {
                 var syncContext     = new SyncContext(contextPools);
                 try {
-                    await database.ExecuteSync(syncRequest, syncContext);
+                    await database.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
                 } catch (Exception e) {
                     Console.WriteLine(e.ToString());
                 }
@@ -33,7 +28,7 @@ namespace Friflo.Json.Flow.Database.PubSub
         }
     }
     
-    public class Publisher : ISyncObserver
+    public class Broker : IBroker
     {
         private readonly JsonEvaluator jsonEvaluator = new JsonEvaluator();
             
@@ -47,7 +42,7 @@ namespace Friflo.Json.Flow.Database.PubSub
         
         private readonly Dictionary<EntityDatabase, Subscriber> subscribers = new Dictionary<EntityDatabase, Subscriber>();
         
-        public void EnqueueSyncRequest (SyncRequest syncRequest) {
+        public void EnqueueSync (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  subscriberTasks = null;
                 Subscriber          subscriber = pair.Value;
@@ -62,8 +57,8 @@ namespace Friflo.Json.Flow.Database.PubSub
                 }
                 if (subscriberTasks == null)
                     continue;
-                var subscriberSync = new SyncRequest {
-                    tasks = subscriberTasks
+                var subscriberSync = new ChangeMessage {
+                    change = subscriberTasks
                 };
                 subscriber.queue.Enqueue(subscriberSync);
             }

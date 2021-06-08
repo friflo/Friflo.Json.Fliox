@@ -10,8 +10,8 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     public class HttpClientDatabase : RemoteClientDatabase
     {
-        private readonly string         endpoint;
-        private readonly HttpClient     httpClient;
+        private readonly    string          endpoint;
+        private readonly    HttpClient      httpClient;
 
         public HttpClientDatabase(string endpoint) {
             this.endpoint = endpoint;
