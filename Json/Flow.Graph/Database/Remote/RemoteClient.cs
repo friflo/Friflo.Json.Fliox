@@ -58,8 +58,12 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
         protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);
-
-        public override async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            return (SyncResponse)await ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
+        }
+        
+        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;

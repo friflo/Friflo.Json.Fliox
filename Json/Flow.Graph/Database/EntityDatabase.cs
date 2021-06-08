@@ -45,17 +45,6 @@ namespace Friflo.Json.Flow.Database
             return container;
         }
         
-        public virtual async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
-            switch (request.requestType) {
-                case RequestType.sync:
-                    return await ExecuteSync((SyncRequest)request, syncContext);
-                case RequestType.subscribe:
-                    throw new NotImplementedException();
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-        
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>

@@ -51,6 +51,17 @@ namespace Friflo.Json.Flow.Database.Remote
                 return JsonResponse.CreateResponseError(syncContext, errorMsg, SyncStatusType.Exception);
             }
         }
+        
+        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
+            switch (request.requestType) {
+                case RequestType.sync:
+                    return await ExecuteSync((SyncRequest)request, syncContext).ConfigureAwait(false);
+                case RequestType.subscribe:
+                    throw new NotImplementedException();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
     
     public enum SyncStatusType {

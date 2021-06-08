@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Graph
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             SyncResponse response;
             try {
-                response = (SyncResponse)await _intern.database.ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
+                response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             }
             catch (Exception e) {
                 var errorMsg = ResponseError.ErrorFromException(e).ToString();
