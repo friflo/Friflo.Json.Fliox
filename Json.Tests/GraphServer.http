@@ -8,7 +8,7 @@
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
 		"task": "echo",
 		"message": "Hello"		
@@ -19,7 +19,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
     {
 		"task": "read",	"container": "Article",
 		"reads": [
@@ -32,7 +32,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "read",         "container": "Order",
         "reads": [
@@ -53,7 +53,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "query",        "container": "Article",
         "filterLinq": "true",
@@ -66,7 +66,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "query",        "container": "Article",
         "filterLinq": "true",
@@ -80,7 +80,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "query",        "container": "Article",
         "filterLinq": "true",
@@ -104,7 +104,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "create",       "container": "Article",
         "entities": {
@@ -119,7 +119,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "delete",       "container": "Article",
         "ids": ["new-article"]
@@ -130,7 +130,7 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "tasks": [
+{ "type": "sync", "tasks": [
 	{
         "task": "patch",        "container": "Article",
         "patches": {

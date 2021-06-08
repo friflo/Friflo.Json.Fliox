@@ -5,10 +5,31 @@
     <link rel="icon" href="data:,">
     <title>friflo Graph Server</title>
     <script>
+        var connection;
+
         function connectWebsocket() {
             var loc = window.location;
             var uri = "ws://" + loc.host + "/ws";
-            var connection = new WebSocket(uri);            
+            connection = new WebSocket(uri);
+            connection.onopen = function () {
+                connection.send('Ping'); // Send the message 'Ping' to the server
+            };
+
+            // Log errors
+            connection.onerror = function (error) {
+                console.log('WebSocket Error ' + error);
+            };
+
+            // Log messages from the server
+            connection.onmessage = function (e) {
+                console.log('Server: ' + e.data);
+            };
+        }
+
+        function sendEcho() {
+            var request = {type:"sync", tasks: [{ task: "echo", message: "test echo"}]};
+            var json = JSON.stringify(request);
+            connection.send(json);
         }
     </script>
 </head>
@@ -16,6 +37,7 @@
 <body>
     friflo Graph Server
     <br><br>
-    Websocket <button type="button" onclick="connectWebsocket()">Connect</button>
+    Websocket   <button type="button" onclick="connectWebsocket()">Connect</button> <br>
+    Echo        <button type="button" onclick="sendEcho()">Send</button> <br>
 </body>
 </html>

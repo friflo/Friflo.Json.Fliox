@@ -128,7 +128,7 @@ namespace Friflo.Json.Flow.Database.Remote
                         wsResult = await ws.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
                         memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
                     }
-                    while(wsResult.EndOfMessage);
+                    while(!wsResult.EndOfMessage);
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
