@@ -95,8 +95,8 @@ namespace Friflo.Json.Tests
             try {
                 if (req.HttpMethod == "GET") {
                     var path = req.Url.AbsolutePath;
-                    if (path == "/")
-                        path = "/index.html";
+                    if (path.EndsWith("/"))
+                        path += "index.html";
                     var filePath = wwwRoot + path;
                     var content = await ReadFile(filePath);
                     var contentType = ContentTypeFromPath(path);

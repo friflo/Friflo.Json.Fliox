@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="data:,">
     <title>friflo Graph Server</title>
+    <script>
+        function connectWebsocket() {
+            var loc = window.location;
+            var uri = "ws://" + loc.host + "/ws";
+            var connection = new WebSocket(uri);            
+        }
+    </script>
 </head>
+
 <body>
-friflo Graph Server
+    friflo Graph Server
+    <br><br>
+    Websocket <button type="button" onclick="connectWebsocket()">Connect</button>
 </body>
 </html>
