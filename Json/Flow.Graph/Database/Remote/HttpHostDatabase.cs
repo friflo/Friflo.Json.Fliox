@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 Log(reqMsg);
             }
             if (req.IsWebSocketRequest) {
-                await AcceptWebSocket (ctx);
+                await AcceptWebSocket (ctx).ConfigureAwait(false);
                 return;
             }
 

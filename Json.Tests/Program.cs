@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests
                     if (path.EndsWith("/"))
                         path += "index.html";
                     var filePath = wwwRoot + path;
-                    var content = await ReadFile(filePath);
+                    var content = await ReadFile(filePath).ConfigureAwait(false);
                     var contentType = ContentTypeFromPath(path);
                     HttpHostDatabase.SetResponseHeader(resp, contentType, HttpStatusCode.OK, content.Length);
                     await resp.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
