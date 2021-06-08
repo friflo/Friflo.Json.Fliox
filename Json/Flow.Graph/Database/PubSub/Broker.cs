@@ -21,6 +21,7 @@ namespace Friflo.Json.Flow.Database.PubSub
                 var syncContext     = new SyncContext(contextPools);
                 try {
                     await database.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    syncContext.pools.AssertNoLeaks();
                 } catch (Exception e) {
                     Console.WriteLine(e.ToString());
                 }

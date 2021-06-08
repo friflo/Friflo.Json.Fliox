@@ -30,9 +30,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest) {
-            var contextPools    = new Pools(Pools.SharedPools);
-            var syncContext     = new SyncContext(contextPools);
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext) {
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
@@ -46,7 +44,6 @@ namespace Friflo.Json.Flow.Database.Remote
                     mapper.Pretty = true;
                     jsonResponse = mapper.Write(response);
                 }
-                syncContext.pools.AssertNoLeaks();
                 return new JsonResponse(jsonResponse, RequestStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = ResponseError.ErrorFromException(e).ToString();

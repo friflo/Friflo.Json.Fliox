@@ -49,7 +49,14 @@ namespace Friflo.Json.Flow.Database.Remote
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
                     // await HandleListenerContext(ctx);            // handle incoming requests serial
-                    _ = Task.Run(() => HandleListenerContext(ctx)); // handle incoming requests parallel
+                    await Task.Run(async () => {
+                        try {
+                            await HandleListenerContext(ctx); // handle incoming requests parallel
+                        }
+                        catch (Exception e) {
+                            Log($"Request failed - {e.GetType()}: {e.Message}");
+                        }
+                    });
                 }
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
@@ -66,6 +73,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
                 catch (Exception e) {
                      Log($"RemoteHost error: {e}");
+                     return;
                 }
             }
         }
@@ -88,7 +96,10 @@ namespace Friflo.Json.Flow.Database.Remote
                 StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-                var     result      = await ExecuteRequestJson(requestContent).ConfigureAwait(false);
+                var contextPools    = new Pools(Pools.SharedPools);
+                var syncContext     = new SyncContext(contextPools);
+                var     result      = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
+                syncContext.pools.AssertNoLeaks();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
                 switch (result.statusType){
@@ -132,7 +143,10 @@ namespace Friflo.Json.Flow.Database.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                        var result          = await ExecuteRequestJson(requestContent).ConfigureAwait(false);
+                        var contextPools    = new Pools(Pools.SharedPools);
+                        var syncContext     = new SyncContext(contextPools);
+                        var result          = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
+                        syncContext.pools.AssertNoLeaks();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                         var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
                         await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
