@@ -22,8 +22,8 @@
 
             // Log messages from the server
             connection.onmessage = function (e) {
-                var data = JSON.parse(e.data);
-                console.log('Server:', data);
+                // var data = JSON.parse(e.data);
+                console.log('Server:', e.data);
             };
         }
 
@@ -46,7 +46,14 @@
     <button type="button" onclick="connectWebsocket()">Connect</button>
     <button type="button" onclick="sendSyncEcho()">Send sync echo</button> <br><br>
 
-    <textarea id="jsonRequest" cols="80" rows="15"></textarea> <br>
+    <textarea id="jsonRequest" cols="80" rows="15">{ "type": "sync", "tasks": [
+    {
+        "task": "read",	"container": "Article",
+        "reads": [
+            { "ids": ["article-galaxy", "article-ipad"] }
+        ]
+    }
+] }</textarea> <br>
     <button type="button" onclick="sendSyncRequest()">Send sync</button>
 </body>
 </html>
