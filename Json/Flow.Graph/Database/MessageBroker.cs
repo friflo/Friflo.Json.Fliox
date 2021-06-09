@@ -10,36 +10,6 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
-    public class ChangesSubscriber {
-        private  readonly   IMessageTarget                  messageTarget;
-        internal readonly   SubscribeChanges                subscribe;
-        internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
-        
-        public ChangesSubscriber (IMessageTarget messageTarget, SubscribeChanges subscribe) {
-            this.messageTarget  = messageTarget;
-            this.subscribe      = subscribe;
-        }
-        
-        internal async Task SendChangeMessages () {
-            if (!messageTarget.IsOpen())
-                return;
-            
-            var contextPools    = new Pools(Pools.SharedPools);
-            while (queue.TryPeek(out var changeMessage)) {
-                try {
-                    var syncContext     = new SyncContext(contextPools, messageTarget);
-                    var success = await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
-                    if (success) {
-                        queue.TryDequeue(out _);
-                    }
-                    syncContext.pools.AssertNoLeaks();
-                } catch (Exception e) {
-                    Console.WriteLine(e.ToString());
-                }
-            }
-        }
-    }
-    
     public interface IMessageTarget {
         bool        IsOpen ();
         Task<bool>  ExecuteChange(ChangesMessage change, SyncContext syncContext);
@@ -48,7 +18,7 @@ namespace Friflo.Json.Flow.Database
     public class MessageBroker
     {
         private readonly JsonEvaluator                                  jsonEvaluator = new JsonEvaluator();
-        private readonly Dictionary<IMessageTarget, ChangesSubscriber>  subscribers = new Dictionary<IMessageTarget, ChangesSubscriber>();
+        private readonly Dictionary<IMessageTarget, MessageSubscriber>  subscribers = new Dictionary<IMessageTarget, MessageSubscriber>();
             
         public void Subscribe (SubscribeChanges subscribe, IMessageTarget messageTarget) {
             var filters = subscribe.filters;
@@ -56,7 +26,7 @@ namespace Friflo.Json.Flow.Database
                 subscribers.Remove(messageTarget);
                 return;
             }
-            var subscriber = new ChangesSubscriber (messageTarget, subscribe);
+            var subscriber = new MessageSubscriber (messageTarget, subscribe);
             subscribers[messageTarget] = subscriber;
         }
         
@@ -71,7 +41,7 @@ namespace Friflo.Json.Flow.Database
         public void EnqueueSyncTasks (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  changes = null;
-                ChangesSubscriber   subscriber = pair.Value;
+                MessageSubscriber   subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
                     var taskResult = FilterTask(task, subscriber.subscribe);
                     if (taskResult == null)
@@ -148,6 +118,36 @@ namespace Friflo.Json.Flow.Database
                 }
             }
             return null;
+        }
+    }
+    
+    public class MessageSubscriber {
+        private  readonly   IMessageTarget                  messageTarget;
+        internal readonly   SubscribeChanges                subscribe;
+        internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
+        
+        public MessageSubscriber (IMessageTarget messageTarget, SubscribeChanges subscribe) {
+            this.messageTarget  = messageTarget;
+            this.subscribe      = subscribe;
+        }
+        
+        internal async Task SendChangeMessages () {
+            if (!messageTarget.IsOpen())
+                return;
+            
+            var contextPools    = new Pools(Pools.SharedPools);
+            while (queue.TryPeek(out var changeMessage)) {
+                try {
+                    var syncContext     = new SyncContext(contextPools, messageTarget);
+                    var success = await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    if (success) {
+                        queue.TryDequeue(out _);
+                    }
+                    syncContext.pools.AssertNoLeaks();
+                } catch (Exception e) {
+                    Console.WriteLine(e.ToString());
+                }
+            }
         }
     }
 }
