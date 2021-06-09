@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Database
 {
     public class Subscriber {
         internal            IMessageTarget                  messageTarget;
-        internal            Subscription                    subscription;
+        internal            SubscribeChanges                subscribe;
         internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
         
         internal async Task SendMessages () {
@@ -45,15 +45,15 @@ namespace Friflo.Json.Flow.Database
         private readonly JsonEvaluator                          jsonEvaluator = new JsonEvaluator();
         private readonly Dictionary<IMessageTarget, Subscriber> subscribers = new Dictionary<IMessageTarget, Subscriber>();
             
-        public void Subscribe (Subscription subscription, SyncContext syncContext) {
-            if (subscription == null)
+        public void Subscribe (SubscribeChanges subscribe, IMessageTarget messageTarget) {
+            var filters = subscribe.filters;
+            if (filters == null || filters.Count == 0) {
+                subscribers.Remove(messageTarget);
                 return;
-            var messageTarget = syncContext.messageTarget;
-            if (messageTarget == null)
-                return;
+            }
             var subscriber = new Subscriber {
                 messageTarget   = messageTarget,
-                subscription    = subscription
+                subscribe       = subscribe
             };
             subscribers[messageTarget] = subscriber;
         }
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Database
                 List<DatabaseTask>  subscriberTasks = null;
                 Subscriber          subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
-                    var taskResult = FilterTask(task, subscriber.subscription);
+                    var taskResult = FilterTask(task, subscriber.subscribe);
                     if (taskResult == null)
                         continue;
                     if (subscriberTasks == null) {
@@ -88,12 +88,12 @@ namespace Friflo.Json.Flow.Database
             }
         }
         
-        private DatabaseTask FilterTask (DatabaseTask task, Subscription subscription) {
+        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
             ContainerFilter containerFilter;
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
-                    containerFilter = FindFilter(subscription, create.container, TaskType.create);
+                    containerFilter = FindFilter(subscribe, create.container, TaskType.create);
                     if (containerFilter == null)
                         return null;
                     var createResult = new CreateEntities {
@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Database
                     return createResult;
                 case TaskType.update:
                     var update = (UpdateEntities) task;
-                    containerFilter = FindFilter(subscription, update.container, TaskType.update);
+                    containerFilter = FindFilter(subscribe, update.container, TaskType.update);
                     if (containerFilter == null)
                         return null;
                     var updateResult = new UpdateEntities {
@@ -139,8 +139,8 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
         
-        private static ContainerFilter FindFilter (Subscription subscription, string container, TaskType taskType) {
-            foreach (var filter in subscription.filters) {
+        private static ContainerFilter FindFilter (SubscribeChanges subscribe, string container, TaskType taskType) {
+            foreach (var filter in subscribe.filters) {
                 if (filter.container == container) {
                     if (Array.IndexOf(filter.changes, taskType) != -1)
                         return filter;

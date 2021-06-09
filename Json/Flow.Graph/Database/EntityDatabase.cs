@@ -107,7 +107,6 @@ namespace Friflo.Json.Flow.Database
             response.AssertResponse(syncRequest);
             
             if (messageBroker != null) {
-                messageBroker.Subscribe(syncRequest.subscription, syncContext);
                 messageBroker.EnqueueSync(syncRequest);
                 await messageBroker.SendQueueMessages();
             }

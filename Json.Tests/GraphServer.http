@@ -147,12 +147,13 @@ content-type: application/json
     }
 ] }
 
-### subscribe database changes
+### subscribe database changes - run only for WebSOcket, fails for HTTP POST
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync", "tasks": [],
-    "subscription": {
+{ "type": "sync", "tasks": [
+    {
+        "task": "subscribe",
         "filters": [
             {"container": "Article",  "changes": ["create","update","delete", "patch"] },
             {"container": "Customer", "changes": ["create","update","delete", "patch"] },
@@ -161,6 +162,6 @@ content-type: application/json
             {"container": "Producer", "changes": ["create","update","delete", "patch"] }
         ]
     }
-}
+] }
 
 
