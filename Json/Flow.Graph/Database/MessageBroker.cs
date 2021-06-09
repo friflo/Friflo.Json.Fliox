@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Database
                 messageTarget   = messageTarget,
                 subscription    = subscription
             };
-            subscribers.Add(messageTarget, subscriber);
+            subscribers[messageTarget] = subscriber;
         }
         
         // todo remove - only for testing
