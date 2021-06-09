@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         // --- IMessageTarget 
-        public async Task<bool> SendMessage(PushMessage change, SyncContext syncContext) {
+        public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
             return true;
         }
         

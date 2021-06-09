@@ -215,13 +215,13 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
         
-        public async Task<bool> SendMessage(PushMessage change, SyncContext syncContext) {
+        public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
-                writer.Pretty = true;
-                var jsonChange = writer.Write(change);
-                byte[] jsonBytes  = Encoding.UTF8.GetBytes(jsonChange);
+                writer.Pretty           = true;
+                var jsonMessage         = writer.Write(message);
+                byte[] jsonBytes        = Encoding.UTF8.GetBytes(jsonMessage);
                 try {
                     var arraySegment    = new ArraySegment<byte>(jsonBytes, 0, jsonBytes.Length);
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);

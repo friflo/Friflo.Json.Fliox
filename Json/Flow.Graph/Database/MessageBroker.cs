@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database
 {
     public interface IMessageTarget {
         bool        IsOpen ();
-        Task<bool>  SendMessage(PushMessage change, SyncContext syncContext);
+        Task<bool>  SendMessage(PushMessage message, SyncContext syncContext);
     }
     
     public class MessageBroker
@@ -33,26 +33,26 @@ namespace Friflo.Json.Flow.Database
         internal async Task SendQueueMessages() {
             foreach (var pair in subscribers) {
                 var subscriber = pair.Value;
-                await subscriber.SendChangeMessages();
+                await subscriber.SendMessages();
             }
         }
 
         public void EnqueueSyncTasks (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
-                List<DatabaseTask>  changes = null;
+                List<DatabaseTask>  tasks = null;
                 MessageSubscriber   subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
                     var taskResult = FilterTask(task, subscriber.subscribe);
                     if (taskResult == null)
                         continue;
-                    if (changes == null) {
-                        changes = new List<DatabaseTask>();
+                    if (tasks == null) {
+                        tasks = new List<DatabaseTask>();
                     }
-                    changes.Add(taskResult);
+                    tasks.Add(taskResult);
                 }
-                if (changes == null)
+                if (tasks == null)
                     continue;
-                var subscriberSync = new DatabaseMessage {tasks = changes};
+                var subscriberSync = new DatabaseMessage {tasks = tasks};
                 subscriber.queue.Enqueue(subscriberSync);
             }
         }
