@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Main
         
         private static string ContentTypeFromPath(string path) {
             if (path.EndsWith(".html"))
-                return "text/html";
+                return "text/html; charset=UTF-8";
             if (path.EndsWith(".js"))
                 return "application/javascript";
             if (path.EndsWith(".png"))
