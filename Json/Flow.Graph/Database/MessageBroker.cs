@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Database
         internal async Task SendQueueMessages() {
             foreach (var pair in subscribers) {
                 var subscriber = pair.Value;
-                await subscriber.SendMessages();
+                await subscriber.SendMessages().ConfigureAwait(false);
             }
         }
 

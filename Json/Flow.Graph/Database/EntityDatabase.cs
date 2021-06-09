@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Database
             
             if (messageBroker != null) {
                 messageBroker.EnqueueSyncTasks(syncRequest);
-                await messageBroker.SendQueueMessages();
+                await messageBroker.SendQueueMessages().ConfigureAwait(false);
             }
             
             return response;
