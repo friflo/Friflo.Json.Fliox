@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Database
             while (queue.TryPeek(out var changeMessage)) {
                 try {
                     var syncContext     = new SyncContext(contextPools, messageTarget);
-                    var success = await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    var success = await messageTarget.SendMessage(changeMessage, syncContext).ConfigureAwait(false);
                     if (success) {
                         queue.TryDequeue(out _);
                     }

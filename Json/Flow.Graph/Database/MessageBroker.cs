@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database
 {
     public interface IMessageTarget {
         bool        IsOpen ();
-        Task<bool>  ExecuteChange(ChangesMessage change, SyncContext syncContext);
+        Task<bool>  SendMessage(ChangesMessage change, SyncContext syncContext);
     }
     
     public class MessageBroker
