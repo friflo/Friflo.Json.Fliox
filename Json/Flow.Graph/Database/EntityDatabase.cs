@@ -115,7 +115,13 @@ namespace Friflo.Json.Flow.Database
             return response;
         }
         
-        public async Task ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+        // --- IMessageTarget 
+        public async Task<bool> ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+            return true;
+        }
+        
+        public bool IsOpen () {
+            return true;
         }
     }
 }

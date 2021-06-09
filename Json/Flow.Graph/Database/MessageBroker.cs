@@ -16,11 +16,17 @@ namespace Friflo.Json.Flow.Database
         internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
         
         internal async Task SendMessages () {
+            if (!messageTarget.IsOpen())
+                return;
+            
             var contextPools    = new Pools(Pools.SharedPools);
-            while (queue.TryDequeue(out var changeMessage)) {
+            while (queue.TryPeek(out var changeMessage)) {
                 try {
                     var syncContext     = new SyncContext(contextPools, messageTarget);
-                    await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    var success = await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
+                    if (success) {
+                        queue.TryDequeue(out _);
+                    }
                     syncContext.pools.AssertNoLeaks();
                 } catch (Exception e) {
                     Console.WriteLine(e.ToString());
@@ -30,7 +36,8 @@ namespace Friflo.Json.Flow.Database
     }
     
     public interface IMessageTarget {
-        Task ExecuteChange(ChangeMessage change, SyncContext syncContext);
+        bool        IsOpen ();
+        Task<bool>  ExecuteChange(ChangeMessage change, SyncContext syncContext);
     }
     
     public class MessageBroker
@@ -105,11 +112,11 @@ namespace Friflo.Json.Flow.Database
                     };
                     return updateResult;
                 case TaskType.delete:
-                    // todo
-                    return null;
+                    // todo apply filter
+                    return task;
                 case TaskType.patch:
-                    // todo
-                    return null;
+                    // todo apply filter
+                    return task;
                 default:
                     return null;
             }
