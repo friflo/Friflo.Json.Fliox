@@ -7,21 +7,21 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Flow.Sync
 {
     [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(ChangeMessage),    Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(ChangesMessage),    Discriminant = "changes")]
     public abstract class DatabaseMessage {
         internal abstract   MessageType  MessageType { get; }
     }
 
-    public class ChangeMessage : DatabaseMessage
+    public class ChangesMessage : DatabaseMessage
     {
-        public              List<DatabaseTask>          change;
+        public              List<DatabaseTask>          changes;
         
-        internal override   MessageType  MessageType => MessageType.change;
+        internal override   MessageType  MessageType => MessageType.changes;
     }
     
     
     // ReSharper disable InconsistentNaming
     public enum MessageType {
-        change
+        changes
     }
 }

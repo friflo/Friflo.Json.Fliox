@@ -10,12 +10,12 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
-    public class Subscriber {
+    public class ChangesSubscriber {
         internal            IMessageTarget                  messageTarget;
         internal            SubscribeChanges                subscribe;
-        internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
+        internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
         
-        internal async Task SendMessages () {
+        internal async Task SendChangeMessages () {
             if (!messageTarget.IsOpen())
                 return;
             
@@ -37,13 +37,13 @@ namespace Friflo.Json.Flow.Database
     
     public interface IMessageTarget {
         bool        IsOpen ();
-        Task<bool>  ExecuteChange(ChangeMessage change, SyncContext syncContext);
+        Task<bool>  ExecuteChange(ChangesMessage change, SyncContext syncContext);
     }
     
     public class MessageBroker
     {
-        private readonly JsonEvaluator                          jsonEvaluator = new JsonEvaluator();
-        private readonly Dictionary<IMessageTarget, Subscriber> subscribers = new Dictionary<IMessageTarget, Subscriber>();
+        private readonly JsonEvaluator                                  jsonEvaluator = new JsonEvaluator();
+        private readonly Dictionary<IMessageTarget, ChangesSubscriber>  subscribers = new Dictionary<IMessageTarget, ChangesSubscriber>();
             
         public void Subscribe (SubscribeChanges subscribe, IMessageTarget messageTarget) {
             var filters = subscribe.filters;
@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Database
                 subscribers.Remove(messageTarget);
                 return;
             }
-            var subscriber = new Subscriber {
+            var subscriber = new ChangesSubscriber {
                 messageTarget   = messageTarget,
                 subscribe       = subscribe
             };
@@ -62,28 +62,26 @@ namespace Friflo.Json.Flow.Database
         internal async Task SendQueueMessages() {
             foreach (var pair in subscribers) {
                 var subscriber = pair.Value;
-                await subscriber.SendMessages();
+                await subscriber.SendChangeMessages();
             }
         }
 
-        public void EnqueueSync (SyncRequest syncRequest) {
+        public void EnqueueSyncTasks (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
-                List<DatabaseTask>  subscriberTasks = null;
-                Subscriber          subscriber = pair.Value;
+                List<DatabaseTask>  changes = null;
+                ChangesSubscriber   subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
                     var taskResult = FilterTask(task, subscriber.subscribe);
                     if (taskResult == null)
                         continue;
-                    if (subscriberTasks == null) {
-                        subscriberTasks = new List<DatabaseTask>();
+                    if (changes == null) {
+                        changes = new List<DatabaseTask>();
                     }
-                    subscriberTasks.Add(taskResult);
+                    changes.Add(taskResult);
                 }
-                if (subscriberTasks == null)
+                if (changes == null)
                     continue;
-                var subscriberSync = new ChangeMessage {
-                    change = subscriberTasks
-                };
+                var subscriberSync = new ChangesMessage {changes = changes};
                 subscriber.queue.Enqueue(subscriberSync);
             }
         }

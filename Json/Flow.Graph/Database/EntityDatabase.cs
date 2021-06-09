@@ -107,7 +107,7 @@ namespace Friflo.Json.Flow.Database
             response.AssertResponse(syncRequest);
             
             if (messageBroker != null) {
-                messageBroker.EnqueueSync(syncRequest);
+                messageBroker.EnqueueSyncTasks(syncRequest);
                 await messageBroker.SendQueueMessages();
             }
             
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         // --- IMessageTarget 
-        public async Task<bool> ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+        public async Task<bool> ExecuteChange(ChangesMessage change, SyncContext syncContext) {
             return true;
         }
         

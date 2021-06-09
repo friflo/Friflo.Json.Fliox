@@ -215,7 +215,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
         
-        public async Task<bool> ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+        public async Task<bool> ExecuteChange(ChangesMessage change, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
