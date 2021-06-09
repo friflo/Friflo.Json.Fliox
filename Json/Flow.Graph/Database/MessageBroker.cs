@@ -11,9 +11,14 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Database
 {
     public class ChangesSubscriber {
-        internal            IMessageTarget                  messageTarget;
-        internal            SubscribeChanges                subscribe;
+        private  readonly   IMessageTarget                  messageTarget;
+        internal readonly   SubscribeChanges                subscribe;
         internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
+        
+        public ChangesSubscriber (IMessageTarget messageTarget, SubscribeChanges subscribe) {
+            this.messageTarget  = messageTarget;
+            this.subscribe      = subscribe;
+        }
         
         internal async Task SendChangeMessages () {
             if (!messageTarget.IsOpen())
@@ -51,10 +56,7 @@ namespace Friflo.Json.Flow.Database
                 subscribers.Remove(messageTarget);
                 return;
             }
-            var subscriber = new ChangesSubscriber {
-                messageTarget   = messageTarget,
-                subscribe       = subscribe
-            };
+            var subscriber = new ChangesSubscriber (messageTarget, subscribe);
             subscribers[messageTarget] = subscriber;
         }
         
