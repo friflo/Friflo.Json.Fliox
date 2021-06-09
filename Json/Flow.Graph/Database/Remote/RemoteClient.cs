@@ -48,9 +48,8 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        
-        public RemoteClientDatabase() {
-        }
+        // ReSharper disable once EmptyConstructor - added for source navigation
+        protected RemoteClientDatabase() { }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             RemoteClientContainer container = new RemoteClientContainer(name, this);
