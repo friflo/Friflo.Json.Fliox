@@ -12,7 +12,6 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        public  override    MessageBroker   MessageBroker { get => local.MessageBroker; set => local.MessageBroker = value; }
 
 
         public RemoteHostDatabase(EntityDatabase local) {

@@ -6,10 +6,11 @@
     <title>friflo Graph Server</title>
     <script>
         var connection;
+        var websocketCount = 0;
 
         function connectWebsocket() {
             var loc = window.location;
-            var uri = "ws://" + loc.host + "/ws";
+            var uri = `ws://${loc.host}/websocket-${++websocketCount}`;
             connection = new WebSocket(uri);
             connection.onopen = function () {
                 console.log('WebSocket connected');

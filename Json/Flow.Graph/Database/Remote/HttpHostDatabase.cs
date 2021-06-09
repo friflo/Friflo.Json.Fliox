@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     // Will wait here until we hear from a connection
                     HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
                     // await HandleListenerContext(ctx);            // handle incoming requests serial
-                    await Task.Run(async () => {
+                    _ = Task.Run(async () => {
                         try {
                             await HandleListenerContext(ctx); // handle incoming requests parallel
                         }
@@ -210,8 +210,16 @@ namespace Friflo.Json.Flow.Database.Remote
         internal WebSocketTarget (WebSocket webSocket) {
             this.webSocket = webSocket;
         }
-        public Task ExecuteChange(ChangeMessage change, SyncContext syncContext) {
-            throw new NotImplementedException();
+        
+        public async Task ExecuteChange(ChangeMessage change, SyncContext syncContext) {
+            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+                var writer = pooledMapper.instance.writer;
+                writer.WriteNullMembers = false;
+                writer.Pretty = true;
+                var jsonChange = writer.Write(change);
+                byte[] jsonBytes  = Encoding.UTF8.GetBytes(jsonChange);
+                await webSocket.SendAsync(jsonBytes, WebSocketMessageType.Text, true, CancellationToken.None);
+            }
         }
     }
 }

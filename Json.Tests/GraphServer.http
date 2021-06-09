@@ -146,3 +146,21 @@ content-type: application/json
         }
     }
 ] }
+
+### subscribe database changes
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "type": "sync", "tasks": [],
+    "subscription": {
+        "filters": [
+            {"container": "Article",  "taskTypes": ["create","update","delete", "patch"] },
+            {"container": "Customer", "taskTypes": ["create","update","delete", "patch"] },
+            {"container": "Employee", "taskTypes": ["create","update","delete", "patch"] },
+            {"container": "Order",    "taskTypes": ["create","update","delete", "patch"] },
+            {"container": "Producer", "taskTypes": ["create","update","delete", "patch"] }
+        ]
+    }
+}
+
+

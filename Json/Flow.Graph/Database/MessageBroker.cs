@@ -15,11 +15,11 @@ namespace Friflo.Json.Flow.Database
         internal            Subscription                    subscription;
         internal readonly   ConcurrentQueue<ChangeMessage>  queue = new ConcurrentQueue<ChangeMessage>();
         
-        internal async Task Publish () {
+        internal async Task SendMessages () {
             var contextPools    = new Pools(Pools.SharedPools);
             while (queue.TryDequeue(out var changeMessage)) {
-                var syncContext     = new SyncContext(contextPools, messageTarget);
                 try {
+                    var syncContext     = new SyncContext(contextPools, messageTarget);
                     await messageTarget.ExecuteChange(changeMessage, syncContext).ConfigureAwait(false);
                     syncContext.pools.AssertNoLeaks();
                 } catch (Exception e) {
@@ -35,9 +35,12 @@ namespace Friflo.Json.Flow.Database
     
     public class MessageBroker
     {
-        private readonly JsonEvaluator jsonEvaluator = new JsonEvaluator();
+        private readonly JsonEvaluator                          jsonEvaluator = new JsonEvaluator();
+        private readonly Dictionary<IMessageTarget, Subscriber> subscribers = new Dictionary<IMessageTarget, Subscriber>();
             
         public void Subscribe (Subscription subscription, SyncContext syncContext) {
+            if (subscription == null)
+                return;
             var messageTarget = syncContext.messageTarget;
             if (messageTarget == null)
                 return;
@@ -48,8 +51,14 @@ namespace Friflo.Json.Flow.Database
             subscribers.Add(messageTarget, subscriber);
         }
         
-        private readonly Dictionary<IMessageTarget, Subscriber> subscribers = new Dictionary<IMessageTarget, Subscriber>();
-        
+        // todo remove - only for testing
+        internal async Task SendQueueMessages() {
+            foreach (var pair in subscribers) {
+                var subscriber = pair.Value;
+                await subscriber.SendMessages();
+            }
+        }
+
         public void EnqueueSync (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  subscriberTasks = null;
