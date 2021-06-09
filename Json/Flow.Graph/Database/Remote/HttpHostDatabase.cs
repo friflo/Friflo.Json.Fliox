@@ -126,7 +126,6 @@ namespace Friflo.Json.Flow.Database.Remote
             resp.Close();
         }
         
-        /// todo untested
         private async Task AcceptWebSocket(HttpListenerContext ctx) {
             var         wsContext   = await ctx.AcceptWebSocketAsync(null);
             WebSocket   ws          = wsContext.WebSocket;
@@ -151,7 +150,7 @@ namespace Friflo.Json.Flow.Database.Remote
                         syncContext.pools.AssertNoLeaks();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                         var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
-                        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);;
+                        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                     }
                 }
                 Log("WebSocket closed");
@@ -203,7 +202,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    class WebSocketTarget : IMessageTarget
+    internal class WebSocketTarget : IMessageTarget
     {
         readonly WebSocket webSocket;
         
