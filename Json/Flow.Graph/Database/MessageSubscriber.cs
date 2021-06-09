@@ -10,10 +10,10 @@ namespace Friflo.Json.Flow.Database
 {
     public class MessageSubscriber {
         private  readonly   IMessageTarget                  messageTarget;
-        internal readonly   SubscribeChanges                subscribe;
+        internal readonly   SubscribeMessages               subscribe;
         internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
         
-        public MessageSubscriber (IMessageTarget messageTarget, SubscribeChanges subscribe) {
+        public MessageSubscriber (IMessageTarget messageTarget, SubscribeMessages subscribe) {
             this.messageTarget  = messageTarget;
             this.subscribe      = subscribe;
         }

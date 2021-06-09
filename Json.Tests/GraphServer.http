@@ -155,11 +155,11 @@ content-type: application/json
   {
     "task": "subscribe",
     "filters": [
-      {"container": "Article",  "changes": ["create", "update", "delete", "patch"] },
-      {"container": "Customer", "changes": ["create", "update", "delete", "patch"] },
-      {"container": "Employee", "changes": ["create", "update", "delete", "patch"] },
-      {"container": "Order",    "changes": ["create", "update", "delete", "patch"] },
-      {"container": "Producer", "changes": ["create", "update", "delete", "patch"] }
+      {"container": "Article",  "types": ["create", "update", "delete", "patch"] },
+      {"container": "Customer", "types": ["create", "update", "delete", "patch"] },
+      {"container": "Employee", "types": ["create", "update", "delete", "patch"] },
+      {"container": "Order",    "types": ["create", "update", "delete", "patch"] },
+      {"container": "Producer", "types": ["create", "update", "delete", "patch"] }
     ]
   }
 ]}

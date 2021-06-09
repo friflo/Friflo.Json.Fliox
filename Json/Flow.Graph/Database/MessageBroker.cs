@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database
         private readonly JsonEvaluator                                  jsonEvaluator = new JsonEvaluator();
         private readonly Dictionary<IMessageTarget, MessageSubscriber>  subscribers = new Dictionary<IMessageTarget, MessageSubscriber>();
             
-        public void Subscribe (SubscribeChanges subscribe, IMessageTarget messageTarget) {
+        public void Subscribe (SubscribeMessages subscribe, IMessageTarget messageTarget) {
             var filters = subscribe.filters;
             if (filters == null || filters.Count == 0) {
                 subscribers.Remove(messageTarget);
@@ -57,27 +57,27 @@ namespace Friflo.Json.Flow.Database
             }
         }
         
-        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
-            ContainerFilter containerFilter;
+        private DatabaseTask FilterTask (DatabaseTask task, SubscribeMessages subscribe) {
+            MessageFilter messageFilter;
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
-                    containerFilter = FindFilter(subscribe, create.container, TaskType.create);
-                    if (containerFilter == null)
+                    messageFilter = FindFilter(subscribe, create.container, TaskType.create);
+                    if (messageFilter == null)
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = FilterEntities(containerFilter.filter, create.entities)
+                        entities    = FilterEntities(messageFilter.filter, create.entities)
                     };
                     return createResult;
                 case TaskType.update:
                     var update = (UpdateEntities) task;
-                    containerFilter = FindFilter(subscribe, update.container, TaskType.update);
-                    if (containerFilter == null)
+                    messageFilter = FindFilter(subscribe, update.container, TaskType.update);
+                    if (messageFilter == null)
                         return null;
                     var updateResult = new UpdateEntities {
                         container   = update.container,
-                        entities    = FilterEntities(containerFilter.filter, update.entities)
+                        entities    = FilterEntities(messageFilter.filter, update.entities)
                     };
                     return updateResult;
                 case TaskType.delete:
@@ -108,10 +108,10 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
         
-        private static ContainerFilter FindFilter (SubscribeChanges subscribe, string container, TaskType taskType) {
+        private static MessageFilter FindFilter (SubscribeMessages subscribe, string container, TaskType taskType) {
             foreach (var filter in subscribe.filters) {
                 if (filter.container == container) {
-                    if (Array.IndexOf(filter.changes, taskType) != -1)
+                    if (Array.IndexOf(filter.types, taskType) != -1)
                         return filter;
                     return null;
                 }

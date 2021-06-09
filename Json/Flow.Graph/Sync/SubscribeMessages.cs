@@ -8,9 +8,9 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class SubscribeChanges : DatabaseTask
+    public class SubscribeMessages : DatabaseTask
     {
-        public List<ContainerFilter>    filters;
+        public List<MessageFilter>      filters;
         
         internal override   TaskType    TaskType => TaskType.subscribe;
         
@@ -24,19 +24,19 @@ namespace Friflo.Json.Flow.Sync
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a messageTarget"));
             
             messageBroker.Subscribe(this, messageTarget);
-            return Task.FromResult<TaskResult>(new SubscribeChangesResult());
+            return Task.FromResult<TaskResult>(new SubscribeMessagesResult());
         }
     }
     
-    public class SubscribeChangesResult : TaskResult
+    public class SubscribeMessagesResult : TaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribe;
     }
     
-    public class ContainerFilter
+    public class MessageFilter
     {
         public string                   container;
-        public TaskType[]               changes;
+        public TaskType[]               types;
         public FilterOperation          filter;
     }
 
