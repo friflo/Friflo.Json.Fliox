@@ -223,7 +223,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 var jsonChange = writer.Write(change);
                 byte[] jsonBytes  = Encoding.UTF8.GetBytes(jsonChange);
                 try {
-                    await webSocket.SendAsync(jsonBytes, WebSocketMessageType.Text, true, CancellationToken.None);
+                    var arraySegment    = new ArraySegment<byte>(jsonBytes, 0, jsonBytes.Length);
+                    await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
                     return true;
                 }
                 catch (Exception) {
