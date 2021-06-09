@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database
 {
     public interface IMessageTarget {
         bool        IsOpen ();
-        Task<bool>  SendMessage(ChangesMessage change, SyncContext syncContext);
+        Task<bool>  SendMessage(PushMessage change, SyncContext syncContext);
     }
     
     public class MessageBroker
@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Database
                 }
                 if (changes == null)
                     continue;
-                var subscriberSync = new ChangesMessage {changes = changes};
+                var subscriberSync = new DatabaseMessage {tasks = changes};
                 subscriber.queue.Enqueue(subscriberSync);
             }
         }

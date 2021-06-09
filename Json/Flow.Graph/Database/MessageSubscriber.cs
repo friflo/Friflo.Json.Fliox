@@ -9,9 +9,9 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database
 {
     public class MessageSubscriber {
-        private  readonly   IMessageTarget                  messageTarget;
-        internal readonly   SubscribeMessages               subscribe;
-        internal readonly   ConcurrentQueue<ChangesMessage> queue = new ConcurrentQueue<ChangesMessage>();
+        private  readonly   IMessageTarget                      messageTarget;
+        internal readonly   SubscribeMessages                   subscribe;
+        internal readonly   ConcurrentQueue<DatabaseMessage>    queue = new ConcurrentQueue<DatabaseMessage>();
         
         public MessageSubscriber (IMessageTarget messageTarget, SubscribeMessages subscribe) {
             this.messageTarget  = messageTarget;
