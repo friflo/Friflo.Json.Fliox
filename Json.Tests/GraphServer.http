@@ -28,7 +28,7 @@ content-type: application/json
   }
 ]}
 
-### read entity "order-1" and its referenced .customer
+### read entity "order-1" and its reference to .customer
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -62,7 +62,7 @@ content-type: application/json
 ]}
 
 
-### query articles with => .name == "Smartphone"
+### query articles with a filter => .name == "Smartphone"
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -76,7 +76,7 @@ content-type: application/json
 ]}
 
 
-### query all articles, their referenced .producer (and .employees[*] referenced by .producer)
+### query all articles, their referenced .producer (and the .employees[*] referenced by .producer)
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -147,7 +147,7 @@ content-type: application/json
   }
 ]}
 
-### subscribe database changes - run only for WebSocket; fails for HTTP POST
+### subscribe to database changes - run only for WebSocket; fails for HTTP POST
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
