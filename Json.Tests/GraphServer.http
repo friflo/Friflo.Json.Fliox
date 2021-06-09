@@ -9,57 +9,57 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "echo",
-        "message": "Hello"		
-    }
-] }
+  {
+    "task": "echo",
+    "message": "Hello"		
+  }
+]}
 
 ### read entities by their ids
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "read",	"container": "Article",
-        "reads": [
-            { "ids": ["article-galaxy", "article-ipad"] }
-        ]
-    }
-] }
+  {
+    "task": "read",	"container": "Article",
+    "reads": [
+      { "ids": ["article-galaxy", "article-ipad"] }
+    ]
+  }
+]}
 
 ### read entity "order-1" and its referenced .customer
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "read",         "container": "Order",
-        "reads": [
-        {
-            "ids": ["order-1"],
-            "references": [
-                {
-                    "selector": ".customer",
-                    "container": "Customer"
-                }
-            ]
-        }
+  {
+    "task": "read",         "container": "Order",
+    "reads": [
+      {
+        "ids": ["order-1"],
+        "references": [
+          {
+            "selector": ".customer",
+            "container": "Customer"
+          }
         ]
-    }
-] }
+      }
+    ]
+  }
+]}
 
 ### query all articles -> "filter": { "op":"true" }
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "query",        "container": "Article",
-        "filterLinq": "true",
-        "filter": { "op":"true" }
-    }
-] }
+  {
+    "task": "query",        "container": "Article",
+    "filterLinq": "true",
+    "filter": { "op":"true" }
+  }
+]}
 
 
 ### query articles with => .name == "Smartphone"
@@ -67,13 +67,13 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "query",        "container": "Article",
-        "filterLinq": "true",
-        "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
-                                 "right":{"op":"string", "value": "Smartphone"}}
-    }
-] }
+  {
+    "task": "query",        "container": "Article",
+    "filterLinq": "true",
+    "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
+                             "right":{"op":"string", "value": "Smartphone"}}
+  }
+]}
 
 
 ### query all articles, their referenced .producer (and .employees[*] referenced by .producer)
@@ -81,87 +81,87 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "query",        "container": "Article",
-        "filterLinq": "true",
-        "filter": { "op":"true" },
+  {
+    "task": "query",        "container": "Article",
+    "filterLinq": "true",
+    "filter": { "op":"true" },
+    "references": [
+      {
+        "selector": ".producer",
+        "container": "Producer",
         "references": [
-        {
-            "selector": ".producer",
-            "container": "Producer",
-            "references": [
-                {
-                    "selector": ".employees[*]",
-                    "container": "Employee"
-                }
-            ]
-        }
+          {
+            "selector": ".employees[*]",
+            "container": "Employee"
+          }
         ]
-    }
-] }
+      }
+    ]
+  }
+]}
 
 ### create an article - creates file ./Json.Tests/assets/db/Article/new-article.json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "create",       "container": "Article",
-        "entities": {
-            "new-article": {
-                "value": {"id": "new-article","name":"New Article S10"}
-            }
-        }
+  {
+    "task": "create",       "container": "Article",
+    "entities": {
+      "new-article": {
+        "value": {"id": "new-article","name":"New Article S10"}
+      }
     }
-] }
+  }
+]}
 
 ### delete an article
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "delete",       "container": "Article",
-        "ids": ["new-article"]
-    }
-] }
+  {
+    "task": "delete",       "container": "Article",
+    "ids": ["new-article"]
+  }
+]}
 
 ### patch article member .name (article need to be present)
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "patch",        "container": "Article",
-        "patches": {
-            "new-article": {
-                "patches": [
-                    {
-                        "op":"replace",
-                        "path": ".name",
-                        "value": "patched Name"
-                    }
-                ]
-            }
-        }
+  {
+    "task": "patch",        "container": "Article",
+    "patches": {
+      "new-article": {
+        "patches": [
+          {
+            "op":"replace",
+            "path": ".name",
+            "value": "patched Name"
+          }
+        ]
+      }
     }
-] }
+  }
+]}
 
-### subscribe database changes - run only for WebSOcket, fails for HTTP POST
+### subscribe database changes - run only for WebSocket; fails for HTTP POST
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-    {
-        "task": "subscribe",
-        "filters": [
-            {"container": "Article",  "changes": ["create","update","delete", "patch"] },
-            {"container": "Customer", "changes": ["create","update","delete", "patch"] },
-            {"container": "Employee", "changes": ["create","update","delete", "patch"] },
-            {"container": "Order",    "changes": ["create","update","delete", "patch"] },
-            {"container": "Producer", "changes": ["create","update","delete", "patch"] }
-        ]
-    }
-] }
+  {
+    "task": "subscribe",
+    "filters": [
+      {"container": "Article",  "changes": ["create", "update", "delete", "patch"] },
+      {"container": "Customer", "changes": ["create", "update", "delete", "patch"] },
+      {"container": "Employee", "changes": ["create", "update", "delete", "patch"] },
+      {"container": "Order",    "changes": ["create", "update", "delete", "patch"] },
+      {"container": "Producer", "changes": ["create", "update", "delete", "patch"] }
+    ]
+  }
+]}
 
 
