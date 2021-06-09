@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Sync
     public class ContainerFilter
     {
         public string                   container;
-        public TaskType[]               taskTypes;
+        public TaskType[]               changes;
         public FilterOperation          filter;
     }
 

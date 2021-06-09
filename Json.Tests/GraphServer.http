@@ -154,11 +154,11 @@ content-type: application/json
 { "type": "sync", "tasks": [],
     "subscription": {
         "filters": [
-            {"container": "Article",  "taskTypes": ["create","update","delete", "patch"] },
-            {"container": "Customer", "taskTypes": ["create","update","delete", "patch"] },
-            {"container": "Employee", "taskTypes": ["create","update","delete", "patch"] },
-            {"container": "Order",    "taskTypes": ["create","update","delete", "patch"] },
-            {"container": "Producer", "taskTypes": ["create","update","delete", "patch"] }
+            {"container": "Article",  "changes": ["create","update","delete", "patch"] },
+            {"container": "Customer", "changes": ["create","update","delete", "patch"] },
+            {"container": "Employee", "changes": ["create","update","delete", "patch"] },
+            {"container": "Order",    "changes": ["create","update","delete", "patch"] },
+            {"container": "Producer", "changes": ["create","update","delete", "patch"] }
         ]
     }
 }
