@@ -8,12 +8,19 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
+    public abstract class ChangeListener {}
+    
+    public abstract class ChangeListener<T> : ChangeListener where T : Entity
+    {
+        public virtual void CreatedEntities(List<T> entities) {}
+    }
+    
     public class SubscribeTask<T> : SyncTask where T : Entity
     {
         internal            TaskState               state;
         internal readonly   HashSet<TaskType>       types;
         internal readonly   FilterOperation         filter;
-        private  readonly   string                  filterLinq; // use as string identifier of a filter 
+        private  readonly   string                  filterLinq; // use as string identifier of a filter
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"SubscribeTask<{typeof(T).Name}> (filter: {filterLinq})";

@@ -18,15 +18,16 @@ namespace Friflo.Json.Flow.Graph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  readonly  string  name;
-        
-        internal  abstract  SyncSet Sync      { get; }
-        internal  abstract  SetInfo SetInfo   { get; }
+        internal  readonly  string          name;
+        internal            ChangeListener  changeListener;
+
+        internal  abstract  SyncSet         Sync      { get; }
+        internal  abstract  SetInfo         SetInfo   { get; }
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
-        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
+        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities, ChangeListener changeListener);
         internal  abstract  void            ResetSync               ();
 
         protected EntitySet(string name) {
@@ -115,22 +116,22 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Subscribe
-        public SubscribeTask<T> Subscribe(HashSet<TaskType> types, Expression<Func<T, bool>> filter) {
+        public SubscribeTask<T> Subscribe(HashSet<TaskType> types, Expression<Func<T, bool>> filter, ChangeListener<T> changeListener) {
             var op = Operation.FromFilter(filter);
-            var task = sync.SubscribeFilter(types, op);
+            var task = sync.SubscribeFilter(types, op, changeListener);
             intern.store.AddTask(task);
             return task;
         }
         
-        public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter) {
-            var task = sync.SubscribeFilter(types, filter.op);
+        public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter, ChangeListener<T> changeListener) {
+            var task = sync.SubscribeFilter(types, filter.op, changeListener);
             intern.store.AddTask(task);
             return task;
         }
         
-        public SubscribeTask<T> SubscribeAll(HashSet<TaskType> types) {
+        public SubscribeTask<T> SubscribeAll(HashSet<TaskType> types, ChangeListener<T> changeListener) {
             var all = Operation.FilterTrue;
-            var task = sync.SubscribeFilter(types, all);
+            var task = sync.SubscribeFilter(types, all, changeListener);
             intern.store.AddTask(task);
             return task;
         }
@@ -326,7 +327,12 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities) {
+        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities, ChangeListener changeListener) {
+            var typedListener = (ChangeListener<T>)changeListener;
+            List<T> createdEntities = null;
+            if (typedListener != null)
+                createdEntities = new List<T>();
+                
             foreach (var entityPair in entities) {
                 var id = entityPair.Key;
                 var value = entityPair.Value;
@@ -362,7 +368,11 @@ namespace Friflo.Json.Flow.Graph
                     peer.SetPatchSourceNull();
                 }
                 peer.assigned = true;
+                if (createdEntities != null)
+                    createdEntities.Add(peer.Entity);
             }
+            if (typedListener != null)
+                typedListener.CreatedEntities(createdEntities);
         }
 
         internal override void ResetSync() {
