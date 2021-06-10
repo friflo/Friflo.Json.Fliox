@@ -34,7 +34,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
             Echo        (tasks);
-            // Subscribe   (tasks);
         }
                 
         // --- Echo
@@ -58,27 +57,5 @@ namespace Friflo.Json.Flow.Graph.Internal
             echoTask.result = echoResult.message;
             echoTask.state.Synced = true;
         }
-        /*
-        // --- Subscribe
-        private void Subscribe(List<DatabaseTask> tasks) {
-            SubscribeMessages subscribe = null;
-            foreach (var pair in entityStore._intern.setByType) {
-                EntitySet set = pair.Value;
-                var messageFilter = set.GetMessageFilter();
-                if (messageFilter == null)
-                    continue;
-                if (subscribe == null)
-                    subscribe = new SubscribeMessages{filters = new List<MessageFilter>()};
-                subscribe.filters.Add(messageFilter);
-            }
-            if (subscribe != null)
-                tasks.Add(subscribe);
-        }
-        
-        internal void SubscribeResult (SubscribeMessages task, TaskResult result) {
-            foreach (var pair in entityStore._intern.setByType) {
-                EntitySet set = pair.Value; 
-            }
-        } */
     }
 }

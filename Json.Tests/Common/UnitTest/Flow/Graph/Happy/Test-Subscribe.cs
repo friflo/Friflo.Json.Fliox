@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
+using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -28,9 +28,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var useStore     = new PocStore(fileDatabase)) {
                 fileDatabase.messageBroker = messageBroker;
                 var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
-                useStore.articles.SubscribeAll(types);
-                await useStore.Sync();
-                using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase)) {
+                var subscribeArticles = useStore.articles.SubscribeAll(types);
+                
+                await useStore.Sync(); // -------- Sync --------
+                
+                IsTrue(subscribeArticles.Success);
+                
+                using (await TestRelationPoC.CreateStore(fileDatabase)) {
 
                 }
             }

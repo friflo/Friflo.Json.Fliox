@@ -14,10 +14,6 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   HashSet<TaskType>       types;
         internal readonly   FilterOperation         filter;
         private  readonly   string                  filterLinq; // use as string identifier of a filter 
-     // private  readonly   EntityStore             store;
-
-        // public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? entities     : throw e;
-        // public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? entities[id] : throw e;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"SubscribeTask<{typeof(T).Name}> (filter: {filterLinq})";
@@ -27,7 +23,6 @@ namespace Friflo.Json.Flow.Graph
             this.types      = types;
             this.filter     = filter;
             this.filterLinq = filter.Linq;
-            // this.store      = store;
         }
     }
 }

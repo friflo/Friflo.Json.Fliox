@@ -226,6 +226,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             QueryEntities   (tasks);
             PatchEntities   (tasks);
             DeleteEntities  (tasks);
+            Subscribe       (tasks);
         }
         
         private void CreateEntities(List<DatabaseTask> tasks) {
@@ -355,6 +356,18 @@ namespace Friflo.Json.Flow.Graph.Internal
             deletes.Clear();
         }
         
+        private void Subscribe(List<DatabaseTask> tasks) {
+            var sub = subscribe;
+            if (sub == null)
+                return;
+            var req = new SubscribeMessages {
+                container   = set.name,
+                filter      = sub.filter,
+                types       = sub.types
+            };
+            tasks.Add(req);
+        }
+        
         // ----------------------------------- helper methods -----------------------------------
         private static void AddReferences(List<References> references, SubRefs refs) {
             foreach (var readRefs in refs) {
@@ -385,7 +398,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 Any(creates.Count) +
                 Any(updates.Count) +
                 Any(patches.Count + patchTasks.Count) +
-                Any(deletes.Count);
+                Any(deletes.Count) +
+                (subscribe != null ? 1 : 0);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;
