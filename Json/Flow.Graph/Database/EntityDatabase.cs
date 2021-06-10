@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Database
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public abstract class EntityDatabase : IMessageTarget, IDisposable
+    public abstract class EntityDatabase : IDisposable
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
@@ -112,15 +112,6 @@ namespace Friflo.Json.Flow.Database
             }
             
             return response;
-        }
-        
-        // --- IMessageTarget 
-        public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
-            return true;
-        }
-        
-        public bool IsOpen () {
-            return true;
         }
     }
 }
