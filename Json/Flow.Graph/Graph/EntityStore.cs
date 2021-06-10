@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Graph
                 TracerContext = this
             };
             var messageTarget = new MessageTarget(this);
-            var sync = new SyncStore(this);
+            var sync = new SyncStore();
             _intern = new StoreIntern(typeStore, owned, database, jsonMapper, messageTarget, sync);
         }
         
@@ -341,7 +341,7 @@ namespace Friflo.Json.Flow.Graph
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
-                _intern.sync = new SyncStore(this);
+                _intern.sync = new SyncStore();
             }
             return syncResult;
         }

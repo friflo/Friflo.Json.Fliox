@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             
         // --- IMessageTarget 
         public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
+            var databaseMessage = message as DatabaseMessage;
             return true;
         }
         
