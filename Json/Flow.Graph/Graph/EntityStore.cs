@@ -323,7 +323,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.subscribe:
                             var subscribe = (SubscribeMessages) task;
-                            _intern.sync.SubscribeResult(subscribe, result);
+                            // _intern.sync.SubscribeResult(subscribe, result);
                             break;
                     }
                 }

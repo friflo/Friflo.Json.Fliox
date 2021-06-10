@@ -24,13 +24,11 @@ namespace Friflo.Json.Flow.Database
         }
 
         public void Subscribe (SubscribeMessages subscribe, IMessageTarget messageTarget) {
-            var filters = subscribe.filters;
-            if (filters == null || filters.Count == 0) {
-                subscribers.Remove(messageTarget);
-                return;
+            if (!subscribers.TryGetValue(messageTarget, out var messageSubscriber)) {
+                messageSubscriber = new MessageSubscriber(messageTarget);
+                subscribers.Add(messageTarget, messageSubscriber);
             }
-            var subscriber = new MessageSubscriber (messageTarget, subscribe);
-            subscribers[messageTarget] = subscriber;
+            messageSubscriber.subscribeMap[subscribe.container] = subscribe;
         }
         
         // todo remove - only for testing
@@ -46,13 +44,16 @@ namespace Friflo.Json.Flow.Database
                 List<DatabaseTask>  tasks = null;
                 MessageSubscriber   subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
-                    var taskResult = FilterTask(task, subscriber.subscribe);
-                    if (taskResult == null)
-                        continue;
-                    if (tasks == null) {
-                        tasks = new List<DatabaseTask>();
+                    foreach (var messagePair in subscriber.subscribeMap) {
+                        SubscribeMessages subscribeMessages = messagePair.Value;
+                        var taskResult = FilterTask(task, subscribeMessages);
+                        if (taskResult == null)
+                            continue;
+                        if (tasks == null) {
+                            tasks = new List<DatabaseTask>();
+                        }
+                        tasks.Add(taskResult);
                     }
-                    tasks.Add(taskResult);
                 }
                 if (tasks == null)
                     continue;
@@ -62,34 +63,37 @@ namespace Friflo.Json.Flow.Database
         }
         
         private DatabaseTask FilterTask (DatabaseTask task, SubscribeMessages subscribe) {
-            MessageFilter messageFilter;
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
-                    messageFilter = FindFilter(subscribe, create.container, TaskType.create);
-                    if (messageFilter == null)
+                    if (!MatchFilter(subscribe, create.container, TaskType.create))
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = FilterEntities(messageFilter.filter, create.entities)
+                        entities    = FilterEntities(subscribe.filter, create.entities)
                     };
                     return createResult;
                 case TaskType.update:
                     var update = (UpdateEntities) task;
-                    messageFilter = FindFilter(subscribe, update.container, TaskType.update);
-                    if (messageFilter == null)
+                    if (!MatchFilter(subscribe, update.container, TaskType.create))
                         return null;
                     var updateResult = new UpdateEntities {
                         container   = update.container,
-                        entities    = FilterEntities(messageFilter.filter, update.entities)
+                        entities    = FilterEntities(subscribe.filter, update.entities)
                     };
                     return updateResult;
                 case TaskType.delete:
                     // todo apply filter
-                    return task;
+                    var delete = (DeleteEntities) task;
+                    if (subscribe.container == delete.container)
+                        return task;
+                    return null;
                 case TaskType.patch:
                     // todo apply filter
-                    return task;
+                    var patch = (PatchEntities) task;
+                    if (subscribe.container == patch.container)
+                        return task;
+                    return null;
                 default:
                     return null;
             }
@@ -112,15 +116,13 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
         
-        private static MessageFilter FindFilter (SubscribeMessages subscribe, string container, TaskType taskType) {
-            foreach (var filter in subscribe.filters) {
-                if (filter.container == container) {
-                    if (filter.types.Contains(taskType))
-                        return filter;
-                    return null;
-                }
+        private static bool MatchFilter (SubscribeMessages subscribe, string container, TaskType taskType) {
+            if (subscribe.container == container) {
+                if (subscribe.types.Contains(taskType))
+                    return true;
+                return false;
             }
-            return null;
+            return false;
         }
     }
 }

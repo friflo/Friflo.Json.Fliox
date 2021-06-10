@@ -10,10 +10,14 @@ namespace Friflo.Json.Flow.Sync
 {
     public class SubscribeMessages : DatabaseTask
     {
-        public List<MessageFilter>      filters;
+        public string                   container;
+        public HashSet<TaskType>        types;
+        public FilterOperation          filter;
         
-        internal override   TaskType    TaskType => TaskType.subscribe;
-        
+        internal override   TaskType    TaskType    => TaskType.subscribe;
+
+        public   override   string      ToString()  => container;
+
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var messageBroker = database.messageBroker;
             if (messageBroker == null)
@@ -32,12 +36,4 @@ namespace Friflo.Json.Flow.Sync
     {
         internal override   TaskType    TaskType => TaskType.subscribe;
     }
-    
-    public class MessageFilter
-    {
-        public string                   container;
-        public HashSet<TaskType>        types;
-        public FilterOperation          filter;
-    }
-
 }

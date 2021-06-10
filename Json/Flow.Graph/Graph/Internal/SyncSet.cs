@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return subscribe;
         }
         
-        internal MessageFilter GetMessageFilter() {
+        /* internal MessageFilter GetMessageFilter() {
             var sub = subscribe;
             if (sub == null)
                 return null;
@@ -106,7 +106,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 filter      = sub.filter 
             };
             return messageFilter;
-        }
+        } */
         
         // --- Create
         internal CreateTask<T> Create(T entity) {

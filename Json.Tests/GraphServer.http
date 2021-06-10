@@ -152,15 +152,8 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync", "tasks": [
-  {
-    "task": "subscribe",
-    "filters": [
-      {"container": "Article",  "types": ["create", "update", "delete", "patch"] },
-      {"container": "Customer", "types": ["create", "update", "delete", "patch"] },
-      {"container": "Employee", "types": ["create", "update", "delete", "patch"] },
-      {"container": "Order",    "types": ["create", "update", "delete", "patch"] },
-      {"container": "Producer", "types": ["create", "update", "delete", "patch"] }
-    ]
+  { "task": "subscribe", "container": "Article",
+    "types": ["create", "update", "delete", "patch"]
   }
 ]}
 

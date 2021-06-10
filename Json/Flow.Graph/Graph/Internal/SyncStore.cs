@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
             Echo        (tasks);
-            Subscribe   (tasks);
+            // Subscribe   (tasks);
         }
                 
         // --- Echo
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             echoTask.result = echoResult.message;
             echoTask.state.Synced = true;
         }
-        
+        /*
         // --- Subscribe
         private void Subscribe(List<DatabaseTask> tasks) {
             SubscribeMessages subscribe = null;
@@ -79,6 +79,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var pair in entityStore._intern.setByType) {
                 EntitySet set = pair.Value; 
             }
-        }
+        } */
     }
 }

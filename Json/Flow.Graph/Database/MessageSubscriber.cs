@@ -3,19 +3,20 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
     public class MessageSubscriber {
-        private  readonly   IMessageTarget                  messageTarget;
-        internal readonly   SubscribeMessages               subscribe;
-        internal readonly   ConcurrentQueue<PushMessage>    queue = new ConcurrentQueue<PushMessage>();
+        private  readonly   IMessageTarget                          messageTarget;
+        /// key: <see cref="SubscribeMessages.container"/>
+        internal readonly   Dictionary<string, SubscribeMessages>   subscribeMap = new Dictionary<string, SubscribeMessages>();
+        internal readonly   ConcurrentQueue<PushMessage>            queue = new ConcurrentQueue<PushMessage>();
         
-        public MessageSubscriber (IMessageTarget messageTarget, SubscribeMessages subscribe) {
+        public MessageSubscriber (IMessageTarget messageTarget) {
             this.messageTarget  = messageTarget;
-            this.subscribe      = subscribe;
         }
         
         internal async Task SendMessages () {
