@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Database
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
-        /// <summary> Returned <see cref="Mapper.ObjectMapper"/> dont throw Read() exceptions. To handle errors its
+        /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator   { get; }

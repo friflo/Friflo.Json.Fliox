@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public static readonly RefMatcher Instance = new RefMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (TypeUtils.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // doesnt handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(Ref<>) );
             if (args == null)

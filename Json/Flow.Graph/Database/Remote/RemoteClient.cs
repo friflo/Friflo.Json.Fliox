@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return _singleton;
         }
 
-        /// <summary> Returned <see cref="ObjectMapper"/> dont throw Read() exceptions. To handle errors its
+        /// <summary> Returned <see cref="ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal static ObjectMapper CreateObjectMapper() {
             var mapper = new ObjectMapper(Get(), new NoThrowHandler());

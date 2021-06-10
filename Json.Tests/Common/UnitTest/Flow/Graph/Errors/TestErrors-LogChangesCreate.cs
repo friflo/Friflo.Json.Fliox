@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 | WriteError: Producer 'create-exception', UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
             }
 
-            /*  // not required as TestContainer as database dont mutate
+            /*  // not required as TestContainer as database doesnt mutate
                 patchArticle.Result.producer = default; // restore precondition
                 store.LogChanges();
                 await store.Sync();

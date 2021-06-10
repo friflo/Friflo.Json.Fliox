@@ -30,12 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             const string article1ReadError      = "article-1";
             const string article2JsonError      = "article-2";
             const string articleInvalidJson     = "article-invalidJson";
-            const string articleIdDontMatch     = "article-idDontMatch";
+            const string articleIdDoesntMatch   = "article-idDoesntMatch";
             
             testArticles.readEntityErrors.Add(article2JsonError,    (value) => value.SetJson(@"{""invalidJson"" XXX}"));
             testArticles.readEntityErrors.Add(article1ReadError,    (value) => value.SetError(testArticles.ReadError(article1ReadError)));
             testArticles.readEntityErrors.Add(articleInvalidJson,   (value) => value.SetJson(@"{""invalidJson"" YYY}"));
-            testArticles.readEntityErrors.Add(articleIdDontMatch,   (value) => value.SetJson(@"{""id"": ""article-unexpected-id"""));
+            testArticles.readEntityErrors.Add(articleIdDoesntMatch, (value) => value.SetJson(@"{""id"": ""article-unexpected-id"""));
             
             var orders      = store.orders;
             var articles    = store.articles;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             
             var readArticles3   = articles.Read()                                                   .TaskName("readArticles3");
             var invalidJson     = readArticles3.Find(articleInvalidJson)                            .TaskName("invalidJson");
-            var idDontMatch     = readArticles3.Find(articleIdDontMatch)                            .TaskName("idDontMatch");
+            var idDoesntMatch   = readArticles3.Find(articleIdDoesntMatch)                          .TaskName("idDoesntMatch");
 
             // test throwing exception in case of task or entity errors
             try {
@@ -109,8 +109,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 |   ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- invalidJson # EntityErrors ~ count: 1
 |   ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
-|- idDontMatch # EntityErrors ~ count: 1
-|   ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id";
+|- idDoesntMatch # EntityErrors ~ count: 1
+|   ParseError: Article 'article-idDoesntMatch', entity id does not match key. id: article-unexpected-id";
                 AreEqual(expect, sre.Message);
             }
             
@@ -158,9 +158,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             AreEqual(@"EntityErrors ~ count: 1
 | ParseError: Article 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString());
             
-            IsFalse(idDontMatch.Success);
+            IsFalse(idDoesntMatch.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ParseError: Article 'article-idDontMatch', entity id does not match key. id: article-unexpected-id", idDontMatch.Error.ToString());
+| ParseError: Article 'article-idDoesntMatch', entity id does not match key. id: article-unexpected-id", idDoesntMatch.Error.ToString());
             
         }
     }

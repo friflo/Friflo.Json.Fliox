@@ -3,10 +3,12 @@
 		"**/*.meta": true
     },
     "cSpell.words": [
-        "Ullrich",
-        "Praetz",
+        "JSONB",
         "Linq",
+        "Postgres",
+        "Praetz",
         "SIMD",
+        "Ullrich",
         "netsh"
     ],
     "cSpell.enableFiletypes": [

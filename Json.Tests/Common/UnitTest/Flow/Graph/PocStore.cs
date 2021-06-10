@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var notebook        = new Article { id = "article-3", name = "Notebook", producer = samsung };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Create(notebook);
-            var createCam2      = articles.Create(cameraCreate);   // Create new CreatTask for same entity
+            var createCam2      = articles.Create(cameraCreate);   // Create new CreateTask for same entity
             AreNotSame(createCam1, createCam2);               
             AreEqual("CreateTask<Article> (#ids: 1)", createCam1.ToString());
 

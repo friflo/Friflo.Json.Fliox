@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public static readonly EntityMatcher Instance = new EntityMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (TypeUtils.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // doesnt handle standard types
                 return null;
             if (!typeof(Entity).IsAssignableFrom(type))
                 return null;

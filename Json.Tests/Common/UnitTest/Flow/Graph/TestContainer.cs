@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     /// <para>2. Exceptions thrown by a <see cref="EntityContainer"/> command by a buggy implementation.</para>
     /// <para>3. One or more <see cref="ReadError"/>'s added to a <see cref="TaskResult"/> entity error dictionary.</para>
     /// <br></br>
-    /// Note: The <see cref="TestContainer"/> dont modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
+    /// Note: The <see cref="TestContainer"/> doesnt modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
     /// to avoid side effects by error tests.
     /// </summary>
     public class TestContainer : EntityContainer
