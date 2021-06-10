@@ -113,6 +113,27 @@ namespace Friflo.Json.Flow.Graph
             intern.store.AddTask(task);
             return task;
         }
+        
+        // --- Subscribe
+        public SubscribeTask<T> Subscribe(TaskType[] types, Expression<Func<T, bool>> filter) {
+            var op = Operation.FromFilter(filter);
+            var task = sync.SubscribeFilter(types, op);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public SubscribeTask<T> SubscribeByFilter(TaskType[] types, EntityFilter<T> filter) {
+            var task = sync.SubscribeFilter(types, filter.op);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public SubscribeTask<T> SubscribeAll(TaskType[] types) {
+            var all = Operation.FilterTrue;
+            var task = sync.SubscribeFilter(types, all);
+            intern.store.AddTask(task);
+            return task;
+        }
 
         // --- Create
         public CreateTask<T> Create(T entity) {

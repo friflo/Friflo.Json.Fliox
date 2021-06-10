@@ -14,11 +14,15 @@ namespace Friflo.Json.Flow.Database
         Task<bool>  SendMessage(PushMessage message, SyncContext syncContext);
     }
     
-    public class MessageBroker
+    public class MessageBroker : IDisposable
     {
         private readonly JsonEvaluator                                  jsonEvaluator = new JsonEvaluator();
         private readonly Dictionary<IMessageTarget, MessageSubscriber>  subscribers = new Dictionary<IMessageTarget, MessageSubscriber>();
-            
+
+        public void Dispose() {
+            jsonEvaluator.Dispose();
+        }
+
         public void Subscribe (SubscribeMessages subscribe, IMessageTarget messageTarget) {
             var filters = subscribe.filters;
             if (filters == null || filters.Count == 0) {

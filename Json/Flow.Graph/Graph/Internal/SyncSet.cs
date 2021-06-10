@@ -27,6 +27,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
         private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();
         
+        private             SubscribeTask<T>                    subscribe;
+        
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
         private readonly    List<WriteTask>                     createTasks  = new List<WriteTask>();
@@ -86,6 +88,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             query = new QueryTask<T>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
+        }
+        
+        // --- Query
+        internal SubscribeTask<T> SubscribeFilter(TaskType[] types, FilterOperation filter) {
+            subscribe = new SubscribeTask<T>(types, filter);
+            return subscribe;
         }
         
         // --- Create

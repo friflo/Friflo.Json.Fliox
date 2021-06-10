@@ -8,9 +8,9 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        internal readonly   List<SyncTask>                  appTasks    = new List<SyncTask>();
-        private  readonly   List<LogTask>                   logTasks    = new List<LogTask>();
-        internal readonly   Dictionary<string, EchoTask>    echoTasks   = new Dictionary<string, EchoTask>();
+        internal readonly   List<SyncTask>                  appTasks        = new List<SyncTask>();
+        private  readonly   List<LogTask>                   logTasks        = new List<LogTask>();
+        internal readonly   Dictionary<string, EchoTask>    echoTasks       = new Dictionary<string, EchoTask>();
 
         internal LogTask CreateLog() {
             var logTask = new LogTask();
@@ -27,9 +27,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
-            Echo(tasks);
+            Echo        (tasks);
         }
                 
+        // --- Echo
         private void Echo(List<DatabaseTask> tasks) {
             foreach (var entry in echoTasks) {
                 EchoTask echoTask = entry.Value;
