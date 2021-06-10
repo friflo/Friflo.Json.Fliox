@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Database
         private static MessageFilter FindFilter (SubscribeMessages subscribe, string container, TaskType taskType) {
             foreach (var filter in subscribe.filters) {
                 if (filter.container == container) {
-                    if (Array.IndexOf(filter.types, taskType) != -1)
+                    if (filter.types.Contains(taskType))
                         return filter;
                     return null;
                 }

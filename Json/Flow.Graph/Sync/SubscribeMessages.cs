@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Sync
     public class MessageFilter
     {
         public string                   container;
-        public TaskType[]               types;
+        public HashSet<TaskType>        types;
         public FilterOperation          filter;
     }
 

@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
@@ -25,7 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var useStore     = new PocStore(fileDatabase)) {
                 fileDatabase.messageBroker = messageBroker;
-                useStore.articles.SubscribeAll(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+                var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+                useStore.articles.SubscribeAll(types);
                 await useStore.Sync();
                 using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase)) {
 
