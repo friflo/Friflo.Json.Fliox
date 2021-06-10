@@ -6,12 +6,12 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-public class SubscribeTask<T> : SyncTask where T : Entity
+    public class SubscribeTask<T> : SyncTask where T : Entity
     {
         internal            TaskState               state;
         internal readonly   TaskType[]              types;
         internal readonly   FilterOperation         filter;
-        internal readonly   string                  filterLinq; // use as string identifier of a filter 
+        private  readonly   string                  filterLinq; // use as string identifier of a filter 
      // private  readonly   EntityStore             store;
 
         // public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? entities     : throw e;

@@ -25,9 +25,10 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
-        internal  abstract  void    LogSetChangesInternal (LogTask logTask);
-        internal  abstract  void    SyncContainerEntities (ContainerEntities containerResults);
-        internal  abstract  void    ResetSync             ();
+        internal  abstract  void            LogSetChangesInternal (LogTask logTask);
+        internal  abstract  void            SyncContainerEntities (ContainerEntities containerResults);
+        internal  abstract  void            ResetSync             ();
+        internal  abstract  MessageFilter   GetMessageFilter();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -367,6 +368,10 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void ResetSync() {
             sync = new SyncSet<T>(this);
+        }
+        
+        internal override MessageFilter GetMessageFilter() {
+            return sync.GetMessageFilter();
         }
     }
 }

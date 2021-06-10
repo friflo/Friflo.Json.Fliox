@@ -35,17 +35,24 @@ namespace Friflo.Json.Flow.Graph
         internal            LogTask                         tracerLogTask;
 
         
-        internal StoreIntern(TypeStore typeStore, TypeStore owned, EntityDatabase database, ObjectMapper jsonMapper, MessageTarget messageTarget) {
+        internal StoreIntern(
+            TypeStore       typeStore,
+            TypeStore       owned,
+            EntityDatabase  database,
+            ObjectMapper    jsonMapper,
+            MessageTarget   messageTarget,
+            SyncStore       sync)
+        {
             this.typeStore      = typeStore;
             this.ownedTypeStore = owned;
             this.database       = database;
             this.jsonMapper     = jsonMapper;
             this.typeCache      = jsonMapper.writer.TypeCache;
             this.messageTarget  = messageTarget;
+            this.sync           = sync;
             setByType           = new Dictionary<Type, EntitySet>();
             setByName           = new Dictionary<string, EntitySet>();
             objectPatcher       = new ObjectPatcher(jsonMapper);
-            sync                = new SyncStore();
             contextPools        = new Pools(Pools.SharedPools);
             tracerLogTask       = null;
         }
@@ -88,7 +95,8 @@ namespace Friflo.Json.Flow.Graph
                 TracerContext = this
             };
             var messageTarget = new MessageTarget(this);
-            _intern = new StoreIntern(typeStore, owned, database, jsonMapper, messageTarget);
+            var sync = new SyncStore(this);
+            _intern = new StoreIntern(typeStore, owned, database, jsonMapper, messageTarget, sync);
         }
         
         public void Dispose() {
@@ -313,6 +321,10 @@ namespace Friflo.Json.Flow.Graph
                             var echo = (Echo) task;
                             _intern.sync.EchoResult(echo, result);
                             break;
+                        case TaskType.subscribe:
+                            var subscribe = (SubscribeMessages) task;
+                            _intern.sync.SubscribeResult(subscribe, result);
+                            break;
                     }
                 }
                 _intern.sync.LogResults();
@@ -328,7 +340,7 @@ namespace Friflo.Json.Flow.Graph
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
-                _intern.sync = new SyncStore();
+                _intern.sync = new SyncStore(this);
             }
             return syncResult;
         }

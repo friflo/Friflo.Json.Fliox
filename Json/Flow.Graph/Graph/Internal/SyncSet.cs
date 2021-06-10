@@ -90,10 +90,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             return query;
         }
         
-        // --- Query
+        // --- Subscribe
         internal SubscribeTask<T> SubscribeFilter(TaskType[] types, FilterOperation filter) {
             subscribe = new SubscribeTask<T>(types, filter);
             return subscribe;
+        }
+        
+        internal MessageFilter GetMessageFilter() {
+            var sub = subscribe;
+            if (sub == null)
+                return null;
+            var messageFilter = new MessageFilter {
+                container   = set.name,
+                types       = sub.types,
+                filter      = sub.filter 
+            };
+            return messageFilter;
         }
         
         // --- Create

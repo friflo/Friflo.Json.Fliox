@@ -26,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var useStore     = new PocStore(fileDatabase)) {
                 fileDatabase.messageBroker = messageBroker;
                 useStore.articles.SubscribeAll(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+                await useStore.Sync();
                 using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase)) {
 
                 }
