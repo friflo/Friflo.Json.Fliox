@@ -25,12 +25,12 @@ namespace Friflo.Json.Flow.Graph.Internal
                     case TaskType.create:
                         var create = (CreateEntities)task;
                         var set = store._intern.setByName[create.container];
-                        set.SyncPeerEntities(create.entities, set.changeListener);
+                        set.SyncPeerEntities(create.entities, set.GetChangeListener());
                         break;
                     case TaskType.update:
                         var update = (UpdateEntities)task;
                         set = store._intern.setByName[update.container];
-                        set.SyncPeerEntities(update.entities, set.changeListener);
+                        set.SyncPeerEntities(update.entities, set.GetChangeListener());
                         break;
                     case TaskType.delete:
                         // todo implement

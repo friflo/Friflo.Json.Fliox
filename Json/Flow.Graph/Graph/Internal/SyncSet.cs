@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // --- Subscribe
         internal SubscribeTask<T> SubscribeFilter(HashSet<TaskType> types, FilterOperation filter, ChangeListener<T> changeListener) {
             subscribe = new SubscribeTask<T>(types, filter);
-            set.changeListener = changeListener;
+            set.intern.changeListener = changeListener;
             return subscribe;
         }
         

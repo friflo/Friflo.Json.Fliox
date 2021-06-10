@@ -19,7 +19,6 @@ namespace Friflo.Json.Flow.Graph
     public abstract class EntitySet
     {
         internal  readonly  string          name;
-        internal            ChangeListener  changeListener;
 
         internal  abstract  SyncSet         Sync      { get; }
         internal  abstract  SetInfo         SetInfo   { get; }
@@ -29,20 +28,21 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities, ChangeListener changeListener);
         internal  abstract  void            ResetSync               ();
+        internal  abstract  ChangeListener  GetChangeListener();
 
         protected EntitySet(string name) {
             this.name = name;
         }
     }
 
-    internal readonly struct SetIntern<T> where T : Entity
+    internal struct SetIntern<T> where T : Entity
     {
         internal readonly   TypeMapper<T>       typeMapper;
         internal readonly   ObjectMapper        jsonMapper;
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
-
+        internal            ChangeListener      changeListener;
 
         internal SetIntern(EntityStore store) {
             jsonMapper      = store._intern.jsonMapper;
@@ -50,6 +50,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher   = store._intern.objectPatcher;
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
+            changeListener  = null;
         }
     }
     
@@ -61,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
         //          peers, Sync, name, container & store 
-        internal readonly   SetIntern<T>                        intern;
+        internal            SetIntern<T>                        intern;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
@@ -73,6 +74,8 @@ namespace Friflo.Json.Flow.Graph
         
         internal override   SyncSet                             Sync => sync;
         public   override   string                              ToString() => SetInfo.ToString();
+        
+        internal override   ChangeListener                      GetChangeListener() => intern.changeListener;
         
         internal override   SetInfo                             SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
