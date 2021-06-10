@@ -16,9 +16,31 @@ namespace Friflo.Json.Flow.Graph.Internal
         } 
             
         // --- IMessageTarget 
-        public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
+        public Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
             var databaseMessage = message as DatabaseMessage;
-            return true;
+            if (databaseMessage == null)
+                return Task.FromResult(true);
+            foreach (var task in databaseMessage.tasks) {
+                switch (task.TaskType) {
+                    case TaskType.create:
+                        var create = (CreateEntities)task;
+                        var set = store._intern.setByName[create.container];
+                        set.SyncPeerEntities(create.entities);
+                        break;
+                    case TaskType.update:
+                        var update = (UpdateEntities)task;
+                        set = store._intern.setByName[update.container];
+                        set.SyncPeerEntities(update.entities);
+                        break;
+                    case TaskType.delete:
+                        // todo implement
+                        break;
+                    case TaskType.patch:
+                        // todo implement
+                        break;
+                }
+            }
+            return Task.FromResult(true);
         }
         
         public bool IsOpen () {

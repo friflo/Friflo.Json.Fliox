@@ -25,10 +25,9 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
-        internal  abstract  void            LogSetChangesInternal (LogTask logTask);
-        internal  abstract  void            SyncContainerEntities (ContainerEntities containerResults);
-        internal  abstract  void            ResetSync             ();
-        // internal  abstract  MessageFilter   GetMessageFilter();
+        internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
+        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
+        internal  abstract  void            ResetSync               ();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -327,8 +326,8 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- EntitySet
-        internal override void SyncContainerEntities(ContainerEntities containerResults) {
-            foreach (var entityPair in containerResults.entities) {
+        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities) {
+            foreach (var entityPair in entities) {
                 var id = entityPair.Key;
                 var value = entityPair.Value;
                 var error = value.Error;
@@ -357,7 +356,7 @@ namespace Friflo.Json.Flow.Graph
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {
                         var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                        containerResults.entities[id].SetError(entityError);
+                        entities[id].SetError(entityError);
                     }
                 } else {
                     peer.SetPatchSourceNull();
@@ -369,9 +368,5 @@ namespace Friflo.Json.Flow.Graph
         internal override void ResetSync() {
             sync = new SyncSet<T>(this);
         }
-        
-        /* internal override MessageFilter GetMessageFilter() {
-            return sync.GetMessageFilter();
-        } */
     }
 }

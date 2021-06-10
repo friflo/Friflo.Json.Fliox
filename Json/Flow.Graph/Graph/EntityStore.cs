@@ -253,8 +253,9 @@ namespace Friflo.Json.Flow.Graph
                     syncError = null;
                     containerResults = response.results;
                     foreach (var containerResult in containerResults) {
+                        ContainerEntities containerEntities = containerResult.Value;
                         var set = _intern.setByName[containerResult.Key];
-                        set.SyncContainerEntities(containerResult.Value);
+                        set.SyncPeerEntities(containerEntities.entities);
                     }
                     SetErrors(response);
                 } else {
