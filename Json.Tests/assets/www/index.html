@@ -30,6 +30,10 @@
             };
         }
 
+        function closeWebsocket() {
+            connection.close();
+        }
+
         function sendSyncEcho() {
             var request = {type:"sync", tasks: [{ task: "echo", message: "test echo"}]};
             var json = JSON.stringify(request);
@@ -47,7 +51,8 @@
     <br><br>
     Websocket
     <button type="button" onclick="connectWebsocket()">Connect</button>
-    <button type="button" onclick="sendSyncEcho()">Send sync echo</button> <br><br>
+    <button type="button" onclick="sendSyncEcho()">Send sync echo</button>
+    <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
 
     <textarea id="jsonRequest" title="request" cols="100" rows="15">{ "type": "sync", "tasks": [
     {

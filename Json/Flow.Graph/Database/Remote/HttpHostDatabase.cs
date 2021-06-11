@@ -160,7 +160,10 @@ namespace Friflo.Json.Flow.Database.Remote
                             await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                             return;
                         case WebSocketState.Closed:
-                            Log("WebSocket Close");
+                            Log("WebSocket Closed");
+                            return;
+                        case WebSocketState.Aborted:
+                            Log("WebSocket Aborted");
                             return;
                     }
                 }
