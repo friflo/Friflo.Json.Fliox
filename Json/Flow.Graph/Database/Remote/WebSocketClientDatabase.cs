@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -14,8 +15,10 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {
-        private readonly    string          endpoint;
-        private readonly    ClientWebSocket websocket;
+        private readonly    string                              endpoint;
+        private readonly    ClientWebSocket                     websocket;
+        private readonly    ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
+
 
         public WebSocketClientDatabase(string endpoint) {
             this.endpoint = endpoint;
@@ -69,31 +72,34 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
         
-        private ConcurrentQueue<WebsocketRequest> requestQueue = new ConcurrentQueue<WebsocketRequest>();
-        
-        
         private void OnReceive(string messageJson) {
             var contextPools    = new Pools(Pools.SharedPools);
             using (var pooledMapper = contextPools.ObjectMapper.Get()) {
                 var reader = pooledMapper.instance.reader;
-                var message = reader.Read<WebSocketMessage>(messageJson);
-                if (message.response != null) {
-                    if (requestQueue.TryDequeue(out WebsocketRequest request)) {
-                        if (websocket.State != WebSocketState.Open) {
-                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
-                            request.response.SetResult(error);
+                try {
+                    var message = reader.Read<WebSocketMessage>(messageJson);
+                    if (message.response != null) {
+                        if (requestQueue.TryDequeue(out WebsocketRequest request)) {
+                            if (websocket.State != WebSocketState.Open) {
+                                var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
+                                request.response.SetResult(error);
+                                return;
+                            }
+                            var writer = pooledMapper.instance.writer;
+                            var responseJson = writer.Write(message.response);
+                            var response = new JsonResponse(responseJson, RequestStatusType.Ok);
+                            request.response.SetResult(response);
                             return;
                         }
-                        var writer = pooledMapper.instance.writer;
-                        var responseJson = writer.Write(message.response);
-                        var response = new JsonResponse(responseJson, RequestStatusType.Ok);
-                        request.response.SetResult(response);
                         return;
                     }
-                    return;
-                }
-                if (message.push != null) {
-                    throw new NotImplementedException("");
+                    if (message.push != null) {
+                        throw new NotImplementedException("");
+                    }
+                } catch (Exception e) {
+                    var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
+                    Console.WriteLine(error);
+                    Debug.Fail(error);
                 }
             }
         }
@@ -123,7 +129,7 @@ namespace Friflo.Json.Flow.Database.Remote
         internal readonly   TaskCompletionSource<JsonResponse>  response;          
         
         internal WebsocketRequest(SyncContext syncContext) {
-            response = new TaskCompletionSource<JsonResponse>(); 
+            response            = new TaskCompletionSource<JsonResponse>(); 
             this.syncContext    = syncContext;
         }
     }

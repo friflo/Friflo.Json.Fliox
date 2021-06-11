@@ -33,6 +33,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 _singleton = new TypeStore();
                 _singleton.GetTypeMapper(typeof(DatabaseRequest));
                 _singleton.GetTypeMapper(typeof(DatabaseResponse));
+                _singleton.GetTypeMapper(typeof(WebSocketMessage));
                 _singleton.GetTypeMapper(typeof(ResponseError));
             }
             return _singleton;

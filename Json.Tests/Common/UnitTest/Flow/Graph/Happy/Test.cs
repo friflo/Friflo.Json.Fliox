@@ -86,11 +86,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
         private static async Task HttpCreate() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
+            using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
                     using (var useStore         = new PocStore(remoteDatabase)) {
                         await TestStores(createStore, useStore);
@@ -100,21 +100,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
-        // [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
+        [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
         
         private static async Task WebSocketCreate() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) 
+            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
-                        await remoteDatabase.Connect();
-                        using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
-                        using (var useStore         = new PocStore(remoteDatabase)) {
-                            await TestStores(createStore, useStore);
-                        }
-                        await remoteDatabase.Close();
+                    await remoteDatabase.Connect();
+                    using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
+                    using (var useStore         = new PocStore(remoteDatabase)) {
+                        await TestStores(createStore, useStore);
                     }
+                    await remoteDatabase.Close();
                 });
             }
         }
