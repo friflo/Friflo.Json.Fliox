@@ -29,13 +29,13 @@ namespace Friflo.Json.Flow.Database.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, ResponseType type) {
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, MessageType type) {
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
-                    ObjectMapper mapper = pooledMapper.instance;
-                    ObjectReader reader = mapper.reader;
-                    var request = reader.Read<DatabaseRequest>(jsonRequest);
+                    ObjectMapper    mapper  = pooledMapper.instance;
+                    ObjectReader    reader  = mapper.reader;
+                    DatabaseRequest request = ReadRequest (reader, jsonRequest, type);
                     if (reader.Error.ErrSet)
                         return JsonResponse.CreateResponseError(syncContext, reader.Error.msg.ToString(), RequestStatusType.Error);
                     DatabaseResponse response = await ExecuteRequest(request, syncContext).ConfigureAwait(false);
@@ -50,11 +50,22 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
         
-        private string CreateResponse (ObjectWriter writer, DatabaseResponse response, ResponseType type) {
+        private static DatabaseRequest ReadRequest (ObjectReader reader, string jsonRequest, MessageType type) {
             switch (type) {
-                case ResponseType.Response:
+                case MessageType.ReqResp:
+                    return reader.Read<DatabaseRequest>(jsonRequest);
+                case MessageType.Message:
+                    var msg = reader.Read<DatabaseMessage>(jsonRequest);
+                    return msg.req;
+            }
+            throw new InvalidOperationException("can't be reached");
+        }
+        
+        private static string CreateResponse (ObjectWriter writer, DatabaseResponse response, MessageType type) {
+            switch (type) {
+                case MessageType.ReqResp:
                     return writer.Write(response);
-                case ResponseType.Message:
+                case MessageType.Message:
                     var message = new DatabaseMessage { resp = response };
                     return writer.Write(message);
             }
@@ -72,8 +83,9 @@ namespace Friflo.Json.Flow.Database.Remote
     }
     
     // todo should be named MessageType
-    public enum ResponseType {
-        Response,
+    public enum MessageType {
+        /// request / response
+        ReqResp,
         Message
     }
     

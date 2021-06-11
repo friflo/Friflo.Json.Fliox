@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
                 var contextPools    = new Pools(Pools.SharedPools);
                 var syncContext     = new SyncContext(contextPools, null);
-                var     result      = await ExecuteRequestJson(requestContent, syncContext, ResponseType.Response).ConfigureAwait(false);
+                var     result      = await ExecuteRequestJson(requestContent, syncContext, MessageType.ReqResp).ConfigureAwait(false);
                 syncContext.pools.AssertNoLeaks();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
@@ -148,7 +148,7 @@ namespace Friflo.Json.Flow.Database.Remote
                                 var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                                 var contextPools    = new Pools(Pools.SharedPools);
                                 var syncContext     = new SyncContext(contextPools, target);
-                                var result          = await ExecuteRequestJson(requestContent, syncContext, ResponseType.Message).ConfigureAwait(false);
+                                var result          = await ExecuteRequestJson(requestContent, syncContext, MessageType.Message).ConfigureAwait(false);
                                 syncContext.pools.AssertNoLeaks();
                                 byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                                 var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);

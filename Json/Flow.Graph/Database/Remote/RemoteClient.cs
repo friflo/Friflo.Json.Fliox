@@ -49,8 +49,12 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public abstract class RemoteClientDatabase : EntityDatabase
     {
+        private readonly MessageType messageType;
+        
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientDatabase() { }
+        protected RemoteClientDatabase(MessageType messageType) {
+            this.messageType = messageType;
+        }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             RemoteClientContainer container = new RemoteClientContainer(name, this);
@@ -72,7 +76,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                var jsonRequest = mapper.Write(request);
+                var jsonRequest = CreateRequest(mapper.writer, request);
                 var result = await ExecuteRequestJson(jsonRequest, syncContext).ConfigureAwait(false);
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == RequestStatusType.Ok) {
@@ -88,6 +92,17 @@ namespace Friflo.Json.Flow.Database.Remote
                     return new ResponseError{message = reader.Error.msg.ToString()};
                 return responseError;
             }
+        }
+        
+        private string CreateRequest (ObjectWriter writer, DatabaseRequest request) {
+            switch (messageType) {
+                case MessageType.ReqResp:
+                    return writer.Write(request);
+                case MessageType.Message:
+                    var msg = new DatabaseMessage { req = request };
+                    return writer.Write(msg);
+            }
+            throw new InvalidOperationException("cannot be reached");
         }
     }
     

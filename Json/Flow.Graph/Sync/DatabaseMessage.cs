@@ -10,6 +10,7 @@ namespace Friflo.Json.Flow.Sync
     /// </summary>
     public class DatabaseMessage
     {
+        public DatabaseRequest  req;
         public DatabaseResponse resp;
         public DatabaseEvent    ev;
     }

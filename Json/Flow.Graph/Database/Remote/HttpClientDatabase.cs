@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private readonly    string          endpoint;
         private readonly    HttpClient      httpClient;
 
-        public HttpClientDatabase(string endpoint) {
+        public HttpClientDatabase(string endpoint) : base(MessageType.ReqResp){
             this.endpoint = endpoint;
             httpClient = new HttpClient();
         }

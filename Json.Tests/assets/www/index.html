@@ -36,12 +36,14 @@
 
         function sendSyncEcho() {
             var request = {type:"sync", tasks: [{ task: "echo", message: "test echo"}]};
-            var json = JSON.stringify(request);
+            var msg = {req: request};
+            var json = JSON.stringify(msg);
             connection.send(json);
         }
         function sendSyncRequest() {
             var jsonRequest = document.getElementById("jsonRequest").value;
-            connection.send(jsonRequest);
+            var msg = `{"req": ${jsonRequest}}`;
+            connection.send(msg);
         }
     </script>
 </head>
