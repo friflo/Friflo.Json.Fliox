@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public interface IChangeListener
     {
-        void OnSubscribeChanges(DatabaseMessage message);
+        void OnSubscribeChanges(ChangesEvent changes);
     }
     
     

@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Database.Remote
                         }
                         return;
                     }
-                    if (message.push != null) {
+                    if (message.ev != null) {
                         throw new NotImplementedException("");
                     }
                 } catch (Exception e) {
@@ -139,6 +139,6 @@ namespace Friflo.Json.Flow.Database.Remote
     public class WebSocketMessage
     {
         public DatabaseResponse resp;
-        public PushMessage      push;
+        public DatabaseEvent    ev;
     }
 }

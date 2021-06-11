@@ -9,25 +9,25 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
-    public class MessageSubscriber {
-        private  readonly   IMessageTarget                          messageTarget;
-        /// key: <see cref="SubscribeMessages.container"/>
-        internal readonly   Dictionary<string, SubscribeMessages>   subscribeMap = new Dictionary<string, SubscribeMessages>();
-        internal readonly   ConcurrentQueue<PushMessage>            queue = new ConcurrentQueue<PushMessage>();
+    public class EventSubscriber {
+        private  readonly   IEventTarget                            eventTarget;
+        /// key: <see cref="SubscribeChanges.container"/>
+        internal readonly   Dictionary<string, SubscribeChanges>   subscribeMap = new Dictionary<string, SubscribeChanges>();
+        internal readonly   ConcurrentQueue<DatabaseEvent>          queue = new ConcurrentQueue<DatabaseEvent>();
         
-        public MessageSubscriber (IMessageTarget messageTarget) {
-            this.messageTarget  = messageTarget;
+        public EventSubscriber (IEventTarget eventTarget) {
+            this.eventTarget  = eventTarget;
         }
         
         internal async Task SendMessages () {
-            if (!messageTarget.IsOpen())
+            if (!eventTarget.IsOpen())
                 return;
             
             var contextPools    = new Pools(Pools.SharedPools);
             while (queue.TryPeek(out var message)) {
                 try {
-                    var syncContext     = new SyncContext(contextPools, messageTarget);
-                    var success = await messageTarget.SendMessage(message, syncContext).ConfigureAwait(false);
+                    var syncContext     = new SyncContext(contextPools, eventTarget);
+                    var success = await eventTarget.SendEvent(message, syncContext).ConfigureAwait(false);
                     if (success) {
                         queue.TryDequeue(out _);
                     }

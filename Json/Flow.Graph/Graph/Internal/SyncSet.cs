@@ -348,7 +348,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var sub = subscribe;
             if (sub == null)
                 return;
-            var req = new SubscribeMessages {
+            var req = new SubscribeChanges {
                 container   = set.name,
                 filter      = sub.filter,
                 types       = sub.types

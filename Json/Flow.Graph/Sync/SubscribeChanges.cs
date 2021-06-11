@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class SubscribeMessages : DatabaseTask
+    public class SubscribeChanges : DatabaseTask
     {
         public string                   container;
         public HashSet<TaskType>        types;
@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Sync
             if (messageBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no messageBroker"));
             
-            var messageTarget = syncContext.messageTarget;
+            var messageTarget = syncContext.eventTarget;
             if (messageTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a messageTarget"));
             

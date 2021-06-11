@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     [Fri.Polymorph(typeof(Echo),                    Discriminant = "echo")]
-    [Fri.Polymorph(typeof(SubscribeMessages),       Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(SubscribeChanges),       Discriminant = "subscribe")]
     public abstract class DatabaseTask
     {
         [Fri.Ignore]

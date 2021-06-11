@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
         internal readonly   Pools                           contextPools;
-        internal readonly   MessageTarget                   messageTarget;
+        internal readonly   EventTarget                   eventTarget;
         
         // --- non readonly
         internal            SyncStore                       sync;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph
             TypeStore       owned,
             EntityDatabase  database,
             ObjectMapper    jsonMapper,
-            MessageTarget   messageTarget,
+            EventTarget   eventTarget,
             SyncStore       sync)
         {
             this.typeStore      = typeStore;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
             this.database       = database;
             this.jsonMapper     = jsonMapper;
             this.typeCache      = jsonMapper.writer.TypeCache;
-            this.messageTarget  = messageTarget;
+            this.eventTarget  = eventTarget;
             this.sync           = sync;
             setByType           = new Dictionary<Type, EntitySet>();
             setByName           = new Dictionary<string, EntitySet>();
@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph
             var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
                 TracerContext = this
             };
-            var messageTarget = new MessageTarget(this);
+            var messageTarget = new EventTarget(this);
             var sync = new SyncStore();
             _intern = new StoreIntern(typeStore, owned, database, jsonMapper, messageTarget, sync);
         }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.messageTarget);
+            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
             SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
@@ -126,7 +126,7 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.messageTarget);
+            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
             SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
             syncContext.pools.AssertNoLeaks();
@@ -136,7 +136,7 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.messageTarget);
+            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
             var responseTask = ExecuteSync(syncRequest, syncContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
@@ -329,7 +329,7 @@ namespace Friflo.Json.Flow.Graph
                             _intern.sync.EchoResult(echo, result);
                             break;
                         case TaskType.subscribe:
-                            var subscribe = (SubscribeMessages) task;
+                            var subscribe = (SubscribeChanges) task;
                             set = _intern.setByName[subscribe.container];
                             set.Sync.SubscribeResult(subscribe, result);
                             break;

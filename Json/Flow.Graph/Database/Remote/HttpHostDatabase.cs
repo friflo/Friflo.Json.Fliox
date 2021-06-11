@@ -215,7 +215,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    internal class WebSocketTarget : IMessageTarget
+    internal class WebSocketTarget : IEventTarget
     {
         readonly WebSocket webSocket;
         
@@ -227,12 +227,12 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
         
-        public async Task<bool> SendMessage(PushMessage push, SyncContext syncContext) {
+        public async Task<bool> SendEvent(DatabaseEvent ev, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var message         = new WebSocketMessage { push = push };
+                var message         = new WebSocketMessage { ev = ev };
                 var jsonMessage     = writer.Write(message);
                 byte[] jsonBytes    = Encoding.UTF8.GetBytes(jsonMessage);
                 try {

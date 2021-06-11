@@ -7,20 +7,20 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    public class MessageTarget : IMessageTarget
+    public class EventTarget : IEventTarget
     {
         readonly EntityStore store;
         
-        internal MessageTarget (EntityStore store) {
+        internal EventTarget (EntityStore store) {
             this.store = store; 
         } 
             
         // --- IMessageTarget 
-        public Task<bool> SendMessage(PushMessage push, SyncContext syncContext) {
-            var databaseMessage = push as DatabaseMessage;
-            if (databaseMessage == null)
+        public Task<bool> SendEvent(DatabaseEvent ev, SyncContext syncContext) {
+            var changesEvent = ev as ChangesEvent;
+            if (changesEvent == null)
                 return Task.FromResult(true);
-            foreach (var task in databaseMessage.tasks) {
+            foreach (var task in changesEvent.tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
                         var create = (CreateEntities)task;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                         break;
                 }
             }
-            store._intern.changeListener?.OnSubscribeChanges(databaseMessage);
+            store._intern.changeListener?.OnSubscribeChanges(changesEvent);
 
             return Task.FromResult(true);
         }

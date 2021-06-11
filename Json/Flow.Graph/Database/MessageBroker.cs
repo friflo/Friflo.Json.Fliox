@@ -9,24 +9,24 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Database
 {
-    public interface IMessageTarget {
+    public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  SendMessage(PushMessage push, SyncContext syncContext);
+        Task<bool>  SendEvent(DatabaseEvent ev, SyncContext syncContext);
     }
     
     public class MessageBroker : IDisposable
     {
-        private readonly JsonEvaluator                                  jsonEvaluator = new JsonEvaluator();
-        private readonly Dictionary<IMessageTarget, MessageSubscriber>  subscribers = new Dictionary<IMessageTarget, MessageSubscriber>();
+        private readonly JsonEvaluator                              jsonEvaluator = new JsonEvaluator();
+        private readonly Dictionary<IEventTarget, EventSubscriber>  subscribers = new Dictionary<IEventTarget, EventSubscriber>();
 
         public void Dispose() {
             jsonEvaluator.Dispose();
         }
 
-        public void Subscribe (SubscribeMessages subscribe, IMessageTarget messageTarget) {
-            if (!subscribers.TryGetValue(messageTarget, out var messageSubscriber)) {
-                messageSubscriber = new MessageSubscriber(messageTarget);
-                subscribers.Add(messageTarget, messageSubscriber);
+        public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
+            if (!subscribers.TryGetValue(eventTarget, out var messageSubscriber)) {
+                messageSubscriber = new EventSubscriber(eventTarget);
+                subscribers.Add(eventTarget, messageSubscriber);
             }
             messageSubscriber.subscribeMap[subscribe.container] = subscribe;
         }
@@ -42,11 +42,11 @@ namespace Friflo.Json.Flow.Database
         public void EnqueueSyncTasks (SyncRequest syncRequest) {
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;
-                MessageSubscriber   subscriber = pair.Value;
+                EventSubscriber     subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
                     foreach (var messagePair in subscriber.subscribeMap) {
-                        SubscribeMessages subscribeMessages = messagePair.Value;
-                        var taskResult = FilterTask(task, subscribeMessages);
+                        SubscribeChanges subscribeChanges = messagePair.Value;
+                        var taskResult = FilterTask(task, subscribeChanges);
                         if (taskResult == null)
                             continue;
                         if (tasks == null) {
@@ -57,12 +57,12 @@ namespace Friflo.Json.Flow.Database
                 }
                 if (tasks == null)
                     continue;
-                var subscriberSync = new DatabaseMessage {tasks = tasks};
-                subscriber.queue.Enqueue(subscriberSync);
+                var changesEvent = new ChangesEvent {tasks = tasks};
+                subscriber.queue.Enqueue(changesEvent);
             }
         }
         
-        private DatabaseTask FilterTask (DatabaseTask task, SubscribeMessages subscribe) {
+        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
@@ -116,7 +116,7 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
         
-        private static bool MatchFilter (SubscribeMessages subscribe, string container, TaskType taskType) {
+        private static bool MatchFilter (SubscribeChanges subscribe, string container, TaskType taskType) {
             if (subscribe.container == container) {
                 if (subscribe.types.Contains(taskType))
                     return true;

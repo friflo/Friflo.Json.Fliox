@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test] public async Task TestSubscribe      () { await TestCreate(async (store) => await AssertSubscribe ()); }
 
         private class StoreChanges : IChangeListener {
-            public void OnSubscribeChanges (DatabaseMessage message) { }
+            public void OnSubscribeChanges (ChangesEvent changes) { }
         }
         
         private static async Task AssertSubscribe() {
