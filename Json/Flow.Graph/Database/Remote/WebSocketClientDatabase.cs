@@ -31,6 +31,10 @@ namespace Friflo.Json.Flow.Database.Remote
             var uri = new Uri(endpoint);
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
         }
+        
+        public async Task Close() {
+            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+        }
 
         protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, SyncContext syncContext) {
             try {

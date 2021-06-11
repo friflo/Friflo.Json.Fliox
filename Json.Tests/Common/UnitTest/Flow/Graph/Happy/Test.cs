@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [UnityTest] public IEnumerator  CollectAwaitCoroutine() { yield return RunAsync.Await(CollectAwait(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task   CollectAwaitAsync() { await CollectAwait(); }
         
-        private async Task CollectAwait() {
+        private static async Task CollectAwait() {
             List<Task> tasks = new List<Task>();
             for (int n = 0; n < 1000; n++) {
                 Task task = Task.Delay(1);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         [UnityTest] public IEnumerator  ChainAwaitCoroutine() { yield return RunAsync.Await(ChainAwait(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task   ChainAwaitAsync() { await ChainAwait(); }
-        private async Task ChainAwait() {
+        private static async Task ChainAwait() {
             for (int n = 0; n < 5; n++) {
                 await Task.Delay(1);
             }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [UnityTest] public IEnumerator  MemoryCreateCoroutine() { yield return RunAsync.Await(MemoryCreate()); }
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
-        private async Task MemoryCreate() {
+        private static async Task MemoryCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var createStore  = await TestRelationPoC.CreateStore(database))
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [UnityTest] public IEnumerator FileCreateCoroutine() { yield return RunAsync.Await(FileCreate(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
-        private async Task FileCreate() {
+        private static async Task FileCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [UnityTest] public IEnumerator FileUseCoroutine() { yield return RunAsync.Await(FileUse()); }
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
-        private async Task FileUse() {
+        private static async Task FileUse() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [UnityTest] public IEnumerator HttpCreateCoroutine() { yield return RunAsync.Await(HttpCreate()); }
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
-        private async Task HttpCreate() {
+        private static async Task HttpCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) {
@@ -99,10 +99,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
+        // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
+        // [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
+        
+        private static async Task WebSocketCreate() {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) {
+                await RunRemoteHost(hostDatabase, async () => {
+                    using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
+                        await remoteDatabase.Connect();
+                        using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
+                        using (var useStore         = new PocStore(remoteDatabase)) {
+                            await TestStores(createStore, useStore);
+                        }
+                        await remoteDatabase.Close();
+                    }
+                });
+            }
+        }
+        
         [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
         [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
-        private async Task LoopbackUse() {
+        private static async Task LoopbackUse() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
