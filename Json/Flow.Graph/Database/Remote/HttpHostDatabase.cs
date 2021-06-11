@@ -132,28 +132,38 @@ namespace Friflo.Json.Flow.Database.Remote
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
             WebSocketTarget target  = new WebSocketTarget(ws);
             using (var memoryStream = new MemoryStream()) {
-                while (ws.State == WebSocketState.Open) {
-                    memoryStream.Position = 0;
-                    memoryStream.SetLength(0);
-                    WebSocketReceiveResult wsResult;
-                    do {
-                        wsResult = await ws.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
-                        memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
-                    }
-                    while(!wsResult.EndOfMessage);
-                    
-                    if (wsResult.MessageType == WebSocketMessageType.Text) {
-                        var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                        var contextPools    = new Pools(Pools.SharedPools);
-                        var syncContext     = new SyncContext(contextPools, target);
-                        var result          = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
-                        syncContext.pools.AssertNoLeaks();
-                        byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
-                        var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
-                        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                while (true) {
+                    switch (ws.State) {
+                        case WebSocketState.Open:
+                            memoryStream.Position = 0;
+                            memoryStream.SetLength(0);
+                            WebSocketReceiveResult wsResult;
+                            do {
+                                wsResult = await ws.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
+                                memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
+                            }
+                            while(!wsResult.EndOfMessage);
+                            
+                            if (wsResult.MessageType == WebSocketMessageType.Text) {
+                                var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
+                                var contextPools    = new Pools(Pools.SharedPools);
+                                var syncContext     = new SyncContext(contextPools, target);
+                                var result          = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
+                                syncContext.pools.AssertNoLeaks();
+                                byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
+                                var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
+                                await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                            }
+                            break;
+                        case WebSocketState.CloseReceived:
+                            Log("WebSocket CloseReceived");
+                            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                            return;
+                        case WebSocketState.Closed:
+                            Log("WebSocket Close");
+                            return;
                     }
                 }
-                Log("WebSocket closed");
             }
         }
 
